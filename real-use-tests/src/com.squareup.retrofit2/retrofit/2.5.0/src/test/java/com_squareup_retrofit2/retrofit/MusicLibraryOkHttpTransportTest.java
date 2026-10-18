@@ -96,7 +96,6 @@ public class MusicLibraryOkHttpTransportTest {
                 .addInterceptor(logging)
                 .authenticator(new TokenRefreshAuthenticator(tokens, authApi))
                 .cache(cache)
-                .readTimeout(500, TimeUnit.MILLISECONDS)
                 .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(server.url("/library/"))
@@ -239,8 +238,11 @@ public class MusicLibraryOkHttpTransportTest {
     @Test
     void reportsAStalledBackendAsAReadTimeout() throws Exception {
         server.enqueue(new MockResponse().setSocketPolicy(SocketPolicy.NO_RESPONSE));
+        // Only this call gets the short timeout, so a slow runner cannot time out the other tests.
+        OkHttpClient impatient = client.newBuilder().readTimeout(500, TimeUnit.MILLISECONDS).build();
+        LibraryApi impatientApi = retrofit.newBuilder().client(impatient).build().create(LibraryApi.class);
 
-        Call<List<Playlist>> call = api.playlists();
+        Call<List<Playlist>> call = impatientApi.playlists();
 
         assertThrows(SocketTimeoutException.class, call::execute);
         assertTrue(call.isExecuted());
