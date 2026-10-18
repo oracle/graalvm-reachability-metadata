@@ -1,0 +1,69 @@
+Prompt:
+The deterministic checkMetadataFiles step failed for org.apache.pulsar:pulsar-client-all:4.2.5.
+Make the smallest metadata correction supported by the captured failure output.
+Do not remove tested versions, weaken validation, or change the command to suppress the failure.
+Forge will rerun the exact command after this repair and provide new evidence if another attempt is needed.
+
+Exact command:
+./gradlew checkMetadataFiles -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5
+
+Captured failure output:
+```text
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[323].condition.typeReached: must be valid to one and only one schema, but 0 are valid
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[323].condition.typeReached: does not match the regex pattern ^[^.;\[/]+(\.[^.;\[/]+)*(\[])*$
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[323].condition.typeReached: string found, object expected
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[323].condition.typeReached: must be valid to one and only one schema, but 2 are valid with indexes '0, 1'
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[324].condition.typeReached: must be valid to one and only one schema, but 0 are valid
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[324].condition.typeReached: does not match the regex pattern ^[^.;\[/]+(\.[^.;\[/]+)*(\[])*$
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[324].condition.typeReached: string found, object expected
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[324].condition.typeReached: must be valid to one and only one schema, but 2 are valid with indexes '0, 1'
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[325].condition.typeReached: must be valid to one and only one schema, but 0 are valid
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[325].condition.typeReached: does not match the regex pattern ^[^.;\[/]+(\.[^.;\[/]+)*(\[])*$
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[325].condition.typeReached: string found, object expected
+ERROR: Invalid reachability metadata in file:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json: $.reflection[325].condition.typeReached: must be valid to one and only one schema, but 2 are valid with indexes '0, 1'
+Metadata files check failed for org.apache.pulsar:pulsar-client-all:4.2.5: Errors above found for: org.apache.pulsar:pulsar-client-all:4.2.5
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-064fa791/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.pulsar:pulsar-client-all:4.2.5: Errors above found for: org.apache.pulsar:pulsar-client-all:4.2.5
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+```
+
+Conversation:
+{"duration_api_ms":63195,"stop_reason":"end_turn","session_id":"df7260d8-f025-4e07-9666-b2fbf586cf12","total_cost_usd":0.3013574,"usage":{"input_tokens":14,"cache_creation_input_tokens":42740,"cache_read_input_tokens":395347,"output_tokens":5130,"output_tokens_details":{"thinking_tokens":2272},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":42740,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":651,"cache_read_input_tokens":65878,"cache_creation_input_tokens":870,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":870},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":14,"outputTokens":5130,"cacheReadInputTokens":395347,"cacheCreationInputTokens":42740,"webSearchRequests":0,"costUSD":0.3013574,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":2272,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":7,"subtype":"success","api_error_status":null,"result":"`checkMetadataFiles` now passes.\n\n**Fix:** removed three invalid reflection entries (array indices 323–325) whose `condition.typeReached` named a JVM-synthetic lambda class — `org.apache.pulsar.shade.org.apache.commons.lang3.RandomUtils$$Lambda/0x...` — instead of a real class. These are harmless to drop: they were exact duplicates (same `sun.security.provider.NativePRNG` constructor target) of the entry immediately above them, which already conditions on `RandomUtils` itself and provides equivalent coverage.\n\n★ Insight ─────────────────────────────────────\n- `condition.typeReached` must name a *loadable* class, matched against the regex `^[^.;\\[/]+(\\.[^.;\\[/]+)*(\\[])*$` — essentially dotted identifiers with optional `[]` array suffixes. JVM-generated lambda classes are named `EnclosingClass$$Lambda/0x<heap-address>` at runtime, which contains a `/`, so it can never satisfy that pattern — these names aren't meant to be referenced in source-level metadata at all.\n- The three near-duplicate entries are a tell-tale sign of an agent-generated artifact: each one came from a separate javaagent trace run, and the hex address after `/0x` is a JVM object-identity hash that differs every run — that's why \"the same lambda\" produced three different strings across captures instead of being stable.\n- Conditions in reachability metadata work by causality: if reaching class `A` implies some ancestor/enclosing class `B` was already initialized, conditioning on `B` is sufficient and strictly more robust. Since a lambda's enclosing method can't run before its enclosing class (`RandomUtils`) is initialized, the pre-existing `RandomUtils` condition already dominates the three bogus lambda-keyed entries — making them redundant as well as invalid.\n─────────────────────────────────────────────────","ttft_ms":3033,"type":"result","duration_ms":79757,"uuid":"76d2718a-9ff1-4e4a-8f0c-3e1582502e4a","ttft_stream_ms":1746,"time_to_request_ms":102,"first_content_frame_ms":1747,"queued_turn_count":0,"result_index":0}
+

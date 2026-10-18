@@ -1,0 +1,80 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.apache.pulsar:pulsar-client-all:4.2.5",
+  "failure": {
+    "operand": "org.apache.pulsar:pulsar-client-all:4.2.5",
+    "phase": "explore",
+    "step": "native_trace_gate()"
+  },
+  "issueNumber": 10642,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "In @BeforeAll, start the broker the same way JnatsTest.java and the mosquitto-based tests do in this repo: `new ProcessBuilder(\"docker\", \"run\", \"--rm\", \"-p\", \"6650:6650\", \"-p\", \"8080:8080\", \"apachepulsar/pulsar:4.2.5\", \"bin/pulsar\", \"standalone\").inheritIO().start()`, then poll until a PulsarClient can connect before running tests, and destroy the process in @AfterAll. Connect with `PulsarClient.builder().serviceUrl(\"pulsar://localhost:6650\").build()`. Give the readiness wait a materially longer timeout than the ~120s used for NATS/MQTT \u2014 standalone Pulsar bootstraps an embedded ZooKeeper and BookKeeper in addition to the broker, so it starts noticeably slower. No extra Maven dependency or system property is needed; pulsar-client-all already pulls in bouncycastle, opentelemetry, and jackson-annotations transitively.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "image": "apachepulsar/pulsar:4.2.5",
+        "kind": "docker_image",
+        "reason": "pulsar-client-all's connection, producer/consumer, schema, and compression (lz4/zstd/snappy) code is only reachable against a running broker; no in-process or mock broker exists. Tag matches the tested client version exactly and is published for amd64/arm64 on Docker Hub.",
+        "slug": "apachepulsar_pulsar"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10642 Support for org.apache.pulsar:pulsar-client-all:4.2.5; label=library-new-request; body_chars=61"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 16,
+    "issue_label": "library-new-request",
+    "issue_number": 10642,
+    "library": "org.apache.pulsar:pulsar-client-all:4.2.5",
+    "model": "sonnet",
+    "output_tokens_used": 10944,
+    "risks": [
+      "Standalone Pulsar is heavier than the single-binary brokers already allow-listed (NATS, MQTT): it embeds ZooKeeper and BookKeeper, so container startup is slower and more memory-intensive, which could strain CI timeouts/resources relative to existing broker-client tests.",
+      "This introduces a brand-new Docker image entry (no existing pinned pulsar tag to reuse), so it needs its own allow-list addition rather than reusing a shared tag."
+    ],
+    "status": "completed",
+    "summary": "pulsar-client-all is the full client implementation (not just API interfaces); its producer/consumer, schema, and compression code paths only execute against a live Pulsar broker, so the generated test needs a standalone Pulsar Docker container, following this repo's existing pattern for jnats/mosquitto broker clients."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10642-library-new-request-org.apache.pulsar-pulsar-client-all-4.2.5-347f50f6",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
+}

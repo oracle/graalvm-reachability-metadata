@@ -1,0 +1,45 @@
+Prompt:
+Reproduce the failure first and read the FULL stack trace, including every `Caused by:`
+line, to find the real cause before changing anything.
+- If the cause is missing or inactive-condition for metadata, fix that condition.
+- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode
+  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,
+  or a class reachable only through a custom class loader), Remove the
+  generated test that exercises it, or rewrite it to a native-compatible public-API path that
+  still validates metadata.
+Re-run the reproduce command after each change and keep running until the test passes.
+Do not use any skill for this.
+
+Use this exact GraalVM for every command; do not switch to another that appears on PATH:
+- GRAALVM_HOME=/home/mihailo/.sdkman/candidates/java/25.4.4+1-graal
+- JAVA_HOME=/home/mihailo/.sdkman/candidates/java/25.4.4+1-graal
+
+Reproduce with:
+./gradlew runNativeTraceImage -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5 -PtraceMetadataPath=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-334346f8/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/runs/cycle-0 -PtraceMetadataConditionPackages=com.scurrilous.circe,org.apache.avro.reflect,org.apache.pulsar -PmetadataConfigDirs=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-334346f8/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/_global_/agent
+
+Failure output excerpt:
+```text
+    at com.oracle.svm.core.code.RuntimeMetadataDecoderImpl.decodeDynamicAccessMetadata(RuntimeMetadataDecoderImpl.java:488)
+    at com.oracle.svm.core.code.RuntimeMetadataDecoderImpl.parseDynamicAccessMetadata(RuntimeMetadataDecoderImpl.java:314)
+    at com.oracle.svm.core.hub.ImageReflectionMetadataEncoding.getDynamicAccessMetadata(ImageReflectionMetadataEncoding.java:165)
+    at com.oracle.svm.core.hub.ImageReflectionMetadata.getDynamicAccessMetadata(ImageReflectionMetadata.java:94)
+    at java.lang.Class.getDynamicAccessMetadata(DynamicHub.java:1630)
+    at com.oracle.svm.core.jdk.Util_java_lang_reflect_Array.shouldTraceReflectionArrayType(JavaLangReflectSubstitutions.java:452)
+    at java.lang.reflect.Array.newArray(Array.java:398)
+    at java.lang.reflect.Array.newInstance(Array.java:76)
+Fatal error: Failed to create the main Isolate. (code 13)
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-334346f8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 46s
+9 actionable tasks: 1 executed, 8 up-to-date
+```
+
+Conversation:
+

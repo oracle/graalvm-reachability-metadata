@@ -1,0 +1,25 @@
+`★ Insight ─────────────────────────────────────`
+The repo's convention for broker-dependent clients (`io.nats:jnats`, MQTT via `eclipse-mosquitto`) is to spin up a Docker container by hand in `@BeforeAll` via `ProcessBuilder`, pinned to the exact tag in `tests/tck-build-logic/.../allowed-docker-images/`, rather than using Testcontainers — that library only appears in this repo when the library *under test* literally is Testcontainers. `pulsar-client-all`'s POM dependency list confirms it's a true uber-artifact (bouncycastle, opentelemetry, jackson-annotations, caffeine all transitively bundled), so the gap isn't a missing Maven coordinate — it's that produce/consume/schema code paths are simply unreachable without a live broker on `pulsar://localhost:6650`.
+`─────────────────────────────────────────────────`
+
+Research summary: checked the Maven Central POM for `pulsar-client-all:4.2.5` (no missing dependencies — it's self-contained), confirmed via Pulsar docs that the client needs a running broker at `pulsar://localhost:6650` for any meaningful produce/consume/schema/compression coverage, verified `apachepulsar/pulsar:4.2.5` exists on Docker Hub (exact version match, multi-arch), and cross-checked this repo's existing broker-client tests (`JnatsTest.java`, mosquitto) which all use a hand-rolled `docker run` in `@BeforeAll` rather than Testcontainers — no pulsar image is currently pinned in the allow-list.
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "pulsar-client-all is the full client implementation (not just API interfaces); its producer/consumer, schema, and compression code paths only execute against a live Pulsar broker, so the generated test needs a standalone Pulsar Docker container, following this repo's existing pattern for jnats/mosquitto broker clients.",
+  "deterministic_setup": [
+    {
+      "kind": "docker_image",
+      "image": "apachepulsar/pulsar:4.2.5",
+      "slug": "apachepulsar_pulsar",
+      "reason": "pulsar-client-all's connection, producer/consumer, schema, and compression (lz4/zstd/snappy) code is only reachable against a running broker; no in-process or mock broker exists. Tag matches the tested client version exactly and is published for amd64/arm64 on Docker Hub."
+    }
+  ],
+  "agent_guidance": "In @BeforeAll, start the broker the same way JnatsTest.java and the mosquitto-based tests do in this repo: `new ProcessBuilder(\"docker\", \"run\", \"--rm\", \"-p\", \"6650:6650\", \"-p\", \"8080:8080\", \"apachepulsar/pulsar:4.2.5\", \"bin/pulsar\", \"standalone\").inheritIO().start()`, then poll until a PulsarClient can connect before running tests, and destroy the process in @AfterAll. Connect with `PulsarClient.builder().serviceUrl(\"pulsar://localhost:6650\").build()`. Give the readiness wait a materially longer timeout than the ~120s used for NATS/MQTT — standalone Pulsar bootstraps an embedded ZooKeeper and BookKeeper in addition to the broker, so it starts noticeably slower. No extra Maven dependency or system property is needed; pulsar-client-all already pulls in bouncycastle, opentelemetry, and jackson-annotations transitively.",
+  "risks": [
+    "Standalone Pulsar is heavier than the single-binary brokers already allow-listed (NATS, MQTT): it embeds ZooKeeper and BookKeeper, so container startup is slower and more memory-intensive, which could strain CI timeouts/resources relative to existing broker-client tests.",
+    "This introduces a brand-new Docker image entry (no existing pinned pulsar tag to reuse), so it needs its own allow-list addition rather than reusing a shared tag."
+  ]
+}
+```

@@ -1,0 +1,184 @@
+Prompt:
+You are handling a post-generation workflow failure in the current repository.
+Inspect the metadata-fix log and the Gradle failure output.
+
+Determine the root cause of each test failure:
+
+1. If the failure is NOT metadata-related (e.g. a native-image limitation, a test bug,
+   or an unsupported platform feature), remove the generated test that causes that failure.
+   You may also remove generated test-only files that are only needed by that failing test.
+   Treat runtime bytecode generation, runtime class definition or loading, Java agent
+   self-attach, class redefinition, instrumentation, native-image substitutions, and
+   Byte Buddy-backed inline/static/construction/concrete-class mocking as unsupported
+   native-image behavior. Delete generated tests that depend on those paths instead of
+   trying to preserve them with more metadata.
+
+2. If the failure IS metadata-related (e.g. the metadata fix did not finish or only partially fixed
+   missing metadata), do NOT remove the test. Instead, describe in the report what metadata
+   is still missing and why the metadata fix could not resolve it.
+
+Do not modify metadata files.
+
+Write a Markdown report to the exact report path below.
+The report must include:
+- the exact library line requested below
+- a short summary of what failed
+- why the remaining generated support should still be preserved
+
+Task details:
+- Library: org.apache.pulsar:pulsar-client-all:4.2.5
+- Stage: metadata_fix_failed
+- Analysis agent log path: logs/org.apache.pulsar:pulsar-client-all:4.2.5/metadata-fix/claude-code.log
+- Intervention report path: forge/scratchpad/post-generation-b650dc4d/intervention.md
+
+The report must contain the literal line `Library: org.apache.pulsar:pulsar-client-all:4.2.5` near the top.
+```
+
+Gradle failure output excerpt:
+```text
+y-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/metadata/org.apache.pulsar/pulsar-client-admin-api/4.2.5,/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/metadata/org.apache.pulsar/pulsar-package-core/4.2.5,/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/metadata/com.google.guava/guava/33.7.0-jre,/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/metadata/com.google.guava/failureaccess/1.0.1,/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/metadata/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava,/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/metadata/com.google.errorprone/error_prone_annotations/2.46.0,/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/metadata/com.google.j2objc/j2objc-annotations/1.3,/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/metadata/org.apache.commons/commons-lang3/3.19.0 \
+-H:Optimize@user+api=b \
+-H:+ReportExceptionStackTraces@user \
+-H:Features@user+api=org.graalvm.junit.platform.JUnitPlatformFeature \
+'-H:Class@explicit main-class=org.graalvm.junit.platform.NativeImageJUnitLauncher' \
+-H:ImageBuildID@driver=955be24f-2140-3d9a-5599-b5c5d3ad9f58 \
+'-H:Features@jar:file:///home/mihailo/.sdkman/candidates/java/25.0.3-graal/lib/svm/library-support.jar!/META-INF/native-image/com.oracle.svm/thirdparty/native-image.properties+api=com.oracle.svm.thirdparty.gson.GsonFeature' \
+'-H:Features@jar:file:///home/mihailo/.sdkman/candidates/java/25.0.3-graal/lib/svm/library-support.jar!/META-INF/native-image/com.oracle.svm/polyglot/native-image.properties+api=com.oracle.svm.polyglot.groovy.GroovyIndyInterfaceFeature,com.oracle.svm.polyglot.scala.ScalaFeature'
+]
+========================================================================================================================
+GraalVM Native Image: Generating 'org.apache.pulsar.pulsar-client-all_tests-tests' (executable)...
+========================================================================================================================
+For detailed information and explanations on the build output, visit:
+https://github.com/oracle/graal/blob/master/docs/reference-manual/native-image/BuildOutput.md
+------------------------------------------------------------------------------------------------------------------------
+[1/8] Initializing...                                                                                   (13.4s @ 0.28GB)
+ Java version: 25.0.3+9-LTS, vendor version: Oracle GraalVM 25.0.3+9.1
+ Graal compiler: optimization level: b, target machine: x86-64-v3, PGO: off
+ C compiler: gcc (linux, x86_64, 13.3.0)
+ Garbage collector: Serial GC (max heap size: 80% of RAM)
+ 2 user-specific feature(s):
+ - com.oracle.svm.thirdparty.gson.GsonFeature
+ - org.graalvm.junit.platform.JUnitPlatformFeature
+------------------------------------------------------------------------------------------------------------------------
+Build resources:
+ - 28.45GB of memory (42.6% of system memory, using available memory)
+ - 16 thread(s) (100.0% of 16 available processor(s), determined at start)
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/test-results/test/testlist] and its subfolders.
+[2/8] Performing analysis...  [*****]                                                                   (32.2s @ 1.31GB)
+   12,939 types,  16,052 fields, and  61,277 methods found reachable
+    4,866 types,   1,897 fields, and   9,832 methods registered for reflection
+       61 types,      68 fields, and      53 methods registered for JNI access
+        0 downcalls and 0 upcalls registered for foreign access
+        4 native libraries: dl, pthread, rt, z
+[3/8] Building universe...                                                                               (6.7s @ 1.44GB)
+[4/8] Parsing methods...      [**]                                                                       (3.8s @ 1.01GB)
+[5/8] Inlining methods...     [***]                                                                      (1.3s @ 1.07GB)
+[6/8] Compiling methods...    [****]                                                                    (13.4s @ 1.14GB)
+[7/8] Laying out methods...   [***]                                                                      (6.5s @ 1.41GB)
+
+------------------------------------------------------------------------------------------------------------------------
+                        6.1s (7.4% of total time) in 307 GCs | Peak RSS: 2.75GB | CPU load: 8.87
+------------------------------------------------------------------------------------------------------------------------
+Build artifacts:
+ /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/native/nativeTestCompile/svm_err_b_20261016T150827.022_pid1542772.md (build_info)
+========================================================================================================================
+Failed generating 'org.apache.pulsar.pulsar-client-all_tests-tests' after 1m 20s.
+
+The build process encountered an unexpected error:
+
+com.oracle.graal.pointsto.constraints.UnsupportedFeatureException: Unsupported features in 2 methods
+Detailed message:
+Error: Type not found during analysis: AnalysisType<X509CertInfo -> HotSpotType<Lsun/security/x509/X509CertInfo;, resolved>, instantiated: false, reachable: false>
+Trace: Object was reached by
+  reading field sun.security.x509.X509CertImpl.info of constant 
+    sun.security.x509.X509CertImpl@79e58f1e: [[  Version: V3  Subject: CN=Legion of the Bouncy Castle Inc., OU=Java Softwa...
+  indexing into array java.lang.Object[]@598ab929: [Ljava.lang.Object;@598ab929
+  reading field com.oracle.svm.core.code.ImageCodeInfo.objectConstants of constant 
+    com.oracle.svm.core.code.ImageCodeInfo@72b5faec: com.oracle.svm.core.code.ImageCodeInfo@72b5faec
+  indexing into array com.oracle.svm.core.code.ImageCodeInfo[]@58dc19d: [Lcom.oracle.svm.core.code.ImageCodeInfo;@58dc19d
+  scanning root com.oracle.svm.core.code.ImageCodeInfo[]@58dc19d: [Lcom.oracle.svm.core.code.ImageCodeInfo;@58dc19d embedded in
+    com.oracle.svm.core.layeredimagesingleton.MultiLayeredImageSingleton.getAllLayers(MultiLayeredImageSingleton.java)
+  parsing method com.oracle.svm.core.layeredimagesingleton.MultiLayeredImageSingleton.getAllLayers(MultiLayeredImageSingleton.java:50) reachable via the parsing context <no parsing context available> 
+
+Error: Type not found during analysis: AnalysisType<X509CertInfo -> HotSpotType<Lsun/security/x509/X509CertInfo;, resolved>, instantiated: false, reachable: false>
+Trace: Object was reached by
+  reading field sun.security.x509.X509CertImpl.info of constant 
+    sun.security.x509.X509CertImpl@3245b223: [[  Version: V3  Subject: CN=JCE Code Signing CA, OU=Java Software Code Signi...
+  indexing into array java.lang.Object[]@598ab929: [Ljava.lang.Object;@598ab929
+  reading field com.oracle.svm.core.code.ImageCodeInfo.objectConstants of constant 
+    com.oracle.svm.core.code.ImageCodeInfo@72b5faec: com.oracle.svm.core.code.ImageCodeInfo@72b5faec
+  indexing into array com.oracle.svm.core.code.ImageCodeInfo[]@58dc19d: [Lcom.oracle.svm.core.code.ImageCodeInfo;@58dc19d
+  scanning root com.oracle.svm.core.code.ImageCodeInfo[]@58dc19d: [Lcom.oracle.svm.core.code.ImageCodeInfo;@58dc19d embedded in
+    com.oracle.svm.core.layeredimagesingleton.MultiLayeredImageSingleton.getAllLayers(MultiLayeredImageSingleton.java)
+  parsing method com.oracle.svm.core.layeredimagesingleton.MultiLayeredImageSingleton.getAllLayers(MultiLayeredImageSingleton.java:50) reachable via the parsing context <no parsing context available> 
+
+
+	at org.graalvm.nativeimage.pointsto/com.oracle.graal.pointsto.constraints.UnsupportedFeatures.report(UnsupportedFeatures.java:130)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.hosted.NativeImageGenerator.doRun(NativeImageGenerator.java:680)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.hosted.NativeImageGenerator.run(NativeImageGenerator.java:534)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.hosted.NativeImageGeneratorRunner.buildImage(NativeImageGeneratorRunner.java:548)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.hosted.NativeImageGeneratorRunner.build(NativeImageGeneratorRunner.java:761)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.hosted.NativeImageGeneratorRunner.start(NativeImageGeneratorRunner.java:163)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.hosted.NativeImageGeneratorRunner.main(NativeImageGeneratorRunner.java:111)
+
+com.oracle.svm.driver.NativeImage$NativeImageError
+
+	at org.graalvm.nativeimage.driver/com.oracle.svm.driver.NativeImage.showError(NativeImage.java:2514)
+> Task :nativeTestCompile FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/reports/problems/problems-report.html
+	at org.graalvm.nativeimage.driver/com.oracle.svm.driver.NativeImage.build(NativeImage.java:2089)
+	at org.graalvm.nativeimage.driver/com.oracle.svm.driver.NativeImage.performBuild(NativeImage.java:2048)
+	at org.graalvm.nativeimage.driver/com.oracle.svm.driver.NativeImage.main(NativeImage.java:2030)
+	at java.base@25.0.3/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
+
+FAILURE: Build failed with an exception.
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+* What went wrong:
+
+Execution failed for task ':nativeTestCompile'.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+> Process 'command '/home/mihailo/.sdkman/candidates/java/25.0.3-graal/bin/native-image'' finished with non-zero exit value 1
+
+* Try:
+
+> Run with --stacktrace option to get the stack trace.
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+> Run with --info or --debug option to get more log output.
+17 actionable tasks: 2 executed, 15 up-to-date
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 38s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.pulsar:pulsar-client-all:4.2.5 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 52s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+```
+
+Conversation:
+

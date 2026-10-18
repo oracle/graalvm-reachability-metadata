@@ -1,0 +1,20 @@
+Based on the logs, I traced the failure to a specific stage. Here's what happened: the JVM test suite actually passed cleanly (74/74, two separate `BUILD SUCCESSFUL` runs), but the later native-image build step failed on an unrelated GraalVM analysis limitation, and the two automated recovery agents (`metadata_fix`, `post_gen`) both timed out trying to handle it, which is why the job escalated without ever producing a proper root-cause report.
+
+Here is the exact comment to post:
+
+---
+
+## Human intervention needed
+
+The automated metadata-generation job for `org.apache.pulsar:pulsar-client-all:4.2.5` failed and needs manual follow-up.
+
+Preserved work branch: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10642-library-new-request-org.apache.pulsar-pulsar-client-all-4.2.5-672de1db
+
+Most likely failing stage: the native-image test build in finalization (operand `org.apache.pulsar:pulsar-client-all:4.2.5 current-defaults GraalVM 25 test`, step `agent_fix()` per `forge/.continuation-marker.json`), not the JVM tests themselves. The JVM suite passed cleanly (74/74 tests, `BUILD SUCCESSFUL`) in `logs/org.apache.pulsar:pulsar-client-all:4.2.5/gradle-test/gradle-test-2026-10-16T13-03-21-139201Z.log` and the following `...13-04-59...` log, so this is not a generated-test compile/assert bug. The real failure shows up in `logs/org.apache.pulsar:pulsar-client-all:4.2.5/post-gen/claude-code-session-c0lr9of8.log`: `nativeTestCompile FAILED` with `UnsupportedFeatureException: Type not found during analysis: AnalysisType<X509CertInfo...>`, reached while scanning an embedded `sun.security.x509.X509CertImpl` constant via `MultiLayeredImageSingleton.getAllLayers`. The dynamic-access coverage JSON shows an uncovered call site at `org.apache.pulsar.shade.io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator.generate(...)`, which is almost certainly the origin: a generated test exercises Netty's self-signed cert generator, baking JDK-internal X.509 objects into the image heap in a way the closed-world analysis can't resolve.
+
+Both automated recovery steps then gave up before producing a fix or report: `logs/org.apache.pulsar:pulsar-client-all:4.2.5/metadata-fix/claude-code.log` reads "Agent metadata_fix() timed out after 20:00", and `logs/org.apache.pulsar:pulsar-client-all:4.2.5/post-gen/claude-code.log` reads "Agent post_gen() timed out after 10:00" — so the usual fallback (deleting the offending generated test) never ran, and dynamic-access coverage (258/989, 26.09%) reflects the snapshot from just before this native-image failure, not a final state.
+
+Suggested next steps:
+1. Check out the preserved branch and reproduce with `./gradlew test -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5`, then isolate the test(s) that trigger `OpenJdkSelfSignedCertGenerator`/self-signed cert generation to confirm it's the cause of the `X509CertInfo` analysis failure.
+2. Since this looks like a native-image-unsupported pattern (embedding a generated X.509 cert as an image-heap constant) rather than missing metadata, remove or rescope the generated test(s) that exercise that path instead of adding more reflection entries.
+3. Re-run `./gradlew generateDynamicAccessCoverageReport -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5` once the native-image build passes to get a trustworthy coverage number before resubmitting.

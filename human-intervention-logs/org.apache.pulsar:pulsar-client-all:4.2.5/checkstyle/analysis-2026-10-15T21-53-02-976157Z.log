@@ -1,0 +1,16 @@
+=== Analysis agent checkstyle attempt 1 ===
+<no output>
+=== Analysis agent checkstyle attempt 2 ===
+<no output>
+=== Analysis agent checkstyle attempt 3 ===
+Checkstyle now passes — `BUILD SUCCESSFUL` for both `:checkstyleTest` and `:checkstyle`.
+
+The working tree already contained the fix: `AnnotationUtilsTest.java` had been updated with `@SuppressWarnings("checkstyle:annotationAccess")` on the test method plus the `// Checkstyle: allow direct annotation access` / `// Checkstyle: disallow direct annotation access` comment pair bracketing the two `getAnnotation` calls (lines 23-24). The captured failure output in the task predates that edit — it pointed at lines 21-22 of the *old* file content, where those calls sat before the three new lines were inserted. No further changes were needed; I just reran checkstyle to confirm the fix holds.
+
+`★ Insight ─────────────────────────────────────`
+This repo's `annotationAccess` rule is a `RegexpSinglelineJava` check (gradle/checkstyle.xml:20) — a regex-based rule matching `.getAnnotation(...)`-style calls, not a type-aware check. Suppressing it needs **both** pieces working together for different scenarios:
+- `SuppressWarningsHolder` + `@SuppressWarnings("checkstyle:...")` — ties the suppression to an AST node (method/class).
+- `SuppressionCommentFilter` with the exact `offCommentFormat`/`onCommentFormat` strings — a line-range suppression that doesn't care about AST structure at all, which is why Checkstyle's own error message tells you to use the comment pair rather than `@SuppressWarnings`.
+
+Since the regex can't tell `Class.getAnnotation()` (test code, intentionally raw) apart from unguarded reflective access elsewhere, the project relies on this explicit opt-in pattern rather than tightening the regex — keeping the rule simple at the cost of needing manual escape hatches like this one.
+`─────────────────────────────────────────────────`

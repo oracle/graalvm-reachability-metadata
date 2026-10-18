@@ -1,0 +1,46 @@
+Prompt:
+Reproduce the failure first and read the FULL stack trace, including every `Caused by:`
+line, to find the real cause before changing anything.
+- If the cause is missing or inactive-condition for metadata, fix that condition.
+- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode
+  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,
+  or a class reachable only through a custom class loader), Remove the
+  generated test that exercises it, or rewrite it to a native-compatible public-API path that
+  still validates metadata.
+Re-run the reproduce command after each change and keep running until the test passes.
+Do not use any skill for this.
+
+Use this exact GraalVM for every command; do not switch to another that appears on PATH:
+- GRAALVM_HOME=/home/mihailo/.sdkman/candidates/java/25.4.4+1-graal
+- JAVA_HOME=/home/mihailo/.sdkman/candidates/java/25.4.4+1-graal
+
+Reproduce with:
+./gradlew test -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5 -PmetadataConfigDirs=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/_global_/agent
+
+Failure output excerpt:
+```text
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> No matching coordinates found for 'org.apache.pulsar:pulsar-client-all:4.2.5'. The specified coordinate or filter does not exist. Tip: run './gradlew listCoordinates -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5' to inspect matches.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+```
+
+Conversation:
+{"duration_api_ms":295098,"stop_reason":"end_turn","session_id":"86f15fff-f502-40ba-89e9-b7dcdbaf296a","total_cost_usd":1.4746328,"usage":{"input_tokens":72,"cache_creation_input_tokens":129517,"cache_read_input_tokens":3734304,"output_tokens":20956,"output_tokens_details":{"thinking_tokens":12229},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":129517,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":1216,"cache_read_input_tokens":145236,"cache_creation_input_tokens":8289,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":8289},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":72,"outputTokens":20956,"cacheReadInputTokens":3734304,"cacheCreationInputTokens":129517,"webSearchRequests":0,"costUSD":1.4746328,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":12229,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":36,"subtype":"success","api_error_status":null,"result":"All 74 tests pass and the build succeeded — `BUILD SUCCESSFUL`, \"Test for org.apache.pulsar:pulsar-client-all:4.2.5 passed.\" The single missing reflection field registration was the root cause for all 5 failures, since they all chained from the same `PlatformDependent0` static-initializer failure.\n\n## Summary\n\n**Root cause (layer 1):** The reproduce command's top-level failure (\"No matching coordinates found\") wasn't a test bug — the scaffold commit (`3c66e96f01`) had only added `metadata/org.apache.pulsar/pulsar-client-all/index.json`, never the `metadata/org.apache.pulsar/pulsar-client-all/4.2.5/` directory itself. The harness's coordinate resolver requires that directory to exist on disk before it'll run anything for that version.\n\n**Fix:** Ran `./gradlew generateMetadata -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5`, which re-ran the JVM test suite with the native-image agent attached and merged the collected metadata into the durable directory.\n\n**Root cause (layer 2):** With coordinates now resolving, the native-image test ran and failed 5 tests, all with the same underlying cause via `Caused by:` chains — Netty's `PlatformDependent0` static initializer calls `Unsafe.staticFieldOffset` on the private field `java.nio.Bits.UNALIGNED`. The generated metadata registered the `java.nio.Bits` type for reachability but not that specific field, so GraalVM threw `MissingReflectionRegistrationError` (an `Error`, not caught by Netty's narrower `catch (Exception)` fallback), which cascaded into `NoClassDefFoundError` everywhere `PlatformDependent` was touched.\n\n**Fix:** `io.grpc:grpc-netty-shaded:1.68.0` has the identical Netty `PlatformDependent0$6` condition in its own metadata, correctly including the `UNALIGNED` field registration — confirming this is a known, legitimate reflective-field entry, not a native-image-unsupported pattern. Added the matching `\"fields\": [{\"name\": \"UNALIGNED\"}]` entry to the `java.nio.Bits` reflection record in `metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json`.\n\nRe-running the exact reproduce command now reports `BUILD SUCCESSFUL` with 74/74 tests passing.\n\n★ Insight ─────────────────────────────────────\n- The native-image agent runs on HotSpot during `-Pagent test`, but HotSpot and native-image diverge on *how* a denied Unsafe field-offset lookup surfaces: HotSpot raises something Netty's `catch (Exception)` swallows, while native-image raises `MissingReflectionRegistrationError`, which `extends Error` and sails right past that same catch block. That asymmetry is why the agent can \"see\" a reflective access attempt yet still produce metadata that's incomplete for native-image's stricter closed-world model — a recurring class of bug whenever Unsafe-based offset computation is on the hot path (common in Netty-derived libraries).\n- Comparing against `grpc-netty-shaded`'s metadata for the exact same `PlatformDependent0$6` condition was decisive here — rather than guessing at the right JSON shape, finding a sibling library that bundles the same Netty internals and already has the correct, working entry turned \"what should this look like\" into \"copy this.\"\n─────────────────────────────────────────────────","ttft_ms":3508,"type":"result","duration_ms":562382,"uuid":"90c2ef80-f55f-43a9-afcb-13769f1ed8d5","ttft_stream_ms":1924,"time_to_request_ms":142,"first_content_frame_ms":1924,"queued_turn_count":0,"result_index":0}
+

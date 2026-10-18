@@ -1,0 +1,23 @@
+Good, the working tree is back to its original state — no unintended edits.
+
+## Findings
+
+I reproduced the failure, read the full trace (no `Caused by:` — a `StackOverflowError` thrown straight out of GraalVM's own metadata-tracer internals), and then ran controlled experiments to isolate the cause:
+
+| Experiment | Result |
+|---|---|
+| Baseline reproduce command | Crashes: `StackOverflowError` during isolate init, in `RuntimeDynamicAccessMetadata.canonicalConditions` → `Arrays.copyOf` → `Array.newInstance` → `shouldTraceReflectionArrayType` → back into metadata decode |
+| Removed the only SSL/TLS-touching test (`JdkAlpnSslUtilsTest`, the sole source of the 788 `typeReached` entries) | **Still crashes**, identically |
+| Fed an empty directory via `-PmetadataConfigDirs` (discarding the stale agent-collected config) | **Still crashes**, identically |
+| Ran the *same* `runNativeTraceImage` task against an unrelated, already-correct, already-shipped library (`com.google.code.gson:gson:2.14.0`) | **Also crashes** with a `StackOverflowError` under `-H:+MetadataTracingSupport` |
+
+`★ Insight ─────────────────────────────────────`
+The crash reproduces on gson — a tiny library with zero Pulsar-specific code and metadata that's long since been validated in CI. That's the control that falsifies "it's something in Pulsar's test or metadata": whatever is wrong lives in GraalVM 25.4.4+1-graal's own `MetadataTracer`/`RuntimeDynamicAccessMetadata` machinery (`com.oracle.svm.core.metadata.MetadataTracer`, copyright 2024 — this is a brand-new feature), not in anything checked into this repository. `canonicalConditions`'s `Arrays.copyOf` reflectively creates an array via `Array.newInstance`, which re-enters the exact same tracing/decode hook it's in the middle of — a genuine fixed-point loop in the tracer itself, independent of which classes or conditions are involved.
+`─────────────────────────────────────────────────`
+
+Neither of the two prescribed remediation paths applies here:
+- **Not a missing/inactive metadata condition** — the pulsar metadata file is empty (`{}`), and emptying the agent-collected config entirely didn't help.
+- **Not native-image-unsupported test behavior** — removing the one plausible offending test changed nothing, and the identical crash hits an unrelated library with none of Pulsar's code involved.
+
+This looks like an upstream regression in this specific GraalVM build's `-H:+MetadataTracingSupport` flag (which `runNativeTraceImage` always passes), not something fixable by editing Pulsar's tests or metadata. Since I'm instructed to use this exact GraalVM for every command and not substitute another, I want to check with you before going further: do you want me to (a) look for a newer/patched GraalVM build to confirm it's fixed upstream, (b) dig further into whether there's a build flag that disables just the problematic tracing sub-feature while still collecting usable trace data, or (c) something else (e.g., flag this as a blocker and move on)?
+Agent failure: Agent native_test_verify() timed out after 30:00
