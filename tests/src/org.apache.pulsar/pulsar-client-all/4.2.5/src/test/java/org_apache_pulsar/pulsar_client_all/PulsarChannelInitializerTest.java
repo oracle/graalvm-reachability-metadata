@@ -124,15 +124,19 @@ public class PulsarChannelInitializerTest {
     @Test
     @Timeout(60)
     void queriesBrokerAdministrationEndpointWithJerseyClient() {
-        try (Client httpClient = ClientBuilder.newBuilder()
+        final Client httpClient = ClientBuilder.newBuilder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(10, TimeUnit.SECONDS)
                 .build();
-                Response response = httpClient.target("http://localhost:8080/admin/v2/clusters")
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .get()) {
-            assertThat(response.getStatus()).isEqualTo(200);
-            assertThat(response.readEntity(String.class)).contains("standalone");
+        try {
+            try (Response response = httpClient.target("http://localhost:8080/admin/v2/clusters")
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .get()) {
+                assertThat(response.getStatus()).isEqualTo(200);
+                assertThat(response.readEntity(String.class)).contains("standalone");
+            }
+        } finally {
+            httpClient.close();
         }
     }
 
