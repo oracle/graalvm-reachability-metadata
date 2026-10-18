@@ -119,6 +119,8 @@ class CheckoutDeadlinePropagationTest {
         shopperChannel = NettyChannelBuilder.forAddress("127.0.0.1", checkoutServer.getPort())
                 .usePlaintext()
                 .build();
+        // Connects both hops up front, so the short deadlines below time the held call, not the dial.
+        ClientCalls.blockingUnaryCall(shopperChannel, RESERVE, CallOptions.DEFAULT, text("sku-warm-up"));
     }
 
     @AfterAll
