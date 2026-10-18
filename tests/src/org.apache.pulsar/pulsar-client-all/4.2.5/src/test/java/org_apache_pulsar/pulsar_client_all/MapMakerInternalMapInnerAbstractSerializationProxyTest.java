@@ -19,13 +19,18 @@ public class MapMakerInternalMapInnerAbstractSerializationProxyTest {
 
     @Test
     void preservesEntriesInAWeakKeyConcurrentMap() {
-        final ConcurrentMap<String, Integer> source = new MapMaker().weakKeys().makeMap();
-        source.put("partition-zero", 0);
-        source.put("partition-one", 1);
+        final ConcurrentMap<Partition, Integer> source = new MapMaker().weakKeys().makeMap();
+        source.put(Partition.ZERO, 0);
+        source.put(Partition.ONE, 1);
 
         final Map<?, ?> restored = (Map<?, ?>) SerializationUtils.clone((Serializable) source);
 
-        assertThat(restored.get("partition-zero")).isEqualTo(0);
-        assertThat(restored.get("partition-one")).isEqualTo(1);
+        assertThat(restored.get(Partition.ZERO)).isEqualTo(0);
+        assertThat(restored.get(Partition.ONE)).isEqualTo(1);
+    }
+
+    private enum Partition {
+        ZERO,
+        ONE
     }
 }

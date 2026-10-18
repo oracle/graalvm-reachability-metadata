@@ -19,7 +19,8 @@ public class CommonsCodecResourcesTest {
     @Test
     void opensARequiredClasspathResource() throws Exception {
         try (InputStream input = Resources.getInputStream("/META-INF/io.netty.versions.properties")) {
-            assertThat(IOUtils.toString(input, StandardCharsets.UTF_8)).contains("artifactId=pulsar-test-transport");
+            assertThat(IOUtils.toString(input, StandardCharsets.UTF_8))
+                    .contains("pulsar-test-transport.version=fixture");
         }
     }
 }

@@ -25,7 +25,8 @@ public class IOUtilsTest {
 
         assertThat(classResource).isEqualTo(loaderResource);
         try (InputStream input = classResource.openStream()) {
-            assertThat(IOUtils.toString(input, StandardCharsets.UTF_8)).contains("artifactId=pulsar-test-transport");
+            assertThat(IOUtils.toString(input, StandardCharsets.UTF_8))
+                    .contains("pulsar-test-transport.version=fixture");
         }
     }
 }

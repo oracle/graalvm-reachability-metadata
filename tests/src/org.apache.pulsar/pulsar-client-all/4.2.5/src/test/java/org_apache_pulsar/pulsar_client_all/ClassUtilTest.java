@@ -53,7 +53,7 @@ public class ClassUtilTest {
                 .contains("getName", "setName");
         assertThat(Arrays.stream(ClassUtil.getClassMethods(Envelope.class))
                         .map(method -> method.getName()))
-                .contains("getName", "toString");
+                .contains("getName", "setEvents");
         assertThat(ClassUtil.findFirstAnnotatedEnumValue(enumType, Primary.class)).isEqualTo(State.READY);
     }
 
