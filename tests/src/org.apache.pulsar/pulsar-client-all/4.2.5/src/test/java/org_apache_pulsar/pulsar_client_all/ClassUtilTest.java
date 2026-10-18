@@ -8,8 +8,14 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.pulsar.shade.com.fasterxml.jackson.databind.util.ClassUtil;
 import org.junit.jupiter.api.Test;
 
 public class ClassUtilTest {
@@ -34,9 +40,32 @@ public class ClassUtilTest {
         assertThat(states).containsExactly(State.READY, State.DONE);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void exposesDeclaredMembersAndAnnotatedEnumConstants() {
+        final Class<Enum<?>> enumType = (Class<Enum<?>>) (Class<?>) State.class;
+
+        assertThat(Arrays.stream(ClassUtil.getDeclaredFields(Envelope.class))
+                        .map(field -> field.getName()))
+                .contains("name", "state", "events");
+        assertThat(Arrays.stream(ClassUtil.getDeclaredMethods(Envelope.class))
+                        .map(method -> method.getName()))
+                .contains("getName", "setName");
+        assertThat(Arrays.stream(ClassUtil.getClassMethods(Envelope.class))
+                        .map(method -> method.getName()))
+                .contains("getName", "toString");
+        assertThat(ClassUtil.findFirstAnnotatedEnumValue(enumType, Primary.class)).isEqualTo(State.READY);
+    }
+
     public enum State {
+        @Primary
         READY,
         DONE
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    public @interface Primary {
     }
 
     public record Event(String name, int count) {

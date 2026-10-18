@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.apache.pulsar.shade.it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import org.apache.pulsar.shade.org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Test;
 
 public class ObjectArraySetTest {
@@ -19,8 +20,10 @@ public class ObjectArraySetTest {
         final ObjectArraySet<String> values = new ObjectArraySet<>(List.of("one", "two"));
 
         final String[] copied = values.toArray(new String[0]);
+        final ObjectArraySet<String> restored = SerializationUtils.clone(values);
 
         assertThat(copied).containsExactlyInAnyOrder("one", "two");
         assertThat(copied.getClass()).isEqualTo(String[].class);
+        assertThat(restored).containsExactlyInAnyOrder("one", "two");
     }
 }
