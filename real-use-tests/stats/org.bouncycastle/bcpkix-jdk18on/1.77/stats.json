@@ -1,0 +1,42 @@
+{
+  "issue_number": 9436,
+  "iterations": 15,
+  "library_coverage": {
+    "instruction": {
+      "covered": 17312,
+      "ratio": 0.17510569862237776,
+      "total": 98866
+    },
+    "line": "N/A",
+    "method": {
+      "covered": 807,
+      "ratio": 0.1875,
+      "total": 4304
+    }
+  },
+  "removed": [
+    {
+      "reason": "JCE engines (Cipher/KeyGenerator) on a private `new BouncyCastleProvider()` fail JceSecurity verification at run time ('provider not registered at build time'); the failure survived three options: -H:AdditionalSecurityProviders=org.bouncycastle.jce.provider.BouncyCastleProvider, --future-defaults=run-time-initialize-security-providers, and -J-Djava.security.properties installing BC at build time",
+      "scenario": "real-use-tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/src/test/java/org_bouncycastle/bcpkix_jdk18on/PayrollDocumentEncryptionTest.java"
+    },
+    {
+      "reason": "Encrypted-PEM decryption uses JCE Cipher/SecretKeyFactory on a private BouncyCastleProvider instance, which fails JceSecurity verification at run time; the failure survived the same three options",
+      "scenario": "real-use-tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/src/test/java/org_bouncycastle/bcpkix_jdk18on/PemKeyStoreFilesTest.java"
+    },
+    {
+      "reason": "PKCS#12 PBE encryption and MAC use JCE SecretKeyFactory/Mac on a private BouncyCastleProvider instance, which fails JceSecurity verification at run time; the failure survived the same three options",
+      "scenario": "real-use-tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/src/test/java/org_bouncycastle/bcpkix_jdk18on/ServerKeystoreExportTest.java"
+    },
+    {
+      "reason": "CMS authenticated data uses JCE KeyGenerator/Mac on a private BouncyCastleProvider instance, which fails JceSecurity verification at run time; the failure survived the same three options",
+      "scenario": "real-use-tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/src/test/java/org_bouncycastle/bcpkix_jdk18on/SettlementNoticeAuthenticationTest.java"
+    }
+  ],
+  "timestamp": "2026-10-18T07:53:50+00:00",
+  "tokens": {
+    "cache_write_input": 1122442,
+    "cached_input": 12613448,
+    "input": 426,
+    "output": 219476
+  }
+}
