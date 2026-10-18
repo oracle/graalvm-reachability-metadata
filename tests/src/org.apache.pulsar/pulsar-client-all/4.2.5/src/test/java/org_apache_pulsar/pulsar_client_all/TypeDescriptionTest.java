@@ -29,6 +29,8 @@ public class TypeDescriptionTest {
 
     public interface Service {
         String getName();
+
+        void setName(String name);
     }
 
     public static final class ServiceConfiguration implements Service {
@@ -42,6 +44,7 @@ public class TypeDescriptionTest {
             return name;
         }
 
+        @Override
         public void setName(String name) {
             this.name = name;
         }

@@ -37,6 +37,8 @@ public class BeanAsArrayBuilderDeserializerTest {
             this.partitions = partitions;
         }
 
+        @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+        @JsonPropertyOrder({"topic", "partitions"})
         @JsonPOJOBuilder(withPrefix = "")
         public static final class Builder {
             private String topic;
