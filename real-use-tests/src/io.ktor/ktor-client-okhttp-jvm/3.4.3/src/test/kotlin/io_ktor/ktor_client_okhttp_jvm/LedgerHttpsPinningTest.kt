@@ -23,6 +23,7 @@ import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
 import mockwebserver3.RecordedRequest
 import okhttp3.CertificatePinner
+import okhttp3.Dns
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.tls.HandshakeCertificates
@@ -171,6 +172,8 @@ class LedgerHttpsPinningTest {
             engine {
                 preconfigured = companyHttp
                 config {
+                    // Dial only the address the ledger listens on, so a refused `::1` cannot win.
+                    dns(Dns { listOf(ledger.socketAddress.address) })
                     certificatePinner(CertificatePinner.Builder().add(ledger.hostName, rootPin).build())
                 }
             }
