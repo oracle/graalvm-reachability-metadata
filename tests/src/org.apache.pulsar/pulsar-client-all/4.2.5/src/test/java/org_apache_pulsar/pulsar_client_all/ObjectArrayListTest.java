@@ -23,6 +23,6 @@ public class ObjectArrayListTest {
 
         assertThat(copied).containsExactly("one", "two");
         assertThat(copied.getClass()).isEqualTo(String[].class);
-        assertThat(restored).containsExactly("one", "two");
+        assertThat(restored.toArray(new String[0])).containsExactly("one", "two");
     }
 }

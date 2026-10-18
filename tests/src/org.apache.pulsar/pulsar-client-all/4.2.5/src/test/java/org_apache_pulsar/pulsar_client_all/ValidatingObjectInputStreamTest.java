@@ -25,7 +25,7 @@ public class ValidatingObjectInputStreamTest {
         try (ValidatingObjectInputStream input = new ValidatingObjectInputStream(
                         new ByteArrayInputStream(serialized))
                 .accept(ArrayList.class)) {
-            final ArrayList<?> restored = input.readObjectCast();
+            final ArrayList<String> restored = input.readObjectCast();
             assertThat(restored).containsExactly("created", "stored");
         }
     }
