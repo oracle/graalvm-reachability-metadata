@@ -6,7 +6,7 @@
  */
 package com_alibaba.druid;
 
-import com.alibaba.druid.stat.JdbcSqlStat;
+import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.util.JdbcSqlStatUtils;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -16,18 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JdbcSqlStatUtilsTest {
     @Test
-    void readsStatisticsFromSubclass() {
-        DerivedJdbcSqlStat stat = new DerivedJdbcSqlStat("select 1");
-        stat.incrementExecuteSuccessCount();
+    void readsStatisticsFromValueObject() {
+        JdbcSqlStatValue stat = new JdbcSqlStatValue();
+        stat.setSql("select 1");
+        stat.setExecuteSuccessCount(1);
 
         Map<String, Object> data = JdbcSqlStatUtils.getData(stat);
         assertNotNull(data);
         assertEquals("select 1", data.get("SQL"));
-    }
-
-    public static final class DerivedJdbcSqlStat extends JdbcSqlStat {
-        DerivedJdbcSqlStat(String sql) {
-            super(sql);
-        }
     }
 }
