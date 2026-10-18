@@ -33,7 +33,7 @@ public class UtilsTest {
 
         ClassLoader original = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(null);
+            Thread.currentThread().setContextClassLoader(ClassLoader.getPlatformClassLoader());
             assertNotNull(Utils.readFromResource("/META-INF/druid-filter.properties"));
         } finally {
             Thread.currentThread().setContextClassLoader(original);

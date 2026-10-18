@@ -26,7 +26,7 @@ public class DruidDataSourceUtilsTest {
         dataSource.setName("utility-pool");
         dataSource.setUrl("jdbc:h2:mem:druid_utils;DB_CLOSE_DELAY=-1");
         dataSource.setRemoveAbandoned(true);
-        dataSource.setFilters("stat");
+        dataSource.setFilters("stat,wall");
 
         try {
             dataSource.init();
