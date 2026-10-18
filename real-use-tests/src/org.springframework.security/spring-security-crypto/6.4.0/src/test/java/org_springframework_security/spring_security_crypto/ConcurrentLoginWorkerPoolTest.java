@@ -175,15 +175,20 @@ public class ConcurrentLoginWorkerPoolTest {
     }
 
     /// Releases every task at once behind a start gate and returns the results in task order.
+    /// The gate opens only once every worker holds a task, so a reused pool cannot let one
+    /// worker drain the queue alone.
     private <T> List<T> runTogether(List<Callable<T>> tasks) throws Exception {
+        CountDownLatch ready = new CountDownLatch(Math.min(WORKERS, tasks.size()));
         CountDownLatch gate = new CountDownLatch(1);
         List<Future<T>> futures = new ArrayList<>();
         for (Callable<T> task : tasks) {
             futures.add(pool.submit(() -> {
+                ready.countDown();
                 assertTrue(gate.await(30, TimeUnit.SECONDS), "start gate");
                 return task.call();
             }));
         }
+        assertTrue(ready.await(30, TimeUnit.SECONDS), "every worker holds a task");
         gate.countDown();
         List<T> results = new ArrayList<>();
         for (Future<T> future : futures) {
