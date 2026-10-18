@@ -23,7 +23,10 @@ public class ArrayTableTest {
         table.put("broker-b", "state", "standby");
         table.put("broker-b", "region", "west");
 
-        assertThat(table.toArray(String.class))
-                .containsExactly(new String[] {"ready", "east"}, new String[] {"standby", "west"});
+        final String[][] values = table.toArray(String.class);
+
+        assertThat(values).hasDimensions(2, 2);
+        assertThat(values[0]).containsExactly("ready", "east");
+        assertThat(values[1]).containsExactly("standby", "west");
     }
 }
