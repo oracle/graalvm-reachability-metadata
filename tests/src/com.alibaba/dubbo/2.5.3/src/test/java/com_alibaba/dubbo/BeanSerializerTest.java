@@ -8,7 +8,6 @@ package com_alibaba.dubbo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.alibaba.com.caucho.hessian.io.BeanSerializerFactory;
 import org.junit.jupiter.api.Test;
 
 public class BeanSerializerTest {
@@ -18,7 +17,7 @@ public class BeanSerializerTest {
         source.setName("Ada");
         source.setCount(3);
 
-        Bean copy = (Bean) HessianTestSupport.roundTrip(source, new BeanSerializerFactory());
+        Bean copy = (Bean) HessianTestSupport.roundTripBean(source);
 
         assertThat(copy.getName()).isEqualTo("Ada");
         assertThat(copy.getCount()).isEqualTo(3);

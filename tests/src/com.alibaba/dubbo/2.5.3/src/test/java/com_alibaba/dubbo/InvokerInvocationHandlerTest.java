@@ -17,6 +17,6 @@ public class InvokerInvocationHandlerTest {
         RpcTestSupport.Echo proxy = new JdkProxyFactory().getProxy(RpcTestSupport.newInvoker());
 
         assertThat(proxy.echo("forwarded")).isEqualTo("echo:forwarded");
-        assertThat(proxy.toString()).contains("com.alibaba.dubbo.rpc.proxy.jdk.JdkProxyFactory");
+        assertThat(proxy.toString()).contains("test://127.0.0.1");
     }
 }

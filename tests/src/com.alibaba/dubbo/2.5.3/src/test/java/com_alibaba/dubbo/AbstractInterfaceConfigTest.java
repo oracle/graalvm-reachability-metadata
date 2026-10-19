@@ -19,7 +19,7 @@ public class AbstractInterfaceConfigTest {
         MethodConfig method = new MethodConfig();
         method.setName("echo");
         ProbeConfig config = new ProbeConfig();
-        config.setStub(EchoStub.class.getName());
+        config.setStub(DubboEchoStub.class.getName());
 
         assertThatCode(
                         () -> {
@@ -33,18 +33,6 @@ public class AbstractInterfaceConfigTest {
         String echo(String value);
     }
 
-    public static class EchoStub implements Echo {
-        private final Echo delegate;
-
-        public EchoStub(Echo delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public String echo(String value) {
-            return delegate.echo(value);
-        }
-    }
 
     public static class ProbeConfig extends AbstractInterfaceConfig {
         void validateMethods(Class<?> type, MethodConfig method) {

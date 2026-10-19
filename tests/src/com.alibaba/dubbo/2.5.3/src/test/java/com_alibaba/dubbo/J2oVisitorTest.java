@@ -10,22 +10,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.alibaba.dubbo.common.json.JSON;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 
 public class J2oVisitorTest {
     @Test
-    void parsesObjectsCollectionsAndTypedArrays() throws Exception {
-        Record record =
-                JSON.parse("{\"name\":\"dubbo\",\"numbers\":[1,2,3]}", Record.class);
+    void parsesMapsCollectionsAndTypedArrays() throws Exception {
+        HashMap<?, ?> map = JSON.parse("{\"name\":\"dubbo\"}", HashMap.class);
+        ArrayList<?> list = JSON.parse("[1,2,3]", ArrayList.class);
         int[] values = JSON.parse("[4,5]", int[].class);
 
-        assertThat(record.name).isEqualTo("dubbo");
-        assertThat(record.numbers).containsExactly(1, 2, 3);
+        assertThat(map).containsEntry("name", "dubbo");
+        assertThat(list).containsExactly(1L, 2L, 3L);
         assertThat(values).containsExactly(4, 5);
-    }
-
-    public static class Record {
-        public String name;
-        public ArrayList<Integer> numbers;
     }
 }

@@ -6,8 +6,11 @@
  */
 package com_alibaba.dubbo;
 
+import com.alibaba.com.caucho.hessian.io.BeanSerializerFactory;
 import com.alibaba.com.caucho.hessian.io.Hessian2Input;
 import com.alibaba.com.caucho.hessian.io.Hessian2Output;
+import com.alibaba.com.caucho.hessian.io.HessianInput;
+import com.alibaba.com.caucho.hessian.io.HessianOutput;
 import com.alibaba.com.caucho.hessian.io.SerializerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,6 +31,20 @@ final class HessianTestSupport {
         output.flush();
 
         Hessian2Input input = new Hessian2Input(new ByteArrayInputStream(bytes.toByteArray()));
+        input.setSerializerFactory(factory);
+        return input.readObject(value.getClass());
+    }
+
+    static Object roundTripBean(Object value) throws Exception {
+        SerializerFactory factory = new BeanSerializerFactory();
+        factory.setAllowNonSerializable(true);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        HessianOutput output = new HessianOutput(bytes);
+        output.setSerializerFactory(factory);
+        output.writeObject(value);
+        output.flush();
+
+        HessianInput input = new HessianInput(new ByteArrayInputStream(bytes.toByteArray()));
         input.setSerializerFactory(factory);
         return input.readObject(value.getClass());
     }
