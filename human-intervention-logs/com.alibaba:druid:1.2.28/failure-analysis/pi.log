@@ -1,0 +1,15 @@
+### Human intervention needed
+
+The automated job failed during test generation/validation for `com.alibaba:druid:1.2.28`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10927-library-new-request-com.alibaba-druid-1.2.28-e2a4815e.
+
+The immediate failure is the Native Image test runtime: the image builds, but `MySqlUtilsTest.exposesConnectionStateAndCreatesXaConnections()` fails while initializing `MySqlUtils` because the native image does not include the `GBK` charset (`UnsupportedCharsetException: GBK`). The final Gradle run reports 23/24 tests passing. The workflow then failed in `explore/generate_tests()` after 22 iterations; subsequent Pi attempts also encountered provider-overload errors. Coverage reached 108/129 dynamic-access sites (83.72%), while metrics remained `failure` with no finalized generated LOC or metadata artifact.
+
+Please inspect:
+- `logs/do-work-20261018-172551.log`
+- `logs/com.alibaba:druid:1.2.28/gradle-test/gradle-test-2026-10-19T07-21-35-397182Z.log`
+- `logs/com.alibaba:druid:1.2.28/issue-requested-metadata/pi-generation-2026-10-19T07-21-32-801362Z.log`
+
+Manual next steps:
+1. On the preserved branch, configure the native test binary with `-H:+AddAllCharsets` (matching existing repository tests) so Druid’s `GBK` initialization succeeds.
+2. Run `./gradlew test -Pcoordinates=com.alibaba:druid:1.2.28` and confirm all 24 JVM/native tests pass.
+3. Review the generated metadata and the 21 remaining uncovered dynamic-access sites, then regenerate/finalize the stats and execution metrics before publication.
