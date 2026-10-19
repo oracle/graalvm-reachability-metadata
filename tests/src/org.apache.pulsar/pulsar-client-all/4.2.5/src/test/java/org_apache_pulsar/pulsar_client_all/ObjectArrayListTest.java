@@ -21,7 +21,9 @@ public class ObjectArrayListTest {
         ObjectArrayList<String> restored = SerializationSupport.roundTrip(input);
         String[] values = restored.toArray(new String[0]);
 
-        assertThat(restored).containsExactly("alpha", "beta");
+        assertThat(restored.size()).isEqualTo(2);
+        assertThat(restored.get(0)).isEqualTo("alpha");
+        assertThat(restored.get(1)).isEqualTo("beta");
         assertThat(values).containsExactly("alpha", "beta");
     }
 }

@@ -8,11 +8,11 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.pulsar.shade.com.fasterxml.jackson.annotation.JsonFilter;
-import org.apache.pulsar.shade.com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.pulsar.shade.com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.pulsar.shade.com.fasterxml.jackson.databind.SerializerProvider;

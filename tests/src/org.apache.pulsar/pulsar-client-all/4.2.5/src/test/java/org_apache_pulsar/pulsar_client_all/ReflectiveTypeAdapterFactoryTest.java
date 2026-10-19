@@ -21,7 +21,7 @@ public class ReflectiveTypeAdapterFactoryTest {
         ChildValue restored = gson.fromJson("{\"parent\":\"base\",\"child\":\"leaf\"}", ChildValue.class);
 
         assertThat(json).contains("\"parent\":\"parent\"").contains("\"child\":\"child\"");
-        assertThat(restored.parent).isEqualTo("base");
+        assertThat(restored.parent()).isEqualTo("base");
         assertThat(restored.child).isEqualTo("leaf");
     }
 
@@ -33,6 +33,10 @@ public class ReflectiveTypeAdapterFactoryTest {
 
         public ParentValue(String parent) {
             this.parent = parent;
+        }
+
+        public String parent() {
+            return parent;
         }
     }
 
