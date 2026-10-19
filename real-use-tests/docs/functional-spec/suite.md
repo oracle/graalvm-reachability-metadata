@@ -6,7 +6,9 @@ metadata, so its tests chase the paths that trigger dynamic access
 (§root/FS-tests). A real-use test instead runs one realistic scenario end to
 end, with whatever libraries that scenario needs on the classpath, and shows
 that a native-built consumer of the library works with the metadata the
-repository ships (§GOAL-consumer-evidence).
+repository ships (§GOAL-consumer-evidence). The scenarios are examples of real
+use of a library, not a compatibility matrix, so they run on the latest
+GraalVM only (§FS-real-use-tests.3).
 
 Real-use tests consume shipped metadata and never change it. They justify no
 entry in `metadata/` — that stays the job of §root/FS-tests under
@@ -96,3 +98,9 @@ not metadata: moving one into `metadata/` is a separate change held to
   request that changes no real-use project reports success without running
   one. A change under `metadata/` does not trigger the suite: shipped metadata
   is additive, and real-use work never changes it (§FS-real-use-tests.2.1).
+- The suite runs on one GraalVM lane: the latest GraalVM early-access build,
+  with Native Image's current defaults. It does not run on the JDK 25 LTS line
+  or with the future-defaults mode. Those lanes check that the shipped
+  metadata keeps working, which is the job of the `tests/` suite
+  (§root/FS-tests). A real-use scenario is an example of how the library is
+  used, and only the newest GraalVM is of interest for that.

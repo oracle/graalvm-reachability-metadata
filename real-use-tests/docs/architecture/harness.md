@@ -86,8 +86,11 @@ A pull-request workflow runs the real-use projects the pull request changes
   the real-use projects that still exist, failing for a project whose
   coordinate the repository does not support (§FS-real-use-tests.1);
 - it runs `realUseJavaTest`, then `realUseNativeTest`, for those coordinates
-  on the same `ci.json` matrix the `tests/` PR workflow uses
-  (§root/AR-test-changed-metadata, §root/AR-matrix-source);
+  on the `generateChangedRealUseMatrix` section of `ci.json`, which names only
+  `latest-ea` and only the `current-defaults` native-image mode
+  (§FS-real-use-tests.3, §root/AR-matrix-source). The `tests/` PR matrix of
+  §root/AR-test-changed-metadata is not used, so the suite's single lane does
+  not change when that matrix does;
 - it reports one always-present status check, which passes without running
   anything when no real-use project changed, and that check joins the required
   set (§root/AR-required-status-checks).
