@@ -1,9 +1,9 @@
 {
   "add_new_library_support:2026-10-19": {
-    "timestamp": "2026-10-19T14:30:05.321239Z",
+    "timestamp": "2026-10-19T20:05:29.012227Z",
     "library": "com.alibaba:dubbo:2.5.3",
-    "starting_commit": "694b2e6d5ff917a0e972019c2c506a5087a009c3",
-    "ending_commit": "fb529a491f8e1a1f324f6d7cd50dd91fa82a7141",
+    "starting_commit": "13c611200a6957897a27d04ae23f2527a80a598e",
+    "ending_commit": "5797984d3fd8fecdd4e4212a58bc527b196c2cc4",
     "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
     "agent": "pi",
     "model": "gpt-5.6-sol",
@@ -13,55 +13,54 @@
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.604563,
-            "coveredCalls": 159,
+            "coverageRatio": 0.775665,
+            "coveredCalls": 204,
             "totalCalls": 263
           },
           "resources": {
-            "coverageRatio": 0.666667,
-            "coveredCalls": 6,
+            "coverageRatio": 0.777778,
+            "coveredCalls": 7,
             "totalCalls": 9
           }
         },
-        "coverageRatio": 0.606618,
-        "coveredCalls": 165,
+        "coverageRatio": 0.775735,
+        "coveredCalls": 211,
         "totalCalls": 272
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 22363,
-          "missed": 119670,
-          "ratio": 0.157449,
+          "covered": 27123,
+          "missed": 114910,
+          "ratio": 0.190963,
           "total": 142033
         },
         "line": {
-          "covered": 3775,
-          "missed": 24779,
-          "ratio": 0.132206,
+          "covered": 4840,
+          "missed": 23714,
+          "ratio": 0.169503,
           "total": 28554
         },
         "method": {
-          "covered": 722,
-          "missed": 4503,
-          "ratio": 0.138182,
+          "covered": 1008,
+          "missed": 4217,
+          "ratio": 0.192919,
           "total": 5225
         }
       }
     },
     "library_preparation_preflight": {
       "status": "completed",
-      "action": "advisory_preparation",
+      "action": "no_action",
       "issue_number": 10994,
       "issue_label": "library-new-request",
       "library": "com.alibaba:dubbo:2.5.3",
-      "summary": "No extra dependency or Docker image is needed. Spring 2.5.6.SEC03, javassist 3.15.0-GA, Netty 3.2.5.Final and commons-logging all come in transitively and resolve from Maven Central. The `dubbo` protocol, Netty transport and the Hessian2 copy bundled in the jar all run in-process on localhost. Every optional integration (ZooKeeper/zkclient/curator, Redis, Mina, Grizzly, fastjson, CXF, Thrift, Jetty, validation, JCache) is `provided`-scope and only reached through registries or protocols the tests should avoid. Two pieces of test setup are needed: an `--add-opens` JVM argument so javassist 3.15 works on JDK 25, and steering the tests away from code paths that generate classes at runtime, which cannot work in Native Image.",
+      "summary": "com.alibaba:dubbo:2.5.3 needs no setup beyond the normal scaffold. Its compile-scope dependencies (spring 2.5.6.SEC03, javassist 3.15.0-GA, netty 3.2.5.Final) come in transitively. That is enough for its core code paths: ExtensionLoader/SPI, the config classes, the bundled Hessian serialization, javassist proxies, filters, and the default dubbo protocol over in-process Netty. The existing test project already covers these with no extra dependencies, Docker images or properties.",
       "deterministic_setup": [],
-      "agent_guidance": "1) JVM test task: javassist 3.15.0-GA `ClassPool.toClass` defines classes by calling `java.lang.ClassLoader.defineClass` through reflection with `setAccessible(true)`. On JDK 25 that fails with InaccessibleObjectException unless you add `tasks.withType(Test).configureEach { jvmArgs \"--add-opens=java.base/java.lang=ALL-UNNAMED\" }`, the same pattern as `tests/src/com.alibaba/fastjson/1.2.83/build.gradle`. Dubbo reaches this from `ClassGenerator`/`Wrapper`/`Proxy`, `JavassistProxyFactory` and the `javassist` adaptive compiler. Don't try to fix it by pinning a newer javassist; that is not this library's setup.\n2) Native Image cannot define or compile classes at runtime. Avoid paths that generate bytecode: `ExtensionLoader.getAdaptiveExtension()` for SPI interfaces without a hand-written `@Adaptive` class (Protocol, ProxyFactory, Transporter, Cluster, RegistryFactory and others; `ExtensionFactory`/`AdaptiveExtensionFactory` and `Compiler`/`AdaptiveCompiler` are fine). Also avoid `ServiceConfig`/`ReferenceConfig`, whose static fields create adaptive Protocol/ProxyFactory/Cluster extensions, and `Wrapper.getWrapper`/`com.alibaba.dubbo.common.bytecode.Proxy`. Reach the same code through: `ExtensionLoader.getExtensionLoader(X.class).getExtension(\"name\")` and `getActivateExtension(url, key)`, which read the SPI files under `META-INF/dubbo/internal/`; `getExtension(\"jdk\")` on ProxyFactory (`JdkProxyFactory`, which uses `java.lang.reflect.Proxy` plus reflective invocation); the `injvm` protocol; and the `dubbo` protocol over Netty, with URLs like `dubbo://127.0.0.1:<NetUtils.getAvailablePort()>/<iface>`. Exporting and referring via `DubboProtocol.export`/`refer` with a JdkProxyFactory invoker is fine.\n3) Other good targets: `Serialization` extensions (`hessian2`, `java`, `compactedjava`, `dubbo`, `json`) round-tripping real POJOs, which exercises the bundled `com.alibaba.com.caucho.hessian` and Java serialization; `com.alibaba.dubbo.common.json.JSON`; `URL` parsing; `PojoUtils`\n...[truncated]",
+      "agent_guidance": "",
       "risks": [
-        "Javassist runtime class generation (adaptive extensions, Wrapper, Proxy) is unsupported in Native Image. Tests that reach `ServiceConfig`/`ReferenceConfig` or the Spring `dubbo:` XML namespace will fail the native run however much metadata is added, so both API-level and Spring-config coverage are limited.",
-        "Spring 2.5.6.SEC03 predates the module system. The Dubbo Spring XML namespace path (`DubboNamespaceHandler`, `ServiceBean`/`ReferenceBean`) may break on JDK 25, and it also goes through adaptive extensions, so it is a poor coverage target.",
-        "Netty 3.2.5 starts boss/worker thread pools. Tests must close servers and clients (`ExchangeServer.close()`, `Protocol.destroy()`) and use ephemeral localhost ports, or the JVM/native test run can hang or ports can collide.",
-        "A shipped `user-code-filter.json` must cover both `com.alibaba.dubbo` and the bundled `com.alibaba.com.caucho.hessian` package, so the Hessian serialization metadata isn't dropped."
+        "Optional integrations are declared with scope 'provided' in the POM and are not on the test classpath: ZooKeeper/zkclient/curator, Redis/jedis, memcached, mina, grizzly, httpclient, fastjson, xstream, CXF, thrift, hessian 4.0.7, jetty, validation and jcache. Tests for those extensions would need the matching testImplementation dependency, and ZooKeeper or Redis registries would also need a Docker image. They are not needed to reach meaningful coverage.",
+        "If a test starts a real dubbo/netty server, it should bind to localhost on a free port and use a direct URL or N/A registry rather than multicast, which can be unreliable in CI sandboxes.",
+        "Dubbo 2.5.3 generates javassist bytecode at runtime (proxies, Wrapper, adaptive extensions). On Native Image these paths can't be reached unless metadata or a pre-generated class covers them. Local Native Image verification decides."
       ],
       "applied_setup": [],
       "input_evidence": [
@@ -71,24 +70,24 @@
         },
         {
           "name": "existing_tests",
-          "summary": "0 existing test file path(s) included"
+          "summary": "40 existing test file path(s) included"
         }
       ],
       "model": "opus",
-      "input_tokens_used": 10,
-      "output_tokens_used": 6315
+      "input_tokens_used": 8,
+      "output_tokens_used": 1756
     },
     "metrics": {
-      "input_tokens_used": 366947,
-      "cached_input_tokens_used": 12526080,
-      "output_tokens_used": 60481,
-      "iterations": 8,
-      "cost_usd": 9.9121,
-      "generated_loc": 2091,
-      "tested_library_loc": 3775,
-      "metadata_entries": 153,
-      "test_only_metadata_entries": 257,
-      "code_coverage_percent": 13.22
+      "input_tokens_used": 1192560,
+      "cached_input_tokens_used": 15485696,
+      "output_tokens_used": 97117,
+      "iterations": 24,
+      "cost_usd": 16.6191,
+      "generated_loc": 2715,
+      "tested_library_loc": 4840,
+      "metadata_entries": 359,
+      "test_only_metadata_entries": 549,
+      "code_coverage_percent": 16.95
     },
     "artifacts": {
       "metadata_file": "metadata/com.alibaba/dubbo/2.5.3/reachability-metadata.json"
