@@ -84,6 +84,29 @@ public class Hibernate_c3p0Test {
 
     @Test
     @Timeout(60)
+    public void automaticallySelectsC3p0ProviderFromPoolSettings() throws Exception {
+        Map<String, Object> settings = connectionSettings(uniqueDatabaseName("automatic-provider"));
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .applySettings(settings)
+                .build();
+        try {
+            ConnectionProvider connectionProvider = registry.getService(ConnectionProvider.class);
+            assertThat(connectionProvider).isInstanceOf(C3P0ConnectionProvider.class);
+
+            try (Connection connection = connectionProvider.getConnection();
+                    PreparedStatement query = connection.prepareStatement("select 1");
+                    ResultSet resultSet = query.executeQuery()) {
+                assertThat(resultSet.next()).isTrue();
+                assertThat(resultSet.getInt(1)).isOne();
+                assertThat(resultSet.next()).isFalse();
+            }
+        } finally {
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+    }
+
+    @Test
+    @Timeout(60)
     public void configuresAndUsesConnectionProviderDirectly() throws Exception {
         ServiceRegistryImplementor registry = (ServiceRegistryImplementor) new StandardServiceRegistryBuilder().build();
         C3P0ConnectionProvider provider = new C3P0ConnectionProvider();
