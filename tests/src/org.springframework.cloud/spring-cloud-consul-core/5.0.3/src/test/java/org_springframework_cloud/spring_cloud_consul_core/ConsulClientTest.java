@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,9 @@ import org.junit.jupiter.api.Timeout;
 
 import org.springframework.cloud.consul.ConsulAutoConfiguration;
 import org.springframework.cloud.consul.ConsulClient;
+import org.springframework.cloud.consul.config.ConsulConfigProperties;
+import org.springframework.cloud.consul.config.ConsulPropertySource;
+import org.springframework.cloud.consul.config.ConsulPropertySources;
 import org.springframework.cloud.consul.model.http.agent.Service;
 import org.springframework.cloud.consul.model.http.catalog.CatalogService;
 import org.springframework.cloud.consul.model.http.catalog.Node;
@@ -77,6 +82,20 @@ public class ConsulClientTest {
         GetValue value = response.getBody().get(0);
         assertThat(value.getKey()).isEqualTo("config/app/data");
         assertThat(value.getDecodedValue()).isEqualTo("feature.enabled=true");
+    }
+
+    @Test
+    void loadsKeyValueConfigAsPropertySource() {
+        ConsulConfigProperties properties = new ConsulConfigProperties();
+        ConsulPropertySources propertySources =
+                new ConsulPropertySources(properties, LogFactory.getLog(ConsulClientTest.class));
+        Map<String, Long> indexes = new HashMap<>();
+
+        ConsulPropertySource propertySource =
+                propertySources.createPropertySource("config/app", client, indexes::put);
+
+        assertThat(propertySource.getProperty("data")).isEqualTo("feature.enabled=true");
+        assertThat(indexes).containsEntry("config/app", 42L);
     }
 
     @Test
