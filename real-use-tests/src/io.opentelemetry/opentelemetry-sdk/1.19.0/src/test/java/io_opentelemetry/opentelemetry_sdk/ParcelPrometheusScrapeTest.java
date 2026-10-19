@@ -29,6 +29,8 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -79,9 +81,19 @@ class ParcelPrometheusScrapeTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        int port = freePort();
-        baseUri = URI.create("http://127.0.0.1:" + port);
-        prometheus = PrometheusHttpServer.builder().setHost("127.0.0.1").setPort(port).build();
+        for (int attempt = 0; ; attempt++) {
+            int port = freePort();
+            try {
+                prometheus = PrometheusHttpServer.builder().setHost("127.0.0.1").setPort(port).build();
+                baseUri = URI.create("http://127.0.0.1:" + port);
+                break;
+            } catch (UncheckedIOException failure) {
+                // Another process can claim the port after freePort() closes its socket.
+                if (!(failure.getCause() instanceof BindException) || attempt == 9) {
+                    throw failure;
+                }
+            }
+        }
         meterProvider = SdkMeterProvider.builder()
                 .setResource(Resource.getDefault().merge(Resource.create(
                         Attributes.of(AttributeKey.stringKey("service.name"), "parcel-depot"))))
