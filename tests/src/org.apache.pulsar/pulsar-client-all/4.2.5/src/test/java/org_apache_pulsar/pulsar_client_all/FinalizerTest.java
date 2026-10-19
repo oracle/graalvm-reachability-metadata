@@ -8,6 +8,7 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.ref.Reference;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.pulsar.shade.com.google.common.base.FinalizableReferenceQueue;
@@ -17,14 +18,16 @@ import org.junit.jupiter.api.Test;
 public class FinalizerTest {
     @Test
     void invokesFinalizableReferenceCallback() throws Exception {
-        FinalizableReferenceQueue queue = new FinalizableReferenceQueue();
-        CountDownLatch finalized = new CountDownLatch(1);
-        TestReference reference = new TestReference(new Object(), queue, finalized);
+        try (FinalizableReferenceQueue queue = new FinalizableReferenceQueue()) {
+            CountDownLatch finalized = new CountDownLatch(1);
+            Object referent = new Object();
+            TestReference reference = new TestReference(referent, queue, finalized);
 
-        assertThat(reference.enqueue()).isTrue();
-        queue.close();
+            assertThat(reference.enqueue()).isTrue();
+            Reference.reachabilityFence(referent);
 
-        assertThat(finalized.await(10, TimeUnit.SECONDS)).isTrue();
+            assertThat(finalized.await(10, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     private static final class TestReference extends FinalizableWeakReference<Object> {
