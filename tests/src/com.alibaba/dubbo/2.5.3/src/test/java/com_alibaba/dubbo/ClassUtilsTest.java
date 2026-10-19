@@ -20,8 +20,8 @@ public class ClassUtilsTest {
         assertThat(ClassUtils.getSizeMethod(HasLength.class)).isEqualTo("length()");
         assertThat(ClassUtils.getSizeMethod(HasGetSize.class)).isEqualTo("getSize()");
         assertThat(ClassUtils.getSizeMethod(HasGetLength.class)).isEqualTo("getLength()");
-        assertThat(ClassUtils.searchMethod(Sink.class, "put", new Class<?>[] {String.class}))
-                .hasName("put");
+        assertThat(ClassUtils.searchMethod(Sink.class, "put", new Class<?>[] {String.class}).getName())
+                .isEqualTo("put");
     }
 
     public static class HasLength {
