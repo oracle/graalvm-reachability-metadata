@@ -1,0 +1,116 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "com.alibaba:druid:1.2.28",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 10927,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Cover the three paths in the issue: (1) logging backend selection: assert LogFactory.getLog(SomeClass.class) returns a com.alibaba.druid.support.logging.SLF4JImpl. LogFactory reads the 'druid.logType' system property (for example 'slf4j' or 'jdk') before probing. Its choice is made once in static state, so if you set the property, set it before any Druid class initializes, or just rely on the default probe with Logback on the classpath. (2) Filter aliases: create a DruidDataSource with url 'jdbc:h2:mem:druid;DB_CLOSE_DELAY=-1', call setFilters(\"stat\") (alias resolved through META-INF/druid-filter.properties via FilterManager), init it, and run several statements. Assert getProxyFilters() contains a StatFilter and getDataSourceStat().getSqlStatMap() is not empty. Other aliases such as 'mergeStat', 'wall', 'encoding' and 'slf4j' go through the same lookup and are cheap to add. (3) JMX: after init, query ManagementFactory.getPlatformMBeanServer() for the com.alibaba.druid:type=DruidDataSourceStat MBean and assert MBeanInfo.getAttributes().length > 0. Do the same for DruidDataSource, DruidDriver and MockDriver. Druid's bundled MockDriver (jdbc:mock:...) and DruidDriver (jdbc:wrap-jdbc:...) are registered through META-INF/services/java.sql.Driver and can be used for extra no-database coverage. Always close() each DruidDataSource, because DruidDataSourceStatManager keeps static registrations that leak between tests. Use only public Druid APIs; do not call Class.forName or reflection on Druid internals from test code.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "com.h2database:h2:2.4.240",
+        "kind": "dependency",
+        "reason": "In-memory JDBC database (jdbc:h2:mem:...) to run real SQL through DruidDataSource, so StatFilter/JdbcSqlStat, DruidPooledConnection and the stat MBeans are populated. This is the version the reporter used, and the repository already ships metadata for h2 2.4.240. Other pool tests here (HikariCP 7.0.\n...[truncated]",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "ch.qos.logback:logback-classic:1.5.20",
+        "kind": "dependency",
+        "reason": "Brings in slf4j-api 2.0.17 and a LocationAwareLogger backend. Without it, Druid's LogFactory never selects SLF4JImpl, which is the logging path the issue reports as broken; per the reporter, slf4j-simple loggers are refused because they are not a LocationAwareLogger. The repository already ships met\n...[truncated]",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10927 Support for com.alibaba:druid:1.2.28; label=library-new-request; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 10,
+    "issue_label": "library-new-request",
+    "issue_number": 10927,
+    "library": "com.alibaba:druid:1.2.28",
+    "model": "opus",
+    "output_tokens_used": 4031,
+    "risks": [
+      "LogFactory chooses its backend once per process. Tests that expect different backends (SLF4J vs JDK logging) cannot both pass in the same JVM or native image without forking, so cover only the SLF4J path unless forking is set up.",
+      "Do not add log4j, log4j2 or commons-logging to the test classpath. LogFactory may pick one of them before SLF4J, which changes the selected implementation and the metadata that gets generated.",
+      "The tracing agent also files JDK management beans and H2 entries under Druid classes, as the reporter noted. Keep generated metadata limited to Druid's own lookups (plus the org.slf4j.Logger probe) and keep test-only and H2 types out of the shipped metadata.",
+      "Many filters and integrations (Spring, MyBatis, WallFilter for specific database dialects, ConfigFilter decryption) depend on provided-scope libraries. They are out of scope unless the agent adds the matching dependencies; that is not required for the paths in the issue."
+    ],
+    "status": "completed",
+    "summary": "Druid 1.2.28 is a JDBC connection pool. Every dependency in its POM is provided, optional or test scope, so the default scaffold has no real database and no SLF4J backend. The issue's main gaps are the SLF4JImpl logging probe, the 'stat' filter alias from META-INF/druid-filter.properties with SQL stats collected, and the DruidDataSourceStat MBean attributes. Exercising them as the reporter did needs an in-process H2 database and Logback (Druid's SLF4JImpl only accepts a LocationAwareLogger). No Docker image is needed."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 6,
+      "chunkProcessedClassCount": 6,
+      "exhaustedClasses": [
+        "com.alibaba.druid.filter.FilterManager",
+        "com.alibaba.druid.filter.config.ConfigFilter",
+        "com.alibaba.druid.pool.DruidAbstractDataSource",
+        "com.alibaba.druid.pool.DruidConnectionHolder",
+        "com.alibaba.druid.pool.ha.PropertiesUtils",
+        "com.alibaba.druid.pool.ha.selector.DataSourceSelectorEnum",
+        "com.alibaba.druid.pool.xa.JtdsXAResource",
+        "com.alibaba.druid.proxy.DruidDriver",
+        "com.alibaba.druid.stat.DruidDataSourceStatManager",
+        "com.alibaba.druid.support.http.stat.WebAppStatUtils",
+        "com.alibaba.druid.support.logging.LogFactory",
+        "com.alibaba.druid.support.logging.Resources",
+        "com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl",
+        "com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl$BeanInfo",
+        "com.alibaba.druid.support.spring.stat.SpringStatUtils",
+        "com.alibaba.druid.util.DruidDataSourceUtils",
+        "com.alibaba.druid.util.H2Utils",
+        "com.alibaba.druid.util.JdbcSqlStatUtils",
+        "com.alibaba.druid.util.JdbcUtils",
+        "com.alibaba.druid.util.MySqlUtils",
+        "com.alibaba.druid.util.Utils",
+        "com.alibaba.druid.wall.spi.WallVisitorUtils"
+      ],
+      "iteration": 12,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10927-library-new-request-com.alibaba-druid-1.2.28-e2a4815e",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.alibaba:druid:1.2.28",
+    "timestamp": "2026-10-19T07:21:42.221028Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
+}

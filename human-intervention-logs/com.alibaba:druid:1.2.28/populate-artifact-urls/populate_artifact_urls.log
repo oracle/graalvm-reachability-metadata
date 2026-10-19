@@ -1,0 +1,40 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I didn't change anything in `metadata/com.alibaba/druid/index.json`. Every requested field already had a value, and each one checked out for version 1.2.28.
+
+| Field | Value | Check |
+|---|---|---|
+| `source-code-url` | `https://repo1.maven.org/maven2/com/alibaba/druid/$version$/druid-$version$-sources.jar` | Returns 200; this is the sources jar on Maven Central, which is the preferred source. |
+| `repository-url` | `https://github.com/alibaba/druid` | Returns 200; it's the repository root with no tag or branch in the path. |
+| `test-code-url` | `https://github.com/alibaba/druid/tree/$version$/core/src/test/java` | Returns 200; the tag `1.2.28` exists (commit `33824c3`). Maven has no tests jar for 1.2.28, so the GitHub tag is the right choice. |
+| `documentation-url` | `https://javadoc.io/doc/com.alibaba/druid/$version$/index.html` | Returns 200 and the page title is "druid 1.2.28 javadoc", so it's the versioned docs, not "latest". |
+| `description` | (existing text) | It's exactly two sentences: Druid is a JDBC connection pool with monitoring and filters, and it includes a SQL parser for many database dialects. |
+| `language` | left absent | Druid is a plain Java library, not specific to Kotlin, Groovy or Scala. |
+
+Since the only tested version is 1.2.28, the `$version$` templates are valid for every tested version.
+Ran agent for com.alibaba:druid:1.2.28 (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10927-d5cc6061/build/agent-url-discovery-logs/com.alibaba-druid-1.2.28.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10927-d5cc6061/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 19s
+9 actionable tasks: 1 executed, 8 up-to-date
