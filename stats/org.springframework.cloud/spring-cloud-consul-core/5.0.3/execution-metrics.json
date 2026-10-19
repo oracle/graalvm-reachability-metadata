@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-10-19": {
+    "timestamp": "2026-10-19T10:19:11.457778Z",
+    "library": "org.springframework.cloud:spring-cloud-consul-core:5.0.3",
+    "starting_commit": "ec3d7f773ec2df0a193269e840ed52d7b77b7d6e",
+    "ending_commit": "4dfb75abf065fbfd847bcc489a8fd49d3f45b954",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.0.3",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 540,
+          "missed": 2196,
+          "ratio": 0.197368,
+          "total": 2736
+        },
+        "line": {
+          "covered": 204,
+          "missed": 542,
+          "ratio": 0.273458,
+          "total": 746
+        },
+        "method": {
+          "covered": 114,
+          "missed": 225,
+          "ratio": 0.336283,
+          "total": 339
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10911,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.cloud:spring-cloud-consul-core:5.0.3",
+      "summary": "spring-cloud-consul-core 5.0.3's ConsulClient is a Spring HTTP-interface client on RestClient, and the reported failure is the Jackson 3 (tools.jackson) deserialization of GetValue. Jackson is not on the library's runtime classpath: spring-boot-restclient -> spring-boot-http-converter -> spring-web only. So the tests must add jackson-databind before the KV/JSON paths can be reached. A Consul server is not needed, because an in-JVM fake HTTP endpoint is enough.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "tools.jackson.core:jackson-databind:3.1.5",
+          "scope": "testImplementation",
+          "reason": "Jackson 3 is not a transitive dependency of spring-cloud-consul-core 5.0.3. Without it, RestClient has no JSON message converter, so ConsulClient cannot deserialize GetValue, CatalogService, HealthService and the other model types. These are the reflection paths the issue reports. 3.1.5 is the jacks\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Do not use a Consul Docker container. No Consul image is on the allow-list, and coverage does not need one. Start a com.sun.net.httpserver.HttpServer on 127.0.0.1 with an ephemeral port as a fake Consul agent. Have it return canned JSON with Content-Type application/json, for example a GET /v1/kv/<key> that returns [{\"Key\":\"config/app/data\",\"Value\":\"<base64>\",\"ModifyIndex\":1,...}] plus an X-Consul-Index header, and similar responses for the catalog, health and agent endpoints. Build the ConsulClient the way the library does: a RestClient with baseUrl pointing at the fake server, wrapped by HttpServiceProxyFactory, or through ConsulAutoConfiguration with spring.cloud.consul.host and spring.cloud.consul.port set to the fake server. Then call its KV, catalog, health and agent methods so Jackson deserializes the model classes in org.springframework.cloud.consul.model.http.*. Don't add response bodies with no JSON content: the issue notes that a later poll failed with 'HTTP/1.1 header parser received no bytes'.",
+      "risks": [
+        "ConsulClient is an interface proxied by HttpServiceProxyFactory, so native runs may also need proxy and annotation metadata for the @HttpExchange interface on top of reflection for the model types.",
+        "The ConfigDataLoader/ConsulPropertySources path named in the issue's condition lives in spring-cloud-consul-config, not in -core. Tests limited to -core may not reach that typeReached condition, so metadata conditions should use core types such as ConsulClient.",
+        "Optional dependencies of the library (spring-cloud-commons, spring-retry, actuator, consul-api) are not on the classpath. Tests that touch ConsulAutoConfiguration$RetryConfiguration, ConsulHealthIndicator or ConsulEndpoint would need extra dependencies; keep the scope to ConsulClient and its models unless the build confirms otherwise."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "tools.jackson.core:jackson-databind:3.1.5",
+          "result": "applied",
+          "target": "tests/src/org.springframework.cloud/spring-cloud-consul-core/5.0.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10911 Support for org.springframework.cloud:spring-cloud-consul-core:5.0.3; label=library-new-request; body_chars=2435"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 12,
+      "output_tokens_used": 4056
+    },
+    "metrics": {
+      "input_tokens_used": 202437,
+      "cached_input_tokens_used": 1804416,
+      "output_tokens_used": 17178,
+      "iterations": 5,
+      "cost_usd": 2.4297,
+      "generated_loc": 257,
+      "tested_library_loc": 204,
+      "metadata_entries": 24,
+      "test_only_metadata_entries": 172,
+      "code_coverage_percent": 27.35
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.cloud/spring-cloud-consul-core/5.0.3/reachability-metadata.json"
+    }
+  }
+}
