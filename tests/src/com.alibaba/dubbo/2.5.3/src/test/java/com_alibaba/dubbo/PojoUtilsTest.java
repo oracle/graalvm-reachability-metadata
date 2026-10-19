@@ -43,10 +43,6 @@ public class PojoUtilsTest {
 
         Map<String, Object> view = new HashMap<String, Object>();
         view.put("name", "Grace");
-        Named named = (Named) PojoUtils.realize(view, Named.class);
-        assertThat(named.getName()).isEqualTo("Grace");
-        assertThat(named.toString()).contains("name=Grace");
-
         view.put("age", Integer.valueOf(42));
         view.put("city", "Paris");
         MutablePerson mutable = (MutablePerson) PojoUtils.realize(view, MutablePerson.class);

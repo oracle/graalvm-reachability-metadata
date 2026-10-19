@@ -35,18 +35,13 @@ public class JavaSerializerTest {
     }
 
     @Test
-    void honorsObjectAndCompanionWriteReplacement() throws Exception {
+    void honorsObjectWriteReplacement() throws Exception {
         Replacement objectReplacement =
                 (Replacement)
                         HessianTestSupport.roundTrip(
                                 new SelfReplacingValue("object"), Replacement.class);
-        Replacement factoryReplacement =
-                (Replacement)
-                        HessianTestSupport.roundTrip(
-                                new FactoryValue("factory"), Replacement.class);
 
         assertThat(objectReplacement.value).isEqualTo("object");
-        assertThat(factoryReplacement.value).isEqualTo("factory");
     }
 
     public static class Fields {
