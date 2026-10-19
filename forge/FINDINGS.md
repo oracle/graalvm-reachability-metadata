@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-19 — org.apache.pulsar:pulsar-client-all:4.2.5 (#10642)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-10-19 — p6spy:p6spy:3.9.1 (#10912)
 
 **Committed library statistics were stale**
