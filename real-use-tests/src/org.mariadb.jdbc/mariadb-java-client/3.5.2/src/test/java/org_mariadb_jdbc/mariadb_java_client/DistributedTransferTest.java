@@ -49,6 +49,8 @@ public class DistributedTransferTest {
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(120);
 
+    private static final Duration SESSION_END_TIMEOUT = Duration.ofSeconds(30);
+
     private static final String CHECKING = "checking_bank";
 
     private static final String SAVINGS = "savings_bank";
@@ -309,19 +311,51 @@ public class DistributedTransferTest {
         /// way a coordinator crash between the two phases would.
         TransferXid prepareOnly(MariaDbDataSource bank, String owner, long deltaCents) throws Exception {
             XAConnection xaConnection = bank.getXAConnection();
+            TransferXid xid = TransferXid.next(1);
+            long session;
             try {
                 XAResource resource = xaConnection.getXAResource();
-                TransferXid xid = TransferXid.next(1);
                 resource.start(xid, XAResource.TMNOFLAGS);
                 try (Connection connection = xaConnection.getConnection()) {
+                    session = sessionId(connection);
                     adjust(connection, owner, deltaCents);
                 }
                 resource.end(xid, XAResource.TMSUCCESS);
                 assertThat(resource.prepare(xid)).isEqualTo(XAResource.XA_OK);
-                return xid;
             } finally {
                 xaConnection.close();
             }
+            awaitSessionEnded(bank, session);
+            return xid;
+        }
+
+        private static long sessionId(Connection connection) throws SQLException {
+            try (Statement statement = connection.createStatement();
+                    ResultSet rows = statement.executeQuery("SELECT CONNECTION_ID()")) {
+                assertThat(rows.next()).isTrue();
+                return rows.getLong(1);
+            }
+        }
+
+        /// Waits until the server has torn down a closed session. The server detaches a
+        /// prepared branch only then; until it does, `XA COMMIT` elsewhere fails with `XAER_NOTA`.
+        private static void awaitSessionEnded(MariaDbDataSource bank, long session) throws Exception {
+            long deadline = System.nanoTime() + SESSION_END_TIMEOUT.toNanos();
+            try (Connection connection = bank.getConnection();
+                    PreparedStatement query = connection.prepareStatement(
+                            "SELECT COUNT(*) FROM information_schema.PROCESSLIST WHERE ID = ?")) {
+                query.setLong(1, session);
+                while (System.nanoTime() < deadline) {
+                    try (ResultSet rows = query.executeQuery()) {
+                        assertThat(rows.next()).isTrue();
+                        if (rows.getLong(1) == 0) {
+                            return;
+                        }
+                    }
+                    Thread.sleep(50);
+                }
+            }
+            throw new AssertionError("session " + session + " was still open on the server");
         }
 
         List<TransferXid> inDoubt() throws Exception {
