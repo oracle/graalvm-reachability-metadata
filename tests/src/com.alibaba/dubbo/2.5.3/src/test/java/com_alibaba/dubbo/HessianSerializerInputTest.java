@@ -13,6 +13,7 @@ import com.alibaba.com.caucho.hessian.io.HessianSerializerOutput;
 import com.alibaba.com.caucho.hessian.io.SerializerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 public class HessianSerializerInputTest {
@@ -26,13 +27,26 @@ public class HessianSerializerInputTest {
         output.writeObjectImpl(new SerializedValue("restored", 7));
         output.flush();
 
-        HessianSerializerInput input =
-                new HessianSerializerInput(new ByteArrayInputStream(bytes.toByteArray()));
+        ExposedSerializerInput input =
+                new ExposedSerializerInput(new ByteArrayInputStream(bytes.toByteArray()));
         input.setSerializerFactory(factory);
-        ResolvedValue value = (ResolvedValue) input.readObject(SerializedValue.class);
+        assertThat(input.readMapStart()).isEqualTo('M');
+        assertThat(input.readType()).isEqualTo(SerializedValue.class.getName());
+
+        ResolvedValue value = (ResolvedValue) input.readSerializedObject(SerializedValue.class);
 
         assertThat(value.name).isEqualTo("restored");
         assertThat(value.count).isEqualTo(7);
+    }
+
+    private static final class ExposedSerializerInput extends HessianSerializerInput {
+        private ExposedSerializerInput(ByteArrayInputStream input) {
+            super(input);
+        }
+
+        private Object readSerializedObject(Class<?> type) throws IOException {
+            return super.readObjectImpl(type);
+        }
     }
 
     public static class SerializedValue {
