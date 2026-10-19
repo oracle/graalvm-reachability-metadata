@@ -39,6 +39,15 @@ public class HK2ReflectionHelperTest {
         assertThat(ReflectionHelper.getRawClass(genericArray)).isEqualTo(List[].class);
     }
 
+    @Test
+    void resolvesArrayOfTypeVariableAgainstSubclass() throws Exception {
+        Field field = GenericParent.class.getField("values");
+
+        Type resolved = ReflectionHelper.resolveField(GenericChild.class, field);
+
+        assertThat(resolved).isEqualTo(String[].class);
+    }
+
     public static class MutableValue {
         public String text;
 
@@ -53,5 +62,12 @@ public class HK2ReflectionHelperTest {
 
     public static class GenericArrays {
         public List<String>[] values;
+    }
+
+    public static class GenericParent<T> {
+        public T[] values;
+    }
+
+    public static class GenericChild extends GenericParent<String> {
     }
 }
