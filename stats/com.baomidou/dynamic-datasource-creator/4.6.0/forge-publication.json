@@ -1,0 +1,156 @@
+{
+  "base_commit": "32b0be9c06977e08595780b78a28fb6fdf3cebbf",
+  "branch": "ai/kimeta/add-lib-support-com.baomidou-dynamic-datasource-creator-4.6.0-forge-10909-20261019125017449088-6b728e48e8e4",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "3bc289b3788e0e45f278c4558281c880cfa8feda",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10909,
+  "library": {
+    "artifact": "dynamic-datasource-creator",
+    "coordinates": "com.baomidou:dynamic-datasource-creator:4.6.0",
+    "group": "com.baomidou",
+    "version": "4.6.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "32b0be9c06977e08595780b78a28fb6fdf3cebbf",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmprbtvy9rd"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10909-8de6bd91/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.baomidou:dynamic-datasource-creator"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.baomidou/dynamic-datasource-creator/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10909-8de6bd91/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "b3b3d766d47d6ff15fd76078cd2169a93cf95cb2",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete local diff and gate evidence. The change is scoped to one coordinate and the allowed metadata, stats, and test paths; it uses only reachability-metadata.json; the public, version-agnostic tests exercise library behavior without scaffold code, package bypasses, Native Image skips, tolerated failures, or native flags. Reported dynamic-access coverage is 17/17 (100%), above the new-library gate, and 17 covered calls do not trigger the mismatch guardrail against 201 reported library-plus-test metadata entries. The local changed-index and index-validation gates passed.",
+    "session_id": "a604cb994a1c4857"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.baomidou/dynamic-datasource-creator/4.6.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1516672,
+      "code_coverage_percent": 14.86,
+      "cost_usd": 2.0739,
+      "generated_loc": 188,
+      "input_tokens_used": 157946,
+      "iterations": 6,
+      "metadata_entries": 95,
+      "output_tokens_used": 17529,
+      "test_only_metadata_entries": 106,
+      "tested_library_loc": 123
+    },
+    "timestamp": "2026-10-19T12:50:17.449088Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10909-20261019125017449088-6b728e48e8e4",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator.createDataSource(BasicDataSourceCreator.java:88) (line 88)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator.createDataSource(BasicDataSourceCreator.java:89) (line 89)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator.createDataSource(BasicDataSourceCreator.java:90) (line 90)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator.createDataSource(BasicDataSourceCreator.java:91) (line 91)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator.createDataSource(BasicDataSourceCreator.java:92) (line 92)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator.createDataSource(BasicDataSourceCreator.java:93) (line 93)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.baomidou.dynamic.datasource.creator.basic.BasicDataSourceCreator.createDataSource(BasicDataSourceCreator.java:94) (line 94)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator.createDataSource(HikariDataSourceCreator.java:96) (line 96)",
+        "... and 9 more"
+      ],
+      "metadata_rules": [
+        "when `com.baomidou.dynamic.datasource.creator.DataSourceProperty` is reached, make `com.baomidou.dynamic.datasource.creator.DatasourceInitProperties` available for reflection",
+        "when `com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator` is reached, make `com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig.getCatalog()` available for reflection",
+        "when `com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator` is reached, make `com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig.getConnectionInitSql()` available for reflection",
+        "when `com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator` is reached, make `com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig.getConnectionTestQuery()` available for reflection",
+        "when `com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator` is reached, make `com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig.getConnectionTimeout()` available for reflection",
+        "when `com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator` is reached, make `com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig.getDataSourceClassName()` available for reflection",
+        "when `com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator` is reached, make `com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig.getDataSourceJndiName()` available for reflection",
+        "when `com.baomidou.dynamic.datasource.creator.hikaricp.HikariDataSourceCreator` is reached, make `com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig.getExceptionOverrideClassName()` available for reflection",
+        "... and 37 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 17,
+            "totalCalls": 17
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 17,
+        "totalCalls": 17
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 532,
+          "missed": 4675,
+          "ratio": 0.10217,
+          "total": 5207
+        },
+        "line": {
+          "covered": 123,
+          "missed": 705,
+          "ratio": 0.148551,
+          "total": 828
+        },
+        "method": {
+          "covered": 23,
+          "missed": 82,
+          "ratio": 0.219048,
+          "total": 105
+        }
+      },
+      "version": "4.6.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-19T12:50:17.449088Z"
+}
