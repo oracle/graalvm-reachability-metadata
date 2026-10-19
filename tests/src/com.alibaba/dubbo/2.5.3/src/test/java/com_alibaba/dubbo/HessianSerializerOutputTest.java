@@ -40,7 +40,7 @@ public class HessianSerializerOutputTest {
     public static class FieldValue {
         String value;
 
-        public FieldValue() {}
+        public FieldValue() { }
 
         FieldValue(String value) {
             this.value = value;
@@ -50,7 +50,7 @@ public class HessianSerializerOutputTest {
     public static class ReplacingValue {
         private String value;
 
-        public ReplacingValue() {}
+        public ReplacingValue() { }
 
         ReplacingValue(String value) {
             this.value = value;

@@ -71,6 +71,6 @@ public class ExceptionFilterTest {
         }
 
         @Override
-        public void destroy() {}
+        public void destroy() { }
     }
 }

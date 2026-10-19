@@ -11,7 +11,7 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.proxy.jdk.JdkProxyFactory;
 
 final class RpcTestSupport {
-    private RpcTestSupport() {}
+    private RpcTestSupport() { }
 
     static Invoker<Echo> newInvoker() {
         return new JdkProxyFactory()

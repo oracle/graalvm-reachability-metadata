@@ -15,7 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 final class SerializationTestSupport {
-    private SerializationTestSupport() {}
+    private SerializationTestSupport() { }
 
     static Object roundTrip(String extension, Object value) throws Exception {
         Serialization serialization =

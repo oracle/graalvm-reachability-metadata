@@ -62,7 +62,7 @@ public class BeanSerializerTest {
     public static class SelfReplacingBean {
         private String value;
 
-        public SelfReplacingBean() {}
+        public SelfReplacingBean() { }
 
         SelfReplacingBean(String value) {
             this.value = value;
@@ -76,7 +76,7 @@ public class BeanSerializerTest {
     public static class FactoryValue {
         private String value;
 
-        public FactoryValue() {}
+        public FactoryValue() { }
 
         FactoryValue(String value) {
             this.value = value;
@@ -100,7 +100,7 @@ public class BeanSerializerTest {
     public static class Replacement {
         private String value;
 
-        public Replacement() {}
+        public Replacement() { }
 
         Replacement(String value) {
             this.value = value;

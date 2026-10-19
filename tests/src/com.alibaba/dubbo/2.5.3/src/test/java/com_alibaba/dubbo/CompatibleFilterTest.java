@@ -41,7 +41,7 @@ public class CompatibleFilterTest {
     public static class Value {
         public String name;
 
-        public Value() {}
+        public Value() { }
     }
 
     private static class ValueInvoker implements Invoker<ValueService> {
@@ -80,6 +80,6 @@ public class CompatibleFilterTest {
         }
 
         @Override
-        public void destroy() {}
+        public void destroy() { }
     }
 }

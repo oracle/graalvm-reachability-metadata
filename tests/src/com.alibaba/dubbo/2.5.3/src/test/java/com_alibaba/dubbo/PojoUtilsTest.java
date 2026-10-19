@@ -91,7 +91,7 @@ public class PojoUtilsTest {
         private String name;
         private int age;
 
-        public MutablePerson() {}
+        public MutablePerson() { }
 
         public String getName() {
             return name;

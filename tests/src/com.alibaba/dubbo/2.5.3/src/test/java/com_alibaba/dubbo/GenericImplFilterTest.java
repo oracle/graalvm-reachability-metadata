@@ -51,7 +51,7 @@ public class GenericImplFilterTest {
     public static class Person {
         public String name;
 
-        public Person() {}
+        public Person() { }
     }
 
     public static class ConstructedFailure extends RuntimeException {
@@ -97,6 +97,6 @@ public class GenericImplFilterTest {
         }
 
         @Override
-        public void destroy() {}
+        public void destroy() { }
     }
 }

@@ -39,7 +39,7 @@ public class HessianSerializerInputTest {
         String name;
         int count;
 
-        public SerializedValue() {}
+        public SerializedValue() { }
 
         SerializedValue(String name, int count) {
             this.name = name;

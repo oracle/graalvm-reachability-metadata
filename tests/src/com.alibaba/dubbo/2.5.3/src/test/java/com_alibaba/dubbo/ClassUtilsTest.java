@@ -43,6 +43,6 @@ public class ClassUtilsTest {
     }
 
     public static class Sink {
-        public void put(CharSequence value) {}
+        public void put(CharSequence value) { }
     }
 }

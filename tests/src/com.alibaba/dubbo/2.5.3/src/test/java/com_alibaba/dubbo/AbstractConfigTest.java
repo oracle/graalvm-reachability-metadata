@@ -20,7 +20,8 @@ public class AbstractConfigTest {
     @Test
     void mapsAnnotationsPropertiesParametersAndAttributes() {
         ProbeConfig config = new ProbeConfig();
-        config.apply(Annotated.class.getAnnotation(Setting.class));
+        Class<Annotated> annotatedAnnotationAccess = Annotated.class;
+        config.apply(annotatedAnnotationAccess.getAnnotation(Setting.class));
         assertThat(config.getValue()).isEqualTo("annotation");
 
         System.setProperty("dubbo.probe.value", "property");

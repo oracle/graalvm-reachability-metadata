@@ -62,7 +62,7 @@ public class JavaSerializerTest {
     public static class SelfReplacingValue {
         String value;
 
-        public SelfReplacingValue() {}
+        public SelfReplacingValue() { }
 
         SelfReplacingValue(String value) {
             this.value = value;
@@ -76,7 +76,7 @@ public class JavaSerializerTest {
     public static class FactoryValue {
         String value;
 
-        public FactoryValue() {}
+        public FactoryValue() { }
 
         FactoryValue(String value) {
             this.value = value;
@@ -92,7 +92,7 @@ public class JavaSerializerTest {
     public static class Replacement {
         String value;
 
-        public Replacement() {}
+        public Replacement() { }
 
         Replacement(String value) {
             this.value = value;

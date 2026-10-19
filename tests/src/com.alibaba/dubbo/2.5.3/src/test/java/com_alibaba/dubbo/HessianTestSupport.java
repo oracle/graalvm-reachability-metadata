@@ -16,7 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 final class HessianTestSupport {
-    private HessianTestSupport() {}
+    private HessianTestSupport() { }
 
     static Object roundTrip(Object value) throws Exception {
         return roundTrip(value, value.getClass(), new SerializerFactory());

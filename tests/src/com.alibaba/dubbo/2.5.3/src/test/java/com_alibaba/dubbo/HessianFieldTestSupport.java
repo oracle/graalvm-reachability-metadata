@@ -11,7 +11,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 
 final class HessianFieldTestSupport {
-    private HessianFieldTestSupport() {}
+    private HessianFieldTestSupport() { }
 
     static Fields roundTrip() throws Exception {
         Fields source = new Fields();

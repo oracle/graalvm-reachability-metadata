@@ -112,7 +112,7 @@ public class MergeableClusterInvokerTest {
         }
 
         @Override
-        public void destroy() {}
+        public void destroy() { }
     }
 
     private static class FixedDirectory implements Directory<MergeService> {

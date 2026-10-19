@@ -7,7 +7,7 @@
 package com_alibaba.dubbo;
 
 public class DubboEchoMock implements AbstractInterfaceConfigTest.Echo {
-    public DubboEchoMock() {}
+    public DubboEchoMock() { }
 
     @Override
     public String echo(String value) {
