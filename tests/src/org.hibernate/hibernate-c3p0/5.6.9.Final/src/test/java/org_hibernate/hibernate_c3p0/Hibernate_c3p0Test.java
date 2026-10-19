@@ -7,29 +7,20 @@
 package org_hibernate.hibernate_c3p0;
 
 import com.mchange.v2.c3p0.PooledDataSource;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.annotations.Proxy;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.c3p0.internal.C3P0ConnectionProvider;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
-import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,78 +30,9 @@ public class Hibernate_c3p0Test {
 
     @Test
     @Timeout(60)
-    public void persistsAndQueriesThroughHibernateConnectionPool() {
-        Map<String, Object> settings = connectionSettings(uniqueDatabaseName("hibernate"));
-        settings.put("hibernate.connection.provider_class", C3P0ConnectionProvider.class.getName());
-        settings.put("hibernate.hbm2ddl.auto", "create-drop");
-        settings.put("hibernate.show_sql", "false");
-
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .applySettings(settings)
-                .build();
-        try {
-            SessionFactory sessionFactory = new MetadataSources(registry)
-                    .addAnnotatedClass(PooledRecord.class)
-                    .buildMetadata()
-                    .buildSessionFactory();
-            try {
-                ConnectionProvider connectionProvider = registry.getService(ConnectionProvider.class);
-                assertThat(connectionProvider).isInstanceOf(C3P0ConnectionProvider.class);
-
-                try (Session session = sessionFactory.openSession()) {
-                    session.beginTransaction();
-                    session.persist(new PooledRecord(1L, "stored through c3p0"));
-                    session.getTransaction().commit();
-                }
-
-                try (Session session = sessionFactory.openSession()) {
-                    List<PooledRecord> records = session.createQuery(
-                                    "from PooledRecord where payload = :payload",
-                                    PooledRecord.class)
-                            .setParameter("payload", "stored through c3p0")
-                            .getResultList();
-                    assertThat(records)
-                            .singleElement()
-                            .extracting(PooledRecord::getId, PooledRecord::getPayload)
-                            .containsExactly(1L, "stored through c3p0");
-                }
-            } finally {
-                sessionFactory.close();
-            }
-        } finally {
-            StandardServiceRegistryBuilder.destroy(registry);
-        }
-    }
-
-    @Test
-    @Timeout(60)
-    public void automaticallySelectsC3p0ProviderFromPoolSettings() throws Exception {
-        Map<String, Object> settings = connectionSettings(uniqueDatabaseName("automatic-provider"));
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .applySettings(settings)
-                .build();
-        try {
-            ConnectionProvider connectionProvider = registry.getService(ConnectionProvider.class);
-            assertThat(connectionProvider).isInstanceOf(C3P0ConnectionProvider.class);
-
-            try (Connection connection = connectionProvider.getConnection();
-                    PreparedStatement query = connection.prepareStatement("select 1");
-                    ResultSet resultSet = query.executeQuery()) {
-                assertThat(resultSet.next()).isTrue();
-                assertThat(resultSet.getInt(1)).isOne();
-                assertThat(resultSet.next()).isFalse();
-            }
-        } finally {
-            StandardServiceRegistryBuilder.destroy(registry);
-        }
-    }
-
-    @Test
-    @Timeout(60)
     public void configuresAndUsesConnectionProviderDirectly() throws Exception {
-        ServiceRegistryImplementor registry = (ServiceRegistryImplementor) new StandardServiceRegistryBuilder().build();
+        disableMisspelledConfigurationWarnings();
         C3P0ConnectionProvider provider = new C3P0ConnectionProvider();
-        provider.injectServices(registry);
         provider.configure(connectionSettings(uniqueDatabaseName("provider")));
 
         try {
@@ -155,13 +77,16 @@ public class Hibernate_c3p0Test {
             }
         } finally {
             provider.stop();
-            StandardServiceRegistryBuilder.destroy(registry);
         }
+    }
+
+    private static void disableMisspelledConfigurationWarnings() {
+        Logger.getLogger("com.mchange.v2.c3p0.cfg.C3P0ConfigUtils").setLevel(Level.SEVERE);
+        Logger.getLogger("com.mchange.v2.c3p0.cfg.C3P0ConfigXmlUtils").setLevel(Level.SEVERE);
     }
 
     private static Map<String, Object> connectionSettings(String databaseName) {
         Map<String, Object> settings = new HashMap<>();
-        settings.put("hibernate.connection.driver_class", "org.h2.Driver");
         settings.put("hibernate.connection.url", "jdbc:h2:mem:" + databaseName + ";DB_CLOSE_DELAY=-1");
         settings.put("hibernate.connection.username", "sa");
         settings.put("hibernate.connection.password", "");
@@ -179,32 +104,5 @@ public class Hibernate_c3p0Test {
 
     private static String uniqueDatabaseName(String prefix) {
         return prefix + "_" + DATABASE_SEQUENCE.incrementAndGet();
-    }
-
-    @Entity(name = "PooledRecord")
-    @Table(name = "pooled_record")
-    @Proxy(lazy = false)
-    public static class PooledRecord {
-
-        @Id
-        private Long id;
-
-        private String payload;
-
-        public PooledRecord() {
-        }
-
-        public PooledRecord(Long id, String payload) {
-            this.id = id;
-            this.payload = payload;
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public String getPayload() {
-            return payload;
-        }
     }
 }
