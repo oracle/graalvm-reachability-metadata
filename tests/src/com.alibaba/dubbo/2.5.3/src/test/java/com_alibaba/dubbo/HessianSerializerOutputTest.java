@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.alibaba.com.caucho.hessian.io.HessianSerializerInput;
 import com.alibaba.com.caucho.hessian.io.HessianSerializerOutput;
+import com.alibaba.com.caucho.hessian.io.SerializerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.junit.jupiter.api.Test;
@@ -18,13 +19,17 @@ public class HessianSerializerOutputTest {
     @Test
     void writesFieldsAndHonorsWriteReplacement() throws Exception {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        SerializerFactory factory = new SerializerFactory();
+        factory.setAllowNonSerializable(true);
         HessianSerializerOutput output = new HessianSerializerOutput(bytes);
-        output.writeObject(new FieldValue("field"));
-        output.writeObject(new ReplacingValue("replacement"));
+        output.setSerializerFactory(factory);
+        output.writeObjectImpl(new FieldValue("field"));
+        output.writeObjectImpl(new ReplacingValue("replacement"));
         output.flush();
 
         HessianSerializerInput input =
                 new HessianSerializerInput(new ByteArrayInputStream(bytes.toByteArray()));
+        input.setSerializerFactory(factory);
         FieldValue fieldValue = (FieldValue) input.readObject(FieldValue.class);
         FieldValue replacement = (FieldValue) input.readObject(FieldValue.class);
 
