@@ -20,6 +20,7 @@ public class AbstractInterfaceConfigTest {
         method.setName("echo");
         ProbeConfig config = new ProbeConfig();
         config.setStub(DubboEchoStub.class.getName());
+        config.setMock(EchoMock.class.getName());
 
         assertThatCode(
                         () -> {
@@ -33,6 +34,14 @@ public class AbstractInterfaceConfigTest {
         String echo(String value);
     }
 
+    public static class EchoMock implements Echo {
+        public EchoMock() {}
+
+        @Override
+        public String echo(String value) {
+            return "mock:" + value;
+        }
+    }
 
     public static class ProbeConfig extends AbstractInterfaceConfig {
         void validateMethods(Class<?> type, MethodConfig method) {

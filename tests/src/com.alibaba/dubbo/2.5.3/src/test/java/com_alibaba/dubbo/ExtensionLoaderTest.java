@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
 import com.alibaba.dubbo.common.serialize.Serialization;
+import com.alibaba.dubbo.rpc.Protocol;
 import org.junit.jupiter.api.Test;
 
 public class ExtensionLoaderTest {
@@ -21,5 +22,9 @@ public class ExtensionLoaderTest {
                 .contains("hessian2", "java", "compactedjava", "dubbo", "nativejava");
         assertThat(loader.getExtension("hessian2").getContentType()).isEqualTo("x-application/hessian2");
         assertThat(loader.getExtension("java").getContentType()).isEqualTo("x-application/java");
+
+        Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension("injvm");
+        assertThat(protocol).isNotNull();
+        protocol.destroy();
     }
 }
