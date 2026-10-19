@@ -3,8 +3,8 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for the test that reaches each observed group, and for the class-file
-reader that resolves its steps' lines.
+"""Tests for each observed group's chain from the test down, and for the
+class-file reader that resolves its test frames' lines.
 
 §AR-code-coverage-deep-navigation.2
 """
@@ -23,14 +23,9 @@ import yaml
 from utility_scripts import code_coverage_profile_report as report_module
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_graph import FACTORY_METHOD_HOLDER, CallGraph
-from utility_scripts.code_coverage_profile_render import write_markdown
+from utility_scripts.code_coverage_profile_render import observed_chain, write_markdown
 from utility_scripts.code_coverage_profile_routes import SampledProfile, sampled_profile_from_document
-from utility_scripts.code_coverage_profile_trace import (
-    GroupTrace,
-    SampleTrace,
-    TestProject,
-    called_from_test_lines,
-)
+from utility_scripts.code_coverage_profile_trace import GroupTrace, SampleTrace, TestProject
 from utility_scripts.java_class_file import descriptor_params, read_class_file
 
 from tests.code_coverage_profile_support import FIXTURES, JACOCO_PATH, _coverage
@@ -85,11 +80,17 @@ WORKER = MethodRef("org.lib.Worker", "run", (), "void")
 STUB = MethodRef(FACTORY_METHOD_HOLDER, "Store_constructor_1", (), "org.lib.Store")
 CONSTRUCTOR = MethodRef("org.lib.Store", "<init>", (), "void")
 LAMBDA_FORM = MethodRef("java.lang.invoke.LambdaForm$MH.0x2", "invoke", (), "void")
+ASSERTJ = MethodRef("org.assertj.core.api.ThrowableAssert", "catchThrowable", ("java.lang.Object",), "void")
 
 REFS: list[MethodRef] = [
     JUNIT, FLUSHES, WITH_STORE, LAMBDA_CLASS, LAMBDA_BODY, FLUSH, WRITE, CLOSE,
-    REGULAR, THREAD, WORKER, STUB, CONSTRUCTOR, LAMBDA_FORM,
+    REGULAR, THREAD, WORKER, STUB, CONSTRUCTOR, LAMBDA_FORM, ASSERTJ,
 ]
+
+THROUGH_LAMBDA: str = (
+    "StoreCoverageTest.flushes() (line 8) → withStore(...) (line 13) → lambda (line 8) "
+    "→ Store.flush() → write()"
+)
 
 
 @unittest.skipIf(_java_tool("javac") is None, "javac is required")
@@ -169,16 +170,37 @@ class TestTraceTests(unittest.TestCase):
         self.assertIsNone(project.source_of("org.lib.Store"))
         self.assertIsNone(project.source_of("org.lib.ReplayTest"))
 
-    def test_steps_follow_the_test_through_its_helper_and_lambda(self) -> None:
+    def test_the_chain_runs_from_the_test_through_its_helper_and_lambda(self) -> None:
         trace: GroupTrace = self._trace([(self._through_lambda(), 3)]).group(
             (self._id(FLUSH), self._id(WRITE)))
-        self.assertEqual(trace.chain, [FLUSH, WRITE])
-        self.assertEqual(called_from_test_lines(trace), [
-            f"Called from test `StoreCoverageTest.flushes()` in `{COVERAGE_SOURCE}`:",
-            "  line 8: flushes()",
-            "      line 13: withStore()",
-            "          line 8: lambda",
-        ])
+        self.assertEqual(observed_chain(trace.chain), THROUGH_LAMBDA)
+        self.assertEqual(trace.test_files, [COVERAGE_SOURCE])
+
+    def test_a_lambda_seen_only_through_its_class_reads_its_body_line(self) -> None:
+        stack: list[tuple[MethodRef, int]] = self._through_lambda()
+        del stack[4]
+        trace: GroupTrace = self._trace([(stack, 1)]).group((self._id(FLUSH), self._id(WRITE)))
+        self.assertEqual(observed_chain(trace.chain), THROUGH_LAMBDA)
+
+    def test_an_assertion_library_running_a_test_lambda_stays_in_the_chain(self) -> None:
+        stack: list[tuple[MethodRef, int]] = [
+            (JUNIT, 9), (FLUSHES, 0), (ASSERTJ, 1), (LAMBDA_CLASS, 5), (FLUSH, 4), (WRITE, 0),
+        ]
+        trace: GroupTrace = self._trace([(stack, 1)]).group((self._id(FLUSH), self._id(WRITE)))
+        self.assertEqual(
+            observed_chain(trace.chain),
+            "StoreCoverageTest.flushes() → ThrowableAssert.catchThrowable(...) "
+            "→ StoreCoverageTest.lambda (line 8) → Store.flush() → write()",
+        )
+
+    def test_a_route_that_starts_at_the_test_keeps_the_test(self) -> None:
+        stack: list[tuple[MethodRef, int]] = [
+            (JUNIT, 9), (FLUSHES, self.bci[("flushes", "withStore")]), (WITH_STORE, 0),
+        ]
+        trace: GroupTrace = self._trace([(stack, 1)]).group(
+            (self._id(FLUSHES), self._id(WITH_STORE)))
+        self.assertEqual(observed_chain(trace.chain), "StoreCoverageTest.flushes() (line 8) → withStore(...)")
+        self.assertEqual(trace.test_files, [COVERAGE_SOURCE])
 
     def test_a_try_with_resources_close_reads_the_line_javac_gives_it(self) -> None:
         stack: list[tuple[MethodRef, int]] = [
@@ -188,13 +210,13 @@ class TestTraceTests(unittest.TestCase):
             (CLOSE, 0),
         ]
         trace: GroupTrace = self._trace([(stack, 1)]).group((self._id(CLOSE),))
-        self.assertEqual(called_from_test_lines(trace)[2], "      line 14: withStore()")
+        self.assertEqual(trace.chain[1].line, 14)
 
-    def test_a_bci_that_no_longer_invokes_the_next_frame_reads_a_question_mark(self) -> None:
+    def test_a_bci_that_no_longer_invokes_the_next_frame_shows_no_line(self) -> None:
         stack: list[tuple[MethodRef, int]] = self._through_lambda()
         stack[1] = (FLUSHES, 0)
         trace: GroupTrace = self._trace([(stack, 1)]).group((self._id(FLUSH), self._id(WRITE)))
-        self.assertEqual(called_from_test_lines(trace)[1], "  line ?: flushes()")
+        self.assertTrue(observed_chain(trace.chain).startswith("StoreCoverageTest.flushes() → "))
 
     def test_the_most_frequent_test_stack_wins_whatever_its_suite(self) -> None:
         regular: list[tuple[MethodRef, int]] = [(JUNIT, 9), (REGULAR, 3), (FLUSH, 4), (WRITE, 0)]
@@ -202,22 +224,22 @@ class TestTraceTests(unittest.TestCase):
         trace: GroupTrace = self._trace(
             [(regular, 50), (self._through_lambda(), 1), (untested, 500)]
         ).group((self._id(FLUSH), self._id(WRITE)))
-        self.assertEqual([step.source for step in trace.steps], ["src/test/java/org/lib/StoreTest.java"])
+        self.assertEqual(trace.test_files, ["src/test/java/org/lib/StoreTest.java"])
         coverage: GroupTrace = self._trace([(regular, 1), (self._through_lambda(), 50)]).group(
             (self._id(FLUSH), self._id(WRITE)))
-        self.assertEqual(coverage.steps[0].ref, FLUSHES)
+        self.assertEqual(coverage.chain[0].ref, FLUSHES)
 
     def test_a_jdk_frame_between_the_test_and_the_library_stays_in_the_chain(self) -> None:
         stack: list[tuple[MethodRef, int]] = [(JUNIT, 9), (FLUSHES, 3), (THREAD, 2), (FLUSH, 4), (WRITE, 0)]
         trace: GroupTrace = self._trace([(stack, 1)]).group((self._id(FLUSH), self._id(WRITE)))
-        self.assertEqual(trace.chain, [THREAD, FLUSH, WRITE])
+        self.assertEqual([frame.ref for frame in trace.chain], [FLUSHES, THREAD, FLUSH, WRITE])
 
     def test_a_stack_without_a_test_starts_at_its_outermost_library_frame(self) -> None:
         stack: list[tuple[MethodRef, int]] = [(THREAD, 2), (WORKER, 7), (FLUSH, 4), (WRITE, 0)]
         trace: GroupTrace = self._trace([(stack, 1)], {"org.lib.Worker", "org.lib.Store"}).group(
             (self._id(FLUSH), self._id(WRITE)))
-        self.assertEqual(trace.chain, [WORKER, FLUSH, WRITE])
-        self.assertEqual(called_from_test_lines(trace), [])
+        self.assertEqual([frame.ref for frame in trace.chain], [WORKER, FLUSH, WRITE])
+        self.assertEqual(trace.test_files, [])
 
     def test_synthetic_frames_drop_and_a_factory_stub_reads_as_its_constructor(self) -> None:
         stack: list[tuple[MethodRef, int]] = [
@@ -225,10 +247,9 @@ class TestTraceTests(unittest.TestCase):
         ]
         trace: GroupTrace = self._trace([(stack, 1)], {"org.lib.Worker", "org.lib.Store"}).group(
             (self._id(FLUSH), self._id(WRITE)))
-        self.assertEqual(trace.chain, [WORKER, CONSTRUCTOR, FLUSH, WRITE])
+        self.assertEqual([frame.ref for frame in trace.chain], [WORKER, CONSTRUCTOR, FLUSH, WRITE])
 
-
-    def test_the_prompt_states_the_project_and_ends_each_group_with_its_test(self) -> None:
+    def test_the_prompt_states_the_project_and_heads_each_chain_with_its_test(self) -> None:
         self.graph.adjacency = {self._id(FLUSH): [{
             "caller": self._id(FLUSH), "callee": self._id(WRITE), "bci": "1",
             "is_direct": "true", "kind": "call", "invoke_id": 1,
@@ -246,9 +267,11 @@ class TestTraceTests(unittest.TestCase):
 
         self.assertIn(f"Test project: `{self.project}`; test files are relative to it.", markdown)
         group: str = markdown.split("Observed:\n", 1)[1]
-        self.assertTrue(group.startswith("`Store.flush()`\n\nUncovered paths:\n"))
-        self.assertLess(group.index("Reached only through an exception:"),
-                        group.index("Called from test `StoreCoverageTest.flushes()`"))
+        self.assertTrue(group.startswith(
+            "`StoreCoverageTest.flushes() (line 8) → withStore(...) (line 13) → lambda (line 8) "
+            f"→ Store.flush()`\nTest file: `{COVERAGE_SOURCE}`\n\nUncovered paths:\n"
+        ), group)
+        self.assertNotIn("Called from test", markdown)
 
 
 class TestProjectWiringTests(unittest.TestCase):

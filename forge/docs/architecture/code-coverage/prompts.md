@@ -64,10 +64,13 @@ how to reach them, how to read the handed-over report, where tests go and how
 they are laid out, and which command checks them. A rule that repeats another
 rule, or forbids something the state has no means to do, is dropped: the API
 and deep cover states keep "never touch the regular `src/test` sources" and
-drop "do not weaken metadata-generation tests", and keep "`codeCoverageTest` is
-the only Gradle task you run" and drop "do not measure coverage yourself". The
-naive cover state keeps its two rules unchanged, because its prompt is the
-benchmark's control (§AR-code-coverage-benchmarking.3).
+drop "do not weaken metadata-generation tests". "Do not measure coverage
+yourself" is not such a repeat: "`codeCoverageTest` is the only Gradle task you
+run" leaves plain `java` free, and with only that rule a commons-compress deep
+session wrote its own JaCoCo reader to check its targets. The cover states keep
+it and name JaCoCo output explicitly. The naive cover state keeps its two rules
+unchanged, because its prompt is the benchmark's control
+(§AR-code-coverage-benchmarking.3).
 
 ### 2.5 The plan is Rhei's
 
