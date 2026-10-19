@@ -49,7 +49,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SecuredOrderGatewayAuthTest {
 
-    private static final String NATS_IMAGE = "nats:2.15.0";
+    private static final String NATS_IMAGE = "nats:2.15.1";
 
     private static final String BILLING_USER = "billing";
 
