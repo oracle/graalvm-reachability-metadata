@@ -14,6 +14,7 @@ route, ranking keys, and the JSON forms the report serializes
 from __future__ import annotations
 
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
 
 from utility_scripts.code_coverage_jacoco import JacocoMethodCoverage
@@ -25,9 +26,18 @@ from utility_scripts.code_coverage_profile_graph import (
     translated_ref,
 )
 from utility_scripts.code_coverage_profile_inputs import TargetState
-from utility_scripts.code_coverage_profile_routes import RouteMap, Sample, route_to
+from utility_scripts.code_coverage_profile_routes import (
+    RecordedRoute,
+    RouteMap,
+    Sample,
+    route_to,
+)
 
 MAX_LISTED_METHODS = 200
+
+#: Routes with an observed stack to show; the rest stay in the JSON report
+#: (§AR-code-coverage-deep-navigation.2).
+PROMPTED_JOIN_KINDS: tuple[str, ...] = ("recorded", "sampled")
 
 #: Methods that hand a closure to another thread, so its body runs later, on a
 #: thread the test does not control (§AR-code-coverage-improvement.4.2.1).
@@ -91,9 +101,66 @@ class NearCallRecord:
         return [edge for edge in self.static_path_edges if edge.get("unobserved")]
 
 
+def recorded_record(
+        coverage: JacocoMethodCoverage,
+        route: RecordedRoute,
+        target_state: TargetState,
+        public_api: bool,
+) -> NearCallRecord:
+    """A record whose route is a recorded stack plus the one uncovered call
+    (§AR-code-coverage-deep-navigation.2)."""
+    return NearCallRecord(
+        coverage=coverage,
+        target_id=route.edge["callee"],
+        target_state=target_state,
+        join_kind="recorded",
+        static_path=[route.edge["caller"], route.edge["callee"]],
+        static_path_edges=[route.edge],
+        sample=route.sample,
+        sampled_join_path_index=route.join_path_index,
+        public_api=public_api,
+        semantic_distance=route.distance,
+    )
+
+
+def settle_recorded_tie(
+        record: NearCallRecord,
+        recorded: dict[int, list[RecordedRoute]],
+        graph: CallGraph,
+        classify: Callable[[NearCallRecord], dict],
+) -> NearCallRecord:
+    """Among equally short recorded routes to the record's target, the one whose
+    call into the target has the higher reach count; the classifier is asked
+    only when a tie exists (§AR-code-coverage-deep-navigation.2)."""
+    assert record.target_id is not None
+    candidates: list[RecordedRoute] = recorded[record.target_id]
+    shortest: tuple = candidates[0].rank_key(graph)[:2]
+    tied: list[RecordedRoute] = [
+        route for route in candidates if route.rank_key(graph)[:2] == shortest
+    ]
+    if len(tied) == 1:
+        return record
+    records: list[NearCallRecord] = [
+        recorded_record(record.coverage, route, record.target_state, record.public_api)
+        for route in tied
+    ]
+    for candidate in records:
+        candidate.reach = classify(candidate)["reach"]
+    return min(
+        records,
+        key=lambda candidate: (
+            -(candidate.reach or 0),
+            -candidate.sample_count,
+            graph.methods[candidate.static_path[0]].canonical_id,
+            candidate.sample.context_id if candidate.sample else "",
+        ),
+    )
+
+
 def build_record(
         coverage: JacocoMethodCoverage,
         graph: CallGraph,
+        recorded: dict[int, list[RecordedRoute]],
         sampled_routes: RouteMap,
         entry_routes: RouteMap,
         target_state: TargetState,
@@ -112,6 +179,8 @@ def build_record(
             sampled_join_path_index=None,
             public_api=public_api,
         )
+    if target_id in recorded:
+        return recorded_record(coverage, recorded[target_id][0], target_state, public_api)
     if target_id in sampled_routes.distance:
         path, edges = route_to(target_id, sampled_routes)
         sample, path_index = sampled_routes.payload[target_id]
@@ -157,7 +226,7 @@ def build_record(
 def record_rank_key(record: NearCallRecord) -> tuple:
     """Distance first; everything after it only breaks equal-distance ties
     (§AR-code-coverage-deep-navigation.2.2)."""
-    join_order: dict[str, int] = {"sampled": 0, "public-entry": 1, "none": 2}
+    join_order: dict[str, int] = {"recorded": 0, "sampled": 1, "public-entry": 2, "none": 3}
     distance: int = record.distance if record.distance is not None else sys.maxsize
     return (
         distance,
