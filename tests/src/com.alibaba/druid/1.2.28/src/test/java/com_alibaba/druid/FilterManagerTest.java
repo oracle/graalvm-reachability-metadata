@@ -7,18 +7,32 @@
 package com_alibaba.druid;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterManager;
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FilterManagerTest {
+    @Test
+    void loadsFilterByConcreteClassName() throws Exception {
+        List<Filter> filters = new ArrayList<>();
+
+        FilterManager.loadFilter(filters, ConfigFilter.class.getName());
+
+        assertEquals(1, filters.size());
+        assertInstanceOf(ConfigFilter.class, filters.get(0));
+    }
+
     @Test
     void resolvesFilterAliasesAndCollectsSqlStatistics() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
