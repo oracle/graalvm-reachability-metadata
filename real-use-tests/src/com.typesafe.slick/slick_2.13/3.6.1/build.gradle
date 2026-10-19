@@ -15,6 +15,14 @@ String scala2Version = tck.scala2Version.get()
 
 dependencies {
     testImplementation "com.typesafe.slick:slick_2.13:$libraryVersion"
+    // Embedded relational scenarios and PostgreSQL-specific SQL and streaming.
+    testImplementation "com.h2database:h2:2.3.232"
+    testImplementation "org.postgresql:postgresql:42.7.7"
+    // Slick's matching pool integration and its public configuration/streaming APIs.
+    testImplementation "com.typesafe.slick:slick-hikaricp_2.13:3.6.1"
+    testImplementation "com.zaxxer:HikariCP:6.3.0"
+    testImplementation "com.typesafe:config:1.4.3"
+    testImplementation "org.reactivestreams:reactive-streams:1.0.4"
     testImplementation "org.scala-lang:scala-library:$scala2Version"
     testImplementation "org.scala-lang:scala-compiler:$scala2Version"
 }
