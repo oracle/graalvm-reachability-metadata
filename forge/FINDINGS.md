@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-19 — p6spy:p6spy:3.9.1 (#10912)
+
+**Committed library statistics were stale**
+
+The first required finalization pass changed `stats/p6spy/p6spy/3.9.1/stats.json`: reproduced instruction coverage was 4093/14411 instead of 4092/14411, and line coverage was 998/3776 instead of 997/3776. The mirrored generated statistics therefore did not match the finalized test run.
+
 ## 2026-10-15 — org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2 (#8416)
 
 **Generated test used trivial assertions and pinned a companion artifact version**
