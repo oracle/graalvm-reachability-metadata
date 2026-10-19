@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-19 — com.alibaba:dubbo:2.5.3 (#10994)
+
+**Completed dynamic-access classes lacked dedicated test files**
+
+The exhaust report marked com.alibaba.com.caucho.hessian.io.SerializerFactory and com.alibaba.dubbo.common.utils.PojoUtils$PojoInvocationHandler as completed, but the contribution had no dedicated SerializerFactoryTest or PojoUtilsInnerPojoInvocationHandlerTest. This violated the one-test-file-per-dynamic-access-class requirement in FS-test-contract.1.8.
+
 ## 2026-10-19 — org.apache.pulsar:pulsar-client-all:4.2.5 (#10642)
 
 **Pre-push review unavailable**
