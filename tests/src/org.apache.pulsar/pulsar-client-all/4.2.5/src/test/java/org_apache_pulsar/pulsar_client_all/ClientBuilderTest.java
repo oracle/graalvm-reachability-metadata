@@ -19,7 +19,7 @@ public class ClientBuilderTest {
         Client client = builder.build();
         try {
             assertThat(builder.getClass().getName()).contains("JerseyClientBuilder");
-            assertThat(client.isRegistered(Object.class)).isFalse();
+            assertThat(client.getConfiguration().isRegistered(Object.class)).isFalse();
         } finally {
             client.close();
         }

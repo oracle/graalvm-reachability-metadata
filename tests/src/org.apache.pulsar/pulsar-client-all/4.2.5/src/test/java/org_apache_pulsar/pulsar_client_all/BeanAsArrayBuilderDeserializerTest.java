@@ -8,8 +8,8 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.pulsar.shade.com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.pulsar.shade.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.pulsar.shade.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.pulsar.shade.com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
