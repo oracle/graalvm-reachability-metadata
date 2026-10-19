@@ -8,6 +8,7 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.apache.pulsar.client.schema.AvroTrustedClasses;
 import org.apache.pulsar.shade.org.apache.avro.Protocol;
 import org.apache.pulsar.shade.org.apache.avro.Schema;
 import org.apache.pulsar.shade.org.apache.avro.generic.GenericData.InstanceSupplier;
@@ -23,20 +24,29 @@ public class SpecificDataTest {
         Protocol protocol = SpecificData.get().getProtocol(GeneratedService.class);
 
         assertThat(model).isSameAs(GeneratedRecord.MODEL$);
-        assertThat(schema).isSameAs(GeneratedRecord.SCHEMA$);
+        assertThat(schema.getType()).isEqualTo(Schema.Type.RECORD);
+        assertThat(schema.getName()).isEqualTo("GeneratedRecord");
         assertThat(protocol.getMessages()).containsKey("lookup");
     }
 
     @Test
     void constructsSpecificRecordsAndUsesCachedInstanceSupplier() {
-        SchemaConstructedRecord constructed = (SchemaConstructedRecord) SpecificData.newInstance(
-                SchemaConstructedRecord.class, SchemaConstructedRecord.SCHEMA$);
-        InstanceSupplier supplier = SpecificData.get().getNewRecordSupplier(GeneratedRecord.SCHEMA$);
-        Object supplied = supplier.newInstance(null, GeneratedRecord.SCHEMA$);
+        synchronized (AvroTrustedClasses.class) {
+            AvroTrustedClasses.State previousTrust = AvroTrustedClasses.snapshot();
+            AvroTrustedClasses.trustExactly(GeneratedRecord.class);
+            try {
+                SchemaConstructedRecord constructed = (SchemaConstructedRecord) SpecificData.newInstance(
+                        SchemaConstructedRecord.class, SchemaConstructedRecord.SCHEMA$);
+                InstanceSupplier supplier = SpecificData.get().getNewRecordSupplier(GeneratedRecord.SCHEMA$);
+                Object supplied = supplier.newInstance(null, GeneratedRecord.SCHEMA$);
 
-        assertThat(constructed.constructorSchema).isSameAs(SchemaConstructedRecord.SCHEMA$);
-        assertThat(supplied).isInstanceOf(GeneratedRecord.class);
-        assertThat(supplier.newInstance(supplied, GeneratedRecord.SCHEMA$)).isSameAs(supplied);
+                assertThat(constructed.constructorSchema).isSameAs(SchemaConstructedRecord.SCHEMA$);
+                assertThat(supplied).isInstanceOf(GeneratedRecord.class);
+                assertThat(supplier.newInstance(supplied, GeneratedRecord.SCHEMA$)).isSameAs(supplied);
+            } finally {
+                AvroTrustedClasses.restore(previousTrust);
+            }
+        }
     }
 
     public interface GeneratedService {

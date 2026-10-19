@@ -10,11 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
+import org.apache.avro.reflect.AvroEncode;
+import org.apache.pulsar.client.schema.AvroTrustedClasses;
 import org.apache.pulsar.shade.org.apache.avro.Protocol;
 import org.apache.pulsar.shade.org.apache.avro.Schema;
 import org.apache.pulsar.shade.org.apache.avro.io.Decoder;
 import org.apache.pulsar.shade.org.apache.avro.io.Encoder;
-import org.apache.avro.reflect.AvroEncode;
 import org.apache.pulsar.shade.org.apache.avro.reflect.CustomEncoding;
 import org.apache.pulsar.shade.org.apache.avro.reflect.ReflectData;
 import org.apache.pulsar.shade.org.apache.avro.specific.SpecificData;
@@ -38,17 +39,24 @@ public class ReflectDataTest {
 
     @Test
     void createsAndCachesCustomFieldAndTypeEncodings() {
-        ReflectData data = new ReflectData();
+        synchronized (AvroTrustedClasses.class) {
+            AvroTrustedClasses.State previousTrust = AvroTrustedClasses.snapshot();
+            AvroTrustedClasses.trustExactly(EncodedValue.class);
+            try {
+                ReflectData data = new ReflectData();
+                Schema typeSchema = data.getSchema(EncodedValue.class);
+                Schema fieldSchema = data.getSchema(EncodedRecord.class).getField("value").schema();
+                Schema cacheSchema = Schema.create(Schema.Type.STRING);
+                cacheSchema.addProp(SpecificData.CLASS_PROP, EncodedValue.class.getName());
+                CustomEncoding<?> cached = data.getCustomEncoding(cacheSchema);
 
-        Schema typeSchema = data.getSchema(EncodedValue.class);
-        Schema fieldSchema = data.getSchema(EncodedRecord.class).getField("value").schema();
-        Schema cacheSchema = Schema.create(Schema.Type.STRING);
-        cacheSchema.addProp(SpecificData.CLASS_PROP, EncodedValue.class.getName());
-        CustomEncoding<?> cached = data.getCustomEncoding(cacheSchema);
-
-        assertThat(typeSchema.getType()).isEqualTo(Schema.Type.STRING);
-        assertThat(fieldSchema.getType()).isEqualTo(Schema.Type.STRING);
-        assertThat(cached).isInstanceOf(ValueEncoding.class);
+                assertThat(typeSchema.getType()).isEqualTo(Schema.Type.STRING);
+                assertThat(fieldSchema.getType()).isEqualTo(Schema.Type.STRING);
+                assertThat(cached).isInstanceOf(ValueEncoding.class);
+            } finally {
+                AvroTrustedClasses.restore(previousTrust);
+            }
+        }
     }
 
     public interface EchoService {

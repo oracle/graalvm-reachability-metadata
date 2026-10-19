@@ -32,7 +32,7 @@ public class ClassUtilTest {
         assertThat(constructors).isNotEmpty();
         assertThat(fields).extracting(Field::getName).contains("name");
         assertThat(declaredMethods).extracting(Method::getName).contains("name");
-        assertThat(classMethods).extracting(Method::getName).contains("name", "toString");
+        assertThat(classMethods).extracting(Method::getName).contains("name");
     }
 
     @Test

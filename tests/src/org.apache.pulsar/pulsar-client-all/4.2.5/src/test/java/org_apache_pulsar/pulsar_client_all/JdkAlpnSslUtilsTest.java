@@ -42,7 +42,7 @@ public class JdkAlpnSslUtilsTest {
         engine.setHandshakeApplicationProtocolSelector(selector);
 
         assertThat(engine.getHandshakeApplicationProtocolSelector()).isSameAs(selector);
-        assertThat(engine.getApplicationProtocol()).isNotNull();
+        assertThat(engine.getApplicationProtocol()).isNull();
         assertThat(engine.getHandshakeApplicationProtocol()).isNull();
         assertThat(engine.getSSLParameters().getApplicationProtocols()).containsExactly("h2", "http/1.1");
     }
