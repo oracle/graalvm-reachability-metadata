@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-19 — org.springframework.cloud:spring-cloud-consul-core:5.0.3 (#10911)
+
+**Spring validation dependency requires an out-of-scope Hibernate Validator metadata correction**
+
+FS-contribution-contract.2 limits this new-library contribution to the Spring Cloud Consul coordinate; routed owner metadata may add entries but may not remove or change existing entries. The branch modifies metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json, and local gate evidence records that path in repo_fix_paths with human_intervention_required=true. Restoring the shared file and running the required finalization command makes the GraalVM 25 lane fail in nativeTestCompile with `Type not found during analysis: org.hibernate.validator.internal.constraintvalidators.bv.time.past.PastValidatorForReadablePartial`; the latest current-defaults and future-defaults lanes pass. Fixing this requires shared Hibernate Validator metadata rather than a target-coordinate repair.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/11046 (#11046)
+
 ## 2026-10-15 — org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2 (#8416)
 
 **Generated test used trivial assertions and pinned a companion artifact version**
