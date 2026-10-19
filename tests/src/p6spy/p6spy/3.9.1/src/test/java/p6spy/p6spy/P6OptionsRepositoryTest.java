@@ -26,4 +26,29 @@ public class P6OptionsRepositoryTest {
         assertThat(logger).isInstanceOf(StdoutLogger.class);
         assertThat(logger.isCategoryEnabled(Category.STATEMENT)).isTrue();
     }
+
+    @Test
+    void retriesLoggerInstantiationWithSystemClassLoader() {
+        P6OptionsRepository repository = new P6OptionsRepository();
+        RetryingLogger.constructionAttempts = 0;
+
+        assertThat(repository.set(P6Logger.class, "logger", RetryingLogger.class.getName()))
+                .isTrue();
+        repository.initCompleted();
+        P6Logger logger = repository.get(P6Logger.class, "logger");
+
+        assertThat(logger).isInstanceOf(RetryingLogger.class);
+        assertThat(logger.isCategoryEnabled(Category.STATEMENT)).isTrue();
+        assertThat(RetryingLogger.constructionAttempts).isEqualTo(2);
+    }
+
+    public static final class RetryingLogger extends StdoutLogger {
+        private static int constructionAttempts;
+
+        public RetryingLogger() {
+            if (++constructionAttempts == 1) {
+                throw new IllegalStateException("Retry logger construction");
+            }
+        }
+    }
 }
