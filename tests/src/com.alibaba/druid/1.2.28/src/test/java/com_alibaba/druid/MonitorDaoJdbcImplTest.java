@@ -11,6 +11,8 @@ import com.alibaba.druid.pool.DruidDataSourceStatValue;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.monitor.MonitorContext;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,18 +30,23 @@ public class MonitorDaoJdbcImplTest {
     }
 
     @Test
-    void persistsAndLoadsSqlStatistics() {
+    void persistsAndLoadsSqlStatistics() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:h2:mem:druid_monitor;MODE=MySQL;DB_CLOSE_DELAY=-1");
+        dataSource.setUrl("jdbc:h2:mem:druid_monitor;MODE=MySQL;NON_KEYWORDS=VALUE;DB_CLOSE_DELAY=-1");
 
         try {
             MonitorDaoJdbcImpl dao = new MonitorDaoJdbcImpl();
             dao.setDataSource(dataSource);
             dao.createTables("mysql");
+            try (Connection connection = dataSource.getConnection();
+                    Statement statement = connection.createStatement()) {
+                statement.execute("alter table druid_datasource add keepAliveCheckCount bigint");
+            }
 
             long collectedAt = System.currentTimeMillis();
             MonitorContext context = new MonitorContext();
             context.setCollectTime(new Date(collectedAt));
+            context.setPID(7);
 
             JdbcSqlStatValue sqlStat = new JdbcSqlStatValue();
             sqlStat.setSqlHash(42L);
