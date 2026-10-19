@@ -7,8 +7,10 @@
 package com_alibaba.dubbo;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.alibaba.dubbo.common.compiler.Compiler;
+import com.alibaba.dubbo.common.extension.Adaptive;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
 import com.alibaba.dubbo.common.extension.SPI;
 import com.alibaba.dubbo.common.serialize.Serialization;
@@ -43,9 +45,28 @@ public class ExtensionLoaderTest {
         assertThat(loader.getExtensionName(extension)).isEqualTo("compiler-aware");
     }
 
+    @Test
+    void rejectsAdaptiveMethodsWithoutUrlContext() {
+        ExtensionLoader<InvalidAdaptiveExtension> loader =
+                ExtensionLoader.getExtensionLoader(InvalidAdaptiveExtension.class);
+
+        assertThatThrownBy(loader::getAdaptiveExtension)
+                .isInstanceOf(IllegalStateException.class)
+                .hasRootCauseMessage(
+                        "fail to create adative class for interface "
+                                + InvalidAdaptiveExtension.class.getName()
+                                + ": not found url parameter or url attribute in parameters of method route");
+    }
+
     @SPI
     public interface InjectableExtension {
         Compiler compiler();
+    }
+
+    @SPI
+    public interface InvalidAdaptiveExtension {
+        @Adaptive
+        String route(String request);
     }
 
     public static class CompilerAwareExtension implements InjectableExtension {
