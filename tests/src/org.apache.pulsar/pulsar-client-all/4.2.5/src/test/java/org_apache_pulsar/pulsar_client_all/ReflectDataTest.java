@@ -14,7 +14,7 @@ import org.apache.pulsar.shade.org.apache.avro.Protocol;
 import org.apache.pulsar.shade.org.apache.avro.Schema;
 import org.apache.pulsar.shade.org.apache.avro.io.Decoder;
 import org.apache.pulsar.shade.org.apache.avro.io.Encoder;
-import org.apache.pulsar.shade.org.apache.avro.reflect.AvroEncode;
+import org.apache.avro.reflect.AvroEncode;
 import org.apache.pulsar.shade.org.apache.avro.reflect.CustomEncoding;
 import org.apache.pulsar.shade.org.apache.avro.reflect.ReflectData;
 import org.apache.pulsar.shade.org.apache.avro.specific.SpecificData;
