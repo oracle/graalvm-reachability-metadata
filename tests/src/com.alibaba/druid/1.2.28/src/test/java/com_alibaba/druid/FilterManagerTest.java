@@ -7,6 +7,7 @@
 package com_alibaba.druid;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import java.sql.Connection;
@@ -22,7 +23,7 @@ public class FilterManagerTest {
     void resolvesFilterAliasesAndCollectsSqlStatistics() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:h2:mem:druid_filters;DB_CLOSE_DELAY=-1");
-        dataSource.setFilters("stat,mergeStat,wall,encoding,slf4j");
+        dataSource.setFilters("stat,mergeStat,wall,encoding,slf4j," + FilterAdapter.class.getName());
 
         try {
             dataSource.init();
@@ -35,7 +36,8 @@ public class FilterManagerTest {
 
             List<Filter> filters = dataSource.getProxyFilters();
             assertTrue(filters.stream().anyMatch(StatFilter.class::isInstance));
-            assertTrue(filters.size() >= 5);
+            assertTrue(filters.stream().anyMatch(FilterAdapter.class::isInstance));
+            assertTrue(filters.size() >= 6);
             assertFalse(dataSource.getDataSourceStat().getSqlStatMap().isEmpty());
         } finally {
             dataSource.close();

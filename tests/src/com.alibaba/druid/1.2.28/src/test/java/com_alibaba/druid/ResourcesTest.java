@@ -14,6 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ResourcesTest {
     @Test
     void loadsDruidClassByName() throws Exception {
-        assertEquals(Resources.class, Resources.classForName("com.alibaba.druid.support.logging.Resources"));
+        ClassLoader original = Resources.getDefaultClassLoader();
+        try {
+            Resources.setDefaultClassLoader(ClassLoader.getPlatformClassLoader());
+            assertEquals(Resources.class, Resources.classForName("com.alibaba.druid.support.logging.Resources"));
+        } finally {
+            Resources.setDefaultClassLoader(original);
+        }
     }
 }

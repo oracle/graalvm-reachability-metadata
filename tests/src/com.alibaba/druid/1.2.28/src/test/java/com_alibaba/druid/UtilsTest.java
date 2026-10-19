@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UtilsTest {
@@ -22,6 +23,7 @@ public class UtilsTest {
     @Test
     void loadsClassesAndBundledResources() throws Exception {
         assertEquals(Utils.class, Utils.loadClass("com.alibaba.druid.util.Utils"));
+        assertNull(Utils.loadClass("missing.example.UnavailableClass"));
         assertFalse(Utils.loadProperties(FILTER_RESOURCE).isEmpty());
         assertFalse(Utils.readLines(FILTER_RESOURCE).isEmpty());
         assertTrue(Utils.readFromResource(FILTER_RESOURCE).contains("druid.filters.stat"));

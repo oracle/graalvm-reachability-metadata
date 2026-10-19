@@ -6,6 +6,7 @@
  */
 package com_alibaba.druid;
 
+import com.alibaba.druid.support.logging.Jdk14LoggingImpl;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.logging.SLF4JImpl;
@@ -15,8 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class LogFactoryTest {
     @Test
-    void selectsSlf4jWhenLogbackIsAvailable() {
-        Log log = LogFactory.getLog(LogFactoryTest.class);
-        assertInstanceOf(SLF4JImpl.class, log);
+    void selectsAvailableLoggingImplementations() {
+        Log defaultLog = LogFactory.getLog(LogFactoryTest.class);
+        assertInstanceOf(SLF4JImpl.class, defaultLog);
+
+        LogFactory.selectJavaLogging();
+        assertInstanceOf(Jdk14LoggingImpl.class, LogFactory.getLog(LogFactoryTest.class));
     }
 }
