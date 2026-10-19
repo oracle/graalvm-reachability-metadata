@@ -33,8 +33,11 @@ public class ClientFactoryFinderTest {
     }
 
     private static void assertUsable(ClientBuilder builder) {
-        try (Client client = builder.build()) {
+        Client client = builder.build();
+        try {
             assertThat(client.getConfiguration().getProperties()).isNotNull();
+        } finally {
+            client.close();
         }
     }
 
