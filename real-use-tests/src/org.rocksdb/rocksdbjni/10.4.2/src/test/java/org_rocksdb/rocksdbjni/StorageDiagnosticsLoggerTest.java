@@ -122,8 +122,11 @@ public class StorageDiagnosticsLoggerTest {
             assertFalse(pipeline.linesAt(InfoLogLevel.INFO_LEVEL).isEmpty());
             assertEquals(300, countOrders(db));
 
+            // Drain callbacks that may already have passed the old INFO-level filter.
+            db.pauseBackgroundWork();
             pipeline.setInfoLogLevel(InfoLogLevel.ERROR_LEVEL);
             int beforeQuiet = pipeline.linesBelow(InfoLogLevel.ERROR_LEVEL).size();
+            db.continueBackgroundWork();
             writeOrders(db, 300, 400);
             db.flush(flush);
             assertEquals(beforeQuiet, pipeline.linesBelow(InfoLogLevel.ERROR_LEVEL).size(),
