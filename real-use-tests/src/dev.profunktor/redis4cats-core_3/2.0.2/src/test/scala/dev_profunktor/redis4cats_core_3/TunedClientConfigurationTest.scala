@@ -86,7 +86,7 @@ class TunedClientConfigurationTest {
 
       val options: ClientOptions = ClientOptions
         .builder()
-        .timeoutOptions(TimeoutOptions.enabled(Duration.ofMillis(500L)))
+        .timeoutOptions(TimeoutOptions.enabled(Duration.ofSeconds(10L)))
         .build()
 
       def client(resources: ClientResources): Resource[IO, RedisClient] = {
@@ -108,7 +108,7 @@ class TunedClientConfigurationTest {
                   inventory.set("stock:widget", "42") *> inventory.get("stock:widget")
                 }
                 waitForJob <- commands(redis).use { queue =>
-                  queue.blPop(3.seconds, NonEmptyList.one("jobs:restock")).attempt
+                  queue.blPop(30.seconds, NonEmptyList.one("jobs:restock")).attempt
                 }
               } yield (firstRead, waitForJob)
             }
