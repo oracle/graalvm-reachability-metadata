@@ -39,6 +39,8 @@ public class BeanAsArrayBuilderDeserializerTest {
         }
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder({"text", "priority"})
     @JsonPOJOBuilder(withPrefix = "")
     public static class ArrayMessageBuilder {
         private String text;

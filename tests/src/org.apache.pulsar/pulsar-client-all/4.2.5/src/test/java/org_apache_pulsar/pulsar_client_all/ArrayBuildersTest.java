@@ -17,10 +17,10 @@ public class ArrayBuildersTest {
         String[] original = {"second", "third"};
 
         String[] expanded = ArrayBuilders.insertInListNoDup(original, "first");
-        String[] unchanged = ArrayBuilders.insertInListNoDup(expanded, "second");
+        String[] reordered = ArrayBuilders.insertInListNoDup(expanded, "second");
 
         assertThat(expanded).containsExactly("first", "second", "third");
         assertThat(expanded.getClass()).isEqualTo(String[].class);
-        assertThat(unchanged).isSameAs(expanded);
+        assertThat(reordered).containsExactly("second", "first", "third");
     }
 }

@@ -8,13 +8,15 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.IOException;
+
 import org.apache.pulsar.shade.com.google.common.util.concurrent.Futures;
 import org.junit.jupiter.api.Test;
 
 public class FuturesGetCheckedTest {
     @Test
     void wrapsFailedFutureInRequestedCheckedException() {
-        IllegalStateException failure = new IllegalStateException("unavailable");
+        IOException failure = new IOException("unavailable");
 
         assertThatThrownBy(() -> Futures.getChecked(Futures.immediateFailedFuture(failure), ClientException.class))
                 .isInstanceOf(ClientException.class)
