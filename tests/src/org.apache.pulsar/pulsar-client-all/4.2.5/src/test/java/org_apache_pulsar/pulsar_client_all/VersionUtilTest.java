@@ -23,7 +23,8 @@ public class VersionUtilTest {
                 "jackson-core");
 
         assertThat(packageVersion.isUnknownVersion()).isFalse();
-        assertThat(packageVersion.getGroupId()).isEqualTo("com.fasterxml.jackson.core");
+        assertThat(packageVersion.getGroupId())
+                .isEqualTo("org.apache.pulsar.shade.com.fasterxml.jackson.core");
         assertThat(mavenVersion.isUnknownVersion()).isTrue();
     }
 }

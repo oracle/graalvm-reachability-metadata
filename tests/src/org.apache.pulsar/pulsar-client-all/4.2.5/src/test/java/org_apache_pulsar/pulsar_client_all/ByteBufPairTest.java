@@ -55,7 +55,7 @@ public class ByteBufPairTest {
                 .inheritIO()
                 .start();
 
-        waitUntil(this::adminEndpointIsReady, Duration.ofSeconds(120), Duration.ofSeconds(1));
+        waitUntil(this::standaloneNamespaceIsReady, Duration.ofSeconds(120), Duration.ofSeconds(1));
     }
 
     @AfterAll
@@ -106,7 +106,7 @@ public class ByteBufPairTest {
         }
     }
 
-    private boolean adminEndpointIsReady() throws Exception {
+    private boolean standaloneNamespaceIsReady() throws Exception {
         if (!pulsar.isAlive()) {
             throw new IllegalStateException("Pulsar container exited before becoming ready");
         }
@@ -114,11 +114,12 @@ public class ByteBufPairTest {
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(HTTP_URL + "/admin/v2/clusters"))
+                .uri(URI.create(HTTP_URL + "/admin/v2/namespaces/public"))
                 .timeout(Duration.ofSeconds(10))
                 .GET()
                 .build();
-        return client.send(request, HttpResponse.BodyHandlers.discarding()).statusCode() == 200;
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.statusCode() == 200 && response.body().contains("public/default");
     }
 
     private static void removeExistingContainer() throws Exception {
