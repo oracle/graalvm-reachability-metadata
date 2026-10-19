@@ -266,7 +266,7 @@ class TestTraceTests(unittest.TestCase):
             markdown: str = prompt.read()
 
         self.assertIn(f"Test project: `{self.project}`; test files are relative to it.", markdown)
-        group: str = markdown.split("Observed:\n", 1)[1]
+        group: str = markdown.split("Observed (sampled):\n", 1)[1]
         self.assertTrue(group.startswith(
             "`StoreCoverageTest.flushes() (line 8) → withStore(...) (line 13) → lambda (line 8) "
             f"→ Store.flush()`\nTest file: `{COVERAGE_SOURCE}`\n\nUncovered paths:\n"

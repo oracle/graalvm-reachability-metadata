@@ -68,7 +68,10 @@ class SampledProfile:
     #: Recorded calling contexts: every stack that entered a library method,
     #: with its exact count (§AR-code-coverage-deep-navigation.1).
     contexts: list[Sample] = field(default_factory=list)
-    recorded_context_count: int = 0
+
+    @property
+    def recorded_context_count(self) -> int:
+        return len(self.contexts)
 
 
 @dataclass
@@ -137,7 +140,6 @@ def _sampled_profile(
     profile.contexts = list(
         _section_samples(document, "callingContexts", "context", graph, iprof_refs)
     )
-    profile.recorded_context_count = len(profile.contexts)
     return profile
 
 

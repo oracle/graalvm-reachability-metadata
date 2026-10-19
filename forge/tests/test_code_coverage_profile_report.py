@@ -228,9 +228,12 @@ class DeepCorrelationTest(unittest.TestCase):
         self.assertEqual(resolve["stepsRemaining"], 2)
         self.assertEqual(resolve["sampleContextId"], "context-short")
         self.assertEqual(resolve["sampleCount"], 1)
-        self.assertIn(RESOLVE_ID, report["promptTargetIds"])
+        # With recorded contexts, only recorded routes are prompted.
+        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID])
         self.assertEqual(report["summary"]["recordedJoins"], 1)
-        self.assertEqual(report["summary"]["recordedContexts"], 0)
+        self.assertEqual(report["summary"]["sampledJoins"], 0)
+        self.assertEqual(report["summary"]["recordedContexts"], 3)
+        self.assertFalse(any("no recorded calling contexts" in c for c in report["caveats"]))
         self.assertEqual(
             next(record for record in prompt_records if record.target_ref.canonical_id == RESOLVE_ID)
             .sampled_join_path_index,

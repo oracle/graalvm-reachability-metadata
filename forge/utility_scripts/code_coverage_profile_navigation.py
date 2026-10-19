@@ -121,6 +121,7 @@ def report_caveats(
         evidence: NavigationEvidence,
         graph: CallGraph,
         library_methods_known: bool,
+        recorded_contexts: int = 0,
 ) -> list[str]:
     """Every caveat the report carries: what guidance can and cannot prove, and
     which input was missing (§AR-code-coverage-deep-navigation.1.2)."""
@@ -128,7 +129,12 @@ def report_caveats(
         "JaCoCo is the only coverage authority; PGO evidence is guidance only.",
         "Absence of a sample never proves non-execution.",
         "The analysis call graph over-approximates; static paths may be infeasible.",
-    ] + navigation_caveats(evidence) + ([] if library_methods_known else [
+    ] + navigation_caveats(evidence) + ([] if recorded_contexts else [
+        # Sampled routes may rest on static hops (§AR-code-coverage-deep-navigation.2).
+        "The profile carries no recorded calling contexts, so prompted routes come "
+        "from sampled stacks and may rest on a static hop the run never took; build "
+        "the PGO image with -H:+PGOCallingContexts to record every stack.",
+    ]) + ([] if library_methods_known else [
         "No library method list was supplied, so the deep universe still counts "
         "every JaCoCo-reported method, including any the library's own "
         "test-classifier artifact contributes.",

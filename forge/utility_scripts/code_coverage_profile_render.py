@@ -208,9 +208,9 @@ def write_markdown(
             sampled_group_order.append(group_key)
         sampled_groups[group_key].append(record)
 
-    lines += ["", "## Observed (sampled guidance only)", ""]
+    lines += ["", "## Observed", ""]
     if not sampled_group_order:
-        lines.append("_No sampled context reaches an actionable uncovered path._")
+        lines.append("_No observed stack reaches an actionable uncovered path._")
     for position, group_key in enumerate(sampled_group_order):
         if position:
             lines += [GROUP_SEPARATOR, ""]
@@ -233,7 +233,13 @@ def write_markdown(
             group = trace.recorded(sample, join_index)
         else:
             group = trace.group(tuple(divergence))
-        lines.append("Observed:")
+        # The heading names the evidence: every arrow of a recorded chain ran
+        # (§AR-code-coverage-deep-navigation.2).
+        if representative.join_kind == "recorded":
+            runs: str = "once" if sample.count == 1 else f"{sample.count} times"
+            lines.append(f"Observed (recorded, ran {runs}):")
+        else:
+            lines.append("Observed (sampled):")
         lines.append(f"`{observed_chain(group.chain)}`")
         files: list[str] = group.test_files
         if files:

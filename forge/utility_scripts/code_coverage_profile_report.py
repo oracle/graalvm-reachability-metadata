@@ -227,10 +227,15 @@ def correlate(
         and not record.target_state.terminal
         and is_synthetic_method(record.target_ref)
     )
-    # Only a route with a stack to show is prompted; public-entry routes stay
+    # A profile with recorded contexts prompts recorded routes only; sampled
+    # routes are prompted only without them, and public-entry routes stay
     # ranked in the JSON (§AR-code-coverage-deep-navigation.2).
+    prompted_kinds: tuple[str, ...] = (
+        ("recorded",) if profile.recorded_context_count else ("sampled",)
+    )
+    assert set(prompted_kinds) <= set(PROMPTED_JOIN_KINDS)
     prompt_records: list[NearCallRecord] = sorted(
-        (record for record in actionable_records if record.join_kind in PROMPTED_JOIN_KINDS),
+        (record for record in actionable_records if record.join_kind in prompted_kinds),
         key=prompt_selection_key,
     )[:effective_limit]
     uncovered_json: list[dict] = [
@@ -322,7 +327,9 @@ def correlate(
         "uncoveredPaths": uncovered_json,
         "promptTargetIds": [record.target_ref.canonical_id for record in prompt_records],
         "bulkTargets": bulk_json,
-        "caveats": report_caveats(navigation, graph, library_methods is not None),
+        "caveats": report_caveats(
+            navigation, graph, library_methods is not None, profile.recorded_context_count
+        ),
     }
     return report, prompt_records
 
