@@ -20,8 +20,8 @@ public class J2oVisitorTest {
         ArrayList<?> list = JSON.parse("[1,2,3]", ArrayList.class);
         int[] values = JSON.parse("[4,5]", int[].class);
 
-        assertThat(map).containsEntry("name", "dubbo");
-        assertThat(list).containsExactly(1L, 2L, 3L);
+        assertThat(map.get("name")).isEqualTo("dubbo");
+        assertThat(list.toArray()).containsExactly(1L, 2L, 3L);
         assertThat(values).containsExactly(4, 5);
     }
 }
