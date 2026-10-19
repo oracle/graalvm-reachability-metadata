@@ -14,10 +14,25 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UtilsTest {
+    private static final String CONTEXT_CLASS_ALIAS = "com_alibaba.druid.ContextLoadedAlias";
     private static final String FILTER_RESOURCE = "META-INF/druid-filter.properties";
+
+    @Test
+    void loadsClassFromContextClassLoaderWhenDefaultLookupMisses() {
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+        AliasClassLoader contextClassLoader = new AliasClassLoader(original);
+        try {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+            assertSame(Utils.class, Utils.loadClass(CONTEXT_CLASS_ALIAS));
+            assertTrue(contextClassLoader.wasAliasRequested());
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
+        }
+    }
 
     @Test
     void loadsClassesAndBundledResources() throws Exception {
@@ -37,6 +52,27 @@ public class UtilsTest {
             assertNotNull(Utils.readFromResource("/META-INF/druid-filter.properties"));
         } finally {
             Thread.currentThread().setContextClassLoader(original);
+        }
+    }
+
+    private static final class AliasClassLoader extends ClassLoader {
+        private boolean aliasRequested;
+
+        private AliasClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (CONTEXT_CLASS_ALIAS.equals(name)) {
+                aliasRequested = true;
+                return Utils.class;
+            }
+            return super.loadClass(name);
+        }
+
+        private boolean wasAliasRequested() {
+            return aliasRequested;
         }
     }
 }
