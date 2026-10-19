@@ -19,9 +19,19 @@ public class J2oVisitorTest {
         HashMap<?, ?> map = JSON.parse("{\"name\":\"dubbo\"}", HashMap.class);
         ArrayList<?> list = JSON.parse("[1,2,3]", ArrayList.class);
         int[] values = JSON.parse("[4,5]", int[].class);
+        JsonBean bean = JSON.parse("{\"name\":\"visitor\",\"count\":2}", JsonBean.class);
 
         assertThat(map.get("name")).isEqualTo("dubbo");
         assertThat(list.toArray()).containsExactly(1L, 2L, 3L);
         assertThat(values).containsExactly(4, 5);
+        assertThat(bean.name).isEqualTo("visitor");
+        assertThat(bean.count).isEqualTo(2);
+    }
+
+    public static class JsonBean {
+        public String name;
+        public int count;
+
+        public JsonBean() { }
     }
 }

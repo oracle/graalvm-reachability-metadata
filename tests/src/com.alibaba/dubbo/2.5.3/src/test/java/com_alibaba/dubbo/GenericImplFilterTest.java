@@ -36,8 +36,19 @@ public class GenericImplFilterTest {
                                                 ConstructedFailure.class.getName(), "expected"))),
                         invocation());
 
+        Result defaultConstructedFailure =
+                filter.invoke(
+                        new GenericInvoker(
+                                new RpcResult(
+                                        new GenericException(
+                                                DefaultConstructedFailure.class.getName(),
+                                                "default"))),
+                        invocation());
+
         assertThat(((Person) value.getValue()).name).isEqualTo("Ada");
         assertThat(failure.getException()).isInstanceOf(ConstructedFailure.class);
+        assertThat(defaultConstructedFailure.getException())
+                .isInstanceOf(DefaultConstructedFailure.class);
     }
 
     private static RpcInvocation invocation() {
@@ -58,6 +69,10 @@ public class GenericImplFilterTest {
         public ConstructedFailure(String message) {
             super(message);
         }
+    }
+
+    public static class DefaultConstructedFailure extends RuntimeException {
+        public DefaultConstructedFailure() { }
     }
 
     private static class GenericInvoker implements Invoker<GenericService> {

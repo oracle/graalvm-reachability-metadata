@@ -17,11 +17,23 @@ public class ClassUtilsTest {
     void resolvesAndInstantiatesClassesAndSearchesCompatibleMethods() throws Exception {
         assertThat(ClassUtils.forName("java.lang.String[]")).isEqualTo(String[].class);
         assertThat(ClassUtils.newInstance("java.util.ArrayList")).isInstanceOf(ArrayList.class);
+        assertThat(ClassUtils.getSizeMethod(HasSize.class)).isEqualTo("size()");
         assertThat(ClassUtils.getSizeMethod(HasLength.class)).isEqualTo("length()");
         assertThat(ClassUtils.getSizeMethod(HasGetSize.class)).isEqualTo("getSize()");
         assertThat(ClassUtils.getSizeMethod(HasGetLength.class)).isEqualTo("getLength()");
+        assertThat(
+                        ClassUtils.searchMethod(
+                                        Sink.class, "put", new Class<?>[] {CharSequence.class})
+                                .getName())
+                .isEqualTo("put");
         assertThat(ClassUtils.searchMethod(Sink.class, "put", new Class<?>[] {String.class}).getName())
                 .isEqualTo("put");
+    }
+
+    public static class HasSize {
+        public int size() {
+            return 1;
+        }
     }
 
     public static class HasLength {
