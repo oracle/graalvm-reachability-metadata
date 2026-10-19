@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-19 — org.apache.cxf:cxf-rt-frontend-simple:2.6.1 (#10993)
+
+**Dynamic-access coverage was below the required gate**
+
+The submitted test configured ClientProxyFactoryBean and inspected its getters but never created a client proxy. The resolved statistics therefore reported 0 of 3 dynamic-access calls covered, violating the requirement for coverage above 20% when dynamic-access calls exist.
+
 ## 2026-10-19 — com.alibaba:dubbo:2.5.3 (#10994)
 
 **Completed dynamic-access classes lacked dedicated test files**
