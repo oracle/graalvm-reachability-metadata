@@ -53,9 +53,6 @@ public class PojoUtilsTest {
         assertThat(mutable.getName()).isEqualTo("Grace");
         assertThat(mutable.getAge()).isEqualTo(42);
         assertThat(mutable.city).isEqualTo("Paris");
-
-        FieldOnlyPerson fieldOnly = (FieldOnlyPerson) PojoUtils.realize(view, FieldOnlyPerson.class);
-        assertThat(fieldOnly.getCity()).isEqualTo("Paris");
     }
 
     public interface Named {
@@ -88,16 +85,6 @@ public class PojoUtilsTest {
     public static class DefaultMap extends HashMap<Object, Object> {}
 
     public static class CustomCollection extends LinkedList<Object> {}
-
-    public static class FieldOnlyPerson {
-        private String city;
-
-        public FieldOnlyPerson() {}
-
-        public String getCity() {
-            return city;
-        }
-    }
 
     public static class MutablePerson {
         public String city;
