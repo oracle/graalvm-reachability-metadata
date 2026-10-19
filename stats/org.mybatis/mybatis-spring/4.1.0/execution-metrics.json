@@ -1,0 +1,142 @@
+{
+  "add_new_library_support:2026-10-19": {
+    "timestamp": "2026-10-19T11:44:22.509452Z",
+    "library": "org.mybatis:mybatis-spring:4.1.0",
+    "starting_commit": "e6dbfe2ee252c4de67dc5acb892ee120f9cf3894",
+    "ending_commit": "935e4170d6811a36fa80011d6f7581cf3105329f",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.857143,
+            "coveredCalls": 6,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.857143,
+        "coveredCalls": 6,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 901,
+          "missed": 3364,
+          "ratio": 0.211254,
+          "total": 4265
+        },
+        "line": {
+          "covered": 246,
+          "missed": 804,
+          "ratio": 0.234286,
+          "total": 1050
+        },
+        "method": {
+          "covered": 57,
+          "missed": 258,
+          "ratio": 0.180952,
+          "total": 315
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10910,
+      "issue_label": "library-new-request",
+      "library": "org.mybatis:mybatis-spring:4.1.0",
+      "summary": "mybatis-spring 4.1.0 declares every runtime dependency as 'provided': MyBatis 3.5.19, spring-context 7.0.8 and spring-jdbc 7.0.8. None of them reach the test classpath transitively, so the generated scaffold can't load SqlSessionFactoryBean or SqlSessionTemplate. Tests that do real work also need an embedded JDBC database. All of these are plain Maven additions and no Docker image is needed.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.mybatis:mybatis:3.5.19",
+          "scope": "testImplementation",
+          "reason": "Declared as provided in the mybatis-spring 4.1.0 POM (mybatis.version=3.5.19). SqlSessionFactoryBean, SqlSessionTemplate and the mapper factories all need it. This repo already ships metadata for org.mybatis:mybatis 3.5.19."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-context:7.0.8",
+          "scope": "testImplementation",
+          "reason": "Declared as provided (spring.version=7.0.8). Needed for the ApplicationContext, FactoryBean and InitializingBean wiring, and for BeanWrapperImpl through spring-beans."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-jdbc:7.0.8",
+          "scope": "testImplementation",
+          "reason": "Declared as provided. Needed for DataSource utilities, DataSourceTransactionManager and SpringManagedTransactionFactory, which mybatis-spring uses at runtime. It also brings in spring-tx."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "scope": "testImplementation",
+          "reason": "An in-memory database is needed so SqlSessionFactoryBean.afterPropertiesSet, SqlSessionTemplate queries and mapper calls actually run. This version is listed in the repo's H2 tested-versions and is the H2 version other test projects use most often."
+        }
+      ],
+      "agent_guidance": "Build the Spring wiring in code, with no component scanning. Use GenericApplicationContext or registerBean, or create the beans directly. Create the DataSource with org.h2.jdbcx.JdbcDataSource and a URL like jdbc:h2:mem:<name>;DB_CLOSE_DELAY=-1, and create the schema with plain JDBC. Exercise the paths named in the issue: (1) new BeanWrapperImpl(SqlSessionFactoryBean.class) followed by getPropertyDescriptors() and setPropertyValue, which needs the no-arg constructor reflectively; (2) SystemMetaObject.forObject(sqlSessionTemplate).getValue(\"sqlSessionFactory\"), which needs the public getSqlSessionFactory() reflectively. Also cover SqlSessionFactoryBean.getObject() with a DataSource and an annotation mapper, SqlSessionTemplate selectOne/insert/getMapper, MapperFactoryBean, SqlSessionDaoSupport, and transactions through DataSourceTransactionManager with TransactionTemplate so SpringManagedTransaction is used. If you use XML mapper or config resources, load them by explicit classpath location rather than wildcard patterns. For @Configuration classes, set proxyBeanMethods = false so Native Image doesn't need CGLIB proxies.",
+      "risks": [
+        "MapperScannerConfigurer, @MapperScan and ClassPathMapperScanner rely on Spring classpath scanning, which doesn't work in Native Image without Spring AOT. Use explicit MapperFactoryBean registration instead, or accept that the scanner path runs on the JVM only.",
+        "MyBatis mapper interfaces are JDK dynamic proxies of test-only types. Any proxy or reflection entries the agent records for test classes must stay out of the shipped metadata.",
+        "The first entry in the issue (the SqlSessionFactoryBean constructor) is conditioned on MybatisAutoConfiguration, which lives in mybatis-spring-boot-autoconfigure. The second is conditioned on MyBatis-Plus. Neither is on this library's test classpath, so the shipped conditions will have to point at types inside mybatis-spring, such as SqlSessionFactoryBean or SqlSessionTemplate themselves.",
+        "spring-batch-infrastructure is also a provided dependency and is left out here. Without it, MyBatisBatchItemWriter, MyBatisCursorItemReader and MyBatisPagingItemReader can't be loaded, so the org.mybatis.spring.batch package will get no coverage."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.mybatis:mybatis:3.5.19",
+          "result": "applied",
+          "target": "tests/src/org.mybatis/mybatis-spring/4.1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-context:7.0.8",
+          "result": "applied",
+          "target": "tests/src/org.mybatis/mybatis-spring/4.1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-jdbc:7.0.8",
+          "result": "applied",
+          "target": "tests/src/org.mybatis/mybatis-spring/4.1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "result": "applied",
+          "target": "tests/src/org.mybatis/mybatis-spring/4.1.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10910 Support for org.mybatis:mybatis-spring:4.1.0; label=library-new-request; body_chars=3263"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 8,
+      "output_tokens_used": 3475
+    },
+    "metrics": {
+      "input_tokens_used": 207982,
+      "cached_input_tokens_used": 1330688,
+      "output_tokens_used": 17419,
+      "iterations": 5,
+      "cost_usd": 2.2278,
+      "generated_loc": 187,
+      "tested_library_loc": 246,
+      "metadata_entries": 19,
+      "test_only_metadata_entries": 88,
+      "code_coverage_percent": 23.43
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.mybatis/mybatis-spring/4.1.0/reachability-metadata.json"
+    }
+  }
+}
