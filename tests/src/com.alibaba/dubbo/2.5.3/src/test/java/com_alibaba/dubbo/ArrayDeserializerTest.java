@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 public class ArrayDeserializerTest {
     @Test
     void restoresTypedArrays() throws Exception {
-        String[] copy = (String[]) HessianTestSupport.roundTrip(new String[] {"one", "two"});
+        Integer[] copy = (Integer[]) HessianTestSupport.roundTrip(new Integer[] {13, 21});
 
-        assertThat(copy).containsExactly("one", "two");
+        assertThat(copy).containsExactly(13, 21);
     }
 }

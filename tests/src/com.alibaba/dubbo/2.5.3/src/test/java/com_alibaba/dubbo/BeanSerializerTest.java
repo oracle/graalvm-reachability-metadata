@@ -21,6 +21,7 @@ public class BeanSerializerTest {
 
         assertThat(copy.getName()).isEqualTo("Ada");
         assertThat(copy.getCount()).isEqualTo(3);
+
     }
 
     @Test
