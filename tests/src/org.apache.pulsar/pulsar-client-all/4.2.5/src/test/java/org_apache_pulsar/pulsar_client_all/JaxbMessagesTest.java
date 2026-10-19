@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class JaxbMessagesTest {
     @Test
     void formatsPropertyNameAndValue() {
-        PropertyException exception = new PropertyException("encoding", "UTF-8");
+        PropertyException exception = new PropertyException("encoding", (Object) "UTF-8");
 
         assertThat(exception.getMessage()).contains("encoding", "UTF-8");
     }

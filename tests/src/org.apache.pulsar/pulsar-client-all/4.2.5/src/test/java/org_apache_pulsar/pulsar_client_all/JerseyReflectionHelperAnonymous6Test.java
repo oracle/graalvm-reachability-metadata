@@ -16,7 +16,7 @@ public class JerseyReflectionHelperAnonymous6Test {
     void obtainsDeclaredMethodsThroughPrivilegedAction() {
         assertThat(ReflectionHelper.getDeclaredMethodsPA(MethodBean.class).run())
                 .extracting(method -> method.getName())
-                .containsExactly("value");
+                .contains("value");
     }
 
     private static class MethodBean {

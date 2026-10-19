@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.avro.reflect.AvroEncode;
+import org.apache.pulsar.client.schema.AvroTrustedClasses;
 import org.apache.pulsar.shade.org.apache.avro.Schema;
 import org.apache.pulsar.shade.org.apache.avro.io.BinaryEncoder;
 import org.apache.pulsar.shade.org.apache.avro.io.Decoder;
@@ -27,35 +28,57 @@ public final class AvroReflectionRoundTripSupport {
     }
 
     public static void roundTrip() throws Exception {
-        ReflectData reflectData = new ReflectData();
-        Schema schema = reflectData.getSchema(TopicRecord.class);
-        TopicRecord input = new TopicRecord("persistent", new String[] {"pulsar", "bookkeeper"});
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(bytes, null);
-        new ReflectDatumWriter<TopicRecord>(schema, reflectData).write(input, encoder);
-        encoder.flush();
+        synchronized (AvroTrustedClasses.class) {
+            AvroTrustedClasses.State previousTrust = AvroTrustedClasses.snapshot();
+            AvroTrustedClasses.trustExactly(TopicRecord.class);
+            try {
+                ReflectData reflectData = new ReflectData();
+                Schema schema = reflectData.getSchema(TopicRecord.class);
+                TopicRecord input =
+                        new TopicRecord("persistent", new String[] {"pulsar", "bookkeeper"});
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(bytes, null);
+                new ReflectDatumWriter<TopicRecord>(schema, reflectData).write(input, encoder);
+                encoder.flush();
 
-        ReflectDatumReader<TopicRecord> reader = new ReflectDatumReader<>(schema, schema, reflectData);
-        TopicRecord restored = reader.read(null, DecoderFactory.get().binaryDecoder(bytes.toByteArray(), null));
+                ReflectDatumReader<TopicRecord> reader =
+                        new ReflectDatumReader<>(schema, schema, reflectData);
+                TopicRecord restored = reader.read(
+                        null, DecoderFactory.get().binaryDecoder(bytes.toByteArray(), null));
 
-        assertThat(restored.name).isEqualTo("persistent");
-        assertThat(restored.labels).isInstanceOf(String[].class).containsExactly("pulsar", "bookkeeper");
+                assertThat(restored.name).isEqualTo("persistent");
+                assertThat(restored.labels)
+                        .isInstanceOf(String[].class)
+                        .containsExactly("pulsar", "bookkeeper");
+            } finally {
+                AvroTrustedClasses.restore(previousTrust);
+            }
+        }
     }
 
     public static void roundTripCustomEncoding() throws Exception {
-        ReflectData reflectData = new ReflectData();
-        Schema schema = reflectData.getSchema(CustomRecord.class);
-        CustomRecord input = new CustomRecord(new EncodedValue("persistent"));
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(bytes, null);
-        new ReflectDatumWriter<CustomRecord>(schema, reflectData).write(input, encoder);
-        encoder.flush();
+        synchronized (AvroTrustedClasses.class) {
+            AvroTrustedClasses.State previousTrust = AvroTrustedClasses.snapshot();
+            AvroTrustedClasses.trustExactly(CustomRecord.class, EncodedValue.class);
+            try {
+                ReflectData reflectData = new ReflectData();
+                Schema schema = reflectData.getSchema(CustomRecord.class);
+                CustomRecord input = new CustomRecord(new EncodedValue("persistent"));
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(bytes, null);
+                new ReflectDatumWriter<CustomRecord>(schema, reflectData).write(input, encoder);
+                encoder.flush();
 
-        ReflectDatumReader<CustomRecord> reader = new ReflectDatumReader<>(schema, schema, reflectData);
-        CustomRecord restored =
-                reader.read(null, DecoderFactory.get().binaryDecoder(bytes.toByteArray(), null));
+                ReflectDatumReader<CustomRecord> reader =
+                        new ReflectDatumReader<>(schema, schema, reflectData);
+                CustomRecord restored = reader.read(
+                        null, DecoderFactory.get().binaryDecoder(bytes.toByteArray(), null));
 
-        assertThat(restored.value.text).isEqualTo("persistent");
+                assertThat(restored.value.text).isEqualTo("persistent");
+            } finally {
+                AvroTrustedClasses.restore(previousTrust);
+            }
+        }
     }
 
     public static class TopicRecord {

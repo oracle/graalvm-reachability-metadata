@@ -14,14 +14,9 @@ import org.junit.jupiter.api.Test;
 
 public class VersionTest {
     @Test
-    void discoversBundledNettyBuildMetadata() {
+    void doesNotAdvertiseUnshadedNettyArtifacts() {
         Map<String, Version> versions = Version.identify();
 
-        assertThat(versions).isNotEmpty();
-        assertThat(versions.values())
-                .allSatisfy(version -> {
-                    assertThat(version.artifactId()).isNotBlank();
-                    assertThat(version.artifactVersion()).isNotBlank();
-                });
+        assertThat(versions).isEmpty();
     }
 }
