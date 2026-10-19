@@ -15,6 +15,15 @@ String scala3Version = tck.scala3Version.get()
 
 dependencies {
     testImplementation "org.scalatra:scalatra_3:$libraryVersion"
+    // Use Scalatra's upstream javax container, with one Servlet API implementation.
+    testImplementation("org.eclipse.jetty:jetty-server:10.0.15") {
+        exclude group: "org.eclipse.jetty.toolchain", module: "jetty-servlet-api"
+    }
+    testImplementation("org.eclipse.jetty:jetty-servlet:10.0.15") {
+        exclude group: "org.eclipse.jetty.toolchain", module: "jetty-servlet-api"
+    }
+    testImplementation "javax.servlet:javax.servlet-api:4.0.1"
+    testImplementation "org.slf4j:slf4j-simple:2.0.7"
     testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
     testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
 }
