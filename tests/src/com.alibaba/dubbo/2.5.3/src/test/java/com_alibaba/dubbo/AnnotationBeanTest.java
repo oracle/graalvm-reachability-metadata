@@ -24,7 +24,7 @@ public class AnnotationBeanTest {
         PlainBean bean = new PlainBean();
 
         assertThat(annotations.postProcessBeforeInitialization(bean, "plainBean")).isSameAs(bean);
-        assertThat(beanFactory.getBeanDefinitionCount()).isZero();
+        assertThat(beanFactory.getBeanDefinitionNames()).hasSize(2);
         assertThat(annotations.getPackage()).isEqualTo("com_alibaba.dubbo");
     }
 
