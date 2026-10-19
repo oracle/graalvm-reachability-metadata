@@ -19,8 +19,17 @@ public class MapDeserializerTest {
         source.put("second", 2);
 
         Object copy = HessianTestSupport.roundTrip(source);
+        PublicMap custom = new PublicMap();
+        custom.put("custom", 3);
+        Object customCopy = HessianTestSupport.roundTrip(custom);
 
         assertThat(copy).isInstanceOf(LinkedHashMap.class);
         assertThat(copy).isEqualTo(source);
+        assertThat(customCopy).isInstanceOf(PublicMap.class);
+        assertThat(customCopy).isEqualTo(custom);
+    }
+
+    public static class PublicMap extends LinkedHashMap<String, Integer> {
+        public PublicMap() { }
     }
 }
