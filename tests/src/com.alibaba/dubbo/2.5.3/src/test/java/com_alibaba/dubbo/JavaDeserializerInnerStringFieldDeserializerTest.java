@@ -6,11 +6,13 @@
  */
 package com_alibaba.dubbo;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
-class DubboTest {
+public class JavaDeserializerInnerStringFieldDeserializerTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void restoresStringFields() throws Exception {
+        assertThat(HessianFieldTestSupport.roundTrip().text).isEqualTo("restored");
     }
 }
