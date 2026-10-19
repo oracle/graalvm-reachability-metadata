@@ -23,7 +23,6 @@ import skunk.codec.all.*
 import skunk.data.Completion
 import skunk.implicits.*
 
-import java.net.ServerSocket
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -119,9 +118,10 @@ class BulkPriceImportTest {
 
   private final class Postgres {
     private val name: String = "skunk-bulk-prices-" + UUID.randomUUID().toString
-    val port: Int = {
-      val socket: ServerSocket = new ServerSocket(0)
-      try socket.getLocalPort finally socket.close()
+    def port: Int = {
+      val (exit, output) = docker("port", name, "5432/tcp")
+      require(exit == 0, output)
+      output.trim.split(":").last.toInt
     }
 
     def start(): Unit = {
@@ -129,7 +129,7 @@ class BulkPriceImportTest {
         val (exit, output) = docker(
           "run", "--rm", "--pull=never", "-d", "--name", name,
           "-e", "POSTGRES_PASSWORD=price-import-secret",
-          "-p", s"127.0.0.1:$port:5432", "postgres:18-alpine"
+          "-p", "127.0.0.1::5432", "postgres:18-alpine"
         )
         require(exit == 0, output)
         val deadline: Long = System.nanoTime() + 20.seconds.toNanos
