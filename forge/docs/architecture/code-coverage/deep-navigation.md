@@ -100,10 +100,10 @@ The covered prefix is the shortest one from a sampled frame or, when no
 sampled frame joins, from a public API inventory entry JaCoCo reports covered,
 and it governs routing and ranking only. It may be any length: no method on it
 is JaCoCo-uncovered, so it only shows the agent how existing tests reach the
-caller. Only a route from a sampled frame enters the agent prompt: its observed
-path is the evidence the agent follows, and a public-entry route has none to
+caller. Only a route with an observed stack enters the agent prompt: that
+stack is the evidence the agent follows, and a public-entry route has none to
 show. Public-entry routes stay ranked in the JSON report and enter the prompt
-once a later run samples a frame on their covered prefix.
+once a later run observes a frame on their covered prefix.
 
 When the profile carries recorded calling contexts (§1), a target's route
 starts at a recorded stack whose innermost frame is a covered caller of the
@@ -115,15 +115,26 @@ library frames from the innermost test frame — or from the outermost library
 frame, when the stack holds no test frame — down to the caller, and a stack
 with a test frame before one without. Equal lengths break on the higher reach
 count of the call into the target (§3), then the higher record count, then the
-canonical ids of the caller and of the stack. A recorded route enters the
-prompt like a sampled one, and shows its own stack rather than a most frequent
-one. A target none of whose covered callers was recorded — a caller the
-compiler cannot probe, or one JaCoCo covers that the native run never entered
-— keeps its sampled or public-entry route.
+canonical ids of the caller and of the stack. A recorded route shows its own
+stack rather than a most frequent one, and says how many times it ran.
 
-`Observed` is one chain: every frame of the group's most frequent sampled
-stack, from the test method JUnit invoked down to the group's divergence, the
-route's first method and its observed callee. Nothing between them is left out
+A profile that carries recorded contexts prompts recorded routes only. A
+sampled route would show a chain with a static hop nobody saw, which is the
+thing the recording exists to remove, so sampled routes then stay ranked in the
+JSON report beside public-entry ones. A target none of whose covered callers
+was recorded — a caller the compiler cannot probe, or one JaCoCo covers that
+the native run never entered — keeps that route there, and enters the prompt
+once a later run records a stack into one of its callers. A profile without the
+section still prompts sampled routes, and the report carries a caveat saying so,
+so a run on a toolchain that cannot record is never silently a lesser one.
+
+`Observed` is one chain: every frame of the group's stack — its recorded
+stack, or for a sampled group its most frequent sampled stack — from the test
+method JUnit invoked down to the group's divergence, the route's first method
+and its observed callee. The group's heading names its evidence, `Observed
+(recorded, ran once):` or `Observed (sampled):`, since the agent may trust
+every arrow of a recorded chain and only the frames of a sampled one. Nothing
+between them is left out
 or moved aside, so the chain reads in the order the code ran: the test's own
 helpers and lambdas, an assertion library that runs a lambda for the test, a
 JDK frame such as `DriverManager` ahead of the driver's `connect` or a stream
