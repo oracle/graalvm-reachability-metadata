@@ -1,0 +1,28 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_apache_pulsar.pulsar_client_all;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.apache.pulsar.shade.io.netty.channel.ReflectiveChannelFactory;
+import org.apache.pulsar.shade.io.netty.channel.socket.nio.NioSocketChannel;
+import org.junit.jupiter.api.Test;
+
+public class ReflectiveChannelFactoryTest {
+    @Test
+    void createsUsableChannelFromPublicNoArgConstructor() {
+        ReflectiveChannelFactory<NioSocketChannel> factory = new ReflectiveChannelFactory<>(NioSocketChannel.class);
+        NioSocketChannel channel = factory.newChannel();
+        try {
+            assertThat(channel.isOpen()).isTrue();
+            assertThat(channel.parent()).isNull();
+            assertThat(channel.config()).isNotNull();
+        } finally {
+            channel.close();
+        }
+    }
+}

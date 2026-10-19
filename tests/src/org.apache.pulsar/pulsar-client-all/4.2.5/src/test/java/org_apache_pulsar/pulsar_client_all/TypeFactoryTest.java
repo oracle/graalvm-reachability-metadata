@@ -21,9 +21,14 @@ public class TypeFactoryTest {
 
         JavaType listType = factory.constructFromCanonical("java.util.List<java.lang.String>");
         JavaType arrayType = factory.constructArrayType(String.class);
+        JavaType applicationType = factory.constructFromCanonical(Payload.class.getName());
 
         assertThat(listType.getRawClass()).isEqualTo(List.class);
         assertThat(listType.getContentType().getRawClass()).isEqualTo(String.class);
         assertThat(arrayType.getRawClass()).isEqualTo(String[].class);
+        assertThat(applicationType.getRawClass()).isEqualTo(Payload.class);
+    }
+
+    public static class Payload {
     }
 }
