@@ -15,6 +15,23 @@ String scala3Version = tck.scala3Version.get()
 
 dependencies {
     testImplementation "com.softwaremill.sttp.tapir:tapir-http4s-server_3:$libraryVersion"
+
+    // JSON APIs and static file endpoints interpreted by the target's http4s routes.
+    testImplementation "com.softwaremill.sttp.tapir:tapir-json-circe_3:1.11.25"
+    testImplementation "com.softwaremill.sttp.tapir:tapir-files_3:1.11.25"
+    testImplementation "io.circe:circe-generic_3:0.14.12"
+
+    // Application routes, middleware, and local HTTP/WebSocket transport.
+    testImplementation "org.http4s:http4s-core_3:0.23.30"
+    testImplementation "org.http4s:http4s-server_3:0.23.30"
+    testImplementation "org.http4s:http4s-ember-server_3:0.23.30"
+    testImplementation "org.http4s:http4s-ember-client_3:0.23.30"
+
+    // Resource-safe server logic, streaming bodies, SSE, and file upload/download I/O.
+    testImplementation "org.typelevel:cats-effect_3:3.6.1"
+    testImplementation "co.fs2:fs2-core_3:3.11.0"
+    testImplementation "co.fs2:fs2-io_3:3.11.0"
+
     testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
     testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
 }
