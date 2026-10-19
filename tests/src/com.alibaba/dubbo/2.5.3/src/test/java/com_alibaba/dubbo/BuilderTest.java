@@ -7,6 +7,7 @@
 package com_alibaba.dubbo;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.Serializable;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,16 @@ public class BuilderTest {
 
         assertThat(copy.payload).isEqualTo("configured");
         assertThat(copy.temporary).isNull();
+    }
+
+    @Test
+    void rejectsNestedNonSerializableValuesAfterInspectingConstructorsAndProperties() {
+        SerializableContainer source = new SerializableContainer(new NonSerializableValue());
+
+        assertThatThrownBy(() -> SerializationTestSupport.roundTrip("dubbo", source))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining(NonSerializableValue.class.getName())
+                .hasMessageContaining("must implement java.io.Serializable");
     }
 
     public static class DiscoveredFieldsValue implements Serializable {
@@ -61,4 +72,26 @@ public class BuilderTest {
             this.temporary = temporary;
         }
     }
+
+    public static class SerializableContainer implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private NonSerializableValue value;
+
+        public SerializableContainer() { }
+
+        SerializableContainer(NonSerializableValue value) {
+            this.value = value;
+        }
+
+        public NonSerializableValue getValue() {
+            return value;
+        }
+
+        public void setValue(NonSerializableValue value) {
+            this.value = value;
+        }
+    }
+
+    public static class NonSerializableValue { }
 }
