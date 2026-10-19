@@ -7,12 +7,13 @@
 package com_alibaba.druid;
 
 import com.alibaba.druid.util.MySqlUtils;
-import com.mysql.cj.jdbc.Driver;
+import com.mysql.jdbc.Driver;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -34,25 +35,27 @@ public class MySqlUtilsTest {
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/" + DATABASE
             + "?allowPublicKeyRetrieval=true&useSSL=false&connectTimeout=10000&socketTimeout=10000";
 
-    private static Process mysql;
+    private static Process mariadb;
 
     @BeforeAll
-    static void startMysql() throws IOException {
-        mysql = new ProcessBuilder(
+    static void startMariaDb() throws IOException {
+        mariadb = new ProcessBuilder(
                         "docker",
                         "run",
                         "--rm",
                         "-p",
                         "3306:3306",
                         "-e",
-                        "MYSQL_DATABASE=" + DATABASE,
+                        "MARIADB_DATABASE=" + DATABASE,
                         "-e",
-                        "MYSQL_USER=" + USERNAME,
+                        "MARIADB_USER=" + USERNAME,
                         "-e",
-                        "MYSQL_PASSWORD=" + PASSWORD,
-                        "container-registry.oracle.com/mysql/community-server:26.7.1")
-                .redirectOutput(new File("druid-mysql-stdout.txt"))
-                .redirectError(new File("druid-mysql-stderr.txt"))
+                        "MARIADB_PASSWORD=" + PASSWORD,
+                        "-e",
+                        "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true",
+                        "mariadb:13.0")
+                .redirectOutput(new File("druid-mariadb-stdout.txt"))
+                .redirectError(new File("druid-mariadb-stderr.txt"))
                 .start();
 
         Awaitility.await().atMost(Duration.ofSeconds(50)).ignoreExceptionsInstanceOf(SQLException.class).until(() -> {
@@ -63,12 +66,12 @@ public class MySqlUtilsTest {
     }
 
     @AfterAll
-    static void stopMysql() throws InterruptedException {
-        if (mysql != null && mysql.isAlive()) {
-            mysql.destroy();
-            if (!mysql.waitFor(10, TimeUnit.SECONDS)) {
-                mysql.destroyForcibly();
-                mysql.waitFor(10, TimeUnit.SECONDS);
+    static void stopMariaDb() throws InterruptedException {
+        if (mariadb != null && mariadb.isAlive()) {
+            mariadb.destroy();
+            if (!mariadb.waitFor(10, TimeUnit.SECONDS)) {
+                mariadb.destroyForcibly();
+                mariadb.waitFor(10, TimeUnit.SECONDS);
             }
         }
     }
@@ -84,6 +87,9 @@ public class MySqlUtilsTest {
             assertTrue(connectionId > 0);
             assertEquals("KILL QUERY " + connectionId, MySqlUtils.buildKillQuerySql(physical, null));
 
+            try (Statement statement = physical.createStatement()) {
+                assertTrue(statement.executeQuery("SELECT 1").next());
+            }
             long lastPacketReceived = MySqlUtils.getLastPacketReceivedTimeMs(physical);
             assertTrue(lastPacketReceived > 0);
             assertTrue(lastPacketReceived <= System.currentTimeMillis());
