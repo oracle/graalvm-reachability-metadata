@@ -34,6 +34,21 @@ public class JavaSerializerTest {
         assertThat(copy.created).isEqualTo(new Date(1234L));
     }
 
+    @Test
+    void honorsObjectAndCompanionWriteReplacement() throws Exception {
+        Replacement objectReplacement =
+                (Replacement)
+                        HessianTestSupport.roundTrip(
+                                new SelfReplacingValue("object"), Replacement.class);
+        Replacement factoryReplacement =
+                (Replacement)
+                        HessianTestSupport.roundTrip(
+                                new FactoryValue("factory"), Replacement.class);
+
+        assertThat(objectReplacement.value).isEqualTo("object");
+        assertThat(factoryReplacement.value).isEqualTo("factory");
+    }
+
     public static class Fields {
         boolean flag;
         int number;
@@ -42,5 +57,45 @@ public class JavaSerializerTest {
         double precise;
         String text;
         Date created;
+    }
+
+    public static class SelfReplacingValue {
+        String value;
+
+        public SelfReplacingValue() {}
+
+        SelfReplacingValue(String value) {
+            this.value = value;
+        }
+
+        public Replacement writeReplace() {
+            return new Replacement(value);
+        }
+    }
+
+    public static class FactoryValue {
+        String value;
+
+        public FactoryValue() {}
+
+        FactoryValue(String value) {
+            this.value = value;
+        }
+    }
+
+    public static class FactoryValueHessianSerializer {
+        public Replacement writeReplace(FactoryValue value) {
+            return new Replacement(value.value);
+        }
+    }
+
+    public static class Replacement {
+        String value;
+
+        public Replacement() {}
+
+        Replacement(String value) {
+            this.value = value;
+        }
     }
 }

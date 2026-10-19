@@ -19,9 +19,20 @@ public class J2oVisitorTest {
         HashMap<?, ?> map = JSON.parse("{\"name\":\"dubbo\"}", HashMap.class);
         ArrayList<?> list = JSON.parse("[1,2,3]", ArrayList.class);
         int[] values = JSON.parse("[4,5]", int[].class);
+        Payload payload =
+                JSON.parse("{\"name\":\"service\",\"ports\":[20880,20881]}", Payload.class);
 
         assertThat(map.get("name")).isEqualTo("dubbo");
         assertThat(list.toArray()).containsExactly(1L, 2L, 3L);
         assertThat(values).containsExactly(4, 5);
+        assertThat(payload.name).isEqualTo("service");
+        assertThat(payload.ports).containsExactly(20880, 20881);
+    }
+
+    public static class Payload {
+        public String name;
+        public int[] ports;
+
+        public Payload() {}
     }
 }

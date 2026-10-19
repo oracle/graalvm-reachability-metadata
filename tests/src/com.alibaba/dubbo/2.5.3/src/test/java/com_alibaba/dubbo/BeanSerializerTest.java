@@ -23,6 +23,21 @@ public class BeanSerializerTest {
         assertThat(copy.getCount()).isEqualTo(3);
     }
 
+    @Test
+    void honorsObjectAndCompanionWriteReplacement() throws Exception {
+        Replacement objectReplacement =
+                (Replacement)
+                        HessianTestSupport.roundTripBean(
+                                new SelfReplacingBean("object"), Replacement.class);
+        Replacement factoryReplacement =
+                (Replacement)
+                        HessianTestSupport.roundTripBean(
+                                new FactoryValue("factory"), Replacement.class);
+
+        assertThat(objectReplacement.getValue()).isEqualTo("object");
+        assertThat(factoryReplacement.getValue()).isEqualTo("factory");
+    }
+
     public static class Bean {
         private String name;
         private int count;
@@ -41,6 +56,62 @@ public class BeanSerializerTest {
 
         public void setCount(int count) {
             this.count = count;
+        }
+    }
+
+    public static class SelfReplacingBean {
+        private String value;
+
+        public SelfReplacingBean() {}
+
+        SelfReplacingBean(String value) {
+            this.value = value;
+        }
+
+        public Replacement writeReplace() {
+            return new Replacement(value);
+        }
+    }
+
+    public static class FactoryValue {
+        private String value;
+
+        public FactoryValue() {}
+
+        FactoryValue(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
+    public static class FactoryValueHessianSerializer {
+        public Replacement writeReplace(FactoryValue value) {
+            return new Replacement(value.getValue());
+        }
+    }
+
+    public static class Replacement {
+        private String value;
+
+        public Replacement() {}
+
+        Replacement(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 }

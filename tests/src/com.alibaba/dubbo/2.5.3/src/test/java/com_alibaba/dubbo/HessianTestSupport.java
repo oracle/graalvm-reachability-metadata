@@ -19,10 +19,19 @@ final class HessianTestSupport {
     private HessianTestSupport() {}
 
     static Object roundTrip(Object value) throws Exception {
-        return roundTrip(value, new SerializerFactory());
+        return roundTrip(value, value.getClass(), new SerializerFactory());
+    }
+
+    static Object roundTrip(Object value, Class<?> expectedType) throws Exception {
+        return roundTrip(value, expectedType, new SerializerFactory());
     }
 
     static Object roundTrip(Object value, SerializerFactory factory) throws Exception {
+        return roundTrip(value, value.getClass(), factory);
+    }
+
+    private static Object roundTrip(Object value, Class<?> expectedType, SerializerFactory factory)
+            throws Exception {
         factory.setAllowNonSerializable(true);
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         Hessian2Output output = new Hessian2Output(bytes);
@@ -32,10 +41,14 @@ final class HessianTestSupport {
 
         Hessian2Input input = new Hessian2Input(new ByteArrayInputStream(bytes.toByteArray()));
         input.setSerializerFactory(factory);
-        return input.readObject(value.getClass());
+        return input.readObject(expectedType);
     }
 
     static Object roundTripBean(Object value) throws Exception {
+        return roundTripBean(value, value.getClass());
+    }
+
+    static Object roundTripBean(Object value, Class<?> expectedType) throws Exception {
         SerializerFactory factory = new BeanSerializerFactory();
         factory.setAllowNonSerializable(true);
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -46,6 +59,6 @@ final class HessianTestSupport {
 
         HessianInput input = new HessianInput(new ByteArrayInputStream(bytes.toByteArray()));
         input.setSerializerFactory(factory);
-        return input.readObject(value.getClass());
+        return input.readObject(expectedType);
     }
 }
