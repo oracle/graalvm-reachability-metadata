@@ -29,12 +29,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ServiceConfigTest {
+    private static boolean adaptiveExtensionsInstalled;
+
     @BeforeAll
-    static void installStaticallyRepresentableAdaptiveExtensions() {
+    static synchronized void installStaticallyRepresentableAdaptiveExtensions() {
+        if (adaptiveExtensionsInstalled) {
+            return;
+        }
         ExtensionLoader.getExtensionLoader(Protocol.class)
                 .addExtension("static-adaptive", StaticAdaptiveProtocol.class);
         ExtensionLoader.getExtensionLoader(ProxyFactory.class)
                 .addExtension("static-adaptive", StaticAdaptiveProxyFactory.class);
+        adaptiveExtensionsInstalled = true;
     }
 
     @Test
