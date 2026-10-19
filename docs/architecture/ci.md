@@ -22,7 +22,8 @@ runners the test matrix uses, plus the build arguments for the build. The Gradle
 matrix-generation tasks (§AR-test-harness) read it and emit the GitHub Actions
 matrices the test workflows consume. It supports optional per-native-image-mode
 Java overrides via `nativeImageModeJavaVersions` when a mode should run on only a
-subset of the configured JDKs. Because the whole matrix derives from this file,
+subset of the configured JDKs, and an optional per-section `native-image-modes`
+list when one matrix should run only some of the modes. Because the whole matrix derives from this file,
 changing it re-runs everything: the infrastructure workflow
 (§AR-test-changed-infrastructure) treats a `ci.json` change as an infrastructure
 change.
@@ -69,8 +70,8 @@ networking, validates config, and runs only that batch (§FS-metadata,
 
 Triggers on PRs touching `real-use-tests/`. Runs `generateChangedRealUseMatrix`
 with the PR base/head SHAs, then `realUseJavaTest` and `realUseNativeTest` for
-each changed real-use project on the `generateChangedMetadataTestMatrix` JDK and
-OS matrix, after pulling allowed Docker images and disabling Docker networking.
+each changed real-use project on its own `generateChangedRealUseMatrix` lane
+(`latest-ea`, `current-defaults`), after pulling allowed Docker images and disabling Docker networking.
 It is one of the gates of §FS-repository-functional-spec.5.3, for the suite of
 §real-use-tests/FS-real-use-tests.3; the job itself is specified in
 §real-use-tests/AR-real-use-test-harness.4.

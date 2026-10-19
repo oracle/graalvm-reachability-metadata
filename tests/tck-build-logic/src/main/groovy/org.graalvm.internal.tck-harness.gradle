@@ -588,10 +588,6 @@ Map<String, List<String>> matrixDefaultsFor(String section) {
     ]
 }
 
-List<String> nativeImageModesForMatrix() {
-    NativeImageConfigUtils.modeNames(loadCi())
-}
-
 int versionsPerJobFor(String section) {
     def sec = matrixSectionFor(section)
     Object versionsPerJob = sec["versions-per-job"]
@@ -620,13 +616,13 @@ int maxLibrariesFor(String section) {
 
 List<Map<String, Object>> expandMatrixEntries(List<Map<String, Object>> entries, String section) {
     def defaults = matrixDefaultsFor(section)
-    List<String> nativeImageModes = nativeImageModesForMatrix()
+    Map<String, Object> ci = loadCi()
     NativeImageConfigUtils.expandMatrixEntries(
             entries,
             defaults["version"],
             defaults["os"],
-            nativeImageModes,
-            NativeImageConfigUtils.javaVersionsByMode(loadCi(), defaults["version"], nativeImageModes)
+            NativeImageConfigUtils.matrixModes(ci, section),
+            NativeImageConfigUtils.javaVersionsByMode(ci, defaults["version"], NativeImageConfigUtils.modeNames(ci))
     )
 }
 
@@ -726,7 +722,7 @@ Provider<Task> generateMatrixBatchedCoordinates = tasks.register("generateMatrix
 }
 
 // gradle generateChangedRealUseMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-// The changed real-use projects on the tests/ PR matrix
+// The changed real-use projects on their own single lane, latest-ea with current defaults
 // (§real-use-tests/AR-real-use-test-harness.4).
 tasks.register("generateChangedRealUseMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with coordinates of changed real-use projects")
@@ -747,7 +743,7 @@ tasks.register("generateChangedRealUseMatrix", DefaultTask) { task ->
                         ? []
                         : expandMatrixEntries(
                                 changed.collect { coordinate -> ["coordinates": coordinate] },
-                                "generateChangedMetadataTestMatrix"
+                                "generateChangedRealUseMatrix"
                         )
         ]
         if (noneFound) {
