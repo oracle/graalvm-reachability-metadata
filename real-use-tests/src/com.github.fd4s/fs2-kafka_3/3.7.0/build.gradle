@@ -15,6 +15,13 @@ String scala3Version = tck.scala3Version.get()
 
 dependencies {
     testImplementation "com.github.fd4s:fs2-kafka_3:$libraryVersion"
+    // JSON record values through custom fs2-kafka Serializer/Deserializer instances.
+    testImplementation "io.circe:circe-core_3:0.14.10"
+    testImplementation "io.circe:circe-generic_3:0.14.10"
+    testImplementation "io.circe:circe-parser_3:0.14.10"
+    // MockAdminClient for admin scenarios; no Kafka broker image is allowed, so producers and
+    // consumers run on kafka-clients' MockProducer and MockConsumer through MkProducer/MkConsumer.
+    testImplementation "org.apache.kafka:kafka-clients:3.9.0:test"
     testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
     testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
 }
