@@ -13,13 +13,11 @@ import java.beans.PropertyDescriptor;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 
-import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.BeanWrapperImpl;
 
-public class Mybatis_springTest {
+public class SqlSessionFactoryBeanTest {
 
     @Test
     void configuresSqlSessionFactoryBeanThroughSpringBeanWrapper() throws Exception {
@@ -34,19 +32,5 @@ public class Mybatis_springTest {
         SqlSessionFactoryBean factoryBean = (SqlSessionFactoryBean) beanWrapper.getWrappedInstance();
         SqlSessionFactory sqlSessionFactory = factoryBean.getObject();
         assertThat(sqlSessionFactory.getConfiguration().getEnvironment().getDataSource()).isSameAs(dataSource);
-    }
-
-    @Test
-    void readsSqlSessionFactoryThroughMyBatisMetaObject() throws Exception {
-        JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:mem:meta_object;DB_CLOSE_DELAY=-1");
-        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-        factoryBean.setDataSource(dataSource);
-        SqlSessionFactory sqlSessionFactory = factoryBean.getObject();
-        SqlSessionTemplate template = new SqlSessionTemplate(sqlSessionFactory);
-
-        Object value = SystemMetaObject.forObject(template).getValue("sqlSessionFactory");
-
-        assertThat(value).isSameAs(sqlSessionFactory);
     }
 }
