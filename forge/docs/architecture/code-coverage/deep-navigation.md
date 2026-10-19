@@ -9,12 +9,13 @@ navigation only (§GOAL-maximize-library-coverage).
 
 ## 1. Evidence sources
 
-Four sources feed navigation. Each answers one question the others cannot:
+Five sources feed navigation. Each answers one question the others cannot:
 
 | Source | Answers | Blind to |
 | --- | --- | --- |
 | Analysis call-tree CSV dump | what can call what | whether a call ever happens |
 | Sampled stacks (`samplingProfiles`) | where execution runs hot | cold code, which is every target |
+| Recorded calling contexts (`callingContexts`) | every stack that entered a library method, with its exact count | methods the compiler cannot probe: hidden classes such as lambda bodies, and entry points |
 | Instrumented counters (`conditionalProfiles`, `virtualInvokeProfiles`) | how often each branch successor ran; which receiver types each virtual call site saw | branches the compiler removed |
 | Bytecode control-flow table | where each branch leads | how often anything ran |
 
@@ -23,6 +24,14 @@ missed, never which successor, how often the taken side ran, or which
 implementation answered a virtual call. A sampler has counts, but a timer misses
 cold code, and every deep target is cold by definition. Instrumented counters
 close both gaps.
+
+A recorded calling context is a stack the run took, not one a timer happened to
+catch: an image built with calling-context recording records every distinct
+stack that reaches the entry of a library method, inlined frames included, and
+counts it exactly. A stack that ran once is recorded once. It proves the whole
+chain from the test into the method, so a route that starts from one needs no
+static hop to reach its caller (§2). A profile without the section keeps sampled
+routes; the section is optional evidence, never a gate.
 
 ### 1.1 One build, one run
 
@@ -95,6 +104,22 @@ caller. Only a route from a sampled frame enters the agent prompt: its observed
 path is the evidence the agent follows, and a public-entry route has none to
 show. Public-entry routes stay ranked in the JSON report and enter the prompt
 once a later run samples a frame on their covered prefix.
+
+When the profile carries recorded calling contexts (§1), a target's route
+starts at a recorded stack whose innermost frame is a covered caller of the
+target. The stack is exact evidence of how a test reaches that caller, so the
+only static step left is the uncovered call itself; no static hop stands in for
+a call nobody saw. A target usually has several covered callers, and each
+caller several recorded stacks; the one shown is the shortest: the fewest
+library frames from the innermost test frame — or from the outermost library
+frame, when the stack holds no test frame — down to the caller, and a stack
+with a test frame before one without. Equal lengths break on the higher reach
+count of the call into the target (§3), then the higher record count, then the
+canonical ids of the caller and of the stack. A recorded route enters the
+prompt like a sampled one, and shows its own stack rather than a most frequent
+one. A target none of whose covered callers was recorded — a caller the
+compiler cannot probe, or one JaCoCo covers that the native run never entered
+— keeps its sampled or public-entry route.
 
 `Observed` is one chain: every frame of the group's most frequent sampled
 stack, from the test method JUnit invoked down to the group's divergence, the
@@ -196,8 +221,10 @@ nothing there.
 Distance is the primary ranking key. Every route has exactly one uncovered
 call, so distance counts no obstacles; it measures how far the shown evidence
 starts from the caller, and at distance 1 the caller is itself the sampled
-frame or public entry. Equal-distance ties break, in order, on
-fewer unobserved dispatch steps, a sampled join before a public-entry join, the
+frame or public entry. A recorded route's distance counts the same way along
+its stack, from the test frame to the target, so its evidence starts where the
+test does. Equal-distance ties break, in order, on fewer unobserved dispatch
+steps, a recorded join before a sampled one before a public-entry join, the
 higher reach count of the target's diagnosis (§3), the higher sample count, and
 the canonical id. The reach count is how often the fork ran, or how often the
 dispatch site ran: how much existing test traffic arrives where the target
