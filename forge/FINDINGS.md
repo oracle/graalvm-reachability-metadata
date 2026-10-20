@@ -27,6 +27,12 @@ Forge could not obtain a readable pre-push review verdict. This records a review
 
 The first required finalization pass changed `stats/p6spy/p6spy/3.9.1/stats.json`: reproduced instruction coverage was 4093/14411 instead of 4092/14411, and line coverage was 998/3776 instead of 997/3776. The mirrored generated statistics therefore did not match the finalized test run.
 
+## 2026-10-15 — com.azure:azure-storage-internal-avro:12.14.0 (#10693)
+
+**Grund citation under the ASCII-only test tree**
+
+The contributed `tests/src/com.azure/azure-storage-internal-avro/12.14.0/build.gradle` contained the non-ASCII `§FS-test-contract.2.7` marker. Repository instructions prohibit grund citations anywhere under `tests/src` because that suite is ASCII-only.
+
 ## 2026-10-15 — org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2 (#8416)
 
 **Generated test used trivial assertions and pinned a companion artifact version**
