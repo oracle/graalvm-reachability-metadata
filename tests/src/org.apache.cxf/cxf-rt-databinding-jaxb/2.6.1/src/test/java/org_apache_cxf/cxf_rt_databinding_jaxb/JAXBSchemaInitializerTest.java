@@ -11,8 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.namespace.QName;
+import org.apache.cxf.bus.extension.ExtensionManagerBus;
 import org.apache.cxf.jaxb.JAXBDataBinding;
+import org.apache.cxf.service.Service;
 import org.apache.cxf.service.ServiceImpl;
+import org.apache.cxf.service.factory.ReflectionServiceFactoryBean;
 import org.apache.cxf.service.model.FaultInfo;
 import org.apache.cxf.service.model.InterfaceInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
@@ -45,6 +48,32 @@ public class JAXBSchemaInitializerTest {
         assertThat(part.getProperty(JAXBDataBinding.class.getName() + ".CUSTOM_EXCEPTION"))
                 .isEqualTo(Boolean.TRUE);
         assertThat(service.getSchema(NAMESPACE)).isNotNull();
+    }
+
+    @Test
+    void reflectionServiceFactoryBuildsFaultSchemaFromExceptionAccessors() {
+        JaxbTestSupport.disableOptimizedAccessors();
+        ExtensionManagerBus bus = new ExtensionManagerBus();
+        try {
+            JAXBDataBinding binding = new JAXBDataBinding();
+            ReflectionServiceFactoryBean factory = new ReflectionServiceFactoryBean();
+            factory.setBus(bus);
+            factory.setServiceClass(FaultService.class);
+            factory.setWrapped(false);
+            factory.setDataBinding(binding);
+
+            Service service = factory.create();
+            FaultInfo fault = service.getServiceInfos().get(0).getInterface()
+                    .getOperations().iterator().next().getFaults().iterator().next();
+
+            assertThat(fault.getMessageParts().get(0).getXmlSchema()).isNotNull();
+        } finally {
+            bus.shutdown(true);
+        }
+    }
+
+    public interface FaultService {
+        String invoke(String value) throws ServiceFault;
     }
 
     @XmlAccessorType(XmlAccessType.PROPERTY)

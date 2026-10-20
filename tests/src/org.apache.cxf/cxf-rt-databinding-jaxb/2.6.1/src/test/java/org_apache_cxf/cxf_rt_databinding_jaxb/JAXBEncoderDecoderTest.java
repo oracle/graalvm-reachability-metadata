@@ -10,7 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -25,13 +27,20 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import org.apache.cxf.bus.extension.ExtensionManagerBus;
 import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.jaxb.JAXBEncoderDecoder;
+import org.apache.cxf.service.Service;
+import org.apache.cxf.service.factory.ReflectionServiceFactoryBean;
 import org.apache.cxf.service.model.InterfaceInfo;
 import org.apache.cxf.service.model.MessageInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.ServiceInfo;
+import org.apache.cxf.service.model.UnwrappedOperationInfo;
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.junit.jupiter.api.Test;
 
 public class JAXBEncoderDecoderTest {
@@ -112,6 +121,86 @@ public class JAXBEncoderDecoderTest {
     }
 
     @Test
+    void restoresFieldAndPropertyArraysForCustomExceptions() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
+        JAXBContext context = JAXBContext.newInstance(String.class);
+        MessagePartInfo fieldPart = newPart(FieldException.class, "fieldFault");
+        String fieldXml = "<fieldFault xmlns=\"" + NAMESPACE
+                + "\"><detail>field detail</detail><labels>one</labels><labels>two</labels>"
+                + "</fieldFault>";
+        XMLStreamReader fieldReader = XMLInputFactory.newFactory()
+                .createXMLStreamReader(new StringReader(fieldXml));
+        fieldReader.nextTag();
+
+        FieldException fieldException = (FieldException) JAXBEncoderDecoder.unmarshallException(
+                context.createUnmarshaller(), fieldReader, fieldPart);
+
+        assertThat(fieldException.detail).isEqualTo("field detail");
+        assertThat(fieldException.labels).containsExactly("one", "two");
+
+        MessagePartInfo propertyPart = newPart(BooleanPropertyException.class, "propertyFault");
+        String propertyXml = "<propertyFault xmlns=\"" + NAMESPACE
+                + "\"><retryable>true</retryable><codes>3</codes><codes>5</codes>"
+                + "</propertyFault>";
+        XMLStreamReader propertyReader = XMLInputFactory.newFactory()
+                .createXMLStreamReader(new StringReader(propertyXml));
+        propertyReader.nextTag();
+
+        BooleanPropertyException propertyException = (BooleanPropertyException)
+                JAXBEncoderDecoder.unmarshallException(
+                        context.createUnmarshaller(), propertyReader, propertyPart);
+
+        assertThat(propertyException.isRetryable()).isTrue();
+        assertThat(propertyException.getCodes()).containsExactly(3, 5);
+    }
+
+    @Test
+    void unmarshalsRepeatedObjectAndPrimitiveElementsAsArrays() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
+        JAXBContext context = JAXBContext.newInstance(String.class, Integer.class);
+
+        MessagePartInfo stringPart = repeatedPart(String.class, "name");
+        XMLStreamReader stringReader = repeatedReader("name", "Ada", "Grace");
+        String[] names = (String[]) JAXBEncoderDecoder.unmarshall(
+                context.createUnmarshaller(), stringReader, stringPart, true);
+
+        MessagePartInfo intPart = repeatedPart(Integer.TYPE, "number");
+        XMLStreamReader intReader = repeatedReader("number", "7", "11");
+        int[] numbers = (int[]) JAXBEncoderDecoder.unmarshall(
+                context.createUnmarshaller(), intReader, intPart, true);
+
+        assertThat(names).containsExactly("Ada", "Grace");
+        assertThat(numbers).containsExactly(7, 11);
+    }
+
+    @Test
+    void preservesConcreteListAndSetTypesWhenReadingRepeatedElements() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
+        ExtensionManagerBus bus = new ExtensionManagerBus();
+        try {
+            JAXBDataBinding binding = new JAXBDataBinding();
+            ReflectionServiceFactoryBean factory = new ReflectionServiceFactoryBean();
+            factory.setBus(bus);
+            factory.setServiceClass(CollectionService.class);
+            factory.setWrapped(false);
+            factory.setDataBinding(binding);
+            Service service = factory.create();
+
+            MessagePartInfo listPart = outputPart(service, "listValues");
+            Object list = readRepeated(binding, listPart, "alpha", "beta");
+            MessagePartInfo setPart = outputPart(service, "setValues");
+            Object set = readRepeated(binding, setPart, "alpha", "beta");
+
+            assertThat(list).isInstanceOf(ValueList.class);
+            assertThat((ValueList<String>) list).containsExactly("alpha", "beta");
+            assertThat(set).isInstanceOf(ValueSet.class);
+            assertThat((ValueSet<String>) set).containsExactly("alpha", "beta");
+        } finally {
+            bus.shutdown(true);
+        }
+    }
+
+    @Test
     void unmarshalsWithSchemaValidation() throws Exception {
         JaxbTestSupport.disableOptimizedAccessors();
         String schemaText = """
@@ -135,6 +224,62 @@ public class JAXBEncoderDecoderTest {
         assertThat(value).isEqualTo("validated");
     }
 
+    private static MessagePartInfo outputPart(Service service, String operationName) {
+        for (OperationInfo operation : service.getServiceInfos().get(0).getInterface().getOperations()) {
+            if (operationName.equals(operation.getName().getLocalPart())) {
+                return operation.getOutput().getMessagePart(0);
+            }
+        }
+        throw new IllegalArgumentException("No operation named " + operationName);
+    }
+
+    private static Object readRepeated(
+            JAXBDataBinding binding, MessagePartInfo part, String first, String second) throws Exception {
+        QName name = part.getConcreteName();
+        XMLStreamReader reader = repeatedReader(name, first, second);
+        return JAXBEncoderDecoder.unmarshall(
+                binding.getContext().createUnmarshaller(), reader, part, true);
+    }
+
+    private static MessagePartInfo repeatedPart(Class<?> componentType, String localName) {
+        ServiceInfo service = new ServiceInfo();
+        service.setName(new QName(NAMESPACE, "ArrayService"));
+        InterfaceInfo iface = service.createInterface(new QName(NAMESPACE, "ArrayPort"));
+        OperationInfo wrapped = iface.addOperation(new QName(NAMESPACE, "read" + localName));
+        UnwrappedOperationInfo operation = new UnwrappedOperationInfo(wrapped);
+        wrapped.setUnwrappedOperation(operation);
+        MessageInfo message = operation.createMessage(
+                new QName(NAMESPACE, localName + "Message"), MessageInfo.Type.OUTPUT);
+        operation.setOutput(localName + "Message", message);
+        MessagePartInfo part = message.addMessagePart(new QName(NAMESPACE, localName));
+        part.setConcreteName(new QName(NAMESPACE, localName));
+        part.setTypeClass(componentType == Integer.TYPE ? int[].class : String[].class);
+        XmlSchema schema = new XmlSchema(NAMESPACE, new XmlSchemaCollection());
+        XmlSchemaElement element = new XmlSchemaElement(schema, false);
+        element.setName(localName);
+        element.setMaxOccurs(2);
+        part.setXmlSchema(element);
+        return part;
+    }
+
+    private static XMLStreamReader repeatedReader(String localName, String first, String second)
+            throws Exception {
+        return repeatedReader(new QName(NAMESPACE, localName), first, second);
+    }
+
+    private static XMLStreamReader repeatedReader(QName name, String first, String second)
+            throws Exception {
+        String localName = name.getLocalPart();
+        String xml = "<values xmlns=\"" + name.getNamespaceURI() + "\"><" + localName + ">" + first
+                + "</" + localName + "><" + localName + ">" + second + "</" + localName
+                + "></values>";
+        XMLStreamReader reader = XMLInputFactory.newFactory()
+                .createXMLStreamReader(new StringReader(xml));
+        reader.nextTag();
+        reader.nextTag();
+        return reader;
+    }
+
     private static MessagePartInfo newPart(Class<?> type, String localName) {
         ServiceInfo service = new ServiceInfo();
         service.setName(new QName(NAMESPACE, "ExceptionService"));
@@ -149,6 +294,22 @@ public class JAXBEncoderDecoderTest {
         part.setTypeClass(type);
         part.setProperty(JAXBDataBinding.class.getName() + ".CUSTOM_EXCEPTION", Boolean.TRUE);
         return part;
+    }
+
+    public interface CollectionService {
+        ValueList<String> listValues();
+
+        ValueSet<String> setValues();
+    }
+
+    public static class ValueList<T> extends ArrayList<T> {
+        public ValueList() {
+        }
+    }
+
+    public static class ValueSet<T> extends LinkedHashSet<T> {
+        public ValueSet() {
+        }
     }
 
     @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -199,6 +360,31 @@ public class JAXBEncoderDecoderTest {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class InheritedFieldException extends PublicFaultFields {
         public InheritedFieldException() {
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.PROPERTY)
+    public static class BooleanPropertyException extends Exception {
+        private boolean retryable;
+        private int[] codes;
+
+        public BooleanPropertyException() {
+        }
+
+        public boolean isRetryable() {
+            return retryable;
+        }
+
+        public void setRetryable(boolean retryable) {
+            this.retryable = retryable;
+        }
+
+        public int[] getCodes() {
+            return codes;
+        }
+
+        public void setCodes(int[] codes) {
+            this.codes = codes.clone();
         }
     }
 
