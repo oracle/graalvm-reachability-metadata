@@ -8,8 +8,8 @@
 Turns the correlated report and prompt records into the compact prompt
 markdown and the guidance-only LCOV file (§AR-code-coverage-improvement.3):
 each group's observed chain and routes, its miss classifications in one
-section per cause (§AR-code-coverage-deep-navigation.3.3), and the test that
-reaches it (§AR-code-coverage-deep-navigation.2).
+section per cause (§AR-code-coverage-deep-navigation.3.3), with the test that
+reaches it at the head of the chain (§AR-code-coverage-deep-navigation.2).
 """
 
 from __future__ import annotations
@@ -31,8 +31,9 @@ from utility_scripts.code_coverage_profile_records import (
 from utility_scripts.code_coverage_profile_routes import Sample, SampledProfile
 from utility_scripts.code_coverage_profile_trace import (
     GroupTrace,
+    ObservedFrame,
     SampleTrace,
-    called_from_test_lines,
+    untraced,
 )
 
 # A thematic break between consecutive route groups; a blank line always
@@ -51,6 +52,22 @@ def _display_refs(path: list[MethodRef | None]) -> str:
             continue
         labels.append(display_method(ref, ref.owner != previous_owner))
         previous_owner = ref.owner
+    return " → ".join(labels)
+
+
+def observed_chain(chain: list[ObservedFrame]) -> str:
+    """The `Observed` chain: a test frame with its line, a test lambda as
+    `lambda` (§AR-code-coverage-deep-navigation.2)."""
+    labels: list[str] = []
+    previous_owner: str | None = None
+    for frame in chain:
+        qualify: bool = frame.ref.owner != previous_owner
+        label: str = (
+            (f"{simple_owner(frame.ref.owner)}.lambda" if qualify else "lambda")
+            if frame.is_lambda else display_method(frame.ref, qualify)
+        )
+        labels.append(f"{label} (line {frame.line})" if frame.line is not None else label)
+        previous_owner = frame.ref.owner
     return " → ".join(labels)
 
 
@@ -87,9 +104,7 @@ def _prompt_line(
 ) -> str:
     """One prompt path with its synthetic-method notes."""
     note: dict = notes.get(record.target_ref.canonical_id, {})
-    # A public target may be called directly, unlike an internal one
-    # (§AR-code-coverage-improvement.4.2).
-    suffixes: list[str] = ["public API"] if note.get("publicApi") else []
+    suffixes: list[str] = []
     closures: dict | None = note.get("closures")
     if closures is not None and closures["unexecuted"]:
         suffixes.append(
@@ -206,14 +221,19 @@ def write_markdown(
             static_id
             for static_id, _ in sample.path[join_index:join_index + 2]
         ]
-        # The most frequent stack that reaches the divergence, from the test's
-        # call down (§AR-code-coverage-deep-navigation.2).
+        # The most frequent stack that reaches the divergence, from the test
+        # method down (§AR-code-coverage-deep-navigation.2).
         group: GroupTrace = (
             trace.group(tuple(divergence)) if trace is not None
-            else GroupTrace(translated_path(divergence, graph))
+            else untraced(translated_path(divergence, graph))
         )
         lines.append("Observed:")
-        lines.append(f"`{_display_refs(list(group.chain))}`")
+        lines.append(f"`{observed_chain(group.chain)}`")
+        files: list[str] = group.test_files
+        if files:
+            label: str = "Test file" if len(files) == 1 else "Test files"
+            lines.append(f"{label}: {', '.join(f'`{path}`' for path in files)}")
+        tested = tested or bool(files)
         lines.append("")
         lines.append("Uncovered paths:")
         for record in records:
@@ -223,9 +243,6 @@ def write_markdown(
         lines += diagnosis_lines(
             [_diagnosis(record, graph, notes) for record in records], sources,
         )
-        test_block: list[str] = called_from_test_lines(group)
-        lines += ["", *test_block] if test_block else []
-        tested = tested or bool(test_block)
         lines.append("")
     # Locations are relative to the stated source root, which only a prompt
     # with a resolved location states (§AR-code-coverage-deep-navigation.3.2).

@@ -37,7 +37,7 @@ def native(workspace: str) -> int:
     §FS-real-use-test-generation.2.4
     """
     state: RunState = load(workspace)
-    if not scenarios.scenario_files(state.test_java_path):
+    if not scenarios.scenario_files(state.test_source_path):
         print("[native] no scenario remains")
         return NO_SCENARIO_LEFT
     if _run_native(workspace, state, "realUseNativeTest.log").ok:
@@ -76,7 +76,7 @@ def collect_metadata(workspace: str) -> int:
         os.path.join(os.path.dirname(output), AGENT_OUTPUT),
         state.metadata_path,
         local_metadata.filter_prefixes(state.filter_path),
-        scenarios.test_packages(state.test_java_path),
+        scenarios.test_packages(state.test_source_path),
     )
     if not copied:
         print("[collect-metadata] the agent collected nothing new; the native fix agent follows")

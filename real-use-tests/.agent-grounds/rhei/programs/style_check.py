@@ -27,7 +27,7 @@ def style_check(workspace: str) -> int:
     with open(prompt_path, "w", encoding="utf-8") as handle:
         # The prompt is a declared output, so it exists on every exit.
         handle.write("The style checks passed; no publication fix runs.\n")
-    if not scenarios.scenario_files(state.test_java_path):
+    if not scenarios.scenario_files(state.test_source_path):
         print("[style-check] no scenario remains")
         return NO_SCENARIO_LEFT
     failures: dict[str, str] = {}

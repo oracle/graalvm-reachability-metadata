@@ -3,11 +3,36 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-20 — com.alibaba:dubbo:2.5.3 (#10994)
+
+**Native module-opening flags mask test-shaped JDK-internal access**
+
+The contribution added --add-opens=java.base/java.lang=ALL-UNNAMED as both a test JVM argument and a Native Image build argument without satisfying FS-test-contract.2.7 and Review Signal #12's uniform-necessity rule. Running ./gradlew javaTest without the flags showed that HessianInputTest failed only because its chosen fault detail serialized Throwable.detailMessage, while PojoUtilsTest expected Dubbo to mutate that same private JDK field and received a null message when module access was closed. The already-passing suite and a compliant Hessian fault shape demonstrate that the flag originated in these test scenarios rather than an unavoidable library-wide requirement.
+
+## 2026-10-19 — com.alibaba:dubbo:2.5.3 (#10994)
+
+**Completed dynamic-access classes lacked dedicated test files**
+
+The exhaust report marked com.alibaba.com.caucho.hessian.io.SerializerFactory and com.alibaba.dubbo.common.utils.PojoUtils$PojoInvocationHandler as completed, but the contribution had no dedicated SerializerFactoryTest or PojoUtilsInnerPojoInvocationHandlerTest. This violated the one-test-file-per-dynamic-access-class requirement in FS-test-contract.1.8.
+
+## 2026-10-19 — org.apache.pulsar:pulsar-client-all:4.2.5 (#10642)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
+## 2026-10-19 — p6spy:p6spy:3.9.1 (#10912)
+
+**Committed library statistics were stale**
+
+The first required finalization pass changed `stats/p6spy/p6spy/3.9.1/stats.json`: reproduced instruction coverage was 4093/14411 instead of 4092/14411, and line coverage was 998/3776 instead of 997/3776. The mirrored generated statistics therefore did not match the finalized test run.
+
 ## 2026-10-15 — com.azure:azure-storage-internal-avro:12.14.0 (#10693)
 
 **Grund citation under the ASCII-only test tree**
 
 The contributed `tests/src/com.azure/azure-storage-internal-avro/12.14.0/build.gradle` contained the non-ASCII `§FS-test-contract.2.7` marker. Repository instructions prohibit grund citations anywhere under `tests/src` because that suite is ASCII-only.
+
 ## 2026-10-15 — org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2 (#8416)
 
 **Generated test used trivial assertions and pinned a companion artifact version**

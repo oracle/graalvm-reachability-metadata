@@ -7,6 +7,8 @@
 package org.graalvm.internal.tck.utils;
 
 import org.gradle.api.GradleException;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
+import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -51,6 +53,27 @@ class RealUseUtilsTests {
                   ]
                 }
                 """);
+    }
+
+    @Test
+    void languageToolchainsAreNotDeclarations() {
+        DependencyHandler dependencies = ProjectBuilder.builder().withProjectDir(tempDir.toFile()).build().getDependencies();
+
+        for (String toolchain : List.of(
+                "org.jetbrains.kotlin:kotlin-stdlib:2.2.0",
+                "org.jetbrains.kotlin:kotlin-test-junit5:2.2.0",
+                "org.scala-lang:scala3-library_3:3.3.6",
+                "org.scala-lang:scala3-compiler_3:3.3.6",
+                "org.scala-lang:scala-library:2.13.16",
+                "org.scala-lang:scala-compiler:2.13.16")) {
+            assertThat(RealUseUtils.isHarnessLibrary(dependencies.create(toolchain))).as(toolchain).isTrue();
+        }
+        for (String library : List.of(
+                "org.jetbrains.kotlin:kotlin-reflect:2.2.0",
+                "org.jetbrains.kotlin:kotlin-scripting-jsr223:2.3.21",
+                "org.scala-lang.modules:scala-xml_3:2.3.0")) {
+            assertThat(RealUseUtils.isHarnessLibrary(dependencies.create(library))).as(library).isFalse();
+        }
     }
 
     @Test

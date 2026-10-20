@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""End-to-end and unit tests for the real-use workflow programs.
+"""End-to-end tests for the real-use workflow programs.
 
 A fake repository with a scripted `gradlew` stands in for the harness, and the
 test plays the agent, so each program's exit code can be checked against the
@@ -25,112 +25,22 @@ from typing import Iterator
 
 PROGRAMS: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROGRAMS)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import build_tools  # noqa: E402
-import local_metadata  # noqa: E402
+import publish  # noqa: E402
 import real_use  # noqa: E402
-import run_summary  # noqa: E402
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, NATIVE_FAILED, NO_SCENARIO_LEFT, OK, STYLE_FAILED  # noqa: E402
+from fake_harness import FAKE_GH, FAKE_GRADLEW  # noqa: E402
 from run_state import load  # noqa: E402
 
 COORDINATE: str = "org.example:lib:1.0.0"
 PROJECT: str = os.path.join("real-use-tests", "src", "org.example", "lib", "1.0.0")
+STATS: str = os.path.join("real-use-tests", "stats", "org.example", "lib", "1.0.0", "stats.json")
+STATS_SCHEMA: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "schemas",
+                                 "stats-schema.json")
 METADATA: str = os.path.join("src", "test", "resources", "META-INF", "native-image", "reachability-metadata.json")
 
-# The scripted harness. Control file keys: unresolvable (the filter task fails),
-# spotlessFailing (a file spotless reports), checkstyleFailing (classes checkstyle
-# rejects), nativeNeeds
-# (class -> typeReached it needs), nativeUnfixable, collected (the entries the
-# native-image agent writes when realUseJavaTest runs with an agent output),
-# jacocoFails (the coverage run fails).
-FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
-import glob, json, os, sys
-task = next(arg for arg in sys.argv[1:] if not arg.startswith("-"))
-control = json.load(open(os.environ["FAKE_GRADLE_CONTROL"]))
-root = os.path.dirname(os.path.abspath(__file__))
-project = os.path.join(root, "real-use-tests", "src", "org.example", "lib", "1.0.0")
-java = os.path.join(project, "src", "test", "java")
-def present():
-    names = []
-    for path in glob.glob(os.path.join(java, "**", "*.java"), recursive=True):
-        names.append(os.path.relpath(path, java)[:-5].replace(os.sep, "."))
-    return names
-def report(lane, failing):
-    out = os.path.join(project, "build", "test-results", lane)
-    os.makedirs(out, exist_ok=True)
-    cases = "".join(
-        '<testcase classname="%s" name="t">%s</testcase>' % (name, "<failure/>" if name in failing else "")
-        for name in present())
-    open(os.path.join(out, "TEST-all.xml"), "w").write("<testsuite>%s</testsuite>" % cases)
-    return 1 if failing else 0
-agent_output = next((arg.split("=", 1)[1] for arg in sys.argv[1:]
-                     if arg.startswith("-Ptck.realUse.agentOutput=")), None)
-def native_failing():
-    local = os.path.join(project, "src", "test", "resources", "META-INF", "native-image", "reachability-metadata.json")
-    reached = set()
-    if os.path.exists(local):
-        for entry in json.load(open(local)).get("reflection", []):
-            reached.add(entry["condition"]["typeReached"])
-    needs = control.get("nativeNeeds", {})
-    return [name for name in present()
-            if name in control.get("nativeUnfixable", []) or (name in needs and needs[name] not in reached)]
-if task == "scaffoldRealUseTest":
-    os.makedirs(java, exist_ok=True)
-    open(os.path.join(project, "build.gradle"), "w").write("// scaffold\n")
-elif task == "generateRealUseFilter":
-    if control.get("unresolvable"):
-        sys.exit(1)
-    rules = [{"excludeClasses": "**"}, {"includeClasses": "org.example.lib.**"}]
-    open(os.path.join(project, "user-code-filter.json"), "w").write(json.dumps({"rules": rules}))
-elif task == "realUseJavaTest":
-    if agent_output:
-        out = open(os.path.join(agent_output, "reachability-metadata.json"), "w")
-        out.write(json.dumps({"reflection": control.get("collected", [])}))
-elif task == "spotlessCheck":
-    if control.get("spotlessFailing"):
-        print("The following files had format violations: %s" % control["spotlessFailing"])
-        sys.exit(1)
-elif task == "checkstyle":
-    failing = [n for n in present() if n in control.get("checkstyleFailing", [])]
-    for name in failing:
-        print("[ERROR] %s.java:1: bad style" % os.path.join(java, *name.split(".")))
-    sys.exit(1 if failing else 0)
-elif task == "realUseNativeTest":
-    sys.exit(report("test-native", native_failing()))
-elif task == "realUseJacocoReport":
-    if control.get("jacocoFails"):
-        sys.exit(1)
-    out = os.path.join(project, "build", "reports", "jacoco", "test")
-    os.makedirs(out, exist_ok=True)
-    open(os.path.join(out, "jacocoTestReport.xml"), "w").write(
-        '<report name="lib"><package name="org/example/lib">'
-        '<counter type="LINE" missed="1" covered="1"/></package>'
-        '<counter type="INSTRUCTION" missed="30" covered="70"/>'
-        '<counter type="LINE" missed="5" covered="15"/>'
-        '<counter type="METHOD" missed="2" covered="8"/></report>')
-'''
-
-# The fake Forge real-use route: records its arguments and prints the pushed branch,
-# or fails when the control file says so.
-FAKE_PUBLISH_ROUTE: str = r'''import json, os, sys
-control = json.load(open(os.environ["FAKE_GRADLE_CONTROL"]))
-if control.get("pushFails"):
-    print("gh: not authenticated")
-    sys.exit(1)
-args = sys.argv[1:]
-json.dump(args, open(os.environ["FAKE_PUBLISH_RECORD"], "w"))
-print("Pushed ai/octocat/real-use-lib-1.0.0-forge-real-use-1 for org.example:lib:1.0.0.")
-'''
-
-# The fake `gh`: serves the control file's `issue` for `gh issue view`.
-FAKE_GH: str = r'''#!/usr/bin/env python3
-import json, os, sys
-issue = json.load(open(os.environ["FAKE_GRADLE_CONTROL"])).get("issue")
-if sys.argv[1:3] != ["issue", "view"] or issue is None:
-    print("issue not found", file=sys.stderr)
-    sys.exit(1)
-print(json.dumps(issue))
-'''
 ISSUE: dict = {"title": "Real-use tests for org.example:lib:1.0.0", "state": "OPEN",
                "labels": [{"name": "real-use-test"}]}
 
@@ -185,19 +95,19 @@ class WorkflowTest(unittest.TestCase):
         with open(gradlew, "w") as handle:
             handle.write(FAKE_GRADLEW)
         os.chmod(gradlew, os.stat(gradlew).st_mode | stat.S_IEXEC)
-        route: str = os.path.join(self.repo, "forge", "git_scripts", "publish_real_use_tests.py")
-        os.makedirs(os.path.dirname(route))
-        with open(route, "w") as handle:
-            handle.write(FAKE_PUBLISH_ROUTE)
         with open(os.path.join(self.repo, ".gitignore"), "w") as handle:
             handle.write("build/\n")
         for command in (["init", "-q", "-b", "master"], ["config", "user.email", "t@example.com"],
                         ["config", "user.name", "Test"], ["add", "-A"], ["commit", "-q", "-m", "base"]):
             subprocess.run(["git", *command], cwd=self.repo, check=True)
+        # The upstream the publication branch is pushed to.
+        self.remote: str = os.path.join(self.tmp, "upstream.git")
+        subprocess.run(["git", "init", "-q", "--bare", self.remote], check=True)
+        for command in (["remote", "add", "origin", self.remote], ["push", "-q", "origin", "master"]):
+            subprocess.run(["git", *command], cwd=self.repo, check=True)
         self.control_path: str = os.path.join(self.tmp, "control.json")
         self.control({})
         os.environ["FAKE_GRADLE_CONTROL"] = self.control_path
-        os.environ["FAKE_PUBLISH_RECORD"] = os.path.join(self.tmp, "publish.json")
         bin_dir: str = os.path.join(self.tmp, "bin")
         os.makedirs(bin_dir)
         fake_gh: str = os.path.join(bin_dir, "gh")
@@ -247,6 +157,12 @@ class WorkflowTest(unittest.TestCase):
     def read(self, path: str) -> str:
         with open(path) as handle:
             return handle.read()
+
+    def assertValidStats(self, record: dict) -> None:
+        """The record holds to the schema the trusted publisher validates it against."""
+        from jsonschema import Draft202012Validator
+
+        Draft202012Validator(json.loads(self.read(STATS_SCHEMA))).validate(record)
 
     def write_scenario(self, name: str, subsystem: str) -> None:
         self.write(self.scenario_path(name), SCENARIO.format(name=name, subsystem=subsystem))
@@ -312,13 +228,15 @@ class WorkflowTest(unittest.TestCase):
         self.control({"checkstyleFailing": [], "spotlessFailing": ""})
         self.write(os.path.join(state.worktree, "OUTSIDE.md"), "an agent edit outside the project\n")
         self.assertEqual(OK, self.step("publish"))
-        self.assertEqual(declared, build_tools.git(state.worktree, "rev-parse", "HEAD~1").strip())
-        self.assertIn("Add real-use tests for lib 1.0.0", build_tools.git(state.worktree, "log", "-1", "--format=%s"))
-        committed: list[str] = build_tools.git(state.worktree, "show", "--name-only", "--format=", "HEAD").splitlines()
+        self.assertEqual(declared, build_tools.git(state.worktree, "rev-parse", "HEAD~2").strip())
+        self.assertIn("Add real-use tests for lib 1.0.0", build_tools.git(state.worktree, "log", "-1", "--format=%s", "HEAD~1"))
+        committed: list[str] = build_tools.git(state.worktree, "show", "--name-only", "--format=", "HEAD~1").splitlines()
         self.assertTrue(all(path.startswith(PROJECT + os.sep) for path in committed))
         self.assertIn(os.path.join(PROJECT, METADATA), committed)
         self.assertIn(os.path.join(PROJECT, "src", "test", "java", "com", "example", "realuse", "BrokenStyleTest.java"), committed)
-        facts: dict = json.loads(self.read(self.runtime("publication", "render.json")))
+        # The stats record is the last commit, alone, and the branch carries it upstream.
+        self.assertEqual([STATS], build_tools.git(state.worktree, "show", "--name-only", "--format=", "HEAD").splitlines())
+        facts: dict = json.loads(self.read(os.path.join(state.worktree, STATS)))
         self.assertEqual({"line": {"covered": 15, "total": 20, "ratio": 0.75},
                           "instruction": {"covered": 70, "total": 100, "ratio": 0.7},
                           "method": {"covered": 8, "total": 10, "ratio": 0.8}}, facts["library_coverage"])
@@ -326,11 +244,13 @@ class WorkflowTest(unittest.TestCase):
                          facts["tokens"])
         self.assertEqual(2, facts["iterations"])
         self.assertEqual([], facts["removed"])
-        pushed: list[str] = json.loads(self.read(os.environ["FAKE_PUBLISH_RECORD"]))
-        self.assertEqual(["--repo-path", state.worktree, "--coordinates", COORDINATE, "--issue-number", "10900",
-                          "--timestamp", state.started_at, "--render-json", self.runtime("publication", "render.json")],
-                         pushed[:10])
-        self.assertIn("Pushed ai/octocat/", self.read(self.runtime("publication", "branch.md")))
+        self.assertEqual((10900, state.started_at), (facts["issue_number"], facts["timestamp"]))
+        branch: str = f"ai/octocat/real-use-lib-1.0.0-{publish.publication_id(state)}"
+        self.assertRegex(branch, r"-forge-10900-\d{14,20}-[0-9a-f]{12}$")
+        self.assertEqual(build_tools.git(state.worktree, "rev-parse", "HEAD").strip(),
+                         build_tools.git(self.remote, "rev-parse", branch).strip())
+        self.assertEqual(f"Pushed {branch} for {COORDINATE}.\n", self.read(self.runtime("publication", "branch.md")))
+        self.assertValidStats(facts)
         self.assertIn("publish exited 0", self.read(os.environ["RHEI_RESULT_PATH"]))
 
     def native_agent_fix_turn(self) -> None:
@@ -364,15 +284,15 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step("style-check"))
         self.assertIn("no publication fix runs", self.read(self.runtime("prompts", "publication-fix.md")))
         self.assertEqual(OK, self.step("publish"))
-        committed: list[str] = build_tools.git(load(self.workspace).worktree, "show", "--name-only", "--format=", "HEAD").splitlines()
+        committed: list[str] = build_tools.git(load(self.workspace).worktree, "show", "--name-only", "--format=", "HEAD~1").splitlines()
         self.assertNotIn(stray, committed)
         self.assertIn(os.path.join(PROJECT, METADATA), committed)
         self.assertIn(os.path.join(PROJECT, "build.gradle"), committed)
-        facts: dict = json.loads(self.read(self.runtime("publication", "render.json")))
+        facts: dict = json.loads(self.read(os.path.join(load(self.workspace).worktree, STATS)))
         self.assertEqual([{"scenario": os.path.join(PROJECT, "src", "test", "java", "com", "example", "realuse",
                                                     "BytecodeTest.java"),
                            "reason": "generates bytecode at run time"}], facts["removed"])
-        self.assertEqual(0, facts["iterations"])
+        self.assertEqual(1, facts["iterations"])
 
     def test_no_scenario_left_ends_before_publication(self) -> None:
         self.native_agent_fix_turn()
@@ -384,10 +304,10 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.prepare(passes="1"))
         self.preflight()
         self.write_scenario("ClientRoundTripTest", "Sends requests through the client")
-        self.control({"pushFails": True})
+        self.control({"loginFails": True})
         self.assertEqual(INFRASTRUCTURE, self.step("publish"))
         head: str = build_tools.git(load(self.workspace).worktree, "rev-parse", "HEAD").strip()
-        self.control({"pushFails": False})
+        self.control({"loginFails": False})
         self.assertEqual(OK, self.step("publish"))
         self.assertEqual(head, build_tools.git(load(self.workspace).worktree, "rev-parse", "HEAD").strip())
 
@@ -397,7 +317,7 @@ class WorkflowTest(unittest.TestCase):
         self.write_scenario("ClientRoundTripTest", "Sends requests through the client")
         self.control({"jacocoFails": True})
         self.assertEqual(INFRASTRUCTURE, self.step("publish"))
-        self.assertFalse(os.path.exists(os.environ["FAKE_PUBLISH_RECORD"]))
+        self.assertFalse(os.path.exists(self.runtime("publication", "branch.md")))
         self.control({"jacocoFails": False})
         self.assertEqual(OK, self.step("publish"))
 
@@ -433,52 +353,17 @@ class WorkflowTest(unittest.TestCase):
         self.assertIn(f"`{PROJECT}/`", note)
         self.assertIn(f"`{os.path.join(state.project_path, 'build.gradle')}`", note)
         self.assertIn(f"`{state.metadata_path}`", note)
+        self.assertIn(f"for Java sources: `{state.test_source_path}/`", note)
 
-
-class UnitTest(unittest.TestCase):
-    """The parsing the programs rely on, checked in isolation."""
-
-    def test_agent_cost_keeps_input_disjoint_from_cache_and_never_invents_a_zero(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            invocations: str = os.path.join(tmp, "runtime", "accounting", "invocations")
-            os.makedirs(invocations)
-            records: dict = {
-                "a": {"token_convention": "input-total-includes-cache",
-                      "tokens": {"input": {"total": {"value": 110}, "cached_read": {"value": 100}},
-                                 "output": {"total": {"value": 5}}}},
-                "b": {"token_convention": "input-total-excludes-cache",
-                      "tokens": {"input": {"total": {"value": 7}, "cached_read": {"value": 50}},
-                                 "output": {"total": {"value": 3}}}},
-                # Killed before it reported usage: an iteration, but no tokens.
-                "c": {"tokens": {"input": {"total": {"status": "missing"}}}},
-            }
-            for name, record in records.items():
-                with open(os.path.join(invocations, f"{name}.json"), "w") as handle:
-                    json.dump(record, handle)
-            tokens, iterations = run_summary.agent_cost(tmp)
-        self.assertEqual({"input": 17, "cached_input": 150, "cache_write_input": None, "output": 8}, tokens)
-        self.assertEqual(3, iterations)
-
-    def test_library_coverage_reads_the_report_totals(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            report: str = os.path.join(tmp, "jacocoTestReport.xml")
-            with open(report, "w") as handle:
-                handle.write('<report name="lib"><counter type="LINE" missed="0" covered="0"/></report>')
-            self.assertEqual({"line": {"covered": 0, "total": 0, "ratio": 1.0}, "instruction": "N/A",
-                              "method": "N/A"}, run_summary.library_coverage(report))
-
-    def test_copy_collected_keeps_conforming_new_entries_only(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            kept: dict = {"type": "a.b.Open", "condition": {"typeReached": "a.b.Client"}}
-            collected: str = os.path.join(tmp, "collected.json")
-            with open(collected, "w") as handle:
-                json.dump({"reflection": [kept, {"type": "a.b.Bare"},
-                                          {"type": "c.D", "condition": {"typeReached": "c.Outside"}}]}, handle)
-            target: str = os.path.join(tmp, "out", "reachability-metadata.json")
-            self.assertEqual(1, local_metadata.copy_collected(collected, target, ["a.b."], set()))
-            self.assertEqual(0, local_metadata.copy_collected(collected, target, ["a.b."], set()))
-            with open(target) as handle:
-                self.assertEqual({"reflection": [kept]}, json.load(handle))
+    def test_prepare_keeps_the_language_the_scaffold_chose(self) -> None:
+        self.control({"scaffoldLanguage": "kotlin"})
+        self.assertEqual(OK, self.prepare())
+        state = load(self.workspace)
+        self.assertEqual(os.path.join("src", "test", "kotlin"), state.test_source_dir)
+        self.assertIn(f"for Kotlin sources: `{state.test_source_path}/`", self.read(self.runtime("run.md")))
+        # Git keeps no empty directory; the recorded language survives its loss.
+        os.rmdir(state.test_source_path)
+        self.assertEqual(os.path.join(state.project_path, "src", "test", "kotlin"), load(self.workspace).test_source_path)
 
 
 if __name__ == "__main__":

@@ -4,8 +4,8 @@ A Rhei workflow generates the real-use project for one coordinate and publishes
 it as a pull request (§FS-real-use-tests). Judgment is used only where it
 cannot be replaced by an algorithm (§root/PRCPL-prefer-algorithmic): choosing
 the supporting libraries, writing scenarios, fixing a native failure the
-shipped metadata cannot, and fixing what the style checks report are agent
-work, and every other phase is a
+shipped metadata cannot, fixing what the style checks report, and reviewing
+a published pull request are agent work, and every other phase is a
 deterministic program whose result decides what runs next. No agent's report
 counts as evidence that a test passes; only a program's run of the real-use
 tasks does.
@@ -38,12 +38,20 @@ issue to `In Progress`. A lost claim moves on to the next candidate. When the
 run's workspace cannot then be created, the launcher releases the claim back to
 `Todo`.
 
+The launcher keeps going until the operator stops it: after each run it claims
+the next issue, and when none can be claimed it waits ten minutes and looks
+again. It verifies the host again before every claim, and a failed check stops
+it, so a host that broke during the loop cannot claim and fail its way through
+the queue. Every third run, and whenever no issue can be claimed, it reviews
+the open real-use pull requests (§FS-real-use-test-generation.4).
+
 ## 2. Phases
 
 ### 2.1 Prepare
 
 A program creates the run's worktree and branch and scaffolds the coordinate
-project when it does not exist yet.
+project, in the target library's language (§FS-real-use-test-contract.1.5),
+when it does not exist yet.
 
 ### 2.2 Preflight: declare the libraries
 
@@ -133,13 +141,14 @@ coordinate project. They are the license header
 every file opens with, the file formatting, and checkstyle. When they fail, one
 agent invocation fixes what they report, adding a missing header, reformatting
 a file, or fixing a checkstyle finding, and edits nothing else; it neither
-changes what a scenario does nor deletes one. A program then commits the
-coordinate project's changes as they stand, on top of the run's earlier
-commits, and publishes that project through the repository's shared
-publication pipeline, which opens the pull request
-(§forge/AR-real-use-tests-publication). The pull request resolves the run's
-issue. Its description opens with what the run achieved and what it cost,
-so a reviewer sees the numbers before the diff:
+changes what a scenario does nor deletes one. A program then writes the run's
+stats record (§FS-real-use-tests.1), commits it with the coordinate project's
+changes as they stand, on top of the run's earlier commits, and pushes the
+branch. The record is everything the pull request needs beyond the diff, so the
+trusted publisher opens the pull request from it and no other publication
+file (§forge/AR-real-use-tests-publication). The pull request resolves the
+run's issue. Its description opens with what the run achieved and what it
+cost, so a reviewer sees the numbers before the diff:
 
 - the target library's coverage on the JVM as JaCoCo measures it over the
   published scenarios: the total, then lines, instructions, and methods,
@@ -147,7 +156,8 @@ so a reviewer sees the numbers before the diff:
 - the tokens the run's agent invocations spent, split as the other
   generation workflows report them: input, cached input, cache-write input,
   and output;
-- the number of iterations, each one agent invocation of the run.
+- the number of iterations: the scenario passes the run made
+  (§FS-real-use-test-generation.1).
 
 Measuring the coverage is one more JVM run over the published scenarios, not a
 check: it gates nothing.
@@ -163,3 +173,37 @@ diff (§FS-real-use-tests.2.3).
 | Published | At least one scenario remains, and the branch is pushed for the pipeline to open the pull request. |
 | Nothing to publish | Every scenario was removed; no pull request is opened and the run records why. |
 | Failed | A program step itself failed: a bad input, scaffolding, resolving the declared libraries, the build, the commit, or the push. |
+
+## 4. Approval and merge
+
+A published pull request merges without waiting for a person. Every third
+run, and whenever no issue can be claimed, the launcher reviews the open pull
+requests labeled `real-use-test`. It reads them from GitHub rather than
+remembering what its own runs pushed, so a review sees the pull requests of
+every launcher and of earlier sessions, and nothing is lost when a launcher
+stops. It takes them oldest first, so the longest wait is served first, and
+stops once it has reviewed three, so a review never holds the queue for long;
+a pull request it skips does not count.
+
+It skips a pull request that is already approved, and one that another review
+holds. A review holds a pull request by marking it `in-review` before its
+agent starts and clearing the mark once the agent has stopped. A mark set more
+than three hours ago belongs to a review that died, and the next review takes
+the pull request over.
+
+Each other pull request gets one agent invocation, given only its number, its
+branch, and its head commit, which never waits for running checks:
+
+- The agent looks for a real-use test that can fail intermittently, from
+  timing or garbage collection, by reading the tests and any check that has
+  already failed. When it finds one, it makes the smallest fix that keeps
+  every assertion, pushes it to the branch, then approves the new head it
+  pushed and enables auto-merge for that head.
+- When it finds none and no check has failed, it approves the head it was
+  given and enables auto-merge for it.
+- Otherwise it changes nothing, and the pull request is left for a human;
+  while it stays open and unapproved, later reviews see it again.
+
+Auto-merge is always pinned to the head that was approved, so a later push is
+never merged under that approval, and it still waits for that head's checks.
+The agent edits only the coordinate project (§FS-real-use-test-contract.2.2).

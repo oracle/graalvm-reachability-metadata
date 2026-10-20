@@ -94,6 +94,31 @@ public final class NativeImageConfigUtils {
     }
 
     /**
+     * Returns the native-image modes a matrix section runs: its `native-image-modes` list when present,
+     * otherwise every mode defined in the CI configuration.
+     */
+    public static List<String> matrixModes(Map<String, Object> ci, String section) {
+        List<String> allModes = modeNames(ci);
+        if (!(ci.get(section) instanceof Map<?, ?> sectionConfig)) {
+            throw new GradleException("Missing '" + section + "' in ci.json");
+        }
+        if (!sectionConfig.containsKey("native-image-modes")) {
+            return allModes;
+        }
+        String owner = "ci.json " + section;
+        List<String> modes = new ArrayList<>(new LinkedHashSet<>(requireStringList(sectionConfig, "native-image-modes", owner)));
+        if (modes.isEmpty()) {
+            throw new GradleException(owner + " field 'native-image-modes' must not be empty");
+        }
+        for (String mode : modes) {
+            if (!allModes.contains(mode)) {
+                throw new GradleException(owner + " field 'native-image-modes' contains unknown mode '" + mode + "'");
+            }
+        }
+        return modes;
+    }
+
+    /**
      * Returns the Java versions allowed for each native-image mode, falling back to the matrix defaults.
      */
     public static Map<String, List<String>> javaVersionsByMode(

@@ -376,7 +376,7 @@ class PublicCarryOverTest(unittest.TestCase):
         with self.assertRaisesRegex(ProfileFormatError, "publicTargets"):
             carried_public_targets({"uncoveredPaths": []})
 
-    def test_the_prompt_marks_public_targets(self) -> None:
+    def test_the_prompt_does_not_mark_public_targets(self) -> None:
         report, records = self._correlate()
         with tempfile.TemporaryDirectory(prefix="deep-frontier-") as directory:
             markdown_path: str = os.path.join(directory, "deep.md")
@@ -384,7 +384,10 @@ class PublicCarryOverTest(unittest.TestCase):
             with open(markdown_path, encoding="utf-8") as handle:
                 markdown: str = handle.read()
 
-        self.assertIn("`Api.run() → helper()` — public API", markdown)
+        # A public target is reached like an internal one, so the prompt
+        # names no difference (§AR-code-coverage-improvement.4.2).
+        self.assertIn("`Api.run() → helper()`\n", markdown)
+        self.assertNotIn("public API", markdown)
         self.assertIn("`Api.run() → Impl.work()`\n", markdown)
         # The counts are operator data: the JSON report keeps them, the prompt does not.
         self.assertEqual(report["summary"]["publicTargetsCovered"], 0)

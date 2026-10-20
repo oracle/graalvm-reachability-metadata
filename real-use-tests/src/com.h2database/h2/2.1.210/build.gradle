@@ -1,0 +1,34 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "com.h2database:h2:$libraryVersion"
+    testImplementation "org.apache.lucene:lucene-core:8.5.2"
+    testImplementation "org.apache.lucene:lucene-analyzers-common:8.5.2"
+    testImplementation "org.apache.lucene:lucene-queryparser:8.5.2"
+    testImplementation "org.locationtech.jts:jts-core:1.17.0"
+    testImplementation "org.postgresql:postgresql:42.2.14"
+    testImplementation "com.zaxxer:HikariCP:4.0.3"
+    testImplementation "org.slf4j:slf4j-api:1.7.30"
+    testImplementation "org.slf4j:slf4j-simple:1.7.30"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

@@ -19,12 +19,14 @@ state and driven by its cover state:
 | `api-coverage` | `api-measure` | `api-cover` | `validation/api-cover-report-{iteration}.json` | `/summary/covered` |
 | `deep-coverage` | `deep-measure` | `deep-cover` | `discovery/discovery-report-{iteration}.json` | `/summary/rosterCovered` |
 | `naive-coverage` | `naive-measure` | `naive-cover` | `validation/naive-cover-report-{iteration}.json` | `/summary/covered` |
+| `deep-session-coverage` | `deep-dispatch` | `deep-cover` | `discovery/session-coverage-{iteration}.json` | `/summary/covered` |
 
-Paths sit under `runtime/code-coverage/`. Each value is the covered count the
-stop rule reads for that phase (§AR-code-coverage-improvement.4.3), so a row's
+Paths sit under `runtime/code-coverage/`. Each loop value is the covered count
+the stop rule reads for that phase (§AR-code-coverage-improvement.4.3), so a row's
 delta is that pass's yield and matches the phase verdict's last yields. The
 detail beside a value names the roster it counts on; the deep detail splits the
 roster into internal methods and the public methods the API phase left.
+The session count is §AR-code-coverage-trajectory.4.
 
 ## 2. What Rhei records
 
@@ -49,3 +51,24 @@ reports, so row 0 is the phase baseline and the two counters agree.
   window.
 - **Deltas are raw.** A pass that loses coverage shows a negative delta, where
   the stop rule clamps it to zero yield.
+
+## 4. Deep session count
+
+A deep pass runs its group sessions under one measurement
+(§AR-code-coverage-deep-navigation.4), so the pass row cannot say what each
+session added. The dispatch state therefore counts coverage after every
+session: when the session it handed out last has returned, it runs the
+combined JaCoCo report alone, with no sampling, call graph, or ranking, and
+writes `discovery/session-coverage-{iteration}.json` with the covered count
+over every library method JaCoCo reports, numbered by Rhei's iteration
+counter. The first dispatch of the deep phase writes the baseline from the
+JaCoCo report the first deep measurement produced. `deep-session-coverage`
+declares that count, so each session report shows that session's own delta
+and the metrics summary carries one row per session.
+
+- **Information only.** The pass measurement still feeds the stop rule. A
+  count that fails writes no file, so dispatch never fails or parks on it, and
+  that session's gain shows in the next row.
+- **Library-wide, not roster.** The count spans every library method, so the
+  session deltas of a pass add up to its row only approximately; a repair
+  between passes lands in the next session's window.

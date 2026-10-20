@@ -1,0 +1,156 @@
+{
+  "base_commit": "49b3f38dc344a52a8343110b85a1c5af3d8aa6db",
+  "branch": "ai/kimeta/add-lib-support-org.apache.cxf-cxf-rt-databinding-jaxb-2.6.1-forge-10990-20261020102947580773-f9055bbcf3f5",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "80675a5ef21b4d0b5706c4f2b86c82e9800abf9f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10990,
+  "library": {
+    "artifact": "cxf-rt-databinding-jaxb",
+    "coordinates": "org.apache.cxf:cxf-rt-databinding-jaxb:2.6.1",
+    "group": "org.apache.cxf",
+    "version": "2.6.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "49b3f38dc344a52a8343110b85a1c5af3d8aa6db",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpajiibelc"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10990-d2793351/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.cxf:cxf-rt-databinding-jaxb"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.cxf/cxf-rt-databinding-jaxb/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10990-d2793351/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "75c828dc07137f63f17dd50df258d4e3dda9880f",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Checked the single-coordinate diff shape, test sources for scaffold/native-skip/version-pin/package-boundary violations, metadata file format, and reported coverage. Dynamic-access coverage is 60/74 (81.0811%), and the reported 179 library plus 338 test-only entries do not trigger the mismatch probe. Removal and progressive narrowing confirmed that each of the three runtime-initialization targets is required by the transitive JAXB implementation. The exact Forge finalizer then passed current-defaults, future-defaults, GraalVM 25, metadata, style, generated-test, and statistics checks without changing the publishable tree.",
+    "session_id": "a85cca48c377463d"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.cxf/cxf-rt-databinding-jaxb/2.6.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 13418752,
+      "code_coverage_percent": 45.78,
+      "cost_usd": 13.7364,
+      "generated_loc": 1191,
+      "input_tokens_used": 803651,
+      "iterations": 21,
+      "metadata_entries": 179,
+      "output_tokens_used": 100291,
+      "test_only_metadata_entries": 338,
+      "tested_library_loc": 1113
+    },
+    "timestamp": "2026-10-20T10:29:47.580773Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10990-20261020102947580773-f9055bbcf3f5",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- org.apache.cxf.jaxb.JAXBSchemaInitializer.end(JAXBSchemaInitializer.java:399) (line 399)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.apache.cxf.jaxb.JAXBSchemaInitializer.buildExceptionType(JAXBSchemaInitializer.java:527) (line 527)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.apache.cxf.jaxb.JAXBSchemaInitializer.end(JAXBSchemaInitializer.java:434) (line 434)",
+        "[reflection] java.lang.Class#getMethods() <- org.apache.cxf.jaxb.JAXBSchemaInitializer.buildExceptionType(JAXBSchemaInitializer.java:537) (line 537)",
+        "[reflection] java.lang.Class#getMethods() <- org.apache.cxf.jaxb.JAXBSchemaInitializer.end(JAXBSchemaInitializer.java:428) (line 428)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.apache.cxf.jaxb.JAXBContextInitializer.isMethodAccepted(JAXBContextInitializer.java:401) (line 401)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- org.apache.cxf.jaxb.JAXBContextInitializer.addType(JAXBContextInitializer.java:225) (line 225)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- org.apache.cxf.jaxb.JAXBContextInitializer.begin(JAXBContextInitializer.java:137) (line 137)",
+        "... and 52 more"
+      ],
+      "metadata_rules": [
+        "when `org.apache.cxf.jaxb.JAXBDataBinding` is reached, make `byte[][]` available for reflection",
+        "when `org.apache.cxf.jaxb.JAXBEncoderDecoder` is reached, make `com.ctc.wstx.sr.CompactNsContext` available for reflection",
+        "when `org.apache.cxf.jaxb.JAXBEncoderDecoder` is reached, make `com.ctc.wstx.sr.InputElementStack.createNonTransientNsContext(javax.xml.stream.Location)` available for reflection",
+        "when `org.apache.cxf.jaxb.JAXBDataBinding` is reached, make `com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl.<init>()` available for reflection",
+        "when `org.apache.cxf.jaxb.JAXBDataBinding` is reached, make `com.sun.xml.bind.v2.ContextFactory.createContext(java.lang.Class[], java.util.Map)` available for reflection",
+        "when `org.apache.cxf.jaxb.JAXBSchemaInitializer` is reached, make `com.sun.xml.bind.v2.runtime.JAXBContextImpl.getBeanInfo(java.lang.Class)` available for reflection",
+        "when `org.apache.cxf.jaxb.JAXBSchemaInitializer` is reached, make `com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl.getElementLocalName(java.lang.Object)` available for reflection",
+        "when `org.apache.cxf.jaxb.JAXBSchemaInitializer` is reached, make `com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl.getElementNamespaceURI(java.lang.Object)` available for reflection",
+        "... and 68 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.810811,
+            "coveredCalls": 60,
+            "totalCalls": 74
+          }
+        },
+        "coverageRatio": 0.810811,
+        "coveredCalls": 60,
+        "totalCalls": 74
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5218,
+          "missed": 6447,
+          "ratio": 0.447321,
+          "total": 11665
+        },
+        "line": {
+          "covered": 1113,
+          "missed": 1318,
+          "ratio": 0.457836,
+          "total": 2431
+        },
+        "method": {
+          "covered": 120,
+          "missed": 152,
+          "ratio": 0.441176,
+          "total": 272
+        }
+      },
+      "version": "2.6.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-20T10:29:47.580773Z"
+}

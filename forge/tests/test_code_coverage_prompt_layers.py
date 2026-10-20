@@ -17,7 +17,7 @@ class CodeCoveragePromptLayerTests(unittest.TestCase):
         """Rhei pastes the index into every agent turn and a task body into every
         agent state of its task, so the index holds only the workflow-wide rules,
         the loop tasks carry no body, and the cover states keep no rule another
-        rule already covers.
+        rule already covers but do keep the one against measuring coverage.
 
         §AR-code-coverage-prompts.2
         """
@@ -33,7 +33,6 @@ class CodeCoveragePromptLayerTests(unittest.TestCase):
         )
         dropped_rules: tuple[str, ...] = (
             "Do not weaken metadata-generation tests",
-            "Do not measure or claim coverage yourself",
             "Do not write any target state",
         )
 
@@ -61,6 +60,7 @@ class CodeCoveragePromptLayerTests(unittest.TestCase):
                     if name in ("api-cover", "deep-cover"):
                         for rule in dropped_rules:
                             self.assertNotIn(rule, instructions, name)
+                        self.assertIn("never read JaCoCo output", instructions, name)
 
 
 if __name__ == "__main__":
