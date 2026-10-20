@@ -1,10 +1,10 @@
 {
-  "base_commit": "8dcfb5448350769916681ad4c33ce24350ab6227",
-  "branch": "ai/kimeta/add-lib-support-com.alibaba-dubbo-2.5.3-chunked-forge-10994-20261019200529012227-5fe6a1975f6d",
+  "base_commit": "dfadeb28c17a2d03e045c91986cad0fab804249e",
+  "branch": "ai/kimeta/add-lib-support-com.alibaba-dubbo-2.5.3-chunked-forge-10994-20261020021804332186-4a292ada6e4e",
   "follow_ups": [],
   "forge": {
     "branch": "master",
-    "commit": "13c611200a6957897a27d04ae23f2527a80a598e",
+    "commit": "bdcab07f39c34b76258fba621bc749aca9facd62",
     "monitored_branch": "origin/master"
   },
   "issue_number": 10994,
@@ -15,133 +15,58 @@
     "version": "2.5.3"
   },
   "local_ci_verification": {
-    "base_commit": "8dcfb5448350769916681ad4c33ce24350ab6227",
+    "base_commit": "dfadeb28c17a2d03e045c91986cad0fab804249e",
     "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "9e1d79fa2db7bd9c0db153e9f64b43ab4b638a03",
+    "final_commit": "d984fdd1e072787dadf5f48c33c608a8e2100b9a",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
     "status": "success"
   },
   "local_review": {
-    "changed_paths": [],
+    "changed_paths": [
+      "stats/com.alibaba/dubbo/2.5.3/stats.json",
+      "tests/src/com.alibaba/dubbo/2.5.3/build.gradle",
+      "tests/src/com.alibaba/dubbo/2.5.3/src/test/java/com_alibaba/dubbo/HessianInputTest.java",
+      "tests/src/com.alibaba/dubbo/2.5.3/src/test/java/com_alibaba/dubbo/PojoUtilsTest.java"
+    ],
     "decision": "approved",
-    "finding_body": "",
-    "finding_title": "",
-    "fix_note": "",
+    "finding_body": "The contribution added --add-opens=java.base/java.lang=ALL-UNNAMED as both a test JVM argument and a Native Image build argument without satisfying FS-test-contract.2.7 and Review Signal #12's uniform-necessity rule. Running ./gradlew javaTest without the flags showed that HessianInputTest failed only because its chosen fault detail serialized Throwable.detailMessage, while PojoUtilsTest expected Dubbo to mutate that same private JDK field and received a null message when module access was closed. The already-passing suite and a compliant Hessian fault shape demonstrate that the flag originated in these test scenarios rather than an unavoidable library-wide requirement.",
+    "finding_title": "Native module-opening flags mask test-shaped JDK-internal access",
+    "fix_note": "Removed both module-opening flags, rewrote HessianInputTest to exercise fault decoding with a string detail while preserving observable assertions, and dropped only the PojoUtils Throwable-message scenario. That scenario required reflective mutation of private JDK field Throwable.detailMessage; Dubbo silently catches the access refusal, leaving no failure for NativeImageSupport to verify. The remaining PojoUtils test still exercises its public bean, collection, array, and map behavior. Regenerated stats report 229/272 covered dynamic-access calls, and the exact Forge finalization command reached a stable successful pass.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the single-coordinate diff, test sources, metadata file shape, resolved statistics, and local gate record. The changes stay within com.alibaba:dubbo:2.5.3, use only reachability-metadata.json, contain no scaffold, native-image skip/tolerance, version pin, package overlap, JVM override, or unjustified native flag, and exercise library behavior with assertions. Dynamic-access evidence is 211/272 (77.5735%) with nonzero covered calls; 211 covered calls versus 908 reported library-plus-test-only metadata entries does not trigger the mismatch probe. The local gate record reports success. The tree satisfies the applicable contribution contract and review rules.",
-    "session_id": "e0bfc60e52664ae5"
+    "review_comment": "Reviewed the single-coordinate diff, changed test sources and build script, metadata file shape, local gate evidence, and resolved statistics under every applicable new-library review rule. The repaired tree stays within com.alibaba:dubbo:2.5.3, uses only reachability-metadata.json, and has no scaffold placeholder, native-image skip or tolerated failure, hardcoded test version, library-package test, shadow type, toolchain override, or native build/run flag. The tests exercise public library behavior with assertions. Regenerated dynamic-access coverage is 229/272 (84.1912%); 229 covered calls versus 1,415 reported library-plus-test-only metadata entries does not trigger the entry-count mismatch probe. The exact Forge finalizer passed all three native lanes, metadata validation, style checks, generated-test checks, and statistics generation, then completed a second time without changing the publishable tree.",
+    "session_id": "957fc1c348b04132"
   },
   "metrics": {
     "agent": "pi",
     "model": "gpt-5.6-sol",
     "path": "stats/com.alibaba/dubbo/2.5.3/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 15485696,
-      "code_coverage_percent": 16.95,
-      "cost_usd": 16.6191,
-      "generated_loc": 2715,
-      "input_tokens_used": 1192560,
-      "iterations": 24,
-      "metadata_entries": 359,
-      "output_tokens_used": 97117,
-      "test_only_metadata_entries": 549,
-      "tested_library_loc": 4840
+      "cached_input_tokens_used": 17869824,
+      "code_coverage_percent": 21.34,
+      "cost_usd": 18.0558,
+      "generated_loc": 3371,
+      "input_tokens_used": 1149436,
+      "iterations": 32,
+      "metadata_entries": 675,
+      "output_tokens_used": 112455,
+      "test_only_metadata_entries": 740,
+      "tested_library_loc": 6092
     },
-    "timestamp": "2026-10-19T20:05:29.012227Z"
+    "timestamp": "2026-10-20T02:18:04.332186Z"
   },
   "modifiers": {
-    "chunk_final": false,
+    "chunk_final": true,
     "chunked_dynamic_access": true,
     "human_intervention": false
   },
   "producer": "kimeta",
-  "publication_id": "forge-10994-20261019200529012227-5fe6a1975f6d",
+  "publication_id": "forge-10994-20261020021804332186-4a292ada6e4e",
   "render": {
-    "dynamic_access": {
-      "classThreshold": 15,
-      "completedClasses": [
-        "com.alibaba.com.caucho.hessian.io.BeanDeserializer",
-        "com.alibaba.com.caucho.hessian.io.EnumDeserializer",
-        "com.alibaba.com.caucho.hessian.io.EnumSerializer",
-        "com.alibaba.com.caucho.hessian.io.HessianSerializerOutput",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$BooleanFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$ByteFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$DoubleFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$FloatFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$IntFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$LongFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$ObjectFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$ShortFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$SqlDateFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$SqlTimeFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$SqlTimestampFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaDeserializer$StringFieldDeserializer",
-        "com.alibaba.com.caucho.hessian.io.JavaSerializer",
-        "com.alibaba.com.caucho.hessian.io.JavaSerializer$BooleanFieldSerializer",
-        "com.alibaba.com.caucho.hessian.io.JavaSerializer$DateFieldSerializer",
-        "com.alibaba.com.caucho.hessian.io.JavaSerializer$DoubleFieldSerializer",
-        "com.alibaba.com.caucho.hessian.io.JavaSerializer$FieldSerializer",
-        "com.alibaba.com.caucho.hessian.io.JavaSerializer$IntFieldSerializer",
-        "com.alibaba.com.caucho.hessian.io.JavaSerializer$LongFieldSerializer",
-        "com.alibaba.com.caucho.hessian.io.JavaSerializer$StringFieldSerializer",
-        "com.alibaba.com.caucho.hessian.io.SerializerFactory",
-        "com.alibaba.com.caucho.hessian.io.SqlDateDeserializer",
-        "com.alibaba.com.caucho.hessian.io.StringValueDeserializer",
-        "com.alibaba.dubbo.common.Version",
-        "com.alibaba.dubbo.common.logger.jdk.JdkLoggerAdapter",
-        "com.alibaba.dubbo.common.serialize.support.dubbo.Builder$7",
-        "com.alibaba.dubbo.common.serialize.support.java.CompactedObjectInputStream",
-        "com.alibaba.dubbo.common.serialize.support.java.JavaObjectInput",
-        "com.alibaba.dubbo.common.serialize.support.java.JavaObjectOutput",
-        "com.alibaba.dubbo.common.serialize.support.nativejava.NativeJavaObjectInput",
-        "com.alibaba.dubbo.common.serialize.support.nativejava.NativeJavaObjectOutput",
-        "com.alibaba.dubbo.common.status.support.LoadStatusChecker",
-        "com.alibaba.dubbo.common.utils.ClassHelper",
-        "com.alibaba.dubbo.common.utils.CompatibleTypeUtils",
-        "com.alibaba.dubbo.common.utils.ConfigUtils",
-        "com.alibaba.dubbo.common.utils.PojoUtils$PojoInvocationHandler",
-        "com.alibaba.dubbo.common.utils.ReflectUtils",
-        "com.alibaba.dubbo.config.AbstractInterfaceConfig",
-        "com.alibaba.dubbo.rpc.cluster.merger.ArrayMerger",
-        "com.alibaba.dubbo.rpc.filter.CompatibleFilter",
-        "com.alibaba.dubbo.rpc.filter.ExceptionFilter",
-        "com.alibaba.dubbo.rpc.proxy.InvokerInvocationHandler",
-        "com.alibaba.dubbo.rpc.proxy.jdk.JdkProxyFactory",
-        "com.alibaba.dubbo.rpc.proxy.jdk.JdkProxyFactory$1",
-        "com.alibaba.dubbo.rpc.proxy.wrapper.StubProxyFactoryWrapper",
-        "com.alibaba.dubbo.rpc.support.RpcUtils",
-        "com.alibaba.com.caucho.hessian.io.CalendarHandle",
-        "com.alibaba.dubbo.common.compiler.support.ClassUtils",
-        "com.alibaba.dubbo.config.AbstractConfig",
-        "com.alibaba.dubbo.config.spring.schema.DubboBeanDefinitionParser",
-        "com.alibaba.dubbo.rpc.protocol.dubbo.filter.FutureFilter",
-        "com.alibaba.com.caucho.hessian.io.HessianSerializerInput",
-        "com.alibaba.dubbo.common.extension.ExtensionLoader",
-        "com.alibaba.dubbo.config.ServiceConfig",
-        "com.alibaba.dubbo.config.spring.ServiceBean",
-        "com.alibaba.com.caucho.hessian.io.ArrayDeserializer"
-      ],
-      "coordinate": "com.alibaba:dubbo:2.5.3",
-      "currentChunkClassCount": 15,
-      "exhaustedClasses": [
-        "com.alibaba.dubbo.common.serialize.support.dubbo.Builder",
-        "com.alibaba.dubbo.common.bytecode.Wrapper",
-        "com.alibaba.dubbo.common.bytecode.Proxy",
-        "com.alibaba.dubbo.common.bytecode.Mixin",
-        "com.alibaba.dubbo.common.json.J2oVisitor"
-      ],
-      "failedClasses": [],
-      "issueNumber": 10994,
-      "latestChunkBranch": "ai/kimeta/add-lib-support-com.alibaba-dubbo-2.5.3-chunked-forge-10994-20261019200529012227-5fe6a1975f6d",
-      "latestChunkCommit": null,
-      "latestChunkPublicationId": "forge-10994-20261019200529012227-5fe6a1975f6d",
-      "latestChunkPullRequest": null,
-      "skippedClasses": []
-    },
+    "dynamic_access": null,
     "dynamic_access_evidence": {
       "covered_call_sites": [
         "[reflection] java.lang.Class#getDeclaredConstructors() <- com.alibaba.dubbo.common.serialize.support.dubbo.Builder.newObjectBuilder(Builder.java:440) (line 440)",
@@ -151,27 +76,27 @@
         "[resources] java.lang.Class#getResourceAsStream(java.lang.String) <- com.alibaba.dubbo.common.serialize.support.dubbo.Builder.newObjectBuilder(Builder.java:337) (line 337)",
         "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- com.alibaba.dubbo.common.bytecode.Proxy.getProxy(Proxy.java:92) (line 92)",
         "[reflection] java.lang.Class#getMethods() <- com.alibaba.dubbo.common.bytecode.Proxy.getProxy(Proxy.java:171) (line 171)",
-        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- com.alibaba.com.caucho.hessian.io.BeanSerializer.introspectWriteReplace(BeanSerializer.java:151) (line 151)",
-        "... and 203 more"
+        "[reflection] java.lang.Class#newInstance() <- com.alibaba.dubbo.common.json.J2oVisitor.arrayEnd(J2oVisitor.java:214) (line 214)",
+        "... and 224 more"
       ],
       "metadata_rules": [
         "when `com.alibaba.dubbo.common.bytecode.ClassGenerator` is reached, make `byte[]` available for reflection",
+        "when `com.alibaba.dubbo.common.compiler.support.JavassistCompiler` is reached, make `byte[]` available for reflection",
         "when `com.alibaba.com.caucho.hessian.io.CalendarSerializer` is reached, make `com.alibaba.com.caucho.hessian.io.CalendarHandle` available for reflection",
         "when `com.alibaba.com.caucho.hessian.io.JavaDeserializer` is reached, make `com.alibaba.com.caucho.hessian.io.CalendarHandle.readResolve()` available for reflection",
         "when `com.alibaba.com.caucho.hessian.io.CalendarSerializer` is reached, make `com.alibaba.com.caucho.hessian.io.CalendarHandleHessianSerializer` available for reflection",
-        "when `com.alibaba.dubbo.common.extension.factory.SpiExtensionFactory` is reached, make `com.alibaba.dubbo.common.compiler.support.AdaptiveCompiler.<init>()` available for reflection",
-        "when `com.alibaba.dubbo.common.extension.factory.SpiExtensionFactory` is reached, make `com.alibaba.dubbo.common.compiler.support.JavassistCompiler` available for reflection",
-        "when `com.alibaba.dubbo.common.extension.factory.SpiExtensionFactory` is reached, make `com.alibaba.dubbo.common.compiler.support.JdkCompiler` available for reflection",
-        "when `com.alibaba.dubbo.common.extension.ExtensionLoader` is reached, make `com.alibaba.dubbo.common.extension.factory.AdaptiveExtensionFactory.<init>()` available for reflection",
-        "... and 258 more"
+        "when `com.alibaba.com.caucho.hessian.io.HessianOutput` is reached, make `com.alibaba.com.caucho.hessian.io.HessianServiceException` available for reflection",
+        "when `com.alibaba.com.caucho.hessian.io.SerializerFactory` is reached, make `com.alibaba.com.caucho.hessian.io.HessianServiceException.<init>()` available for reflection",
+        "when `com.alibaba.com.caucho.hessian.io.ThrowableSerializer` is reached, make `com.alibaba.com.caucho.hessian.io.HessianServiceException` available for reflection",
+        "... and 465 more"
       ]
     },
     "library_stats": {
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.775665,
-            "coveredCalls": 204,
+            "coverageRatio": 0.844106,
+            "coveredCalls": 222,
             "totalCalls": 263
           },
           "resources": {
@@ -180,27 +105,27 @@
             "totalCalls": 9
           }
         },
-        "coverageRatio": 0.775735,
-        "coveredCalls": 211,
+        "coverageRatio": 0.841912,
+        "coveredCalls": 229,
         "totalCalls": 272
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 27123,
-          "missed": 114910,
-          "ratio": 0.190963,
+          "covered": 32604,
+          "missed": 109429,
+          "ratio": 0.229552,
           "total": 142033
         },
         "line": {
-          "covered": 4840,
-          "missed": 23714,
-          "ratio": 0.169503,
+          "covered": 5996,
+          "missed": 22558,
+          "ratio": 0.209988,
           "total": 28554
         },
         "method": {
-          "covered": 1008,
-          "missed": 4217,
-          "ratio": 0.192919,
+          "covered": 1225,
+          "missed": 4000,
+          "ratio": 0.23445,
           "total": 5225
         }
       },
@@ -211,5 +136,5 @@
   "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
   "task_type": "library-new-request",
   "template_type": "library-new-request",
-  "timestamp": "2026-10-19T20:05:29.012227Z"
+  "timestamp": "2026-10-20T02:18:04.332186Z"
 }
