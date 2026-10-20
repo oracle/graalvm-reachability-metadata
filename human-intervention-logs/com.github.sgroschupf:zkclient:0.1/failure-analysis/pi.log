@@ -1,0 +1,16 @@
+## Human intervention needed
+
+The automated job failed during setup, before test generation or coverage collection. Both the preparation preflight and `discoverArtifactMetadata` Claude calls hit the session usage limit; the discovery Gradle task exited with code 1. The continuation marker confirms failure in `setup/normal_setup()`, with all later phases pending. No zkclient tests, metadata, run metrics, or dynamic-access coverage were generated.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10980-library-new-request-com.github.sgroschupf-zkclient-0.1-a0450397
+
+Inspect:
+- `logs/do-work-20261018-172551.log`
+- `logs/com.github.sgroschupf:zkclient:0.1/discover-artifact-metadata/discover_artifact_metadata.log`
+- `logs/com.github.sgroschupf:zkclient:0.1/library-preparation-preflight/claude-code.log`
+- `logs/com.github.sgroschupf:zkclient:0.1/library-preparation-preflight/claude-code-session-jrf69145.log`
+
+Manual next steps:
+1. Restore Claude capacity/credentials or select an available agent, then rerun the setup preflight and artifact-metadata discovery.
+2. Verify the discovered artifact URLs and whether zkclient tests require a ZooKeeper service or other deterministic setup.
+3. Resume test generation and run the coordinate-scoped JVM/native test and coverage pipeline for `com.github.sgroschupf:zkclient:0.1`.
