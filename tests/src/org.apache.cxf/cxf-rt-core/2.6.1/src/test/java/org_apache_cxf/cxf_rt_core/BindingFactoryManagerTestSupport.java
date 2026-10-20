@@ -41,21 +41,33 @@ public final class BindingFactoryManagerTestSupport {
 
         @Override
         public List<String> getBeanNamesOfType(Class<?> type) {
+            if (!type.isInstance(factory)) {
+                return Collections.emptyList();
+            }
             return Collections.singletonList("testBindingFactory");
         }
 
         @Override
         public <T> T getBeanOfType(String name, Class<T> type) {
+            if (!hasBeanOfName(name) || !type.isInstance(factory)) {
+                return null;
+            }
             return type.cast(factory);
         }
 
         @Override
         public <T> Collection<? extends T> getBeansOfType(Class<T> type) {
+            if (!type.isInstance(factory)) {
+                return Collections.emptyList();
+            }
             return Collections.singletonList(type.cast(factory));
         }
 
         @Override
         public <T> boolean loadBeansOfType(Class<T> type, BeanLoaderListener<T> listener) {
+            if (!type.isInstance(factory)) {
+                return false;
+            }
             Class<? extends T> factoryType = factory.getClass().asSubclass(type);
             if (!listener.loadBean("testBindingFactory", factoryType)) {
                 return false;
