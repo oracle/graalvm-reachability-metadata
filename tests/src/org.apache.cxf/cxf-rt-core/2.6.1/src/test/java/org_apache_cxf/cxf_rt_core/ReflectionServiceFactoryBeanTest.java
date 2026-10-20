@@ -8,8 +8,15 @@ package org_apache_cxf.cxf_rt_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.cxf.Bus;
@@ -19,12 +26,23 @@ import org.apache.cxf.bus.CXFBusFactory;
 import org.apache.cxf.databinding.source.SourceDataBinding;
 import org.apache.cxf.interceptor.FaultOutInterceptor.FaultInfoException;
 import org.apache.cxf.service.Service;
+import org.apache.cxf.service.factory.AbstractServiceConfiguration;
 import org.apache.cxf.service.factory.ReflectionServiceFactoryBean;
+import org.apache.cxf.service.model.EndpointInfo;
+import org.apache.cxf.service.model.FaultInfo;
+import org.apache.cxf.service.model.InterfaceInfo;
+import org.apache.cxf.service.model.OperationInfo;
+import org.apache.cxf.transport.Destination;
+import org.apache.cxf.transport.DestinationFactory;
+import org.apache.cxf.transport.DestinationFactoryManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class ReflectionServiceFactoryBeanTest {
     private Bus bus;
+
+    @TempDir Path temporaryDirectory;
 
     @AfterEach
     void closeBus() {
@@ -61,18 +79,98 @@ public class ReflectionServiceFactoryBeanTest {
     }
 
     @Test
-    void modelsGenericArrayParametersAndFaultInfoExceptions() {
+    void modelsGenericArrayParametersAndExceptionFields() {
         bus = new CXFBusFactory().createBus();
-        ReflectionServiceFactoryBean factory = new ReflectionServiceFactoryBean();
+        ReflectionServiceFactoryBean factory = new FaultModelFactory();
         factory.setBus(bus);
         factory.setServiceClass(AdvancedDocumentService.class);
+        factory.getServiceConfigurations().add(0, new GenericHolderConfiguration());
 
         Service service = factory.create();
+        InterfaceInfo serviceInterface = service.getServiceInfos().get(0).getInterface();
+        OperationInfo transformMany =
+                serviceInterface.getOperations().stream()
+                        .filter(
+                                operation ->
+                                        operation
+                                                .getName()
+                                                .getLocalPart()
+                                                .equals("transformMany"))
+                        .findFirst()
+                        .orElseThrow();
+        OperationInfo read =
+                serviceInterface.getOperations().stream()
+                        .filter(operation -> operation.getName().getLocalPart().equals("read"))
+                        .findFirst()
+                        .orElseThrow();
 
-        assertThat(service.getServiceInfos().get(0).getInterface().getOperations())
-                .extracting(operation -> operation.getName().getLocalPart())
-                .contains("transformMany", "read");
-        assertThat(service.getServiceInfos().get(0).getInterface().getOperations()).hasSize(2);
+        assertThat(
+                        transformMany
+                                .getUnwrappedOperation()
+                                .getInput()
+                                .getMessagePart(0)
+                                .getTypeClass())
+                .isEqualTo(List[][].class);
+        assertThat(read.getFaults())
+                .flatExtracting(fault -> fault.getMessageParts())
+                .extracting(part -> part.getName().getLocalPart())
+                .contains("faultInfo", "message");
+    }
+
+    @Test
+    void associatesWsdlOperationsWithServiceMethods() throws IOException {
+        Path wsdl = temporaryDirectory.resolve("document-service.wsdl");
+        Files.writeString(
+                wsdl,
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+                             xmlns:tns="urn:test:document"
+                             xmlns:transport="urn:test:transport"
+                             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                             targetNamespace="urn:test:document">
+                  <message name="TransformInput">
+                    <part name="source" type="xsd:anyType"/>
+                  </message>
+                  <message name="TransformOutput">
+                    <part name="result" type="xsd:anyType"/>
+                  </message>
+                  <portType name="DocumentPortType">
+                    <operation name="transform">
+                      <input message="tns:TransformInput"/>
+                      <output message="tns:TransformOutput"/>
+                    </operation>
+                  </portType>
+                  <binding name="DocumentBinding" type="tns:DocumentPortType">
+                    <operation name="transform">
+                      <input/>
+                      <output/>
+                    </operation>
+                  </binding>
+                  <service name="DocumentService">
+                    <port name="DocumentPort" binding="tns:DocumentBinding">
+                      <transport:address/>
+                    </port>
+                  </service>
+                </definitions>
+                """);
+        bus = new CXFBusFactory().createBus();
+        bus.getExtension(DestinationFactoryManager.class)
+                .registerDestinationFactory("urn:test:transport", new ModelDestinationFactory());
+        ReflectionServiceFactoryBean factory = new ReflectionServiceFactoryBean();
+        factory.setBus(bus);
+        factory.setServiceClass(WsdlDocumentService.class);
+        factory.setServiceName(new QName("urn:test:document", "DocumentService"));
+        factory.setEndpointName(new QName("urn:test:document", "DocumentPort"));
+        factory.setWsdlURL(wsdl.toUri().toString());
+
+        Service service = factory.create();
+        OperationInfo operation =
+                service.getServiceInfos().get(0).getInterface().getOperations().iterator().next();
+
+        assertThat(service.getName()).isEqualTo(new QName("urn:test:document", "DocumentService"));
+        assertThat(operation.getName().getLocalPart()).isEqualTo("transform");
+        assertThat(operation.getProperty(ReflectionServiceFactoryBean.METHOD)).isNotNull();
     }
 
     @Test
@@ -109,9 +207,65 @@ public class ReflectionServiceFactoryBeanTest {
 
     @DataBinding(SourceDataBinding.class)
     public interface AdvancedDocumentService {
-        void transformMany(List<String>[] values);
+        void transformMany(GenericHolder<List<String>[]> values);
 
         DOMSource read(DOMSource source) throws DetailedFault;
+    }
+
+    public static final class GenericHolder<T> {
+        private T value;
+
+        public T getValue() {
+            return value;
+        }
+
+        public void setValue(T value) {
+            this.value = value;
+        }
+    }
+
+    public static final class GenericHolderConfiguration extends AbstractServiceConfiguration {
+        @Override
+        public Boolean isHolder(Class<?> type, Type genericType) {
+            return type == GenericHolder.class ? Boolean.TRUE : null;
+        }
+
+        @Override
+        public Type getHolderType(Class<?> type, Type genericType) {
+            if (type != GenericHolder.class) {
+                return null;
+            }
+            return ((ParameterizedType) genericType).getActualTypeArguments()[0];
+        }
+    }
+
+    public static final class FaultModelFactory extends ReflectionServiceFactoryBean {
+        @Override
+        protected FaultInfo addFault(
+                InterfaceInfo service, OperationInfo operation, Class<?> exceptionClass) {
+            FaultInfo fault = super.addFault(service, operation, exceptionClass);
+            if (fault != null) {
+                createFaultForException(exceptionClass, fault);
+            }
+            return fault;
+        }
+    }
+
+    public static final class ModelDestinationFactory implements DestinationFactory {
+        @Override
+        public Destination getDestination(EndpointInfo endpoint) throws IOException {
+            throw new IOException("This model-only transport does not create destinations");
+        }
+
+        @Override
+        public Set<String> getUriPrefixes() {
+            return Set.of("urn:test:transport");
+        }
+
+        @Override
+        public List<String> getTransportIds() {
+            return List.of("urn:test:transport");
+        }
     }
 
     public static final class DetailedFault extends Exception implements FaultInfoException {
@@ -142,6 +296,11 @@ public class ReflectionServiceFactoryBeanTest {
     @DataBinding(SourceDataBinding.class)
     public interface DocumentService {
         DOMSource transform(DOMSource source) throws DocumentFault;
+    }
+
+    @DataBinding(SourceDataBinding.class)
+    public interface WsdlDocumentService {
+        DOMSource transform(DOMSource source);
     }
 
     public static final class DocumentFault extends Exception {
