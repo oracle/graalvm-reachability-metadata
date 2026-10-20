@@ -15,6 +15,21 @@ String scala3Version = tck.scala3Version.get()
 
 dependencies {
     testImplementation "com.softwaremill.sttp.client4:core_3:$libraryVersion"
+
+    // Typed JSON request bodies and response decoding through the sttp integration.
+    testImplementation "com.softwaremill.sttp.client4:circe_3:$libraryVersion"
+    testImplementation "io.circe:circe-core_3:0.14.12"
+    testImplementation "io.circe:circe-parser_3:0.14.12"
+    testImplementation "io.circe:circe-generic_3:0.14.12"
+
+    // Request/response logging around the core HTTP backends.
+    testImplementation "com.softwaremill.sttp.client4:slf4j-backend_3:$libraryVersion"
+    testImplementation "org.slf4j:slf4j-simple:2.0.17"
+
+    // Local WebSocket service for real exchanges through the core JDK backends.
+    // Other HTTP services use the JDK HttpServer and require no Docker images.
+    testImplementation "org.java-websocket:Java-WebSocket:1.5.7"
+
     testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
     testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
 }
