@@ -17,11 +17,11 @@ public class ExtensionRegistryLiteTest {
     @Test
     void addsAFullGeneratedExtensionThroughTheLiteRegistryApi() {
         ExtensionRegistry registry = ExtensionRegistry.newInstance();
-        GeneratedExtension<?, ?> extension = GeneratedMessageAnonymous4Test.newTextExtension();
+        GeneratedExtension<?, ?> extension = GeneratedMessageTest.newEnumExtension();
         ExtensionLite<?, ?> liteView = extension;
 
         registry.add(liteView);
 
-        assertThat(registry.findExtensionByName("sample.tag").descriptor).isSameAs(extension.getDescriptor());
+        assertThat(registry.findExtensionByName("sample.enum_tag").descriptor).isSameAs(extension.getDescriptor());
     }
 }

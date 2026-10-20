@@ -22,10 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GeneratedMessageTest {
     @Test
     void convertsAnEnumExtensionDefaultThroughItsGeneratedAccessors() {
-        GeneratedExtension<?, ?> extension = GeneratedMessage.newFileScopedGeneratedExtension(
-                Type.class, null, EnumExtensionDescriptor.class.getName(), "enum_tag");
+        GeneratedExtension<?, ?> extension = newEnumExtension();
 
         assertThat(extension.getDefaultValue()).isEqualTo(Type.TYPE_DOUBLE);
+    }
+
+    public static GeneratedExtension<?, ?> newEnumExtension() {
+        return GeneratedMessage.newFileScopedGeneratedExtension(
+                Type.class, null, EnumExtensionDescriptor.class.getName(), "enum_tag");
     }
 
     public static class EnumExtensionDescriptor {

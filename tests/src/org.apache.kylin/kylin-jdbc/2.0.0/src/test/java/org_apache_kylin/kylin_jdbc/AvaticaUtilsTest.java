@@ -15,7 +15,7 @@ public class AvaticaUtilsTest {
     @Test
     void instantiatesPluginsFromAClassAndAStaticField() {
         Greeting constructed = AvaticaUtils.instantiatePlugin(Greeting.class, ConstructedGreeting.class.getName());
-        Greeting selectedByName = AvaticaUtils.instantiatePlugin(Greeting.class, GreetingHolder.class.getName());
+        Greeting selectedByName = AvaticaUtils.instantiatePlugin(Greeting.class, SharedGreeting.class.getName());
         Greeting selectedExplicitly = AvaticaUtils.instantiatePlugin(
                 Greeting.class, GreetingHolder.class.getName() + "#INSTANCE");
 
@@ -43,6 +43,8 @@ public class AvaticaUtilsTest {
     }
 
     public static class SharedGreeting implements Greeting {
+        public static final Greeting INSTANCE = new SharedGreeting();
+
         @Override
         public String message() {
             return "shared";
