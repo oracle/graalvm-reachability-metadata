@@ -47,6 +47,14 @@ public class ExtensionTest {
         defaultExtension.setClassname(DefaultConstructed.class.getName());
         assertThat(defaultExtension.load(getClass().getClassLoader(), null))
                 .isInstanceOf(DefaultConstructed.class);
+
+        Extension retainedLoaderExtension = new Extension(DefaultConstructed.class).cloneNoObject();
+        assertThat(retainedLoaderExtension.load(getClass().getClassLoader(), null))
+                .isInstanceOf(DefaultConstructed.class);
+
+        Extension fallbackLoaderExtension = new Extension();
+        fallbackLoaderExtension.setClassname(DefaultConstructed.class.getName());
+        assertThat(fallbackLoaderExtension.load(null, null)).isInstanceOf(DefaultConstructed.class);
     }
 
     public static final class BusConstructed {

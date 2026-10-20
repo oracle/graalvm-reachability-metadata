@@ -8,6 +8,8 @@ package org_apache_cxf.cxf_rt_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.cxf.Bus;
@@ -15,6 +17,7 @@ import org.apache.cxf.BusFactory;
 import org.apache.cxf.annotations.DataBinding;
 import org.apache.cxf.bus.CXFBusFactory;
 import org.apache.cxf.databinding.source.SourceDataBinding;
+import org.apache.cxf.interceptor.FaultOutInterceptor.FaultInfoException;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.factory.ReflectionServiceFactoryBean;
 import org.junit.jupiter.api.AfterEach;
@@ -32,6 +35,47 @@ public class ReflectionServiceFactoryBeanTest {
     }
 
     @Test
+    void createsConfiguredDataBindingsUsingSupportedConstructors() {
+        bus = new CXFBusFactory().createBus();
+        bus.setProperty(
+                org.apache.cxf.databinding.DataBinding.class.getName(),
+                FactoryAwareDataBinding.class);
+
+        ReflectionServiceFactoryBean factory = new ReflectionServiceFactoryBean();
+        factory.setBus(bus);
+        factory.setServiceClass(ConstructorBoundService.class);
+        Service constructorBoundService = factory.create();
+
+        assertThat(constructorBoundService.getDataBinding())
+                .isInstanceOf(FactoryAwareDataBinding.class);
+        assertThat(((FactoryAwareDataBinding) constructorBoundService.getDataBinding()).factory)
+                .isSameAs(factory);
+
+        bus.setProperty(
+                org.apache.cxf.databinding.DataBinding.class.getName(), DefaultDataBinding.class);
+        ReflectionServiceFactoryBean defaultFactory = new ReflectionServiceFactoryBean();
+        defaultFactory.setBus(bus);
+        defaultFactory.setServiceClass(ConstructorBoundService.class);
+
+        assertThat(defaultFactory.create().getDataBinding()).isInstanceOf(DefaultDataBinding.class);
+    }
+
+    @Test
+    void modelsGenericArrayParametersAndFaultInfoExceptions() {
+        bus = new CXFBusFactory().createBus();
+        ReflectionServiceFactoryBean factory = new ReflectionServiceFactoryBean();
+        factory.setBus(bus);
+        factory.setServiceClass(AdvancedDocumentService.class);
+
+        Service service = factory.create();
+
+        assertThat(service.getServiceInfos().get(0).getInterface().getOperations())
+                .extracting(operation -> operation.getName().getLocalPart())
+                .contains("transformMany", "read");
+        assertThat(service.getServiceInfos().get(0).getInterface().getOperations()).hasSize(2);
+    }
+
+    @Test
     void buildsAServiceModelFromAnAnnotatedJavaInterface() {
         bus = new CXFBusFactory().createBus();
         ReflectionServiceFactoryBean factory = new ReflectionServiceFactoryBean();
@@ -45,6 +89,54 @@ public class ReflectionServiceFactoryBeanTest {
                 .extracting(operation -> operation.getName().getLocalPart())
                 .contains("transform");
         assertThat(service.getDataBinding()).isInstanceOf(SourceDataBinding.class);
+    }
+
+    public static final class FactoryAwareDataBinding extends SourceDataBinding {
+        private final ReflectionServiceFactoryBean factory;
+
+        public FactoryAwareDataBinding(ReflectionServiceFactoryBean factory) {
+            this.factory = factory;
+        }
+    }
+
+    public static final class DefaultDataBinding extends SourceDataBinding {
+        public DefaultDataBinding() {}
+    }
+
+    public interface ConstructorBoundService {
+        DOMSource transform(DOMSource source);
+    }
+
+    @DataBinding(SourceDataBinding.class)
+    public interface AdvancedDocumentService {
+        void transformMany(List<String>[] values);
+
+        DOMSource read(DOMSource source) throws DetailedFault;
+    }
+
+    public static final class DetailedFault extends Exception implements FaultInfoException {
+        private final FaultDetail faultInfo;
+
+        public DetailedFault(String message, FaultDetail faultInfo) {
+            super(message);
+            this.faultInfo = faultInfo;
+        }
+
+        public FaultDetail getFaultInfo() {
+            return faultInfo;
+        }
+    }
+
+    public static final class FaultDetail {
+        private String reason;
+
+        public String getReason() {
+            return reason;
+        }
+
+        public void setReason(String reason) {
+            this.reason = reason;
+        }
     }
 
     @DataBinding(SourceDataBinding.class)
