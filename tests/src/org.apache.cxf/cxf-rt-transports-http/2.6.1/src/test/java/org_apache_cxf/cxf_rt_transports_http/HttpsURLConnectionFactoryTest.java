@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -39,6 +40,20 @@ public class HttpsURLConnectionFactoryTest {
         assertThat(connection.getSSLSocketFactory().getDelegate()).isNotNull();
     }
 
+    @Test
+    void installsAStandardSocketFactoryOnAnAlternativeHttpsConnection() throws Exception {
+        DirectHttpsConnection connection = new DirectHttpsConnection();
+        URL url = new URL("https", "localhost", 443, "/", new ConnectionHandler(connection));
+        TLSClientParameters parameters = new TLSClientParameters();
+        parameters.setUseHttpsURLConnectionDefaultSslSocketFactory(true);
+
+        HttpURLConnection result = new HttpsURLConnectionFactory().createConnection(parameters, null, url);
+
+        assertThat(result).isSameAs(connection);
+        assertThat(connection.getSSLSocketFactory())
+                .isSameAs(HttpsURLConnection.getDefaultSSLSocketFactory());
+    }
+
     public interface LegacyHostnameVerifier {
         boolean verify(String host, SSLSession session);
     }
@@ -52,6 +67,37 @@ public class HttpsURLConnectionFactoryTest {
 
         public SSLSocketFactory getDelegate() {
             return delegate;
+        }
+    }
+
+    public static final class DirectHttpsConnection extends HttpURLConnection {
+        private SSLSocketFactory socketFactory;
+
+        DirectHttpsConnection() throws IOException {
+            super(new URL("https://localhost/"));
+        }
+
+        public SSLSocketFactory getSSLSocketFactory() {
+            return socketFactory;
+        }
+
+        public void setSSLSocketFactory(SSLSocketFactory socketFactory) {
+            this.socketFactory = socketFactory;
+        }
+
+        @Override
+        public void connect() {
+            connected = true;
+        }
+
+        @Override
+        public void disconnect() {
+            connected = false;
+        }
+
+        @Override
+        public boolean usingProxy() {
+            return false;
         }
     }
 
