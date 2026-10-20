@@ -65,6 +65,25 @@ public class JAXBDataBindingTest {
         assertThat(helper.getWrapperParts(wrapper)).containsExactly(true, "ok");
     }
 
+    @Test
+    void resolvesReservedBooleanAndXmlAliasedAccessors() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
+        JAXBDataBinding binding = new JAXBDataBinding(JAXBContext.newInstance(String.class));
+        WrapperHelper helper = binding.createWrapperHelper(
+                SpecialAccessorWrapper.class,
+                new QName("urn:cxf-jaxb-test", "specialAccessorWrapper"),
+                Arrays.asList("return", "externalValue"),
+                Arrays.asList("boolean", "string"),
+                Arrays.<Class<?>>asList(Boolean.TYPE, String.class));
+
+        SpecialAccessorWrapper wrapper = (SpecialAccessorWrapper)
+                helper.createWrapperObject(Arrays.<Object>asList(true, "aliased"));
+
+        assertThat(wrapper.is_return()).isTrue();
+        assertThat(wrapper.getInternalValue()).isEqualTo("aliased");
+        assertThat(helper.getWrapperParts(wrapper)).containsExactly(true, "aliased");
+    }
+
     @XmlRootElement(name = "customer")
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Customer {
@@ -80,6 +99,33 @@ public class JAXBDataBindingTest {
 
         public String getName() {
             return name;
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class SpecialAccessorWrapper {
+        private boolean result;
+
+        @XmlElement(name = "externalValue")
+        private String internalValue;
+
+        public SpecialAccessorWrapper() {
+        }
+
+        public boolean is_return() {
+            return result;
+        }
+
+        public void set_return(boolean result) {
+            this.result = result;
+        }
+
+        public String getInternalValue() {
+            return internalValue;
+        }
+
+        public void setInternalValue(String internalValue) {
+            this.internalValue = internalValue;
         }
     }
 
