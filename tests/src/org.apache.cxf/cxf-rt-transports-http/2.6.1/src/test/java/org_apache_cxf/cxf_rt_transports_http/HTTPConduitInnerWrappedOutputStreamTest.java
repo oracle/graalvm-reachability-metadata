@@ -25,13 +25,13 @@ import com.sun.net.httpserver.HttpServer;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
+import org.apache.cxf.configuration.security.ProxyAuthorizationPolicy;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.MessageObserver;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-import org.apache.cxf.transports.http.configuration.ProxyAuthorizationPolicy;
 import org.junit.jupiter.api.Test;
 
 public class HTTPConduitInnerWrappedOutputStreamTest {
