@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Test;
 public class JAXBDataBindingTest {
     @Test
     void writesAndReadsRootElementThroughDataBinding() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         JAXBDataBinding binding = new JAXBDataBinding(Customer.class);
         DataWriter<XMLStreamWriter> dataWriter = binding.createWriter(XMLStreamWriter.class);
         StringWriter output = new StringWriter();
@@ -47,7 +49,8 @@ public class JAXBDataBindingTest {
 
     @Test
     void createsWrapperHelperForBooleanAndReturnProperties() throws Exception {
-        JAXBDataBinding binding = new JAXBDataBinding(BooleanWrapper.class);
+        JaxbTestSupport.disableOptimizedAccessors();
+        JAXBDataBinding binding = new JAXBDataBinding(JAXBContext.newInstance(String.class));
         WrapperHelper helper = binding.createWrapperHelper(
                 BooleanWrapper.class,
                 new QName("urn:cxf-jaxb-test", "booleanWrapper"),

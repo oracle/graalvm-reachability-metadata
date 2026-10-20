@@ -25,12 +25,14 @@ public class JAXBSchemaInitializerTest {
 
     @Test
     void initializationBuildsSchemaForCustomException() {
+        JaxbTestSupport.disableOptimizedAccessors();
         ServiceInfo service = new ServiceInfo();
         service.setName(new QName(NAMESPACE, "FaultService"));
         InterfaceInfo iface = service.createInterface(new QName(NAMESPACE, "FaultPort"));
         OperationInfo operation = iface.addOperation(new QName(NAMESPACE, "invoke"));
         FaultInfo fault = operation.addFault(
                 new QName(NAMESPACE, "ServiceFaultMessage"), new QName(NAMESPACE, "ServiceFault"));
+        fault.setProperty("elementName", new QName(NAMESPACE, "ServiceFault"));
         MessagePartInfo part = fault.addMessagePart(new QName(NAMESPACE, "ServiceFault"));
         part.setElementQName(new QName(NAMESPACE, "ServiceFault"));
         part.setTypeClass(ServiceFault.class);

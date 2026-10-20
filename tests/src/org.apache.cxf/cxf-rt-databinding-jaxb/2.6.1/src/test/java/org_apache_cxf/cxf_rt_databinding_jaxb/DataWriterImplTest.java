@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 public class DataWriterImplTest {
     @Test
     void writesCollectionForArrayMessagePart() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         JAXBDataBinding binding = new JAXBDataBinding(String[].class);
         MessagePartInfo part = arrayPart();
         DataWriter<XMLStreamWriter> dataWriter = binding.createWriter(XMLStreamWriter.class);
@@ -45,6 +46,7 @@ public class DataWriterImplTest {
         OperationInfo operation = iface.addOperation(new QName(namespace, "write"));
         MessageInfo message = operation.createMessage(
                 new QName(namespace, "writeRequest"), MessageInfo.Type.INPUT);
+        operation.setInput("writeRequest", message);
         MessagePartInfo part = message.addMessagePart(new QName(namespace, "values"));
         part.setConcreteName(new QName(namespace, "values"));
         part.setTypeClass(String[].class);

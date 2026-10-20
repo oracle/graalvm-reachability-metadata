@@ -26,6 +26,7 @@ public class JAXBContextInitializerTest {
 
     @Test
     void initializationDiscoversPropertyBasedModel() {
+        JaxbTestSupport.disableOptimizedAccessors();
         ServiceInfo serviceInfo = serviceWithPart(PropertyModel.class);
         JAXBDataBinding binding = new JAXBDataBinding();
 
@@ -43,6 +44,7 @@ public class JAXBContextInitializerTest {
         OperationInfo operation = iface.addOperation(new QName(NAMESPACE, "echo"));
         MessageInfo input = operation.createMessage(
                 new QName(NAMESPACE, "echoRequest"), MessageInfo.Type.INPUT);
+        operation.setInput("echoRequest", input);
         MessagePartInfo part = input.addMessagePart(new QName(NAMESPACE, "model"));
         part.setTypeClass(type);
         return service;

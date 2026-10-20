@@ -13,6 +13,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -38,6 +39,7 @@ public class JAXBEncoderDecoderTest {
 
     @Test
     void marshalsAndUnmarshalsCustomExceptionProperties() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         JAXBContext context = JAXBContext.newInstance(String.class);
         MessagePartInfo part = newPart(PropertyException.class, "fault");
         PropertyException original = new PropertyException();
@@ -48,7 +50,9 @@ public class JAXBEncoderDecoderTest {
         XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(output);
-        JAXBEncoderDecoder.marshallException(context.createMarshaller(), original, part, writer);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+        JAXBEncoderDecoder.marshallException(marshaller, original, part, writer);
         writer.close();
 
         XMLStreamReader reader = XMLInputFactory.newFactory()
@@ -63,6 +67,7 @@ public class JAXBEncoderDecoderTest {
 
     @Test
     void usesStringConstructorWhenRestoringException() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         JAXBContext context = JAXBContext.newInstance(String.class);
         MessagePartInfo part = newPart(StringConstructorException.class, "stringFault");
         String xml = "<stringFault xmlns=\"" + NAMESPACE + "\"><code>42</code></stringFault>";
@@ -77,6 +82,7 @@ public class JAXBEncoderDecoderTest {
 
     @Test
     void unmarshalsWithSchemaValidation() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         String schemaText = """
                 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
                            targetNamespace="urn:cxf-jaxb-test"

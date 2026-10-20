@@ -9,6 +9,7 @@ package org_apache_cxf.cxf_rt_databinding_jaxb;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.namespace.QName;
@@ -19,7 +20,8 @@ import org.junit.jupiter.api.Test;
 public class JAXBWrapperHelperTest {
     @Test
     void reflectionFallbackHandlesFieldsGettersAndElementFactories() throws Exception {
-        JAXBDataBinding binding = new JAXBDataBinding(ReflectionWrapper.class);
+        JaxbTestSupport.disableOptimizedAccessors();
+        JAXBDataBinding binding = new JAXBDataBinding(JAXBContext.newInstance(String.class));
         WrapperHelper helper = binding.createWrapperHelper(
                 ReflectionWrapper.class,
                 new QName("urn:cxf-jaxb-test", "reflectionWrapper"),
