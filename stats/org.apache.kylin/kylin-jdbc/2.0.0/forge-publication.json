@@ -1,0 +1,161 @@
+{
+  "base_commit": "eb1d0f030f1ab6d2e0cdc976000a93ff8138c0da",
+  "branch": "ai/kimeta/add-lib-support-org.apache.kylin-kylin-jdbc-2.0.0-chunked-forge-10986-20261020182718655039-3037777dddac",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "8f4fe42eb221d5318a097f24e906ee5e247a1b31",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10986,
+  "library": {
+    "artifact": "kylin-jdbc",
+    "coordinates": "org.apache.kylin:kylin-jdbc:2.0.0",
+    "group": "org.apache.kylin",
+    "version": "2.0.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "eb1d0f030f1ab6d2e0cdc976000a93ff8138c0da",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp0akr1www"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10986-a791d822/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.kylin:kylin-jdbc"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.kylin/kylin-jdbc/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10986-a791d822/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "2d95325078492a28344c6a11dca5d7ac00318215",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Approved. The diff is scoped to org.apache.kylin:kylin-jdbc:2.0.0 and its allowed metadata, index, stats, metrics, and test files. I checked the generated tests for scaffold placeholders, native-image skips or tolerated failures, hardcoded artifact versions, package/visibility bypasses, direct reflection shortcuts, legacy metadata files, and unrelated coordinates; none were present. Reported dynamic-access coverage is 169/179 (94.4134%), above the new-library gate, and the reported 632 total library plus test-only metadata entries do not trigger the entry-count mismatch probe. I also verified the two native build options rather than treating them as repairs: removing the java.util opening makes the shaded Jackson empty-EnumSet public API test fail with module access denial, and removing HTTP protocol support makes the Avatica HTTP-client public API test fail under GraalVM 25; both options are library-originated and narrowly scoped. The exact Forge finalizer then passed all three native lanes, metadata validation, style checks, generated-test validity, metadata splitting, and statistics generation without changing the publishable tree.",
+    "session_id": "74f53907da4c485c"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.kylin/kylin-jdbc/2.0.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 37313664,
+      "code_coverage_percent": 13.15,
+      "cost_usd": 31.5648,
+      "generated_loc": 2452,
+      "input_tokens_used": 1576660,
+      "iterations": 33,
+      "metadata_entries": 318,
+      "output_tokens_used": 167489,
+      "test_only_metadata_entries": 314,
+      "tested_library_loc": 14898
+    },
+    "timestamp": "2026-10-20T18:27:18.655039Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10986-20261020182718655039-3037777dddac",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl.createLogFromClass(LogFactoryImpl.java:1102) (line 1102)",
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl.createLogFromClass(LogFactoryImpl.java:1081) (line 1081)",
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl.createLogFromClass(LogFactoryImpl.java:1115) (line 1115)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl.createLogFromClass(LogFactoryImpl.java:1197) (line 1197)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl.createLogFromClass(LogFactoryImpl.java:1116) (line 1116)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl.newInstance(LogFactoryImpl.java:608) (line 608)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl.newInstance(LogFactoryImpl.java:613) (line 613)",
+        "[reflection] java.lang.Class#getDeclaredConstructors() <- org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.introspect.AnnotatedClass._addConstructorMixIns(AnnotatedClass.java:531) (line 531)",
+        "... and 161 more"
+      ],
+      "metadata_rules": [
+        "when `org.apache.kylin.jdbc.shaded.com.google.protobuf.ByteString` is reached, make `android.content.Context` available for reflection",
+        "when `org.apache.kylin.jdbc.shaded.org.apache.http.conn.ssl.SSLSocketFactory` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `org.apache.kylin.jdbc.shaded.org.apache.http.conn.ssl.SSLSocketFactory` is reached, make `com.sun.crypto.provider.ARCFOURCipher.<init>()` available for reflection",
+        "when `org.apache.kylin.jdbc.shaded.org.apache.http.conn.ssl.SSLSocketFactory` is reached, make `com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305.<init>()` available for reflection",
+        "when `org.apache.kylin.jdbc.shaded.org.apache.http.conn.ssl.SSLSocketFactory` is reached, make `com.sun.crypto.provider.DESCipher.<init>()` available for reflection",
+        "when `org.apache.kylin.jdbc.shaded.org.apache.http.conn.ssl.SSLSocketFactory` is reached, make `com.sun.crypto.provider.DESedeCipher.<init>()` available for reflection",
+        "when `org.apache.kylin.jdbc.shaded.org.apache.http.conn.ssl.SSLSocketFactory` is reached, make `com.sun.crypto.provider.GaloisCounterMode$AESGCM.<init>()` available for reflection",
+        "when `org.apache.kylin.jdbc.KylinClient` is reached, make `com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl.<init>()` available for reflection",
+        "... and 103 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.957055,
+            "coveredCalls": 156,
+            "totalCalls": 163
+          },
+          "resources": {
+            "coverageRatio": 0.8125,
+            "coveredCalls": 13,
+            "totalCalls": 16
+          }
+        },
+        "coverageRatio": 0.944134,
+        "coveredCalls": 169,
+        "totalCalls": 179
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 68689,
+          "missed": 416270,
+          "ratio": 0.141639,
+          "total": 484959
+        },
+        "line": {
+          "covered": 14898,
+          "missed": 98359,
+          "ratio": 0.131542,
+          "total": 113257
+        },
+        "method": {
+          "covered": 3457,
+          "missed": 22979,
+          "ratio": 0.130769,
+          "total": 26436
+        }
+      },
+      "version": "2.0.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-20T18:27:18.655039Z"
+}

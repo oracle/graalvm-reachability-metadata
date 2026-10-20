@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — org.springframework.modulith:spring-modulith-starter-jpa:2.1.0 (#10691)
+
+**Not-for-native-image review repairs leave stale descriptor guidance**
+
+The replacement calls org.springframework.modulith:spring-modulith-starter-core:2.1.0 a class-bearing dependency, but its Maven Central JAR contains zero `.class` files and `metadata/org.springframework.modulith/spring-modulith-starter-core/index.json` already marks it not-for-native-image. Removing it from this contribution's marker would not complete the repair: `publish_not_for_native_image.py` snapshots `reason` and `replacement` before local review and passes a non-callable descriptor input, which `branch_publication.py` reuses after reviewer edits. The eventual descriptor and PR body would therefore retain the false guidance. The contribution cannot be safely repaired without changing shared publication infrastructure.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10775 (#10775)
+
 ## 2026-10-20 — org.apache.cxf:cxf-rt-transports-http:2.6.1 (#10989)
 
 **URL protocol build flag enabled an unnecessary HTTPS protocol**
@@ -38,6 +46,12 @@ Forge could not obtain a readable pre-push review verdict. This records a review
 **Committed library statistics were stale**
 
 The first required finalization pass changed `stats/p6spy/p6spy/3.9.1/stats.json`: reproduced instruction coverage was 4093/14411 instead of 4092/14411, and line coverage was 998/3776 instead of 997/3776. The mirrored generated statistics therefore did not match the finalized test run.
+
+## 2026-10-15 — com.azure:azure-storage-internal-avro:12.14.0 (#10693)
+
+**Grund citation under the ASCII-only test tree**
+
+The contributed `tests/src/com.azure/azure-storage-internal-avro/12.14.0/build.gradle` contained the non-ASCII `§FS-test-contract.2.7` marker. Repository instructions prohibit grund citations anywhere under `tests/src` because that suite is ASCII-only.
 
 ## 2026-10-15 — org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2 (#8416)
 
