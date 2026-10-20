@@ -33,6 +33,7 @@ public class JAXBSchemaInitializerTest {
         FaultInfo fault = operation.addFault(
                 new QName(NAMESPACE, "ServiceFaultMessage"), new QName(NAMESPACE, "ServiceFault"));
         fault.setProperty("elementName", new QName(NAMESPACE, "ServiceFault"));
+        fault.setProperty(Class.class.getName(), ServiceFault.class);
         MessagePartInfo part = fault.addMessagePart(new QName(NAMESPACE, "ServiceFault"));
         part.setElementQName(new QName(NAMESPACE, "ServiceFault"));
         part.setTypeClass(ServiceFault.class);
