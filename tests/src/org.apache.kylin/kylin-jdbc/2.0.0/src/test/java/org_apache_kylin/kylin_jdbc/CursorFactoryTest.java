@@ -6,6 +6,8 @@
  */
 package org_apache_kylin.kylin_jdbc;
 
+import java.util.Arrays;
+
 import org.apache.kylin.jdbc.shaded.org.apache.calcite.avatica.Meta.CursorFactory;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CursorFactoryTest {
     @Test
     void createsAndRestoresARecordCursorDescription() {
-        CursorFactory factory = CursorFactory.record(Row.class);
+        CursorFactory factory = CursorFactory.record(Row.class, null, Arrays.asList("id", "name"));
         CursorFactory restored = CursorFactory.fromProto(factory.toProto());
 
         assertThat(factory.fieldNames).containsExactly("id", "name");

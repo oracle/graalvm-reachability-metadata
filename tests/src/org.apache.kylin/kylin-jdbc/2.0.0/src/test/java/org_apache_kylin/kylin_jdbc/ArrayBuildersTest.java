@@ -15,11 +15,11 @@ public class ArrayBuildersTest {
     @Test
     void insertsValuesWhilePreservingTheArrayComponentType() {
         String[] inserted = ArrayBuilders.insertInList(new String[] {"second"}, "first");
-        String[] withoutDuplicate = ArrayBuilders.insertInListNoDup(inserted, "second");
-        String[] movedToFront = ArrayBuilders.insertInListNoDup(withoutDuplicate, "second");
+        String[] uniqueInsertion = ArrayBuilders.insertInListNoDup(inserted, "third");
+        String[] movedToFront = ArrayBuilders.insertInListNoDup(inserted, "second");
 
         assertThat(inserted).containsExactly("first", "second");
-        assertThat(withoutDuplicate).containsExactly("first", "second");
+        assertThat(uniqueInsertion).containsExactly("third", "first", "second");
         assertThat(movedToFront).containsExactly("second", "first");
         assertThat(movedToFront.getClass()).isEqualTo(String[].class);
     }
