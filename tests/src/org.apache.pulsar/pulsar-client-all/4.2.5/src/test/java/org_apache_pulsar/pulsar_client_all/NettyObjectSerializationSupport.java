@@ -40,7 +40,7 @@ public final class NettyObjectSerializationSupport {
             throw new ClassNotFoundException(className);
         }));
         try {
-            assertThat(encoder.writeOutbound(new String[] {"pulsar", "bookkeeper"})).isTrue();
+            assertThat(encoder.writeOutbound((Object) new String[] {"pulsar", "bookkeeper"})).isTrue();
             ByteBuf encoded = encoder.readOutbound();
             assertThat(decoder.writeInbound(encoded)).isTrue();
             assertThat((String[]) decoder.readInbound()).containsExactly("pulsar", "bookkeeper");

@@ -27,10 +27,11 @@ public class ArrayMemberValueTest {
         annotation.addMemberValue("values", matrix);
 
         ArrayCarrier proxy = (ArrayCarrier) annotation.toAnnotationType(getClass().getClassLoader(), null);
+        String[][] values = proxy.values();
 
-        assertThat(proxy.values()).containsExactly(
-                new String[] {"persistent", "non-persistent"},
-                new String[] {"partitioned"});
+        assertThat(values).hasSize(2);
+        assertThat(values[0]).containsExactly("persistent", "non-persistent");
+        assertThat(values[1]).containsExactly("partitioned");
     }
 
     private static ArrayMemberValue stringArray(ConstPool constPool, String... values) {
@@ -43,7 +44,7 @@ public class ArrayMemberValueTest {
         return result;
     }
 
-    public @interface ArrayCarrier {
+    public interface ArrayCarrier {
         String[][] values();
     }
 }
