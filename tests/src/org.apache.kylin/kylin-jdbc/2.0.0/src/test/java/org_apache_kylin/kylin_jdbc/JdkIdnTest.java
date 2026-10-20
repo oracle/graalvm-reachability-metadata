@@ -14,6 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JdkIdnTest {
     @Test
     void convertsAnAsciiInternationalizedDomainToUnicode() throws Exception {
-        assertThat(new JdkIdn().toUnicode("xn--bcher-kva.example")).isEqualTo("bücher.example");
+        assertThat(new JdkIdn().toUnicode("xn--bcher-kva.example")).isEqualTo("b\u00fccher.example");
     }
 }
