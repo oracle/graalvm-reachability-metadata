@@ -6,6 +6,11 @@
  */
 package org_apache_kylin.kylin_jdbc;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.BeanDescription;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.introspect.AnnotatedConstructor;
@@ -22,6 +27,25 @@ public class AnnotatedConstructorTest {
 
         assertThat(description.findDefaultConstructor().call()).isEqualTo(new Entry("default"));
         assertThat(oneArgument.call1("selected")).isEqualTo(new Entry("selected"));
+    }
+
+    @Test
+    void restoresConstructorDiscoveredByJacksonIntrospection() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        BeanDescription description = mapper.getDeserializationConfig().introspect(mapper.constructType(Entry.class));
+        AnnotatedConstructor constructor = description.getConstructors().get(0);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeObject(constructor);
+        }
+
+        AnnotatedConstructor restored;
+        try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            restored = (AnnotatedConstructor) input.readObject();
+        }
+
+        assertThat(restored.call1("restored")).isEqualTo(new Entry("restored"));
     }
 
     public static class Entry {
