@@ -106,7 +106,7 @@ public class AnnotationsFactoryBeanListenerTest {
         }
 
         @Override
-        public void release(Exchange exchange, Object serviceObject) {}
+        public void release(Exchange exchange, Object serviceObject) { }
     }
 
     private static final class EndpointServer implements Server {

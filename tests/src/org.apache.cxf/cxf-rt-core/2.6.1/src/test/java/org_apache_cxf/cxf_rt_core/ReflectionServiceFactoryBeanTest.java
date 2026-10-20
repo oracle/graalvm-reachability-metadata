@@ -198,7 +198,7 @@ public class ReflectionServiceFactoryBeanTest {
     }
 
     public static final class DefaultDataBinding extends SourceDataBinding {
-        public DefaultDataBinding() {}
+        public DefaultDataBinding() { }
     }
 
     public interface ConstructorBoundService {

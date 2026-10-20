@@ -62,7 +62,7 @@ public class ExtensionManagerImplTest {
     public static final class NamespaceAwareExtension {
         private Collection<String> activationNamespaces;
 
-        public NamespaceAwareExtension() {}
+        public NamespaceAwareExtension() { }
 
         public void setActivationNamespaces(Collection<String> namespaces) {
             activationNamespaces = namespaces;

@@ -20,7 +20,7 @@ import org.apache.cxf.service.model.BindingInfo;
 import org.apache.cxf.transport.Destination;
 
 public final class BindingFactoryManagerTestSupport {
-    private BindingFactoryManagerTestSupport() {}
+    private BindingFactoryManagerTestSupport() { }
 
     public static final class Locator implements ConfiguredBeanLocator {
         private final BindingFactoryManagerImpl manager;

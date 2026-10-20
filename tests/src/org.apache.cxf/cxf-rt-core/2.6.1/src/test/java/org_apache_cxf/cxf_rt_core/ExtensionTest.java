@@ -84,6 +84,6 @@ public class ExtensionTest {
     }
 
     public static final class DefaultConstructed {
-        public DefaultConstructed() {}
+        public DefaultConstructed() { }
     }
 }

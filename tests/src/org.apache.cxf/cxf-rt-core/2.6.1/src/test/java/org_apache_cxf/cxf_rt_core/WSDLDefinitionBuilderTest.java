@@ -67,7 +67,7 @@ public class WSDLDefinitionBuilderTest {
     public static final class TestExtensibilityPlugin implements WSDLExtensibilityPlugin {
         private ExtensionRegistry extensionRegistry;
 
-        public TestExtensibilityPlugin() {}
+        public TestExtensibilityPlugin() { }
 
         @Override
         public void setExtensionRegistry(ExtensionRegistry extensionRegistry) {
