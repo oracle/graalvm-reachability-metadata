@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.cert.Certificate;
 
 import org.apache.cxf.transport.https.HttpsURLConnectionInfo;
@@ -44,7 +43,7 @@ public class HttpsURLConnectionInfoTest {
                 Certificate[] localCertificates,
                 Certificate[] serverCertificates)
                 throws IOException {
-            super(new URL("https://localhost/resource"));
+            super(HttpsTestUrls.create("/resource"));
             this.cipherSuite = cipherSuite;
             this.localCertificates = localCertificates;
             this.serverCertificates = serverCertificates;

@@ -74,7 +74,7 @@ public class HttpsURLConnectionFactoryTest {
         private SSLSocketFactory socketFactory;
 
         DirectHttpsConnection() throws IOException {
-            super(new URL("https://localhost/"));
+            super(HttpsTestUrls.create("/"));
         }
 
         public SSLSocketFactory getSSLSocketFactory() {
@@ -106,7 +106,7 @@ public class HttpsURLConnectionFactoryTest {
         private LegacySocketFactory socketFactory;
 
         LegacyHttpsConnection() throws IOException {
-            super(new URL("https://localhost/"));
+            super(HttpsTestUrls.create("/"));
         }
 
         public LegacyHostnameVerifier getHostnameVerifier() {
