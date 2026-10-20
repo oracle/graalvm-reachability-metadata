@@ -125,7 +125,7 @@ public class ServiceListGeneratorServletTest {
                 return "/app/cxf/catalog";
             }
             if ("getRequestURL".equals(name)) {
-                return new StringBuffer("http://localhost/app/cxf/catalog");
+                return new java.lang.StringBuffer("http://localhost/app/cxf/catalog");
             }
             if ("getContextPath".equals(name)) {
                 return "/app";
@@ -189,7 +189,8 @@ public class ServiceListGeneratorServletTest {
         }
 
         @Override
-        public void setWriteListener(WriteListener listener) {}
+        public void setWriteListener(WriteListener listener) {
+        }
     }
 
     private static Object defaultValue(Class<?> type) {

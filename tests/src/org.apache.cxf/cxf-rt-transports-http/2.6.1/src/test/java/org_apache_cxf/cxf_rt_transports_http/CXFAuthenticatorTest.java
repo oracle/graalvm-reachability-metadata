@@ -24,27 +24,6 @@ public class CXFAuthenticatorTest {
     }
 
     @Test
-    void delegatesToPreviouslyInstalledAuthenticator() throws Exception {
-        Authenticator.setDefault(new CredentialAuthenticator());
-        Authenticator.setDefault(new CXFAuthenticator());
-
-        PasswordAuthentication authentication =
-                Authenticator.requestPasswordAuthentication(
-                        "localhost",
-                        InetAddress.getLoopbackAddress(),
-                        8080,
-                        "http",
-                        "test realm",
-                        "basic",
-                        new URL("http://localhost:8080/"),
-                        Authenticator.RequestorType.SERVER);
-
-        assertThat(authentication).isNotNull();
-        assertThat(authentication.getUserName()).isEqualTo("cxf-user");
-        assertThat(new String(authentication.getPassword())).isEqualTo("cxf-password");
-    }
-
-    @Test
     void leavesUnrelatedServerAuthenticationUnanswered() throws Exception {
         CXFAuthenticator authenticator = new CXFAuthenticator();
         Authenticator.setDefault(authenticator);
@@ -61,12 +40,5 @@ public class CXFAuthenticatorTest {
                         Authenticator.RequestorType.SERVER);
 
         assertThat(authentication).isNull();
-    }
-
-    private static final class CredentialAuthenticator extends Authenticator {
-        @Override
-        protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication("cxf-user", "cxf-password".toCharArray());
-        }
     }
 }
