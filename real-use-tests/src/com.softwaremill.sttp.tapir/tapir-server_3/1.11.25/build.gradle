@@ -15,6 +15,14 @@ String scala3Version = tck.scala3Version.get()
 
 dependencies {
     testImplementation "com.softwaremill.sttp.tapir:tapir-server_3:$libraryVersion"
+
+    // Serve application endpoints over loopback HTTP using the core server interpreter.
+    testImplementation "com.softwaremill.sttp.tapir:tapir-jdkhttp-server_3:1.11.25"
+    // Decode and encode application JSON payloads, including validation failures.
+    testImplementation "com.softwaremill.sttp.tapir:tapir-json-circe_3:1.11.25"
+    // Observe server interceptor metrics through an application metrics endpoint.
+    testImplementation "com.softwaremill.sttp.tapir:tapir-prometheus-metrics_3:1.11.25"
+
     testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
     testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
 }
