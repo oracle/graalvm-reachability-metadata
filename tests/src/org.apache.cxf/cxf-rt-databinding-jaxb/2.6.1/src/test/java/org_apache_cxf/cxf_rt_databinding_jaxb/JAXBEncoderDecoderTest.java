@@ -235,6 +235,8 @@ public class JAXBEncoderDecoderTest {
 
     private static Object readRepeated(
             JAXBDataBinding binding, MessagePartInfo part, String first, String second) throws Exception {
+        part.setTypeClass(String[].class);
+        ((XmlSchemaElement) part.getXmlSchema()).setMaxOccurs(2);
         QName name = part.getConcreteName();
         XMLStreamReader reader = repeatedReader(name, first, second);
         return JAXBEncoderDecoder.unmarshall(
