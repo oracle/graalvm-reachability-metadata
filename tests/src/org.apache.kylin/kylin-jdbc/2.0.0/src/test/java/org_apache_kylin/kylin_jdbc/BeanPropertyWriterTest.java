@@ -6,6 +6,8 @@
  */
 package org_apache_kylin.kylin_jdbc;
 
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.annotation.JsonFormat;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +23,30 @@ public class BeanPropertyWriterTest {
         String json = new ObjectMapper().writeValueAsString(bean);
 
         assertThat(json).contains("\"code\":7", "\"label\":\"ready\"");
+    }
+
+    @Test
+    void serializesFieldAndMethodPropertiesAsArrayElements() throws Exception {
+        ArrayBean bean = new ArrayBean();
+        bean.code = 11;
+        bean.setLabel("array");
+
+        assertThat(new ObjectMapper().writeValueAsString(bean)).isEqualTo("[11,\"array\"]");
+    }
+
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    @JsonPropertyOrder({"code", "label"})
+    public static class ArrayBean {
+        public int code;
+        private String label;
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
     }
 
     public static class PropertyBean {

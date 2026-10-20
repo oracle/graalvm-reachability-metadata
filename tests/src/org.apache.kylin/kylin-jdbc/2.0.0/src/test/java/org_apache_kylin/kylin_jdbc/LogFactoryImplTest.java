@@ -7,6 +7,7 @@
 package org_apache_kylin.kylin_jdbc;
 
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.Log;
+import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.LogFactory;
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl;
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.SimpleLog;
 import org.junit.jupiter.api.Test;
@@ -17,14 +18,27 @@ public class LogFactoryImplTest {
     @Test
     void createsTheConfiguredLoggingImplementation() {
         LogFactoryImpl factory = new LogFactoryImpl();
-        factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, SimpleLog.class.getName());
+        factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, FactoryAwareLog.class.getName());
         try {
             Log log = factory.getInstance("configured.logger");
 
-            assertThat(log).isInstanceOf(SimpleLog.class);
+            assertThat(log).isInstanceOf(FactoryAwareLog.class);
+            assertThat(((FactoryAwareLog) log).factory).isSameAs(factory);
             assertThat(factory.getInstance("configured.logger")).isSameAs(log);
         } finally {
             factory.release();
+        }
+    }
+
+    public static class FactoryAwareLog extends SimpleLog {
+        private LogFactoryImpl factory;
+
+        public FactoryAwareLog(String name) {
+            super(name);
+        }
+
+        public void setLogFactory(LogFactory factory) {
+            this.factory = (LogFactoryImpl) factory;
         }
     }
 }

@@ -18,6 +18,15 @@ public class JsonValueSerializerTest {
         assertThat(new ObjectMapper().writeValueAsString(new Identifier("K-19"))).isEqualTo("\"K-19\"");
     }
 
+    @Test
+    void includesTypeInformationForAJsonValueObject() throws Exception {
+        ObjectMapper mapper = new ObjectMapper().enableDefaultTyping();
+
+        String json = mapper.writeValueAsString((Object) new Identifier("typed"));
+
+        assertThat(json).contains("Identifier", "typed");
+    }
+
     public static class Identifier {
         private final String value;
 

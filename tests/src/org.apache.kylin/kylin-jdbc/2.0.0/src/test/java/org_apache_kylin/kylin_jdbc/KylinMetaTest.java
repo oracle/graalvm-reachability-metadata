@@ -40,13 +40,16 @@ public class KylinMetaTest {
 
         try (Connection connection = new Driver().connect(
                         "jdbc:kylin://127.0.0.1:" + server.getAddress().getPort() + "/sales", properties);
-                ResultSet tableTypes = connection.getMetaData().getTableTypes()) {
+                ResultSet tableTypes = connection.getMetaData().getTableTypes();
+                ResultSet procedures = connection.getMetaData().getProcedures(null, null, null)) {
             List<String> names = new ArrayList<>();
             while (tableTypes.next()) {
                 names.add(tableTypes.getString("TABLE_TYPE"));
             }
 
             assertThat(names).contains("TABLE");
+            assertThat(procedures.next()).isFalse();
+            assertThat(procedures.getMetaData().getColumnCount()).isPositive();
             assertThat(authenticationHandler.requestMethod).isEqualTo("POST");
             assertThat(authenticationHandler.authorization).isEqualTo("Basic " + expectedCredentials);
         } finally {
