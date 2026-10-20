@@ -20,17 +20,26 @@ public class WrapperHelperCompilerTest {
     void wrapperOptimizationPreservesPublicHelperBehavior() throws Exception {
         JaxbTestSupport.disableOptimizedAccessors();
         JAXBDataBinding binding = new JAXBDataBinding(JAXBContext.newInstance(String.class));
-        WrapperHelper helper = binding.createWrapperHelper(
+        QName wrapperName = new QName("urn:cxf-jaxb-test", "optimizableWrapper");
+        WrapperHelper firstHelper = createHelper(binding, wrapperName);
+        WrapperHelper reusedHelper = createHelper(binding, wrapperName);
+
+        OptimizableWrapper firstWrapper = (OptimizableWrapper)
+                firstHelper.createWrapperObject(Collections.<Object>singletonList("generated"));
+        OptimizableWrapper reusedWrapper = (OptimizableWrapper)
+                reusedHelper.createWrapperObject(Collections.<Object>singletonList("reused"));
+
+        assertThat(firstHelper.getWrapperParts(firstWrapper)).containsExactly("generated");
+        assertThat(reusedHelper.getWrapperParts(reusedWrapper)).containsExactly("reused");
+    }
+
+    private static WrapperHelper createHelper(JAXBDataBinding binding, QName wrapperName) {
+        return binding.createWrapperHelper(
                 OptimizableWrapper.class,
-                new QName("urn:cxf-jaxb-test", "optimizableWrapper"),
+                wrapperName,
                 Collections.singletonList("value"),
                 Collections.singletonList("string"),
                 Collections.<Class<?>>singletonList(String.class));
-
-        OptimizableWrapper wrapper = (OptimizableWrapper)
-                helper.createWrapperObject(Collections.<Object>singletonList("optimized"));
-
-        assertThat(helper.getWrapperParts(wrapper)).containsExactly("optimized");
     }
 
     public static class OptimizableWrapper {
