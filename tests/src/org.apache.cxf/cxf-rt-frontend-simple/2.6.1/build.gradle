@@ -11,7 +11,10 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.apache.cxf:cxf-rt-frontend-simple:$libraryVersion"
+    testImplementation("org.apache.cxf:cxf-rt-frontend-simple:$libraryVersion") {
+        // This suite selects SourceDataBinding rather than the default JAXB provider.
+        exclude group: "org.apache.cxf", module: "cxf-rt-databinding-jaxb"
+    }
     testImplementation "org.apache.cxf:cxf-rt-bindings-xml:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'javax.annotation:javax.annotation-api:1.3.2'
