@@ -10,35 +10,96 @@ import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.Log;
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.LogFactory;
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl;
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.SimpleLog;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Order(1)
 public class LogFactoryImplTest {
     @Test
-    void createsTheConfiguredLoggingImplementation() {
+    void createsTheConfiguredLoggingImplementationAfterContextLoaderFallback() {
+        String originalDiagnostics = System.getProperty(LogFactory.DIAGNOSTICS_DEST_PROPERTY);
         Thread thread = Thread.currentThread();
         ClassLoader originalLoader = thread.getContextClassLoader();
-        LogFactoryImpl factory = new LogFactoryImpl();
-        factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, FactoryAwareLog.class.getName());
+        LogFactoryImpl factory = null;
         try {
-            thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
+            System.setProperty(LogFactory.DIAGNOSTICS_DEST_PROPERTY, "STDOUT");
+            thread.setContextClassLoader(new LogFilteringClassLoader(originalLoader));
+            factory = new LogFactoryImpl();
+            factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, FactoryAwareLog.class.getName());
+
             Log log = factory.getInstance("configured.logger");
 
             assertThat(log).isInstanceOf(FactoryAwareLog.class);
+            assertThat(((FactoryAwareLog) log).name).isEqualTo("configured.logger");
             assertThat(((FactoryAwareLog) log).factory).isSameAs(factory);
             assertThat(factory.getInstance("configured.logger")).isSameAs(log);
         } finally {
-            factory.release();
+            release(factory);
             thread.setContextClassLoader(originalLoader);
+            restoreProperty(LogFactory.DIAGNOSTICS_DEST_PROPERTY, originalDiagnostics);
         }
     }
 
-    public static class FactoryAwareLog extends SimpleLog {
+    @Test
+    void createsTheConfiguredLoggingImplementationWithSystemLoaderFallback() {
+        String originalDiagnostics = System.getProperty(LogFactory.DIAGNOSTICS_DEST_PROPERTY);
+        Thread thread = Thread.currentThread();
+        ClassLoader originalLoader = thread.getContextClassLoader();
+        LogFactoryImpl factory = null;
+        try {
+            System.setProperty(LogFactory.DIAGNOSTICS_DEST_PROPERTY, "STDOUT");
+            thread.setContextClassLoader(null);
+            factory = new LogFactoryImpl();
+            factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, SimpleLog.class.getName());
+
+            Log log = factory.getInstance("system.loader.logger");
+
+            assertThat(log).isInstanceOf(SimpleLog.class);
+            assertThat(log.isInfoEnabled()).isTrue();
+        } finally {
+            release(factory);
+            thread.setContextClassLoader(originalLoader);
+            restoreProperty(LogFactory.DIAGNOSTICS_DEST_PROPERTY, originalDiagnostics);
+        }
+    }
+
+    private static void release(LogFactoryImpl factory) {
+        if (factory != null) {
+            factory.release();
+        }
+    }
+
+    private static void restoreProperty(String name, String originalValue) {
+        if (originalValue == null) {
+            System.clearProperty(name);
+        } else {
+            System.setProperty(name, originalValue);
+        }
+    }
+
+    private static final class LogFilteringClassLoader extends ClassLoader {
+        private LogFilteringClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (FactoryAwareLog.class.getName().equals(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            return super.loadClass(name, resolve);
+        }
+    }
+
+    public static final class FactoryAwareLog extends SimpleLog {
+        private final String name;
         private LogFactoryImpl factory;
 
         public FactoryAwareLog(String name) {
             super(name);
+            this.name = name;
         }
 
         public void setLogFactory(LogFactory factory) {
