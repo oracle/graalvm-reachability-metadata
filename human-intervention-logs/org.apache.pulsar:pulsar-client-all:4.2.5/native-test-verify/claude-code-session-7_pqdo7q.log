@@ -1,0 +1,46 @@
+Prompt:
+Reproduce the failure first and read the FULL stack trace, including every `Caused by:`
+line, to find the real cause before changing anything.
+- If the cause is missing or inactive-condition for metadata, fix that condition.
+- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode
+  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,
+  or a class reachable only through a custom class loader), Remove the
+  generated test that exercises it, or rewrite it to a native-compatible public-API path that
+  still validates metadata.
+Re-run the reproduce command after each change and keep running until the test passes.
+Do not use any skill for this.
+
+Use this exact GraalVM for every command; do not switch to another that appears on PATH:
+- GRAALVM_HOME=/home/mihailo/.sdkman/candidates/java/25.4.4+1-graal
+- JAVA_HOME=/home/mihailo/.sdkman/candidates/java/25.4.4+1-graal
+
+Reproduce with:
+./gradlew runNativeTraceImage -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5 -PtraceMetadataPath=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-334346f8/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/runs/cycle-0 -PtraceMetadataConditionPackages=com.scurrilous.circe,org.apache.avro.reflect,org.apache.pulsar -PmetadataConfigDirs=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-334346f8/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/_global_/agent
+
+Failure output excerpt:
+```text
+    at com.oracle.svm.core.configure.RuntimeDynamicAccessMetadata.<init>(RuntimeDynamicAccessMetadata.java:234)
+    at com.oracle.svm.core.configure.RuntimeDynamicAccessMetadata.createDecoded(RuntimeDynamicAccessMetadata.java:172)
+    at com.oracle.svm.core.code.RuntimeMetadataDecoderImpl.decodeDynamicAccessMetadata(RuntimeMetadataDecoderImpl.java:488)
+    at com.oracle.svm.core.code.RuntimeMetadataDecoderImpl.parseDynamicAccessMetadata(RuntimeMetadataDecoderImpl.java:314)
+    at com.oracle.svm.core.hub.ImageReflectionMetadataEncoding.getDynamicAccessMetadata(ImageReflectionMetadataEncoding.java:165)
+    at com.oracle.svm.core.hub.ImageReflectionMetadata.getDynamicAccessMetadata(ImageReflectionMetadata.java:94)
+    at java.lang.Class.getDynamicAccessMetadata(DynamicHub.java:1630)
+    at com.oracle.svm.core.jdk.Util_java_lang_reflect_Array.shouldTraceReflectionArrayType(JavaLangReflectSubstitutions.java:452)
+Fatal error: Failed to create the main Isolate. (code 13)
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-334346f8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 1 executed, 8 up-to-date
+```
+
+Conversation:
+{"duration_api_ms":689880,"stop_reason":"end_turn","session_id":"524e003d-02ec-42d2-9b5a-0fc736901f69","total_cost_usd":2.5344086000000003,"usage":{"input_tokens":120,"cache_creation_input_tokens":152472,"cache_read_input_tokens":6775653,"output_tokens":56915,"output_tokens_details":{"thinking_tokens":38518},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":152472,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":1327,"cache_read_input_tokens":175757,"cache_creation_input_tokens":723,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":723},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":120,"outputTokens":56915,"cacheReadInputTokens":6775653,"cacheCreationInputTokens":152472,"webSearchRequests":0,"costUSD":2.5344086000000003,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":38518,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":60,"subtype":"success","api_error_status":null,"result":"Good — git status is unchanged (all my edits were to build-output/temp files, nothing tracked). No source changes were needed because none would help.\n\n`★ Insight ─────────────────────────────────────`\nThe key diagnostic move here was treating \"Failed to create the main Isolate\" with a *repeating* 8-frame stack as a StackOverflowError signature, not a single clean exception — GraalVM prints the recursive trace rather than collapsing it. From there, reading the actual SVM source (`svm.src.zip` bundled with the GraalVM distro) instead of guessing was what let me pin the mechanism precisely: `RuntimeDynamicAccessMetadata.canonicalConditions()` calls `Arrays.copyOf`, which — only when `MetadataTracer.enabled()` (i.e., only during `runNativeTraceImage`'s trace-instrumented build) — routes through `shouldTraceReflectionArrayType`, which needs the component type's *own* dynamic-access metadata decoded, which can re-enter `canonicalConditions` before the first decode's result is cached.\n`─────────────────────────────────────────────────`\n\n## Summary of investigation\n\nI reproduced the failure, read the full stack trace (it's a disguised infinite recursion, not a one-shot exception), and traced the mechanism precisely using GraalVM's own SVM sources:\n\n`Arrays.copyOf` (in `canonicalConditions`) → `Array.newInstance` → `shouldTraceReflectionArrayType` → needs the array's component class's own `getDynamicAccessMetadata()` → if that class's metadata is also conditional, decoding it needs `canonicalConditions` again → recurses forever. This only triggers when `MetadataTracer.enabled()`, i.e. **only in `runNativeTraceImage`'s trace-instrumented build mode**.\n\nI then tested three increasingly aggressive hypotheses, each requiring a forced full rebuild (`--rerun-tasks`) since Gradle doesn't invalidate the native-image cache on manual JSON edits:\n\n1. Stripped the Gson-sourced `java.lang.Class` condition (from the generated `ReflectionHelperInnerRecordSupportedHelperTest`) — **still crashed**.\n2. Stripped *all* `java.lang.Class` conditions, including Jackson's — **still crashed**.\n3. Stripped *all* `java.lang.Object` conditions (7 merged conditions, incl. one from `ReflectionsTest`) — **still crashed**.\n4. Pointed `-PmetadataConfigDirs` at a completely empty directory (`{}`) — **still crashed, identically**.\n5. Ran the exact same `runNativeTraceImage` task against an unrelated, already-shipped library (`com.google.code.gson:gson:2.14.0`) with empty metadata — **crashed identically**.\n\nStep 4–5 prove this has nothing to do with `pulsar-client-all`'s metadata or generated tests — it reproduces for any library, even with zero custom metadata. It's a bug in `RuntimeDynamicAccessMetadata.canonicalConditions` in this exact GraalVM build (`Oracle GraalVM 25.4.4.1.1+1.1`, build `25.0.4.1.1+1-LTS-jvmci-25.4-b23`), triggered by *something* already on the shared harness classpath (JUnit/other baseline metadata) whenever `MetadataTracer` is enabled — independent of this PR.\n\nSince no change to this PR's metadata or tests can fix it, I made no source edits — the instructions' two remedies (fix a condition, or remove/rewrite a test) don't apply when the cause lives outside the diff entirely. This looks like it needs either a GraalVM-version pin/workaround at the harness level or an upstream report; let me know if you'd like me to dig into which specific classpath entry triggers it, or check whether a different GraalVM build avoids it.","ttft_ms":7615,"type":"result","duration_ms":1462035,"uuid":"9c77a1cb-200b-4c63-85b4-30749a369d0e","ttft_stream_ms":1885,"time_to_request_ms":224,"first_content_frame_ms":1885,"queued_turn_count":0,"result_index":0}
+

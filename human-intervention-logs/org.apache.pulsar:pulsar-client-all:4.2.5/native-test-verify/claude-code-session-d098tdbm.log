@@ -1,0 +1,46 @@
+Prompt:
+Reproduce the failure first and read the FULL stack trace, including every `Caused by:`
+line, to find the real cause before changing anything.
+- If the cause is missing or inactive-condition for metadata, fix that condition.
+- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode
+  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,
+  or a class reachable only through a custom class loader), Remove the
+  generated test that exercises it, or rewrite it to a native-compatible public-API path that
+  still validates metadata.
+Re-run the reproduce command after each change and keep running until the test passes.
+Do not use any skill for this.
+
+Use this exact GraalVM for every command; do not switch to another that appears on PATH:
+- GRAALVM_HOME=/home/mihailo/git/forge-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_NI_EE_JAVA25/graalvm-ni-ee-25.1.0-dev+10.1
+- JAVA_HOME=/home/mihailo/git/forge-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_NI_EE_JAVA25/graalvm-ni-ee-25.1.0-dev+10.1
+
+Reproduce with:
+./gradlew runNativeTraceImage -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5 -PtraceMetadataPath=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-366cdd9b/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/runs/cycle-1 -PtraceMetadataConditionPackages=com.scurrilous.circe,org.apache.avro.reflect,org.apache.pulsar -PmetadataConfigDirs=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-366cdd9b/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/_global_/agent,/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-366cdd9b/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/runs/cycle-0
+
+Failure output excerpt:
+```text
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.callHandlerAdded(AbstractChannelHandlerContext.java:1130)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.callHandlerAdded0(DefaultChannelPipeline.java:558)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.access$100(DefaultChannelPipeline.java:45)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$PendingHandlerAddedTask.execute(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.callHandlerAddedForAllHandlers(DefaultChannelPipeline.java:1064)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.invokeHandlerAddedIfNeeded(DefaultChannelPipeline.java:599)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannel$AbstractUnsafe.register0(AbstractChannel.java:513)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannel$AbstractUnsafe.access$200(AbstractChannel.java:428)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannel$AbstractUnsafe$1.run(AbstractChannel.java:485)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:472)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:408)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:1007)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+```
+
+Conversation:
+{"duration_api_ms":26441,"stop_reason":"end_turn","session_id":"d21af9ff-bbd9-4aca-87e9-45451737f537","total_cost_usd":0.33823600000000004,"usage":{"input_tokens":12,"cache_creation_input_tokens":64746,"cache_read_input_tokens":302590,"output_tokens":1871,"output_tokens_details":{"thinking_tokens":463},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":64746,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":147,"cache_read_input_tokens":64357,"cache_creation_input_tokens":389,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":389},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":12,"outputTokens":1871,"cacheReadInputTokens":302590,"cacheCreationInputTokens":64746,"webSearchRequests":0,"costUSD":0.33823600000000004,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":463,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":6,"subtype":"success","api_error_status":null,"result":"I've kicked off the reproduce command in the background (task ID `bdblv7a80`) since native image builds take a while. I'll wait for it to finish and then read the full stack trace before diagnosing the cause — no need to poll further.","ttft_ms":2626,"type":"result","duration_ms":630073,"uuid":"3756b20f-7523-4481-92ed-b997fc74f66d","ttft_stream_ms":1654,"time_to_request_ms":126,"first_content_frame_ms":1654,"queued_turn_count":0,"result_index":0}
+

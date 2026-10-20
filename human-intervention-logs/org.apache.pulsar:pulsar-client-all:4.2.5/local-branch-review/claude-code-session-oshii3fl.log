@@ -1,0 +1,32 @@
+Prompt:
+Review the branch Forge is about to push for org.apache.pulsar:pulsar-client-all:4.2.5.
+There is no pull request yet. Use these local equivalents:
+- Review `git diff 3bc289b3788e0e45f278c4558281c880cfa8feda 78ac3d22ee88fca732445d792fceff5e3f6e2e25`; it is the eventual PR diff minus the descriptor.
+- Apply every relevant enumerated rule in `skills/review-library-new-request/SKILL.md`.
+- Apply the first matching disposition in §root/FS-contribution-contract.5.
+- Read local gate records and resolved render statistics from `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_prepublication_review_worktrees/review-782a36ea/.forge-local-review-565baf7f/review-evidence.json`.
+- Ignore skill steps about `gh`, PR labels, reviews, merges, and remote CI status.
+
+This is a detached worktree and a cold session. Do not run `gh`, push, commit, or edit forge/FINDINGS.md.
+
+Repair a violation when the complete fix stays inside the contribution's allowed files. If the repaired tree satisfies every rule, approve it. Never edit shared infrastructure or another coordinate. Reject with action human-intervention for shared infrastructure, uncertainty, or anything else requiring a maintainer. When §root/FS-contribution-contract.5.4 proves the library version is unsupportable and the artifact has an index entry, repair the contribution into the skip record that rule prescribes and approve it. Reject with action close only when that rule leaves nothing to record.
+For a shared infrastructure defect, include infrastructure_issue with a concise non-empty title and a body containing the cause and reproducible evidence. Forge will open or reuse that issue and add its link to the recorded finding.
+
+If you edit the contribution, run the exact Forge-owned finalization command after your last manual edit. This is the only semantic repair pass; it disables nested agents and includes all three test lanes, foreign-metadata routing, deterministic allowed-package updates, metadata and style checks, generated-test validity, and library statistics:
+- `PYTHONPATH=forge python3 -m git_scripts.review_finalization --repo-path . --coordinates org.apache.pulsar:pulsar-client-all:4.2.5 --base-commit 3bc289b3788e0e45f278c4558281c880cfa8feda --receipt-path /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_prepublication_review_worktrees/review-782a36ea/.forge-local-review-565baf7f/finalization-receipt.json`
+If it fails, use its logs and resulting diff to repair the contribution, then run the exact command again. A run that updates the publishable tree deliberately exits nonzero: inspect those changes as part of the review and rerun it. Write the verdict only after the command exits successfully, which proves a complete pass made no further publishable change. Do not edit the contribution after that successful run. Forge will not run finalization again.
+
+Write exactly one JSON verdict to `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_prepublication_review_worktrees/review-782a36ea/.forge-local-review-565baf7f/verdict.json`. This is the only judgment Forge reads:
+{
+  "decision": "approved",
+  "review_comment": "What you checked and concluded.",
+  "finding_title": "Reusable defect title, or empty when no finding.",
+  "finding_body": "Rule violation and evidence, or empty when no finding.",
+  "fix_note": "What you changed and why, or empty when you made no correction."
+}
+
+For rejection, set decision to rejected, add action as human-intervention or close, and provide a non-empty finding title and body. For approval, omit action. Keep a repaired finding in the verdict even when the repaired tree is approved.
+
+Conversation:
+{"duration_api_ms":146474,"stop_reason":"end_turn","session_id":"ca1bdd06-0bc0-4528-89f1-0d160a76daa5","total_cost_usd":0.7811374,"usage":{"input_tokens":30,"cache_creation_input_tokens":98756,"cache_read_input_tokens":1412067,"output_tokens":10364,"output_tokens_details":{"thinking_tokens":6780},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":98756,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":240,"cache_read_input_tokens":117131,"cache_creation_input_tokens":277,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":277},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":30,"outputTokens":10364,"cacheReadInputTokens":1412067,"cacheCreationInputTokens":98756,"webSearchRequests":0,"costUSD":0.7811374,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":6780,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":18,"subtype":"success","api_error_status":null,"result":"The background finalization run will notify me automatically when it completes — no need for a separate wakeup. I'll wait for that notification before proceeding.","ttft_ms":4594,"type":"result","duration_ms":269171,"uuid":"f79a7fe1-291d-42c3-babe-260ede3ecd30","ttft_stream_ms":4032,"time_to_request_ms":97,"first_content_frame_ms":4033,"queued_turn_count":0,"result_index":0}
+

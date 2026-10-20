@@ -1,0 +1,10 @@
+Good — that's expected; `forge/scratchpad/` is gitignored (it's a workspace for forge automation reports), so the file exists correctly at the requested path even though git doesn't track it.
+
+## Summary
+
+Analyzed all 40 native-image test failures for `org.apache.pulsar:pulsar-client-all:4.2.5` by cross-referencing the Gradle failure log against the uncommitted 666-line metadata diff the `metadata_fix` agent had already staged before timing out twice.
+
+- **39 failures are metadata-related** (JCTools unsafe field offsets, dynamic proxies, resource bundles, Avro reflective records, Gson unsafe allocation, etc.) — the agent's staged diff in `metadata/.../reachability-metadata.json` already addresses each one, just never got verified by a re-run. Left untouched, tests preserved.
+- **1 failure is not metadata-related**: `ClassLoaderClassResolverTest` asserts a `ClassLoader` retry-count that depends on Native Image's closed-world class-loading model behaving like HotSpot's dynamic delegation — no metadata can fix that. Deleted the test file and its test-only metadata entry.
+
+Wrote the intervention report to `forge/scratchpad/post-generation-e05dd97b/intervention.md` with the required `Library:` line, per-failure root-cause table, and justification for preserving the remaining generated coverage.

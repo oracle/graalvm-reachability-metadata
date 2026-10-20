@@ -1,0 +1,35 @@
+Based on direct inspection of the repo (not just the issue JSON), here's my analysis and decision.
+
+## What I found
+
+**The scaffold's own progress data is the smoking gun.** `dynamic-access-exhaust-report.json` shows 111 classes already completed with zero failures/skips — but only 8 of those 111 (7%) are real `org.apache.pulsar.*` classes. The other 103 are shaded third-party internals bundled inside the fat jar (Jackson, Guava, Avro reflection, etc.) that the generator fell back to because it couldn't exercise the library's actual purpose. None of the genuine Pulsar classes reached so far are the runtime classes that matter (`ProducerImpl`, `ConsumerImpl`, `ClientCnx`, binary-protocol `Commands`, schema/admin clients) — those only activate when a producer/consumer actually completes a handshake with a broker.
+
+**Direct repo precedent confirms the fix.** `com.rabbitmq.client:amqp-client` and `com.rabbitmq:amqp-client` (also message-broker clients) hit the same wall and were given a `required-docker-images.txt` pinning `rabbitmq:4.3` (already in the allow-list as `Dockerfile-rabbitmq`), with test code spinning the broker up directly via `ProcessBuilder("docker","run",...)` in `@BeforeAll`/`@AfterAll` and polling readiness before running assertions. `io.nats:jnats` follows the same pattern. Pulsar is architecturally identical — a client whose value is almost entirely in broker interaction.
+
+**Verified the exact image tag exists**: `apachepulsar/pulsar:4.2.5` is published on Docker Hub (matches the client version exactly, avoiding protocol drift), and Testcontainers' own official `PulsarContainer` module uses `bin/pulsar standalone --no-functions-worker -nss` as its startup command — confirming those flags are the right way to skip functions-worker/BookKeeper stream-storage overhead that the client doesn't need.
+
+`★ Insight ─────────────────────────────────────`
+The `dynamic-access-exhaust-report.json`'s completedClasses list is effectively a trace of what the generator could reach without extra setup — filtering out the `.shade.` entries turns it into direct evidence of "stuck on X" rather than guesswork. This is a more reliable signal than reading the library's docs in isolation, because it reflects what *this specific scaffold* already tried.
+`─────────────────────────────────────────────────`
+
+## Decision
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "pulsar-client-all's real value (producer/consumer runtime, binary-protocol commands, connection/auth handshake) only activates against a live broker. 103 of the 111 classes already covered by the scaffold are shaded third-party internals, not org.apache.pulsar.* client code — matching the exact pattern that led rabbitmq/nats client tests in this repo to require a Docker broker.",
+  "deterministic_setup": [
+    {
+      "kind": "docker_image",
+      "image": "apachepulsar/pulsar:4.2.5",
+      "slug": "pulsar",
+      "reason": "Pulsar's own client/producer/consumer/admin runtime classes are only reachable through an actual broker handshake; the client version is pinned to the broker tag to avoid wire-protocol drift. Mirrors the rabbitmq:4.3 and nats precedents already in allowed-docker-images/ for the same reason (message-broker clients)."
+    }
+  ],
+  "agent_guidance": "Standalone Pulsar bundles its own ZooKeeper + BookKeeper + broker in one JVM, so it starts slower than the rabbitmq/nats images already in this repo — poll readiness (e.g. GET http://localhost:8080/admin/v2/clusters, or attempt to open a producer) with a generous timeout (~90-120s) rather than a fixed sleep, following the waitUntil pattern already used in tests/src/com.rabbitmq.client/amqp-client/0.8.0's ClientPropertiesTest. Start the container with `bin/pulsar standalone --no-functions-worker -nss` (same default Testcontainers' own PulsarContainer module uses) to skip functions-worker and BookKeeper-backed stream storage, which the client doesn't need and which slow startup further. Publish port 6650 for the binary client protocol (serviceUrl pulsar://localhost:6650) and 8080 for the admin REST API. Use a fixed container name and remove any stale container in both @BeforeAll and @AfterAll, matching the existing rabbitmq test's cleanup pattern.",
+  "risks": [
+    "Standalone mode is heavier than the single-process brokers already allow-listed (rabbitmq, nats) — CI timeouts may need to be generous, and this adds real wall-clock cost per test run.",
+    "This is advisory: if the remaining dynamic-access classes the generator needs turn out to still be reachable without a live broker, the Docker setup adds cost without benefit — local Gradle/Native Image verification should confirm before committing to it."
+  ]
+}
+```

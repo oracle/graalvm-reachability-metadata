@@ -1,0 +1,67 @@
+{
+  "timestamp": "2026-10-20T03:00:13.808860Z",
+  "library": "org.apache.pulsar:pulsar-client-all:4.2.5",
+  "starting_commit": "46dbba029b3609a51d3d1a779e49774f32a12c4b",
+  "ending_commit": "a40ffe1f3d4bf42b28dcba1820cb4598640c8fa9",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 10642,
+    "issue_label": "library-new-request",
+    "library": "org.apache.pulsar:pulsar-client-all:4.2.5",
+    "summary": "pulsar-client-all's real value (producer/consumer runtime, binary-protocol commands, connection/auth handshake) only activates against a live broker. 103 of the 111 classes already covered by the scaffold are shaded third-party internals, not org.apache.pulsar.* client code — matching the exact pattern that led rabbitmq/nats client tests in this repo to require a Docker broker.",
+    "deterministic_setup": [
+      {
+        "kind": "docker_image",
+        "image": "apachepulsar/pulsar:4.2.5",
+        "slug": "pulsar",
+        "reason": "Pulsar's own client/producer/consumer/admin runtime classes are only reachable through an actual broker handshake; the client version is pinned to the broker tag to avoid wire-protocol drift. Mirrors the rabbitmq:4.3 and nats precedents already in allowed-docker-images/ for the same reason (message-\n...[truncated]"
+      }
+    ],
+    "agent_guidance": "Standalone Pulsar bundles its own ZooKeeper + BookKeeper + broker in one JVM, so it starts slower than the rabbitmq/nats images already in this repo — poll readiness (e.g. GET http://localhost:8080/admin/v2/clusters, or attempt to open a producer) with a generous timeout (~90-120s) rather than a fixed sleep, following the waitUntil pattern already used in tests/src/com.rabbitmq.client/amqp-client/0.8.0's ClientPropertiesTest. Start the container with `bin/pulsar standalone --no-functions-worker -nss` (same default Testcontainers' own PulsarContainer module uses) to skip functions-worker and BookKeeper-backed stream storage, which the client doesn't need and which slow startup further. Publish port 6650 for the binary client protocol (serviceUrl pulsar://localhost:6650) and 8080 for the admin REST API. Use a fixed container name and remove any stale container in both @BeforeAll and @AfterAll, matching the existing rabbitmq test's cleanup pattern.",
+    "risks": [
+      "Standalone mode is heavier than the single-process brokers already allow-listed (rabbitmq, nats) — CI timeouts may need to be generous, and this adds real wall-clock cost per test run.",
+      "This is advisory: if the remaining dynamic-access classes the generator needs turn out to still be reachable without a live broker, the Docker setup adds cost without benefit — local Gradle/Native Image verification should confirm before committing to it."
+    ],
+    "applied_setup": [
+      {
+        "kind": "docker_image",
+        "image": "apachepulsar/pulsar:4.2.5",
+        "slug": "pulsar",
+        "result": "already_present",
+        "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-pulsar"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10642 Support for org.apache.pulsar:pulsar-client-all:4.2.5; label=library-new-request; body_chars=61"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "40 existing test file path(s) included"
+      }
+    ],
+    "model": "sonnet",
+    "input_tokens_used": 28,
+    "output_tokens_used": 15791
+  },
+  "metrics": {
+    "input_tokens_used": 1351639,
+    "cached_input_tokens_used": 67684608,
+    "output_tokens_used": 147304,
+    "iterations": 10,
+    "cost_usd": 45.0196,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

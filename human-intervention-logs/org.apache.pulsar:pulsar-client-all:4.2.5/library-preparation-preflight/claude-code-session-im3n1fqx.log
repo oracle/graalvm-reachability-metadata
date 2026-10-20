@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10642,
+    "title": "Support for org.apache.pulsar:pulsar-client-all:4.2.5",
+    "label": "library-new-request",
+    "body": "### Reason for requesting the library\n\nUsed by Spring Pulsar.",
+    "body_error": ""
+  },
+  "library": "org.apache.pulsar:pulsar-client-all:4.2.5",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":135704,"stop_reason":"end_turn","session_id":"bac9436c-0560-47ca-805f-e9cd5e7ad233","total_cost_usd":0.48499600000000004,"usage":{"input_tokens":16,"cache_creation_input_tokens":60633,"cache_read_input_tokens":494230,"output_tokens":10944,"output_tokens_details":{"thinking_tokens":7456},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":60633,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":4253,"cache_read_input_tokens":78446,"cache_creation_input_tokens":839,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":839},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":16,"outputTokens":10944,"cacheReadInputTokens":494230,"cacheCreationInputTokens":60633,"webSearchRequests":0,"costUSD":0.4508500000000001,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":7456,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"},"claude-haiku-4-5-20251001":{"inputTokens":18996,"outputTokens":1030,"cacheReadInputTokens":0,"cacheCreationInputTokens":0,"webSearchRequests":1,"costUSD":0.034146,"contextWindow":200000,"maxOutputTokens":32000,"thinkingTokens":0,"canonicalModel":"claude-haiku-4-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":14,"subtype":"success","api_error_status":null,"result":"`★ Insight ─────────────────────────────────────`\nThe repo's convention for broker-dependent clients (`io.nats:jnats`, MQTT via `eclipse-mosquitto`) is to spin up a Docker container by hand in `@BeforeAll` via `ProcessBuilder`, pinned to the exact tag in `tests/tck-build-logic/.../allowed-docker-images/`, rather than using Testcontainers — that library only appears in this repo when the library *under test* literally is Testcontainers. `pulsar-client-all`'s POM dependency list confirms it's a true uber-artifact (bouncycastle, opentelemetry, jackson-annotations, caffeine all transitively bundled), so the gap isn't a missing Maven coordinate — it's that produce/consume/schema code paths are simply unreachable without a live broker on `pulsar://localhost:6650`.\n`─────────────────────────────────────────────────`\n\nResearch summary: checked the Maven Central POM for `pulsar-client-all:4.2.5` (no missing dependencies — it's self-contained), confirmed via Pulsar docs that the client needs a running broker at `pulsar://localhost:6650` for any meaningful produce/consume/schema/compression coverage, verified `apachepulsar/pulsar:4.2.5` exists on Docker Hub (exact version match, multi-arch), and cross-checked this repo's existing broker-client tests (`JnatsTest.java`, mosquitto) which all use a hand-rolled `docker run` in `@BeforeAll` rather than Testcontainers — no pulsar image is currently pinned in the allow-list.\n\n```json\n{\n  \"action\": \"advisory_preparation\",\n  \"summary\": \"pulsar-client-all is the full client implementation (not just API interfaces); its producer/consumer, schema, and compression code paths only execute against a live Pulsar broker, so the generated test needs a standalone Pulsar Docker container, following this repo's existing pattern for jnats/mosquitto broker clients.\",\n  \"deterministic_setup\": [\n    {\n      \"kind\": \"docker_image\",\n      \"image\": \"apachepulsar/pulsar:4.2.5\",\n      \"slug\": \"apachepulsar_pulsar\",\n      \"reason\": \"pulsar-client-all's connection, producer/consumer, schema, and compression (lz4/zstd/snappy) code is only reachable against a running broker; no in-process or mock broker exists. Tag matches the tested client version exactly and is published for amd64/arm64 on Docker Hub.\"\n    }\n  ],\n  \"agent_guidance\": \"In @BeforeAll, start the broker the same way JnatsTest.java and the mosquitto-based tests do in this repo: `new ProcessBuilder(\\\"docker\\\", \\\"run\\\", \\\"--rm\\\", \\\"-p\\\", \\\"6650:6650\\\", \\\"-p\\\", \\\"8080:8080\\\", \\\"apachepulsar/pulsar:4.2.5\\\", \\\"bin/pulsar\\\", \\\"standalone\\\").inheritIO().start()`, then poll until a PulsarClient can connect before running tests, and destroy the process in @AfterAll. Connect with `PulsarClient.builder().serviceUrl(\\\"pulsar://localhost:6650\\\").build()`. Give the readiness wait a materially longer timeout than the ~120s used for NATS/MQTT — standalone Pulsar bootstraps an embedded ZooKeeper and BookKeeper in addition to the broker, so it starts noticeably slower. No extra Maven dependency or system property is needed; pulsar-client-all already pulls in bouncycastle, opentelemetry, and jackson-annotations transitively.\",\n  \"risks\": [\n    \"Standalone Pulsar is heavier than the single-binary brokers already allow-listed (NATS, MQTT): it embeds ZooKeeper and BookKeeper, so container startup is slower and more memory-intensive, which could strain CI timeouts/resources relative to existing broker-client tests.\",\n    \"This introduces a brand-new Docker image entry (no existing pinned pulsar tag to reuse), so it needs its own allow-list addition rather than reusing a shared tag.\"\n  ]\n}\n```","ttft_ms":4048,"type":"result","duration_ms":135140,"uuid":"a23cc5f7-21f0-4723-b8de-10853ee199f2","ttft_stream_ms":1624,"time_to_request_ms":175,"first_content_frame_ms":1625,"queued_turn_count":0,"result_index":0}
+

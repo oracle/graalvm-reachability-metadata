@@ -1,0 +1,46 @@
+Prompt:
+Reproduce the failure first and read the FULL stack trace, including every `Caused by:`
+line, to find the real cause before changing anything.
+- If the cause is missing or inactive-condition for metadata, fix that condition.
+- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode
+  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,
+  or a class reachable only through a custom class loader), Remove the
+  generated test that exercises it, or rewrite it to a native-compatible public-API path that
+  still validates metadata.
+Re-run the reproduce command after each change and keep running until the test passes.
+Do not use any skill for this.
+
+Use this exact GraalVM for every command; do not switch to another that appears on PATH:
+- GRAALVM_HOME=/home/mihailo/git/forge-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_NI_EE_JAVA25/graalvm-ni-ee-25.1.0-dev+10.1
+- JAVA_HOME=/home/mihailo/git/forge-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_NI_EE_JAVA25/graalvm-ni-ee-25.1.0-dev+10.1
+
+Reproduce with:
+./gradlew runNativeTraceImage -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5 -PtraceMetadataPath=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-366cdd9b/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/runs/cycle-1 -PtraceMetadataConditionPackages=com.scurrilous.circe,org.apache.avro.reflect,org.apache.pulsar -PmetadataConfigDirs=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-366cdd9b/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/_global_/agent,/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-366cdd9b/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/runs/cycle-0
+
+Failure output excerpt:
+```text
+	at org.apache.pulsar.shade.io.netty.resolver.dns.DnsAddressResolverGroup.newResolver(DnsAddressResolverGroup.java:100)
+	at org.apache.pulsar.shade.io.netty.resolver.dns.DnsAddressResolverGroup.newResolver(DnsAddressResolverGroup.java:85)
+	at org.apache.pulsar.shade.io.netty.resolver.AddressResolverGroup.getResolver(AddressResolverGroup.java:70)
+	at org.apache.pulsar.client.impl.DnsResolverGroupImpl.createAddressResolver(DnsResolverGroupImpl.java:116)
+	at org.apache.pulsar.client.impl.PulsarClientImpl.<init>(PulsarClientImpl.java:250)
+	at org.apache.pulsar.client.impl.PulsarClientImpl$PulsarClientImplBuilder.build(PulsarClientImpl.java:202)
+	at org.apache.pulsar.client.impl.ClientBuilderImpl.build(ClientBuilderImpl.java:79)
+	at org_apache_pulsar.pulsar_client_all.ByteBufPairTest.publishesAndConsumesThroughTheBinaryProtocol(ByteBufPairTest.java:84)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+```
+
+Conversation:
+{"duration_api_ms":694550,"stop_reason":"end_turn","session_id":"cff81a1a-9a34-40ed-98bc-4ebe54fa9598","total_cost_usd":2.9673138999999997,"usage":{"input_tokens":38,"cache_creation_input_tokens":48199,"cache_read_input_tokens":2772357,"output_tokens":14864,"output_tokens_details":{"thinking_tokens":7902},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":48199,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":25,"cache_read_input_tokens":172658,"cache_creation_input_tokens":617,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":617},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":172,"outputTokens":56443,"cacheReadInputTokens":7932052,"cacheCreationInputTokens":233678,"webSearchRequests":0,"costUSD":2.9673138999999997,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":33444,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","origin":{"kind":"task-notification"},"subagent_stats":{"spawned":1,"requested":{"background":0,"foreground":0,"unset":1},"started_in_background":1,"max_depth":1,"spawned_by_subagents":0,"completed":1,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{"Explore":1}},"is_error":false,"num_turns":19,"subtype":"success","api_error_status":null,"result":"I'll pause here and wait for the background task notification when the current run finishes.","ttft_ms":6450,"type":"result","duration_ms":175980,"uuid":"822a1e88-6860-403a-a2c9-b8363929d3d2","ttft_stream_ms":1345,"time_to_request_ms":52,"first_content_frame_ms":1345,"queued_turn_count":0,"result_index":1}
+

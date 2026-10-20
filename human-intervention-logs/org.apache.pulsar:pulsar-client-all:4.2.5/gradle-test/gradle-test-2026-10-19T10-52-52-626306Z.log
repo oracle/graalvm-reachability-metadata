@@ -1,0 +1,212 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.pulsar:pulsar-client-all:4.2.5
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-2cd5e252/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 7 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+
+Note: Some input files use or override a deprecated API.
+> Task :compileTestJava
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test
+
+ArrayBuildersTest > insertsNewElementAtFrontOfTypedArray() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      ["first", "second", "third"]
+    and actual:
+      ["second", "first", "third"]
+    to refer to the same object
+        at org_apache_pulsar.pulsar_client_all.ArrayBuildersTest.insertsNewElementAtFrontOfTypedArray(ArrayBuildersTest.java:24)
+
+BeanAsArrayBuilderDeserializerTest > finishesArrayShapedObjectThroughBuilder() FAILED
+    org.apache.pulsar.shade.com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize value of type `org_apache_pulsar.pulsar_client_all.BeanAsArrayBuilderDeserializerTest$ArrayMessageBuilder` from Array value (token `JsonToken.START_ARRAY`)
+     at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.exc.MismatchedInputException.from(MismatchedInputException.java:59)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.DeserializationContext.reportInputMismatch(DeserializationContext.java:1767)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.DeserializationContext.handleUnexpectedToken(DeserializationContext.java:1541)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.DeserializationContext.handleUnexpectedToken(DeserializationContext.java:1488)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.BuilderBasedDeserializer._deserializeFromArray(BuilderBasedDeserializer.java:543)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.BuilderBasedDeserializer.deserialize(BuilderBasedDeserializer.java:238)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4939)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3876)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3844)
+        at app//org_apache_pulsar.pulsar_client_all.BeanAsArrayBuilderDeserializerTest.finishesArrayShapedObjectThroughBuilder(BeanAsArrayBuilderDeserializerTest.java:23)
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.apache.pulsar.common.api.proto.LightProtoCodec (file:/tmp/metadata-forge-gradle/6c511174d24457d7/worktree-homes/10642-2cd5e252-533bb7e4/caches/modules-2/files-2.1/org.apache.pulsar/pulsar-client-all/4.2.5/cbde199801ccc540c9f7fc1c76c57db95c668915/pulsar-client-all-4.2.5.jar)
+WARNING: Please consider reporting this to the maintainers of class org.apache.pulsar.common.api.proto.LightProtoCodec
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+
+
+> Task :test
+
+DateDeserializersInnerCalendarDeserializerTest > createsRequestedCalendarSubtype() FAILED
+    org.apache.pulsar.shade.com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Invalid type definition for type `org_apache_pulsar.pulsar_client_all.DateDeserializersInnerCalendarDeserializerTest$TestCalendar`: Failed to call `setAccess()` on Method 'setGregorianChange' (of class `java.util.GregorianCalendar`) due to `java.lang.reflect.InaccessibleObjectException`, problem: Unable to make private void java.util.GregorianCalendar.setGregorianChange(long) accessible: module java.base does not "opens java.util" to unnamed module @28925516
+     at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.exc.InvalidDefinitionException.from(InvalidDefinitionException.java:62)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.DeserializationContext.reportBadTypeDefinition(DeserializationContext.java:1866)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.BeanDeserializerBuilder._handleBadAccess(BeanDeserializerBuilder.java:633)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.BeanDeserializerBuilder._fixAccess(BeanDeserializerBuilder.java:553)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.BeanDeserializerBuilder.build(BeanDeserializerBuilder.java:400)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.BeanDeserializerFactory.buildBeanDeserializer(BeanDeserializerFactory.java:295)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.BeanDeserializerFactory.createBeanDeserializer(BeanDeserializerFactory.java:151)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.DeserializerCache._createDeserializer2(DeserializerCache.java:471)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.DeserializerCache._createDeserializer(DeserializerCache.java:415)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCache2(DeserializerCache.java:317)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCacheValueDeserializer(DeserializerCache.java:284)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.DeserializerCache.findValueDeserializer(DeserializerCache.java:174)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.DeserializationContext.findRootValueDeserializer(DeserializationContext.java:669)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper._findRootDeserializer(ObjectMapper.java:5070)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4940)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3876)
+        at app//org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3844)
+        at app//org_apache_pulsar.pulsar_client_all.DateDeserializersInnerCalendarDeserializerTest.createsRequestedCalendarSubtype(DateDeserializersInnerCalendarDeserializerTest.java:23)
+
+        Caused by:
+        java.lang.IllegalArgumentException: Failed to call `setAccess()` on Method 'setGregorianChange' (of class `java.util.GregorianCalendar`) due to `java.lang.reflect.InaccessibleObjectException`, problem: Unable to make private void java.util.GregorianCalendar.setGregorianChange(long) accessible: module java.base does not "opens java.util" to unnamed module @28925516
+            at org.apache.pulsar.shade.com.fasterxml.jackson.databind.util.ClassUtil.checkAndFixAccess(ClassUtil.java:1018)
+            at org.apache.pulsar.shade.com.fasterxml.jackson.databind.introspect.AnnotatedMember.fixAccess(AnnotatedMember.java:139)
+            at org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.impl.MethodProperty.fixAccess(MethodProperty.java:95)
+            at org.apache.pulsar.shade.com.fasterxml.jackson.databind.deser.BeanDeserializerBuilder._fixAccess(BeanDeserializerBuilder.java:551)
+            ... 14 more
+
+            Caused by:
+            java.lang.reflect.InaccessibleObjectException: Unable to make private void java.util.GregorianCalendar.setGregorianChange(long) accessible: module java.base does not "opens java.util" to unnamed module @28925516
+                at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(AccessibleObject.java:353)
+                at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:329)
+                at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:277)
+                at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:182)
+                at java.base/java.lang.reflect.Method.setAccessible(Method.java:176)
+                at org.apache.pulsar.shade.com.fasterxml.jackson.databind.util.ClassUtil.checkAndFixAccess(ClassUtil.java:1005)
+                ... 17 more
+
+FuturesGetCheckedTest > wrapsFailedFutureInRequestedCheckedException() FAILED
+    java.lang.AssertionError: 
+    Expecting actual throwable to be an instance of:
+      org_apache_pulsar.pulsar_client_all.FuturesGetCheckedTest.ClientException
+    but was:
+      org.apache.pulsar.shade.com.google.common.util.concurrent.UncheckedExecutionException: java.lang.IllegalStateException: unavailable
+    	at org.apache.pulsar.shade.com.google.common.util.concurrent.FuturesGetChecked.wrapAndThrowExceptionOrError(FuturesGetChecked.java:209)
+    	at org.apache.pulsar.shade.com.google.common.util.concurrent.FuturesGetChecked.getChecked(FuturesGetChecked.java:63)
+    	at org.apache.pulsar.shade.com.google.common.util.concurrent.FuturesGetChecked.getChecked(FuturesGetChecked.java:47)
+    	at org.apache.pulsar.shade.com.google.common.util.concurrent.Futures.getChecked(Futures.java:1222)
+    	at org_apache_pulsar.pulsar_client_all.FuturesGetCheckedTest.lambda$wrapsFailedFutureInRequestedCheckedException$0(FuturesGetCheckedTest.java:19)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1337)
+    	at org.assertj.core.api.Assertions.assertThatThrownBy(Assertions.java:1181)
+    	at org_apache_pulsar.pulsar_client_all.FuturesGetCheckedTest.wrapsFailedFutureInRequestedCheckedException(FuturesGetCheckedTest.java:19)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+    Caused by: java.lang.IllegalStateException: unavailable
+    	at org_apache_pulsar.pulsar_client_all.FuturesGetCheckedTest.wrapsFailedFutureInRequestedCheckedException(FuturesGetCheckedTest.java:17)
+    	... 10 more
+        at org_apache_pulsar.pulsar_client_all.FuturesGetCheckedTest.wrapsFailedFutureInRequestedCheckedException(FuturesGetCheckedTest.java:20)
+
+ReflectiveChannelFactoryTest > createsUsableChannelFromPublicNoArgConstructor() FAILED
+    java.lang.IllegalStateException: channel not registered to an event loop
+        at org.apache.pulsar.shade.io.netty.channel.AbstractChannel.eventLoop(AbstractChannel.java:163)
+        at org.apache.pulsar.shade.io.netty.channel.nio.AbstractNioChannel.eventLoop(AbstractNioChannel.java:113)
+        at org.apache.pulsar.shade.io.netty.channel.nio.AbstractNioChannel.eventLoop(AbstractNioChannel.java:48)
+        at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.executor(AbstractChannelHandlerContext.java:132)
+        at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.newPromise(AbstractChannelHandlerContext.java:1011)
+        at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.close(AbstractChannelHandlerContext.java:560)
+        at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.close(DefaultChannelPipeline.java:906)
+        at org.apache.pulsar.shade.io.netty.channel.AbstractChannel.close(AbstractChannel.java:243)
+        at org_apache_pulsar.pulsar_client_all.ReflectiveChannelFactoryTest.createsUsableChannelFromPublicNoArgConstructor(ReflectiveChannelFactoryTest.java:25)
+
+133 tests completed, 5 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-2cd5e252/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/reports/problems/problems-report.html
+
+
+FAILURE: Build failed with an exception.
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+* What went wrong:
+Execution failed for task ':test'.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-2cd5e252/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/reports/tests/test/index.html
+
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+* Try:
+15 actionable tasks: 3 executed, 12 up-to-date
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 42s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-2cd5e252/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.pulsar:pulsar-client-all:4.2.5 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 46s
+9 actionable tasks: 1 executed, 8 up-to-date

@@ -1,0 +1,83 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10642,
+    "title": "Support for org.apache.pulsar:pulsar-client-all:4.2.5",
+    "label": "library-new-request",
+    "body": "### Reason for requesting the library\n\nUsed by Spring Pulsar.",
+    "body_error": ""
+  },
+  "library": "org.apache.pulsar:pulsar-client-all:4.2.5",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {
+    "org.apache.pulsar:pulsar-client-all:4.2.5": [
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/.gitignore",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build.gradle",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/dynamic-access-exhaust-report.json",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/gradle.properties",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/settings.gradle",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/user-code-filter.json",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/AnnotatedFieldTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/AnnotatedMethodTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/AnnotationUtilsTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ArrayBuildersTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ArrayTableTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ArrayTypeAdapterTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ArrayTypeTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ArrayUtilsTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/AuthenticationUtilTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/BaseConstructorTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/BeanAsArrayBuilderDeserializerTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/BeanPropertyWriterTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/BeanReflectionHelperTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/BrokerEntryMetadataUtilsTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/BuilderBasedDeserializerTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ClassClassPathTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ClassLoaderClassResolverTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ClassLoaderObjectInputStreamTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ClassMetaobjectTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ClassUtilTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ClassUtilsTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ClientBuilderTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/CloseShieldChannelHandlerTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/CloseShieldChannelTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/CompareToBuilderTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ConcurrentHashMultisetTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ConstructorConstructorTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ConstructorInnerConstructScalarTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ConstructorInnerConstructSequenceTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ConstructorUtilsTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/ContextFinderTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/DateDeserializersInnerCalendarDeserializerTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/DefaultChannelIdTest.java",
+      "tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/src/test/java/org_apache_pulsar/pulsar_client_all/EnumBiMapTest.java"
+    ]
+  }
+}
+
+Conversation:
+{"duration_api_ms":203756,"stop_reason":"end_turn","session_id":"d9c672a3-2b2f-4e97-8c0e-a1eeca357775","total_cost_usd":0.6726713999999999,"usage":{"input_tokens":28,"cache_creation_input_tokens":67900,"cache_read_input_tokens":961572,"output_tokens":15791,"output_tokens_details":{"thinking_tokens":10096},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":67900,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":3297,"cache_read_input_tokens":85954,"cache_creation_input_tokens":598,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":598},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":28,"outputTokens":15791,"cacheReadInputTokens":961572,"cacheCreationInputTokens":67900,"webSearchRequests":0,"costUSD":0.6218804,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":10096,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"},"claude-haiku-4-5-20251001":{"inputTokens":25941,"outputTokens":970,"cacheReadInputTokens":0,"cacheCreationInputTokens":0,"webSearchRequests":2,"costUSD":0.050791,"contextWindow":200000,"maxOutputTokens":32000,"thinkingTokens":0,"canonicalModel":"claude-haiku-4-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":19,"subtype":"success","api_error_status":null,"result":"Based on direct inspection of the repo (not just the issue JSON), here's my analysis and decision.\n\n## What I found\n\n**The scaffold's own progress data is the smoking gun.** `dynamic-access-exhaust-report.json` shows 111 classes already completed with zero failures/skips — but only 8 of those 111 (7%) are real `org.apache.pulsar.*` classes. The other 103 are shaded third-party internals bundled inside the fat jar (Jackson, Guava, Avro reflection, etc.) that the generator fell back to because it couldn't exercise the library's actual purpose. None of the genuine Pulsar classes reached so far are the runtime classes that matter (`ProducerImpl`, `ConsumerImpl`, `ClientCnx`, binary-protocol `Commands`, schema/admin clients) — those only activate when a producer/consumer actually completes a handshake with a broker.\n\n**Direct repo precedent confirms the fix.** `com.rabbitmq.client:amqp-client` and `com.rabbitmq:amqp-client` (also message-broker clients) hit the same wall and were given a `required-docker-images.txt` pinning `rabbitmq:4.3` (already in the allow-list as `Dockerfile-rabbitmq`), with test code spinning the broker up directly via `ProcessBuilder(\"docker\",\"run\",...)` in `@BeforeAll`/`@AfterAll` and polling readiness before running assertions. `io.nats:jnats` follows the same pattern. Pulsar is architecturally identical — a client whose value is almost entirely in broker interaction.\n\n**Verified the exact image tag exists**: `apachepulsar/pulsar:4.2.5` is published on Docker Hub (matches the client version exactly, avoiding protocol drift), and Testcontainers' own official `PulsarContainer` module uses `bin/pulsar standalone --no-functions-worker -nss` as its startup command — confirming those flags are the right way to skip functions-worker/BookKeeper stream-storage overhead that the client doesn't need.\n\n`★ Insight ─────────────────────────────────────`\nThe `dynamic-access-exhaust-report.json`'s completedClasses list is effectively a trace of what the generator could reach without extra setup — filtering out the `.shade.` entries turns it into direct evidence of \"stuck on X\" rather than guesswork. This is a more reliable signal than reading the library's docs in isolation, because it reflects what *this specific scaffold* already tried.\n`─────────────────────────────────────────────────`\n\n## Decision\n\n```json\n{\n  \"action\": \"advisory_preparation\",\n  \"summary\": \"pulsar-client-all's real value (producer/consumer runtime, binary-protocol commands, connection/auth handshake) only activates against a live broker. 103 of the 111 classes already covered by the scaffold are shaded third-party internals, not org.apache.pulsar.* client code — matching the exact pattern that led rabbitmq/nats client tests in this repo to require a Docker broker.\",\n  \"deterministic_setup\": [\n    {\n      \"kind\": \"docker_image\",\n      \"image\": \"apachepulsar/pulsar:4.2.5\",\n      \"slug\": \"pulsar\",\n      \"reason\": \"Pulsar's own client/producer/consumer/admin runtime classes are only reachable through an actual broker handshake; the client version is pinned to the broker tag to avoid wire-protocol drift. Mirrors the rabbitmq:4.3 and nats precedents already in allowed-docker-images/ for the same reason (message-broker clients).\"\n    }\n  ],\n  \"agent_guidance\": \"Standalone Pulsar bundles its own ZooKeeper + BookKeeper + broker in one JVM, so it starts slower than the rabbitmq/nats images already in this repo — poll readiness (e.g. GET http://localhost:8080/admin/v2/clusters, or attempt to open a producer) with a generous timeout (~90-120s) rather than a fixed sleep, following the waitUntil pattern already used in tests/src/com.rabbitmq.client/amqp-client/0.8.0's ClientPropertiesTest. Start the container with `bin/pulsar standalone --no-functions-worker -nss` (same default Testcontainers' own PulsarContainer module uses) to skip functions-worker and BookKeeper-backed stream storage, which the client doesn't need and which slow startup further. Publish port 6650 for the binary client protocol (serviceUrl pulsar://localhost:6650) and 8080 for the admin REST API. Use a fixed container name and remove any stale container in both @BeforeAll and @AfterAll, matching the existing rabbitmq test's cleanup pattern.\",\n  \"risks\": [\n    \"Standalone mode is heavier than the single-process brokers already allow-listed (rabbitmq, nats) — CI timeouts may need to be generous, and this adds real wall-clock cost per test run.\",\n    \"This is advisory: if the remaining dynamic-access classes the generator needs turn out to still be reachable without a live broker, the Docker setup adds cost without benefit — local Gradle/Native Image verification should confirm before committing to it.\"\n  ]\n}\n```","ttft_ms":12574,"type":"result","duration_ms":203247,"uuid":"6a55c039-ca4e-4597-961d-2ed4d14a2ce5","ttft_stream_ms":2124,"time_to_request_ms":101,"first_content_frame_ms":2125,"queued_turn_count":0,"result_index":0}
+

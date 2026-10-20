@@ -1,0 +1,18 @@
+Prompt:
+Fix the metadata entries for org.apache.pulsar:pulsar-client-all:4.2.5
+
+Required GraalVM for every reproduction and verification command:
+- GRAALVM_HOME=/home/mihailo/git/forge-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_NI_EE_JAVA25/graalvm-ni-ee-25.1.0-dev+10.1
+- JAVA_HOME=/home/mihailo/git/forge-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_NI_EE_JAVA25/graalvm-ni-ee-25.1.0-dev+10.1
+- native-image --version:
+native-image 25.0.2 2026-01-20
+GraalVM Runtime Environment Oracle GraalVM 25.1.0-dev+10.1 (build 25.0.2+10-LTS-jvmci-25.1-b17)
+Substrate VM Oracle GraalVM 25.1.0-dev+10.1 (build 25.0.2+10-LTS, serial gc, compressed references)
+
+Use this exact GraalVM distribution. Do not switch to another GraalVM, even if another `native-image` appears earlier on PATH.
+
+Reproduce the failure with:
+./gradlew test -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5
+
+Conversation:
+

@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10642,
+    "title": "Support for org.apache.pulsar:pulsar-client-all:4.2.5",
+    "label": "library-new-request",
+    "body": "### Reason for requesting the library\n\nUsed by Spring Pulsar.",
+    "body_error": ""
+  },
+  "library": "org.apache.pulsar:pulsar-client-all:4.2.5",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":211871,"stop_reason":"end_turn","session_id":"a6df46a0-c160-4196-b015-623977d6e0b1","total_cost_usd":0.7573108,"usage":{"input_tokens":28,"cache_creation_input_tokens":79381,"cache_read_input_tokens":1040429,"output_tokens":16345,"output_tokens_details":{"thinking_tokens":10562},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":79381,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":4168,"cache_read_input_tokens":96248,"cache_creation_input_tokens":1785,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":1785},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":28,"outputTokens":16345,"cacheReadInputTokens":1040429,"cacheCreationInputTokens":79381,"webSearchRequests":0,"costUSD":0.6891158,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":10562,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"},"claude-haiku-4-5-20251001":{"inputTokens":31630,"outputTokens":1313,"cacheReadInputTokens":0,"cacheCreationInputTokens":0,"webSearchRequests":3,"costUSD":0.068195,"contextWindow":200000,"maxOutputTokens":32000,"thinkingTokens":0,"canonicalModel":"claude-haiku-4-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":23,"subtype":"success","api_error_status":null,"result":"`pulsar-client-all` is Pulsar's shaded fat jar — unlike the already-tracked `pulsar-client-api` (interfaces only), it bundles the real client implementation *and* `pulsar-client-admin`. I confirmed:\n\n- The upstream project itself only tests this client meaningfully against a live broker — Apache Pulsar ships an official `apachepulsar/pulsar` Docker image for standalone mode, and `testcontainers-java` has a dedicated `PulsarContainer` module built on that same image specifically for client testing.\n- `apachepulsar/pulsar:4.2.5` exists on Docker Hub and matches the requested client version exactly (Pulsar releases client and broker from the same train).\n- This repo has direct precedent: `com.rabbitmq.client:amqp-client:0.8.0` (also a real-connection client, not just an API jar) spins up its broker via a raw `docker run` + readiness-poll in `ClientPropertiesTest.java`, declared through `required-docker-images.txt` and pinned in `tests/tck-build-logic/.../allowed-docker-images/Dockerfile-rabbitmq`. No Pulsar image is pinned there yet.\n- No extra Maven dependency is needed — `pulsar-client-all` already shades in admin support, so nothing beyond the generated scaffold's `testImplementation` is required.\n\n★ Insight ─────────────────────────────────────\nThe repo's Docker convention isn't \"testcontainers library as a dependency\" — it's a raw `docker run`/`ProcessBuilder` lifecycle hook in the test itself, with the image only declared (not orchestrated) via `required-docker-images.txt`. That's why the deterministic-setup schema only has room for `image` + `slug`, not startup flags — those belong in test code, which is exactly where `agent_guidance` is meant to carry them.\n─────────────────────────────────────────────────\n\n```json\n{\n  \"action\": \"advisory_preparation\",\n  \"summary\": \"pulsar-client-all is the real producer/consumer/admin implementation (not just the API jar already tracked), so meaningful reachability coverage needs a live Pulsar broker, matching the amqp-client precedent for real-connection clients.\",\n  \"deterministic_setup\": [\n    {\n      \"kind\": \"docker_image\",\n      \"image\": \"apachepulsar/pulsar:4.2.5\",\n      \"slug\": \"apachepulsar_pulsar\",\n      \"reason\": \"pulsar-client-all's producer/consumer/admin code paths (connection setup, auth plugin loading, admin REST, schema handling) only execute against a real broker; apachepulsar/pulsar is the official image and the version matches the client exactly.\"\n    }\n  ],\n  \"agent_guidance\": \"Launch the broker like the com.rabbitmq.client:amqp-client:0.8.0 ClientPropertiesTest does: a lifecycle hook that runs `docker run --rm -p 6650:6650 -p 8080:8080 apachepulsar/pulsar:4.2.5 bin/pulsar standalone --no-functions-worker --no-stream-storage --advertised-address localhost`, polls until a PulsarClient can connect, and tears the container down afterward. The `--no-functions-worker --no-stream-storage` flags are the standard way to keep standalone startup fast and low-memory for tests. Default client/admin URLs are pulsar://localhost:6650 and http://localhost:8080.\",\n  \"risks\": [\n    \"Standalone Pulsar startup is slow (tens of seconds to ~1-2 minutes) and memory-hungry even with the lightweight flags; the readiness-wait timeout should be generous.\",\n    \"apachepulsar/pulsar is not yet in the allowed-docker-images list, so this is a new pinned image, not a reuse of an existing tag.\"\n  ]\n}\n```","ttft_ms":4997,"type":"result","duration_ms":212681,"uuid":"3d6234e6-f389-40c3-935d-a0664ac60174","ttft_stream_ms":1805,"time_to_request_ms":106,"first_content_frame_ms":1806,"queued_turn_count":0,"result_index":0}
+

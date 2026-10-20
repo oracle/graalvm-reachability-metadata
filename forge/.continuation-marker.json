@@ -1,0 +1,85 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.apache.pulsar:pulsar-client-all:4.2.5",
+  "failure": {
+    "operand": "org.apache.pulsar:pulsar-client-all:4.2.5 current-defaults latest GRAALVM test",
+    "phase": "finalization",
+    "step": "agent_fix()"
+  },
+  "issueNumber": 10642,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Standalone Pulsar bundles its own ZooKeeper + BookKeeper + broker in one JVM, so it starts slower than the rabbitmq/nats images already in this repo \u2014 poll readiness (e.g. GET http://localhost:8080/admin/v2/clusters, or attempt to open a producer) with a generous timeout (~90-120s) rather than a fixed sleep, following the waitUntil pattern already used in tests/src/com.rabbitmq.client/amqp-client/0.8.0's ClientPropertiesTest. Start the container with `bin/pulsar standalone --no-functions-worker -nss` (same default Testcontainers' own PulsarContainer module uses) to skip functions-worker and BookKeeper-backed stream storage, which the client doesn't need and which slow startup further. Publish port 6650 for the binary client protocol (serviceUrl pulsar://localhost:6650) and 8080 for the admin REST API. Use a fixed container name and remove any stale container in both @BeforeAll and @AfterAll, matching the existing rabbitmq test's cleanup pattern.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "image": "apachepulsar/pulsar:4.2.5",
+        "kind": "docker_image",
+        "reason": "Pulsar's own client/producer/consumer/admin runtime classes are only reachable through an actual broker handshake; the client version is pinned to the broker tag to avoid wire-protocol drift. Mirrors the rabbitmq:4.3 and nats precedents already in allowed-docker-images/ for the same reason (message-\n...[truncated]",
+        "slug": "pulsar"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10642 Support for org.apache.pulsar:pulsar-client-all:4.2.5; label=library-new-request; body_chars=61"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "40 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 28,
+    "issue_label": "library-new-request",
+    "issue_number": 10642,
+    "library": "org.apache.pulsar:pulsar-client-all:4.2.5",
+    "model": "sonnet",
+    "output_tokens_used": 15791,
+    "risks": [
+      "Standalone mode is heavier than the single-process brokers already allow-listed (rabbitmq, nats) \u2014 CI timeouts may need to be generous, and this adds real wall-clock cost per test run.",
+      "This is advisory: if the remaining dynamic-access classes the generator needs turn out to still be reachable without a live broker, the Docker setup adds cost without benefit \u2014 local Gradle/Native Image verification should confirm before committing to it."
+    ],
+    "status": "completed",
+    "summary": "pulsar-client-all's real value (producer/consumer runtime, binary-protocol commands, connection/auth handshake) only activates against a live broker. 103 of the 111 classes already covered by the scaffold are shaded third-party internals, not org.apache.pulsar.* client code \u2014 matching the exact pattern that led rabbitmq/nats client tests in this repo to require a Docker broker."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 10,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10642-library-new-request-org.apache.pulsar-pulsar-client-all-4.2.5-167bcc79",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.pulsar:pulsar-client-all:4.2.5",
+    "timestamp": "2026-10-20T03:00:13.808860Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
+}
