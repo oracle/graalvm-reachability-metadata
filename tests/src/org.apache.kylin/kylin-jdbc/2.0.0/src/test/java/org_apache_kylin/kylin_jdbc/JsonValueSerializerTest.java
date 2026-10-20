@@ -6,9 +6,15 @@
  */
 package org_apache_kylin.kylin_jdbc;
 
+import java.util.Set;
+
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.annotation.JsonValue;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.JavaType;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.JsonMappingException;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrapper;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.jsonFormatVisitors.JsonStringFormatVisitor;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +30,39 @@ public class JsonValueSerializerTest {
         String json = new ObjectMapper().writeValueAsString(new TypedIdentifier("typed"));
 
         assertThat(json).contains("TypedIdentifier", "typed");
+    }
+
+    @Test
+    void reportsJsonValuesForEveryEnumConstant() throws Exception {
+        EnumValueVisitor visitor = new EnumValueVisitor();
+
+        new ObjectMapper().acceptJsonFormatVisitor(Status.class, visitor);
+
+        assertThat(visitor.values).containsExactly("ready-value", "done-value");
+    }
+
+    public static class EnumValueVisitor extends JsonFormatVisitorWrapper.Base {
+        private Set<String> values;
+
+        @Override
+        public JsonStringFormatVisitor expectStringFormat(JavaType type) throws JsonMappingException {
+            return new JsonStringFormatVisitor.Base() {
+                @Override
+                public void enumTypes(Set<String> enums) {
+                    values = enums;
+                }
+            };
+        }
+    }
+
+    public enum Status {
+        READY,
+        DONE;
+
+        @JsonValue
+        public String value() {
+            return name().toLowerCase() + "-value";
+        }
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_ARRAY)

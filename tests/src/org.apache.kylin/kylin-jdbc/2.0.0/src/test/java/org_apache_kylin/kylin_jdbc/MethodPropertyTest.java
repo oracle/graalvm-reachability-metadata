@@ -6,9 +6,12 @@
  */
 package org_apache_kylin.kylin_jdbc;
 
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.BeanDescription;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.deser.impl.MethodProperty;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +29,26 @@ public class MethodPropertyTest {
         BuiltMethodBean bean = new ObjectMapper().readValue("{\"enabled\":true}", BuiltMethodBean.class);
 
         assertThat(bean.enabled).isTrue();
+    }
+
+    @Test
+    void directlyAssignsValuesThroughAnIntrospectedMethodProperty() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        BeanDescription description =
+                mapper.getDeserializationConfig().introspect(mapper.constructType(MethodBean.class));
+        BeanPropertyDefinition definition = description.findProperties().get(0);
+        MethodProperty property = new MethodProperty(
+                definition,
+                mapper.constructType(boolean.class),
+                null,
+                description.getClassAnnotations(),
+                definition.getSetter());
+        MethodBean bean = new MethodBean();
+
+        property.set(bean, true);
+        assertThat(bean.isEnabled()).isTrue();
+        assertThat(property.setAndReturn(bean, false)).isSameAs(bean);
+        assertThat(bean.isEnabled()).isFalse();
     }
 
     @JsonDeserialize(builder = MethodBuilder.class)

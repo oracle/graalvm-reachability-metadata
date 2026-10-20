@@ -8,6 +8,7 @@ package org_apache_kylin.kylin_jdbc;
 
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.Log;
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.LogFactory;
+import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +25,29 @@ public class LogFactoryTest {
             assertThat(second).isNotNull();
         } finally {
             LogFactory.releaseAll();
+        }
+    }
+
+    @Test
+    void fallsBackToTheLibraryLoaderForAFactoryImplementation() {
+        Thread thread = Thread.currentThread();
+        ClassLoader originalLoader = thread.getContextClassLoader();
+        String originalFactory = System.getProperty(LogFactory.FACTORY_PROPERTY);
+        LogFactory.releaseAll();
+        try {
+            thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
+            System.setProperty(LogFactory.FACTORY_PROPERTY, LogFactoryImpl.class.getName());
+            LogFactory factory = LogFactory.getFactory();
+            assertThat(factory).isInstanceOf(LogFactoryImpl.class);
+            assertThat(factory.getInstance("fallback.logger")).isNotNull();
+        } finally {
+            LogFactory.releaseAll();
+            thread.setContextClassLoader(originalLoader);
+            if (originalFactory == null) {
+                System.clearProperty(LogFactory.FACTORY_PROPERTY);
+            } else {
+                System.setProperty(LogFactory.FACTORY_PROPERTY, originalFactory);
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ package org_apache_kylin.kylin_jdbc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +26,7 @@ public class SetterlessPropertyTest {
     public static class SetterlessBean {
         private final List<String> values = new ArrayList<>();
 
+        @JsonProperty("values")
         public List<String> getValues() {
             return values;
         }

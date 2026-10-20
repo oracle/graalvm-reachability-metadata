@@ -15,11 +15,13 @@ public class AvaticaUtilsTest {
     @Test
     void instantiatesPluginsFromAClassAndAStaticField() {
         Greeting constructed = AvaticaUtils.instantiatePlugin(Greeting.class, ConstructedGreeting.class.getName());
-        Greeting shared = AvaticaUtils.instantiatePlugin(
+        Greeting selectedByName = AvaticaUtils.instantiatePlugin(Greeting.class, GreetingHolder.class.getName());
+        Greeting selectedExplicitly = AvaticaUtils.instantiatePlugin(
                 Greeting.class, GreetingHolder.class.getName() + "#INSTANCE");
 
         assertThat(constructed.message()).isEqualTo("constructed");
-        assertThat(shared.message()).isEqualTo("shared");
+        assertThat(selectedByName.message()).isEqualTo("shared");
+        assertThat(selectedExplicitly.message()).isEqualTo("shared");
     }
 
     public interface Greeting {

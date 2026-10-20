@@ -17,9 +17,13 @@ public class ObjectArrayDeserializerTest {
     void wrapsASingleJsonValueInATypedArray() throws Exception {
         ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
-        String[] values = mapper.readValue("\"only\"", String[].class);
+        ArrayValue[] values = mapper.readValue("{\"text\":\"only\"}", ArrayValue[].class);
 
-        assertThat(values).containsExactly("only");
-        assertThat(values.getClass()).isEqualTo(String[].class);
+        assertThat(values).extracting(value -> value.text).containsExactly("only");
+        assertThat(values.getClass()).isEqualTo(ArrayValue[].class);
+    }
+
+    public static class ArrayValue {
+        public String text;
     }
 }

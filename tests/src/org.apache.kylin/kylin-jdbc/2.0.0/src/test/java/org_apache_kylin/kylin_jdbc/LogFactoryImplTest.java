@@ -17,9 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LogFactoryImplTest {
     @Test
     void createsTheConfiguredLoggingImplementation() {
+        Thread thread = Thread.currentThread();
+        ClassLoader originalLoader = thread.getContextClassLoader();
         LogFactoryImpl factory = new LogFactoryImpl();
         factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, FactoryAwareLog.class.getName());
         try {
+            thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
             Log log = factory.getInstance("configured.logger");
 
             assertThat(log).isInstanceOf(FactoryAwareLog.class);
@@ -27,6 +30,7 @@ public class LogFactoryImplTest {
             assertThat(factory.getInstance("configured.logger")).isSameAs(log);
         } finally {
             factory.release();
+            thread.setContextClassLoader(originalLoader);
         }
     }
 

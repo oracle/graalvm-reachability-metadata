@@ -14,7 +14,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClassUtilTest {
     @Test
     void locatesAndCreatesAConcreteType() throws Exception {
-        assertThat(ClassUtil.findClass(Constructible.class.getName())).isEqualTo(Constructible.class);
+        Thread thread = Thread.currentThread();
+        ClassLoader originalLoader = thread.getContextClassLoader();
+        try {
+            thread.setContextClassLoader(null);
+            assertThat(ClassUtil.findClass(Constructible.class.getName())).isEqualTo(Constructible.class);
+        } finally {
+            thread.setContextClassLoader(originalLoader);
+        }
         assertThat(ClassUtil.createInstance(Constructible.class, true).value).isEqualTo("created");
     }
 

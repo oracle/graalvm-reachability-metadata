@@ -24,14 +24,15 @@ public class StdKeyDeserializerInnerStringFactoryKeyDeserializerTest {
     }
 
     public static class Metric {
-        private final String value;
+        private String value;
 
-        private Metric(String value) {
-            this.value = value;
+        private Metric() {
         }
 
         public static Metric valueOf(String value) {
-            return new Metric(value);
+            Metric metric = new Metric();
+            metric.value = value;
+            return metric;
         }
 
         @Override

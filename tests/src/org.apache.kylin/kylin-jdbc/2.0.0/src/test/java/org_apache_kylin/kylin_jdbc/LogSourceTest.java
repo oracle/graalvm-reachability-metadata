@@ -18,6 +18,7 @@ public class LogSourceTest {
     @Test
     void selectsAndConstructsALogImplementationByName() throws Exception {
         LogSource.setLogImplementation(SimpleLog.class.getName());
+        LogSource.setLogImplementation(SimpleLog.class);
 
         Log log = LogSource.makeNewLogInstance("legacy.logger");
 

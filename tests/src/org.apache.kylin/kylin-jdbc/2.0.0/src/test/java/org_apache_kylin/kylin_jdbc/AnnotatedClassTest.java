@@ -41,6 +41,22 @@ public class AnnotatedClassTest {
         assertThat(json).contains("\"identifier\":23", "\"displayName\":\"Grace\"");
     }
 
+    @Test
+    void appliesAnObjectMethodMixInDuringIntrospection() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.addMixInAnnotations(Object.class, ObjectMixIn.class);
+
+        assertThat(mapper.getSerializationConfig()
+                        .introspect(mapper.constructType(Customer.class))
+                        .findProperties())
+                .isNotEmpty();
+    }
+
+    public abstract static class ObjectMixIn {
+        @JsonProperty("identity")
+        public abstract int hashCode();
+    }
+
     public abstract static class CustomerMixIn {
         @JsonCreator
         public CustomerMixIn(@JsonProperty("identifier") int id) {
