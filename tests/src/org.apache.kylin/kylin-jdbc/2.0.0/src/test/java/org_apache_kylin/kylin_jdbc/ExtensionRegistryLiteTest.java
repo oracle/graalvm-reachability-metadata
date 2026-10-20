@@ -22,6 +22,7 @@ public class ExtensionRegistryLiteTest {
 
         registry.add(liteView);
 
-        assertThat(registry.findExtensionByName("sample.enum_tag").descriptor).isSameAs(extension.getDescriptor());
+        assertThat(registry.findMutableExtensionByName("sample.enum_tag").descriptor)
+                .isSameAs(extension.getDescriptor());
     }
 }
