@@ -51,6 +51,18 @@ public class PojoUtilsTest {
         assertThat(mutable.city).isEqualTo("Paris");
     }
 
+    @Test
+    void realizesThrowableMessageFromGeneralizedData() {
+        Map<String, Object> throwableData = new HashMap<String, Object>();
+        throwableData.put("message", "remote invocation failed");
+
+        IllegalStateException realized =
+                (IllegalStateException)
+                        PojoUtils.realize(throwableData, IllegalStateException.class);
+
+        assertThat(realized).hasMessage("remote invocation failed");
+    }
+
     public interface Named {
         String getName();
     }
