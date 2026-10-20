@@ -41,17 +41,31 @@ public class ServiceListGeneratorServletTest {
         CXFNonSpringServlet servlet = new CXFNonSpringServlet(new DestinationRegistryImpl(), false);
         servlet.init(config);
 
-        RequestHandler requestHandler = new RequestHandler();
-        HttpServletRequest request = proxy(HttpServletRequest.class, requestHandler);
-        ResponseHandler responseHandler = new ResponseHandler();
-        HttpServletResponse response = proxy(HttpServletResponse.class, responseHandler);
+        RequestHandler styleSheetRequestHandler = new RequestHandler(true);
+        HttpServletRequest styleSheetRequest =
+                proxy(HttpServletRequest.class, styleSheetRequestHandler);
+        ResponseHandler styleSheetResponseHandler = new ResponseHandler();
+        HttpServletResponse styleSheetResponse =
+                proxy(HttpServletResponse.class, styleSheetResponseHandler);
 
-        servlet.service(request, response);
+        servlet.service(styleSheetRequest, styleSheetResponse);
 
-        assertThat(requestHandler.attributes).containsKey(Message.BASE_PATH);
-        assertThat(responseHandler.contentType).isEqualTo("text/css; charset=UTF-8");
-        assertThat(responseHandler.body.toString(StandardCharsets.ISO_8859_1))
-                .contains(".heading", "font-weight");
+        assertThat(styleSheetRequestHandler.attributes).containsKey(Message.BASE_PATH);
+        assertThat(styleSheetResponseHandler.contentType).isEqualTo("text/css; charset=UTF-8");
+
+        RequestHandler serviceListRequestHandler = new RequestHandler(false);
+        HttpServletRequest serviceListRequest =
+                proxy(HttpServletRequest.class, serviceListRequestHandler);
+        ResponseHandler serviceListResponseHandler = new ResponseHandler();
+        HttpServletResponse serviceListResponse =
+                proxy(HttpServletResponse.class, serviceListResponseHandler);
+
+        servlet.service(serviceListRequest, serviceListResponse);
+        serviceListResponseHandler.writer.flush();
+
+        assertThat(serviceListResponseHandler.contentType).isEqualTo("text/html; charset=UTF-8");
+        assertThat(serviceListResponseHandler.body.toString(StandardCharsets.UTF_8))
+                .contains("CXF - Service list", "No services have been found.");
         servlet.destroy();
     }
 
@@ -92,6 +106,11 @@ public class ServiceListGeneratorServletTest {
 
     private static final class RequestHandler extends DefaultHandler {
         private final Map<String, Object> attributes = new HashMap<String, Object>();
+        private final boolean styleSheetRequested;
+
+        private RequestHandler(boolean styleSheetRequested) {
+            this.styleSheetRequested = styleSheetRequested;
+        }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] arguments) {
@@ -114,7 +133,9 @@ public class ServiceListGeneratorServletTest {
             if ("getServletPath".equals(name)) {
                 return "/cxf";
             }
-            if ("getParameter".equals(name) && "stylesheet".equals(arguments[0])) {
+            if ("getParameter".equals(name)
+                    && "stylesheet".equals(arguments[0])
+                    && styleSheetRequested) {
                 return "1";
             }
             if ("setAttribute".equals(name)) {

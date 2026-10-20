@@ -65,6 +65,7 @@ public class HTTPConduitInnerWrappedOutputStreamTest {
             HttpServer unavailableServer =
                     HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
             int unavailablePort = unavailableServer.getAddress().getPort();
+            unavailableServer.start();
             unavailableServer.stop(0);
             HTTPConduit unavailableConduit =
                     newConduit(bus, "http://127.0.0.1:" + unavailablePort + "/unavailable");
