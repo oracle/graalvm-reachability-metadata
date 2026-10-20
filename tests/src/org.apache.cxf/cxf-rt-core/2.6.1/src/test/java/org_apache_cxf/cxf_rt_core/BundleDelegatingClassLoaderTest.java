@@ -30,17 +30,39 @@ public class BundleDelegatingClassLoaderTest {
     void fallsBackToApplicationClassLoaderForClassesAndResources() throws ClassNotFoundException {
         Bundle bundle = new EmptyBundle();
         ClassLoader applicationClassLoader = getClass().getClassLoader();
+        URL expectedResource = applicationClassLoader.getResource("META-INF/wsdl.plugin.xml");
+        assertThat(expectedResource).isNotNull();
+
+        String resourceAlias = "org_apache_cxf/cxf_rt_core/blueprint-fallback.xml";
+        ClassLoader fallbackClassLoader =
+                new ResourceAliasClassLoader(
+                        applicationClassLoader, resourceAlias, expectedResource);
         BundleDelegatingClassLoader loader =
-                new BundleDelegatingClassLoader(bundle, applicationClassLoader);
+                new BundleDelegatingClassLoader(bundle, fallbackClassLoader);
 
         Class<?> loaded = loader.loadClass(BundleDelegatingClassLoader.class.getName());
-        URL resource = loader.getResource("META-INF/wsdl.plugin.xml");
+        URL resource = loader.getResource(resourceAlias);
 
         assertThat(loaded).isSameAs(BundleDelegatingClassLoader.class);
-        assertThat(resource)
-                .isNotNull()
-                .isEqualTo(applicationClassLoader.getResource("META-INF/wsdl.plugin.xml"));
+        assertThat(resource).isSameAs(expectedResource);
         assertThat(loader.getBundle()).isSameAs(bundle);
+    }
+
+    private static final class ResourceAliasClassLoader extends ClassLoader {
+        private final String resourceAlias;
+        private final URL resource;
+
+        private ResourceAliasClassLoader(
+                ClassLoader parent, String resourceAlias, URL resource) {
+            super(parent);
+            this.resourceAlias = resourceAlias;
+            this.resource = resource;
+        }
+
+        @Override
+        protected URL findResource(String name) {
+            return resourceAlias.equals(name) ? resource : null;
+        }
     }
 
     private static final class EmptyBundle implements Bundle {
