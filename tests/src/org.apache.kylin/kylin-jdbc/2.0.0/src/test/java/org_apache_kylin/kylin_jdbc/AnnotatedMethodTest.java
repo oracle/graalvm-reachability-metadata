@@ -6,6 +6,11 @@
  */
 package org_apache_kylin.kylin_jdbc;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.BeanDescription;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +51,28 @@ public class AnnotatedMethodTest {
         assertThat(create.call()).isEqualTo(new MethodBean("created"));
         assertThat(from.call(new Object[] {"factory"})).isEqualTo(new MethodBean("factory"));
         assertThat(from.call1("single")).isEqualTo(new MethodBean("single"));
+    }
+
+    @Test
+    void restoresMethodDiscoveredByJacksonIntrospection() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        AnnotatedMethod getter = mapper.getSerializationConfig()
+                .introspect(mapper.constructType(MethodBean.class))
+                .findProperties()
+                .get(0)
+                .getGetter();
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeObject(getter);
+        }
+
+        AnnotatedMethod restored;
+        try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            restored = (AnnotatedMethod) input.readObject();
+        }
+
+        assertThat(restored.getValue(new MethodBean("restored"))).isEqualTo("restored");
     }
 
     public static class MethodBean {
