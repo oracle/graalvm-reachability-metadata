@@ -82,6 +82,44 @@ class NativeImageConfigUtilsTests {
     }
 
     @Test
+    void matrixModesUsesEveryModeWhenSectionNamesNone() {
+        Map<String, Object> ci = ciWithModes();
+        ci.put("generateChangedMetadataTestMatrix", Map.of("java", List.of("25")));
+
+        assertThat(NativeImageConfigUtils.matrixModes(ci, "generateChangedMetadataTestMatrix"))
+                .containsExactly("current-defaults", "future-defaults-all");
+    }
+
+    @Test
+    void matrixModesUsesTheSectionModesWhenPresent() {
+        Map<String, Object> ci = ciWithModes();
+        ci.put("generateChangedRealUseMatrix", Map.of(
+                "java", List.of("latest-ea"),
+                "native-image-modes", List.of("current-defaults")
+        ));
+
+        assertThat(NativeImageConfigUtils.matrixModes(ci, "generateChangedRealUseMatrix"))
+                .containsExactly("current-defaults");
+    }
+
+    @Test
+    void matrixModesRejectsUnknownOrEmptySectionModes() {
+        Map<String, Object> ci = ciWithModes();
+        ci.put("unknownMode", Map.of("native-image-modes", List.of("missing-mode")));
+        ci.put("emptyModes", Map.of("native-image-modes", List.of()));
+
+        assertThatThrownBy(() -> NativeImageConfigUtils.matrixModes(ci, "unknownMode"))
+                .isInstanceOf(GradleException.class)
+                .hasMessageContaining("unknown mode 'missing-mode'");
+        assertThatThrownBy(() -> NativeImageConfigUtils.matrixModes(ci, "emptyModes"))
+                .isInstanceOf(GradleException.class)
+                .hasMessageContaining("must not be empty");
+        assertThatThrownBy(() -> NativeImageConfigUtils.matrixModes(ci, "missingSection"))
+                .isInstanceOf(GradleException.class)
+                .hasMessageContaining("Missing 'missingSection'");
+    }
+
+    @Test
     void javaVersionsByModeUsesOverridesWhenPresent() {
         Map<String, Object> ci = new LinkedHashMap<>();
         ci.put("buildArgs", List.of("--verbose"));
@@ -177,5 +215,15 @@ class NativeImageConfigUtilsTests {
                         "nativeImageMode", "future-defaults-all"
                 )
         );
+    }
+
+    private static Map<String, Object> ciWithModes() {
+        Map<String, Object> ci = new LinkedHashMap<>();
+        ci.put("buildArgs", List.of("--verbose"));
+        Map<String, Object> modes = new LinkedHashMap<>();
+        modes.put("current-defaults", List.of());
+        modes.put("future-defaults-all", List.of("--future-defaults=all"));
+        ci.put("nativeImageModes", modes);
+        return ci;
     }
 }

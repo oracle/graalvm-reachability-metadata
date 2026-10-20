@@ -44,6 +44,8 @@ file rather than by prefix.
 | [§AR-chunked-dynamic-access-pr-linking](workflows.md#ar-chunked-dynamic-access-pr-linking-chunk-pr-linking) | Chunk PR linking |
 | [§AR-code-coverage-improvement](code-coverage/workflow.md#ar-code-coverage-improvement-code-coverage-improvement-workflow) | Code coverage improvement workflow |
 | [§AR-code-coverage-deep-navigation](code-coverage/deep-navigation.md#ar-code-coverage-deep-navigation-deep-phase-navigation-evidence) | Deep-phase navigation: samples, counters, control flow, routes, miss classification, and group sessions |
+| [§AR-code-coverage-prompts](code-coverage/prompts.md#ar-code-coverage-prompts-agent-prompt-composition) | Agent prompt composition: which prompt layer carries what |
+| [§AR-code-coverage-trajectory](code-coverage/trajectory.md#ar-code-coverage-trajectory-per-pass-coverage-trajectory) | Per-pass coverage trajectory: each loop's pass yield as a Rhei metric |
 | [§AR-code-coverage-benchmarking](code-coverage/benchmarking.md#ar-code-coverage-benchmarking-code-coverage-benchmark-architecture) | Fixed-input benchmark execution, metrics publication, and preserved workspaces |
 | [§AR-do-work-loop](do-work.md#ar-do-work-loop-do-work-loop-architecture) | do-work loop architecture |
 | [§AR-forge-orchestration](orchestration-scripts.md#ar-forge-orchestration-forge-orchestration-scripts) | Forge orchestration scripts |
@@ -59,6 +61,7 @@ file rather than by prefix.
 | [§AR-issue-linking](git-scripts.md#ar-issue-linking-issue-linking-and-labels) | Issue linking and labels |
 | [§AR-chunked-linking](git-scripts.md#ar-chunked-linking-chunked-dynamic-access-pr-linking) | Chunked dynamic-access PR linking |
 | [§AR-not-for-native-image-publication](git-scripts.md#ar-not-for-native-image-publication-not-for-native-image-publication) | Not-for-native-image publication |
+| [§AR-real-use-tests-publication](git-scripts.md#ar-real-use-tests-publication-real-use-tests-publication) | Real-use tests publication |
 
 This index is navigational. Cite the specific declaration ID rather than this
 file.

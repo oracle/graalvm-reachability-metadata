@@ -1,0 +1,118 @@
+{
+  "add_new_library_support:2026-10-20": {
+    "timestamp": "2026-10-20T03:25:41.157490Z",
+    "library": "org.apache.cxf:cxf-rt-bindings-soap:2.6.1",
+    "starting_commit": "13e985be4ca07540668a01f797698e6c5ecd41ed",
+    "ending_commit": "5cf01fcaf73dbaf67fd59b8899abd7f65b4f3042",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.6.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 254,
+          "missed": 13929,
+          "ratio": 0.017909,
+          "total": 14183
+        },
+        "line": {
+          "covered": 56,
+          "missed": 3379,
+          "ratio": 0.016303,
+          "total": 3435
+        },
+        "method": {
+          "covered": 10,
+          "missed": 538,
+          "ratio": 0.018248,
+          "total": 548
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10992,
+      "issue_label": "library-new-request",
+      "library": "org.apache.cxf:cxf-rt-bindings-soap:2.6.1",
+      "summary": "cxf-rt-bindings-soap 2.6.1 targets Java 6 and relies on Java EE APIs that are gone from JDK 25. Creating the CXF runtime (Bus), which nearly all binding/interceptor tests need, fails without javax.annotation-api (NoClassDefFoundError: javax/annotation/Resource in ResourceInjector). The org.apache.cxf.binding.soap.saaj package (SAAJInInterceptor/SAAJOutInterceptor/SAAJUtils/SAAJStreamWriter/SAAJFactoryResolver) needs javax.xml.soap, which the POM only declares as optional in a JDK-1.5-only profile, so it is not resolved. With both added, a JDK 25 probe created the Bus, got SoapBindingFactory, ran ReadHeadersInterceptor and SAAJInInterceptor.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "javax.annotation:javax.annotation-api:1.3.2",
+          "scope": "testImplementation",
+          "reason": "CXF 2.6.1 Bus creation (CXFBusFactory -> ExtensionManagerImpl -> ResourceInjector.<clinit>) needs javax.annotation.Resource, which JDK 11+ no longer ships; without it BusFactory.newInstance().createBus() fails. Same version is used by other test projects in this repo."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.sun.xml.messaging.saaj:saaj-impl:1.5.3",
+          "scope": "testImplementation",
+          "reason": "Brings the javax.xml.soap API (jakarta.xml.soap-api 1.4.2, javax.* package names) and a JDK 9+-compatible SAAJ implementation. Covering the org.apache.cxf.binding.soap.saaj package needs it; the library's own SAAJ dependency is optional and limited to a JDK 1.5 profile. Verified on JDK 25 with SAAJI\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Usual non-network usage: create a Bus with BusFactory.newInstance().createBus() (shut it down after each test), wrap a MessageImpl in SoapMessage, attach an ExchangeImpl that holds the Bus, and set InputStream/XMLStreamReader (StaxUtils.createXMLStreamReader) or OutputStream/XMLStreamWriter content. Then call interceptors directly: ReadHeadersInterceptor, SoapActionInInterceptor, MustUnderstandInterceptor, Soap11/Soap12 FaultIn/Out interceptors, SoapOutInterceptor, SAAJInInterceptor/SAAJOutInterceptor, plus SoapBindingFactory and SoapVersionFactory. The binding and SOAP transport factories are registered through META-INF/cxf/bus-extensions.txt and loaded reflectively. No HTTP server, Docker image or environment variable is needed. Do not add Spring, OSGi or Aries blueprint. Those are optional integration points (spring.handlers, blueprint namespace handlers) and not needed for core coverage. The library ships com.sun.xml.bind:jaxb-impl:2.1.13 without a JAXB API. If tests use JAXB-based header or fault-detail data binding (JAXBDataBinding), also add javax.xml.bind:jaxb-api:2.1 as a testImplementation dependency; the same version is already used by jersey-core 1.9 here. The probed paths did not need it.",
+      "risks": [
+        "javax.activation classes may end up on the classpath twice: saaj-impl 1.5.3 brings com.sun.activation:jakarta.activation:1.2.2, and jaxb-api:2.1 (if added) brings javax.activation:activation:1.1. This is harmless on the classpath but could cause duplicate-class warnings.",
+        "saaj-impl 1.5.3 is far newer than what CXF 2.6.1 was built against (SAAJ 1.3). Older 1.3.x SAAJ implementations depend on internal JDK Xerces classes and fail on JDK 9+. Native Image may need extra metadata for SAAJ's service-loader-based factories (MessageFactory/SOAPFactory lookup through SAAJFactoryResolver).",
+        "Bus creation loads extensions from bus-extensions.txt and uses resource injection, both through reflection. Native Image runs must confirm the generated metadata covers these classes.",
+        "Only checked on the JVM (JDK 25). Local Gradle and Native Image runs remain authoritative."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "javax.annotation:javax.annotation-api:1.3.2",
+          "result": "applied",
+          "target": "tests/src/org.apache.cxf/cxf-rt-bindings-soap/2.6.1/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.sun.xml.messaging.saaj:saaj-impl:1.5.3",
+          "result": "applied",
+          "target": "tests/src/org.apache.cxf/cxf-rt-bindings-soap/2.6.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10992 Support for org.apache.cxf:cxf-rt-bindings-soap:2.6.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 32,
+      "output_tokens_used": 12161
+    },
+    "metrics": {
+      "input_tokens_used": 110614,
+      "cached_input_tokens_used": 771072,
+      "output_tokens_used": 8978,
+      "iterations": 2,
+      "cost_usd": 1.2079,
+      "generated_loc": 92,
+      "tested_library_loc": 56,
+      "metadata_entries": 53,
+      "test_only_metadata_entries": 16,
+      "code_coverage_percent": 1.63
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.cxf/cxf-rt-bindings-soap/2.6.1/reachability-metadata.json"
+    }
+  }
+}

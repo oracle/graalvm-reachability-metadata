@@ -1,0 +1,140 @@
+{
+  "base_commit": "38d653b1c7d9ee953131277c05a14a09d7464497",
+  "branch": "ai/kimeta/add-lib-support-org.java-websocket-Java-WebSocket-1.6.0-forge-10696-20261014023758320548-e8a9806f80c3",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "38d653b1c7d9ee953131277c05a14a09d7464497",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10696,
+  "library": {
+    "artifact": "Java-WebSocket",
+    "coordinates": "org.java-websocket:Java-WebSocket:1.6.0",
+    "group": "org.java-websocket",
+    "version": "1.6.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "38d653b1c7d9ee953131277c05a14a09d7464497",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpwceku7yw"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10696-187831b2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.java-websocket:Java-WebSocket"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.java-websocket/Java-WebSocket/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10696-187831b2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "d7a8adf9bc412a8bbf3975836b1747a7b25db3ff",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the exact base-to-head contribution diff and local review evidence. The change is scoped to org.java-websocket:Java-WebSocket:1.6.0, uses only reachability-metadata.json, and provides meaningful public-API WebSocket, DNS resolver, and TLS tests in a separate test package with bounded waits and no Native Image skips, tolerated failures, version-pinned assertions, JVM overrides, or native build/run flags. The resolved dynamic-access result is a valid 0/0 no-calls case, so percentage and entry-count mismatch checks do not apply. JSON, diff whitespace, index validation, and the recorded local gates are clean.",
+    "session_id": "bb563794d88b4f8a"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.java-websocket/Java-WebSocket/1.6.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2206848,
+      "code_coverage_percent": 55.54,
+      "cost_usd": 2.6309,
+      "generated_loc": 377,
+      "input_tokens_used": 187031,
+      "iterations": 4,
+      "metadata_entries": 58,
+      "output_tokens_used": 19743,
+      "test_only_metadata_entries": 73,
+      "tested_library_loc": 1729
+    },
+    "timestamp": "2026-10-14T02:37:58.320548Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10696-20261014023758320548-e8a9806f80c3",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.java_websocket.SSLSocketChannel2` is reached, make `com.sun.crypto.provider.AESKeyGenerator.<init>()` available for reflection",
+        "when `org.java_websocket.client.WebSocketClient` is reached, make `com.sun.crypto.provider.DHParameters.<init>()` available for reflection",
+        "when `org.java_websocket.SSLSocketChannel2` is reached, make `com.sun.crypto.provider.GaloisCounterMode$AESGCM.<init>()` available for reflection",
+        "when `org.java_websocket.client.WebSocketClient` is reached, make `com.sun.crypto.provider.GaloisCounterMode$AESGCM.<init>()` available for reflection",
+        "when `org.java_websocket.client.WebSocketClient$WebsocketWriteThread` is reached, make `com.sun.crypto.provider.GaloisCounterMode$AESGCM.<init>()` available for reflection",
+        "when `org.java_websocket.SSLSocketChannel2` is reached, make `com.sun.crypto.provider.HKDFKeyDerivation$HKDFSHA384.<init>(javax.crypto.KDFParameters)` available for reflection",
+        "when `org.java_websocket.client.WebSocketClient` is reached, make `com.sun.crypto.provider.HKDFKeyDerivation$HKDFSHA384.<init>(javax.crypto.KDFParameters)` available for reflection",
+        "when `org.java_websocket.SSLSocketChannel2` is reached, make `com.sun.crypto.provider.HmacCore$HmacSHA384.<init>()` available for reflection",
+        "... and 22 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12136,
+          "missed": 5734,
+          "ratio": 0.679127,
+          "total": 17870
+        },
+        "line": {
+          "covered": 1729,
+          "missed": 1384,
+          "ratio": 0.555413,
+          "total": 3113
+        },
+        "method": {
+          "covered": 357,
+          "missed": 196,
+          "ratio": 0.64557,
+          "total": 553
+        }
+      },
+      "version": "1.6.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-14T02:37:58.320548Z"
+}

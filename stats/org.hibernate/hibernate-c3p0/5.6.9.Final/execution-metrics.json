@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-10-19": {
+    "timestamp": "2026-10-19T16:43:03.696486Z",
+    "library": "org.hibernate:hibernate-c3p0:5.6.9.Final",
+    "starting_commit": "79ea7366d6ed9520fb83036cd7c293bc035d09b0",
+    "ending_commit": "79c813013a480cfdd7f53f1964587b70b9defee4",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.6.9.Final",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 391,
+          "missed": 195,
+          "ratio": 0.667235,
+          "total": 586
+        },
+        "line": {
+          "covered": 94,
+          "missed": 46,
+          "ratio": 0.671429,
+          "total": 140
+        },
+        "method": {
+          "covered": 24,
+          "missed": 22,
+          "ratio": 0.521739,
+          "total": 46
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10995,
+      "issue_label": "library-new-request",
+      "library": "org.hibernate:hibernate-c3p0:5.6.9.Final",
+      "summary": "hibernate-c3p0 only pulls in hibernate-core, c3p0 0.9.5.5 and jboss-logging, with no JDBC driver. To get real coverage of C3P0ConnectionProvider, c3p0 has to open pooled JDBC connections, so the tests need an embedded H2 database on the test classpath. No Docker image is needed.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.214",
+          "scope": "testImplementation",
+          "reason": "hibernate-c3p0 5.6.9.Final brings in no JDBC driver (its POM lists only jboss-logging, hibernate-core and com.mchange:c3p0:0.9.5.5). Without a driver, C3P0ConnectionProvider.configure and getConnection cannot run, and neither can the c3p0 pool startup and its reflective driver and connection-customi\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Tests set everything up in code, with no environment variables. Start a Hibernate SessionFactory (StandardServiceRegistryBuilder + MetadataSources, or Configuration) with these settings: hibernate.connection.driver_class=org.h2.Driver; hibernate.connection.url=jdbc:h2:mem:<unique>;DB_CLOSE_DELAY=-1; hibernate.connection.username=sa; hibernate.dialect=org.hibernate.dialect.H2Dialect; hibernate.connection.provider_class=org.hibernate.c3p0.internal.C3P0ConnectionProvider (Hibernate also picks it automatically when any hibernate.c3p0.* key is set); hibernate.hbm2ddl.auto=create-drop. Set c3p0 pool properties so the provider's configuration mapping runs: hibernate.c3p0.min_size, max_size, timeout, max_statements, idle_test_period, acquire_increment, plus a pass-through key such as hibernate.c3p0.testConnectionOnCheckout or a hibernate.c3p0.connectionCustomizerClassName. Persist and query a simple annotated entity so connections are checked out and returned. Also cover the provider directly: configure, getConnection/closeConnection, isUnwrappableAs/unwrap to DataSource, and stop(). Use a different in-memory DB name in each test and close the SessionFactory so c3p0 helper threads shut down.",
+      "risks": [
+        "c3p0 0.9.5.5 and its mchange-commons-java dependency load classes reflectively (the driver, ConnectionCustomizer, ConnectionTester, the JMX/MBean management coordinator) and start helper threads and timers. Native runs will probably need reflection metadata for com.mchange.* classes. Some of those entries belong to the c3p0 artifact, not hibernate-c3p0.",
+        "c3p0 registers JMX MBeans by default. If MBean registration causes native-image problems, the tests may need to set the system property com.mchange.v2.c3p0.management.ManagementCoordinator=com.mchange.v2.c3p0.management.NullManagementCoordinator. Local verification decides this.",
+        "Hibernate 5.6.9 on JDK 25 relies on Byte Buddy for proxies and enhancement. Keep entities simple (no lazy proxies needed) to avoid Byte Buddy class-file-version issues. The existing hibernate-core 5.6.14.Final tests run without extra JVM flags."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.214",
+          "result": "applied",
+          "target": "tests/src/org.hibernate/hibernate-c3p0/5.6.9.Final/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10995 Support for org.hibernate:hibernate-c3p0:5.6.9.Final; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 8,
+      "output_tokens_used": 2562
+    },
+    "metrics": {
+      "input_tokens_used": 164067,
+      "cached_input_tokens_used": 1323008,
+      "output_tokens_used": 15466,
+      "iterations": 3,
+      "cost_usd": 1.9458,
+      "generated_loc": 124,
+      "tested_library_loc": 94,
+      "metadata_entries": 152,
+      "test_only_metadata_entries": 18,
+      "code_coverage_percent": 67.14
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate/hibernate-c3p0/5.6.9.Final/reachability-metadata.json"
+    }
+  }
+}

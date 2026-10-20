@@ -1,0 +1,51 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    alias(libs.plugins.kotlin.jvm)
+    id "org.jetbrains.kotlin.plugin.serialization" version "2.3.20"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+
+dependencies {
+    testImplementation "io.ktor:ktor-client-okhttp-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-client-content-negotiation-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-client-auth-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-client-encoding-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-client-logging-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-json-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-cio-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-content-negotiation-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-auth-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-compression-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-websockets-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-sse-jvm:$libraryVersion"
+    testImplementation "com.squareup.okhttp3:okhttp-tls:5.3.2"
+    testImplementation "com.squareup.okhttp3:mockwebserver3:5.3.2"
+    testImplementation "org.slf4j:slf4j-simple:2.0.17"
+}
+
+kotlin {
+    jvmToolchain(testJvmVersion)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

@@ -1,0 +1,36 @@
+{
+  "defaults": {
+    "agent_timeout": "2h",
+    "transition_limit": 1000,
+    "invocations_per_day": 500
+  },
+  "agents": {
+    "pi": {
+      "command": ["pi"],
+      "prompt_flag": "-p",
+      "model_flag": "--model",
+      "session": {
+        "session_dir_flag": "--session-dir",
+        "layout": {
+          "kind": "FlatById",
+          "ext": "jsonl"
+        }
+      },
+      "modes": {
+        "medium": ["--thinking", "medium"],
+        "high": ["--thinking", "high"],
+        "xhigh": ["--thinking", "xhigh"]
+      }
+    },
+    "claude-code": {
+      "command": ["claude"],
+      "prompt_flag": "-p",
+      "model_flag": "--model",
+      "modes": {
+        "medium": ["--permission-mode", "bypassPermissions", "--effort", "medium"],
+        "high": ["--permission-mode", "bypassPermissions", "--effort", "high"],
+        "xhigh": ["--permission-mode", "bypassPermissions", "--effort", "xhigh"]
+      }
+    }
+  }
+}

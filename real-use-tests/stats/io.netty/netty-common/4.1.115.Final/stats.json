@@ -1,0 +1,34 @@
+{
+  "issue_number": 9423,
+  "iterations": 15,
+  "library_coverage": {
+    "instruction": {
+      "covered": 19271,
+      "ratio": 0.3690701905582687,
+      "total": 52215
+    },
+    "line": {
+      "covered": 4433,
+      "ratio": 0.35944214708505634,
+      "total": 12333
+    },
+    "method": {
+      "covered": 1194,
+      "ratio": 0.3713841368584759,
+      "total": 3215
+    }
+  },
+  "removed": [
+    {
+      "reason": "inspectsTheVersionsBundledWithAPluginDirectory needs an isolated URLClassLoader to find a plugin's own META-INF/io.netty.versions.properties, but Native Image's ClassLoader.getResources substitution returns the embedded image resource to every class loader whenever one exists (GR-19998), so Version.identify(pluginLoader) sees only netty-common; no metadata entry or native-image option changes that loader semantics, and the resource must stay registered for the classpath scenarios.",
+      "scenario": "real-use-tests/src/io.netty/netty-common/4.1.115.Final/src/test/java/io_netty/netty_common/DiagnosticsEndpointVersionIdentificationTest.java"
+    }
+  ],
+  "timestamp": "2026-10-19T00:29:41+00:00",
+  "tokens": {
+    "cache_write_input": 967263,
+    "cached_input": 10606553,
+    "input": 392,
+    "output": 184129
+  }
+}

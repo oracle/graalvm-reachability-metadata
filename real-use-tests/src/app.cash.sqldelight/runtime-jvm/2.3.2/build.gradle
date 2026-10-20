@@ -1,0 +1,43 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    alias(libs.plugins.kotlin.jvm)
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+
+dependencies {
+    testImplementation "app.cash.sqldelight:runtime-jvm:$libraryVersion"
+    testImplementation "app.cash.sqldelight:sqlite-driver:$libraryVersion"
+    testImplementation "app.cash.sqldelight:jdbc-driver:$libraryVersion"
+    testImplementation "app.cash.sqldelight:coroutines-extensions-jvm:$libraryVersion"
+    testImplementation "app.cash.sqldelight:primitive-adapters-jvm:$libraryVersion"
+    testImplementation "org.postgresql:postgresql:42.7.12"
+    testImplementation "com.zaxxer:HikariCP:6.3.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
+}
+
+kotlin {
+    jvmToolchain(testJvmVersion)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

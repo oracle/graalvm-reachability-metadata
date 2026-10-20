@@ -1,0 +1,38 @@
+{
+  "issue_number": 9417,
+  "iterations": 15,
+  "library_coverage": {
+    "instruction": {
+      "covered": 222239,
+      "ratio": 0.19181337124046605,
+      "total": 1158621
+    },
+    "line": {
+      "covered": 54435,
+      "ratio": 0.21155580083013353,
+      "total": 257308
+    },
+    "method": {
+      "covered": 15174,
+      "ratio": 0.23135682376080627,
+      "total": 65587
+    }
+  },
+  "removed": [
+    {
+      "reason": "Jet job submission serializes Hazelcast's own serializable lambdas created in class initializers (StreamSourceStageImpl.WRAP_TO_JET_EVENT, plus ConsumerEx.noop); native-image resolves {\"lambda\": ...} descriptors only from declared methods, never <clinit>, so no single-file metadata entry registers them, and the MissingSerializationRegistrationError survived three options (--initialize-at-run-time for the four declaring classes, -H:-SimulateClassInitializer which crashed the builder, --initialize-at-run-time=com.hazelcast.jet,com.hazelcast.function)",
+      "scenario": "real-use-tests/src/com.hazelcast/hazelcast/5.5.0/src/test/java/com_hazelcast/hazelcast/PlantTelemetryJetStreamingTest.java"
+    },
+    {
+      "reason": "Jet grouping serializes the Partitioner.HASH_CODE lambda created in Partitioner's <clinit> (and a ComputeStageImplBase FunctionEx lambda); same unregistrable lambda-serialization failure, surviving the same three options",
+      "scenario": "real-use-tests/src/com.hazelcast/hazelcast/5.5.0/src/test/java/com_hazelcast/hazelcast/RegionalRevenueJetPipelineTest.java"
+    }
+  ],
+  "timestamp": "2026-10-19T05:00:35+00:00",
+  "tokens": {
+    "cache_write_input": 1348265,
+    "cached_input": 33848600,
+    "input": 662,
+    "output": 310222
+  }
+}

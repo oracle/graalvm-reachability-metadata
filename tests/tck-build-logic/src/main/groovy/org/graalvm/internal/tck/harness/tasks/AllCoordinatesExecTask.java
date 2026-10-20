@@ -65,6 +65,20 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
     }
 
     /**
+     * Directories the command runs in for one coordinate, in order; the coordinate fails at the first that fails.
+     */
+    protected List<Path> workingDirsFor(String coordinates) {
+        return List.of(tckExtension.getTestDir(coordinates));
+    }
+
+    /**
+     * Whether an explicit, non-shard `-Pcoordinates` filter that selects nothing is an error.
+     */
+    protected boolean failWhenFilterSelectsNothing() {
+        return true;
+    }
+
+    /**
      * Whether this task should keep running remaining coordinates after a coordinate fails.
      */
     protected boolean continueOnCoordinateFailure() {
@@ -94,7 +108,7 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
             boolean userProvidedFilter = filter != null && !filter.isBlank();
             boolean isBatch = userProvidedFilter && CoordinateUtils.isFractionalBatch(filter);
 
-            if (!hasProgrammaticOverride && userProvidedFilter && !isBatch) {
+            if (!hasProgrammaticOverride && userProvidedFilter && !isBatch && failWhenFilterSelectsNothing()) {
                 throw new GradleException("No matching coordinates found for '" + filter + "'. " +
                         "The specified coordinate or filter does not exist. " +
                         "Tip: run './gradlew listCoordinates -Pcoordinates=" + filter + "' to inspect matches.");
@@ -127,12 +141,23 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
     private CoordinateFailure runSingle(String coordinates) {
         List<String> command = commandFor(coordinates);
         beforeEach(coordinates, command);
+        for (Path workingDir : workingDirsFor(coordinates)) {
+            int exitCode = runIn(coordinates, command, workingDir);
+            if (exitCode != 0) {
+                return new CoordinateFailure(coordinates, exitCode, errorMessageFor(coordinates, exitCode));
+            }
+        }
+        afterEach(coordinates);
+        return null;
+    }
 
+    private int runIn(String coordinates, List<String> command, Path workingDir) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ByteArrayOutputStream err = new ByteArrayOutputStream();
 
         var execResult = getExecOperations().exec((ExecSpec spec) -> {
             this.configureSpec(spec, coordinates, command);
+            spec.workingDir(workingDir.toAbsolutePath().toFile());
             if (streamSubprocessOutput(coordinates)) {
                 spec.setStandardOutput(new TeeOutputStream(out, System.out));
                 spec.setErrorOutput(new TeeOutputStream(err, System.err));
@@ -143,7 +168,7 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         });
 
         // write output file like AbstractSubprojectTask
-        String hash = md5(String.join(",", command));
+        String hash = md5(String.join(",", command) + "@" + workingDir);
         File outputFile = getProject().getLayout().getBuildDirectory().file("tests/" + coordinates + "/" + hash + ".out").get().getAsFile();
         File parent = outputFile.getParentFile();
         if (parent != null && !parent.exists()) {
@@ -164,12 +189,7 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
             throw new GradleException("Failed to write test output to " + outputFile, e);
         }
 
-        int exitCode = execResult.getExitValue();
-        if (exitCode != 0) {
-            return new CoordinateFailure(coordinates, exitCode, errorMessageFor(coordinates, exitCode));
-        }
-        afterEach(coordinates);
-        return null;
+        return execResult.getExitValue();
     }
 
     private void writeFailureReport(List<CoordinateFailure> failures) {

@@ -1,0 +1,23 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_apache_kylin.kylin_jdbc;
+
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.type.ArrayType;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.type.TypeFactory;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class ArrayTypeTest {
+    @Test
+    void constructsAnArrayTypeWithTheExpectedEmptyValue() {
+        ArrayType type = TypeFactory.defaultInstance().constructArrayType(Long.class);
+
+        assertThat(type.getRawClass()).isEqualTo(Long[].class);
+        assertThat(type.getContentType().getRawClass()).isEqualTo(Long.class);
+    }
+}

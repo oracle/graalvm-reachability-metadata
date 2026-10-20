@@ -1,0 +1,42 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.flywaydb:flyway-core:$libraryVersion"
+    testImplementation "org.flywaydb:flyway-database-postgresql:$libraryVersion"
+    testImplementation "org.flywaydb:flyway-mysql:$libraryVersion"
+    testImplementation "tools.jackson.dataformat:jackson-dataformat-toml:3.1.1"
+    testImplementation "org.apache.commons:commons-text:1.10.0"
+    testImplementation "com.h2database:h2:2.3.232"
+    testImplementation "org.xerial:sqlite-jdbc:3.50.3.0"
+    testImplementation "org.postgresql:postgresql:42.7.7"
+    testImplementation "org.mariadb.jdbc:mariadb-java-client:3.5.3"
+    testImplementation "com.zaxxer:HikariCP:6.3.0"
+    testImplementation "org.slf4j:slf4j-api:2.0.16"
+    testRuntimeOnly "org.slf4j:slf4j-simple:2.0.16"
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("--enable-url-protocols=https")
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

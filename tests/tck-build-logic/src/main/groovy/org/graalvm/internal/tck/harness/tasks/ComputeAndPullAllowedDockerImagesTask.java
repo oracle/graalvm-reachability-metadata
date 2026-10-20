@@ -23,7 +23,6 @@ import org.gradle.process.ExecOperations;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -145,14 +144,12 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
                         .resolve(testVersion)
                         .resolve("required-docker-images.txt");
 
-                File f = getProject().file(dockerImagesPath);
-                if (f.exists()) {
-                    Files.readAllLines(f.toPath()).stream()
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .filter(s -> !s.startsWith("#"))
-                            .forEach(requiredImages::add);
-                }
+                addImages(dockerImagesPath, requiredImages);
+            }
+            // The coordinate's real-use project declares its own images (§real-use-tests/AR-real-use-test-harness.1).
+            Path realUseProject = tck.getRealUseTestDir(c).orElse(null);
+            if (realUseProject != null) {
+                addImages(realUseProject.resolve("required-docker-images.txt"), requiredImages);
             }
         }
 
@@ -175,6 +172,16 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
         if (requiredImages.isEmpty()) {
             getLogger().lifecycle("No required docker images found for coordinates filter '{}'. If your tests use docker, please read: {}", filter,
                     URI.create("https://github.com/oracle/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md#providing-the-tests-that-use-docker"));
+        }
+    }
+
+    private static void addImages(Path dockerImagesPath, Set<String> requiredImages) throws IOException {
+        if (Files.exists(dockerImagesPath)) {
+            Files.readAllLines(dockerImagesPath).stream()
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .filter(s -> !s.startsWith("#"))
+                    .forEach(requiredImages::add);
         }
     }
 
