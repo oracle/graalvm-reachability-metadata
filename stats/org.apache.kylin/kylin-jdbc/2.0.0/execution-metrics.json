@@ -1,0 +1,96 @@
+{
+  "add_new_library_support:2026-10-20": {
+    "timestamp": "2026-10-20T18:27:18.655039Z",
+    "library": "org.apache.kylin:kylin-jdbc:2.0.0",
+    "starting_commit": "d1b9b02d9069d596e402ad300e66d243a0804933",
+    "ending_commit": "09848bc7553ee02fbc2f5fb10c5d13d225b72337",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.957055,
+            "coveredCalls": 156,
+            "totalCalls": 163
+          },
+          "resources": {
+            "coverageRatio": 0.8125,
+            "coveredCalls": 13,
+            "totalCalls": 16
+          }
+        },
+        "coverageRatio": 0.944134,
+        "coveredCalls": 169,
+        "totalCalls": 179
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 68689,
+          "missed": 416270,
+          "ratio": 0.141639,
+          "total": 484959
+        },
+        "line": {
+          "covered": 14898,
+          "missed": 98359,
+          "ratio": 0.131542,
+          "total": 113257
+        },
+        "method": {
+          "covered": 3457,
+          "missed": 22979,
+          "ratio": 0.130769,
+          "total": 26436
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10986,
+      "issue_label": "library-new-request",
+      "library": "org.apache.kylin:kylin-jdbc:2.0.0",
+      "summary": "kylin-jdbc 2.0.0 is a self-contained shaded JAR: Avatica, httpclient, httpcore, Jackson, protobuf, commons-codec and commons-logging are relocated or bundled inside it. It needs no extra Maven dependency. The driver talks to a Kylin server over HTTP REST, and the tests can stand in for that server with the JDK's built-in HttpServer. A real Kylin server is not practical here: no Kylin image is on the Docker allow-list, and Kylin 2.0 needs a full Hadoop, HBase and Hive stack.",
+      "deterministic_setup": [],
+      "agent_guidance": "Start an in-process com.sun.net.httpserver.HttpServer on 127.0.0.1 with an ephemeral port. Connect with DriverManager.getConnection(\"jdbc:kylin://127.0.0.1:<port>/<project>\", props), setting the props user=ADMIN and password=KYLIN (any value works against a mock). To force plain HTTP, set ssl=false in the props; a mock server will not accept TLS. Mock the REST endpoints the driver calls under /kylin/api, all returning JSON. (1) POST /kylin/api/user/authentication: return 200 with a small user JSON. (2) GET /kylin/api/tables_and_columns?project=<project>: return an array of table metadata with columns. This drives DatabaseMetaData.getTables and getColumns, plus the Jackson deserialization of the org.apache.kylin.jdbc.json.* beans. (3) POST /kylin/api/query: return a SQLResponse-shaped JSON with columnMetas, results (rows as arrays of strings), isException=false and similar fields. This drives Statement and PreparedStatement execution and ResultSet type conversion. Also include error paths (a non-200 status, and isException=true) to cover the exception handling. No environment variables or system properties are required.",
+      "risks": [
+        "The JSON field names in the mocked responses must match the shaded Jackson beans in org.apache.kylin.jdbc.json (for example SQLResponseStub and TableMetaStub). Unknown or missing fields can fail deserialization, so check the bean classes in the JAR when writing fixtures.",
+        "The JAR ships META-INF/services/java.sql.Driver naming org.apache.calcite.avatica.remote.Driver, and org.apache.kylin.jdbc.Driver registers itself in a static initializer. Tests should load org.apache.kylin.jdbc.Driver explicitly (Class.forName) or use the jdbc:kylin: URL, so that driver selection is deterministic.",
+        "Avatica and shaded Jackson do a lot of reflection (bean serialization, Avatica's Meta and handler classes). Expect the native run to need substantial reflection metadata. Local native-image verification is authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10986 Support for org.apache.kylin:kylin-jdbc:2.0.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 6,
+      "output_tokens_used": 2237
+    },
+    "metrics": {
+      "input_tokens_used": 1576660,
+      "cached_input_tokens_used": 37313664,
+      "output_tokens_used": 167489,
+      "iterations": 33,
+      "cost_usd": 31.5648,
+      "generated_loc": 2452,
+      "tested_library_loc": 14898,
+      "metadata_entries": 318,
+      "test_only_metadata_entries": 314,
+      "code_coverage_percent": 13.15
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.kylin/kylin-jdbc/2.0.0/reachability-metadata.json"
+    }
+  }
+}
