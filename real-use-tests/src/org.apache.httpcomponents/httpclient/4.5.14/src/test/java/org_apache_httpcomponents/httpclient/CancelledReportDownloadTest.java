@@ -50,7 +50,7 @@ public class CancelledReportDownloadTest {
                 exchange.getResponseBody().write(reportHeader);
                 exchange.getResponseBody().flush();
                 // Keep the export open until the application has observed cancellation.
-                releaseExport.await(30, TimeUnit.SECONDS);
+                releaseExport.await();
             } catch (InterruptedException interrupted) {
                 Thread.currentThread().interrupt();
             } finally {
