@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 public class MergeableClusterInvokerTest {
     @Test
-    void mergesResultsWithReturnMethodAndArrayMerger() {
+    void mergesResultsUsingValueReturningVoidAndArrayMergers() {
         URL directoryUrl =
                 new URL(
                         "test",
@@ -32,6 +32,10 @@ public class MergeableClusterInvokerTest {
                         "combine.merger",
                         ".merge",
                         "combine.timeout",
+                        "10000",
+                        "combineInPlace.merger",
+                        ".mergeInPlace",
+                        "combineInPlace.timeout",
                         "10000",
                         "values.merger",
                         "default",
@@ -47,10 +51,14 @@ public class MergeableClusterInvokerTest {
 
         Result combined =
                 cluster.invoke(new RpcInvocation("combine", new Class<?>[0], new Object[0]));
+        Result combinedInPlace =
+                cluster.invoke(
+                        new RpcInvocation("combineInPlace", new Class<?>[0], new Object[0]));
         Result values =
                 cluster.invoke(new RpcInvocation("values", new Class<?>[0], new Object[0]));
 
         assertThat(((MergeValue) combined.getValue()).value).isIn("AB", "BA");
+        assertThat(((MergeValue) combinedInPlace.getValue()).value).isIn("AB", "BA");
         assertThat((String[]) values.getValue()).containsExactlyInAnyOrder("A", "B");
         cluster.destroy();
     }
@@ -58,11 +66,13 @@ public class MergeableClusterInvokerTest {
     public interface MergeService {
         MergeValue combine();
 
+        MergeValue combineInPlace();
+
         String[] values();
     }
 
     public static class MergeValue {
-        final String value;
+        String value;
 
         MergeValue(String value) {
             this.value = value;
@@ -70,6 +80,10 @@ public class MergeableClusterInvokerTest {
 
         public MergeValue merge(MergeValue other) {
             return new MergeValue(value + other.value);
+        }
+
+        public void mergeInPlace(MergeValue other) {
+            value += other.value;
         }
     }
 
@@ -98,7 +112,7 @@ public class MergeableClusterInvokerTest {
 
         @Override
         public Result invoke(Invocation invocation) {
-            return new RpcResult("combine".equals(invocation.getMethodName()) ? combined : values);
+            return new RpcResult("values".equals(invocation.getMethodName()) ? values : combined);
         }
 
         @Override
