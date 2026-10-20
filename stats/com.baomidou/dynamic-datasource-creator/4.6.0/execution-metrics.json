@@ -1,0 +1,118 @@
+{
+  "add_new_library_support:2026-10-19": {
+    "timestamp": "2026-10-19T12:50:17.449088Z",
+    "library": "com.baomidou:dynamic-datasource-creator:4.6.0",
+    "starting_commit": "b42bcdc32af9c75919b58c44f6bf45f42ab3b724",
+    "ending_commit": "3b4e33ca73267ba374c91315eff693bc5b628ac6",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.6.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 17,
+            "totalCalls": 17
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 17,
+        "totalCalls": 17
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 532,
+          "missed": 4675,
+          "ratio": 0.10217,
+          "total": 5207
+        },
+        "line": {
+          "covered": 123,
+          "missed": 705,
+          "ratio": 0.148551,
+          "total": 828
+        },
+        "method": {
+          "covered": 23,
+          "missed": 82,
+          "ratio": 0.219048,
+          "total": 105
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10909,
+      "issue_label": "library-new-request",
+      "library": "com.baomidou:dynamic-datasource-creator:4.6.0",
+      "summary": "dynamic-datasource-creator 4.6.0 only declares slf4j-api in its published POM. All pool integrations (HikariCP, Druid, DBCP2, BeeCP, C3P0, Atomikos, Oracle UCP) are compiled against optional dependencies that the POM drops. Its reflective code paths (ConfigMergeCreator's Introspector/getDeclaredConstructor().newInstance() merge, HikariDataSourceCreator's getMethod(\"copyState\"/\"copyStateTo\") lookup) only run when a pool library and a JDBC driver are on the test classpath. HikariCP plus in-memory H2 is the smallest pairing that reaches them, and both already have metadata in this repo.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.zaxxer:HikariCP:7.0.2",
+          "scope": "testImplementation",
+          "reason": "HikariDataSourceCreator and the HikariCpConfig -> HikariConfig merge in ConfigMergeCreator (the library's main reflective/introspection path) reference com.zaxxer.hikari classes directly. The library's POM does not bring them in. 7.0.2 is the newest HikariCP version with metadata in this repo and ma\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.210",
+          "scope": "testImplementation",
+          "reason": "Gives HikariDataSourceCreator.createDataSource a real in-memory JDBC URL/driver, so the pool can be built and queried without Docker. The issue's reproducer also uses H2. 2.1.210 is the H2 version with metadata in this repo."
+        }
+      ],
+      "agent_guidance": "Use an in-memory H2 URL such as jdbc:h2:mem:<unique>;DB_CLOSE_DELAY=-1 with driverClassName org.h2.Driver, user 'sa' and an empty password. Close every HikariDataSource you create. The issue's request is reflective access to com.baomidou.dynamic.datasource.creator.DatasourceInitProperties, reached from DataSourceProperty: all declared constructors and methods. Cover it directly. For example, put DataSourceProperty and DatasourceInitProperties through java.beans.Introspector / PropertyDescriptor read and write calls, set init.schema/init.data, and check the values round-trip. That mirrors the binder-style access Spring Boot does, without adding Spring Boot. Also cover ConfigMergeCreator merging a populated HikariCpConfig with per-datasource overrides, and HikariDataSourceCreator.createDataSource with lazy=true and lazy=false, then run a simple query. BasicDataSourceCreator needs Spring Boot's DataSourceBuilder, found via Class.forName. Without it, the constructor logs a warning and createDataSource throws ErrorCreateDataSourceException. Assert that behaviour; do not add Spring Boot just for that path. Leave the Druid, DBCP2, BeeCP, C3P0, Atomikos and Oracle UCP creators alone unless their pool libraries are added. Calling them without those libraries raises NoClassDefFoundError.",
+      "risks": [
+        "HikariCP 7.x needs Java 11+ and slf4j-api 2.x, while the library's BOM pins slf4j-api 1.7.36. Gradle should resolve to 2.x; if logging-binding warnings appear they are harmless.",
+        "The reporter's actual failure is Spring Boot AOT configuration-property binding of DatasourceInitProperties in the dynamic-datasource starter. A plain test against the creator jar can only approximate it through bean introspection/reflection; it will not reproduce Spring Boot's binder path.",
+        "H2 2.1.210 is old. If the H2 driver itself fails in Native Image, a newer H2 may be needed, and that would require its own metadata coverage.",
+        "DruidDataSourceCreator and DdConstants reference org.springframework.util.StringUtils. Tests that load these classes without spring-core on the classpath will fail to link."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.zaxxer:HikariCP:7.0.2",
+          "result": "applied",
+          "target": "tests/src/com.baomidou/dynamic-datasource-creator/4.6.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.210",
+          "result": "applied",
+          "target": "tests/src/com.baomidou/dynamic-datasource-creator/4.6.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10909 Support for com.baomidou:dynamic-datasource-creator:4.6.0; label=library-new-request; body_chars=1535"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 12,
+      "output_tokens_used": 4355
+    },
+    "metrics": {
+      "input_tokens_used": 157946,
+      "cached_input_tokens_used": 1516672,
+      "output_tokens_used": 17529,
+      "iterations": 6,
+      "cost_usd": 2.0739,
+      "generated_loc": 188,
+      "tested_library_loc": 123,
+      "metadata_entries": 95,
+      "test_only_metadata_entries": 106,
+      "code_coverage_percent": 14.86
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.baomidou/dynamic-datasource-creator/4.6.0/reachability-metadata.json"
+    }
+  }
+}

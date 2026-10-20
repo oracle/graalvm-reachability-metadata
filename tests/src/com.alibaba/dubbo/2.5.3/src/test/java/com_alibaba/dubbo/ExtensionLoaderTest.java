@@ -7,8 +7,12 @@
 package com_alibaba.dubbo;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.alibaba.dubbo.common.compiler.Compiler;
+import com.alibaba.dubbo.common.extension.Adaptive;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
+import com.alibaba.dubbo.common.extension.SPI;
 import com.alibaba.dubbo.common.serialize.Serialization;
 import com.alibaba.dubbo.rpc.Protocol;
 import org.junit.jupiter.api.Test;
@@ -26,5 +30,55 @@ public class ExtensionLoaderTest {
         Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension("injvm");
         assertThat(protocol).isNotNull();
         protocol.destroy();
+    }
+
+    @Test
+    void injectsAdaptiveExtensionsIntoProgrammaticallyAddedExtensions() {
+        ExtensionLoader<InjectableExtension> loader =
+                ExtensionLoader.getExtensionLoader(InjectableExtension.class);
+        loader.addExtension("compiler-aware", CompilerAwareExtension.class);
+
+        InjectableExtension extension = loader.getExtension("compiler-aware");
+
+        assertThat(extension.compiler())
+                .isSameAs(ExtensionLoader.getExtensionLoader(Compiler.class).getAdaptiveExtension());
+        assertThat(loader.getExtensionName(extension)).isEqualTo("compiler-aware");
+    }
+
+    @Test
+    void rejectsAdaptiveMethodsWithoutUrlContext() {
+        ExtensionLoader<InvalidAdaptiveExtension> loader =
+                ExtensionLoader.getExtensionLoader(InvalidAdaptiveExtension.class);
+
+        assertThatThrownBy(loader::getAdaptiveExtension)
+                .isInstanceOf(IllegalStateException.class)
+                .hasRootCauseMessage(
+                        "fail to create adative class for interface "
+                                + InvalidAdaptiveExtension.class.getName()
+                                + ": not found url parameter or url attribute in parameters of method route");
+    }
+
+    @SPI
+    public interface InjectableExtension {
+        Compiler compiler();
+    }
+
+    @SPI
+    public interface InvalidAdaptiveExtension {
+        @Adaptive
+        String route(String request);
+    }
+
+    public static class CompilerAwareExtension implements InjectableExtension {
+        private Compiler compiler;
+
+        public void setCompiler(Compiler compiler) {
+            this.compiler = compiler;
+        }
+
+        @Override
+        public Compiler compiler() {
+            return compiler;
+        }
     }
 }

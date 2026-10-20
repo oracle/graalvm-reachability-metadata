@@ -8,6 +8,13 @@ package com_alibaba.dubbo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.alibaba.com.caucho.hessian.io.BeanSerializer;
+import com.alibaba.com.caucho.hessian.io.BeanSerializerFactory;
+import com.alibaba.com.caucho.hessian.io.Hessian2Input;
+import com.alibaba.com.caucho.hessian.io.Hessian2Output;
+import com.alibaba.com.caucho.hessian.io.SerializerFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import org.junit.jupiter.api.Test;
 
 public class BeanSerializerTest {
@@ -21,13 +28,14 @@ public class BeanSerializerTest {
 
         assertThat(copy.getName()).isEqualTo("Ada");
         assertThat(copy.getCount()).isEqualTo(3);
+
     }
 
     @Test
     void honorsObjectAndCompanionWriteReplacement() throws Exception {
         Replacement objectReplacement =
                 (Replacement)
-                        HessianTestSupport.roundTripBean(
+                        roundTripWithHessian2BeanSerializer(
                                 new SelfReplacingBean("object"), Replacement.class);
         Replacement factoryReplacement =
                 (Replacement)
@@ -36,6 +44,25 @@ public class BeanSerializerTest {
 
         assertThat(objectReplacement.getValue()).isEqualTo("object");
         assertThat(factoryReplacement.getValue()).isEqualTo("factory");
+    }
+
+    private static Object roundTripWithHessian2BeanSerializer(
+            Object value, Class<?> expectedType) throws Exception {
+        BeanSerializerFactory outputFactory = new BeanSerializerFactory();
+        outputFactory.setAllowNonSerializable(true);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        Hessian2Output output = new Hessian2Output(bytes);
+        output.setSerializerFactory(outputFactory);
+        BeanSerializer serializer =
+                new BeanSerializer(value.getClass(), outputFactory.getClassLoader());
+        serializer.writeObject(value, output);
+        output.flush();
+
+        SerializerFactory inputFactory = new SerializerFactory();
+        inputFactory.setAllowNonSerializable(true);
+        Hessian2Input input = new Hessian2Input(new ByteArrayInputStream(bytes.toByteArray()));
+        input.setSerializerFactory(inputFactory);
+        return input.readObject(expectedType);
     }
 
     public static class Bean {

@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Dynamic-access coverage was below the required gate**
 
 The submitted test configured ClientProxyFactoryBean and inspected its getters but never created a client proxy. The resolved statistics therefore reported 0 of 3 dynamic-access calls covered, violating the requirement for coverage above 20% when dynamic-access calls exist.
+## 2026-10-20 — com.alibaba:dubbo:2.5.3 (#10994)
+
+**Native module-opening flags mask test-shaped JDK-internal access**
+
+The contribution added --add-opens=java.base/java.lang=ALL-UNNAMED as both a test JVM argument and a Native Image build argument without satisfying FS-test-contract.2.7 and Review Signal #12's uniform-necessity rule. Running ./gradlew javaTest without the flags showed that HessianInputTest failed only because its chosen fault detail serialized Throwable.detailMessage, while PojoUtilsTest expected Dubbo to mutate that same private JDK field and received a null message when module access was closed. The already-passing suite and a compliant Hessian fault shape demonstrate that the flag originated in these test scenarios rather than an unavoidable library-wide requirement.
 
 ## 2026-10-19 — com.alibaba:dubbo:2.5.3 (#10994)
 

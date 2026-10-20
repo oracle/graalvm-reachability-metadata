@@ -33,6 +33,10 @@ public class AbstractConfigTest {
             System.clearProperty("dubbo.probe.value");
         }
 
+        config.setEnabled(Boolean.TRUE);
+        config.loadProperties();
+        assertThat(config.isEnabled()).isTrue();
+
         config.setValue("configured");
         config.getParameters().put("custom-key", "custom-value");
         assertThat(config.parameters())
@@ -52,6 +56,7 @@ public class AbstractConfigTest {
 
     public static class ProbeConfig extends AbstractConfig {
         private String value;
+        private Boolean enabled;
         private final Map<String, String> parameters = new HashMap<String, String>();
 
         @Parameter(attribute = true)
@@ -61,6 +66,14 @@ public class AbstractConfigTest {
 
         public void setValue(String value) {
             this.value = value;
+        }
+
+        public Boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(Boolean enabled) {
+            this.enabled = enabled;
         }
 
         public Map<String, String> getParameters() {

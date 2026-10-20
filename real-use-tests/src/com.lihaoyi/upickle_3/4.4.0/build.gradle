@@ -1,0 +1,47 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    id "scala"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+String scala3Version = tck.scala3Version.get()
+
+dependencies {
+    testImplementation "com.lihaoyi:upickle_3:$libraryVersion"
+    testImplementation "com.lihaoyi:os-lib_3:0.11.8"
+    testImplementation "com.lihaoyi:requests_3:0.9.3"
+    testImplementation "com.lihaoyi:cask_3:0.11.3"
+    testImplementation "org.wildfly.common:wildfly-common:1.7.0.Final"
+    testImplementation "com.h2database:h2:2.3.232"
+    testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
+    testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(testJvmVersion)
+    }
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("--enable-url-protocols=http")
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

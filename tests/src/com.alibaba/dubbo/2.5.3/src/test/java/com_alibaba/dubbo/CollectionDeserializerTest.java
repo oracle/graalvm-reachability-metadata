@@ -20,7 +20,17 @@ public class CollectionDeserializerTest {
 
         Object copy = HessianTestSupport.roundTrip(source);
 
+        PublicCollection custom = new PublicCollection();
+        custom.add("custom");
+        Object customCopy = HessianTestSupport.roundTrip(custom);
+
         assertThat(copy).isInstanceOf(LinkedList.class);
         assertThat(copy).isEqualTo(source);
+        assertThat(customCopy).isInstanceOf(PublicCollection.class);
+        assertThat(customCopy).isEqualTo(custom);
+    }
+
+    public static class PublicCollection extends LinkedList<String> {
+        public PublicCollection() { }
     }
 }
