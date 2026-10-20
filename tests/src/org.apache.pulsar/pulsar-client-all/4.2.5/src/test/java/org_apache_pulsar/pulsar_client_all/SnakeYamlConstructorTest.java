@@ -8,9 +8,12 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.apache.pulsar.shade.org.yaml.snakeyaml.LoaderOptions;
 import org.apache.pulsar.shade.org.yaml.snakeyaml.Yaml;
 import org.apache.pulsar.shade.org.yaml.snakeyaml.constructor.Constructor;
+import org.apache.pulsar.shade.org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector;
 import org.junit.jupiter.api.Test;
 
 public class SnakeYamlConstructorTest {
@@ -26,7 +29,9 @@ public class SnakeYamlConstructorTest {
 
     @Test
     void resolvesClassNamedByExplicitYamlTag() {
-        Constructor constructor = new Constructor(new LoaderOptions());
+        LoaderOptions options = new LoaderOptions();
+        options.setTagInspector(new TrustedPrefixesTagInspector(List.of(getClass().getPackageName())));
+        Constructor constructor = new Constructor(options);
         String yaml = "!!" + Settings.class.getName() + " {mode: shared, retries: 2}";
 
         Settings settings = new Yaml(constructor).load(yaml);

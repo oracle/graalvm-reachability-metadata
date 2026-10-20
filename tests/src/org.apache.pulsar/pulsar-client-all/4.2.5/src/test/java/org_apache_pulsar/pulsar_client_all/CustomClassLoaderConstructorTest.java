@@ -8,16 +8,21 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.apache.pulsar.shade.org.yaml.snakeyaml.LoaderOptions;
 import org.apache.pulsar.shade.org.yaml.snakeyaml.Yaml;
 import org.apache.pulsar.shade.org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
+import org.apache.pulsar.shade.org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector;
 import org.junit.jupiter.api.Test;
 
 public class CustomClassLoaderConstructorTest {
     @Test
     void resolvesExplicitYamlTagWithConfiguredLoader() {
-        CustomClassLoaderConstructor constructor = new CustomClassLoaderConstructor(
-                getClass().getClassLoader(), new LoaderOptions());
+        LoaderOptions options = new LoaderOptions();
+        options.setTagInspector(new TrustedPrefixesTagInspector(List.of(getClass().getPackageName())));
+        CustomClassLoaderConstructor constructor =
+                new CustomClassLoaderConstructor(getClass().getClassLoader(), options);
         String yaml = "!!" + Settings.class.getName() + " {mode: persistent}";
 
         Settings settings = new Yaml(constructor).load(yaml);

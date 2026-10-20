@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,8 @@ public class ValidatingObjectInputStreamTest {
         byte[] encoded = SerializationUtils.serialize(proxy);
 
         try (ValidatingObjectInputStream input = new ValidatingObjectInputStream(
-                new ByteArrayInputStream(encoded)).accept(Greeting.class, GreetingHandler.class)) {
+                new ByteArrayInputStream(encoded)).accept(
+                        Greeting.class, GreetingHandler.class, Proxy.class)) {
             Greeting restored = input.readObjectCast();
 
             assertThat(restored.greet("Pulsar")).isEqualTo("hello Pulsar");
