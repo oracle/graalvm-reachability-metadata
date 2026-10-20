@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed before test generation for `org.apache.cxf:cxf-api:2.6.1`. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10979-library-new-request-org.apache.cxf-cxf-api-2.6.1-bdf9078b
+
+The most likely failing stage is setup/artifact discovery, not generated-test compilation. `discoverArtifactMetadata` failed because Claude returned HTTP 429 `usage_limit_reached` (“You've hit your session limit”), and the preparation preflight independently exited with the same error. Consequently, no `cxf-api` test, metadata, Gradle test output, execution metrics, or dynamic-access coverage was generated.
+
+Inspect:
+- `logs/org.apache.cxf:cxf-api:2.6.1/discover-artifact-metadata/discover_artifact_metadata.log`
+- `logs/org.apache.cxf:cxf-api:2.6.1/library-preparation-preflight/claude-code-session-jyl93kke.log`
+- `logs/do-work-20261018-172551.log`
+
+Manual next steps:
+1. Retry the setup/artifact-discovery stage after restoring Claude quota or configuring working agent credentials.
+2. Review and complete the degraded library-preparation preflight before generating tests.
+3. Generate the test scaffold, then run the coordinate-scoped metadata validation and JVM/native test lanes and confirm execution/coverage metrics are produced.
