@@ -16,7 +16,13 @@ public class ClassUtilTest {
     void locatesAndCreatesAConcreteType() throws Exception {
         Thread thread = Thread.currentThread();
         ClassLoader originalLoader = thread.getContextClassLoader();
+        ClassLoader testLoader = ClassUtilTest.class.getClassLoader();
+        assertThat(testLoader).isNotNull();
+
         try {
+            thread.setContextClassLoader(testLoader);
+            assertThat(ClassUtil.findClass(Constructible.class.getName())).isEqualTo(Constructible.class);
+
             thread.setContextClassLoader(null);
             assertThat(ClassUtil.findClass(Constructible.class.getName())).isEqualTo(Constructible.class);
         } finally {
