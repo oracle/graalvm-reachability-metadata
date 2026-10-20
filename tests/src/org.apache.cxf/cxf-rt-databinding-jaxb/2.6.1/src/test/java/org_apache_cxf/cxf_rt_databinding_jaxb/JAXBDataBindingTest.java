@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 public class JAXBDataBindingTest {
     @Test
     void writesAndReadsRootElementThroughDataBinding() throws Exception {
-        JaxbTestSupport.disableOptimizedAccessors();
         JAXBDataBinding binding = new JAXBDataBinding(Customer.class);
         DataWriter<XMLStreamWriter> dataWriter = binding.createWriter(XMLStreamWriter.class);
         StringWriter output = new StringWriter();
@@ -49,7 +48,6 @@ public class JAXBDataBindingTest {
 
     @Test
     void createsWrapperHelperForBooleanAndReturnProperties() throws Exception {
-        JaxbTestSupport.disableOptimizedAccessors();
         JAXBDataBinding binding = new JAXBDataBinding(JAXBContext.newInstance(String.class));
         WrapperHelper helper = binding.createWrapperHelper(
                 BooleanWrapper.class,

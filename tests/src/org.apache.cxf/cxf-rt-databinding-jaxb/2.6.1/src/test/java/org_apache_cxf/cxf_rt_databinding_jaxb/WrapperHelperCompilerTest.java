@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 public class WrapperHelperCompilerTest {
     @Test
     void wrapperOptimizationPreservesPublicHelperBehavior() throws Exception {
-        JaxbTestSupport.disableOptimizedAccessors();
         JAXBDataBinding binding = new JAXBDataBinding(JAXBContext.newInstance(String.class));
         WrapperHelper helper = binding.createWrapperHelper(
                 OptimizableWrapper.class,

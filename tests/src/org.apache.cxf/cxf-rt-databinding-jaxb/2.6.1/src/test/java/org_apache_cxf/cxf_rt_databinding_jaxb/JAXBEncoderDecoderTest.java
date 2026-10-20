@@ -39,7 +39,6 @@ public class JAXBEncoderDecoderTest {
 
     @Test
     void marshalsAndUnmarshalsCustomExceptionProperties() throws Exception {
-        JaxbTestSupport.disableOptimizedAccessors();
         JAXBContext context = JAXBContext.newInstance(String.class);
         MessagePartInfo part = newPart(PropertyException.class, "fault");
         PropertyException original = new PropertyException();
@@ -66,8 +65,37 @@ public class JAXBEncoderDecoderTest {
     }
 
     @Test
+    void marshalsFieldsAndRestoresInheritedArrays() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(String.class);
+        FieldException original = new FieldException();
+        original.detail = "field detail";
+        original.labels = new String[] {"first", "second"};
+        MessagePartInfo fieldPart = newPart(FieldException.class, "fieldFault");
+
+        StringWriter output = new StringWriter();
+        XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(output);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+        JAXBEncoderDecoder.marshallException(marshaller, original, fieldPart, writer);
+        writer.close();
+
+        assertThat(output.toString()).contains("field detail", "first", "second");
+
+        MessagePartInfo inheritedPart = newPart(InheritedFieldException.class, "inheritedFault");
+        String xml = "<inheritedFault xmlns=\"" + NAMESPACE
+                + "\"><codes>7</codes><codes>9</codes></inheritedFault>";
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(new StringReader(xml));
+        reader.nextTag();
+        InheritedFieldException restored = (InheritedFieldException)
+                JAXBEncoderDecoder.unmarshallException(context.createUnmarshaller(), reader, inheritedPart);
+
+        assertThat(restored.codes).containsExactly(7, 9);
+    }
+
+    @Test
     void usesStringConstructorWhenRestoringException() throws Exception {
-        JaxbTestSupport.disableOptimizedAccessors();
         JAXBContext context = JAXBContext.newInstance(String.class);
         MessagePartInfo part = newPart(StringConstructorException.class, "stringFault");
         String xml = "<stringFault xmlns=\"" + NAMESPACE + "\"><code>42</code></stringFault>";
@@ -82,7 +110,6 @@ public class JAXBEncoderDecoderTest {
 
     @Test
     void unmarshalsWithSchemaValidation() throws Exception {
-        JaxbTestSupport.disableOptimizedAccessors();
         String schemaText = """
                 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
                            targetNamespace="urn:cxf-jaxb-test"
@@ -111,6 +138,7 @@ public class JAXBEncoderDecoderTest {
         OperationInfo operation = iface.addOperation(new QName(NAMESPACE, "invoke" + localName));
         MessageInfo message = operation.createMessage(
                 new QName(NAMESPACE, localName + "Message"), MessageInfo.Type.OUTPUT);
+        operation.setOutput(localName + "Message", message);
         MessagePartInfo part = message.addMessagePart(new QName(NAMESPACE, localName));
         part.setElementQName(new QName(NAMESPACE, localName));
         part.setConcreteName(new QName(NAMESPACE, localName));
@@ -145,6 +173,28 @@ public class JAXBEncoderDecoderTest {
 
         public void setTags(String[] tags) {
             this.tags = Arrays.copyOf(tags, tags.length);
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class FieldException extends Exception {
+        public String detail;
+        public String[] labels;
+
+        public FieldException() {
+        }
+    }
+
+    public static class PublicFaultFields extends Exception {
+        public int[] codes;
+
+        public PublicFaultFields() {
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class InheritedFieldException extends PublicFaultFields {
+        public InheritedFieldException() {
         }
     }
 

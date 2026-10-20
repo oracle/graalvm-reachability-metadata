@@ -25,7 +25,6 @@ public class JAXBSchemaInitializerTest {
 
     @Test
     void initializationBuildsSchemaForCustomException() {
-        JaxbTestSupport.disableOptimizedAccessors();
         ServiceInfo service = new ServiceInfo();
         service.setName(new QName(NAMESPACE, "FaultService"));
         InterfaceInfo iface = service.createInterface(new QName(NAMESPACE, "FaultPort"));

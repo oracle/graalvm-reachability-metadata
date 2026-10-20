@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 public class DataWriterImplTest {
     @Test
     void writesCollectionForArrayMessagePart() throws Exception {
-        JaxbTestSupport.disableOptimizedAccessors();
         JAXBDataBinding binding = new JAXBDataBinding(String[].class);
         MessagePartInfo part = arrayPart();
         DataWriter<XMLStreamWriter> dataWriter = binding.createWriter(XMLStreamWriter.class);
