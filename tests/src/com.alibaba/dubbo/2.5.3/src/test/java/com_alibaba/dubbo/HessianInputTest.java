@@ -6,7 +6,8 @@
  */
 package com_alibaba.dubbo;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import com.alibaba.com.caucho.hessian.io.HessianInput;
 import com.alibaba.com.caucho.hessian.io.HessianOutput;
@@ -17,21 +18,19 @@ import org.junit.jupiter.api.Test;
 
 public class HessianInputTest {
     @Test
-    void readsThrowableFaultDetailWithRemoteMessage() throws Exception {
+    void readsFaultDetailWithRemoteMessage() throws Exception {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         HessianOutput output = new HessianOutput(bytes);
         output.startReply();
-        output.writeFault(
-                "ServiceException",
-                "remote failure",
-                new HessianServiceException("local detail", "DetailException", "payload"));
+        output.writeFault("ServiceException", "remote failure", "payload");
         output.completeReply();
         output.flush();
 
         HessianInput input = new HessianInput(new ByteArrayInputStream(bytes.toByteArray()));
 
-        assertThatThrownBy(() -> input.readReply(Object.class))
-                .isInstanceOf(HessianServiceException.class)
-                .hasMessage("remote failure");
+        Throwable thrown = catchThrowable(() -> input.readReply(Object.class));
+
+        assertThat(thrown).isInstanceOf(HessianServiceException.class).hasMessage("remote failure");
+        assertThat(((HessianServiceException) thrown).getDetail()).isEqualTo("payload");
     }
 }
