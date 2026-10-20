@@ -26,6 +26,7 @@ public class JAXBContextInitializerTest {
 
     @Test
     void initializationDiscoversPropertyBasedModel() {
+        JaxbTestSupport.disableOptimizedAccessors();
         ServiceInfo serviceInfo = serviceWithPart(PropertyModel.class);
         JAXBDataBinding binding = new JAXBDataBinding();
 

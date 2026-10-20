@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 public class JAXBWrapperHelperTest {
     @Test
     void reflectionFallbackHandlesFieldsGettersAndElementFactories() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         JAXBDataBinding binding = new JAXBDataBinding(JAXBContext.newInstance(String.class));
         WrapperHelper helper = binding.createWrapperHelper(
                 ReflectionWrapper.class,

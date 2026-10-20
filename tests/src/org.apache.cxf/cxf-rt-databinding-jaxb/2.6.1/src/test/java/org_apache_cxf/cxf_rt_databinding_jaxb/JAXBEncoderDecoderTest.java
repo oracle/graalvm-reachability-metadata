@@ -39,6 +39,7 @@ public class JAXBEncoderDecoderTest {
 
     @Test
     void marshalsAndUnmarshalsCustomExceptionProperties() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         JAXBContext context = JAXBContext.newInstance(String.class);
         MessagePartInfo part = newPart(PropertyException.class, "fault");
         PropertyException original = new PropertyException();
@@ -66,6 +67,7 @@ public class JAXBEncoderDecoderTest {
 
     @Test
     void marshalsFieldsAndRestoresInheritedArrays() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         JAXBContext context = JAXBContext.newInstance(String.class);
         FieldException original = new FieldException();
         original.detail = "field detail";
@@ -96,6 +98,7 @@ public class JAXBEncoderDecoderTest {
 
     @Test
     void usesStringConstructorWhenRestoringException() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         JAXBContext context = JAXBContext.newInstance(String.class);
         MessagePartInfo part = newPart(StringConstructorException.class, "stringFault");
         String xml = "<stringFault xmlns=\"" + NAMESPACE + "\"><code>42</code></stringFault>";
@@ -110,6 +113,7 @@ public class JAXBEncoderDecoderTest {
 
     @Test
     void unmarshalsWithSchemaValidation() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
         String schemaText = """
                 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
                            targetNamespace="urn:cxf-jaxb-test"
