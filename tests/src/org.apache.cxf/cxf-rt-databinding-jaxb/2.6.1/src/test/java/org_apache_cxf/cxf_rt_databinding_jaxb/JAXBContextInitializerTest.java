@@ -8,12 +8,22 @@ package org_apache_cxf.cxf_rt_databinding_jaxb;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.apache.cxf.bus.extension.ExtensionManagerBus;
+import org.apache.cxf.databinding.DataReader;
+import org.apache.cxf.databinding.DataWriter;
 import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.ServiceImpl;
@@ -39,6 +49,32 @@ public class JAXBContextInitializerTest {
         assertThat(binding.getContext()).isNotNull();
         assertThat(binding.getContextClasses()).contains(PropertyModel.class);
         assertThat(serviceInfo.getSchemas()).isNotEmpty();
+    }
+
+    @Test
+    void initializationDiscoversGenericArrayBoundAndRoundTripsModel() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
+        ServiceInfo serviceInfo = serviceWithPart(GenericArrayModel.class);
+        JAXBDataBinding binding = new JAXBDataBinding();
+        binding.initialize(new ServiceImpl(serviceInfo));
+
+        GenericArrayModel<CollectionItem> model = new GenericArrayModel<>();
+        model.items = new CollectionItem[] {new CollectionItem("first"), new CollectionItem("second")};
+        DataWriter<XMLStreamWriter> writer = binding.createWriter(XMLStreamWriter.class);
+        StringWriter output = new StringWriter();
+        XMLStreamWriter streamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter(output);
+        writer.write(model, streamWriter);
+        streamWriter.close();
+
+        DataReader<XMLStreamReader> reader = binding.createReader(XMLStreamReader.class);
+        XMLStreamReader streamReader = XMLInputFactory.newFactory()
+                .createXMLStreamReader(new StringReader(output.toString()));
+        GenericArrayModel<?> restored = (GenericArrayModel<?>) reader.read(streamReader);
+        streamReader.close();
+
+        assertThat(binding.getContextClasses()).contains(CollectionItem[].class);
+        assertThat(restored.items).extracting(item -> item.value)
+                .containsExactly("first", "second");
     }
 
     @Test
@@ -81,12 +117,27 @@ public class JAXBContextInitializerTest {
         void accept(List<CollectionItem> items);
     }
 
+    @XmlRootElement(name = "genericArrayModel", namespace = NAMESPACE)
+    @XmlType(name = "genericArrayModel", namespace = NAMESPACE)
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class GenericArrayModel<T extends CollectionItem> {
+        @XmlElement(name = "item", type = CollectionItem.class)
+        public T[] items;
+
+        public GenericArrayModel() {
+        }
+    }
+
     @XmlType(name = "collectionItem", namespace = NAMESPACE)
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class CollectionItem {
         public String value;
 
         public CollectionItem() {
+        }
+
+        public CollectionItem(String value) {
+            this.value = value;
         }
     }
 

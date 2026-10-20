@@ -136,6 +136,10 @@ public class JAXBSchemaInitializerTest {
         public RepeatedFault() {
         }
 
+        public RepeatedFault(String message) {
+            super(message);
+        }
+
         public String getDetail() {
             return detail;
         }
