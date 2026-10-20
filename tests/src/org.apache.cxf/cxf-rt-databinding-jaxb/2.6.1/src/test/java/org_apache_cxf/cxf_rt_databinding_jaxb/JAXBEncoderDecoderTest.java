@@ -234,13 +234,15 @@ public class JAXBEncoderDecoderTest {
     }
 
     private static Object readRepeated(
-            JAXBDataBinding binding, MessagePartInfo part, String first, String second) throws Exception {
-        part.setTypeClass(String[].class);
-        ((XmlSchemaElement) part.getXmlSchema()).setMaxOccurs(2);
-        QName name = part.getConcreteName();
-        XMLStreamReader reader = repeatedReader(name, first, second);
+            JAXBDataBinding binding, MessagePartInfo servicePart, String first, String second)
+            throws Exception {
+        MessagePartInfo repeatedPart = repeatedPart(
+                String.class, servicePart.getConcreteName().getLocalPart());
+        repeatedPart.setProperty("generic.type", servicePart.getProperty("generic.type"));
+        XMLStreamReader reader = repeatedReader(
+                repeatedPart.getConcreteName(), first, second);
         return JAXBEncoderDecoder.unmarshall(
-                binding.getContext().createUnmarshaller(), reader, part, true);
+                binding.getContext().createUnmarshaller(), reader, repeatedPart, true);
     }
 
     private static MessagePartInfo repeatedPart(Class<?> componentType, String localName) {
