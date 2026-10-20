@@ -27,4 +27,16 @@ public class AbstractIoBufferAnonymous3Test {
         assertThat(decoded).isEqualTo(value);
         assertThat(decoded).isInstanceOf(ArrayList.class);
     }
+
+    @Test
+    void readsPrimitiveClassDescriptors() throws Exception {
+        IoBuffer buffer = IoBuffer.allocate(32).setAutoExpand(true);
+        buffer.putObject(int.class);
+        buffer.flip();
+
+        Object decoded = buffer.getObject(AbstractIoBufferAnonymous3Test.class.getClassLoader());
+
+        assertThat(decoded).isSameAs(int.class);
+        assertThat(buffer.remaining()).isZero();
+    }
 }
