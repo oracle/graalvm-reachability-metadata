@@ -29,7 +29,7 @@ public class ArrayMemberValueTest {
         ArrayCarrier proxy = (ArrayCarrier) annotation.toAnnotationType(getClass().getClassLoader(), null);
         String[][] values = proxy.values();
 
-        assertThat(values).hasSize(2);
+        assertThat(values.length).isEqualTo(2);
         assertThat(values[0]).containsExactly("persistent", "non-persistent");
         assertThat(values[1]).containsExactly("partitioned");
     }
