@@ -15,6 +15,18 @@ String scala3Version = tck.scala3Version.get()
 
 dependencies {
     testImplementation "dev.zio:zio-http_3:$libraryVersion"
+
+    // Match the target's published dependency versions for application effects and streaming.
+    testImplementation "dev.zio:zio_3:2.1.17"
+    testImplementation "dev.zio:zio-streams_3:2.1.17"
+
+    // Application models and content codecs for typed endpoints and HTTP request/response bodies.
+    testImplementation "dev.zio:zio-schema_3:1.7.0"
+    testImplementation "dev.zio:zio-schema-derivation_3:1.7.0"
+    testImplementation "dev.zio:zio-schema-json_3:1.7.0"
+    testImplementation "dev.zio:zio-schema-protobuf_3:1.7.0"
+    testImplementation "dev.zio:zio-json_3:0.7.42"
+
     testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
     testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
 }
