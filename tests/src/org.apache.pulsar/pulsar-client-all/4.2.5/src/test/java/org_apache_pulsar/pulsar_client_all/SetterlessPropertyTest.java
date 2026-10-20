@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +20,7 @@ public class SetterlessPropertyTest {
     @Test
     void populatesCollectionReturnedByGetter() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, Visibility.NONE);
 
         SetterlessBean bean = mapper.readValue("{\"values\":[\"one\",\"two\"]}", SetterlessBean.class);
 

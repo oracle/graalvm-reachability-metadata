@@ -9,9 +9,13 @@ package org_apache_pulsar.pulsar_client_all;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.pulsar.shade.com.google.common.reflect.Reflection;
 import org.apache.pulsar.shade.org.apache.commons.io.serialization.ValidatingObjectInputStream;
 import org.apache.pulsar.shade.org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Test;
@@ -26,6 +30,30 @@ public class ValidatingObjectInputStreamTest {
             List<String> restored = input.readObjectCast();
 
             assertThat(restored).containsExactly("alpha", "beta");
+        }
+    }
+
+    @Test
+    void validatesAndResolvesAcceptedProxyInterface() throws Exception {
+        Greeting proxy = Reflection.newProxy(Greeting.class, new GreetingHandler());
+        byte[] encoded = SerializationUtils.serialize(proxy);
+
+        try (ValidatingObjectInputStream input = new ValidatingObjectInputStream(
+                new ByteArrayInputStream(encoded)).accept(Greeting.class, GreetingHandler.class)) {
+            Greeting restored = input.readObjectCast();
+
+            assertThat(restored.greet("Pulsar")).isEqualTo("hello Pulsar");
+        }
+    }
+
+    public interface Greeting extends Serializable {
+        String greet(String name);
+    }
+
+    public static class GreetingHandler implements InvocationHandler, Serializable {
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] arguments) {
+            return "hello " + arguments[0];
         }
     }
 }

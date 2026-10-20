@@ -15,6 +15,7 @@ public class ArrayUtilsTest {
     @Test
     void createsGrowsAndCompactsTypedArrays() {
         String[] inserted = ArrayUtils.add((String[]) null, 0, "first");
+        String[] appendedToNull = ArrayUtils.add((String[]) null, "first");
         String[] appended = ArrayUtils.add(new String[] {"first"}, "second");
         String[] insertedMiddle = ArrayUtils.add(new String[] {"first", "third"}, 1, "second");
         int[] primitiveAppended = ArrayUtils.add(new int[] {1}, 2);
@@ -26,6 +27,7 @@ public class ArrayUtilsTest {
                 new String[] {"a", "b", "a", "c"}, "a");
 
         assertThat(inserted).containsExactly("first");
+        assertThat(appendedToNull).containsExactly("first");
         assertThat(appended).containsExactly("first", "second");
         assertThat(insertedMiddle).containsExactly("first", "second", "third");
         assertThat(primitiveAppended).containsExactly(1, 2);

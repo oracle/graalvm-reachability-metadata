@@ -33,4 +33,20 @@ public final class NettyObjectSerializationSupport {
             decoder.finishAndReleaseAll();
         }
     }
+
+    public static void roundTripArrayWithDefaultResolverFallback() {
+        EmbeddedChannel encoder = new EmbeddedChannel(new ObjectEncoder());
+        EmbeddedChannel decoder = new EmbeddedChannel(new ObjectDecoder(className -> {
+            throw new ClassNotFoundException(className);
+        }));
+        try {
+            assertThat(encoder.writeOutbound(new String[] {"pulsar", "bookkeeper"})).isTrue();
+            ByteBuf encoded = encoder.readOutbound();
+            assertThat(decoder.writeInbound(encoded)).isTrue();
+            assertThat((String[]) decoder.readInbound()).containsExactly("pulsar", "bookkeeper");
+        } finally {
+            encoder.finishAndReleaseAll();
+            decoder.finishAndReleaseAll();
+        }
+    }
 }

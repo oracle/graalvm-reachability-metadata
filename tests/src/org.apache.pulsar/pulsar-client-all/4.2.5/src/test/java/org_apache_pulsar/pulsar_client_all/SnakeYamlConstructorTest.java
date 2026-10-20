@@ -24,6 +24,17 @@ public class SnakeYamlConstructorTest {
         assertThat(settings.retries).isEqualTo(4);
     }
 
+    @Test
+    void resolvesClassNamedByExplicitYamlTag() {
+        Constructor constructor = new Constructor(new LoaderOptions());
+        String yaml = "!!" + Settings.class.getName() + " {mode: shared, retries: 2}";
+
+        Settings settings = new Yaml(constructor).load(yaml);
+
+        assertThat(settings.mode).isEqualTo("shared");
+        assertThat(settings.retries).isEqualTo(2);
+    }
+
     public static class Settings {
         public String mode;
         public int retries;

@@ -13,4 +13,9 @@ public class CompactObjectInputStreamTest {
     void resolvesTheSerializedClassDescriptor() {
         NettyObjectSerializationSupport.roundTrip();
     }
+
+    @Test
+    void fallsBackToDefaultClassResolutionForFatDescriptor() {
+        NettyObjectSerializationSupport.roundTripArrayWithDefaultResolverFallback();
+    }
 }

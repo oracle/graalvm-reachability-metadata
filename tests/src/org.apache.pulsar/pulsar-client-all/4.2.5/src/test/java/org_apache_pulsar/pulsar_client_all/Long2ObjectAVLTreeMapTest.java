@@ -25,4 +25,16 @@ public class Long2ObjectAVLTreeMapTest {
         assertThat(restored.keySet()).containsExactly(10L, 20L, 30L);
         assertThat(restored.get(20L)).isEqualTo("twenty");
     }
+
+    @Test
+    void roundTripPreservesTwoEntryTreeBranch() throws Exception {
+        Long2ObjectAVLTreeMap<String> input = new Long2ObjectAVLTreeMap<>();
+        input.put(2L, "two");
+        input.put(1L, "one");
+
+        Long2ObjectAVLTreeMap<String> restored = SerializationSupport.roundTrip(input);
+
+        assertThat(restored.keySet()).containsExactly(1L, 2L);
+        assertThat(restored.values()).containsExactly("one", "two");
+    }
 }
