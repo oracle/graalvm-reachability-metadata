@@ -7,6 +7,7 @@
 package org_apache_kylin.kylin_jdbc;
 
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.Log;
+import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.LogConfigurationException;
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.LogFactory;
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.LogFactoryImpl;
 import org.apache.kylin.jdbc.shaded.org.apache.commons.logging.impl.SimpleLog;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Order(1)
 public class LogFactoryImplTest {
@@ -43,25 +45,16 @@ public class LogFactoryImplTest {
     }
 
     @Test
-    void createsTheConfiguredLoggingImplementationWithSystemLoaderFallback() {
-        String originalDiagnostics = System.getProperty(LogFactory.DIAGNOSTICS_DEST_PROPERTY);
-        Thread thread = Thread.currentThread();
-        ClassLoader originalLoader = thread.getContextClassLoader();
-        LogFactoryImpl factory = null;
+    void rejectsAConfiguredClassThatDoesNotImplementLog() {
+        LogFactoryImpl factory = new LogFactoryImpl();
+        factory.setAttribute(LogFactoryImpl.ALLOW_FLAWED_DISCOVERY_PROPERTY, Boolean.FALSE);
+        factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, InvalidLogAdapter.class.getName());
         try {
-            System.setProperty(LogFactory.DIAGNOSTICS_DEST_PROPERTY, "STDOUT");
-            thread.setContextClassLoader(null);
-            factory = new LogFactoryImpl();
-            factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, SimpleLog.class.getName());
-
-            Log log = factory.getInstance("system.loader.logger");
-
-            assertThat(log).isInstanceOf(SimpleLog.class);
-            assertThat(log.isInfoEnabled()).isTrue();
+            assertThatExceptionOfType(LogConfigurationException.class)
+                    .isThrownBy(() -> factory.getInstance("invalid.logger"))
+                    .withMessageContaining("does not implement the Log interface");
         } finally {
-            release(factory);
-            thread.setContextClassLoader(originalLoader);
-            restoreProperty(LogFactory.DIAGNOSTICS_DEST_PROPERTY, originalDiagnostics);
+            factory.release();
         }
     }
 
@@ -90,6 +83,11 @@ public class LogFactoryImplTest {
                 throw new ClassNotFoundException(name);
             }
             return super.loadClass(name, resolve);
+        }
+    }
+
+    public static final class InvalidLogAdapter {
+        public InvalidLogAdapter(String name) {
         }
     }
 
