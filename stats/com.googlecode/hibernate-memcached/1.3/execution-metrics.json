@@ -1,0 +1,118 @@
+{
+  "add_new_library_support:2026-10-20": {
+    "timestamp": "2026-10-20T12:26:25.420938Z",
+    "library": "com.googlecode:hibernate-memcached:1.3",
+    "starting_commit": "9afe98a635685cf3273d6946465c239c1b24bc21",
+    "ending_commit": "f5489feee7863f8a1a7edee57054ffaa5bb842da",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1183,
+          "missed": 830,
+          "ratio": 0.58768,
+          "total": 2013
+        },
+        "line": {
+          "covered": 236,
+          "missed": 194,
+          "ratio": 0.548837,
+          "total": 430
+        },
+        "method": {
+          "covered": 102,
+          "missed": 59,
+          "ratio": 0.63354,
+          "total": 161
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10988,
+      "issue_label": "library-new-request",
+      "library": "com.googlecode:hibernate-memcached:1.3",
+      "summary": "Two required dependencies of hibernate-memcached 1.3 have no jars on Maven Central, so Gradle can't resolve the library as published. spy:spymemcached:2.7.1 has no Central artifact at all, and hibernate 3.2.6.ga pulls in javax.transaction:jta:1.0.1B, which has a POM but no jar. Both need to be excluded and replaced with versions that are on Central. A memcached server isn't needed: the library's own reflection runs without one.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.google.code.simple-spring-memcached:spymemcached:2.7.3",
+          "scope": "testImplementation",
+          "reason": "Replaces spy:spymemcached:2.7.1, which has no artifact on Maven Central (it lived on files.couchbase.com). Checked with javap: this jar is binary-compatible with what SpyMemcacheClientFactory and SpyMemcache link against. HashAlgorithm is still an enum with NATIVE_HASH, and it has MemcachedClient(Co\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "javax.transaction:jta:1.1",
+          "scope": "testImplementation",
+          "reason": "Replaces javax.transaction:jta:1.0.1B, a compile dependency of org.hibernate:hibernate:3.2.6.ga. Central has its POM but not its jar, so resolution fails. Existing tests already use the same replacement (tests/src/net.sf.ehcache/ehcache-core/2.4.4)."
+        }
+      ],
+      "agent_guidance": "Build file: declare the library with exclusions, the same way tests/src/com.google.inject.extensions/guice-servlet/4.0/build.gradle does: testImplementation(\"com.googlecode:hibernate-memcached:$libraryVersion\") { exclude group: 'spy', module: 'spymemcached'; exclude group: 'javax.transaction', module: 'jta' }. The replacement dependencies above then fill the gaps.\n\nWhere the library uses reflection: MemcachedCacheProvider.start(Properties) calls Class.forName(...).newInstance() on the key strategy class (property hibernate.memcached.keyStrategy) and Class.forName(...).getConstructor(PropertiesHelper.class).newInstance(...) on the client factory class (property hibernate.memcached.memcacheClientFactory). Cover these by calling MemcachedCacheProvider directly with Properties, not by building a Hibernate SessionFactory. Set the key strategy to each built-in class: HashCodeKeyStrategy, Md5KeyStrategy, Sha1KeyStrategy, StringKeyStrategy. For the client factory, use the default com.googlecode.hibernate.memcached.spymemcached.SpyMemcacheClientFactory and also a test-defined public MemcacheClientFactory with a public (PropertiesHelper) constructor.\n\nNo server is needed: SpyMemcacheClientFactory builds its MemcachedClient against hibernate.memcached.servers=localhost:11211 and connects asynchronously. Cover hibernate.memcached.connectionFactory set to DefaultConnectionFactory, KetamaConnectionFactory and BinaryConnectionFactory, and hibernate.memcached.hashAlgorithm. Call provider.stop() so the client shuts down.\n\nTest MemcachedCache logic (put/get/remove/clear, namespace keys, the dogpile prevention option, exception handling) through buildCache(region, props), backed by a test-defined in-memory Memcache implementation. Don't run cache operations against the real spymemcached client: with no server, each one waits for the operation timeout.\n\nSkip the dangamemcached package. It needs com.danga:java_memcached:2.0.1, a provided dependency that isn't on Maven Central. com.whali\n...[truncated]",
+      "risks": [
+        "The simple-spring-memcached spymemcached 2.7.3 jar is a third-party republish of 2.7.x. Its binary compatibility with the library comes from javap only and hasn't been run in a Gradle build yet.",
+        "spymemcached starts background I/O threads that keep trying to connect to localhost:11211 while no server runs. If the provider is left running, tests can print connection-refused logs or hang the JVM or native test at shutdown.",
+        "hibernate 3.2.6.ga uses old cglib/asm 1.5.3. Bootstrapping a full SessionFactory on JDK 25 or in Native Image will probably fail, so coverage should go through CacheProvider/Cache directly.",
+        "The DangaMemcacheClientFactory reflection (Class.forName for the error handler) stays unreachable because com.danga:java_memcached isn't on Maven Central."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.google.code.simple-spring-memcached:spymemcached:2.7.3",
+          "result": "applied",
+          "target": "tests/src/com.googlecode/hibernate-memcached/1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "javax.transaction:jta:1.1",
+          "result": "applied",
+          "target": "tests/src/com.googlecode/hibernate-memcached/1.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10988 Support for com.googlecode:hibernate-memcached:1.3; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 28,
+      "output_tokens_used": 8935
+    },
+    "metrics": {
+      "input_tokens_used": 282460,
+      "cached_input_tokens_used": 4481280,
+      "output_tokens_used": 31547,
+      "iterations": 7,
+      "cost_usd": 4.5993,
+      "generated_loc": 294,
+      "tested_library_loc": 236,
+      "metadata_entries": 7,
+      "test_only_metadata_entries": 16,
+      "code_coverage_percent": 54.88
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.googlecode/hibernate-memcached/1.3/reachability-metadata.json"
+    }
+  }
+}

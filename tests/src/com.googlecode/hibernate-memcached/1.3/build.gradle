@@ -1,0 +1,33 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation("com.googlecode:hibernate-memcached:$libraryVersion") {
+        exclude group: 'spy', module: 'spymemcached'
+        exclude group: 'javax.transaction', module: 'jta'
+    }
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "com.google.code.simple-spring-memcached:spymemcached:2.7.3"
+    testImplementation "javax.transaction:jta:1.1"
+    testRuntimeOnly "org.slf4j:slf4j-nop:1.5.6"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
