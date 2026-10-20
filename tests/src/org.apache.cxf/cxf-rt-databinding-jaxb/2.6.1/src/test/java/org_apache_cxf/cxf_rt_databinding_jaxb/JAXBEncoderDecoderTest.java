@@ -10,20 +10,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementDecl;
+import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.util.StreamReaderDelegate;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -41,6 +52,8 @@ import org.apache.cxf.service.model.UnwrappedOperationInfo;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeList;
 import org.junit.jupiter.api.Test;
 
 public class JAXBEncoderDecoderTest {
@@ -201,6 +214,59 @@ public class JAXBEncoderDecoderTest {
     }
 
     @Test
+    void convertsJaxbSimpleListValuesToArrays() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
+        MessagePartInfo part = repeatedPart(String.class, "tokens");
+        XmlSchema listSchema = new XmlSchema(NAMESPACE, new XmlSchemaCollection());
+        XmlSchemaSimpleType simpleType = new XmlSchemaSimpleType(listSchema, false);
+        simpleType.setContent(new XmlSchemaSimpleTypeList());
+        ((XmlSchemaElement) part.getXmlSchema()).setSchemaType(simpleType);
+        XMLStreamReader reader = XMLInputFactory.newFactory().createXMLStreamReader(
+                new StringReader("<tokens xmlns=\"" + NAMESPACE + "\">alpha beta</tokens>"));
+        reader.nextTag();
+        JAXBContext context = JAXBContext.newInstance(TokenObjectFactory.class);
+
+        String[] tokens = (String[]) JAXBEncoderDecoder.unmarshall(
+                context.createUnmarshaller(), reader, part, true);
+
+        assertThat(tokens).containsExactly("alpha", "beta");
+    }
+
+    @Test
+    void resolvesInheritedNamespacesDuringSchemaValidation() throws Exception {
+        JaxbTestSupport.disableOptimizedAccessors();
+        String schemaText = """
+                <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                           targetNamespace="urn:cxf-jaxb-test"
+                           elementFormDefault="qualified">
+                  <xs:element name="value" type="xs:QName"/>
+                </xs:schema>
+                """;
+        Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                .newSchema(new StreamSource(new StringReader(schemaText)));
+        Unmarshaller unmarshaller = JAXBContext.newInstance(QName.class).createUnmarshaller();
+        unmarshaller.setSchema(schema);
+        XMLStreamReader delegate = XMLInputFactory.newFactory().createXMLStreamReader(
+                new StringReader("<wrapper xmlns:t=\"urn:cxf-types\"><value xmlns=\""
+                        + NAMESPACE + "\">t:item</value></wrapper>"));
+        delegate.nextTag();
+        delegate.nextTag();
+        XMLStreamReader reader = new NamespaceAwareReader(delegate);
+
+        Object value = JAXBEncoderDecoder.unmarshall(
+                unmarshaller, reader, new QName(NAMESPACE, "value"), QName.class, true);
+
+        assertThat(value).isEqualTo(new QName("urn:cxf-types", "item"));
+    }
+
+    @Test
+    void resolvesGenericArrayTypes() {
+        Class<?> arrayClass = JAXBEncoderDecoder.getClassFromType(new StringGenericArrayType());
+
+        assertThat(arrayClass).isEqualTo(String[].class);
+    }
+
+    @Test
     void unmarshalsWithSchemaValidation() throws Exception {
         JaxbTestSupport.disableOptimizedAccessors();
         String schemaText = """
@@ -313,6 +379,70 @@ public class JAXBEncoderDecoderTest {
 
     public static class ValueSet<T> extends LinkedHashSet<T> {
         public ValueSet() {
+        }
+    }
+
+    @XmlRegistry
+    public static class TokenObjectFactory {
+        public TokenObjectFactory() {
+        }
+
+        @XmlElementDecl(namespace = NAMESPACE, name = "tokens")
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        public JAXBElement<List<String>> createTokens(List<String> value) {
+            return new JAXBElement(new QName(NAMESPACE, "tokens"), List.class, value);
+        }
+    }
+
+    public static class StringGenericArrayType implements GenericArrayType {
+        @Override
+        public Type getGenericComponentType() {
+            return String.class;
+        }
+    }
+
+    public static class NamespaceAwareReader extends StreamReaderDelegate {
+        private final NamespaceContext context;
+
+        public NamespaceAwareReader(XMLStreamReader reader) {
+            super(reader);
+            context = new XercesStyleNamespaceContext(reader.getNamespaceContext());
+        }
+
+        @Override
+        public NamespaceContext getNamespaceContext() {
+            return context;
+        }
+    }
+
+    public static class XercesStyleNamespaceContext implements NamespaceContext {
+        private final PrefixStore fNamespaceContext = new PrefixStore();
+        private final NamespaceContext delegate;
+
+        public XercesStyleNamespaceContext(NamespaceContext delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public String getNamespaceURI(String prefix) {
+            return delegate.getNamespaceURI(prefix);
+        }
+
+        @Override
+        public String getPrefix(String namespaceUri) {
+            return delegate.getPrefix(namespaceUri);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Iterator<String> getPrefixes(String namespaceUri) {
+            return delegate.getPrefixes(namespaceUri);
+        }
+    }
+
+    public static class PrefixStore {
+        public Enumeration<String> getAllPrefixes() {
+            return Collections.enumeration(Collections.singleton("t"));
         }
     }
 

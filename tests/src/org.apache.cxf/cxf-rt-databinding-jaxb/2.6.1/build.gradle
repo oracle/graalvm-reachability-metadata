@@ -18,6 +18,13 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--initialize-at-run-time=com.sun.xml.bind.v2.runtime.reflect.opt.AccessorInjector,'
+                    + 'com.sun.xml.bind.v2.runtime.reflect.opt.Injector,'
+                    + 'com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
