@@ -1,0 +1,106 @@
+{
+  "add_new_library_support:2026-10-20": {
+    "timestamp": "2026-10-20T10:29:47.580773Z",
+    "library": "org.apache.cxf:cxf-rt-databinding-jaxb:2.6.1",
+    "starting_commit": "17244a3c83e60d7271024fe575139515fe11d0b3",
+    "ending_commit": "e9ad321cdde228891fa9683e882b43601f00c684",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.6.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.810811,
+            "coveredCalls": 60,
+            "totalCalls": 74
+          }
+        },
+        "coverageRatio": 0.810811,
+        "coveredCalls": 60,
+        "totalCalls": 74
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5218,
+          "missed": 6447,
+          "ratio": 0.447321,
+          "total": 11665
+        },
+        "line": {
+          "covered": 1113,
+          "missed": 1318,
+          "ratio": 0.457836,
+          "total": 2431
+        },
+        "method": {
+          "covered": 120,
+          "missed": 152,
+          "ratio": 0.441176,
+          "total": 272
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10990,
+      "issue_label": "library-new-request",
+      "library": "org.apache.cxf:cxf-rt-databinding-jaxb:2.6.1",
+      "summary": "CXF 2.6.1 pulls in jaxb-impl 2.1.13 but its parent POM excludes javax.xml.bind:jaxb-api and javax.activation. JDK 25 ships neither javax.xml.bind nor javax.activation, so JAXBContext and JAXBDataBinding fail with NoClassDefFoundError unless the JAXB API is added.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "javax.xml.bind:jaxb-api:2.1",
+          "scope": "testImplementation",
+          "reason": "Gradle resolves cxf-rt-databinding-jaxb:2.6.1 to cxf-api, cxf-rt-core, jaxb-impl:2.1.13 and jaxb-xjc:2.1.13, with no javax.xml.bind API (cxf-parent excludes jaxb-api from jaxb-impl, and cxf-api only adds jaxb-api in a jdk1.5 profile). JDK 25 has no javax.xml.bind, so every JAXBDataBinding/JAXBContex\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Exercise the library through its public API: create org.apache.cxf.jaxb.JAXBDataBinding with test-local @XmlRootElement/@XmlType classes, call initialize() on a minimal Service/ServiceInfo or use JAXBContextCache/JAXBUtils, and use the DataReader/DataWriter for XMLStreamReader/XMLStreamWriter and Node so that marshalling and unmarshalling actually run. jaxb-impl 2.1.13 ships META-INF/services/javax.xml.bind.JAXBContext, so JAXBContext.newInstance finds it without a jaxb.properties file or system property. Do not set com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize unless the JVM run shows Injector/defineClass failures. No Docker image, network, or environment variable is needed. JAXB-bound test classes must be public with no-arg constructors.",
+      "risks": [
+        "jaxb-impl 2.1.13 is from 2010. Its optimized accessor injector (com.sun.xml.bind.v2.runtime.reflect.opt.Injector) defines classes reflectively through ClassLoader.defineClass. On JDK 25 it should fail quietly and fall back to reflection, but it may log warnings or need the ClassTailor.noOptimize system property if the JVM run breaks.",
+        "javax.xml.stream:stax-api:1.0-2, pulled in by woodstox and jaxb-api, duplicates the JDK's javax.xml.stream package on the classpath. It should be harmless because the java.xml module wins, but watch for split-package issues during native-image build.",
+        "Native Image needs reflection metadata for test-local JAXB model classes and for jaxb-impl's runtime (ContextFactory, accessors, JAXB annotations' proxies). That metadata must come from agent runs, and test-only types must stay out of the shipped metadata.",
+        "cxf-rt-core loads bus extensions from META-INF/cxf/bus-extensions.txt. Tests that create a full Bus (BusFactory) pull in many optional classes (Spring and others are optional and absent here), so prefer the lightweight ExtensionManagerBus or no Bus at all."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "javax.xml.bind:jaxb-api:2.1",
+          "result": "applied",
+          "target": "tests/src/org.apache.cxf/cxf-rt-databinding-jaxb/2.6.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10990 Support for org.apache.cxf:cxf-rt-databinding-jaxb:2.6.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 20,
+      "output_tokens_used": 4908
+    },
+    "metrics": {
+      "input_tokens_used": 803651,
+      "cached_input_tokens_used": 13418752,
+      "output_tokens_used": 100291,
+      "iterations": 21,
+      "cost_usd": 13.7364,
+      "generated_loc": 1191,
+      "tested_library_loc": 1113,
+      "metadata_entries": 179,
+      "test_only_metadata_entries": 338,
+      "code_coverage_percent": 45.78
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.cxf/cxf-rt-databinding-jaxb/2.6.1/reachability-metadata.json"
+    }
+  }
+}
