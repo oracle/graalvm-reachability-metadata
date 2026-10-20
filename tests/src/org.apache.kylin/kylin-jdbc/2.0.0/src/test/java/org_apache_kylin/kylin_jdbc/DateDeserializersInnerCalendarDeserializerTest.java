@@ -9,6 +9,8 @@ package org_apache_kylin.kylin_jdbc;
 import java.util.Calendar;
 
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.deser.std.DateDeserializers.CalendarDeserializer;
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.module.SimpleModule;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,7 +18,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DateDeserializersInnerCalendarDeserializerTest {
     @Test
     void createsAConcreteCalendarSubtype() throws Exception {
-        SampleCalendar calendar = new ObjectMapper().readValue("1234", SampleCalendar.class);
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(SampleCalendar.class, new CalendarDeserializer(SampleCalendar.class));
+        ObjectMapper mapper = new ObjectMapper().registerModule(module);
+
+        SampleCalendar calendar = mapper.readValue("1234", SampleCalendar.class);
 
         assertThat(calendar.getTimeInMillis()).isEqualTo(1234L);
     }

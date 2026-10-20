@@ -6,6 +6,7 @@
  */
 package org_apache_kylin.kylin_jdbc;
 
+import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.annotation.JsonValue;
 import org.apache.kylin.jdbc.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -19,12 +20,24 @@ public class JsonValueSerializerTest {
     }
 
     @Test
-    void includesTypeInformationForAJsonValueObject() throws Exception {
-        ObjectMapper mapper = new ObjectMapper().enableDefaultTyping();
+    void serializesAJsonValueObjectWithTypeInformation() throws Exception {
+        String json = new ObjectMapper().writeValueAsString(new TypedIdentifier("typed"));
 
-        String json = mapper.writeValueAsString((Object) new Identifier("typed"));
+        assertThat(json).contains("TypedIdentifier", "typed");
+    }
 
-        assertThat(json).contains("Identifier", "typed");
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.WRAPPER_ARRAY)
+    public static class TypedIdentifier {
+        private final String value;
+
+        public TypedIdentifier(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String value() {
+            return value;
+        }
     }
 
     public static class Identifier {

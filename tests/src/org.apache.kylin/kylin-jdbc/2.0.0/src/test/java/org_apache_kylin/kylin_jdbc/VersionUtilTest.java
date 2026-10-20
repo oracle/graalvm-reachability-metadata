@@ -16,15 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class VersionUtilTest {
     @Test
-    void discoversJacksonPackageAndMavenVersions() {
+    void discoversAPackageVersionAndHandlesAMissingMavenDescriptor() {
         Version packageVersion = VersionUtil.packageVersionFor(PackageVersion.class);
         Version mavenVersion = VersionUtil.mavenVersionFor(
                 ObjectMapper.class.getClassLoader(),
-                "org.apache.kylin",
-                "kylin-jdbc");
+                "example.missing",
+                "missing-artifact");
 
         assertThat(packageVersion.isUknownVersion()).isFalse();
-        assertThat(mavenVersion.isUknownVersion()).isFalse();
-        assertThat(mavenVersion.getArtifactId()).isEqualTo("kylin-jdbc");
+        assertThat(mavenVersion).isEqualTo(Version.unknownVersion());
     }
 }
