@@ -24,6 +24,8 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Protocol;
 import com.alibaba.dubbo.rpc.ProxyFactory;
 import com.alibaba.dubbo.rpc.RpcException;
+import com.alibaba.dubbo.rpc.cluster.Cluster;
+import com.alibaba.dubbo.rpc.cluster.Directory;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,8 @@ public class ServiceConfigTest {
                 .addExtension("static-adaptive", StaticAdaptiveProtocol.class);
         ExtensionLoader.getExtensionLoader(ProxyFactory.class)
                 .addExtension("static-adaptive", StaticAdaptiveProxyFactory.class);
+        ExtensionLoader.getExtensionLoader(Cluster.class)
+                .addExtension("static-adaptive", StaticAdaptiveCluster.class);
         adaptiveExtensionsInstalled = true;
     }
 
@@ -121,6 +125,19 @@ public class ServiceConfigTest {
         private Protocol protocol(URL url) {
             return ExtensionLoader.getExtensionLoader(Protocol.class)
                     .getExtension(url.getProtocol());
+        }
+    }
+
+    @Adaptive
+    public static class StaticAdaptiveCluster implements Cluster {
+        @Override
+        public <T> Invoker<T> join(Directory<T> directory) throws RpcException {
+            String name =
+                    directory.getUrl()
+                            .getParameter(Constants.CLUSTER_KEY, Constants.DEFAULT_CLUSTER);
+            return ExtensionLoader.getExtensionLoader(Cluster.class)
+                    .getExtension(name)
+                    .join(directory);
         }
     }
 

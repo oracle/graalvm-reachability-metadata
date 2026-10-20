@@ -92,5 +92,98 @@
     "artifacts": {
       "metadata_file": "metadata/com.alibaba/dubbo/2.5.3/reachability-metadata.json"
     }
+  },
+  "add_new_library_support:2026-10-20": {
+    "timestamp": "2026-10-20T02:18:04.332186Z",
+    "library": "com.alibaba:dubbo:2.5.3",
+    "starting_commit": "bdcab07f39c34b76258fba621bc749aca9facd62",
+    "ending_commit": "84b304ed7306dfe5a3730c3b1d406b86ef24447c",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.5.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.855513,
+            "coveredCalls": 225,
+            "totalCalls": 263
+          },
+          "resources": {
+            "coverageRatio": 0.777778,
+            "coveredCalls": 7,
+            "totalCalls": 9
+          }
+        },
+        "coverageRatio": 0.852941,
+        "coveredCalls": 232,
+        "totalCalls": 272
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 32932,
+          "missed": 109101,
+          "ratio": 0.231862,
+          "total": 142033
+        },
+        "line": {
+          "covered": 6092,
+          "missed": 22462,
+          "ratio": 0.21335,
+          "total": 28554
+        },
+        "method": {
+          "covered": 1237,
+          "missed": 3988,
+          "ratio": 0.236746,
+          "total": 5225
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10994,
+      "issue_label": "library-new-request",
+      "library": "com.alibaba:dubbo:2.5.3",
+      "summary": "The normal scaffold is enough. The aggregated dubbo 2.5.3 POM pulls in its core runtime dependencies at compile scope: Spring 2.5.6.SEC03, javassist 3.15.0-GA and Netty 3.2.5.Final. That makes the main dynamic-access paths reachable without extra setup: ExtensionLoader SPI loading, Hessian/Java serialization, config and Spring XML parsing, javassist proxies, injvm and loopback dubbo-protocol export and refer. The 79 test files already in tests/src/com.alibaba/dubbo/2.5.3 depend only on dubbo and assertj, and none of them use Docker or ZooKeeper.",
+      "deterministic_setup": [],
+      "agent_guidance": "Keep tests in-process. Use injvm:// or dubbo:// on 127.0.0.1 with a free port, or a multicast/N/A registry, rather than an external registry. Close exported services and ProtocolConfig.destroyAll() between tests so Netty ports and threads don't leak.",
+      "risks": [
+        "The optional extensions (ZooKeeper/curator/zkclient registries, Mina/Grizzly transports, HttpClient, fastjson, xstream, bsf, xmemcached, redis) are 'provided' scope in the POM, so they are not on the test classpath. Extension classes that reference them fail to load. Avoid those SPI names rather than adding the libraries.",
+        "The Spring 2.5.6 and javassist 3.15 runtime proxy and bytecode generation may not work under Native Image. Prefer code paths that use the JDK proxy factory (proxy=jdk) where possible."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10994 Support for com.alibaba:dubbo:2.5.3; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1280
+    },
+    "metrics": {
+      "input_tokens_used": 1149436,
+      "cached_input_tokens_used": 17869824,
+      "output_tokens_used": 112455,
+      "iterations": 32,
+      "cost_usd": 18.0558,
+      "generated_loc": 3371,
+      "tested_library_loc": 6092,
+      "metadata_entries": 675,
+      "test_only_metadata_entries": 740,
+      "code_coverage_percent": 21.34
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.alibaba/dubbo/2.5.3/reachability-metadata.json"
+    }
   }
 }

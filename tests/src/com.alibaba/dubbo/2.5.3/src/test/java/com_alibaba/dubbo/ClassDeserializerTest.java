@@ -15,7 +15,11 @@ public class ClassDeserializerTest {
     @Test
     void restoresClassValuesByName() throws Exception {
         assertThat(HessianTestSupport.roundTrip(String.class)).isEqualTo(String.class);
-        assertThat(HessianTestSupport.roundTrip(String.class, new SerializerFactory(null)))
-                .isEqualTo(String.class);
+        assertThat(
+                        HessianTestSupport.roundTrip(
+                                ApplicationType.class, new SerializerFactory(null)))
+                .isEqualTo(ApplicationType.class);
     }
+
+    public static class ApplicationType { }
 }
