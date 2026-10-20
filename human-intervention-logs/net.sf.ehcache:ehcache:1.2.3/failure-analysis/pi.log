@@ -1,0 +1,16 @@
+## Human intervention needed
+
+The automated job failed in `setup/normal_setup()` while running `discoverArtifactMetadata`; test generation never started. The artifact-discovery Gradle task exited with code 1 because Claude reported `usage_limit_reached` (HTTP 429: “You've hit your session limit”). The preflight session failed for the same reason and produced zero tokens, leaving only a degraded `no_action` result. No generated `net.sf.ehcache:ehcache:1.2.3` test, metadata, metrics, or dynamic-access coverage artifacts are available.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10977-library-new-request-net.sf.ehcache-ehcache-1.2.3-2bf025be
+
+Inspect:
+- `logs/do-work-20261018-172551.log`
+- `logs/net.sf.ehcache:ehcache:1.2.3/discover-artifact-metadata/discover_artifact_metadata.log`
+- `logs/net.sf.ehcache:ehcache:1.2.3/library-preparation-preflight/claude-code-session-nptu5qig.log`
+- `logs/net.sf.ehcache:ehcache:1.2.3/library-preparation-preflight/claude-code.log`
+
+Manual next steps:
+1. Restore Claude quota/credentials or select an available setup agent, then rerun the artifact-discovery and library-preflight steps.
+2. Confirm the discovered repository, source, test, and documentation URLs for version `1.2.3`, then resume the preserved branch from the setup phase.
+3. After tests are generated, run the coordinate-scoped Gradle test and dynamic-access coverage tasks before publication.
