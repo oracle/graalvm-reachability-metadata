@@ -165,6 +165,26 @@ public class MemcachedCacheProviderTest {
     }
 
     @Test
+    void startsSpyFactoryWithPlainAuthentication() {
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.memcached.servers", "localhost:11211");
+        properties.setProperty("hibernate.memcached.daemonMode", "true");
+        properties.setProperty("hibernate.memcached.username", "cache-user");
+        properties.setProperty("hibernate.memcached.password", "cache-password");
+        MemcachedCacheProvider provider = new MemcachedCacheProvider();
+
+        try {
+            provider.start(properties);
+            Cache cache = provider.buildCache("authenticated", properties);
+
+            assertThat(cache.getRegionName()).isEqualTo("authenticated");
+            assertThat(cache).isInstanceOf(MemcachedCache.class);
+        } finally {
+            provider.stop();
+        }
+    }
+
+    @Test
     void usesPublicPropertiesConstructorOnCustomFactory() {
         Properties properties = inMemoryProperties();
         properties.setProperty("custom.setting", "constructor-value");
