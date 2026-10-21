@@ -18,15 +18,16 @@ file rather than by prefix.
 | ID | Subject |
 | --- | --- |
 | [§AR-forge-architecture](architecture.md#ar-forge-architecture-forge-architecture) | Forge architecture, and the map of every architecture ID |
-| [§AR-forge-workflow-pipeline](architecture.md#ar-forge-workflow-pipeline-forge-workflow-architecture) | What runs during one workflow, step by step, and who owns each step |
+| [§AR-forge-workflow-pipeline](workflow-pipeline.md#ar-forge-workflow-pipeline-forge-workflow-pipeline) | The Rhei state machine of one issue run, state by state |
+| [§AR-forge-workflow-prompts](workflow-prompts.md#ar-forge-workflow-prompts-forge-workflow-prompts) | The fixed instructions and handoffs every agent state receives |
 | [§AR-forge-run-location](architecture.md#ar-forge-run-location-one-run-location-for-progress-and-failure) | How progress and failure output share one phase/step vocabulary |
-| [§AR-forge-control-plane](architecture.md#ar-forge-control-plane-worker-loop-and-dispatcher-own-queue-control) | Worker loop and dispatcher own queue control |
-| [§AR-forge-workflow-boundary](architecture.md#ar-forge-workflow-boundary-workflow-drivers-compose-setup-workflow-engine-and-metrics) | Workflow drivers compose setup, workflow engine, and metrics |
+| [§AR-forge-control-plane](architecture.md#ar-forge-control-plane-the-launcher-owns-queue-control) | The launcher owns queue control |
+| [§AR-forge-workflow-boundary](architecture.md#ar-forge-workflow-boundary-programs-compose-one-isolated-run) | Programs compose one isolated run |
 | [§AR-forge-drivers](drivers.md#ar-forge-drivers-workflow-drivers) | Workflow drivers: one per issue queue |
 | [§AR-forge-driver-contract](drivers.md#ar-forge-driver-contract-what-every-driver-does) | What every driver does |
 | [§AR-forge-driver-queues](drivers.md#ar-forge-driver-queues-the-per-queue-drivers) | The per-queue drivers |
 | [§AR-forge-driver-finalization](drivers.md#ar-forge-driver-finalization-finalization-and-metrics) | Finalization and metrics |
-| [§AR-forge-strategy-agent-boundary](architecture.md#ar-forge-strategy-agent-boundary-strategies-configure-workflows-agents-edit-code) | Strategies configure workflows, agents edit code |
+| [§AR-forge-strategy-agent-boundary](architecture.md#ar-forge-strategy-agent-boundary-programs-decide-agents-edit) | Programs decide, agents edit |
 | [§AR-forge-verification-publication-boundary](architecture.md#ar-forge-verification-publication-boundary-local-verification-hands-data-to-trusted-publication) | Local verification hands data to trusted publication |
 | [§AR-agent-api](agent.md#ar-agent-api-forge-agent-api-and-backend-adapters) | Forge agent API and backend adapters |
 | [§AR-forge-workflow-system](workflows.md#ar-forge-workflow-system-forge-workflows) | Forge workflows: workflow, driver, strategy, and the six engines |
@@ -68,8 +69,11 @@ file.
 
 Files:
 
-- [architecture.md](architecture.md) — the pipeline, the control plane, and the
-  boundaries that keep generated work reviewable. Start here.
+- [workflow-pipeline.md](workflow-pipeline.md) — the Rhei state machine of one
+  issue run. Start here.
+- [workflow-prompts.md](workflow-prompts.md) — what each agent state is told.
+- [architecture.md](architecture.md) — the control plane and the boundaries that
+  keep generated work reviewable.
 - [workflows.md](workflows.md) — the six registered workflow engines: what each
   is for, which strategy families bind to it, and what every engine owes a run.
 - [drivers.md](drivers.md) — one driver per issue queue: what each prepares,

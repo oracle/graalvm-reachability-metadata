@@ -244,63 +244,34 @@ cycle. Capabilities the mode does not need are reported as not required, a
 relaxed version mismatch does not fail startup, and commands that start no work
 — stop, resume, help, cache maintenance — do not run the gate at all.
 
-## FS-forge-agent-runtime-selection: Configurable agent roles
+## FS-forge-agent-runtime-selection: Two agent inputs
 
 §GOAL-forge-direction §root/PRCPL-prefer-algorithmic
 
-Forge names three runtime agent **roles** rather than encoding one product into
-a workflow. The **setup agent** prepares a library before any generation
-starts — resolving artifact URL fields and researching what deterministic setup
-the library needs. The **analysis agent** handles recovery, diagnosis, style
-repair, native-test repair, post-generation recovery, and pull-request
-assessment. The **test agent** generates and adjusts library tests inside
-strategy workflows.
+A Forge run has exactly two agent inputs, and nothing else about a run is a
+choice: strategies are fixed per issue label (§AR-forge-workflow-pipeline.7).
 
-Setup and analysis both read evidence and decide, so the line between them is
-what they are allowed to touch and when. A setup step runs before the working
-tree holds generated work, reads the library and the network, and writes only
-the fields it was asked to resolve; it cannot repair the repository. An analysis
-step runs after something has failed, reproduces that failure, and edits until
-it passes. Separating them lets the cheap, network-facing lookup that precedes
-every run be priced differently from the repair loop that follows a failure,
-which §GOAL-forge-direction requires by asking for the least capable agent that
-is sufficient.
+- **`setup_agent`** prepares the library before any test is written: it fills
+  the coordinate's missing artifact URLs, declares the companion libraries and
+  Docker images the tests will need, and touches nothing else. It is the only
+  agent that needs the web — finding a test-sources path or the documentation of
+  an unfamiliar library takes search and reading — so it must be a Claude Code
+  target, whose WebSearch and WebFetch tools are built in. The default is
+  `claude-code[medium]:sonnet`.
+- **`worker_agent`** writes the tests that cover dynamic-access call sites and
+  fixes whatever check a program reports failing. Both jobs only read the
+  repository, edit files, and run Gradle, so one input serves both. The default
+  is `pi[high]:openai-codex/gpt-5.6-luna`. The launcher's review of open Forge
+  pull requests uses the same target (§FS-automated-pr-review).
 
-The roles are selected from different places, because they answer to different
-owners. Setup and analysis are worker configuration: whoever runs the worker
-selects, per role, a registered backend, an optional backend-specific model,
-and — for a backend that addresses a model through a named provider — that
-provider. The test role is strategy data: a predefined strategy names the
-backend, model, and provider it was written and measured against, and nothing
-outside the bundle retargets it, so a strategy name always denotes the agent
-that produced the results recorded under it. The worker may replace only that
-agent's machine-local executable name through `--test-agent-alias`; the alias
-does not change the test backend, model, provider, or recorded selection. No
-role may borrow its selection from another role or from a bundle written for
-one, so retuning one role never
-silently moves a second. Every role's effective selection must reach
-every workflow and its metrics rather than being replaced by a direct backend
-invocation. `do-work.sh` preserves the worker-configured selections across
-self-update and re-execution (§AR-do-work-loop); the concrete roles, families,
-and defaults are architecture (§AR-agent-api).
-
-**The pre-push reviewer is the semantic reviewer.** It runs through the
-worker-configured analysis role, receives local verification evidence, applies
-the label-specific checked-in review rules and the contribution-disposition
-ladder, repairs contribution-local violations, and returns the structured
-decision that publication records (§FS-local-branch-review). Agent, family,
-model, provider, and thinking level remain entirely owned by the analysis role.
-
-The published-PR process does not repeat that semantic review. It validates the
-descriptor on the exact pull-request head and executes its decision
-deterministically (§FS-automated-pr-review). The analysis role is invoked after
-publication only when an approved head has failed CI. That CI-repair turn
-receives the failed-check evidence and applies the same review and disposition
-contract as the pre-push reviewer. Only a repair updates the descriptor and
-findings record for the resulting exact head and pushes the result; any other
-outcome is applied to the unchanged pull request (§FS-automated-pr-review). The
-shared analysis runtime continues to own invocation, logs, failures, and token
-accounting.
+A target is `<agent>[<mode>]:<model>`, where the agent is `pi` or `claude-code`
+and the mode selects the reasoning level from the template's agent profiles;
+OpenAI models run through `pi` with the `openai-codex` provider. Codex and
+OpenCode are not supported. The launcher validates both targets before it
+claims an issue, and the host gate checks that each selected agent is installed
+and authenticated (§FS-forge-host-requirements). Each target reaches its agent
+states unchanged, so the agent and model of every edit are the ones the
+operator selected and the run's metrics record them.
 
 ## FS-forge-run-requirements: Run requirements
 
@@ -316,14 +287,12 @@ issue form is the one requirement that then ends the issue rather than leaving
 it queued, because its defect is in the issue itself and no later cycle can
 repair it (see 3 below).
 
-### 1. Strategy and model
+### 1. Agent targets
 
-Every enabled queue must resolve its configured strategy name against the
-registry before scanning begins, and a strategy bundle must be rejected on load
-unless it names a model and carries the prompts and parameters its workflow
-engine declares as required (§FS-forge-predefined-strategy-contract). An
-unresolvable strategy or model is a worker configuration error: the worker must
-exit before it scans a queue, not fail one issue at a time.
+Both agent targets must be valid before the launcher fetches a queue: each is
+a `pi` or `claude-code` target, and `setup_agent` is a `claude-code` target
+(§FS-forge-agent-runtime-selection). An invalid target is a worker configuration
+error: the launcher exits before it claims an issue, not one issue at a time.
 
 ### 2. Issue claimability
 

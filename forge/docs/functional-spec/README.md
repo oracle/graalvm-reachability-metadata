@@ -22,7 +22,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-glossary](functional-spec.md#fs-forge-glossary-glossary) | Glossary |
 | [§FS-forge-requirements](functional-spec.md#fs-forge-requirements-requirement-gates) | Requirement gates |
 | [§FS-forge-host-requirements](functional-spec.md#fs-forge-host-requirements-host-requirements) | Host requirements |
-| [§FS-forge-agent-runtime-selection](functional-spec.md#fs-forge-agent-runtime-selection-configurable-agent-roles) | Configurable agent roles |
+| [§FS-forge-agent-runtime-selection](functional-spec.md#fs-forge-agent-runtime-selection-two-agent-inputs) | Two agent inputs |
 | [§FS-forge-run-requirements](functional-spec.md#fs-forge-run-requirements-run-requirements) | Run requirements |
 | [§FS-forge-outputs](functional-spec.md#fs-forge-outputs-run-outputs) | Run outputs |
 | [§FS-forge-run-metrics](functional-spec.md#fs-forge-run-metrics-per-run-metrics-record) | Per-run metrics record |
@@ -40,15 +40,12 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-run-output-legibility](functional-spec.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |
 | [§FS-forge-chunked-dynamic-access](functional-spec.md#fs-forge-chunked-dynamic-access-chunked-dynamic-access-semantics) | Chunked dynamic-access semantics |
 | [§FS-forge-workflow-spec-catalog](functional-spec.md#fs-forge-workflow-spec-catalog-workflow-specifications) | Workflow specifications catalog |
-| [§FS-forge-run-continuation](continuation.md#fs-forge-run-continuation-run-continuation-and-resume) | Run continuation and resume |
-| [§FS-workflow-strategy-registry](strategies.md#fs-workflow-strategy-registry-predefined-strategy-configuration-architecture) | Predefined strategy configuration architecture |
-| [§FS-forge-predefined-strategy-contract](strategies.md#fs-forge-predefined-strategy-contract-predefined-strategy-configuration-contract) | Predefined strategy configuration contract |
-| [§FS-predefined-strategy-loader](strategies.md#fs-predefined-strategy-loader-strategy-loading-boundary) | Strategy loading boundary |
-| [§FS-predefined-strategy-fields](strategies.md#fs-predefined-strategy-fields-strategy-bundle-fields) | Strategy bundle fields |
-| [§FS-predefined-strategy-example](strategies.md#fs-predefined-strategy-example-representative-predefined-strategy-bundle) | Representative predefined strategy bundle |
-| [§FS-predefined-strategy-parameter-families](strategies.md#fs-predefined-strategy-parameter-families-parameter-families) | Parameter families |
-| [§FS-java-fail-fix-composite-strategy-config](strategies.md#fs-java-fail-fix-composite-strategy-config-java-fail-fix-composite-strategy-configuration) | Java fail-fix composite strategy configuration |
-| [§FS-predefined-strategy-extension](strategies.md#fs-predefined-strategy-extension-adding-or-changing-a-strategy-bundle) | Adding or changing a strategy bundle |
+| [§FS-forge-run-continuation](continuation.md#fs-forge-run-continuation-run-continuation-retired) | Run continuation (retired) |
+| [§FS-workflow-strategy-registry](strategies.md#fs-workflow-strategy-registry-predefined-strategy-registry-retired) | Predefined strategy registry (retired) |
+| [§FS-forge-predefined-strategy-contract](strategies.md#fs-forge-predefined-strategy-contract-predefined-strategy-contract-retired) | Predefined strategy contract (retired) |
+| [§FS-predefined-strategy-loader](strategies.md#fs-predefined-strategy-loader-strategy-loading-boundary-retired) | Strategy loading boundary (retired) |
+| [§FS-predefined-strategy-fields](strategies.md#fs-predefined-strategy-fields-strategy-bundle-fields-retired) | Strategy bundle fields (retired) |
+| [§FS-predefined-strategy-parameter-families](strategies.md#fs-predefined-strategy-parameter-families-parameter-families-retired) | Parameter families (retired) |
 | [§FS-forge-generation-benchmarking](benchmarking.md#fs-forge-generation-benchmarking-forge-generation-benchmarking) | Forge generation benchmarking |
 | [§FS-code-coverage-benchmarking](benchmarking.md#fs-code-coverage-benchmarking-code-coverage-improvement-benchmarking) | Code coverage improvement benchmarking |
 
@@ -60,11 +57,9 @@ Files:
 - [functional-spec.md](functional-spec.md) — the specification itself:
   requirements, outputs, verification, and the policies that decide a run's
   outcome. Start here.
-- [continuation.md](continuation.md) — the continuation marker, and how a failed
-  run resumes at the phase that failed.
+- [continuation.md](continuation.md) — retired: Rhei resumes a run at its state.
 - [tested-version-split.md](tested-version-split.md) — how a library-update run
   splits the entries that can no longer share its regenerated suite.
-- [strategies.md](strategies.md) — what a strategy bundle must declare, and how
-  one is loaded, extended, and bound to a workflow engine.
+- [strategies.md](strategies.md) — retired: strategies are fixed per label.
 - [benchmarking.md](benchmarking.md) — what a generation benchmark must measure
   and record when comparing strategies.

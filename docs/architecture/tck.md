@@ -224,6 +224,15 @@ input. An empty report therefore always means the library reported no
 dynamic access, never that nothing was built, so a consumer may treat a zero-call
 report as a property of the library (§forge/AR-dynamic-access-fallback-and-failure).
 
+A caller that has already listed the call sites can skip that native build.
+With `-Ptck.dynamicAccess.callSites=<dir>` naming a copy of an earlier
+`dynamic-access` output, the task runs only `jacocoCodeCoverageReport` and
+correlates the fresh JaCoCo report against the copy. The tracking build
+preserves the library JARs whole, so the call sites depend only on the library,
+and a copy taken before more tests were written still lists every site; a copy
+that does not exist fails the task like a missing native output
+(§forge/AR-forge-workflow-pipeline.4.2).
+
 Dynamic-access coverage normally marks a call site covered when its stack frame
 carries a source line and JaCoCo covered that line. Some jars are compiled
 without a `LineNumberTable`, so every dynamic-access frame is line-less
