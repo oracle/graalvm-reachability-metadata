@@ -1,0 +1,17 @@
+## Human intervention needed
+
+The automated job failed during setup, before test generation, for `org.apache.aries.blueprint:org.apache.aries.blueprint.core:0.3.1`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10973-library-new-request-org.apache.aries.blueprint-org.apache.aries.blueprint.core-0.3.1-70d29d5d
+
+The most likely cause is exhaustion of the Claude Code session quota. The preflight agent returned HTTP 429 (`usage_limit_reached`), and `discoverArtifactMetadata` then failed because the agent exited with code 1 and reported “You've hit your session limit.” The workflow recorded failure in `setup/normal_setup()`; no generated tests, library metadata, execution metrics, or dynamic-access coverage are available.
+
+Inspect:
+- `logs/org.apache.aries.blueprint:org.apache.aries.blueprint.core:0.3.1/discover-artifact-metadata/discover_artifact_metadata.log`
+- `logs/org.apache.aries.blueprint:org.apache.aries.blueprint.core:0.3.1/library-preparation-preflight/claude-code-session-kfhegmxb.log`
+- `logs/do-work-20261018-172551.log`
+
+Manual next steps:
+1. Restore the Claude Code quota/session or select another working setup agent, then rerun preflight and artifact discovery.
+2. Confirm any OSGi/Blueprint-specific dependencies or runtime setup needed before generating consumer-like tests.
+3. Generate the tests and run the coordinate-scoped JVM and Native Image test lanes, then collect execution metrics and dynamic-access coverage.
