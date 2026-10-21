@@ -42,6 +42,18 @@ public class Org_apache_aries_proxy_apiTest {
     }
 
     @Test
+    void proxyManagerCreatesAProxyForMultipleServiceInterfaces() throws Exception {
+        SimpleProxyManager manager = new SimpleProxyManager();
+        ConversationService target = new ConversationService();
+
+        Object proxy = manager.createProxy(
+                null, List.of(GreetingService.class, FarewellService.class), () -> target);
+
+        assertThat(((GreetingService) proxy).greet("Aries")).isEqualTo("Hello, Aries");
+        assertThat(((FarewellService) proxy).farewell("Aries")).isEqualTo("Goodbye, Aries");
+    }
+
+    @Test
     void delegatingProxyResolvesTheCurrentTargetForEveryInvocation() throws Exception {
         SimpleProxyManager manager = new SimpleProxyManager();
         AtomicReference<GreetingService> currentTarget =
@@ -118,7 +130,23 @@ public class Org_apache_aries_proxy_apiTest {
         String greet(String name);
     }
 
+    public interface FarewellService {
+        String farewell(String name);
+    }
+
     public static final class FinalService {}
+
+    private static final class ConversationService implements GreetingService, FarewellService {
+        @Override
+        public String greet(String name) {
+            return "Hello, " + name;
+        }
+
+        @Override
+        public String farewell(String name) {
+            return "Goodbye, " + name;
+        }
+    }
 
     public static class ServiceWithFinalMethod {
         public final void finish() {}
@@ -161,8 +189,8 @@ public class Org_apache_aries_proxy_apiTest {
                 Callable<Object> dispatcher,
                 InvocationHandlerWrapper wrapper)
                 throws UnableToProxyException {
-            InvocationHandler delegate = (proxy, method, arguments) ->
-                    invokeGreetingService(dispatcher.call(), proxy, method, arguments);
+            InvocationHandler delegate =
+                    (proxy, method, arguments) -> invokeService(dispatcher.call(), proxy, method, arguments);
             InvocationHandler handler = wrapper == null
                     ? delegate
                     : (proxy, method, arguments) -> wrapper.invoke(proxy, method, arguments, delegate);
@@ -182,7 +210,7 @@ public class Org_apache_aries_proxy_apiTest {
             return dispatchers.containsKey(proxy);
         }
 
-        private static Object invokeGreetingService(Object target, Object proxy, Method method, Object[] arguments) {
+        private static Object invokeService(Object target, Object proxy, Method method, Object[] arguments) {
             if (method.getDeclaringClass() == Object.class) {
                 switch (method.getName()) {
                     case "equals":
@@ -195,7 +223,13 @@ public class Org_apache_aries_proxy_apiTest {
                         throw new UnsupportedOperationException(method.getName());
                 }
             }
-            return ((GreetingService) target).greet((String) arguments[0]);
+            if (method.getDeclaringClass() == GreetingService.class) {
+                return ((GreetingService) target).greet((String) arguments[0]);
+            }
+            if (method.getDeclaringClass() == FarewellService.class) {
+                return ((FarewellService) target).farewell((String) arguments[0]);
+            }
+            throw new UnsupportedOperationException(method.getName());
         }
     }
 }
