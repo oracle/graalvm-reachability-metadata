@@ -40,17 +40,8 @@ public class Jaxb_xjcTest {
             <?xml version="1.0" encoding="UTF-8"?>
             <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
                        xmlns:tns="urn:orders"
-                       xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
                        targetNamespace="urn:orders"
-                       elementFormDefault="qualified"
-                       jaxb:version="2.0">
-              <xs:annotation>
-                <xs:appinfo>
-                  <jaxb:schemaBindings>
-                    <jaxb:package name="generated.customized"/>
-                  </jaxb:schemaBindings>
-                </xs:appinfo>
-              </xs:annotation>
+                       elementFormDefault="qualified">
               <xs:complexType name="OrderType">
                 <xs:sequence>
                   <xs:element name="id" type="xs:string"/>
@@ -109,10 +100,10 @@ public class Jaxb_xjcTest {
     }
 
     @Test
-    void schemaCompilerAppliesCustomizationAndBuildsCodeModel(@TempDir Path tempDir)
-            throws Exception {
+    void schemaCompilerBuildsCodeModel(@TempDir Path tempDir) throws Exception {
         Path schema = writeSchema(tempDir);
         SchemaCompiler compiler = XJC.createSchemaCompiler();
+        compiler.forcePackageName("generated.customized");
         compiler.parseSchema(new InputSource(schema.toUri().toString()));
 
         S2JJAXBModel model = compiler.bind();

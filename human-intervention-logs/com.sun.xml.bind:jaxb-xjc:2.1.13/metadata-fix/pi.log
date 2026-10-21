@@ -1,0 +1,11 @@
+Fixed `metadata/com.sun.xml.bind/jaxb-xjc/2.1.13/reachability-metadata.json`.
+
+Changed the `XmlAccessorTypeWriter` proxy condition from the too-late `ImplStructureStrategy$1` to `com.sun.codemodel.TypedAnnotationWriter`.
+
+Verified with required GraalVM 25.0.4:
+
+- `./gradlew test -Pcoordinates=com.sun.xml.bind:jaxb-xjc:2.1.13` — passed
+- `./gradlew checkMetadataFiles -Pcoordinates=com.sun.xml.bind:jaxb-xjc:2.1.13` — passed
+- `fissile check --staged` — passed
+
+Existing unrelated working-tree changes were preserved.

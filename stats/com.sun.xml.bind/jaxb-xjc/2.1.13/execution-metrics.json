@@ -1,0 +1,55 @@
+{
+  "add_new_library_support:2026-10-21": {
+    "timestamp": "2026-10-21T02:45:07.880549Z",
+    "library": "com.sun.xml.bind:jaxb-xjc:2.1.13",
+    "starting_commit": "d93cc42910f01b2bdd5bb09715e09ad05399bbf0",
+    "ending_commit": "ceff9c473a20795ef89c3dc46e4611b6fb739e44",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10972,
+      "issue_label": "library-new-request",
+      "library": "com.sun.xml.bind:jaxb-xjc:2.1.13",
+      "summary": "jaxb-xjc 2.1.13 crashes on JDK 25 when it reads binding customizations because the bundled JAXB 2.1.13 runtime can't open ClassLoader.defineClass; the generated tests must set the ClassTailor.noOptimize system property. All dependencies resolve transitively and no Docker image is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Before the first XJC or JAXB call in each test class (for example in a static initializer or @BeforeAll), call System.setProperty(\"com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize\", \"true\"). Without it, com.sun.xml.bind.v2.runtime.reflect.opt.Injector.<clinit> throws InaccessibleObjectException (\"module java.base does not opens java.lang\") whenever XJC unmarshals binding customizations, and com.sun.tools.xjc.Driver fails. This was confirmed on JDK 25.0.4; the existing test tests/src/org.apache.cxf/cxf-rt-databinding-jaxb/2.6.1 (JaxbTestSupport) uses the same pattern. Run XJC on small inline XSDs written to a @TempDir, either through com.sun.tools.xjc.Driver.run(String[], PrintStream, PrintStream) with '-d <existing temp dir>' or through the com.sun.tools.xjc.api.XJC.createSchemaCompiler() / S2JJAXBModel / JCodeModel.build(File) API. Make sure the output directory exists before calling the Driver. To exercise more code paths, include a jaxb:schemaBindings/jaxb:package customization and also cover the -npa, -no-header and -p options. Expected output files are ObjectFactory.java, package-info.java and one Java file per element or complexType.",
+      "risks": [
+        "Without the noOptimize property, almost every XJC path that loads binding customizations fails on modern JDKs, so tests would only reach scaffold-level coverage.",
+        "XJC 2.1 uses the JDK's internal XML parsers and the JAXB 2.1 API through javax.xml.bind.ContextFinder, which looks up the JAXB implementation by reflection, along with bundled XSOM, RELAX NG and CodeModel classes. Expect heavy reflection and resource metadata (for example the bindinfo JAXB context and the jaxb.properties/ObjectFactory lookups) when running on Native Image.",
+        "The Driver's System.exit paths (Driver.main) should be avoided in tests; use Driver.run or the XJC API instead."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10972 Support for com.sun.xml.bind:jaxb-xjc:2.1.13; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 14,
+      "output_tokens_used": 5610
+    },
+    "metrics": {
+      "input_tokens_used": 202676,
+      "cached_input_tokens_used": 2478208,
+      "output_tokens_used": 16110,
+      "iterations": 9,
+      "cost_usd": 2.7358,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

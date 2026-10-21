@@ -18,9 +18,9 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            // JAXB internals reached by XJC customization require explicit initialization. §FS-test-contract.2.7
+            // XJC's schema parser stores LocatorImpl instances in the image heap.
             buildArgs.add('--initialize-at-build-time=org.xml.sax.helpers.LocatorImpl')
-            buildArgs.add('--initialize-at-run-time=com.sun.xml.bind.v2.runtime.reflect.opt.Injector')
+            buildArgs.add('-Dcom.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize=true')
         }
     }
     agent {

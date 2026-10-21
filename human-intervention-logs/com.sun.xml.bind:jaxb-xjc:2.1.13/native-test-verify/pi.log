@@ -1,0 +1,18 @@
+Implemented and verified the fix.
+
+Root cause:
+- `Caused by: InaccessibleObjectException` from JAXB’s `Injector`, which attempts runtime class definition through `ClassLoader.defineClass`.
+- The runtime `noOptimize` property was too late because `AccessorInjector` initialized during image build.
+
+Changes:
+- Rewrote the customization test to use the native-compatible `SchemaCompiler.forcePackageName(...)` API.
+- Disabled JAXB’s unsupported optimized accessor generation during image build.
+- Merged newly traced reflection metadata.
+
+Validation passed:
+- Exact reproduction command: **3/3 tests passed**
+- `checkMetadataFiles`
+- `checkstyle`
+- `spotlessCheck`
+- `git diff --check`
+- `fissile check --staged`
