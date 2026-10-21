@@ -13,6 +13,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.validation.Constraint;
@@ -26,9 +27,11 @@ import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.ValidationProviderResolver;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.validation.spi.ValidationProvider;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.hibernate.validator.cfg.ConstraintMapping;
@@ -135,6 +138,7 @@ public final class ValidationScenarios {
         try {
             Set<ConstraintViolation<XmlMappedBean>> violations =
                     Validation.byProvider(HibernateValidator.class)
+                            .providerResolver(new HibernateProviderResolver())
                             .configure()
                             .buildValidatorFactory()
                             .getValidator()
@@ -258,6 +262,13 @@ public final class ValidationScenarios {
     private static class EmptyContextClassLoader extends ClassLoader {
         EmptyContextClassLoader() {
             super(null);
+        }
+    }
+
+    private static class HibernateProviderResolver implements ValidationProviderResolver {
+        @Override
+        public List<ValidationProvider<?>> getValidationProviders() {
+            return Collections.<ValidationProvider<?>>singletonList(new HibernateValidator());
         }
     }
 
