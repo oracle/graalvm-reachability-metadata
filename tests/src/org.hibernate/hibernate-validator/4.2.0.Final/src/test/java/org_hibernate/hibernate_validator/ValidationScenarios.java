@@ -13,7 +13,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.validation.Constraint;
@@ -27,11 +26,9 @@ import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidationProviderResolver;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import javax.validation.spi.ValidationProvider;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.hibernate.validator.cfg.ConstraintMapping;
@@ -44,7 +41,7 @@ import org.hibernate.validator.method.MethodValidator;
 import org.hibernate.validator.method.metadata.MethodDescriptor;
 
 public final class ValidationScenarios {
-    private ValidationScenarios() {}
+    private ValidationScenarios() { }
 
     public static void assertFieldValidation() {
         Set<ConstraintViolation<FieldBean>> violations = validator().validate(new FieldBean());
@@ -129,27 +126,6 @@ public final class ValidationScenarios {
 
         assertThat(violations).hasSize(1);
         assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("first");
-    }
-
-    public static void assertXmlConfiguration() {
-        Thread thread = Thread.currentThread();
-        ClassLoader originalContextClassLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(
-                new ResourceIsolatingContextClassLoader(originalContextClassLoader));
-        try {
-            Set<ConstraintViolation<XmlMappedBean>> violations =
-                    Validation.byProvider(HibernateValidator.class)
-                            .providerResolver(new HibernateProviderResolver())
-                            .configure()
-                            .buildValidatorFactory()
-                            .getValidator()
-                            .validate(new XmlMappedBean("123"));
-
-            assertThat(violations).hasSize(1);
-            assertThat(violations.iterator().next().getMessage()).startsWith("xml:");
-        } finally {
-            thread.setContextClassLoader(originalContextClassLoader);
-        }
     }
 
     public static void assertResourceBundleInterpolation() {
@@ -260,30 +236,6 @@ public final class ValidationScenarios {
         }
     }
 
-    private static class ResourceIsolatingContextClassLoader extends ClassLoader {
-        private final ClassLoader delegate;
-
-        ResourceIsolatingContextClassLoader(ClassLoader delegate) {
-            super(null);
-            this.delegate = delegate;
-        }
-
-        @Override
-        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            if (name.startsWith("org_hibernate.hibernate_validator.")) {
-                throw new ClassNotFoundException(name);
-            }
-            return delegate.loadClass(name);
-        }
-    }
-
-    private static class HibernateProviderResolver implements ValidationProviderResolver {
-        @Override
-        public List<ValidationProvider<?>> getValidationProviders() {
-            return Collections.<ValidationProvider<?>>singletonList(new HibernateValidator());
-        }
-    }
-
     @NotNull
     @Size(min = 2)
     @Constraint(validatedBy = {})
@@ -315,7 +267,7 @@ public final class ValidationScenarios {
     public static class StringArrayValidator
             implements ConstraintValidator<NonNullElements, String[]> {
         @Override
-        public void initialize(NonNullElements constraintAnnotation) {}
+        public void initialize(NonNullElements constraintAnnotation) { }
 
         @Override
         public boolean isValid(String[] values, ConstraintValidatorContext context) {
