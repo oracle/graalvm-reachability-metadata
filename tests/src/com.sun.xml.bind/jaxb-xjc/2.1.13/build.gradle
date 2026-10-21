@@ -16,6 +16,13 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // JAXB internals reached by XJC customization require explicit initialization. §FS-test-contract.2.7
+            buildArgs.add('--initialize-at-build-time=org.xml.sax.helpers.LocatorImpl')
+            buildArgs.add('--initialize-at-run-time=com.sun.xml.bind.v2.runtime.reflect.opt.Injector')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
