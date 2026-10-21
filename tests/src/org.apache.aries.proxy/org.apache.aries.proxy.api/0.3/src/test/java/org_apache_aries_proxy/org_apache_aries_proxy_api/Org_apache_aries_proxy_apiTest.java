@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.aries.proxy.FinalModifierException;
 import org.apache.aries.proxy.InvocationHandlerWrapper;
 import org.apache.aries.proxy.ProxyManager;
@@ -38,6 +39,21 @@ public class Org_apache_aries_proxy_apiTest {
         assertThat(manager.isProxy(target)).isFalse();
         assertThat(manager.unwrap(proxy).call()).isSameAs(target);
         assertThat(manager.unwrap(target)).isNull();
+    }
+
+    @Test
+    void delegatingProxyResolvesTheCurrentTargetForEveryInvocation() throws Exception {
+        SimpleProxyManager manager = new SimpleProxyManager();
+        AtomicReference<GreetingService> currentTarget =
+                new AtomicReference<>(name -> "Hello, " + name);
+        GreetingService proxy = (GreetingService)
+                manager.createProxy(null, List.of(GreetingService.class), currentTarget::get);
+
+        assertThat(proxy.greet("Aries")).isEqualTo("Hello, Aries");
+
+        currentTarget.set(name -> "Welcome, " + name);
+
+        assertThat(proxy.greet("Aries")).isEqualTo("Welcome, Aries");
     }
 
     @Test
