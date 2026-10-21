@@ -11,6 +11,6 @@ import org.junit.jupiter.api.Test;
 public class NewInstanceTest {
     @Test
     public void instantiatesCustomArrayConstraintValidator() {
-        ValidationScenarios.assertGenericArrayValidator();
+        ValidationScenarios.assertArrayValidator();
     }
 }

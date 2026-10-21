@@ -102,7 +102,7 @@ public final class ValidationScenarios {
         assertThat(descriptor.getParameterDescriptors().get(0).hasConstraints()).isTrue();
     }
 
-    public static void assertGenericArrayValidator() {
+    public static void assertArrayValidator() {
         Set<ConstraintViolation<ArrayBean>> violations =
                 validator().validate(new ArrayBean(new String[] {"valid", null}));
 
@@ -244,17 +244,17 @@ public final class ValidationScenarios {
         Class<? extends Payload>[] payload() default {};
     }
 
-    public abstract static class GenericArrayValidator<T>
-            implements ConstraintValidator<NonNullElements, T[]> {
+    public static class StringArrayValidator
+            implements ConstraintValidator<NonNullElements, String[]> {
         @Override
         public void initialize(NonNullElements constraintAnnotation) {}
 
         @Override
-        public boolean isValid(T[] values, ConstraintValidatorContext context) {
+        public boolean isValid(String[] values, ConstraintValidatorContext context) {
             if (values == null) {
                 return true;
             }
-            for (T value : values) {
+            for (String value : values) {
                 if (value == null) {
                     return false;
                 }
@@ -262,6 +262,4 @@ public final class ValidationScenarios {
             return true;
         }
     }
-
-    public static class StringArrayValidator extends GenericArrayValidator<String> {}
 }
