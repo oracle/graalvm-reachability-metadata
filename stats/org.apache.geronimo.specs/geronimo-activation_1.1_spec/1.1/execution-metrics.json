@@ -1,0 +1,97 @@
+{
+  "add_new_library_support:2026-10-21": {
+    "timestamp": "2026-10-21T05:05:00.578337Z",
+    "library": "org.apache.geronimo.specs:geronimo-activation_1.1_spec:1.1",
+    "starting_commit": "dc133eb2e6a74222cd4e1718198f8c39a9c98347",
+    "ending_commit": "dbb3fa26e9dfd00b65f50a5e25fedf8ba5cb80b1",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 700,
+          "missed": 2823,
+          "ratio": 0.198694,
+          "total": 3523
+        },
+        "line": {
+          "covered": 179,
+          "missed": 716,
+          "ratio": 0.2,
+          "total": 895
+        },
+        "method": {
+          "covered": 27,
+          "missed": 152,
+          "ratio": 0.150838,
+          "total": 179
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10970,
+      "issue_label": "library-new-request",
+      "library": "org.apache.geronimo.specs:geronimo-activation_1.1_spec:1.1",
+      "summary": "This is a self-contained javax.activation (JAF 1.1) implementation. Its only declared dependencies (geronimo-osgi-locator, org.osgi.core, org.osgi.compendium) are provided-scope and are only needed when it runs as an OSGi bundle. It needs no services, containers or properties. A JVM smoke test of MailcapCommandMap, MimetypesFileTypeMap and DataHandler passed with only the artifact on the classpath.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The JAR contains copies of org.apache.geronimo.osgi.locator.ProviderLocator and the org.apache.geronimo.specs.activation.Activator classes, which use org.osgi.* types that are not on the test classpath. Tests should not touch Activator or ProviderLocator.init(BundleContext), or they will fail with NoClassDefFoundError. Normal paths through MailcapCommandMap never trigger those OSGi types: ProviderLocator.loadClass falls back to the ClassLoader and Class.forName.",
+        "The reflective paths that need metadata: MailcapCommandMap loads content handlers from x-java-content-handler entries with Class.forName/newInstance. It also reads META-INF/mailcap, META-INF/mailcap.default and META-INF/mime.types, and MimetypesFileTypeMap reads the bundled META-INF/mimetypes.default. Tests should register a test-defined DataContentHandler through addMailcap or a test-resource META-INF/mailcap to cover these.",
+        "ActivationDataFlavor and DataContentHandler use java.awt.datatransfer.DataFlavor from the java.datatransfer module. Check that Native Image builds this cleanly, and keep tests away from wider AWT/GUI classes.",
+        "The JDK no longer includes javax.activation (removed in JDK 11), so there is no split-package conflict on JDK 25. Do not add jakarta.activation or javax.activation-api to the test classpath, because they would duplicate these classes."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10970 Support for org.apache.geronimo.specs:geronimo-activation_1.1_spec:1.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 10,
+      "output_tokens_used": 2977
+    },
+    "metrics": {
+      "input_tokens_used": 129469,
+      "cached_input_tokens_used": 711040,
+      "output_tokens_used": 8033,
+      "iterations": 3,
+      "cost_usd": 1.2438,
+      "generated_loc": 105,
+      "tested_library_loc": 179,
+      "metadata_entries": 4,
+      "test_only_metadata_entries": 4,
+      "code_coverage_percent": 20.0
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.geronimo.specs/geronimo-activation_1.1_spec/1.1/reachability-metadata.json"
+    }
+  }
+}
