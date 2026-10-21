@@ -64,7 +64,7 @@ import static org.assertj.core.api.Assertions.catchThrowableOfType;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RenderJobWorkQueueTest {
 
-    private static final String NATS_IMAGE = "nats:2.15.0";
+    private static final String NATS_IMAGE = "nats:2.15.1";
 
     private static final String STREAM = "RENDER_JOBS";
 
