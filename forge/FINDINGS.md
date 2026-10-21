@@ -11,6 +11,18 @@ The replacement calls org.springframework.modulith:spring-modulith-starter-core:
 
 Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10775 (#10775)
 
+## 2026-10-20 — org.apache.cxf:cxf-rt-transports-http:2.6.1 (#10989)
+
+**URL protocol build flag enabled an unnecessary HTTPS protocol**
+
+The build enabled both `http` and `https`, but FS-test-contract.2.7 and Review Signal #12 require every Native Image flag to be the narrowest necessary option. A no-flag Native Image run failed only in CXF's HTTPConduit path with `MalformedURLException: unknown protocol: http`; all HTTPS scenarios passed, proving that `https` was unnecessary while CXF's runtime HTTP URL construction still requires `http`.
+
+## 2026-10-20 — org.apache.cxf:cxf-rt-transports-http:2.6.1 (#10989)
+
+**Unverifiable CXFAuthenticator scenario relied on unnecessary module-opening flags**
+
+The CXFAuthenticator scenario exercised reflection over private java.net.Authenticator fields and methods, but CXF catches Throwable and discards the failure, so Native Image refusal cannot be verified and the test's null assertion stayed green without proving the reflected behavior. The accompanying java.net --add-opens JVM and native build flags were introduced for a stronger delegation scenario that had already been removed, so they no longer met the uniform-necessity rule in FS-test-contract.2.7.
+
 ## 2026-10-20 — com.alibaba:dubbo:2.5.3 (#10994)
 
 **Native module-opening flags mask test-shaped JDK-internal access**
