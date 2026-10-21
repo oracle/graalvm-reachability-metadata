@@ -1,15 +1,16 @@
 ### Human intervention needed
 
-The automated job failed for `com.netflix.curator:curator-client:1.1.10`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10981-library-new-request-com.netflix.curator-curator-client-1.1.10-3cbb5daf.
+The automated job failed for `com.netflix.curator:curator-client:1.1.10`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10981-library-new-request-com.netflix.curator-curator-client-1.1.10-9fdd45b3.
 
-Although reported as `test_generation_failed`, the run most likely stopped earlier during `setup/normal_setup()`. Artifact metadata discovery failed because Claude returned HTTP 429 `usage_limit_reached` (“You've hit your session limit”), and the library-preparation preflight failed for the same reason. Consequently, no test project, metadata, Gradle test results, dynamic-access report, or run metrics were generated.
+Although classified as `test_generation_failed`, the failure occurred earlier in `setup/normal_setup()`. Artifact discovery exited with code 1, and all three library-preparation preflight attempts received HTTP 429 `usage_limit_reached` (“You've hit your session limit”). No target test project, metadata, Gradle test results, dynamic-access report, or run metrics were produced; the continuation marker leaves setup pending.
 
 Inspect:
 - `logs/do-work-20261018-172551.log`
 - `logs/com.netflix.curator:curator-client:1.1.10/discover-artifact-metadata/discover_artifact_metadata.log`
-- `logs/com.netflix.curator:curator-client:1.1.10/library-preparation-preflight/claude-code-session-7_05dl24.log`
+- `logs/com.netflix.curator:curator-client:1.1.10/library-preparation-preflight/claude-code-session-j1q80z8e.log`
+- `logs/com.netflix.curator:curator-client:1.1.10/library-preparation-preflight/claude-code-session-ll81a96m.log`
 
 Manual next steps:
-1. Restore or replace the exhausted Claude setup-agent credentials, then rerun artifact discovery and library preflight.
-2. Verify the discovered repository/source/test/documentation URLs and determine whether meaningful Curator client tests require ZooKeeper or another explicit setup dependency.
-3. Resume the preserved run from the setup phase and verify that generated tests pass the coordinate-scoped JVM and Native Image lanes.
+1. Restore or replace the exhausted Claude setup-agent credentials, then resume the preserved workflow from setup.
+2. Verify the artifact’s source/documentation details and whether meaningful client tests require ZooKeeper or another deterministic setup dependency.
+3. Confirm generated tests pass the coordinate-scoped JVM and Native Image lanes and produce dynamic-access metrics.
