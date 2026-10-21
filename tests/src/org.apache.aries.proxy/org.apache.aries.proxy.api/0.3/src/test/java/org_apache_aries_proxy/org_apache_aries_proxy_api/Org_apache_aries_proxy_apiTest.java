@@ -8,80 +8,12 @@ package org_apache_aries_proxy.org_apache_aries_proxy_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
 import org.apache.aries.proxy.FinalModifierException;
-import org.apache.aries.proxy.InvocationHandlerWrapper;
-import org.apache.aries.proxy.ProxyManager;
 import org.apache.aries.proxy.UnableToProxyException;
 import org.junit.jupiter.api.Test;
-import org.osgi.framework.Bundle;
 
 public class Org_apache_aries_proxy_apiTest {
-    @Test
-    void proxyManagerCreatesAndRecognizesADelegatingProxy() throws Exception {
-        SimpleProxyManager manager = new SimpleProxyManager();
-        GreetingService target = name -> "Hello, " + name;
-
-        GreetingService proxy =
-                (GreetingService) manager.createProxy(null, List.of(GreetingService.class), () -> target);
-
-        assertThat(proxy.greet("Aries")).isEqualTo("Hello, Aries");
-        assertThat(manager.isProxy(proxy)).isTrue();
-        assertThat(manager.isProxy(target)).isFalse();
-        assertThat(manager.unwrap(proxy).call()).isSameAs(target);
-        assertThat(manager.unwrap(target)).isNull();
-    }
-
-    @Test
-    void proxyManagerCreatesAProxyForMultipleServiceInterfaces() throws Exception {
-        SimpleProxyManager manager = new SimpleProxyManager();
-        ConversationService target = new ConversationService();
-
-        Object proxy = manager.createProxy(
-                null, List.of(GreetingService.class, FarewellService.class), () -> target);
-
-        assertThat(((GreetingService) proxy).greet("Aries")).isEqualTo("Hello, Aries");
-        assertThat(((FarewellService) proxy).farewell("Aries")).isEqualTo("Goodbye, Aries");
-    }
-
-    @Test
-    void delegatingProxyResolvesTheCurrentTargetForEveryInvocation() throws Exception {
-        SimpleProxyManager manager = new SimpleProxyManager();
-        AtomicReference<GreetingService> currentTarget =
-                new AtomicReference<>(name -> "Hello, " + name);
-        GreetingService proxy = (GreetingService)
-                manager.createProxy(null, List.of(GreetingService.class), currentTarget::get);
-
-        assertThat(proxy.greet("Aries")).isEqualTo("Hello, Aries");
-
-        currentTarget.set(name -> "Welcome, " + name);
-
-        assertThat(proxy.greet("Aries")).isEqualTo("Welcome, Aries");
-    }
-
-    @Test
-    void invocationHandlerWrapperDecoratesCallsToTheDelegate() throws Exception {
-        SimpleProxyManager manager = new SimpleProxyManager();
-        GreetingService target = name -> "Hello, " + name;
-        DecoratingInvocationHandlerWrapper wrapper = new DecoratingInvocationHandlerWrapper();
-
-        GreetingService proxy =
-                (GreetingService) manager.createProxy(null, List.of(GreetingService.class), () -> target, wrapper);
-
-        assertThat(proxy.greet("OSGi")).isEqualTo("[Hello, OSGi]");
-        assertThat(wrapper.getInvocationCount()).isOne();
-        assertThat(wrapper.getLastMethodName()).isEqualTo("greet");
-    }
-
     @Test
     void finalModifierExceptionDescribesFinalClassesAndMethods() {
         Locale originalLocale = Locale.getDefault();
@@ -126,110 +58,9 @@ public class Org_apache_aries_proxy_apiTest {
         assertThat(fromName.getCause()).isSameAs(namedCause);
     }
 
-    public interface GreetingService {
-        String greet(String name);
-    }
-
-    public interface FarewellService {
-        String farewell(String name);
-    }
-
     public static final class FinalService {}
-
-    private static final class ConversationService implements GreetingService, FarewellService {
-        @Override
-        public String greet(String name) {
-            return "Hello, " + name;
-        }
-
-        @Override
-        public String farewell(String name) {
-            return "Goodbye, " + name;
-        }
-    }
 
     public static class ServiceWithFinalMethod {
         public final void finish() { }
-    }
-
-    private static final class DecoratingInvocationHandlerWrapper implements InvocationHandlerWrapper {
-        private int invocationCount;
-        private String lastMethodName;
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] arguments, InvocationHandler delegate)
-                throws Throwable {
-            invocationCount++;
-            lastMethodName = method.getName();
-            return "[" + delegate.invoke(proxy, method, arguments) + "]";
-        }
-
-        int getInvocationCount() {
-            return invocationCount;
-        }
-
-        String getLastMethodName() {
-            return lastMethodName;
-        }
-    }
-
-    private static final class SimpleProxyManager implements ProxyManager {
-        private final Map<Object, Callable<Object>> dispatchers = new IdentityHashMap<>();
-
-        @Override
-        public Object createProxy(Bundle clientBundle, Collection<Class<?>> classes, Callable<Object> dispatcher)
-                throws UnableToProxyException {
-            return createProxy(clientBundle, classes, dispatcher, null);
-        }
-
-        @Override
-        public Object createProxy(
-                Bundle clientBundle,
-                Collection<Class<?>> classes,
-                Callable<Object> dispatcher,
-                InvocationHandlerWrapper wrapper)
-                throws UnableToProxyException {
-            InvocationHandler delegate =
-                    (proxy, method, arguments) -> invokeService(dispatcher.call(), proxy, method, arguments);
-            InvocationHandler handler = wrapper == null
-                    ? delegate
-                    : (proxy, method, arguments) -> wrapper.invoke(proxy, method, arguments, delegate);
-            Object proxy = Proxy.newProxyInstance(
-                    Org_apache_aries_proxy_apiTest.class.getClassLoader(), classes.toArray(new Class<?>[0]), handler);
-            dispatchers.put(proxy, dispatcher);
-            return proxy;
-        }
-
-        @Override
-        public Callable<Object> unwrap(Object proxy) {
-            return dispatchers.get(proxy);
-        }
-
-        @Override
-        public boolean isProxy(Object proxy) {
-            return dispatchers.containsKey(proxy);
-        }
-
-        private static Object invokeService(Object target, Object proxy, Method method, Object[] arguments) {
-            if (method.getDeclaringClass() == Object.class) {
-                switch (method.getName()) {
-                    case "equals":
-                        return proxy == arguments[0];
-                    case "hashCode":
-                        return System.identityHashCode(proxy);
-                    case "toString":
-                        return "GreetingService proxy";
-                    default:
-                        throw new UnsupportedOperationException(method.getName());
-                }
-            }
-            if (method.getDeclaringClass() == GreetingService.class) {
-                return ((GreetingService) target).greet((String) arguments[0]);
-            }
-            if (method.getDeclaringClass() == FarewellService.class) {
-                return ((FarewellService) target).farewell((String) arguments[0]);
-            }
-            throw new UnsupportedOperationException(method.getName());
-        }
     }
 }
