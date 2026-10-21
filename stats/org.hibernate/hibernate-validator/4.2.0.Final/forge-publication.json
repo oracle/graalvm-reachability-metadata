@@ -1,0 +1,161 @@
+{
+  "base_commit": "87041810685cf46e5ff85531adc7f072d7f5c2ed",
+  "branch": "ai/kimeta/add-lib-support-org.hibernate-hibernate-validator-4.2.0.Final-chunked-forge-10971-20261021040953930490-ff8bc8ccbad7",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "87041810685cf46e5ff85531adc7f072d7f5c2ed",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10971,
+  "library": {
+    "artifact": "hibernate-validator",
+    "coordinates": "org.hibernate:hibernate-validator:4.2.0.Final",
+    "group": "org.hibernate",
+    "version": "4.2.0.Final"
+  },
+  "local_ci_verification": {
+    "base_commit": "87041810685cf46e5ff85531adc7f072d7f5c2ed",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpd_bszuro"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10971-85834db8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.hibernate:hibernate-validator"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.hibernate/hibernate-validator/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10971-85834db8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "0175a3d3d737d6317cac7ec8a204e00e1903da45",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Checked the single-coordinate diff, test sources and build configuration, metadata file scope, index and stats, resolved render statistics, and local gate records. The tests exercise Hibernate Validator behavior without scaffold code, native-image skips, version-pinned assertions, package visibility bypasses, compatibility overrides, or native build/run flags. Reported dynamic-access coverage is 23/28 (82.1429%), above the required gate; 23 covered calls do not trigger the entry-count mismatch check against 142 reported metadata entries. The contribution stays within the allowed files, uses only reachability-metadata.json, and the recorded index gates passed. No blocking contribution-contract violation was found.",
+    "session_id": "7077b85a687b4840"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.hibernate/hibernate-validator/4.2.0.Final/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 6271616,
+      "code_coverage_percent": 38.66,
+      "cost_usd": 5.723,
+      "generated_loc": 524,
+      "input_tokens_used": 317477,
+      "iterations": 7,
+      "metadata_entries": 55,
+      "output_tokens_used": 33328,
+      "test_only_metadata_entries": 87,
+      "tested_library_loc": 2125
+    },
+    "timestamp": "2026-10-21T04:09:53.930490Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10971-20261021040953930490-ff8bc8ccbad7",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- org.hibernate.validator.jtype.ClassUtils.getArrayType(ClassUtils.java:69) (line 69)",
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- org.hibernate.validator.jtype.Types.parseClass(Types.java:279) (line 279)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.hibernate.validator.metadata.BeanDescriptorImpl.getConstraintsForMethod(BeanDescriptorImpl.java:100) (line 100)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.hibernate.validator.metadata.ConstraintDescriptorImpl.buildAnnotationParameterMap(ConstraintDescriptorImpl.java:322) (line 322)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.hibernate.validator.metadata.ConstraintDescriptorImpl.getMethodValue(ConstraintDescriptorImpl.java:337) (line 337)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.hibernate.validator.metadata.ConstraintHelper.getMultiValueConstraints(ConstraintHelper.java:242) (line 242)",
+        "[resources] java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale, java.lang.ClassLoader) <- org.hibernate.validator.resourceloading.PlatformResourceBundleLocator.loadBundle(PlatformResourceBundleLocator.java:82) (line 82)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- org.hibernate.validator.util.ReflectionHelper.getValue(ReflectionHelper.java:339) (line 339)",
+        "... and 27 more"
+      ],
+      "metadata_rules": [
+        "when `org.hibernate.validator.metadata.BeanMetaDataImpl` is reached, make `java.lang.Deprecated` available for reflection",
+        "when `org.hibernate.validator.metadata.BeanMetaDataImpl` is reached, make `java.lang.Object` available for reflection",
+        "when `org.hibernate.validator.util.privilegedactions.GetDeclaredFields` is reached, make `java.lang.Object` available for reflection",
+        "when `org.hibernate.validator.jtype.Types` is reached, make `java.lang.String` available for reflection",
+        "when `org.hibernate.validator.jtype.ClassUtils` is reached, make `java.lang.String[]` available for reflection",
+        "when `org.hibernate.validator.engine.resolver.DefaultTraversableResolver` is reached, make `javax.persistence.Persistence` available for reflection",
+        "when `org.hibernate.validator.engine.ValidatorFactoryImpl` is reached, make `javax.validation.constraints.NotNull.groups()` available for reflection",
+        "when `org.hibernate.validator.engine.ValidatorFactoryImpl` is reached, make `javax.validation.constraints.NotNull.message()` available for reflection",
+        "... and 21 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.814815,
+            "coveredCalls": 22,
+            "totalCalls": 27
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.821429,
+        "coveredCalls": 23,
+        "totalCalls": 28
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9009,
+          "missed": 15735,
+          "ratio": 0.364088,
+          "total": 24744
+        },
+        "line": {
+          "covered": 2125,
+          "missed": 3372,
+          "ratio": 0.386574,
+          "total": 5497
+        },
+        "method": {
+          "covered": 554,
+          "missed": 744,
+          "ratio": 0.42681,
+          "total": 1298
+        }
+      },
+      "version": "4.2.0.Final"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-21T04:09:53.930490Z"
+}
