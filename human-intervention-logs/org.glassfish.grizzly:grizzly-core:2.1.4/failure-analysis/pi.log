@@ -1,0 +1,17 @@
+## Human intervention needed
+
+The automated job failed during setup, before test generation or Gradle test execution. The most likely cause is exhausted Claude usage: the preparation preflight returned HTTP 429 `usage_limit_reached`, and `discoverArtifactMetadata` then failed after the agent reported “You've hit your session limit.” The main log records the failure in `setup/normal_setup()`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10978-library-new-request-org.glassfish.grizzly-grizzly-core-2.1.4-03e3ddae
+
+No `grizzly-core` tests, metadata, run metrics, or dynamic-access coverage were generated. Inspect:
+
+- `logs/do-work-20261018-172551.log`
+- `logs/org.glassfish.grizzly:grizzly-core:2.1.4/discover-artifact-metadata/discover_artifact_metadata.log`
+- `logs/org.glassfish.grizzly:grizzly-core:2.1.4/library-preparation-preflight/claude-code-session-vy_3l_3a.log`
+
+Manual next steps:
+
+1. Restore or replace the Claude credentials/quota, then rerun the preparation preflight and artifact-metadata discovery.
+2. Resume the new-library workflow so it can scaffold and generate meaningful tests for `org.glassfish.grizzly:grizzly-core:2.1.4`.
+3. Once generated, run the coordinate-scoped metadata validation and JVM/native tests, then verify that execution metrics and dynamic-access coverage are produced.
