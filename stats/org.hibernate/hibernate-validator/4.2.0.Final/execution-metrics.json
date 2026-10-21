@@ -1,0 +1,110 @@
+{
+  "add_new_library_support:2026-10-21": {
+    "timestamp": "2026-10-21T04:09:53.930490Z",
+    "library": "org.hibernate:hibernate-validator:4.2.0.Final",
+    "starting_commit": "9a31c4daf761d865c12c08cc9a683daef223c630",
+    "ending_commit": "31eeaf081c1f763572a70b653107e9a6ae402eb7",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.2.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.814815,
+            "coveredCalls": 22,
+            "totalCalls": 27
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.821429,
+        "coveredCalls": 23,
+        "totalCalls": 28
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9009,
+          "missed": 15735,
+          "ratio": 0.364088,
+          "total": 24744
+        },
+        "line": {
+          "covered": 2125,
+          "missed": 3372,
+          "ratio": 0.386574,
+          "total": 5497
+        },
+        "method": {
+          "covered": 554,
+          "missed": 744,
+          "ratio": 0.42681,
+          "total": 1298
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10971,
+      "issue_label": "library-new-request",
+      "library": "org.hibernate:hibernate-validator:4.2.0.Final",
+      "summary": "HV 4.2.0.Final bootstrap needs javax.xml.bind (JAXB), which JDK 11+ no longer ships; Validation.buildDefaultValidatorFactory() fails with NoClassDefFoundError: javax/xml/bind/JAXBException on JDK 25 without it.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.jaxb:jaxb-runtime:2.3.9",
+          "scope": "testImplementation",
+          "reason": "hibernate-validator 4.2.0.Final declares jaxb-api/jaxb-impl as provided and ConfigurationImpl always instantiates the JAXB-based ValidationXmlParser unless ignoreXmlConfiguration() is called. Verified on JDK 25: without JAXB the default bootstrap throws NoClassDefFoundError javax/xml/bind/JAXBExcept\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "This is the legacy javax.validation (Bean Validation 1.0) line: use javax.validation.* imports and validation-api 1.0.0.GA (transitive), not jakarta.validation. The package is org.hibernate.validator in the org.hibernate:hibernate-validator artifact. Do not add a separate javax.xml.bind:jaxb-api jar next to jaxb-runtime 2.3.9, because both supply javax.xml.bind classes. To cover the JAXB/XML reflection paths, include tests with a META-INF/validation.xml (namespace http://jboss.org/xml/ns/javax/validation/configuration) and a constraint-mapping XML (Configuration.addMapping or <constraint-mapping>), plus annotation-based, programmatic (HibernateValidatorConfiguration.addMapping(ConstraintMapping)), custom-constraint, group/group-sequence and message-interpolation tests. slf4j has no binding by default and only prints a NOP warning, so no logging setup is required. jsoup (@SafeHtml), joda-time (@Past/@Future on Joda types) and hibernate-jpa-2.0-api (JPATraversableResolver) are optional pom dependencies; add them only if you deliberately target those features.",
+      "risks": [
+        "JAXB 2.3.x runtime reflection (com.sun.xml.bind.v2 / org.glassfish.jaxb) may need its own Native Image metadata. Keep allowed-packages limited to org.hibernate.validator so it isn't attributed to this library.",
+        "The existing org.hibernate.validator:hibernate-validator metadata (7.x–9.x, jakarta) is a different artifact and namespace and can't be reused directly for 4.2.0.Final.",
+        "ValidationXmlParser loads XSD schemas from the jar (META-INF/validation-configuration-1.0.xsd, validation-mapping-1.0.xsd), so resource-include metadata will be needed for the XML paths in Native Image."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.jaxb:jaxb-runtime:2.3.9",
+          "result": "applied",
+          "target": "tests/src/org.hibernate/hibernate-validator/4.2.0.Final/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10971 Support for org.hibernate:hibernate-validator:4.2.0.Final; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 16,
+      "output_tokens_used": 6881
+    },
+    "metrics": {
+      "input_tokens_used": 317477,
+      "cached_input_tokens_used": 6271616,
+      "output_tokens_used": 33328,
+      "iterations": 7,
+      "cost_usd": 5.723,
+      "generated_loc": 524,
+      "tested_library_loc": 2125,
+      "metadata_entries": 55,
+      "test_only_metadata_entries": 87,
+      "code_coverage_percent": 38.66
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate/hibernate-validator/4.2.0.Final/reachability-metadata.json"
+    }
+  }
+}
