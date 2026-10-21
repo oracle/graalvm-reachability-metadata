@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed before test generation, in `setup/normal_setup()`. The `discoverArtifactMetadata` Gradle task exited with code 1 because the configured Claude agent hit its session limit (`429 usage_limit_reached`). The preparation preflight failed for the same reason and was recorded as degraded. No tests, metadata, execution metrics, or dynamic-access coverage report were generated.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10975-library-new-request-org.apache.geronimo.specs-geronimo-javamail_1.4_spec-1.7.1-6ae5f017
+
+Inspect:
+- `logs/do-work-20261018-172551.log`
+- `logs/org.apache.geronimo.specs:geronimo-javamail_1.4_spec:1.7.1/discover-artifact-metadata/discover_artifact_metadata.log`
+- `logs/org.apache.geronimo.specs:geronimo-javamail_1.4_spec:1.7.1/library-preparation-preflight/claude-code-session-remg9k3m.log`
+
+Manual next steps:
+1. Restore or replace the configured Claude account’s available quota and verify unattended agent access.
+2. Resume the preserved run from the setup phase, or manually complete artifact URL discovery and the test scaffold.
+3. Generate tests and verify the coordinate with `./gradlew test -Pcoordinates=org.apache.geronimo.specs:geronimo-javamail_1.4_spec:1.7.1`, then regenerate the dynamic-access coverage report.
