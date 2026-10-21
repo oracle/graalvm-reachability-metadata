@@ -1,0 +1,19 @@
+## Human intervention needed
+
+The automated job for `com.sun.xml.bind:jaxb-xjc:2.1.13` failed. Preserved work is available at:
+
+https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10972-library-new-request-com.sun.xml.bind-jaxb-xjc-2.1.13-931dc178
+
+The most likely failing stage is coverage/statistics finalization, rather than test execution. The final `nativeTest` run passed all 3 generated tests, and metadata, Checkstyle, and Spotless validation succeeded. However, `generateLibraryStats` failed because `jacocoCodeCoverageReport` could not create its report. Earlier dynamic-access coverage attempts failed at the same JaCoCo task, leaving dynamic-access coverage unavailable and the failure metrics at `0` generated LOC, metadata entries, and coverage after 9 iterations.
+
+Relevant logs:
+- `logs/com.sun.xml.bind:jaxb-xjc:2.1.13/finalization/generateLibraryStats-2026-10-21T02-44-32-046516Z.log`
+- `logs/com.sun.xml.bind:jaxb-xjc:2.1.13/gradle/generateDynamicAccessCoverageReport-2026-10-21T02-33-34-940348Z.log`
+- `logs/com.sun.xml.bind:jaxb-xjc:2.1.13/gradle-test/gradle-test-2026-10-21T02-42-24-750012Z.log`
+- `logs/do-work-20261018-172551.log`
+
+Manual next steps:
+
+1. Check out the preserved branch and rerun `generateLibraryStats` or `jacocoCodeCoverageReport` with `--stacktrace --info` to identify the class or coverage input JaCoCo cannot analyze.
+2. Correct the JaCoCo/reporting incompatibility, and review whether the added Native Image build arguments—especially build-time initialization of `org.xml.sax.helpers.LocatorImpl`—are strictly necessary and compliant with the test contract.
+3. Rerun the coordinate-scoped metadata, JVM/native test, dynamic-access coverage, and library-statistics tasks; confirm nonzero, schema-valid metrics before publication.
