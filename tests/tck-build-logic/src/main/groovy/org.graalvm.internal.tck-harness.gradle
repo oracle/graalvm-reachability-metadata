@@ -22,6 +22,11 @@ import org.graalvm.internal.tck.GenerateMetadataTask
 import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
+import org.graalvm.internal.tck.harness.tasks.GenerateRealUseFilterInvocationTask
+import org.graalvm.internal.tck.harness.tasks.RealUseJacocoReportInvocationTask
+import org.graalvm.internal.tck.harness.tasks.RealUseJavaTestInvocationTask
+import org.graalvm.internal.tck.harness.tasks.RealUseNativeTestInvocationTask
+import org.graalvm.internal.tck.harness.tasks.ScaffoldRealUseTestTask
 import org.graalvm.internal.tck.harness.tasks.CleanInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CompileTestJavaInvocationTask
 import org.graalvm.internal.tck.harness.tasks.JavaTestInvocationTask
@@ -166,6 +171,38 @@ if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
 tasks.register("checkstyle", CheckstyleInvocationTask.class) { task ->
     task.setDescription("Runs checkstyle on all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+// The real-use suite's own lanes, rooted at real-use-tests/src/ (§real-use-tests/AR-real-use-test-harness.2)
+
+// gradle realUseJavaTest -Pcoordinates=<filter> [-Ptck.realUse.agentOutput=<absolute dir>]
+tasks.register("realUseJavaTest", RealUseJavaTestInvocationTask.class) { task ->
+    task.setDescription("Runs the selected real-use projects on the JVM")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+// gradle realUseJacocoReport -Pcoordinates=<filter>
+tasks.register("realUseJacocoReport", RealUseJacocoReportInvocationTask.class) { task ->
+    task.setDescription("Runs the selected real-use projects on the JVM and writes the target library's JaCoCo report")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+// gradle realUseNativeTest -Pcoordinates=<filter> [-Ptck.realUse.exactReachability=true]
+tasks.register("realUseNativeTest", RealUseNativeTestInvocationTask.class) { task ->
+    task.setDescription("Builds and runs the native test image of the selected real-use projects")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+// gradle scaffoldRealUseTest -Pcoordinates=<group:artifact:version>
+tasks.register("scaffoldRealUseTest", ScaffoldRealUseTestTask.class) { task ->
+    task.setDescription("Creates the real-use project of a supported coordinate")
+    task.setGroup(METADATA_GROUP)
+}
+
+// gradle generateRealUseFilter -Pcoordinates=<filter>
+tasks.register("generateRealUseFilter", GenerateRealUseFilterInvocationTask.class) { task ->
+    task.setDescription("Writes user-code-filter.json of the selected real-use projects from their declared libraries")
+    task.setGroup(METADATA_GROUP)
 }
 
 // gradle compileTestJava -Pcoordinates=<maven-coordinates>  §AR-test-harness.3
@@ -551,10 +588,6 @@ Map<String, List<String>> matrixDefaultsFor(String section) {
     ]
 }
 
-List<String> nativeImageModesForMatrix() {
-    NativeImageConfigUtils.modeNames(loadCi())
-}
-
 int versionsPerJobFor(String section) {
     def sec = matrixSectionFor(section)
     Object versionsPerJob = sec["versions-per-job"]
@@ -583,13 +616,13 @@ int maxLibrariesFor(String section) {
 
 List<Map<String, Object>> expandMatrixEntries(List<Map<String, Object>> entries, String section) {
     def defaults = matrixDefaultsFor(section)
-    List<String> nativeImageModes = nativeImageModesForMatrix()
+    Map<String, Object> ci = loadCi()
     NativeImageConfigUtils.expandMatrixEntries(
             entries,
             defaults["version"],
             defaults["os"],
-            nativeImageModes,
-            NativeImageConfigUtils.javaVersionsByMode(loadCi(), defaults["version"], nativeImageModes)
+            NativeImageConfigUtils.matrixModes(ci, section),
+            NativeImageConfigUtils.javaVersionsByMode(ci, defaults["version"], NativeImageConfigUtils.modeNames(ci))
     )
 }
 
@@ -688,6 +721,39 @@ Provider<Task> generateMatrixBatchedCoordinates = tasks.register("generateMatrix
     }
 }
 
+// gradle generateChangedRealUseMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+// The changed real-use projects on their own single lane, latest-ea with current defaults
+// (§real-use-tests/AR-real-use-test-harness.4).
+tasks.register("generateChangedRealUseMatrix", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with coordinates of changed real-use projects")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+        String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
+        List<String> changed = tck.diffRealUseCoordinates(project.findProperty("baseCommit").toString(), newCommit.toString())
+        List<String> unsupported = changed.findAll { String coordinate -> tck.getMatchingCoordinates(coordinate).isEmpty() }
+        if (!unsupported.isEmpty()) {
+            throw new GradleException("Real-use projects exist only for supported coordinates; not supported: ${unsupported}")
+        }
+        boolean noneFound = changed.isEmpty()
+        def matrix = [
+                "include": noneFound
+                        ? []
+                        : expandMatrixEntries(
+                                changed.collect { coordinate -> ["coordinates": coordinate] },
+                                "generateChangedRealUseMatrix"
+                        )
+        ]
+        if (noneFound) {
+            println "No changed real-use projects were found!"
+        }
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
 // §AR-test-harness.7
 
 // gradle generateChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
@@ -762,13 +828,17 @@ Provider<Task> generateChangedCoordinatesOnlyMatrix = tasks.register("generateCh
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
 
-        boolean noneFound = diffCoordinates.isEmpty()
+        // A changed real-use project is checked too (§real-use-tests/AR-real-use-test-harness.2).
+        String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
+        List<String> changed = (diffCoordinates + tck.diffRealUseCoordinates(
+                project.findProperty("baseCommit").toString(), newCommit.toString())).unique()
+        boolean noneFound = changed.isEmpty()
         if (noneFound) {
             println "No changed coordinates were found!"
         }
 
         writeGithubOutput("matrix", JsonOutput.toJson([
-                "coordinates": noneFound ? [] : diffCoordinates
+                "coordinates": noneFound ? [] : changed
         ]))
         writeGithubOutput("none-found", noneFound.toString())
     }

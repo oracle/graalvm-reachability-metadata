@@ -17,6 +17,7 @@ rather than by kind.
 | [§AR-repository-ci](ci.md#ar-repository-ci-recurring-ci-workflows-and-composite-actions) | Recurring CI workflows and composite actions |
 | [§AR-matrix-source](ci.md#ar-matrix-source-matrix-source-of-truth-cijson) | Matrix source of truth (`ci.json`) |
 | [§AR-test-changed-metadata](ci.md#ar-test-changed-metadata-test-changed-metadata) | Test changed metadata |
+| [§AR-test-changed-real-use](ci.md#ar-test-changed-real-use-test-changed-real-use-projects) | Test changed real-use projects |
 | [§AR-test-changed-infrastructure](ci.md#ar-test-changed-infrastructure-test-changed-infrastructure) | Test changed infrastructure |
 | [§AR-test-affected-spring-aot](ci.md#ar-test-affected-spring-aot-test-affected-spring-aot-smoke-tests) | Test affected Spring AOT smoke tests |
 | [§AR-required-status-checks](ci.md#ar-required-status-checks-required-status-checks-on-the-default-branch) | Required status checks on the default branch |

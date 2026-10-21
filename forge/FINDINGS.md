@@ -3,7 +3,104 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — org.springframework.modulith:spring-modulith-starter-jpa:2.1.0 (#10691)
+
+**Not-for-native-image review repairs leave stale descriptor guidance**
+
+The replacement calls org.springframework.modulith:spring-modulith-starter-core:2.1.0 a class-bearing dependency, but its Maven Central JAR contains zero `.class` files and `metadata/org.springframework.modulith/spring-modulith-starter-core/index.json` already marks it not-for-native-image. Removing it from this contribution's marker would not complete the repair: `publish_not_for_native_image.py` snapshots `reason` and `replacement` before local review and passes a non-callable descriptor input, which `branch_publication.py` reuses after reviewer edits. The eventual descriptor and PR body would therefore retain the false guidance. The contribution cannot be safely repaired without changing shared publication infrastructure.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10775 (#10775)
+
+## 2026-10-20 — org.apache.cxf:cxf-rt-transports-http:2.6.1 (#10989)
+
+**URL protocol build flag enabled an unnecessary HTTPS protocol**
+
+The build enabled both `http` and `https`, but FS-test-contract.2.7 and Review Signal #12 require every Native Image flag to be the narrowest necessary option. A no-flag Native Image run failed only in CXF's HTTPConduit path with `MalformedURLException: unknown protocol: http`; all HTTPS scenarios passed, proving that `https` was unnecessary while CXF's runtime HTTP URL construction still requires `http`.
+
+## 2026-10-20 — org.apache.cxf:cxf-rt-transports-http:2.6.1 (#10989)
+
+**Unverifiable CXFAuthenticator scenario relied on unnecessary module-opening flags**
+
+The CXFAuthenticator scenario exercised reflection over private java.net.Authenticator fields and methods, but CXF catches Throwable and discards the failure, so Native Image refusal cannot be verified and the test's null assertion stayed green without proving the reflected behavior. The accompanying java.net --add-opens JVM and native build flags were introduced for a stronger delegation scenario that had already been removed, so they no longer met the uniform-necessity rule in FS-test-contract.2.7.
+
+## 2026-10-20 — com.alibaba:dubbo:2.5.3 (#10994)
+
+**Native module-opening flags mask test-shaped JDK-internal access**
+
+The contribution added --add-opens=java.base/java.lang=ALL-UNNAMED as both a test JVM argument and a Native Image build argument without satisfying FS-test-contract.2.7 and Review Signal #12's uniform-necessity rule. Running ./gradlew javaTest without the flags showed that HessianInputTest failed only because its chosen fault detail serialized Throwable.detailMessage, while PojoUtilsTest expected Dubbo to mutate that same private JDK field and received a null message when module access was closed. The already-passing suite and a compliant Hessian fault shape demonstrate that the flag originated in these test scenarios rather than an unavoidable library-wide requirement.
+
+## 2026-10-19 — org.apache.cxf:cxf-rt-frontend-simple:2.6.1 (#10993)
+
+**Dynamic-access coverage was below the required gate**
+
+The submitted test configured ClientProxyFactoryBean and inspected its getters but never created a client proxy. The resolved statistics therefore reported 0 of 3 dynamic-access calls covered, violating the requirement for coverage above 20% when dynamic-access calls exist.
+
+## 2026-10-19 — com.alibaba:dubbo:2.5.3 (#10994)
+
+**Completed dynamic-access classes lacked dedicated test files**
+
+The exhaust report marked com.alibaba.com.caucho.hessian.io.SerializerFactory and com.alibaba.dubbo.common.utils.PojoUtils$PojoInvocationHandler as completed, but the contribution had no dedicated SerializerFactoryTest or PojoUtilsInnerPojoInvocationHandlerTest. This violated the one-test-file-per-dynamic-access-class requirement in FS-test-contract.1.8.
+
+## 2026-10-19 — org.apache.pulsar:pulsar-client-all:4.2.5 (#10642)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
+## 2026-10-19 — p6spy:p6spy:3.9.1 (#10912)
+
+**Committed library statistics were stale**
+
+The first required finalization pass changed `stats/p6spy/p6spy/3.9.1/stats.json`: reproduced instruction coverage was 4093/14411 instead of 4092/14411, and line coverage was 998/3776 instead of 997/3776. The mirrored generated statistics therefore did not match the finalized test run.
+
+## 2026-10-15 — com.azure:azure-storage-internal-avro:12.14.0 (#10693)
+
+**Grund citation under the ASCII-only test tree**
+
+The contributed `tests/src/com.azure/azure-storage-internal-avro/12.14.0/build.gradle` contained the non-ASCII `§FS-test-contract.2.7` marker. Repository instructions prohibit grund citations anywhere under `tests/src` because that suite is ASCII-only.
+
+## 2026-10-15 — org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2 (#8416)
+
+**Generated test used trivial assertions and pinned a companion artifact version**
+
+The generated autoConfigurationCanBeCreated test only constructed target types and asserted that they were non-null, which did not exercise observable library behavior as required by FS-test-contract.1.3. The build also pinned org.springframework.ai:spring-ai-model to 2.0.0-RC2 instead of the TCK-resolved tested library version, making the suite version-specific contrary to FS-test-contract.2.5.
+
 ## 2026-10-13 — io.netty:netty-handler-proxy:4.2.1.Final (#9341)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
+## 2026-10-13 — io.projectreactor.netty:reactor-netty-http:1.3.0 (#9352)
+
+**Version-specific native-image flag applied to a shared test suite**
+
+The contribution added -H:+SharedArenaSupport to the 1.0.39 suite shared by 61 older tested versions, although that baseline suite previously passed without the option. Native flags require uniform necessity. The target 1.3.0 WebSocket server path does require the narrow option: without it Netty 4.2.7's WebSocketServerHandshaker releases an unpooled direct response through CleanerJava25 and reaches disabled Arena.ofShared; default epoll, NIO, preferred-heap, and direct-to-heap allocator variants all reproduced that mechanism.
+## 2026-10-13 — org.bytedeco:opencv:4.11.0-1.5.12 (#10689)
+
+**Avoid aggregate Bytedeco platform artifacts in metadata-only preset tests**
+
+The latest-EA current-defaults and future-defaults-all jobs each exceeded the five-minute native-image limit while scanning artifacts for Android, iOS, Linux, macOS, and Windows supplied by org.bytedeco:opencv-platform. The test exercises Loader.loadProperties and does not load OpenCV native binaries, so the aggregate runtime dependency was unnecessary. This is a contribution-local build-file defect repairable under FS-contribution-contract.5.1.
+
+## 2026-10-14 — com.github.jnr:jnr-ffi:2.2.16 (#10697)
+
+**Generated library statistics were stale**
+
+The first required Forge finalization pass changed stats/com.github.jnr/jnr-ffi/2.2.16/stats.json, including line coverage from 1681 to 1678 covered lines and method coverage from 455 to 454 covered methods. This showed that the committed generated statistics did not match the finalized test tree.
+
+## 2026-10-13 — com.google.oauth-client:google-oauth-client:1.35.0 (#10701)
+
+**Native Image flag was bundled as test metadata**
+
+The contribution put `--enable-url-protocols=https` in `src/test/resources/META-INF/native-image/.../native-image.properties`, violating the test contract's prohibition on test-authored Native Image configuration files. Removing it reproduced the underlying need in the GraalVM 25 lane: every OAuth scenario using the dependency's `GenericUrl` HTTPS path failed with `MalformedURLException` requesting that exact protocol option, while the non-URL HMAC test passed.
+
+## 2026-10-12 — org.bytedeco:javacv:1.5.12 (#10687)
+
+**Avoid host GUI dependencies in JavaCV backend-selection tests**
+
+All three required JavaCV matrix jobs failed in javaTest because tests selected an OpenCV backend whose native highgui library required libgtk-x11-2.0.so.0, while the projector scenario assumed a headful graphics environment. Coordinate tests must pass the required lanes while preserving meaningful public-API behavior. §FS-repository-functional-spec.5.2 §FS-test-contract.1.3
+## 2026-10-13 — com.github.jnr:jnr-unixsocket:0.38.22 (#10700)
+## 2026-10-08 — org.eclipse.jetty:jetty-http:10.0.0 (#9376)
 
 **Pre-push review unavailable**
 

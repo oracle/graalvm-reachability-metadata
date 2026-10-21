@@ -22,7 +22,8 @@ runners the test matrix uses, plus the build arguments for the build. The Gradle
 matrix-generation tasks (§AR-test-harness) read it and emit the GitHub Actions
 matrices the test workflows consume. It supports optional per-native-image-mode
 Java overrides via `nativeImageModeJavaVersions` when a mode should run on only a
-subset of the configured JDKs. Because the whole matrix derives from this file,
+subset of the configured JDKs, and an optional per-section `native-image-modes`
+list when one matrix should run only some of the modes. Because the whole matrix derives from this file,
 changing it re-runs everything: the infrastructure workflow
 (§AR-test-changed-infrastructure) treats a `ci.json` change as an infrastructure
 change.
@@ -65,6 +66,16 @@ artifact-level index diffs, pulls allowed Docker images, disables Docker
 networking, validates config, and runs only that batch (§FS-metadata,
 §FS-tests).
 
+### AR-test-changed-real-use: Test changed real-use projects
+
+Triggers on PRs touching `real-use-tests/`. Runs `generateChangedRealUseMatrix`
+with the PR base/head SHAs, then `realUseJavaTest` and `realUseNativeTest` for
+each changed real-use project on its own `generateChangedRealUseMatrix` lane
+(`latest-ea`, `current-defaults`), after pulling allowed Docker images and disabling Docker networking.
+It is one of the gates of §FS-repository-functional-spec.5.3, for the suite of
+§real-use-tests/FS-real-use-tests.3; the job itself is specified in
+§real-use-tests/AR-real-use-test-harness.4.
+
 ### AR-test-changed-infrastructure: Test changed infrastructure
 
 Triggers on PRs touching `tests/tck-build-logic/`, `gradle/`, `build.gradle`,
@@ -104,11 +115,12 @@ schema. Validates and sorts the master supported-library list against its schema
 
 ### AR-grund-check: Validate grund citations
 
-Triggers on PRs touching either project's scanned roots — `docs/`, `skills/`,
-the workflows and composite actions, the top-level Markdown, or a `grund.toml`.
-Installs a pinned `grund` release and runs `grund check` once from the
-repository root, which is the only scope where the workspace alias table
-resolves `§forge/<ID>`, so the run covers both namespaces. It fails on a
+Triggers on PRs touching any project's scanned roots — `docs/`, `skills/`,
+the workflows and composite actions, the top-level Markdown, a member's docs
+and agent instructions, or a `grund.toml`. Installs a pinned `grund` release
+and runs `grund check` once from the repository root, which is the only scope
+where the workspace alias table resolves `§forge/<ID>` and
+`§real-use-tests/<ID>`, so the run covers every namespace. It fails on a
 citation that no longer resolves, on an `AGENTS.md` managed block that has
 drifted from its `grund.toml`, and on a `must`-level citation direction that is
 not met (§FS-repository-functional-spec.5.6).

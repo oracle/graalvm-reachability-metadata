@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-20": {
+    "timestamp": "2026-10-20T22:48:54.322809Z",
+    "library": "com.netflix.curator:curator-framework:1.1.10",
+    "starting_commit": "ebcbe5ac0ec2fd8e9ab4cd67beafcbb5d561414e",
+    "ending_commit": "42e043c1e65b5777cd390c029077851512770c54",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.1.10",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 288,
+          "missed": 5278,
+          "ratio": 0.051743,
+          "total": 5566
+        },
+        "line": {
+          "covered": 72,
+          "missed": 1112,
+          "ratio": 0.060811,
+          "total": 1184
+        },
+        "method": {
+          "covered": 26,
+          "missed": 401,
+          "ratio": 0.06089,
+          "total": 427
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10985,
+      "issue_label": "library-new-request",
+      "library": "com.netflix.curator:curator-framework:1.1.10",
+      "summary": "curator-framework 1.1.10 already pulls in org.apache.zookeeper:zookeeper:3.4.3 at compile scope, and that jar contains the full ZooKeeper server. The tests can start one in-process on 127.0.0.1, which is what the existing org.apache.curator tests in this repo do. No extra Maven dependency or Docker image is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Most CuratorFramework behaviour only runs against a live ZooKeeper, so start an in-process server in the test code. Follow the LocalZooKeeperServer helper in tests/src/org.apache.curator/curator-recipes/2.6.0/src/test/java/org_apache_curator/curator_recipes/Curator_recipesTest.java: create temporary data and log directories, use a ZooKeeperServer subclass with JMX turned off (NoJmxZooKeeperServer) and tickTime 200, and start it with NIOServerCnxnFactory.configure(new InetSocketAddress(\"127.0.0.1\", 0), maxClients) followed by startup(server). Build the connect string from getLocalPort(), and shut the factory down and delete the directories in close(). All API classes are in the com.netflix.curator.* packages, not org.apache.curator.*. Clients come from CuratorFrameworkFactory.newClient(connectString, new RetryOneTime(...)) or the builder(); call start() and close them in try/finally. Do not add com.netflix.curator:curator-test for TestingServer: it brings in javassist and commons-math and isn't needed.",
+      "risks": [
+        "ZooKeeper 3.4.3 pulls in log4j 1.2.15, slf4j-log4j12 1.6.1 and netty 3.2.2.Final. Its server and logging startup may need extra reflection/resource metadata under Native Image that comes from ZooKeeper, not Curator.",
+        "Curator's POM excludes the jmxri, jmxtools and jms dependencies of log4j 1.2.15. If resolution ever ignores those exclusions, the build fails, because those artifacts are not on Maven Central.",
+        "This is a 2012 artifact (Guava 11.0.1, ZooKeeper 3.4.3). Running it on JDK 25 may show old-JDK assumptions; local JVM and Native Image runs decide whether it works."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10985 Support for com.netflix.curator:curator-framework:1.1.10; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 12,
+      "output_tokens_used": 3170
+    },
+    "metrics": {
+      "input_tokens_used": 408182,
+      "cached_input_tokens_used": 6595456,
+      "output_tokens_used": 33793,
+      "iterations": 9,
+      "cost_usd": 6.3524,
+      "generated_loc": 104,
+      "tested_library_loc": 72,
+      "metadata_entries": 11,
+      "code_coverage_percent": 6.08
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.netflix.curator/curator-framework/1.1.10/reachability-metadata.json"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-# Per-PR gate: `grund check` over both namespaces (§AR-grund-check, enforces
+# Per-PR gate: `grund check` over every namespace (§AR-grund-check, enforces
 # §FS-repository-functional-spec.5.6), plus the check that the required-status-check ruleset
 # still matches the gate job names (§AR-required-status-checks).
 name: "Validate grund citations"
@@ -30,7 +30,7 @@ jobs:
         id: filter
         uses: ./.github/actions/detect-file-changes
         with:
-          # The union of both projects' `[scan] include` roots and their configs; a PR that
+          # The union of every project's `[scan] include` roots and their configs; a PR that
           # touches none of them cannot break a citation.
           file-patterns: |
             - 'AGENTS.md'
@@ -49,6 +49,11 @@ jobs:
             - 'forge/DEVELOPING.md'
             - 'forge/grund.toml'
             - 'forge/docs/**'
+            - 'real-use-tests/AGENTS.md'
+            - 'real-use-tests/README.md'
+            - 'real-use-tests/grund.toml'
+            - 'real-use-tests/docs/**'
+            - 'real-use-tests/.agent-grounds/rhei/**'
 
       - name: "🔧 Install grund"
         if: steps.filter.outputs.changed == 'true'

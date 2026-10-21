@@ -30,6 +30,37 @@
 name: code-coverage-improvement
 version: 1.0.0
 
+# Each loop's pass yield, recorded per pass by Rhei and rendered to
+# runtime/reports/metrics-summary.md; the value is the covered count the stop
+# rule reads, so a row's delta is that pass's yield
+# (§AR-code-coverage-trajectory.1). The deep session count adds one row per
+# deep cover session (§AR-code-coverage-trajectory.4).
+metrics:
+  api-coverage:
+    label: API coverage (covered public methods)
+    measured_by: [api-measure]
+    drivers: [api-cover]
+    artifact: runtime/code-coverage/validation/api-cover-report-{iteration}.json
+    pointer: /summary/covered
+    detail: "of {/summary/total}"
+    goal: increase
+  deep-coverage:
+    label: Deep coverage (covered roster methods)
+    measured_by: [deep-measure]
+    drivers: [deep-cover]
+    artifact: runtime/code-coverage/discovery/discovery-report-{iteration}.json
+    pointer: /summary/rosterCovered
+    detail: "internal {/summary/deepCovered}/{/summary/deepMethods}, public {/summary/publicTargetsCovered}/{/summary/publicTargets}"
+    goal: increase
+  deep-session-coverage:
+    label: Deep coverage per session (covered library methods)
+    measured_by: [deep-dispatch]
+    drivers: [deep-cover]
+    artifact: runtime/code-coverage/discovery/session-coverage-{iteration}.json
+    pointer: /summary/covered
+    detail: "of {/summary/total}"
+    goal: increase
+
 states:
   prepared:
     description: Pipeline task is generated and ready for execution.
@@ -152,7 +183,7 @@ states:
                   result.write(f"API coverage loop completed after {iteration} iteration(s); {len(uncovered)} uncovered target(s) remain.\n")
           # Rhei checks the declared handoff output on this zero exit, so the
           # prompt path records that no cover pass follows
-          # (§AR-code-coverage-improvement.5.2).
+          # (§AR-code-coverage-prompts.3).
           prompt_path = Path("runtime/code-coverage/prompts/api-cover-prompt.md")
           prompt_path.parent.mkdir(parents=True, exist_ok=True)
           prompt_path.write_text(f"No cover pass follows: {len(uncovered)} uncovered target(s) remain after {iteration} iteration(s)\n")
@@ -184,7 +215,7 @@ states:
         path: runtime/code-coverage/issues/conversion.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-improvement.5.2).
+      # (§AR-code-coverage-prompts.3).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/api-cover-prompt.md
@@ -196,7 +227,7 @@ states:
     concurrent: true
     visits: 10
     # Measurement's prompt arrives inside the message
-    # (§AR-code-coverage-improvement.5.2).
+    # (§AR-code-coverage-prompts.3).
     handoff:
       inherit:
         - from: transition.previous
@@ -225,9 +256,6 @@ states:
         finalization runs Spotless (§AR-code-coverage-improvement.5).
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
-      - Do not weaken metadata-generation tests.
-      - Do not measure or claim coverage yourself: deterministic re-measurement
-        runs right after this state and decides the loop.
       - Write every test for the prompt's targets first, without running
         Gradle in between. Then, from inside the issue worktree (`worktreePath`
         in conversion.json), run the same task measurement runs:
@@ -241,6 +269,9 @@ states:
         without `-Pcoordinates` configures every library in the repository,
         takes hours, and never compiles this suite; do not pass `--no-daemon`,
         which pays that cost again on every call.
+      - Do not measure or claim coverage yourself: never read JaCoCo output or
+        run a coverage tool. Measurement re-runs right after this state and
+        decides the loop (§AR-code-coverage-prompts.2.4).
 
       Write `{output.work.path}` with:
       - targets attempted and how each was exercised
@@ -455,21 +486,32 @@ states:
       import sys
 
       try:
-          work_path = json.load(open(sys.argv[1]))["workPath"]
+          conversion = json.load(open(sys.argv[1]))
+          work_path = conversion["workPath"]
+          worktree = conversion["worktreePath"]
+          coordinate = conversion["coordinate"]
       except Exception as error:
           print(f"conversion.json missing or invalid: {error}", file=sys.stderr)
           sys.exit(1)
       sys.path.insert(0, work_path)
       from utility_scripts.code_coverage_deep_sessions import dispatch
+      from utility_scripts.code_coverage_session_count import count_session, mark_session
+
+      # Count the coverage the returned session left before handing out the
+      # next one; a failed count never stops dispatch (§AR-code-coverage-trajectory.4).
+      discovery = "runtime/code-coverage/discovery"
+      count_session(discovery, worktree, coordinate)
 
       # 10 runs the next session, 0 returns to measurement, 1 parks
       # (§AR-code-coverage-deep-navigation.4).
       sys.exit(dispatch(
           "runtime/code-coverage/prompts/deep-session-queue.json",
           "runtime/code-coverage/prompts/deep-cover-prompt.md",
+          on_session=lambda session: mark_session(discovery, session),
       ))
       PY
-    program_timeout: 5m
+    # The session count runs one JaCoCo report (§AR-code-coverage-trajectory.4).
+    program_timeout: 30m
     inputs:
       - name: conversion
         path: runtime/code-coverage/issues/conversion.json
@@ -477,7 +519,7 @@ states:
         path: runtime/code-coverage/prompts/deep-session-queue.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-improvement.5.2).
+      # (§AR-code-coverage-prompts.3).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/deep-cover-prompt.md
@@ -493,7 +535,7 @@ states:
     # At most 21 sessions per pass (§AR-code-coverage-deep-navigation.4).
     visits: 210
     # The dispatched session's prompt arrives inside the message
-    # (§AR-code-coverage-improvement.5.2).
+    # (§AR-code-coverage-prompts.3).
     handoff:
       inherit:
         - from: transition.previous
@@ -553,11 +595,10 @@ states:
         without `-Pcoordinates` configures every library in the repository,
         takes hours, and never compiles this suite; do not pass `--no-daemon`,
         which pays that cost again on every call.
-      - Do not weaken metadata-generation tests.
-      - Do not write any target state: measurement tracks attempts and target
-        rotation deterministically from its own report history.
-      - Do not measure or claim coverage yourself: deterministic re-measurement
-        runs once this pass's sessions are done and decides the loop.
+      - Do not measure or claim coverage yourself: never read JaCoCo output or
+        run a coverage tool. Dispatch counts each session, and measurement
+        decides the loop once this pass's sessions are done
+        (§AR-code-coverage-prompts.2.4).
 
       Write `{output.work.path}` with:
       - paths attempted and how each public entry was driven

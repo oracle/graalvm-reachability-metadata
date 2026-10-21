@@ -1,0 +1,147 @@
+{
+  "base_commit": "88e9c1a2ccb88414bba91f2784af02df0496de3c",
+  "branch": "ai/kimeta/add-lib-support-com.googlecode-hibernate-memcached-1.3-forge-10988-20261020122625420938-c72e1c14419b",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "88e9c1a2ccb88414bba91f2784af02df0496de3c",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10988,
+  "library": {
+    "artifact": "hibernate-memcached",
+    "coordinates": "com.googlecode:hibernate-memcached:1.3",
+    "group": "com.googlecode",
+    "version": "1.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "88e9c1a2ccb88414bba91f2784af02df0496de3c",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpppwxoy9d"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10988-2e293c8c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.googlecode:hibernate-memcached"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.googlecode/hibernate-memcached/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10988-2e293c8c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "9a979ca67f4107fdc880921cb3ff583637c00bf2",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is scoped to com.googlecode:hibernate-memcached:1.3 and uses only reachability-metadata.json. The public, library-specific test is outside the library package, is not scaffold-only or version-pinned, does not skip or tolerate Native Image failures, and adds no native build/run flag. Reported dynamic-access coverage is 5/5 (100%), above the new-library gate; the 23 reported metadata entries do not trigger the mismatch probe. The supplied local gate records succeeded, including index validation, and the resolved generation record reports success. No blocking contribution-contract violation was found.",
+    "session_id": "996e9a6195c74fb4"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.googlecode/hibernate-memcached/1.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4481280,
+      "code_coverage_percent": 54.88,
+      "cost_usd": 4.5993,
+      "generated_loc": 294,
+      "input_tokens_used": 282460,
+      "iterations": 7,
+      "metadata_entries": 7,
+      "output_tokens_used": 31547,
+      "test_only_metadata_entries": 16,
+      "tested_library_loc": 236
+    },
+    "timestamp": "2026-10-20T12:26:25.420938Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10988-20261020122625420938-c72e1c14419b",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String) <- com.googlecode.hibernate.memcached.MemcachedCacheProvider.getMemcachedClientFactory(MemcachedCacheProvider.java:165) (line 165)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- com.googlecode.hibernate.memcached.MemcachedCacheProvider.instantiateKeyStrategy(MemcachedCacheProvider.java:131) (line 131)",
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- com.googlecode.hibernate.memcached.MemcachedCacheProvider.getMemcachedClientFactory(MemcachedCacheProvider.java:165) (line 165)",
+        "[reflection] java.lang.Class#newInstance() <- com.googlecode.hibernate.memcached.MemcachedCacheProvider.instantiateKeyStrategy(MemcachedCacheProvider.java:131) (line 131)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- com.googlecode.hibernate.memcached.MemcachedCacheProvider.getMemcachedClientFactory(MemcachedCacheProvider.java:177) (line 177)"
+      ],
+      "metadata_rules": [
+        "when `com.googlecode.hibernate.memcached.spymemcached.SpyMemcacheClientFactory` is reached, make `net.spy.memcached.compat.log.DefaultLogger.<init>(java.lang.String)` available for reflection",
+        "when `com.googlecode.hibernate.memcached.MemcachedCacheProvider` is reached, make `org.slf4j.impl.NOPLoggerFactory` available for reflection",
+        "when `com.googlecode.hibernate.memcached.utils.StringUtils` is reached, make `sun.security.provider.MD5.<init>()` available for reflection",
+        "when `com.googlecode.hibernate.memcached.utils.StringUtils` is reached, make `sun.security.provider.SHA.<init>()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1183,
+          "missed": 830,
+          "ratio": 0.58768,
+          "total": 2013
+        },
+        "line": {
+          "covered": 236,
+          "missed": 194,
+          "ratio": 0.548837,
+          "total": 430
+        },
+        "method": {
+          "covered": 102,
+          "missed": 59,
+          "ratio": 0.63354,
+          "total": 161
+        }
+      },
+      "version": "1.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-20T12:26:25.420938Z"
+}

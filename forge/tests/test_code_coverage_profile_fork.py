@@ -17,7 +17,7 @@ from utility_scripts.code_coverage_profile_flow import Branch, MethodFlow
 from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_miss import edge_miss_classification
 from utility_scripts.code_coverage_profile_navigation import NavigationEvidence
-from utility_scripts.code_coverage_profile_render import classification_lines
+from utility_scripts.code_coverage_profile_diagnoses import Diagnosis, diagnosis_lines
 
 from tests.test_code_coverage_profile_flow import TRY, _flow
 
@@ -155,11 +155,11 @@ class ControlFlowForkTests(unittest.TestCase):
             [[(3, 0, True), (4, 7, False)], [(3, 0, True), (3, 0, True)]],
         )
 
-    def test_a_target_in_a_never_entered_catch_names_the_raising_try_lines(self) -> None:
+    def test_a_target_in_a_never_entered_catch_names_the_calls_that_ran(self) -> None:
         # `try { if (text.isEmpty()) return 0; return Integer.parseInt(text); }
         #  catch (NumberFormatException e) { return handle(); }` where no input
-        # ever failed to parse. Only lines holding a call can raise, and each
-        # carries its own count: the `return 0` arm ran 100×, `parseInt` 8,000,000×.
+        # ever failed to parse. The JSON keeps each `try` line with its count;
+        # the prompt names the calls that ran, without counts.
         self.flow = TRY
         self.lines = {self.CALLER.canonical_id: (
             (0, 41), (7, 42), (9, 44), (14, 45), (15, 46), (18, 47),
@@ -195,18 +195,63 @@ class ControlFlowForkTests(unittest.TestCase):
                 {"line": 41, "count": 8_000_100, "calls": ["String.isEmpty"]},
                 {"line": 44, "count": 8_000_000, "calls": ["Integer.parseInt"]},
             ],
+            "calls": [
+                {"bci": 1, "line": 41, "callee": is_empty.canonical_id, "ran": True},
+                {"bci": 10, "line": 44, "callee": parse_int.canonical_id, "ran": True},
+            ],
         }]})
-        self.assertEqual(classification_lines(classification, True)[1:], [
-            "  reached only through catch (NumberFormatException) at line 45",
-            "    line 41 `String.isEmpty` ran 8,000,100×, never threw it",
-            "    line 44 `Integer.parseInt` ran 8,000,000×, never threw it",
+        self.assertEqual(diagnosis_lines([Diagnosis("Handler.handle()", classification)])[2:], [
+            "  `Router.java:46`: Handler.handle() in catch (NumberFormatException) at line 45",
+            "    line 41: String.isEmpty() never threw it",
+            "    line 44: Integer.parseInt(...) never threw it",
+        ])
+
+    def test_a_call_is_named_at_its_own_line_and_listed_only_if_it_ran(self) -> None:
+        # The same `try`, but `text.isEmpty()` sits on line 42 while its block
+        # starts on line 41, and without counters JaCoCo's status of each
+        # call's own line says whether it ran: `parseInt` on line 44 never did.
+        self.flow = TRY
+        self.lines = {self.CALLER.canonical_id: (
+            (0, 41), (2, 42), (7, 43), (9, 44), (14, 45), (15, 46), (18, 47),
+        )}
+        self.edge["bci"] = "15"
+        self.edge["source_line"] = 46
+        parse_int = MethodRef("java.lang.Integer", "parseInt", ("java.lang.String",), "int")
+        is_empty = MethodRef("java.lang.String", "isEmpty", (), "boolean")
+        self.graph = CallGraph(
+            methods={1: self.CALLER, 2: self.TARGET, 3: parse_int, 4: is_empty},
+            key_to_id={self.CALLER.canonical_id: 1},
+            adjacency={1: [
+                {"caller": 1, "callee": 4, "bci": "3", "kind": "call"},
+                {"caller": 1, "callee": 3, "bci": "10", "kind": "call"},
+                {"caller": 1, "callee": 2, "bci": "15", "kind": "call"},
+            ]},
+            invoke_fan_out={10: [2]},
+        )
+        self.jacoco_lines["example/Router.java"] = {
+            41: JacocoLineCoverage(mi=0, ci=1, mb=0, cb=0),
+            42: JacocoLineCoverage(mi=0, ci=3, mb=1, cb=1),
+            43: JacocoLineCoverage(mi=0, ci=2, mb=0, cb=0),
+            44: JacocoLineCoverage(mi=3, ci=0, mb=0, cb=0),
+            45: JacocoLineCoverage(mi=1, ci=0, mb=0, cb=0),
+            46: JacocoLineCoverage(mi=3, ci=0, mb=0, cb=0),
+            47: JacocoLineCoverage(mi=0, ci=1, mb=0, cb=0),
+        }
+        classification: dict = self._classify()
+        self.assertEqual(classification["exception"]["handlers"][0]["calls"], [
+            {"bci": 3, "line": 42, "callee": is_empty.canonical_id, "ran": True},
+            {"bci": 10, "line": 44, "callee": parse_int.canonical_id, "ran": False},
+        ])
+        self.assertEqual(diagnosis_lines([Diagnosis("Handler.handle()", classification)])[3:], [
+            "    line 42: String.isEmpty() never threw it",
         ])
 
     def test_a_dead_arm_inside_a_try_that_ran_is_not_the_fork(self) -> None:
         # `try { o = parse(s); if (o == null) return fallback(); return convert(o); }
         #  catch (ParseException e) { return target(); }` where `o` was never null.
         # The dead `fallback` arm sits under the try, yet the handler is a catch
-        # boundary: the guard is not reported as a fork, and the arm shows at zero.
+        # boundary: the guard is not reported as a fork, and the arm shows at zero
+        # in the JSON while the prompt leaves out its call, which never ran.
         self.flow = MethodFlow(
             branches=(Branch(7, (10, 12), frozenset(), False),),
             block_starts=(0, 10, 12, 20),
@@ -250,11 +295,10 @@ class ControlFlowForkTests(unittest.TestCase):
             {"line": 44, "count": 0, "calls": ["Router.fallback"]},
             {"line": 46, "count": 500, "calls": ["Router.convert"]},
         ])
-        self.assertEqual(classification_lines(classification, True)[1:], [
-            "  reached only through catch (ParseException) at line 47",
-            "    line 42 `Parser.parse` ran 500×, never threw it",
-            "    line 44 `Router.fallback` ran 0×, never threw it",
-            "    line 46 `Router.convert` ran 500×, never threw it",
+        self.assertEqual(diagnosis_lines([Diagnosis("Handler.handle()", classification)])[2:], [
+            "  `Router.java:48`: Handler.handle() in catch (ParseException) at line 47",
+            "    line 42: Parser.parse(...) never threw it",
+            "    line 46: Router.convert(...) never threw it",
         ])
         self.assertEqual(self._classify()["kind"], "no-fork")
 

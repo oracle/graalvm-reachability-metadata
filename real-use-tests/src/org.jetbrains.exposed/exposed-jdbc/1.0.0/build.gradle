@@ -1,0 +1,42 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    alias(libs.plugins.kotlin.jvm)
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+
+dependencies {
+    testImplementation "org.jetbrains.exposed:exposed-jdbc:$libraryVersion"
+    testImplementation "org.jetbrains.exposed:exposed-dao:$libraryVersion"
+    testImplementation "org.jetbrains.exposed:exposed-java-time:$libraryVersion"
+    testImplementation "com.h2database:h2:2.3.232"
+    testImplementation "org.postgresql:postgresql:42.7.7"
+    testImplementation "org.mariadb.jdbc:mariadb-java-client:3.5.3"
+    testImplementation "com.zaxxer:HikariCP:6.3.0"
+}
+
+kotlin {
+    jvmToolchain(testJvmVersion)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

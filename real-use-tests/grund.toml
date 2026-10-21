@@ -1,0 +1,99 @@
+grund_config_version = 1
+project_name = "real-use-tests"
+project_description = "Realistic library scenarios run on the JVM and Native Image against the shipped metadata"
+
+[reference]
+marker = "§"
+trigger = "$$"
+strict = true
+require_grounding = false
+inline_style = "citation-with-note" # citation-with-note | citation-only
+inline_note_suggested_lines = 1
+inline_note_max_lines = 20
+inline_note_max_columns = 100
+warn_on_suggested = false
+
+[id]
+format = "{kind}-{slug}" # placeholders: {kind} required; use {number}, {slug}, or both
+section_separator = "."
+section_heading_levels = "strict" # strict | warn | loose
+number_pattern = "\\d+"
+slug_pattern = "[a-z0-9][a-z0-9-]*"
+
+[[kinds]]
+kind = "GRUND"
+file = "docs/grund.md"
+title = "Why: real-use tests motivation"
+
+[[kinds]]
+kind = "GOAL"
+file = "docs/goals.md"
+title = "Where: real-use tests direction and outcomes"
+
+[[kinds]]
+kind = "FS"
+folder = "docs/functional-spec"
+title = "What the real-use suite and its generation workflow must do"
+
+[[kinds]]
+kind = "AR"
+folder = "docs/architecture"
+title = "How the real-use suite, its harness tasks, and its Rhei template are wired"
+
+[[kinds]]
+kind = "rhei"
+folder = ".agent-grounds/rhei"
+citable = false
+title = "The Rhei template and the programs its states run"
+
+# Places that are listed, not walked: the scenario projects, whose sources
+# checkstyle holds to ASCII, so no citation marker can appear in them.
+[[kinds]]
+kind = "projects"
+folder = "src"
+citable = false
+scan = false
+title = "Per-coordinate real-use test projects"
+
+# The homeless kind: every citation site outside every home above.
+[[kinds]]
+kind = "code"
+citable = false
+title = "Loose files outside a kind home"
+
+[scan]
+include = ["AGENTS.md", "README.md", "docs", ".agent-grounds/rhei"]
+exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "__pycache__"]
+extensions = ["md", "yaml", "yml", "py", "sh"]
+comment_prefixes = ["//", "#", "/*", "*", "<!--"]
+docstring_python = true
+respect_gitignore = true
+
+[output]
+format = "text" # text | json
+color = "auto" # auto | always | never
+relative_paths = true
+
+[fmt.cross_refs]
+enabled = false
+anchor_format = "github" # github | gitlab | mkdocs | pandoc | none
+
+[citations]
+default = "may"
+
+[citations.GOAL]
+must = ["GRUND"]
+
+[citations.FS]
+must = ["GOAL|FS"]
+
+[citations.AR]
+must = ["FS|GOAL"]
+
+[citations.rhei]
+must = ["FS"]
+should = ["AR"]
+
+[citations.code]
+must = ["FS"]
+should = ["AR"]

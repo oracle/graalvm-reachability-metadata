@@ -137,6 +137,12 @@ public abstract class JarUtils {
         return packages.stream().sorted().toList();
     }
 
+    /// Returns the packages of the given classes, minus each one nested in another, so that
+    /// `<package>.**` rules over the result cover every package and nothing beside them.
+    public static List<String> coveringPackages(Set<String> classNames) {
+        return subsume(extractPackages(classNames)).stream().sorted().toList();
+    }
+
     /// Removes any package that is subsumed by a shorter prefix in the set.
     private static Set<String> subsume(Set<String> packages) {
         Set<String> result = new TreeSet<>();

@@ -6,11 +6,15 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Task that is used to run checkstyle task on subprojects.
+ *
+ * A coordinate's real-use project is checked after its `tests/` project
+ * (§real-use-tests/AR-real-use-test-harness.2).
  */
 @SuppressWarnings("unused")
 public abstract class CheckstyleInvocationTask extends AllCoordinatesExecTask {
@@ -23,6 +27,13 @@ public abstract class CheckstyleInvocationTask extends AllCoordinatesExecTask {
         ));
         appendProperty(command, "includeCodeCoverageSuite");
         return command;
+    }
+
+    @Override
+    protected List<Path> workingDirsFor(String coordinates) {
+        List<Path> dirs = new ArrayList<>(super.workingDirsFor(coordinates));
+        tckExtension.getRealUseTestDir(coordinates).ifPresent(dirs::add);
+        return dirs;
     }
 
     @Override

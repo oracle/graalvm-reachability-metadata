@@ -1,0 +1,134 @@
+{
+  "add_new_library_support:2026-10-16": {
+    "timestamp": "2026-10-16T01:45:37.665138Z",
+    "library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-memory:2.0.0-RC2",
+    "starting_commit": "07324226d3127cbd281a45ef80ebc233e9886888",
+    "ending_commit": "a9a78c84bb98b1cee48fe606ffa8fef220ea658c",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.0.0-RC2",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 12
+        },
+        "line": {
+          "covered": 3,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 3
+        },
+        "method": {
+          "covered": 3,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 3
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8415,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-memory:2.0.0-RC2",
+      "summary": "The artifact's POM marks spring-ai-model and spring-boot-autoconfigure as optional, so they are not on the test classpath transitively. The tests need them added explicitly, plus spring-boot-test for ApplicationContextRunner. No Docker image is needed because the default chat memory repository is in-memory.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.ai:spring-ai-model:2.0.0-RC2",
+          "scope": "testImplementation",
+          "reason": "Optional dependency of the autoconfigure artifact. It provides ChatMemory, ChatMemoryRepository and MessageWindowChatMemory, which the autoconfiguration wires."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+          "scope": "testImplementation",
+          "reason": "Optional dependency. Needed for @AutoConfiguration and conditional annotations. Same version as the sibling Spring AI tests."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-test:4.1.0-RC1",
+          "scope": "testImplementation",
+          "reason": "Provides ApplicationContextRunner and AutoConfigurations to exercise the autoconfiguration. Same version as the sibling Spring AI tests."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "scope": "testImplementation",
+          "reason": "Assertion library used by the sibling Spring AI tests."
+        }
+      ],
+      "agent_guidance": "Use ApplicationContextRunner with AutoConfigurations.of(ChatMemoryAutoConfiguration.class) and no external services. Exercise the default in-memory ChatMemoryRepository and MessageWindowChatMemory, and the spring.ai.chat.memory.* properties binding (ChatMemoryProperties). Also test the @ConditionalOnMissingBean back-off with a user-supplied ChatMemoryRepository. Model the build.gradle on tests/src/org.springframework.ai/spring-ai-autoconfigure-model-chat-client: conditional agent mode with user-code-filter.json. Do not add JDBC, Cassandra, Mongo or Neo4j repository modules. They are separate artifacts that need databases. No system properties or environment variables are required.",
+      "risks": [
+        "I could not confirm the exact class names in the 2.0.0-RC2 autoconfigure jar. Inspect the jar to confirm them.",
+        "The Boot 4.1.0-RC1 pin follows the sibling tests and may not match what RC2 resolves to. Align it with the resolved Gradle dependency graph if the versions conflict.",
+        "The Spring AOT gate (see memory) may fail wide-matrix PRs regardless of content."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.ai:spring-ai-model:2.0.0-RC2",
+          "result": "applied",
+          "target": "tests/src/org.springframework.ai/spring-ai-autoconfigure-model-chat-memory/2.0.0-RC2/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+          "result": "applied",
+          "target": "tests/src/org.springframework.ai/spring-ai-autoconfigure-model-chat-memory/2.0.0-RC2/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-test:4.1.0-RC1",
+          "result": "applied",
+          "target": "tests/src/org.springframework.ai/spring-ai-autoconfigure-model-chat-memory/2.0.0-RC2/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "result": "already_present",
+          "target": "tests/src/org.springframework.ai/spring-ai-autoconfigure-model-chat-memory/2.0.0-RC2/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8415 Support for org.springframework.ai:spring-ai-autoconfigure-model-chat-memory:2.0.0-RC2; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 2048
+    },
+    "metrics": {
+      "input_tokens_used": 173280,
+      "cached_input_tokens_used": 1502208,
+      "output_tokens_used": 14224,
+      "iterations": 3,
+      "cost_usd": 2.0442,
+      "generated_loc": 95,
+      "tested_library_loc": 3,
+      "metadata_entries": 16,
+      "code_coverage_percent": 100.0
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.ai/spring-ai-autoconfigure-model-chat-memory/2.0.0-RC2/reachability-metadata.json"
+    }
+  }
+}

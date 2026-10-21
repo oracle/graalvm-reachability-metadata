@@ -309,15 +309,17 @@ intervention lane, so that every caller gets identical behavior.
 
 ## FS-local-branch-review: Local pre-push branch review
 
-Every generated branch except a `code-coverage-improvement` or
-`code-coverage-benchmark-result` branch must receive its authoritative semantic
-review before it is pushed (§FS-automated-pr-review). The verified working tree,
+Every generated branch except a `code-coverage-improvement`,
+`code-coverage-benchmark-result`, or `real-use-tests` branch must receive its
+authoritative semantic review before it is pushed (§FS-automated-pr-review). The verified working tree,
 local gate records, and resolved render statistics are still available at this
 point, so a contribution-local finding can be corrected before publication.
 The shared publication pipeline implements this phase before it writes the
 descriptor. Coverage publication remains a deterministic descriptor route, and
 benchmark publication a deterministic diff-validated route
-(§FS-code-coverage-benchmarking.3), rather than semantic code-review subjects.
+(§FS-code-coverage-benchmarking.3), and real-use publication a diff-validated
+route whose workflow ran every scenario natively before it publishes
+(§AR-real-use-tests-publication), rather than semantic code-review subjects.
 
 **Placement.** The review runs inside publication, after the pre-publication
 gate of §FS-local-ci-equivalent-verification.2 has passed and the descriptor

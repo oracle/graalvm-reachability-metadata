@@ -1,0 +1,153 @@
+{
+  "base_commit": "140b50a0aba6d416bdffe76dea66e3eeb269fbb7",
+  "branch": "ai/kimeta/add-lib-support-org.apache.cxf-cxf-rt-transports-http-2.6.1-forge-10989-20261020135037238521-b419121f44b3",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "8f4fe42eb221d5318a097f24e906ee5e247a1b31",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10989,
+  "library": {
+    "artifact": "cxf-rt-transports-http",
+    "coordinates": "org.apache.cxf:cxf-rt-transports-http:2.6.1",
+    "group": "org.apache.cxf",
+    "version": "2.6.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "140b50a0aba6d416bdffe76dea66e3eeb269fbb7",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmprwe0zl6x"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10989-bf573bd4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.cxf:cxf-rt-transports-http"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/org.apache.cxf/cxf-rt-transports-http/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10989-bf573bd4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "bed9ad8efb35ecb9ae2bc508ae41cf4035c2708d",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.apache.cxf/cxf-rt-transports-http/2.6.1/build.gradle"
+    ],
+    "decision": "approved",
+    "finding_body": "The build enabled both `http` and `https`, but FS-test-contract.2.7 and Review Signal #12 require every Native Image flag to be the narrowest necessary option. A no-flag Native Image run failed only in CXF's HTTPConduit path with `MalformedURLException: unknown protocol: http`; all HTTPS scenarios passed, proving that `https` was unnecessary while CXF's runtime HTTP URL construction still requires `http`.",
+    "finding_title": "URL protocol build flag enabled an unnecessary HTTPS protocol",
+    "fix_note": "Narrowed `--enable-url-protocols=http,https` to `--enable-url-protocols=http`. Verified the no-flag failure mechanism, then passed full coordinate tests under current defaults and `future-defaults-all` (five JVM and five Native Image tests in each lane), `pullAllowedDockerImages`, `validateIndexFiles`, `checkMetadataFiles`, `checkstyle`, `spotlessCheck`, `generateLibraryStats`, `validateLibraryStats`, `git diff --check`, and `fissile check --staged`; regenerated stats remained unchanged at 20/25 covered calls (80%).",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The required changed-metadata run 39437687188 was cancelled by its five-minute job timeout while Gradle was compiling the matrix task, after checkout alone took 4m22s; no contribution error was reported, and the exact matrix command now succeeds locally in 7s with all three expected lanes. The complete single-coordinate review found one contribution-local build-flag issue, repaired it, and confirmed the resulting tests, metadata/index validation, style, statistics, 80% dynamic-access coverage, and current/future Native Image lanes are ready.",
+    "session_id": "e027c9d3049d4331"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.cxf/cxf-rt-transports-http/2.6.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4565120,
+      "code_coverage_percent": 16.24,
+      "cost_usd": 4.1666,
+      "generated_loc": 538,
+      "input_tokens_used": 215259,
+      "iterations": 5,
+      "metadata_entries": 129,
+      "output_tokens_used": 26924,
+      "test_only_metadata_entries": 149,
+      "tested_library_loc": 611
+    },
+    "timestamp": "2026-10-20T13:50:37.238521Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10989-20261020135037238521-b419121f44b3",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.apache.cxf.transport.http.CXFAuthenticator` is reached, make `byte[][]` available for reflection",
+        "when `org.apache.cxf.transport.https.HttpsURLConnectionFactory` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `org.apache.cxf.transport.https.HttpsURLConnectionFactory` is reached, make `com.sun.crypto.provider.ARCFOURCipher.<init>()` available for reflection",
+        "when `org.apache.cxf.transport.https.HttpsURLConnectionFactory` is reached, make `com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305.<init>()` available for reflection",
+        "when `org.apache.cxf.transport.https.HttpsURLConnectionFactory` is reached, make `com.sun.crypto.provider.DESCipher.<init>()` available for reflection",
+        "when `org.apache.cxf.transport.https.HttpsURLConnectionFactory` is reached, make `com.sun.crypto.provider.DESedeCipher.<init>()` available for reflection",
+        "when `org.apache.cxf.transport.https.HttpsURLConnectionFactory` is reached, make `com.sun.crypto.provider.GaloisCounterMode$AESGCM.<init>()` available for reflection",
+        "when `org.apache.cxf.transport.http.CXFAuthenticator` is reached, make `com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl.<init>()` available for reflection",
+        "... and 39 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.791667,
+            "coveredCalls": 19,
+            "totalCalls": 24
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.8,
+        "coveredCalls": 20,
+        "totalCalls": 25
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2461,
+          "missed": 14522,
+          "ratio": 0.14491,
+          "total": 16983
+        },
+        "line": {
+          "covered": 603,
+          "missed": 3160,
+          "ratio": 0.160244,
+          "total": 3763
+        },
+        "method": {
+          "covered": 142,
+          "missed": 569,
+          "ratio": 0.199719,
+          "total": 711
+        }
+      },
+      "version": "2.6.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-20T13:50:37.238521Z"
+}

@@ -1,0 +1,157 @@
+{
+  "base_commit": "eb1d0f030f1ab6d2e0cdc976000a93ff8138c0da",
+  "branch": "ai/kimeta/add-lib-support-ru.yandex.clickhouse-clickhouse-jdbc-0.2.4-forge-10987-20261020195454523113-6f4d0a973fc7",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "eb1d0f030f1ab6d2e0cdc976000a93ff8138c0da",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10987,
+  "library": {
+    "artifact": "clickhouse-jdbc",
+    "coordinates": "ru.yandex.clickhouse:clickhouse-jdbc:0.2.4",
+    "group": "ru.yandex.clickhouse",
+    "version": "0.2.4"
+  },
+  "local_ci_verification": {
+    "base_commit": "eb1d0f030f1ab6d2e0cdc976000a93ff8138c0da",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpxpzzcy42"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10987-dd3ea95e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=ru.yandex.clickhouse:clickhouse-jdbc"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/ru.yandex.clickhouse/clickhouse-jdbc/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10987-dd3ea95e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "fac1e88a3ce2bf6a2e16afcbed622a2ea2c09265",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full contribution diff and local gate evidence. The change is scoped to one coordinate and uses only reachability-metadata.json; the three public, version-agnostic tests exercise the reported library dynamic-access classes through public APIs without Native Image skips, visibility bypasses, direct reflection, unsupported runtime class definition, or JVM/native flag overrides. Reported dynamic-access coverage is 5/5 (100%), the 60 library plus 22 test-only metadata entries do not trigger the mismatch guardrail, and the recorded index-validation gates passed. No blocking must violation was found.",
+    "session_id": "b2fc4d5075e54c6c"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/ru.yandex.clickhouse/clickhouse-jdbc/0.2.4/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1728896,
+      "code_coverage_percent": 21.6,
+      "cost_usd": 2.329,
+      "generated_loc": 191,
+      "input_tokens_used": 182333,
+      "iterations": 4,
+      "metadata_entries": 60,
+      "output_tokens_used": 18431,
+      "test_only_metadata_entries": 22,
+      "tested_library_loc": 1091
+    },
+    "timestamp": "2026-10-20T19:54:54.523113Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10987-20261020195454523113-6f4d0a973fc7",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- ru.yandex.clickhouse.response.ByteFragmentUtils.parseArray(ByteFragmentUtils.java:188) (line 188)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int[]) <- ru.yandex.clickhouse.response.ByteFragmentUtils.parseArray(ByteFragmentUtils.java:183) (line 183)",
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- ru.yandex.clickhouse.util.ClickHouseHttpClientBuilder.getKeyStore(ClickHouseHttpClientBuilder.java:185) (line 185)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- ru.yandex.clickhouse.util.LogProxy.invoke(LogProxy.java:52) (line 52)",
+        "[reflection] java.lang.reflect.Proxy#newProxyInstance(java.lang.ClassLoader, java.lang.Class[], java.lang.reflect.InvocationHandler) <- ru.yandex.clickhouse.util.LogProxy.getProxy(LogProxy.java:40) (line 40)"
+      ],
+      "metadata_rules": [
+        "when `ru.yandex.clickhouse.util.ClickHouseHttpClientBuilder` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `ru.yandex.clickhouse.util.ClickHouseHttpClientBuilder` is reached, make `com.sun.crypto.provider.ARCFOURCipher.<init>()` available for reflection",
+        "when `ru.yandex.clickhouse.util.ClickHouseHttpClientBuilder` is reached, make `com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305.<init>()` available for reflection",
+        "when `ru.yandex.clickhouse.util.ClickHouseHttpClientBuilder` is reached, make `com.sun.crypto.provider.DESCipher.<init>()` available for reflection",
+        "when `ru.yandex.clickhouse.util.ClickHouseHttpClientBuilder` is reached, make `com.sun.crypto.provider.DESedeCipher.<init>()` available for reflection",
+        "when `ru.yandex.clickhouse.util.ClickHouseHttpClientBuilder` is reached, make `com.sun.crypto.provider.GaloisCounterMode$AESGCM.<init>()` available for reflection",
+        "when `ru.yandex.clickhouse.response.ByteFragmentUtils` is reached, make `int[]` available for reflection",
+        "when `ru.yandex.clickhouse.response.ByteFragmentUtils` is reached, make `int[][]` available for reflection",
+        "... and 22 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7368,
+          "missed": 21955,
+          "ratio": 0.25127,
+          "total": 29323
+        },
+        "line": {
+          "covered": 1091,
+          "missed": 3959,
+          "ratio": 0.21604,
+          "total": 5050
+        },
+        "method": {
+          "covered": 183,
+          "missed": 1259,
+          "ratio": 0.126907,
+          "total": 1442
+        }
+      },
+      "version": "0.2.4"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-20T19:54:54.523113Z"
+}

@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-14": {
+    "timestamp": "2026-10-14T12:07:15.983424Z",
+    "library": "com.azure:azure-storage-common:12.28.0",
+    "starting_commit": "b2c1714d457f36366dcbba2229559f913dde4a23",
+    "ending_commit": "088f43a84ad456d1f4d7313161a5c0c29d606c13",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "12.28.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1426,
+          "missed": 8483,
+          "ratio": 0.14391,
+          "total": 9909
+        },
+        "line": {
+          "covered": 331,
+          "missed": 1889,
+          "ratio": 0.149099,
+          "total": 2220
+        },
+        "method": {
+          "covered": 74,
+          "missed": 428,
+          "ratio": 0.14741,
+          "total": 502
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10692,
+      "issue_label": "library-new-request",
+      "library": "com.azure:azure-storage-common:12.28.0",
+      "summary": "azure-storage-common is a shared helper library with no service client of its own. Its credentials, SAS generation, request-signing policies, and utilities (StorageSharedKeyCredential, SasImplUtils, StorageImplUtils, policies) run in-process. The existing azure-storage-blob test project needs only its own library dependency plus assertj, with no Docker image or extra setup. I didn't open the common-module sources or POM; this rests on knowing the library and on that sibling test project.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests should stay offline by building credentials, SAS tokens, and pipeline policies locally. A real storage endpoint would need an Azurite container, and no Azurite image is pinned in allowed-docker-images.",
+        "The library depends on azure-core and azure-core-http-netty, which come in transitively. If a test sends HTTP requests, it may need a local in-process server or a mock HttpClient."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10692 Support for com.azure:azure-storage-common:12.28.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 766
+    },
+    "metrics": {
+      "input_tokens_used": 382668,
+      "cached_input_tokens_used": 8175616,
+      "output_tokens_used": 30761,
+      "iterations": 12,
+      "cost_usd": 6.9239,
+      "generated_loc": 122,
+      "tested_library_loc": 331,
+      "metadata_entries": 46,
+      "test_only_metadata_entries": 34,
+      "code_coverage_percent": 14.91
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.azure/azure-storage-common/12.28.0/reachability-metadata.json"
+    }
+  }
+}

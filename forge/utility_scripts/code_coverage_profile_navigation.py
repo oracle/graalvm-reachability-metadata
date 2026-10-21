@@ -115,3 +115,28 @@ def navigation_caveats(evidence: NavigationEvidence) -> list[str]:
             "branches are not traced to their targets."
         )
     return caveats
+
+
+def report_caveats(
+        evidence: NavigationEvidence,
+        graph: CallGraph,
+        library_methods_known: bool,
+) -> list[str]:
+    """Every caveat the report carries: what guidance can and cannot prove, and
+    which input was missing (§AR-code-coverage-deep-navigation.1.2)."""
+    return [
+        "JaCoCo is the only coverage authority; PGO evidence is guidance only.",
+        "Absence of a sample never proves non-execution.",
+        "The analysis call graph over-approximates; static paths may be infeasible.",
+    ] + navigation_caveats(evidence) + ([] if library_methods_known else [
+        "No library method list was supplied, so the deep universe still counts "
+        "every JaCoCo-reported method, including any the library's own "
+        "test-classifier artifact contributes.",
+        "Without that list, virtual call sites declaring a foreign type still "
+        "route, so a path may rest on an edge class-hierarchy analysis could "
+        "not rule out.",
+    ]) + ([
+        f"{graph.unjudged_dispatch_sites} virtual call sites carry no declared "
+        "target in the call-tree dump; they still route, so a path may rest on "
+        "an edge class-hierarchy analysis could not rule out."
+    ] if graph.unjudged_dispatch_sites else [])
