@@ -149,7 +149,7 @@ public class Org_apache_aries_proxy_apiTest {
     }
 
     public static class ServiceWithFinalMethod {
-        public final void finish() {}
+        public final void finish() { }
     }
 
     private static final class DecoratingInvocationHandlerWrapper implements InvocationHandlerWrapper {
