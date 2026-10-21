@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mappings xmlns="http://jboss.org/xml/ns/javax/validation/mapping">
+  <bean class="org_hibernate.hibernate_validator.XmlMappedBean" ignore-annotations="true">
+    <getter name="code">
+      <constraint annotation="javax.validation.constraints.Pattern">
+        <element name="regexp">[A-Z]+</element>
+        <element name="flags">
+          <value>CASE_INSENSITIVE</value>
+        </element>
+      </constraint>
+    </getter>
+    <getter name="active">
+      <constraint annotation="javax.validation.constraints.AssertTrue"/>
+    </getter>
+  </bean>
+</constraint-mappings>
