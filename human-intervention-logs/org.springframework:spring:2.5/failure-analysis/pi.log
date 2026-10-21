@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed for `org.springframework:spring:2.5`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10976-library-new-request-org.springframework-spring-2.5-88418a13.
+
+Although the recorded reason is `test_generation_failed`, the logs show the workflow stopped earlier during setup/artifact metadata discovery. Both the preparation preflight and `discoverArtifactMetadata` Claude invocations exited with HTTP 429 because the session usage limit was reached. Gradle consequently failed `:discoverArtifactMetadata` with exit code 1. No coordinate-specific tests, metadata, execution metrics, or dynamic-access coverage were generated.
+
+Inspect:
+- `logs/do-work-20261018-172551.log`
+- `logs/org.springframework:spring:2.5/discover-artifact-metadata/discover_artifact_metadata.log`
+- `logs/org.springframework:spring:2.5/library-preparation-preflight/claude-code-session-w8uzany6.log`
+
+Manual next steps:
+1. Restore Claude quota or credentials, then rerun/resume the workflow from the setup phase.
+2. Confirm artifact metadata discovery completes and produces the test scaffold for `org.springframework:spring:2.5`.
+3. Run the coordinate-specific JVM and Native Image tests and generate coverage/metrics before publication.
