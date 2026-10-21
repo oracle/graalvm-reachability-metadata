@@ -15,6 +15,12 @@ import com.sun.tools.xjc.api.Mapping;
 import com.sun.tools.xjc.api.S2JJAXBModel;
 import com.sun.tools.xjc.api.SchemaCompiler;
 import com.sun.tools.xjc.api.XJC;
+import com.sun.xml.xsom.XSComplexType;
+import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSModelGroup;
+import com.sun.xml.xsom.XSSchema;
+import com.sun.xml.xsom.XSSchemaSet;
+import com.sun.xml.xsom.parser.XSOMParser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -139,6 +145,38 @@ public class Jaxb_xjcTest {
                 .contains("@XmlElementDecl")
                 .contains("namespace = \"urn:orders\"")
                 .contains("name = \"order\"");
+    }
+
+    @Test
+    void xsomParsesSchemaIntoQueryableComponentModel(@TempDir Path tempDir) throws Exception {
+        Path schema = writeSchema(tempDir);
+        XSOMParser parser = new XSOMParser();
+
+        parser.parse(schema.toFile());
+
+        XSSchemaSet schemaSet = parser.getResult();
+        assertThat(schemaSet).isNotNull();
+        XSSchema ordersSchema = schemaSet.getSchema("urn:orders");
+        assertThat(ordersSchema).isNotNull();
+
+        XSElementDecl order = ordersSchema.getElementDecl("order");
+        assertThat(order).isNotNull();
+        assertThat(order.getType().isComplexType()).isTrue();
+
+        XSComplexType orderType = order.getType().asComplexType();
+        assertThat(orderType.getName()).isEqualTo("OrderType");
+
+        XSModelGroup sequence = orderType.getContentType().asParticle().getTerm().asModelGroup();
+        assertThat(sequence.getCompositor()).isEqualTo(XSModelGroup.SEQUENCE);
+        assertThat(sequence.getSize()).isEqualTo(2);
+
+        XSElementDecl id = sequence.getChild(0).getTerm().asElementDecl();
+        assertThat(id.getName()).isEqualTo("id");
+        assertThat(id.getType().getName()).isEqualTo("string");
+
+        XSElementDecl quantity = sequence.getChild(1).getTerm().asElementDecl();
+        assertThat(quantity.getName()).isEqualTo("quantity");
+        assertThat(quantity.getType().getName()).isEqualTo("int");
     }
 
     private static Path writeSchema(Path directory) throws IOException {
