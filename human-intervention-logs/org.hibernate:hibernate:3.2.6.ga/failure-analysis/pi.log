@@ -1,15 +1,16 @@
 ## Human intervention needed
 
-The automated job failed for `org.hibernate:hibernate:3.2.6.ga`. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10983-library-new-request-org.hibernate-hibernate-3.2.6.ga-61832091
+The automated job failed for `org.hibernate:hibernate:3.2.6.ga`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10983-library-new-request-org.hibernate-hibernate-3.2.6.ga-7e1d697f.
 
-The failure occurred during setup, before test generation. `discoverArtifactMetadata` exited with code 1 because the Claude session limit was reached; the preflight agent also returned HTTP 429 for the same reason. The main log reports `setup/normal_setup()` failing with `SystemExit`. No coordinate-specific tests, metadata, execution metrics, or dynamic-access report were generated.
+Although reported as `test_generation_failed`, the failure occurred earlier during `setup/normal_setup()`. `discoverArtifactMetadata` exited with code 1 because the Claude session limit was reached, and all three preparation-preflight attempts returned HTTP 429 `usage_limit_reached`. No coordinate-specific tests, metadata, execution metrics, or dynamic-access coverage were generated.
 
 Inspect:
 - `logs/do-work-20261018-172551.log`
 - `logs/org.hibernate:hibernate:3.2.6.ga/discover-artifact-metadata/discover_artifact_metadata.log`
+- `logs/org.hibernate:hibernate:3.2.6.ga/library-preparation-preflight/claude-code.log`
 - `logs/org.hibernate:hibernate:3.2.6.ga/library-preparation-preflight/claude-code-session-s_lkk420.log`
 
 Manual next steps:
-1. Rerun the preparation preflight and artifact-metadata discovery with an agent account that has available quota.
-2. Verify the discovered artifact metadata, then resume the workflow from the setup phase to generate the test scaffold.
-3. Run the coordinate-scoped metadata validation and JVM/native tests, then confirm that execution metrics and dynamic-access coverage are produced.
+1. Rerun the preparation preflight and artifact discovery with available agent quota.
+2. Verify the discovered artifact information, then resume the workflow from the setup phase to generate tests and metadata.
+3. Run the coordinate-scoped JVM/native tests and confirm execution metrics and dynamic-access coverage are produced.
