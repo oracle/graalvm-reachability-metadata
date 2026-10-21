@@ -65,6 +65,12 @@ The contributed `tests/src/com.azure/azure-storage-internal-avro/12.14.0/build.g
 
 The generated autoConfigurationCanBeCreated test only constructed target types and asserted that they were non-null, which did not exercise observable library behavior as required by FS-test-contract.1.3. The build also pinned org.springframework.ai:spring-ai-model to 2.0.0-RC2 instead of the TCK-resolved tested library version, making the suite version-specific contrary to FS-test-contract.2.5.
 
+## 2026-10-13 — io.netty:netty-handler-proxy:4.2.1.Final (#9341)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-10-13 — io.projectreactor.netty:reactor-netty-http:1.3.0 (#9352)
 
 **Version-specific native-image flag applied to a shared test suite**
