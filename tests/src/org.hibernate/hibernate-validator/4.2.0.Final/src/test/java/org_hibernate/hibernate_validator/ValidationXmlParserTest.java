@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class ValidationXmlParserTest {
     @Test
-    public void appliesXmlBootstrapConfigurationAndMapping() {
+    public void fallsBackToValidatorLoaderForXmlConfigurationAndMapping() {
         ValidationScenarios.assertXmlConfiguration();
     }
 }

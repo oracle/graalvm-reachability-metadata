@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 
 public class GetMethodsTest {
     @Test
-    public void scansBeanHierarchyWhileApplyingGroupSequence() {
+    public void inspectsDynamicDefaultGroupSequenceProviderMethods() {
         ValidationScenarios.assertGroupSequence();
+        ValidationScenarios.assertDynamicGroupSequence();
     }
 }

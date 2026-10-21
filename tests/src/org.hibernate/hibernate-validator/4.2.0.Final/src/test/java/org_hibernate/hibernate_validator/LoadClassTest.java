@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class LoadClassTest {
     @Test
-    public void loadsProviderAndUserConfigurationClassesFromXml() {
+    public void loadsUserConfigurationClassesWhenContextLoaderCannotFindThem() {
         ValidationScenarios.assertXmlConfiguration();
     }
 }

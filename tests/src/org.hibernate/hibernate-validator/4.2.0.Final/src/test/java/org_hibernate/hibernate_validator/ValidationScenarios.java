@@ -12,6 +12,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -24,7 +26,6 @@ import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -33,6 +34,8 @@ import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.hibernate.validator.cfg.ConstraintMapping;
 import org.hibernate.validator.cfg.defs.NotNullDef;
 import org.hibernate.validator.cfg.defs.SizeDef;
+import org.hibernate.validator.group.DefaultGroupSequenceProvider;
+import org.hibernate.validator.group.GroupSequenceProvider;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.method.MethodValidator;
 import org.hibernate.validator.method.metadata.MethodDescriptor;
@@ -117,12 +120,31 @@ public final class ValidationScenarios {
         assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("first");
     }
 
-    public static void assertXmlConfiguration() {
-        Set<ConstraintViolation<XmlMappedBean>> violations =
-                Validation.buildDefaultValidatorFactory().getValidator().validate(new XmlMappedBean("123"));
+    public static void assertDynamicGroupSequence() {
+        Set<ConstraintViolation<DynamicGroupBean>> violations =
+                validator().validate(new DynamicGroupBean());
 
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage()).startsWith("xml:");
+        assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("first");
+    }
+
+    public static void assertXmlConfiguration() {
+        Thread thread = Thread.currentThread();
+        ClassLoader originalContextClassLoader = thread.getContextClassLoader();
+        thread.setContextClassLoader(new EmptyContextClassLoader());
+        try {
+            Set<ConstraintViolation<XmlMappedBean>> violations =
+                    Validation.byProvider(HibernateValidator.class)
+                            .configure()
+                            .buildValidatorFactory()
+                            .getValidator()
+                            .validate(new XmlMappedBean("123"));
+
+            assertThat(violations).hasSize(1);
+            assertThat(violations.iterator().next().getMessage()).startsWith("xml:");
+        } finally {
+            thread.setContextClassLoader(originalContextClassLoader);
+        }
     }
 
     public static void assertResourceBundleInterpolation() {
@@ -214,6 +236,29 @@ public final class ValidationScenarios {
 
         @NotNull(groups = Second.class)
         private String second;
+    }
+
+    @GroupSequenceProvider(DynamicGroupSequenceProvider.class)
+    public static class DynamicGroupBean {
+        @NotNull(groups = First.class)
+        private String first;
+
+        @NotNull(groups = Second.class)
+        private String second;
+    }
+
+    public static class DynamicGroupSequenceProvider
+            implements DefaultGroupSequenceProvider<DynamicGroupBean> {
+        @Override
+        public List<Class<?>> getValidationGroups(DynamicGroupBean bean) {
+            return Arrays.<Class<?>>asList(DynamicGroupBean.class, First.class, Second.class);
+        }
+    }
+
+    private static class EmptyContextClassLoader extends ClassLoader {
+        EmptyContextClassLoader() {
+            super(null);
+        }
     }
 
     @NotNull
