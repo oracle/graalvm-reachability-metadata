@@ -134,7 +134,8 @@ public final class ValidationScenarios {
     public static void assertXmlConfiguration() {
         Thread thread = Thread.currentThread();
         ClassLoader originalContextClassLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(new EmptyContextClassLoader());
+        thread.setContextClassLoader(
+                new ResourceIsolatingContextClassLoader(originalContextClassLoader));
         try {
             Set<ConstraintViolation<XmlMappedBean>> violations =
                     Validation.byProvider(HibernateValidator.class)
@@ -259,9 +260,20 @@ public final class ValidationScenarios {
         }
     }
 
-    private static class EmptyContextClassLoader extends ClassLoader {
-        EmptyContextClassLoader() {
+    private static class ResourceIsolatingContextClassLoader extends ClassLoader {
+        private final ClassLoader delegate;
+
+        ResourceIsolatingContextClassLoader(ClassLoader delegate) {
             super(null);
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (name.startsWith("org_hibernate.hibernate_validator.")) {
+                throw new ClassNotFoundException(name);
+            }
+            return delegate.loadClass(name);
         }
     }
 
