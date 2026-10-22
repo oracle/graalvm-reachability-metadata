@@ -74,15 +74,9 @@ states:
       3. Images. List each Docker image the tests will need in the Docker image
          list, choosing only from
          `tests/tck-build-logic/src/main/resources/allowed-docker-images/`.
-      4. Only then write the report. Run no test task, and change nothing else:
-         a program reverts every other edit.
 
-      Before your final message, write `{output.report.path}` as JSON:
-      `{"urls": {"<field>": "<url>"}, "libraries": [{"coordinate": "<group:artifact:version>", "why": "<use>"}], "dockerImages": ["<image>"]}`.
-    outputs:
-      - name: report
-        path: runtime/forge/reports/setup.json
-        description: The URLs, libraries, and images setup declared.
+      Run no test task, and change nothing else: a program reverts every other
+      edit. The edited files are your result; write no report.
 
   repair:
     description: Run the setup tail once, then make the version work - javaTest and the native check.
