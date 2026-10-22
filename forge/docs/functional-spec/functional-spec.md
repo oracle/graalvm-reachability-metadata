@@ -648,7 +648,7 @@ Every `forge-metadata` run ends in one final state, and the launcher acts on it
 
 | Final state | Meaning |
 | --- | --- |
-| `completed` | Every check and the local CI-equivalent verification passed (§FS-local-ci-equivalent-verification) and the publication branch is pushed. A chunk that is not the last is published the same way, with `RUN_STATUS_CHUNK_READY` in its metrics; the issue must not be resumed until that chunk's PR has merged. |
+| `completed` | Every check and the local CI-equivalent verification passed (§FS-local-ci-equivalent-verification) and the publication branch is pushed. A chunk that is not the last is published the same way, with `RUN_STATUS_CHUNK_READY` in its metrics; the issue must not be resumed until that chunk's PR has merged. A skip record is published the same way (§FS-unsupportable-version-diagnosis.3). |
 | `nothing-to-publish` | The coordinate's paths are unchanged; no branch is pushed. |
 | `human-intervention` | A check still failed after its fix, or the fix reported that nothing within the rules helps; no branch is pushed (§FS-human-intervention-policy). |
 | `failed` | A bad input or an infrastructure failure; no branch is pushed. |
@@ -657,14 +657,83 @@ A run whose checks pass only after a fix request is still `completed`: the fix
 request and report stay in the workspace, and the PR body carries the run's
 metrics like any other.
 
-## FS-unsupportable-version-diagnosis: Pre-generation unsupportable-version diagnosis (retired)
+## FS-unsupportable-version-diagnosis: Unsupportable-version verdict in setup
 
-Retired with the library preparation preflight that asked it
-(§FS-forge-issue-resolution-goal). A `fails-*` run no longer diagnoses an
-unsupportable version before generation: when the version cannot be made to
-work, its fix reports that nothing within the rules helps and the run ends in
-`human-intervention`, where a maintainer can take the disposition of
-§root/FS-contribution-contract.5.4.
+For `fails-javac-compile`, `fails-java-run`, and `fails-native-image-run`
+issues, the `setup` state answers one more question before any repair starts:
+does covering the library's dynamic-access calls require behavior Native Image
+does not support (§root/FS-test-contract.4.5)? The inputs — the issue's failure
+evidence and the library's sources for this and newer versions — all exist
+before any test is written, so an unsupportable verdict costs part of one setup
+turn and saves the whole repair. Without it, the disposition of
+§root/FS-contribution-contract.5.4 is reachable only through a reviewer: a run
+that fails honestly ends in `human-intervention` and publishes nothing. Issues
+without failure evidence are never asked: a `library-new-request` has no index
+entry to record a skip into, and a `library-update-request` carries no failure
+to diagnose. `run.md` names the bar only for the three `fails-*` labels
+(§AR-forge-workflow-prompts.2).
+
+### 1. The bar
+
+The verdict applies the evidence bar of §root/FS-contribution-contract.5.4 in
+five steps, in order, and an unsupportable verdict requires all of them:
+
+1. **Failure.** State the failing operation from the issue's failure evidence
+   alone.
+2. **Trace.** Follow the failing symbol into the library's own source and quote
+   the code performing the operation.
+3. **Classify.** Show the operation is one Native Image does not support:
+   runtime bytecode generation or class definition, runtime lambda definition,
+   Java agent self-attach, class redefinition or instrumentation, native-image
+   substitution paths, or URL, plugin, or OSGi class loader paths that
+   introduce classes not in the image. Anything reachability metadata can
+   register is repairable.
+4. **Sole path.** Prove every public API route the metadata would justify
+   passes through this operation, with no configuration, property, or fallback
+   branch around it. One viable fallback means repairable.
+5. **Range.** List the newer released versions whose sources were verified to
+   share the same mechanism, and only those; when no newer version can be
+   verified, the range is the target version alone.
+
+The verdict never rests on a red test, a library's own error type, or its
+error message — only on the mechanism traced in the library's source. The
+default is strict: any uncertainty at any step means repairable, because a
+missed skip costs one repair while a wrong skip freezes versions that were
+never attempted. An under-skipped range heals itself, since the next version's
+run asks again.
+
+### 2. The verdict is an edit
+
+On an unsupportable verdict, `setup` adds `skipped-versions` entries to the
+coordinate's entry in `index.json`, each with the `version` and a `reason`
+written for a reader who has not seen the analysis, because reasons are
+published verbatim in the index and the pull request. The entries include the
+target version and cover only the range of step 5. `setup` then makes no
+dependency or image edit and changes nothing else, and it writes no report. On
+a repairable verdict it adds no entry.
+
+### 3. The skip record is the run's outcome
+
+The setup tail keeps `skipped-versions` additions on the three `fails-*` labels
+and reverts them on every other label (§AR-forge-workflow-pipeline.4.1). When
+the index gained an entry for the target version, `repair` turns the run into
+the skip record before anything else. The coordinate's paths return to the
+pinned base — the version `prepare` added, its tests, metadata, and stats are
+dropped, as §root/FS-contribution-contract.5.4 requires of a skip record — the
+entries are written onto the base index, `validateIndexFiles` and the
+pre-publication gate (§FS-local-ci-equivalent-verification.2) accept it, and
+the commit is checkpointed. `repair` then exits `21` and the run goes straight
+to `publish`: no repair, exploration, native check, or finalization runs.
+
+`publish` pushes the index-only tree with its descriptor and writes no
+execution metrics for the skipped version, because the stats gate checks
+execution metrics against tested versions. The trusted publisher renders the
+skip record from the tree (§FS-forge-publication-readiness), so the record is
+the run's successful outcome.
+
+A verdict that cannot be applied — a rejected index, or a target version
+already recorded — is reverted, and the run falls through to the normal repair,
+so a redundant or malformed verdict costs nothing beyond the setup turn.
 
 ## FS-forge-chunked-dynamic-access: Chunked dynamic-access semantics
 

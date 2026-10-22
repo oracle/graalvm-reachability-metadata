@@ -56,6 +56,7 @@ the label's `skills/review-*` rules (§FS-automated-pr-review).
 | `11` | `measure` only: the JVM tests fail and a fix request is written |
 | `12` | the check still fails right after its own fix |
 | `20` | nothing to do: no target, exploration deferred, explore budget spent, or nothing to publish |
+| `21` | `repair` only: the setup verdict is recorded as a skip; go straight to `publish` |
 | `2` / `3` | bad input / infrastructure or crash |
 | `30`–`33` | `fix-route` only: return to `repair`, `measure`, `native`, `finalize` |
 | `40` | `fix-route` only: the fix reported that it could not help |
@@ -82,6 +83,7 @@ stateDiagram-v2
     setup --> repair
     repair --> analyze: 0, 20 new library
     repair --> fix: 10
+    repair --> publish: 21 skip recorded
     analyze --> cover: 10
     analyze --> native: 20
     cover --> measure
@@ -118,7 +120,7 @@ budget of 20 passes stays inside the host's transition limit of 80.
 | State | Does |
 | --- | --- |
 | `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<artifact>-<version>` and attaches it to the task; scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
-| `repair` | Runs the setup tail once (§AR-forge-workflow-pipeline.4.1); then a new library exits `20`, and every other route runs the version check, `javaTest`, and the native check (§AR-forge-workflow-pipeline.5); a failure is one "make this version work" fix request |
+| `repair` | Runs the setup tail once (§AR-forge-workflow-pipeline.4.1), which exits `21` on a recorded skip; then a new library exits `20`, and every other route runs the version check, `javaTest`, and the native check (§AR-forge-workflow-pipeline.5); a failure is one "make this version work" fix request |
 | `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt |
 | `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
 | `native` | The native check over the tests exploration added |
@@ -135,6 +137,15 @@ main sources into the run's source context, writes the user-code filter and
 `allowed-packages` from the library JAR when the project has no filter yet, and
 checkpoints. A missing URL, or a declaration that does not resolve, is a bad
 input.
+
+On the three `fails-*` labels `setup` may also add `skipped-versions` entries,
+its unsupportable-version verdict (§FS-unsupportable-version-diagnosis.2); on
+every other label the tail reverts them with the rest. Before anything else,
+when the index gained an entry for the target version, the tail returns the
+coordinate's paths to the pinned base, writes the entries onto the base index,
+runs `validateIndexFiles` and the pre-publication gate, checkpoints, and exits
+`21` to `publish`. A rejected index or an already-recorded version reverts the
+entries and the tail goes on as above (§FS-unsupportable-version-diagnosis.3).
 
 ### 4.2 Call sites are listed once
 
@@ -190,7 +201,7 @@ the next prompt for that class names the tests that were reset.
 
 | State | Target | May change | Report |
 | --- | --- | --- | --- |
-| `setup` | `setup_agent` | the four URL fields, `build.gradle` dependencies, `required-docker-images.txt` | `{"urls", "libraries", "dockerImages"}` |
+| `setup` | `setup_agent` | the four URL fields, `build.gradle` dependencies, `required-docker-images.txt`; on `fails-*` labels, `skipped-versions` entries | none; its edits are its result |
 | `cover` | `worker_agent` | tests under the test project, its `build.gradle` and image list | `{"targets": [...]}` |
 | `fix` | `worker_agent` | only the files the request lists | `{"result": "fixed" \| "cannot-fix", "changed", "summary"}` |
 
@@ -202,7 +213,8 @@ bounds `fix`.
 The strategy registry, per-label drivers, the library-update router, the
 continuation marker, the native trace gate and program-side metadata merging,
 per-class native runs, the pre-push local review, the library preparation
-preflight with its not-for-native-image and unsupportable-version verdicts,
+preflight with its not-for-native-image verdict (its unsupportable-version
+verdict moved into `setup`, §FS-unsupportable-version-diagnosis),
 foreign-owner follow-up issues, and every per-site repair budget are gone: strategies are fixed per label, Rhei resumes a run at its
 state and the run branch holds the checkpoints, and each former repair site is
 one fix request. The issue-form rules, the claim, bulk-then-class exploration,

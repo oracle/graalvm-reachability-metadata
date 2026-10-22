@@ -30,13 +30,15 @@ fixed instruction (template)  +  run.md (prepare)  +  handoff (sender program)
 first: the coordinate, the issue and its label, the route and its explore goal,
 the absolute test-project and metadata paths, the allowed packages, the main
 sources directory, the URL discovery command, and the path of the reporter's
-issue body when there is one.
+issue body when there is one. On the three `fails-*` labels it also carries
+the unsupportable-version bar (§FS-unsupportable-version-diagnosis.1); no
+other label sees it.
 
 ## 3. By state
 
 | State | Fixed instruction carries | Handoff carries |
 | --- | --- | --- |
-| `setup` | how to find the four URLs, declare companion libraries, and choose Docker images | none; `run.md` only |
+| `setup` | how to find the four URLs, declare companion libraries, choose Docker images, and record a verdict when `run.md` names the bar | none; `run.md` only |
 | `cover` | the step order, how a test reaches a call site, and the test rules | the mode and the exact targets |
 | `fix` | the general rules for scope, tests, metadata, and Native Image | failing commands, output, briefs, editable files, return code |
 
