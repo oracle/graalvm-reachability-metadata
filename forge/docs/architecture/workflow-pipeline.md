@@ -62,7 +62,8 @@ claimed, runs the CI pass over the open Forge pull requests
 | `40` | `fix-route` only: the fix reported that it could not help |
 
 Every program also routes any other non-zero exit to `failed`, and every exit
-writes Rhei's result file, which an edge into a final state requires.
+writes Rhei's result file, which an edge into a final state requires; a crash,
+a `SystemExit` from a shared helper included, is an infrastructure exit.
 
 ## 3. State machine
 
@@ -125,7 +126,7 @@ template's `transition_limit`.
 
 | State | Does |
 | --- | --- |
-| `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<artifact>-<version>` and attaches it to the task; scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
+| `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<group>-<artifact>-<version>`, reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate, and attaches it to the task; scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
 | `repair` | Runs the setup tail once (§AR-forge-workflow-pipeline.4.1), which exits `21` on a recorded skip; then a new library exits `20`, and every other route runs the version check, `javaTest`, and the native check (§AR-forge-workflow-pipeline.5); a failure is one "make this version work" fix request |
 | `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt |
 | `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
@@ -140,9 +141,10 @@ template's `transition_limit`.
 `setup` may change only the coordinate entry's four URL fields in `index.json`,
 the test project's `build.gradle`, and its `required-docker-images.txt`. The
 first `repair` reverts every other edit, verifies the four URLs, downloads the
-main sources into the run's source context, writes the user-code filter and
-`allowed-packages` from the library JAR when the project has no filter yet, and
-checkpoints. A missing URL, or a declaration that does not resolve, is a bad
+main sources into the run's source context — a failed download is retried after
+a pause of a few minutes, three attempts in all — writes the user-code filter
+and `allowed-packages` from the library JAR when the project has no filter yet,
+and checkpoints. A missing URL, or a declaration that does not resolve, is a bad
 input.
 
 On the three `fails-*` labels `setup` may also add `skipped-versions` entries,
@@ -234,8 +236,11 @@ processed.
 and repeats while it gains, up to `bulk_passes`; then class mode takes one class
 at a time until it is covered or has spent `class_attempts` passes, when it is
 exhausted. Exploration ends when the goal is met — no actionable class left for
-a new library, the previous version's covered calls for every other label — or
-when `explore_passes` passes are spent. A pass that gained nothing is reset, and
+a new library, the previous version's coverage ratio for every other label — or
+when `explore_passes` passes are spent. The previous version is the one the
+index owned before this run's: the baseline the version was added beside, or,
+for a version the index already lists, that entry's metadata version or the
+nearest earlier supported version. A pass that gained nothing is reset, and
 the next prompt for that class names the tests that were reset.
 
 ## 8. Agent states
