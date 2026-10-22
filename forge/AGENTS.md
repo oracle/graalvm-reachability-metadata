@@ -134,6 +134,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **utility_scripts/** should cite FS or AR.
 - **benchmarks/** should cite FS or AR.
 - **tests/** should cite FS or AR.
+- **.agent-grounds/rhei/** must cite FS or AR.
 - **code** (Loose scripts and plugins outside a kind home) must cite FS; should cite AR.
 Unlisted kinds and pairs are fine.
 

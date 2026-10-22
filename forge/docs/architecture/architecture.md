@@ -88,8 +88,8 @@ verbose output, so the default failed-run output is the location and the error
 
 Forge is a small control plane around one Rhei template, serving
 §FS-forge-issue-resolution-goal. `run-forge.sh` loops until stopped; each cycle
-checks the host and runs `forge_metadata.py` once, which fetches the queues,
-claims one issue, checks its form, and starts the `forge-metadata` workspace
+checks the host (§FS-forge-requirements) and runs `forge_metadata.py` once,
+which fetches the queues, claims one issue, checks its form, and starts the `forge-metadata` workspace
 (§AR-forge-workflow-pipeline.1). The claim, the board status, and the close-out
 stay in the dispatcher's GitHub helpers; every decision about the issue itself
 is made inside the run. The run pushes one verified branch and descriptor, and
