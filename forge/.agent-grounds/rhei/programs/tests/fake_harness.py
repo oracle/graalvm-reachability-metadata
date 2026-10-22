@@ -14,7 +14,8 @@ from __future__ import annotations
 # Control keys: classes (class -> total dynamic-access calls; a test file whose
 # name starts with the class's simple name covers one call), javaFails,
 # nativeFails (until the shipped metadata names `Fixed`), checkFails,
-# styleFails (the failing style task), listFails, coverageFails, indexFails.
+# styleFails (the failing style task), listFails, coverageFails, indexFails, and
+# stats (the dynamicAccess generateLibraryStats writes; else the coverage report's).
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
 import glob, json, os, sys
 args = sys.argv[1:]
@@ -99,7 +100,14 @@ elif task in ("spotlessApply", "spotlessCheck", "checkstyle"):
 elif task == "generateLibraryStats":
     stats = os.path.join(root, "stats", group, artifact, version, "stats.json")
     os.makedirs(os.path.dirname(stats), exist_ok=True)
-    json.dump({"versions": [{"version": version, "dynamicAccess": "N/A"}]}, open(stats, "w"))
+    report = os.path.join(project, "build", "reports", "dynamic-access", "dynamic-access-coverage.json")
+    dynamic = "N/A"
+    if os.path.exists(report):
+        totals = json.load(open(report))["totals"]
+        dynamic = {"coveredCalls": totals["coveredCalls"], "totalCalls": totals["totalCalls"],
+                   "coverageRatio": round(totals["coveredCalls"] / max(totals["totalCalls"], 1), 6), "breakdown": {}}
+    dynamic = control.get("stats", dynamic)
+    json.dump({"versions": [{"version": version, "dynamicAccess": dynamic}]}, open(stats, "w"))
 '''
 
 # The fake `gh`: serves the control file's `issue`, the login, and records edits.

@@ -91,11 +91,16 @@ class RunState:
     # Covered dynamic-access calls of the previous version: the explore goal of every non-new route.
     goal_covered_calls: int | None = None
     has_reporter_request: bool = False
+    # The explicit metadata the reporter asked for (§FS-local-ci-equivalent-verification.1.1).
+    requested_metadata: dict[str, list[str]] = field(default_factory=dict)
     setup_applied: bool = False
     # The run is the skip record of the setup verdict (§FS-unsupportable-version-diagnosis.3).
     skip_recorded: bool = False
     # The sender of the open fix request, for the loop guard (§AR-forge-workflow-pipeline.6).
     pending_request: str | None = None
+    # The audit's checkpoint once sent, and whether it passed (§FS-local-branch-review.4).
+    audit_checkpoint: str = ""
+    audit_passed: bool = False
     explore: Explore = field(default_factory=Explore)
     chunk: Chunk = field(default_factory=Chunk)
     local_ci: dict[str, Any] | None = None

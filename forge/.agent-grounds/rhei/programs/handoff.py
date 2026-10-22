@@ -31,6 +31,8 @@ class Failure:
 
     command: str
     output: str
+    # A program check names its own brief instead of matching the table.
+    brief: str | None = None
 
 
 @dataclass(frozen=True)
@@ -100,6 +102,8 @@ def metadata_check_briefs(output: str, packages: set[str]) -> list[str]:
 
 def briefs_for(failure: Failure, packages: set[str]) -> list[str]:
     """One brief per recognized error in a command's output, or the default."""
+    if failure.brief is not None:
+        return [failure.brief]
     task: str = task_name(failure.command)
     found: list[str] = metadata_check_briefs(failure.output, packages) if task == "checkMetadataFiles" else []
     for brief in BRIEFS:
@@ -129,24 +133,32 @@ def editable_paths(state: RunState, sender: str) -> list[str]:
     return paths
 
 
-def render(state: RunState, sender: str, failures: list[Failure]) -> str:
+def render(state: RunState, sender: str, failures: list[Failure], briefs: list[str] | None = None) -> str:
+    """The request; `briefs` replaces the per-command briefs, as the audit's one brief does."""
     packages: set[str] = test_packages(state)
-    lines: list[str] = [f"# Fix: {state.coordinate}", f"Return: {RETURN_CODES[sender]}", "", "## Failing commands"]
-    lines += [f"- {failure.command}" for failure in failures]
+    lines: list[str] = [f"# Fix: {state.coordinate}", f"Return: {RETURN_CODES[sender]}", "",
+                        "## Failing commands" if briefs is None else "## Commands"]
+    lines += [f"- {command}" for command in dict.fromkeys(failure.command for failure in failures)]
     lines += ["", "## Briefs"]
-    for failure in failures:
-        lines += [f"- {task_name(failure.command)}: {brief}" for brief in briefs_for(failure, packages)]
-    lines += ["", "## Output"]
-    for failure in failures:
+    if briefs is not None:
+        lines += [f"- {sender}: {brief}" for brief in briefs]
+    for failure in failures if briefs is None else []:
+        # A program check's own brief already names the check.
+        label: str = "" if failure.brief is not None else f"{task_name(failure.command)}: "
+        lines += [f"- {label}{brief}" for brief in briefs_for(failure, packages)]
+    outputs: list[Failure] = [failure for failure in failures if failure.output.strip()]
+    lines += ["", "## Output"] if outputs else []
+    for failure in outputs:
         lines += ["", f"### {failure.command}", "", "```text", failure.output.rstrip(), "```"]
     lines += ["", "## You may edit"]
     lines += [f"- {path}" for path in editable_paths(state, sender)]
     return "\n".join(lines) + "\n"
 
 
-def write_fix_request(workspace: str, state: RunState, sender: str, failures: list[Failure]) -> None:
+def write_fix_request(workspace: str, state: RunState, sender: str, failures: list[Failure],
+                      briefs: list[str] | None = None) -> None:
     """Write the request for `fix` and arm the sender's loop guard; the caller saves the state."""
-    write_text(runtime_path(workspace, FIX_REQUEST), render(state, sender, failures))
+    write_text(runtime_path(workspace, FIX_REQUEST), render(state, sender, failures, briefs))
     state.pending_request = sender
 
 

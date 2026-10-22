@@ -24,6 +24,7 @@ FORGE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "
 if FORGE_DIR not in sys.path:
     sys.path.insert(0, FORGE_DIR)
 
+import audit  # noqa: E402
 import explore  # noqa: E402
 import finalize  # noqa: E402
 import fix_route  # noqa: E402
@@ -51,6 +52,7 @@ STEPS: dict[str, Callable[[str], int]] = {
     "measure": explore.measure,
     "native": native_check.native,
     "finalize": finalize.finalize,
+    "audit": audit.audit,
     "fix-route": fix_route.fix_route,
     "publish": publish.publish,
 }
@@ -75,6 +77,8 @@ def outcome(step: str, code: int) -> dict[str, str] | None:
 
     §FS-forge-run-status
     """
+    if step == "audit" and code == STILL_FAILING:
+        return {"outcome": "human-intervention", "reason": "the audit's edit fails the checks it reran"}
     if code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": f"{step} still fails after its fix"}
     if step == "fix-route" and code == CANNOT_FIX:

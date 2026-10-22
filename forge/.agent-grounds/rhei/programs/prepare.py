@@ -31,6 +31,7 @@ from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.library_update_target import prepare_library_update_target
 from utility_scripts.metadata_index import is_not_for_native_image, resolve_version_backfill_baseline
 
+import gates
 import issue
 import run_note
 from build_tools import checkpoint, git, head, run_gradle
@@ -226,6 +227,7 @@ def run(args: argparse.Namespace) -> int:
         return INFRASTRUCTURE
     request: str = reporter_request(payload)
     state.has_reporter_request = bool(request)
+    state.requested_metadata = gates.requested_entries(request)
     if request:
         write_text(runtime_path(workspace, "reporter-request.md"), format_issue_requested_metadata_context(request) + "\n")
     state.checkpoint = checkpoint(worktree, state.coordinate_paths, f"Prepare {state.coordinate}")

@@ -26,6 +26,7 @@ from exit_codes import (  # noqa: E402
     JVM_TESTS_FAIL,
     NOTHING_TO_DO,
     OK,
+    RETURN_AUDIT,
     RETURN_MEASURE,
     RETURN_NATIVE,
     RETURN_REPAIR,
@@ -130,6 +131,11 @@ class WorkflowTest(unittest.TestCase):
 
         self.assertEqual(OK, self.step("finalize"))
         self.assertEqual("success", self.state.local_ci["status"])
+        self.assertEqual(AGENT_WORK, self.step("audit"))
+        self.assertIn("Return: 34", self.read("fix-request.md"))
+        self.fix("fixed", 2)
+        self.assertEqual(RETURN_AUDIT, self.step("fix-route"))
+        self.assertEqual(OK, self.step("audit"))
         self.assertEqual(OK, self.step("publish"))
         outcome = read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
         self.assertEqual("completed", outcome["outcome"])

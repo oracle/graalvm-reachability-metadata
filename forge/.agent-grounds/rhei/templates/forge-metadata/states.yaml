@@ -5,10 +5,11 @@
 #   analyze -- 10 --> cover --> measure; 20 (nothing to explore, deferred) --> native
 #   measure -- 10 --> cover; 11 (JVM tests fail) --> fix; 0 (goal), 20 (budget) --> native
 #   native -- 0 --> finalize; 10 --> fix
-#   finalize -- 0 --> publish; 10 --> fix
-#   fix --> fix-route -- 30/31/32/33 --> repair/measure/native/finalize
+#   finalize -- 0 --> audit; 10 --> fix
+#   audit -- 10 (first visit) --> fix; 0 --> publish
+#   fix --> fix-route -- 30/31/32/33/34 --> repair/measure/native/finalize/audit
 #   fix-route -- 40 (cannot fix) --> human-intervention
-#   repair, measure, native, finalize -- 12 (failing after its fix) --> human-intervention
+#   repair, measure, native, finalize, audit -- 12 (failing after its fix) --> human-intervention
 #   publish -- 0 --> completed; 20 (nothing changed) --> nothing-to-publish
 #   every program -- 2 (bad input), 3 (infrastructure), or a crash --> failed
 #
@@ -168,7 +169,7 @@ states:
         description: Every failing native-check output the fix agent receives.
 
   finalize:
-    description: spotlessApply, then spotlessCheck, checkstyle, generateLibraryStats, and the pre-publication gate, each once.
+    description: spotlessApply, then spotlessCheck, checkstyle, generateLibraryStats, the reviewer gates, and the pre-publication gate, each once.
     program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" finalize
     program_timeout: 120m
     outputs:
@@ -176,6 +177,16 @@ states:
         kind: handoff
         path: runtime/forge/fix-request.md
         description: The first failing check the fix agent receives.
+
+  audit:
+    description: Once - send the audit fix request, then publish an unchanged tree or rerun the checks over a changed one.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" audit
+    program_timeout: 180m
+    outputs:
+      - name: fix-request
+        kind: handoff
+        path: runtime/forge/fix-request.md
+        description: The audit request the fix agent receives.
 
   fix:
     description: Make the failing commands of the request pass, under the repository's rules, once.
@@ -226,6 +237,8 @@ states:
         test-only type (§root/FS-metadata.2).
       - Fix what `checkMetadataFiles` reports with the harness tasks first:
         `splitTestOnlyMetadata` and `routeForeignMetadata` (§root/FS-metadata.2).
+      - Metadata lives only in `reachability-metadata.json`; never write a legacy
+        `*-config.json` file, test-only included (§root/FS-contribution-contract.2).
 
       Native Image
       - Never skip or tolerate a Native Image failure (§root/FS-test-contract.4.1,
@@ -400,9 +413,9 @@ transitions:
     description: The native check could not run.
 
   - from: finalize
-    to: publish
+    to: audit
     exit_code: 0
-    description: Every check and the pre-publication gate pass.
+    description: Every check, the reviewer gates, and the pre-publication gate pass.
 
   - from: finalize
     to: fix
@@ -415,6 +428,26 @@ transitions:
     description: The check still fails after its fix.
 
   - from: finalize
+    to: failed
+    exit_code: nonzero
+    description: The checks could not run.
+
+  - from: audit
+    to: fix
+    exit_code: 10
+    description: The first visit sends the audit fix request.
+
+  - from: audit
+    to: publish
+    exit_code: 0
+    description: The audit left the tree unchanged, or the checks pass over its edit.
+
+  - from: audit
+    to: human-intervention
+    exit_code: 12
+    description: The checks fail over the audit's edit; there is no second audit.
+
+  - from: audit
     to: failed
     exit_code: nonzero
     description: The checks could not run.
@@ -442,6 +475,11 @@ transitions:
     to: finalize
     exit_code: 33
     description: Back to finalize, which reruns its checks.
+
+  - from: fix-route
+    to: audit
+    exit_code: 34
+    description: Back to audit, which compares the tree with its checkpoint.
 
   - from: fix-route
     to: human-intervention

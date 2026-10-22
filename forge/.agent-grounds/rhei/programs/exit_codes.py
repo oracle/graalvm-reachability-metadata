@@ -26,9 +26,11 @@ RETURN_REPAIR: int = 30
 RETURN_MEASURE: int = 31
 RETURN_NATIVE: int = 32
 RETURN_FINALIZE: int = 33
+RETURN_AUDIT: int = 34
 RETURN_CODES: dict[str, int] = {
     "repair": RETURN_REPAIR,
     "measure": RETURN_MEASURE,
     "native": RETURN_NATIVE,
     "finalize": RETURN_FINALIZE,
+    "audit": RETURN_AUDIT,
 }
