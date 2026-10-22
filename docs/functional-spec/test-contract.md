@@ -9,9 +9,8 @@ and how it handles Native Image particularities. It makes the requirements of
 writing or fixing a test.
 
 The Forge prompt templates under [`forge/prompt_templates/`](../../forge/prompt_templates)
-and the review skills under [`skills/`](../../skills) restate points of this
-contract for generation and review; those restatements cite the points here, so
-a change to the contract starts in this file.
+restate points of this contract for generation and repair; those restatements
+cite the points here, so a change to the contract starts in this file.
 
 Each point below carries an example. Examples are illustrative, not exhaustive:
 the rule text is the contract.

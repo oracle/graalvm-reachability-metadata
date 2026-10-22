@@ -19,7 +19,7 @@ Reachability metadata describes reflection, JNI, resource access, serialization,
 | --- | --- | --- |
 | **Application developer** using GraalVM Native Image | Build a native image of an application that depends on third-party libraries without writing reachability metadata by hand; check whether a given library is supported; request support for a missing library. | Consumes metadata indirectly — the GraalVM Gradle/Maven plugin downloads it from this repository at build time. Checks support via `curl … check-library-support.sh \| bash -s "<group>:<artifact>:<version>"` or by browsing [the libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/). Requests a new library by filing a [`01_support_new_library`](../../.github/ISSUE_TEMPLATE/01_support_new_library.yml) issue, or updates an existing one via [`02_update_existing_library`](../../.github/ISSUE_TEMPLATE/02_update_existing_library.yml). |
 | **Community contributor** | Add support for a missing library or update an existing entry to a newer library version. | Files a "library-new-request" or "update existing library" issue; the automation picks it up, optionally guided by custom instructions the contributor supplies. |
-| **Reviewer / Maintainer** of this repo | Sign off on PRs after automated review has enforced licensing, security, and metadata quality rules. | Agents run the review skills under [skills/](../../skills/) (e.g. `review-library-new-request`, `review-fixes-javac-fail`, `review-fixes-java-run-fail`, `review-fixes-native-image-run-fail`, `review-library-bulk-update`, `close-new-library-support-pr`) against the [REVIEWING.md](../REVIEWING.md) checklist; CI runs the same gates. The reviewer does the final human check before merge. |
+| **Reviewer / Maintainer** of this repo | Sign off on PRs after automated checks have enforced licensing, security, and metadata quality rules. | Forge audits its own pull requests against the contribution contract before the push (§forge/FS-local-branch-review) and handles their failing CI after it (§forge/FS-published-pr-ci-failures); CI runs the gates. The reviewer applies the [REVIEWING.md](../REVIEWING.md) checklist, does the final human check, and merges. |
 | **Repository automation (Forge)** | Generate or repair metadata using LLM-driven pipelines. | Per coordinate, the toolkit can: (1) **add support for a new library** — generate a JUnit / Kotlin / Scala test suite, scaffold metadata, and iterate until JVM-mode tests pass and dynamic-access is collected ([`add_new_library_support.py`](../../forge/ai_workflows/drivers/add_new_library_support.py)); (2) **fix a Java compilation (`javac`) failure** raised by a library version bump ([`fix_javac_fail.py`](../../forge/ai_workflows/drivers/fix_javac_fail.py)); (3) **fix a JVM-mode (`javaTest`) runtime failure** raised by a version bump ([`fix_java_run_fail.py`](../../forge/ai_workflows/drivers/fix_java_run_fail.py)); (4) **fix a `native-image` runtime failure** raised by a version bump ([`fix_ni_run.py`](../../forge/ai_workflows/drivers/fix_ni_run.py)); (5) **improve dynamic-access coverage** of already-supported libraries by targeting uncovered call sites; (6) **post-generation repair** of the metadata produced by a previous run ([`post_generation_fix.py`](../../forge/ai_workflows/core/post_generation_fix.py), [`metadata_fix.py`](../../forge/ai_workflows/core/metadata_fix.py)). Each task runs Gradle tasks against a worktree of this repo, appends a schema-validated metrics record, and — when invoked through [`forge/git_scripts/publish_*.py`](../../forge/git_scripts/) — pushes a verified branch that trusted GitHub Actions turn into a PR for human review. See [forge/docs/functional-spec/functional-spec.md](../../forge/docs/functional-spec/functional-spec.md). |
 
 ## 3. Hard Constraints
@@ -131,7 +131,7 @@ GitHub labels are part of the public triage surface for issues and PRs. Pipeline
 | `rhei` | PR | PR was produced by a Rhei workflow, including compact code coverage benchmark results. |
 | `high-priority` | Issue | Highest work-queue urgency marker. Compatibility automation adds it to failed updates for artifacts whose latest index entry sets `high-priority: true`, and Forge processes it before `priority` and regular issues in the same pipeline batch. |
 | `chunked-dynamic-access` | Issue | Forge split dynamic-access generation for this issue into class-aligned chunks because the uncovered class count exceeded the configured threshold. Normal project status controls whether Forge may claim the next chunk. |
-| `human-intervention` | Issue / PR | Automation could not safely complete the work without manual follow-up, or automated PR review requested changes. |
+| `human-intervention` | Issue / PR | Automation could not safely complete the work without manual follow-up, or a failing CI it could not fix has its own issue. |
 | `human-intervention-fixed` | PR | Manual follow-up has fixed a PR previously requiring intervention; review automation may approve and merge it after merge gates pass. |
 
 ### 4.7 Consumption by native-build-tools
@@ -358,10 +358,11 @@ entry points in §8.4.
 
 ### 8.3 Reviewer / maintainer — sign off
 
-Reviewers run the agent skills under [../skills/](../../skills/) against the
-[REVIEWING.md](../REVIEWING.md) checklist before the final human approval. CI
-enforces the same gates, so review is a judgment layer on top of automated
-checks, not a substitute for them.
+Reviewers apply the [REVIEWING.md](../REVIEWING.md) checklist before the final
+human approval and merge. Forge's pull requests arrive audited
+(§forge/FS-local-branch-review), and Forge answers their failing CI itself
+(§forge/FS-published-pr-ci-failures). CI enforces the same gates, so review is a
+judgment layer on top of automated checks, not a substitute for them.
 
 ### 8.4 Repository automation (Forge) — generate and repair
 
@@ -387,8 +388,8 @@ newer upstream versions, tests every candidate across the supported environment
 matrix, records the versions that pass as a single bulk-update pull request, and
 files one tracking issue per version that fails. The failure issues are the
 entry point of the Forge repair queue (§forge/FS-forge-functional-spec,
-§forge/AR-forge-orchestration); the bulk-update PR is reviewed by the
-`review-library-bulk-update` skill. This section is the behavioral contract for
+§forge/AR-forge-orchestration); the bulk-update PR is reviewed by a
+maintainer. This section is the behavioral contract for
 that workflow; the run-size limits are stated in §FS-repository-functional-spec.5.3
 and the recording precondition in §FS-repository-functional-spec.5.2, and every
 label it applies is defined in the

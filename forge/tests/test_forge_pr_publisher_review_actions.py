@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Cover authoritative local-review publication actions. §FS-automated-pr-review"""
+"""Cover authoritative local-review publication actions. §FS-published-pr-ci-failures"""
 
 import importlib.util
 import json

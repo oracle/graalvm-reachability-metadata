@@ -6,8 +6,8 @@ grounded here: the verification it must pass (§FS-local-ci-equivalent-verificat
 the tested-version split its result must record
 (§FS-library-update-tested-version-split), the review it receives before the
 push (§FS-local-branch-review), when the result needs maintainer judgment rather
-than another automated attempt (§FS-human-intervention-policy), and the
-automated review the published PR receives (§FS-automated-pr-review).
+than another automated attempt (§FS-human-intervention-policy), and what Forge
+does when the published PR's CI fails (§FS-published-pr-ci-failures).
 
 Publication readiness is consumed once per publication branch. After the
 trusted publisher opens the matching Forge pull request, identified by the
@@ -416,7 +416,7 @@ generated code, repository automation, metadata, or library behavior.
 A run that cannot finish — a check still failing after its fix, or a fix that
 reports nothing within the rules can help — publishes nothing and labels the
 issue with the reason (§AR-forge-workflow-pipeline.1). On a published pull
-request the label comes from the review of §FS-automated-pr-review, or from a
+request the label comes from the CI handling of §FS-published-pr-ci-failures, or from a
 descriptor that still carries an older pre-push verdict of `rejected` with
 action `human-intervention`; no other descriptor flag or inferred condition may
 add it. Valid cases include:
@@ -436,13 +436,10 @@ add it. Valid cases include:
   shared file and does not raise this case.
 - Publication detects a severe metadata, test, or coverage anomaly that makes
   the PR unsafe to auto-review as a normal generated result.
-- The pull-request review found a violation it could not correct inside the
-  contribution (§FS-automated-pr-review).
-- A CI-repair review reached the escalation of the disposition ladder: a rule
-  violation it could not repair inside the contribution's file set, or a defect
-  in shared repository infrastructure that the contribution must not carry and
-  that now has its own issue (§root/FS-contribution-contract.5) — or returned no
-  valid diagnosis at all.
+- Failing CI on a published pull request could not be fixed inside the
+  contribution: the cause lies outside it, the fix pushes are spent, a rerun
+  failed again, or the diagnosis could not be confirmed. The pull request links
+  the issue that carries the diagnosis (§FS-published-pr-ci-failures.4).
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
@@ -477,39 +474,3 @@ follow-up and review automation may resume after normal merge gates pass. The
 resulting labeled backlog is drained by automated resolution, not per-item
 manual triage. The run's worktree and branch stay on the host, so a maintainer
 can continue from the last checkpoint.
-
-
-## FS-automated-pr-review: Automated pull request review
-
-Every third run, and whenever nothing can be claimed, the launcher reviews up
-to three open Forge pull requests, oldest first, with the worker agent
-(§FS-forge-agent-runtime-selection). It is the only semantic review a
-generated pull request gets, so the bad ones must be closed here
-(§AR-forge-workflow-pipeline.1).
-
-**Eligibility is structural.** A pull request is reviewed only when its head
-repository is `oracle/graalvm-reachability-metadata`, its head branch is an
-upstream `ai/**` branch, it carries a Forge route label with a checked-in
-`skills/review-<label>` rule set, and no human has taken it over: one already
-approved, or labeled `human-intervention` without `human-intervention-fixed`,
-is skipped.
-
-**One agent turn decides.** The agent works in a throwaway checkout of the
-exact head and applies the label's review rules and the contribution
-disposition of §root/FS-contribution-contract.5: it repairs a
-contribution-local violation and pushes the repair to the head branch, closes
-an unsupportable contribution, labels everything it cannot resolve
-`human-intervention`, and approves and arms auto-merge only for the exact head
-whose whole check rollup it has read as green. Forge does not check the
-outcome; GitHub's merge gates still apply after an approval.
-
-**Merged pull requests release their issues deterministically.** Because
-GitHub may complete an armed merge between passes, every review pass first
-reconciles merged pull requests labeled for follow-up: a non-final chunk
-releases its issue for the next chunk, and a parked follow-up issue is released
-once its repair merged (§FS-forge-chunked-dynamic-access). The reconciliation is
-idempotent and never releases an issue a later run has claimed.
-
-Transient CI noise, GitHub status or API failures, and other external
-infrastructure errors are retried or waited out and are not converted into
-`human-intervention` (§FS-human-intervention-policy).

@@ -16,8 +16,9 @@ Use `run-forge.sh` for unattended operation (`do-work.sh` only starts it). Each
 cycle checks the host, fetches the issue queues with `gh issue list`, claims the
 most urgent eligible issue, checks its form, and runs its `forge-metadata` Rhei
 workspace under `runs/` with the browser dashboard. Every third run, and when
-nothing can be claimed, it reviews up to three open Forge pull requests with the
-worker agent and the label's review skill.
+nothing can be claimed, it runs the CI pass: each open Forge pull request whose
+CI fails on a new head gets one diagnosis that ends in a rerun, a pushed fix,
+or an issue.
 §AR-forge-workflow-pipeline.1
 
 ```console
@@ -147,7 +148,7 @@ forge/
 - `forge_metadata.py`: one launcher cycle: fetch, claim, form check, and the Rhei run.
 - `.agent-grounds/rhei/templates/forge-metadata/`: the issue workflow's Rhei template.
 - `.agent-grounds/rhei/programs/`: the programs its states run, and their tests.
-- `dispatcher/`: the claim, the issue-form gate, the board, and the pull-request review.
+- `dispatcher/`: the claim, the issue-form gate, the board, and the CI pass over published pull requests.
 - `ai_workflows/agents/`: the Pi and Claude Code adapters the code coverage workflow still uses.
 - `benchmarks/`: the code coverage benchmark. §FS-code-coverage-benchmarking
 - `git_scripts/`: branch, descriptor, and publication helpers.

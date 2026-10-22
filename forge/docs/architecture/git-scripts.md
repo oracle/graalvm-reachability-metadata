@@ -93,8 +93,8 @@ The descriptor contains data, never GitHub instructions:
   post-generation intervention, and Forge revision evidence;
 - typed flags for chunking, final-chunk state, and human-intervention evidence;
 - optionally, a pre-push review verdict as its own object, which a
-  `forge-metadata` run never writes because its review happens on the pull
-  request (§FS-automated-pr-review). It carries `approved`, or `rejected` with
+  `forge-metadata` run never writes because its review is the local audit
+  before the push (§FS-local-branch-review). It carries `approved`, or `rejected` with
   the required `human-intervention` or `close` action, plus the review comment,
   finding, fix note, model and session provenance, and changed-path evidence;
 - typed follow-up facts for deferred dynamic-access coverage or a tested-version
@@ -126,8 +126,8 @@ body it publishes come from the shared non-mutating renderer
 (§AR-pr-preview-builders), never from a second rendering path.
 
 Strict validation exposes no synthetic review check. The descriptor itself is
-the exact-head decision record consumed later by the authenticated Forge
-PR-review process (§FS-automated-pr-review).
+the exact-head record of what the run verified before the push
+(§FS-local-ci-equivalent-verification).
 
 Its push trigger is scoped to the descriptor path, which excludes ordinary
 repair pushes. A force-pushed rebase can still match that path when GitHub's

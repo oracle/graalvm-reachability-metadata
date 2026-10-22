@@ -216,7 +216,7 @@ class BenchmarkResultsConflictResolutionTests(unittest.TestCase):
     The entries are keyed by run ID and the only legal edit is adding one, so
     two publications conflict textually while never disagreeing; the resolver
     takes base plus the head's additions and escalates real disagreement
-    (§FS-automated-pr-review).
+    (§FS-published-pr-ci-failures).
     """
 
     _PATH = "code-coverage-benchmarks/com.example/demo/1.0.0.json"

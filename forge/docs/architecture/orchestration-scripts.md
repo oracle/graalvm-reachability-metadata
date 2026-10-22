@@ -4,8 +4,8 @@
 
 The dispatcher's queue scan, routing, preflight, and review queues are gone:
 the launcher of §AR-forge-workflow-pipeline.1 fetches, claims, checks the form,
-and starts one Rhei run, and its review of open pull requests is
-§FS-automated-pr-review. This declaration stays only until the last citation
+and starts one Rhei run, and its CI pass over open pull requests is
+§FS-published-pr-ci-failures. This declaration stays only until the last citation
 of it is removed.
 
 ## 1. Library-Specific Preparation Decision

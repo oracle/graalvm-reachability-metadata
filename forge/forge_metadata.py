@@ -9,7 +9,7 @@ One cycle fetches the queues with `gh issue list`, claims the first eligible
 issue whose form is valid, runs its `forge-metadata` Rhei workspace, and closes
 it out; every decision about the issue is the run's
 (§AR-forge-workflow-pipeline.1, §FS-forge-issue-resolution-goal). `--review`
-runs the launcher's pull-request review instead (§FS-automated-pr-review).
+runs the launcher's pull-request review instead (§FS-published-pr-ci-failures).
 
 Usage:
   python3 forge_metadata.py [--label LABEL]... [--setup-agent TARGET] [--worker-agent TARGET]

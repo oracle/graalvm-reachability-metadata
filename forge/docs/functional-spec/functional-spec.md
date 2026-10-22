@@ -53,8 +53,8 @@ The project covers these supported issue-resolution queues
 
 Successful fixes use the matching PR labels (`library-new-request`,
 `library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`, or
-`fixes-native-image-run-fail`) so review automation can validate the result
-(§FS-automated-pr-review).
+`fixes-native-image-run-fail`) so the launcher's CI pass recognizes the pull
+request as Forge's (§FS-published-pr-ci-failures.1).
 
 Out of scope: anything that does not produce reachability metadata or its
 supporting tests for the reachability repo.
@@ -239,13 +239,14 @@ choice: strategies are fixed per issue label (§AR-forge-workflow-pipeline.7).
   Docker images the tests will need, and touches nothing else. It is the only
   agent that needs the web — finding a test-sources path or the documentation of
   an unfamiliar library takes search and reading — so it must be a Claude Code
-  target, whose WebSearch and WebFetch tools are built in. The default is
+  target, whose WebSearch and WebFetch tools are built in. The launcher's
+  diagnosis of failing CI on a published pull request uses the same target for
+  the same reason (§FS-published-pr-ci-failures.3). The default is
   `claude-code[medium]:sonnet`.
 - **`worker_agent`** writes the tests that cover dynamic-access call sites and
   fixes whatever check a program reports failing. Both jobs only read the
   repository, edit files, and run Gradle, so one input serves both. The default
-  is `pi[high]:openai-codex/gpt-5.6-luna`. The launcher's review of open Forge
-  pull requests uses the same target (§FS-automated-pr-review).
+  is `pi[high]:openai-codex/gpt-5.6-luna`.
 
 A target is `<agent>[<mode>]:<model>`, where the agent is `pi` or `claude-code`
 and the mode selects the reasoning level from the template's agent profiles;

@@ -33,7 +33,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-local-branch-review](publication.md#fs-local-branch-review-local-pre-push-audit) | Local pre-push audit |
 | [§FS-library-update-tested-version-split](tested-version-split.md#fs-library-update-tested-version-split-library-update-tested-version-split) | Library-update tested-version split |
 | [§FS-human-intervention-policy](publication.md#fs-human-intervention-policy-human-intervention-policy) | Human intervention policy |
-| [§FS-automated-pr-review](publication.md#fs-automated-pr-review-automated-pull-request-review) | Automated pull request review |
+| [§FS-published-pr-ci-failures](published-pr-ci.md#fs-published-pr-ci-failures-failing-ci-on-a-published-pull-request) | Failing CI on a published pull request |
 | [§FS-forge-run-status](functional-spec.md#fs-forge-run-status-run-status-semantics) | Run status semantics |
 | [§FS-unsupportable-version-diagnosis](functional-spec.md#fs-unsupportable-version-diagnosis-unsupportable-version-verdict-in-setup) | Unsupportable-version verdict in setup |
 | [§FS-forge-run-output-legibility](functional-spec.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |

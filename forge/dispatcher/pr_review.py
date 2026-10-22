@@ -8,7 +8,7 @@
 Merged pull requests first release their linked issues deterministically; then
 up to three open Forge pull requests, oldest first, each get one worker-agent
 turn in a throwaway checkout of their exact head, under the label's checked-in
-review rules (§FS-automated-pr-review). The outcome is the agent's; this module
+review rules (§FS-published-pr-ci-failures). The outcome is the agent's; this module
 does not check it.
 """
 from __future__ import annotations
@@ -74,7 +74,7 @@ def route_label(pull: dict[str, Any]) -> str | None:
 
 
 def skip_reason(pull: dict[str, Any]) -> str | None:
-    """Why the review skips `pull`, or `None` when it reviews it (§FS-automated-pr-review)."""
+    """Why the review skips `pull`, or `None` when it reviews it (§FS-published-pr-ci-failures)."""
     labels: set[str] = {label["name"] for label in pull.get("labels", [])}
     if (pull.get("headRepository") or {}).get("nameWithOwner", REPO) != REPO:
         return "from another repository"

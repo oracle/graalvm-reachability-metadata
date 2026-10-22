@@ -6,7 +6,7 @@
 """Tests for the launcher: fetch, targets, close-out, and the pull-request review.
 
 §AR-forge-workflow-pipeline.1 fixes the fetch and the close-out, and
-§FS-automated-pr-review the review's eligibility and its one agent turn.
+§FS-published-pr-ci-failures the review's eligibility and its one agent turn.
 """
 from __future__ import annotations
 
