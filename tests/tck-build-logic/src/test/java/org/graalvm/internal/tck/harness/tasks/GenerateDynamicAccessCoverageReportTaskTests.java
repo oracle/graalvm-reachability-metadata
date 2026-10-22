@@ -22,7 +22,8 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /// §AR-test-harness.8: an empty coverage report must be a property of the library,
-/// so a report input the native test build never produced fails the task.
+/// so a report input the native test build never produced fails the task, and stored
+/// call sites replace the native listing only when they exist.
 class GenerateDynamicAccessCoverageReportTaskTests {
 
     private static final String COORDINATE = "com.example:demo:1.0.0";
@@ -56,6 +57,34 @@ class GenerateDynamicAccessCoverageReportTaskTests {
         assertThatThrownBy(() -> task.requireDynamicAccessInput(COORDINATE, false))
                 .isInstanceOf(GradleException.class)
                 .hasMessageContaining("was not produced");
+    }
+
+    @Test
+    void storedCallSitesAreAbsentByDefault() throws IOException {
+        GenerateDynamicAccessCoverageReportTask task = createTask();
+
+        assertThat(task.storedCallSites()).isNull();
+    }
+
+    @Test
+    void storedCallSitesComeFromTheProperty() throws IOException {
+        GenerateDynamicAccessCoverageReportTask task = createTask();
+        Path copy = Files.createDirectories(tempDir.resolve("runtime/call-sites"));
+        task.getProject().getExtensions().getExtraProperties()
+                .set(GenerateDynamicAccessCoverageReportTask.CALL_SITES_PROPERTY, copy.toString());
+
+        assertThat(task.storedCallSites()).isEqualTo(copy.toAbsolutePath());
+        assertThatCode(() -> task.requireDynamicAccessInput(COORDINATE, true, copy)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void missingStoredCallSitesFailTheTask() throws IOException {
+        GenerateDynamicAccessCoverageReportTask task = createTask();
+        Path copy = tempDir.resolve("runtime/missing-call-sites");
+
+        assertThatThrownBy(() -> task.requireDynamicAccessInput(COORDINATE, true, copy))
+                .isInstanceOf(GradleException.class)
+                .hasMessageContaining(copy.toString());
     }
 
     private Path dynamicAccessDir() {

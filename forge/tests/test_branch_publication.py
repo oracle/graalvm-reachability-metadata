@@ -10,7 +10,6 @@ import unittest
 from unittest.mock import patch
 
 from git_scripts import branch_publication
-from utility_scripts.continuation_marker import CONTINUATION_MARKER_FILENAME
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 
 
@@ -27,16 +26,6 @@ def _git(repo_path: str, *args: str) -> str:
 
 
 class BranchPublicationTests(unittest.TestCase):
-    def test_code_coverage_is_excluded_from_local_review(self) -> None:
-        self.assertIn(
-            "code-coverage-improvement",
-            branch_publication.LOCAL_REVIEW_EXCLUDED_TASK_TYPES,
-        )
-        self.assertNotIn(
-            "library-new-request",
-            branch_publication.LOCAL_REVIEW_EXCLUDED_TASK_TYPES,
-        )
-
     def test_format_bounded_test_diff_section_truncates_large_diff(self) -> None:
         diff_text = "Q" * (branch_publication.MAX_INLINE_TEST_DIFF_CHARS + 1)
         with patch.object(
@@ -64,46 +53,6 @@ class BranchPublicationTests(unittest.TestCase):
         self.assertLessEqual(len(bounded_body), branch_publication.MAX_PR_BODY_CHARS)
         self.assertIn("GitHub's size limit", bounded_body)
         self.assertIn("Local CI Verification", bounded_body)
-
-    def test_preservation_cleanup_keeps_pending_metrics_as_local_input(self) -> None:
-        with tempfile.TemporaryDirectory() as repo_path:
-            _git(repo_path, "init")
-            forge_path = os.path.join(repo_path, "forge")
-            logs_path = os.path.join(forge_path, "human-intervention-logs")
-            os.makedirs(logs_path)
-
-            pending_path = os.path.join(forge_path, PENDING_METRICS_FILENAME)
-            marker_path = os.path.join(forge_path, CONTINUATION_MARKER_FILENAME)
-            log_path = os.path.join(logs_path, "run.log")
-            with open(pending_path, "w", encoding="utf-8") as pending_file:
-                pending_file.write('{"status":"success"}\n')
-            with open(marker_path, "w", encoding="utf-8") as marker_file:
-                marker_file.write("{}\n")
-            with open(log_path, "w", encoding="utf-8") as log_file:
-                log_file.write("log\n")
-
-            _git(
-                repo_path,
-                "add",
-                "-f",
-                f"forge/{PENDING_METRICS_FILENAME}",
-                f"forge/{CONTINUATION_MARKER_FILENAME}",
-                "forge/human-intervention-logs/run.log",
-            )
-
-            branch_publication._remove_preservation_only_files(repo_path)
-
-            self.assertTrue(os.path.isfile(pending_path))
-            with open(pending_path, "r", encoding="utf-8") as pending_file:
-                self.assertEqual(pending_file.read(), '{"status":"success"}\n')
-            self.assertFalse(os.path.exists(marker_path))
-            self.assertFalse(os.path.exists(logs_path))
-            tracked_paths = _git(repo_path, "ls-files").splitlines()
-            self.assertNotIn(f"forge/{PENDING_METRICS_FILENAME}", tracked_paths)
-            self.assertNotIn(f"forge/{CONTINUATION_MARKER_FILENAME}", tracked_paths)
-            self.assertNotIn("forge/human-intervention-logs/run.log", tracked_paths)
-
-
 
 if __name__ == "__main__":
     unittest.main()

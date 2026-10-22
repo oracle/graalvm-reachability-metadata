@@ -157,8 +157,8 @@ states:
       2. **Repair** (`FS-contribution-contract.5.1`, `.5.2`). The failure is in
          the contribution's own files — `metadata/<group>/<artifact>/…`,
          `tests/src/<group>/<artifact>/…`, `stats/…` — and you can bring it
-         inside the rules. Look for precedent first: `skills/review-fixes-*`,
-         `skills/fix-missing-reachability-metadata`, and
+         inside the rules. Look for precedent first:
+         `skills/fix-missing-reachability-metadata` and
          `git log --oneline --grep='Test fix for' -30`. A test that exercises
          behavior Native Image does not support (reflection on substituted JDK
          internals, dynamic loading the library guards itself, Spring AOT
@@ -177,7 +177,7 @@ states:
          under 60 characters, push to the PR head branch, swap the labels with
          `gh pr edit <n> --remove-label human-intervention --add-label
          human-intervention-fixed`, and comment on the PR what you changed and
-         why under which rule. Never merge; Forge merges after the gates pass.
+         why under which rule. Never merge; a maintainer merges once CI is green.
 
       3. **Skip the version** (`FS-contribution-contract.5.4`). The library's
          dynamic access is reachable only through behavior Native Image cannot

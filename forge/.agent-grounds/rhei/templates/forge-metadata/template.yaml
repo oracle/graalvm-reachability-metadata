@@ -1,0 +1,67 @@
+name: forge-metadata
+version: 1.0.0
+description: Resolve one Forge issue - add or repair the library version it names in a dedicated worktree, explore its dynamic-access call sites with tests, prove the metadata on Native Image, and push the publication branch.
+
+inputs:
+  - name: issue_number
+    description: Open issue with exactly one Forge workflow label whose title names the group:artifact:version.
+    type: number
+    required: true
+    validate: "[1-9][0-9]*"
+
+  - name: setup_agent
+    description: >-
+      Rhei target of the setup state, which needs web search, so a claude-code
+      target such as claude-code[medium]:sonnet.
+    type: string
+    default: claude-code[medium]:sonnet
+    validate: "claude-code(\\[[A-Za-z0-9_-]+\\])?:.+"
+
+  - name: worker_agent
+    description: >-
+      Rhei target of the cover and fix states, as <agent>[<mode>]:<model> with
+      agent pi or claude-code; the mode selects the reasoning level from this
+      template's settings.json.
+    type: string
+    default: pi[high]:openai-codex/gpt-5.6-luna
+    validate: "(pi|claude-code)(\\[[A-Za-z0-9_-]+\\])?:.+"
+
+  - name: bulk_min_classes
+    description: Classes with uncovered dynamic-access calls from which exploration starts with bulk passes.
+    type: number
+    default: 5
+    validate: "[1-9][0-9]*"
+
+  - name: bulk_passes
+    description: Bulk passes before exploration moves to one class at a time.
+    type: number
+    default: 3
+    validate: "[1-9][0-9]*"
+
+  - name: class_attempts
+    description: Passes one class gets before it is exhausted.
+    type: number
+    default: 3
+    validate: "[1-9][0-9]*"
+
+  - name: defer_classes
+    description: Uncovered classes above which a fails-* issue defers exploration, and the class budget of one chunk.
+    type: number
+    default: 15
+    validate: "[1-9][0-9]*"
+
+  - name: explore_passes
+    description: Cover passes of the whole run, its ceiling under the transition limit.
+    type: number
+    default: 20
+    validate: "[1-9][0-9]*"
+
+  - name: repo_checkout
+    description: The repository checkout the run fetches from and branches its worktree from, relative to the rendered workspace or absolute.
+    type: string
+    default: ../../..
+
+  - name: worktree_root
+    description: Directory that holds the run worktree, relative to the rendered workspace or absolute.
+    type: string
+    default: ../worktrees

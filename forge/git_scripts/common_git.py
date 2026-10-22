@@ -13,7 +13,6 @@ import time
 from typing import Any, Callable, Iterable, List
 from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.stage_logger import debug_logging_enabled
-from utility_scripts.strategy_loader import load_strategy_by_name
 from git_scripts.github_cli import (  # noqa: F401 - re-exported for existing callers
     GITHUB_LOG_REDACTED_FLAGS,
     GITHUB_LOG_REDACTED_KEYS,
@@ -507,25 +506,6 @@ def find_issue_for_coordinates(search_string: str, repo: str):
         return sorted_matches[0]['number']
 
     raise RuntimeError(f"No open issue found for exact coordinates {search_string} in repo {repo}")
-
-
-def get_model_display_name(strategy_name: str) -> str:
-    """Resolve the model display name for a strategy. Strips 'oca/' prefix if present."""
-    strategy = load_strategy_by_name(strategy_name)
-    if strategy is None:
-        return "Unknown"
-    model = strategy.get("model", "Unknown")
-    if model.startswith("oca/"):
-        model = model[len("oca/"):]
-    return model
-
-
-def get_agent_name(strategy_name: str) -> str:
-    """Resolve the agent name for a strategy."""
-    strategy = load_strategy_by_name(strategy_name)
-    if strategy is None:
-        return "Unknown"
-    return strategy.get("agent")
 
 
 def load_library_stats(repo_path, coordinates):

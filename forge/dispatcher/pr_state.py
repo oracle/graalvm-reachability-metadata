@@ -4,7 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """Pull request state, reviews, publication validation, and merge readiness
-(§AR-forge-dispatcher-decomposition, §FS-automated-pr-review)."""
+(§AR-forge-dispatcher-decomposition, §FS-published-pr-ci-failures)."""
 
 
 import contextlib
@@ -108,7 +108,7 @@ def pull_request_has_label(pr: dict, label_name: str) -> bool:
 """Backoff delays for re-polling a lazily computed `mergeable` answer.
 
 GitHub recomputes mergeability in the background after every base-branch push
-and answers `UNKNOWN` until that finishes (§FS-automated-pr-review)."""
+and answers `UNKNOWN` until that finishes (§FS-published-pr-ci-failures)."""
 MERGEABILITY_POLL_DELAYS_SECONDS: tuple[int, ...] = (2, 4, 8)
 
 
@@ -117,7 +117,7 @@ def get_pull_request_state(pr_number: int) -> dict:
 
     The fetch itself triggers GitHub's recomputation, so an `UNKNOWN` answer
     is re-polled with bounded backoff instead of being classified as a clean
-    head (§FS-automated-pr-review)."""
+    head (§FS-published-pr-ci-failures)."""
     pull_request = fetch_pull_request_state(pr_number)
     for delay_seconds in MERGEABILITY_POLL_DELAYS_SECONDS:
         if pull_request.get("mergeable") != "UNKNOWN":
@@ -296,7 +296,7 @@ def get_pull_request_workflow_runs(head_sha: str) -> list[dict]:
 
 
 def get_failed_workflow_run_ids(workflow_runs: list[dict]) -> list[int]:
-    """Return failed run IDs from exact-head evidence. §FS-automated-pr-review"""
+    """Return failed run IDs from exact-head evidence. §FS-published-pr-ci-failures"""
     return [
         int(workflow_run["id"])
         for workflow_run in workflow_runs
@@ -313,7 +313,7 @@ def rerun_failed_pull_request_workflow_jobs(
         head_sha: str,
         requested_run_ids: tuple[int, ...],
 ) -> int:
-    """Rerun only agent-selected failed jobs on this head. §FS-automated-pr-review"""
+    """Rerun only agent-selected failed jobs on this head. §FS-published-pr-ci-failures"""
     pull_request = get_pull_request_state(pr_number)
     if (
             pull_request.get("headRefOid") != head_sha

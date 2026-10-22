@@ -297,7 +297,7 @@ class CodeCoverageBenchmarkTemplateTests(unittest.TestCase):
     def test_template_has_distinct_conversion_and_terminal_branches(self) -> None:
         tasks = (
             FORGE_ROOT
-            / ".agents"
+            / ".agent-grounds"
             / "rhei"
             / "templates"
             / "code-coverage-improvement"
@@ -306,7 +306,7 @@ class CodeCoverageBenchmarkTemplateTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         states = (
             FORGE_ROOT
-            / ".agents"
+            / ".agent-grounds"
             / "rhei"
             / "templates"
             / "code-coverage-improvement"
@@ -324,7 +324,7 @@ class CodeCoverageBenchmarkTemplateTests(unittest.TestCase):
     def test_settings_define_all_pi_and_claude_effort_levels(self) -> None:
         settings_path = (
             FORGE_ROOT
-            / ".agents"
+            / ".agent-grounds"
             / "rhei"
             / "templates"
             / "code-coverage-improvement"

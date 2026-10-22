@@ -50,7 +50,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         states_paths: tuple[str, ...] = (
             os.path.join(
                 forge_root,
-                ".agents",
+                ".agent-grounds",
                 "rhei",
                 "templates",
                 "code-coverage-improvement",
@@ -94,7 +94,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_path: str = os.path.join(
             forge_root,
-            ".agents",
+            ".agent-grounds",
             "rhei",
             "templates",
             "code-coverage-improvement",
@@ -119,7 +119,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         states_paths: tuple[str, ...] = (
             os.path.join(
                 forge_root,
-                ".agents",
+                ".agent-grounds",
                 "rhei",
                 "templates",
                 "code-coverage-improvement",
@@ -152,7 +152,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_path: str = os.path.join(
             forge_root,
-            ".agents",
+            ".agent-grounds",
             "rhei",
             "templates",
             "code-coverage-improvement",
@@ -212,7 +212,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         states_paths: tuple[str, ...] = (
             os.path.join(
                 forge_root,
-                ".agents",
+                ".agent-grounds",
                 "rhei",
                 "templates",
                 "code-coverage-improvement",
@@ -267,7 +267,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         states_paths: tuple[str, ...] = (
             os.path.join(
                 forge_root,
-                ".agents",
+                ".agent-grounds",
                 "rhei",
                 "templates",
                 "code-coverage-improvement",
@@ -319,7 +319,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         states_paths: tuple[str, ...] = (
             os.path.join(
                 forge_root,
-                ".agents",
+                ".agent-grounds",
                 "rhei",
                 "templates",
                 "code-coverage-improvement",
@@ -381,7 +381,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         template_path: str = os.path.join(
-            forge_root, ".agents", "rhei", "templates", "code-coverage-improvement", "states.yaml",
+            forge_root, ".agent-grounds", "rhei", "templates", "code-coverage-improvement", "states.yaml",
         )
         example_path: str = os.path.join(
             forge_root, "examples", "code-coverage-improvement-example", "states.yaml",
@@ -420,7 +420,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_paths: tuple[str, ...] = (
             os.path.join(
-                forge_root, ".agents", "rhei", "templates", "code-coverage-improvement", "states.yaml",
+                forge_root, ".agent-grounds", "rhei", "templates", "code-coverage-improvement", "states.yaml",
             ),
             os.path.join(forge_root, "examples", "code-coverage-improvement-example", "states.yaml"),
         )
@@ -483,7 +483,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         template_dir: str = os.path.join(
-            forge_root, ".agents", "rhei", "templates", "code-coverage-improvement"
+            forge_root, ".agent-grounds", "rhei", "templates", "code-coverage-improvement"
         )
         with open(os.path.join(template_dir, "template.yaml"), encoding="utf-8") as template_file:
             inputs: dict[str, dict] = {

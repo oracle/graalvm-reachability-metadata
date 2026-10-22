@@ -8,6 +8,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Keep this bootstrap wrapper stable. Do not add worker behavior here; branch
-# selection and every other option are handled by do_up_to_date_work.sh.
-exec "$SCRIPT_DIR/do_up_to_date_work.sh" "$@"
+# Keep this bootstrap wrapper stable: the Forge launcher loop is run-forge.sh
+# (§AR-forge-workflow-pipeline.1).
+exec "$SCRIPT_DIR/run-forge.sh" "$@"

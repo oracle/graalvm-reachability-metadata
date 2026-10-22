@@ -78,6 +78,18 @@ _QUALIFIER_RANK = {
 }
 
 
+def extract_coordinate_parts(title: str) -> tuple[str, str, str] | None:
+    """Return the first `group:artifact:version` an issue title names, as its three parts.
+
+    The issue title is the only place an issue names its coordinate
+    (§FS-forge-run-requirements.3).
+    """
+    match = re.search(r"([\w.\-]+):([\w.\-]+):([\w.\-]+)", title)
+    if match:
+        return match.group(1), match.group(2), match.group(3)
+    return None
+
+
 def coordinate_parts(coordinate: str) -> tuple[str, str, str | None]:
     """Parse group:artifact[:version] coordinates."""
     parts = coordinate.split(":")
@@ -247,25 +259,7 @@ def resolve_version_backfill_baseline(
     if requested_parsed is None:
         return None
 
-    entries = load_index_entries(repo_path, group, artifact) or []
-    candidates: list[_BaselineCandidate] = []
-    for entry in entries:
-        if (
-                not isinstance(entry, dict)
-                or is_not_for_native_image_entry(entry)
-                or not _entry_has_usable_support(repo_path, group, artifact, entry)
-        ):
-            continue
-        for supported_version in _entry_declared_supported_versions(entry):
-            parsed_version = _parse_metadata_version(supported_version)
-            if parsed_version is None:
-                continue
-            candidates.append(_BaselineCandidate(
-                entry=entry,
-                supported_version=supported_version,
-                parsed_version=parsed_version,
-            ))
-
+    candidates = _usable_candidates(repo_path, group, artifact)
     requested_numbers = requested_parsed[0]
     same_major_minor = [
         candidate for candidate in candidates
@@ -308,6 +302,47 @@ def resolve_version_backfill_baseline(
             f"nearest prior earlier-major supported version {selected.supported_version}",
         )
     return None
+
+
+def nearest_prior_supported_version(
+        repo_path: str,
+        group: str,
+        artifact: str,
+        version: str,
+) -> str | None:
+    """Return the newest supported version before `version` with usable tests and metadata.
+
+    This is the version a run of an already-listed version is measured against
+    (§AR-forge-workflow-pipeline.7); `None` when the index lists nothing earlier.
+    """
+    prior = [
+        candidate for candidate in _usable_candidates(repo_path, group, artifact)
+        if _is_prior_version(candidate.supported_version, version)
+    ]
+    selected = _select_ordered_baseline_candidate(prior, version)
+    return None if selected is None else selected.supported_version
+
+
+def _usable_candidates(repo_path: str, group: str, artifact: str) -> list[_BaselineCandidate]:
+    """Every parseable supported version of an entry with metadata and tests on disk."""
+    candidates: list[_BaselineCandidate] = []
+    for entry in load_index_entries(repo_path, group, artifact) or []:
+        if (
+                not isinstance(entry, dict)
+                or is_not_for_native_image_entry(entry)
+                or not _entry_has_usable_support(repo_path, group, artifact, entry)
+        ):
+            continue
+        for supported_version in _entry_declared_supported_versions(entry):
+            parsed_version = _parse_metadata_version(supported_version)
+            if parsed_version is None:
+                continue
+            candidates.append(_BaselineCandidate(
+                entry=entry,
+                supported_version=supported_version,
+                parsed_version=parsed_version,
+            ))
+    return candidates
 
 
 def require_version_backfill_baseline(

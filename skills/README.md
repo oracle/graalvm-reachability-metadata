@@ -11,44 +11,6 @@ Skills are loaded by symlinking the desired skill directory into the matching re
 Fixes missing GraalVM reachability metadata for a library specified by coordinates. 
 It runs the target tests, identifies missing metadata entries from the error output, and adds them to the correct section of `reachability-metadata.json`. This process repeats until all required metadata is available and the tests pass.
 
-### `fix-index-file-inconsistencies`
-
-Fixes PR review failures where final `validateIndexFiles` against current
-`master` fails because `index.json` tested versions are in the wrong
-metadata-version bucket, duplicated across buckets, or stale after another
-index-changing PR landed first. The reviewer repairs the PR branch, validates,
-commits, and pushes the corrected index files.
-
-### `review-library-bulk-update`
-
-Reviews automated pull requests with the `library-bulk-update` label.
-It encodes the historical approve/close/rerun logic for bulk tested-version updates, checks that the diff stays limited to `metadata/**/index.json`, requires `REQUEST_CHANGES` whenever the review leaves a blocking comment, and approves clean PRs without merging them yet.
-
-### `review-library-new-request`
-
-Reviews pull requests with the `library-new-request` label.
-It covers new-library metadata PRs, including titles like `[GenAI] Add support for com.fasterxml:classmate:1.5.1 using gpt-5.4`, and encodes the review rules already used in this repository: reject scaffold-only tests, keep test packages separate from library packages so tests do not bypass visibility boundaries, and question metadata coverage claims that are not supported by the diff.
-
-### `review-fixes-javac-fail`
-
-Reviews pull requests with the `fixes-javac-fail` label.
-It covers compile-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the compile fix, preserve meaningful tests, and apply the ordered repair coverage gate to overall and breakdown statistics.
-
-### `review-fixes-java-run-fail`
-
-Reviews pull requests with the `fixes-java-run-fail` label.
-It covers JVM runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the Java runtime fix, preserve meaningful tests and assertions, and apply the ordered repair coverage gate to overall and breakdown statistics.
-
-### `review-fixes-native-image-run-fail`
-
-Reviews pull requests with the `fixes-native-image-run-fail` label.
-It covers native-image runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: verify the native path is fixed rather than skipped, keep metadata and test changes scoped, and apply the ordered repair coverage gate to overall and breakdown statistics.
-
-### `review-code-coverage-improvement`
-
-Reviews pull requests with the `code-coverage-improvement` label.
-It covers the Forge code coverage workflow's PRs, which add a `code-coverage-improvement` extension test suite for an already-supported library. Three acceptance rules: overall `libraryCoverage` in `stats.json` must improve, shipped metadata may gain entries but never lose them, and no type defined in a test source tree may reach shipped metadata. The last one needs a human because the coverage suite sits outside the source sets `splitTestOnlyMetadata` scans and its tests are written into library packages.
-
 ### `close-new-library-support-pr`
 
 Closes new-library support pull requests.

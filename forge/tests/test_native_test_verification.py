@@ -452,7 +452,7 @@ class GateRoutingTests(GateHarness):
         self.assertEqual(result.last_native_test_exit_code, 1)
         self.assertEqual(len([call for call in calls if "runNativeTraceImage" in call]), 1)
         self.assertEqual(len(result.intervention_records), 1)
-        self.assertEqual(result.intervention_records[0].kind, "codex")
+        self.assertEqual(result.intervention_records[0].kind, "pi")
 
     def test_concise_output_names_the_native_trace_agent_fix(self) -> None:
         fake, _calls = self._fake_run_factory([1])

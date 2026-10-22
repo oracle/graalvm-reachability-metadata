@@ -53,8 +53,8 @@ The project covers these supported issue-resolution queues
 
 Successful fixes use the matching PR labels (`library-new-request`,
 `library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`, or
-`fixes-native-image-run-fail`) so review automation can validate the result
-(§FS-automated-pr-review).
+`fixes-native-image-run-fail`) so the launcher's CI pass recognizes the pull
+request as Forge's (§FS-published-pr-ci-failures.1).
 
 Out of scope: anything that does not produce reachability metadata or its
 supporting tests for the reachability repo.
@@ -71,23 +71,6 @@ the stage that broke (`fails-javac-compile`, `fails-java-run`,
 issues; it never opens them. The producer's contract is the reachability repo's
 Library version update automation (§root/FS-library-version-update-automation).
 
-## FS-foreign-metadata-owner-follow-ups: Foreign metadata owner follow-ups
-
-§FS-forge-scope §root/FS-metadata
-
-When metadata finalization resolves a foreign condition to one runtime
-dependency coordinate that the reachability repo cannot yet host, Forge must
-create or reuse an open issue targeting that exact coordinate. A missing
-artifact uses `library-new-request`; an existing artifact missing the resolved
-version uses `library-update-request`.
-
-The routing operation and original metadata check remain failed. Forge gives
-the analysis agent their captured output, the resolved coordinate, the failure
-reason, and the follow-up issue URL. It must not treat the dependency package as
-owned by the source artifact. If ownership is absent or ambiguous, Forge creates
-no issue and gives the unresolved routing failure to the agent. A passing
-initial metadata check performs none of this work.
-
 ## FS-forge-glossary: Glossary
 
 | Term | Definition |
@@ -100,17 +83,17 @@ initial metadata check performs none of this work.
 | **Forge Actions publisher** | Default-branch code triggered through a successful unprivileged Branch Ready run. It treats the feature branch as data, revalidates the exact head SHA and descriptor, renders the PR, and performs publication-related GitHub mutations with a short-lived GitHub App token (§AR-actions-publication). |
 | **Coordinate** | Maven coordinate of the target library, formatted `group:artifact:version`. |
 | **Agent** | LLM-driven code editor registered through [ai_workflows/agents/](../../ai_workflows/agents/). Each implements `send_prompt`, `run_test_command`, and `clear_context` behind one editing contract (§FS-forge-agent-runtime-selection); the concrete API and its adapters are documented by §AR-agent-api. |
-| **Workflow driver** | Deterministic script in the `drivers/` subdirectory of [ai_workflows/](../../ai_workflows/) that prepares the working environment, directories, branch/context, strategy bundle, workflow engine, agent, and metrics for one claimed unit of work. The driver runs Forge plumbing; no LLM agent should decide that setup during a generated run. Specified by §AR-forge-drivers. |
-| **Workflow engine** | A registered state-machine-like workflow implementation among the core workflow objects in [ai_workflows/core/](../../ai_workflows/core/), such as `basic_iterative` or `dynamic_access_iterative`. The engine owns prompts, command execution, retries, transitions, and terminal status selection for one run. |
-| **Predefined strategy** | Named configuration bundle in [strategies/predefined_strategies.json](../../strategies/predefined_strategies.json). It selects the workflow engine, agent backend, model, prompts, workflow parameters, optional MCPs, and optional persistent instructions. Selected via `--strategy-name`. |
-| **Post-generation intervention** | The durable record of bounded analysis-agent repair during finalization. It is not a pluggable registry and is not selected per strategy: a repairable failed step supplies its exact command, environment, and captured output; the analysis agent diagnoses and edits; then Forge re-runs the failed check and lets that result decide. Native lanes receive one repair. Metadata validation and Checkstyle retain their established budgets of up to three repair attempts, with deterministic verification after each. Deterministic production and policy steps fail directly. A successful re-run reports `SUCCESS_WITH_INTERVENTION_STATUS` and saves the intervention record (stage, intervention file, analysis) for run metrics and the PR body (§FS-forge-agent-runtime-selection). |
+| **Forge run** | One Rhei workspace of the `forge-metadata` template for one claimed issue. Programs do the deterministic work and route on exit codes; agent states do the judgment (§AR-forge-workflow-pipeline). |
+| **Program state** | A state that runs `forge_run.py <subcommand>`. It owns setup, build runs, routing decisions, and publication; no agent decides that plumbing (§AR-forge-workflow-pipeline.4). |
+| **Agent state** | A state that gives the setup or worker agent one instruction and a handoff: `setup`, `cover`, or `fix` (§AR-forge-workflow-pipeline.8). |
+| **Fix request** | The handoff a failed check writes for the `fix` state: the commands, their output, the files it may edit, one brief per error, and the code to return to. The fix runs once, best effort; the sending program reruns the check and lets that result decide (§AR-forge-workflow-prompts). |
 | **Human intervention** | A maintainer follow-up signal applied through the `human-intervention` issue or PR label when Forge has evidence that generated work, repository automation, or library execution semantics require human judgment. It is distinct from post-generation intervention, which is an automated recovery step. The policy is defined in §FS-human-intervention-policy. |
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
 | **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and latest publication ID/branch. It is stored with the target test suite so orchestration can find it from the coordinate. It does not predefine chunks; each resume regenerates the report and filters processed classes. Legacy PR-number/commit fields remain readable during migration. Specified by §AR-dynamic-access-exhaust-report. |
-| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` passes the configured class boundary to the workflow. An iterative-only workflow receives a concrete class budget; an optimistic composite counts classes completed by its bulk phase toward that boundary and lets iterative exploration fill only the shortfall. The workflow publishes the chunk, then resumes after the chunk PR merges. PR linking rules are in §AR-chunked-dynamic-access-pr-linking. |
-| **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
-| **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§AR-forge-driver-queues.2). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
+| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `analyze` defers exploration past the configured class boundary, the run publishes the chunk, and a later run resumes once the chunk PR merges (§AR-forge-workflow-pipeline.7). PR linking rules are in §AR-chunked-dynamic-access-pr-linking. |
+| **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). The setup tail downloads `main` for every run (§AR-forge-workflow-pipeline.4.1). |
+| **Library update target** | The metadata and test directories `prepare` selects for a non-new coordinate (§FS-library-update-tested-version-split). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
 ## FS-forge-requirements: Requirement gates
 
@@ -119,8 +102,8 @@ Forge validates two kinds of requirement, split by the question each answers.
 provide before any work is claimed — tools, credentials, Java lanes, filesystem,
 network, environment, and the repository checkouts Forge runs in. They are the
 same for every issue. **Run requirements** (§FS-forge-run-requirements) are what
-one work cycle must resolve for itself — the strategy it will run, the issue it
-may claim, the form of that issue, and the run context a driver is handed. Each
+one work cycle must resolve for itself — the agent targets it will run, the
+issue it may claim, the form of that issue, and the run context `prepare` builds. Each
 is a gate, and they run in that order (§AR-forge-workflow-pipeline).
 
 ## FS-forge-host-requirements: Host requirements
@@ -244,69 +227,41 @@ cycle. Capabilities the mode does not need are reported as not required, a
 relaxed version mismatch does not fail startup, and commands that start no work
 — stop, resume, help, cache maintenance — do not run the gate at all.
 
-## FS-forge-agent-runtime-selection: Configurable agent roles
+## FS-forge-agent-runtime-selection: Two agent inputs
 
 §GOAL-forge-direction §root/PRCPL-prefer-algorithmic
 
-Forge names three runtime agent **roles** rather than encoding one product into
-a workflow. The **setup agent** prepares a library before any generation
-starts — resolving artifact URL fields and researching what deterministic setup
-the library needs. The **analysis agent** handles recovery, diagnosis, style
-repair, native-test repair, post-generation recovery, and pull-request
-assessment. The **test agent** generates and adjusts library tests inside
-strategy workflows.
+A Forge run has exactly two agent inputs, and nothing else about a run is a
+choice: strategies are fixed per issue label (§AR-forge-workflow-pipeline.7).
 
-Setup and analysis both read evidence and decide, so the line between them is
-what they are allowed to touch and when. A setup step runs before the working
-tree holds generated work, reads the library and the network, and writes only
-the fields it was asked to resolve; it cannot repair the repository. An analysis
-step runs after something has failed, reproduces that failure, and edits until
-it passes. Separating them lets the cheap, network-facing lookup that precedes
-every run be priced differently from the repair loop that follows a failure,
-which §GOAL-forge-direction requires by asking for the least capable agent that
-is sufficient.
+- **`setup_agent`** prepares the library before any test is written: it fills
+  the coordinate's missing artifact URLs, declares the companion libraries and
+  Docker images the tests will need, and touches nothing else. It is the only
+  agent that needs the web — finding a test-sources path or the documentation of
+  an unfamiliar library takes search and reading — so it must be a Claude Code
+  target, whose WebSearch and WebFetch tools are built in. The launcher's
+  diagnosis of failing CI on a published pull request uses the same target for
+  the same reason (§FS-published-pr-ci-failures.3). The default is
+  `claude-code[medium]:sonnet`.
+- **`worker_agent`** writes the tests that cover dynamic-access call sites and
+  fixes whatever check a program reports failing. Both jobs only read the
+  repository, edit files, and run Gradle, so one input serves both. The default
+  is `pi[high]:openai-codex/gpt-5.6-luna`.
 
-The roles are selected from different places, because they answer to different
-owners. Setup and analysis are worker configuration: whoever runs the worker
-selects, per role, a registered backend, an optional backend-specific model,
-and — for a backend that addresses a model through a named provider — that
-provider. The test role is strategy data: a predefined strategy names the
-backend, model, and provider it was written and measured against, and nothing
-outside the bundle retargets it, so a strategy name always denotes the agent
-that produced the results recorded under it. The worker may replace only that
-agent's machine-local executable name through `--test-agent-alias`; the alias
-does not change the test backend, model, provider, or recorded selection. No
-role may borrow its selection from another role or from a bundle written for
-one, so retuning one role never
-silently moves a second. Every role's effective selection must reach
-every workflow and its metrics rather than being replaced by a direct backend
-invocation. `do-work.sh` preserves the worker-configured selections across
-self-update and re-execution (§AR-do-work-loop); the concrete roles, families,
-and defaults are architecture (§AR-agent-api).
-
-**The pre-push reviewer is the semantic reviewer.** It runs through the
-worker-configured analysis role, receives local verification evidence, applies
-the label-specific checked-in review rules and the contribution-disposition
-ladder, repairs contribution-local violations, and returns the structured
-decision that publication records (§FS-local-branch-review). Agent, family,
-model, provider, and thinking level remain entirely owned by the analysis role.
-
-The published-PR process does not repeat that semantic review. It validates the
-descriptor on the exact pull-request head and executes its decision
-deterministically (§FS-automated-pr-review). The analysis role is invoked after
-publication only when an approved head has failed CI. That CI-repair turn
-receives the failed-check evidence and applies the same review and disposition
-contract as the pre-push reviewer. Only a repair updates the descriptor and
-findings record for the resulting exact head and pushes the result; any other
-outcome is applied to the unchanged pull request (§FS-automated-pr-review). The
-shared analysis runtime continues to own invocation, logs, failures, and token
-accounting.
+A target is `<agent>[<mode>]:<model>`, where the agent is `pi` or `claude-code`
+and the mode selects the reasoning level from the template's agent profiles;
+OpenAI models run through `pi` with the `openai-codex` provider. Codex and
+OpenCode are not supported. The launcher validates both targets before it
+claims an issue, and the host gate checks that each selected agent is installed
+and authenticated (§FS-forge-host-requirements). Each target reaches its agent
+states unchanged, so the agent and model of every edit are the ones the
+operator selected and the run's metrics record them.
 
 ## FS-forge-run-requirements: Run requirements
 
 
 A satisfied host says nothing about whether a given cycle may do work. Before a
-run reaches a workflow driver, four things must be resolved and verified, each
+run does any work, four things must be resolved and verified, each
 before the side effect it protects, and each by deterministic code rather than
 by an agent (§root/PRCPL-prefer-algorithmic, §root/PRCPL-verify-inputs). 
 A run requirement that cannot be satisfied must fail where it is checked, naming what was missing or ambiguous,
@@ -316,61 +271,52 @@ issue form is the one requirement that then ends the issue rather than leaving
 it queued, because its defect is in the issue itself and no later cycle can
 repair it (see 3 below).
 
-### 1. Strategy and model
+### 1. Agent targets
 
-Every enabled queue must resolve its configured strategy name against the
-registry before scanning begins, and a strategy bundle must be rejected on load
-unless it names a model and carries the prompts and parameters its workflow
-engine declares as required (§FS-forge-predefined-strategy-contract). An
-unresolvable strategy or model is a worker configuration error: the worker must
-exit before it scans a queue, not fail one issue at a time.
+Both agent targets must be valid before the launcher fetches a queue: each is
+a `pi` or `claude-code` target, and `setup_agent` is a `claude-code` target
+(§FS-forge-agent-runtime-selection). An invalid target is a worker configuration
+error: the launcher exits before it claims an issue, not one issue at a time.
 
 ### 2. Issue claimability
 
 Claiming is exclusive, and the decision must be made against live GitHub state
-rather than the scan results that led to it (§AR-forge-orchestration).
-Before claiming, orchestration must fetch `origin/master`, pin the fetched
-commit as the issue base, and leave the issue untouched when that base cannot
-be resolved. The branch supplying the running Forge implementation does not
-select the repository state an issue targets.
-The issue payload is re-read at claim time and must still be open, still carry
-the queue label, be unassigned or assigned only to the authenticated user, carry
-no open blockers, and sit in project status `Todo`. Once those live conditions
-hold, the issue is assigned and moved to `In Progress`, and an isolated
-worktree is created from the pinned issue-base commit. While that exclusive
-claim is held and before a driver runs, the issue-form gate and every
-repository-dependent precondition run against that worktree: a `resumable`
-issue must resolve a valid continuation marker on a preserved branch
-(§FS-forge-run-continuation), and a `chunked-dynamic-access` issue must resolve
-its exhaust report (§AR-dynamic-access-exhaust-report). A failed non-terminal
-precondition always removes the worktree and releases the claim back to `Todo`,
-and its classification decides what happens to the issue
-(§FS-human-intervention-policy). A precondition that fails on an external
-dependency takes no issue action, so a later cycle retries it. Any other failed
-precondition would fail identically on every retry, so it is logical: Forge
-posts a comment naming the failed precondition and its error, labels the issue
-`human-intervention`, and removes `resumable`, which takes the issue out of the
-queue until a maintainer resolves it.
+rather than the fetch that led to it (§AR-forge-workflow-pipeline.1). The issue
+payload is re-read at claim time and must still be open, still carry the queue
+label, be unassigned or assigned only to the authenticated user, carry no open
+blockers, and sit in project status `Todo`. Once those live conditions hold, the
+issue is assigned and moved to `In Progress`.
 
-An operator may explicitly enable blocked-issue claiming for one invocation or
-worker configuration. The override is disabled by default and bypasses only the
-open-blocker condition: every other live claimability condition above remains
-mandatory.
+The branch supplying the running Forge implementation does not select the
+repository state an issue targets. The issue-form gate decides against freshly
+fetched `origin/master`, and `prepare` fetches again, pins that commit as the
+run's base, and creates the isolated worktree from it; a base that cannot be
+resolved fails the run before anything is changed. Every repository-dependent
+precondition runs inside the run against that worktree: a
+`chunked-dynamic-access` issue must resolve its exhaust report and find the
+preceding chunk merged (§AR-dynamic-access-exhaust-report). A failed
+precondition ends the run, the launcher releases the claim back to `Todo`, and
+its classification decides what happens to the issue
+(§FS-human-intervention-policy). An infrastructure failure takes no issue
+action, so a later cycle retries it. A bad input would fail identically on every
+retry: Forge posts a comment naming the reason and labels the issue
+`human-intervention`, which takes it out of the queue until a maintainer
+resolves it.
 
 ### 3. Issue form
 
-The queue label decides the workflow, so the issue must be unambiguous before a
-driver starts (§AR-forge-driver-queues). Every rule below is decided from the
-issue payload and the pinned issue-base worktree alone, so all of them are
-checked by one deterministic gate after the exclusive claim and before the
-driver runs (§root/PRCPL-prefer-algorithmic,
+The queue label decides the route, so the issue must be unambiguous before a
+run starts (§AR-forge-control-plane). Every rule below is decided from the
+issue payload and the freshly fetched base's `index.json` alone, so all of them
+are checked by one deterministic gate after the exclusive claim and before the
+run is instantiated (§root/PRCPL-prefer-algorithmic,
 §root/PRCPL-verify-inputs). The claim makes the terminal decision exclusive,
 so two workers cannot both reject the same issue.
 
 - The issue carries **exactly one workflow label**. An issue carrying two queue
   labels is processed once per queue that matches it, so the same issue can be
   claimed, worked, and published more than once, each time by a different
-  driver working from different assumptions about what the issue asks for.
+  route working from different assumptions about what the issue asks for.
 - The **title resolves to Maven coordinates** `group:artifact:version`.
 - A `fails-*` issue **resolves a current `latest` metadata version** for the
   coordinate, because a repair workflow is defined as a move from the currently
@@ -383,11 +329,9 @@ Everything decidable from the issue payload and the checked-out repository is
 decided before the one rule that costs a request to a remote repository, so a
 malformed issue is rejected without a network round trip.
 
-Which driver a `library-update-request` runs is not part of this gate. It is
-decided by a compile, JVM-test, and native-test probe against a prepared
-baseline suite, so it needs the worktree the gate protects; it is resolved
-after the claim and recorded so publication reports the workflow that actually
-ran (§AR-forge-driver-queues.2).
+A `library-update-request` has one route, so this gate decides nothing about
+how it runs: `prepare` adds the version beside its nearest supported one, and
+`repair` finds out whether it already passes (§AR-forge-workflow-pipeline.3).
 
 **Coordinates resolve when the artifact is fetchable.** A title that parses as
 `group:artifact:version` has satisfied a regular expression, not the
@@ -398,9 +342,8 @@ harness resolves against — Maven Central, then the Confluent fallback
 never published, or a version that does not exist upstream is decidable from
 the repository's own layout, so it is decided here rather than surfacing later
 as a Gradle resolution error after Forge has created a worktree and started a
-driver (§root/PRCPL-verify-inputs). Only the artifact's existence is checked —
-its content is a driver concern, and Native Image eligibility remains where it
-is (§AR-forge-driver-queues).
+run (§root/PRCPL-verify-inputs). Only the artifact's existence is checked —
+its content is the run's concern (§AR-forge-workflow-pipeline.4).
 
 The answer is three-valued: published, absent from every configured
 repository, or undecided because a repository could not be reached. Only
@@ -443,12 +386,11 @@ preserves no branch (§FS-human-intervention-policy).
 
 ### 4. Run context
 
-A driver must be handed a complete run context and must not resolve, clone, or
-re-derive any part of it: the freshly fetched and pinned `origin/master`
-commit, resolved coordinates, validated strategy, isolated reachability
-worktree created from that commit, scratch metrics repository, setup-evidence
-directory, issue context, one GraalVM environment pinned for the whole run, and
-the continuation marker (§FS-forge-run-continuation). The pinned commit keeps
+`prepare` builds the run context once, and no later state resolves, clones, or
+re-derives any part of it: the freshly fetched and pinned `origin/master`
+commit, resolved coordinates, the route, the isolated reachability worktree
+created from that commit, the issue context, and one GraalVM environment for the
+whole run (§AR-forge-workflow-pipeline.4). The pinned commit keeps
 repository-dependent checks and generated work on one base even if `master`
 advances during the run. The worktree is also the boundary of the run's Gradle
 daemons. Every worktree builds in its own Gradle user home, so the daemons it
@@ -468,11 +410,9 @@ copy lacks. The copy is never written while worktrees use it. Warming and
 publishing are best effort: when either fails, the failure is reported, the run
 continues, and worktrees merely download more. A worktree home whose worktree
 no longer exists is an orphan that a later Forge process stops and removes
-before it publishes. The driver owns normal and neural setup inside that
-context, including the persisted library preparation result; it does not own
-queue policy or repository resolution. The gap between this requirement and
-the current implementation is
-§ROADMAP-forge-dispatcher-owned-run-preconditions.
+before it publishes. The `setup` state and the setup tail own library setup
+inside that context (§AR-forge-workflow-pipeline.4.1); neither owns queue
+policy or repository resolution.
 
 ## FS-forge-outputs: Run outputs
 
@@ -485,10 +425,10 @@ the current implementation is
   required by §FS-durable-generation-logs.
 - **Generated tests + metadata + index.json** committed on a per-run feature
   branch in the reachability repo, named `ai/<authenticated-login>/<suffix>`
-  where `<suffix>` is workflow-specific and encodes the coordinate (e.g.
+  where `<suffix>` names the route and encodes the coordinate (e.g.
   `add-lib-support-<group>-<artifact>-<version>` for new-library support,
-  `improve-coverage-…`, `fix-javac-…`, `fix-java-run-…`,
-  `fix-native-image-run-…`, `not-for-native-image-…`). Publication branches are
+  `library-update-request-…`, `fixes-javac-fail-…`, `fixes-java-run-fail-…`,
+  `fixes-native-image-run-fail-…`). Publication branches are
   unique per publication ID and are pushed directly to
   `oracle/graalvm-reachability-metadata` so the repository's `push` workflow can
   observe them.
@@ -521,7 +461,7 @@ a Gradle banner or an agent's prose.
 A failing run states the phase, the step, the operand, and the concrete reason
 it stopped, in that order, before any surrounding detail — the same pair
 required everywhere a failure surfaces by
-§ROADMAP-forge-failure-locates-phase-and-step. A failure reported only as a
+§FS-forge-run-location-reporting.3. A failure reported only as a
 status, a stack trace, or a generic message does not satisfy this requirement.
 
 #### 3. The inside of a step stays quiet
@@ -545,13 +485,11 @@ the registered method-style step announcement and deterministic setup details.
 It never replaces the concise progress and outcome lines. A failed gate prints
 the detail needed to diagnose that failure even when verbose mode is off.
 
-For `setup`, normal output reduces the phase to three visible states under the
-registered positions: library preflight starts and reports its decision,
-deterministic workspace preparation names its current unit and reports it
-ready, and workflow-engine dispatch names the strategy it starts. Agent session
-paths, command start/success lines, branch commands, source downloads,
-checkpoints, and report refreshes are verbose narration. A failed command or a
-degraded preflight remains visible with its cause and durable log path.
+Inside a `forge-metadata` run each state writes its own log, and the dashboard
+names the state; a program prints one line per check it runs and its outcome,
+and command output, branch commands, source downloads, and checkpoints stay in
+the state's log (§AR-forge-workflow-pipeline.3). A failed command remains
+visible with its cause and durable log path.
 
 For `fix` and `explore`, normal output names the diagram step and only the unit
 that advances it. Test generation identifies either the selected class and its
@@ -582,20 +520,14 @@ durable log path.
 Every run must persist a per-library metrics record to
 `stats/<group>/<artifact>/<version>/execution-metrics.json` so cost, token,
 coverage, and status evidence stays attached to the library version it describes
-(§GOAL-maximize-library-coverage). During a run, in-flight metrics are staged
-transiently in the Forge metrics directory as `.pending_metrics.json` and
-consumed while constructing the durable publication descriptor; they are not a
-durable output. Benchmark-mode runs
-instead record durable, schema-validated metrics under
-`benchmarks/benchmark_results/` (§FS-forge-generation-benchmarking.4).
+(§GOAL-maximize-library-coverage). `publish` builds the record from the run's
+own token accounting just before it writes the publication descriptor
+(§AR-forge-workflow-pipeline.4).
 Run metrics may identify the generated metadata artifact, but must not record a
 single test-file artifact: the version-controlled test tree and pull-request
 diff are the authoritative set of test files for the run.
-When a failed run is preserved for continuation, `.pending_metrics.json` carries
-the accumulated token, cached-token, cost, and iteration counters for the
-preserved work. Any later resumed run for the same library must add its current
-counters to the pending counters before writing durable metrics or publication
-metrics, so repeated continuation attempts do not reset usage accounting.
+A run Rhei resumes keeps its workspace, so its accounting already holds the
+usage of the attempts before the resume.
 
 ## FS-durable-generation-logs: Durable generation and session logs
 
@@ -603,8 +535,8 @@ Every Forge session and generation step must be logged and saved to a stable
 path because durable logs are the primary debugging surface for generated work.
 This includes agent prompts and responses, session or thread identifiers,
 persistent-instruction state, Gradle command output, metadata-fix output,
-native tracing output, post-generation intervention output, and local
-verification output.
+native check output, fix requests and fix reports, and local verification
+output.
 
 Logs must be scoped by task and coordinate where possible, and the workflow
 must print or record the log path so a maintainer can inspect the exact
@@ -622,21 +554,21 @@ A Forge run must always be able to say **where** it is: the phase it is in and
 the step inside it. That location is one vocabulary used twice — to narrate
 progress while the run works, and to report the location of a failure — so a
 reader of a live run and a reader of a failed run name the same thing the same
-way, serving §GOAL-shorten-issue-to-shipped-metadata.
+way, serving §GOAL-shorten-issue-to-shipped-metadata. Inside a `forge-metadata`
+run the location is the Rhei state, which the dashboard and the state's log
+already name (§AR-forge-workflow-pipeline.3); the vocabulary below is the
+launcher's and the code coverage workflow's.
 
 ### 1. Vocabulary
 
 A **phase** is one banded segment of the run: `claim`, `setup`, `fix`,
-`explore`, `finalization`, or `publication`. The last five are the continuation
-phases (§FS-forge-run-continuation.1) and must not be redeclared anywhere else;
-`claim` is the dispatcher-side segment that runs before a run exists and
-therefore before continuation state exists.
+`explore`, `finalization`, or `publication`. `claim` is the launcher-side
+segment that runs before a run exists, and the phases are declared once, in the
+run-location table (§AR-forge-run-location).
 
-A **step** is the pipeline method that is executing, written with its
-parentheses exactly as the pipeline names it (§AR-forge-workflow-pipeline) —
-`check_host_requirements()`, `neural_setup()`, `normal_setup()`,
-`run_workflow_engine()`, `generate_tests()`, `native_trace_gate()`,
-`agent_fix()`, `finalize_run()`, `local_ci_check()`, `publish_branch()`. A step
+A **step** is the method that is executing, written with its parentheses —
+for example `check_host_requirements()`, `claim_issue()`, `generate_tests()`,
+`native_trace_gate()`, `agent_fix()`, `local_ci_check()`, `publish_branch()`. A step
 is registered under the phase that runs it, and a phase's registered steps are
 ordered by the order the run enters them, so a step has a position `<n>` within
 a total `<total>`. A step name may belong to more than one phase when more than
@@ -657,7 +589,7 @@ operand and `<phase>/<step>[<operand>]` with one.
 
 Entering a phase prints a bounded, visually distinct banner naming the phase and
 the run it belongs to, so a phase transition is findable by eye in a long run
-log even though runs are interleaved on a pool (§AR-forge-control-plane). The
+log even when runs are interleaved (§AR-forge-run-location). The
 banner marks a transition: re-entering the phase the run is already in prints
 nothing.
 
@@ -680,11 +612,9 @@ run failed in <phase>/<step>
 ```
 
 The same pair must appear, unchanged, in every place the failure surfaces: the
-worker's terminal output and run log, the terminal run status the workflow
-driver returns to `forge_metadata`, the continuation marker, and the
-human-intervention comment, which leads with it
-(§FS-human-intervention-policy). A resumed run therefore states the location it
-is retrying.
+worker's terminal output and run log, the run status the workflow returns, and
+the human-intervention comment, which leads with it
+(§FS-human-intervention-policy).
 
 The location is reported once per run — the failure that ends a run is one
 failure, and the first boundary to report it owns the line — and the innermost
@@ -714,155 +644,132 @@ are never suppressed.
 
 ## FS-forge-run-status: Run status semantics
 
-Every workflow records one of these statuses:
+Every `forge-metadata` run ends in one final state, and the launcher acts on it
+(§AR-forge-workflow-pipeline.1):
 
-| Status | Meaning |
+| Final state | Meaning |
 | --- | --- |
-| `RUN_STATUS_SUCCESS` | All generation gates and the local CI-equivalent verification passed; metadata and tests committed (see §FS-local-ci-equivalent-verification). |
-| `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the built-in post-generation recovery modified the working tree (an analysis-agent metadata repair, then the same role removing unsupported failing tests as a last resort), and the local CI-equivalent verification (§FS-local-ci-equivalent-verification) passed. The intervention's record is included in the run-metrics and PR description, and is written to the run's durable logs rather than into the tree Forge publishes, so a recovered run carries no Forge run artifact into its pull request and cannot be classified as a repository-level change by that artifact alone (§FS-human-intervention-policy). PR-eligible; distinct from the `human-intervention` label unless §FS-human-intervention-policy separately requires that label. |
-| `RUN_STATUS_CHUNK_READY` | A chunked dynamic-access run reached a reviewable class boundary and §FS-local-ci-equivalent-verification passed for the current part. The current part is PR-eligible, and the issue must not be resumed until the part PR has merged. |
-| `RUN_STATUS_FAILURE` | The workflow could not converge or a quality gate failed; the feature branch is reset to its workflow recovery checkpoint and no PR is opened. Iterative dynamic-access exploration advances that checkpoint after each committed class (§AR-dynamic-access-fallback-and-failure); other workflows retain their specified checkpoint behavior. |
+| `completed` | Every check and the local CI-equivalent verification passed (§FS-local-ci-equivalent-verification) and the publication branch is pushed. A chunk that is not the last is published the same way, with `RUN_STATUS_CHUNK_READY` in its metrics; the issue must not be resumed until that chunk's PR has merged. A skip record is published the same way (§FS-unsupportable-version-diagnosis.3). |
+| `nothing-to-publish` | The coordinate's paths are unchanged; no branch is pushed. |
+| `human-intervention` | A check still failed after its fix, or the fix reported that nothing within the rules helps; no branch is pushed (§FS-human-intervention-policy). |
+| `failed` | A bad input or an infrastructure failure; no branch is pushed. |
 
-The exit code is `0` for PR-eligible statuses and `1` for failure.
+A run whose checks pass only after a fix request is still `completed`: the fix
+request and report stay in the workspace, and the PR body carries the run's
+metrics like any other.
 
-## FS-unsupportable-version-diagnosis: Pre-generation unsupportable-version diagnosis
+## FS-unsupportable-version-diagnosis: Unsupportable-version verdict in setup
 
-For issues that report a failing version update (`fails-javac-compile`,
-`fails-java-run`, `fails-native-image-run`), the library preparation preflight
-(§AR-forge-orchestration.1) asks one additional question before any generation
-starts: does covering the library's dynamic-access calls require behavior
-Native Image does not support (§root/FS-test-contract.4.5)? The inputs — the
-automation issue's failure evidence and the library's sources for this and
-newer versions — all exist before the scaffold is prepared, so an
-unsupportable verdict costs one preflight turn and saves the whole fix budget.
-Without it, the disposition of §root/FS-contribution-contract.5.4 is reachable
-only through a branch that got green somehow: a run that fails honestly ends
-`RUN_STATUS_FAILURE`, publishes nothing, and no reviewer ever takes the
-disposition. Issues without failure evidence (`library-new-request`,
-`library-update-request`) are not asked: the first has no index entry to
-record a skip into, and the second carries no failure to diagnose.
+For `fails-javac-compile`, `fails-java-run`, and `fails-native-image-run`
+issues, the `setup` state answers one more question before any repair starts:
+does covering the library's dynamic-access calls require behavior Native Image
+does not support (§root/FS-test-contract.4.5)? The inputs — the issue's failure
+evidence and the library's sources for this and newer versions — all exist
+before any test is written, so an unsupportable verdict costs part of one setup
+turn and saves the whole repair. Without it, the disposition of
+§root/FS-contribution-contract.5.4 is reachable only through a reviewer: a run
+that fails honestly ends in `human-intervention` and publishes nothing. Issues
+without failure evidence are never asked: a `library-new-request` has no index
+entry to record a skip into, and a `library-update-request` carries no failure
+to diagnose. `run.md` names the bar only for the three `fails-*` labels
+(§AR-forge-workflow-prompts.2).
 
-The diagnosis applies the evidence bar of §root/FS-contribution-contract.5.4
-in five steps — name the failing operation from the evidence, trace it into
-the library's source, classify it against the unsupported-behavior catalogue,
-prove no public API route avoids it, and bound the version range by verifying
-newer versions' sources. The verdict is structured and strict: anything
-missing, malformed, or uncertain means repairable, because a missed exit costs
-one wasted run while a wrong skip freezes versions that were never attempted.
-The range includes only versions whose sources the diagnosis actually
-verified; an under-skipped range self-heals, since the next version's run
-re-diagnoses before generation.
+### 1. The bar
 
-The verdict travels in the preflight record. On an unsupportable verdict the
-workflow driver, before preparing any scaffold, records the verdict's
-`skipped-versions` entries in the artifact's `index.json`
-(§root/FS-library-version-update-automation.1), validates the index, and ends
-the run `RUN_STATUS_SUCCESS` with no generation spent — the skip record is the
-run's successful outcome. A verdict the driver cannot apply (a rejected index,
-a version already recorded) falls through to normal generation rather than
-failing the run. The publication pipeline is unchanged: the pre-publication
-gate validates the index-only tree, the local pre-push review
-(§FS-local-branch-review) verifies the recorded mechanism instead of
-discovering it, and the trusted publisher renders the pull request from the
-tree's skip record (§FS-forge-publication-readiness).
+The verdict applies the evidence bar of §root/FS-contribution-contract.5.4 in
+five steps, in order, and an unsupportable verdict requires all of them:
+
+1. **Failure.** State the failing operation from the issue's failure evidence
+   alone.
+2. **Trace.** Follow the failing symbol into the library's own source and quote
+   the code performing the operation.
+3. **Classify.** Show the operation is one Native Image does not support:
+   runtime bytecode generation or class definition, runtime lambda definition,
+   Java agent self-attach, class redefinition or instrumentation, native-image
+   substitution paths, or URL, plugin, or OSGi class loader paths that
+   introduce classes not in the image. Anything reachability metadata can
+   register is repairable.
+4. **Sole path.** Prove every public API route the metadata would justify
+   passes through this operation, with no configuration, property, or fallback
+   branch around it. One viable fallback means repairable.
+5. **Range.** List the newer released versions whose sources were verified to
+   share the same mechanism, and only those; when no newer version can be
+   verified, the range is the target version alone.
+
+The verdict never rests on a red test, a library's own error type, or its
+error message — only on the mechanism traced in the library's source. The
+default is strict: any uncertainty at any step means repairable, because a
+missed skip costs one repair while a wrong skip freezes versions that were
+never attempted. An under-skipped range heals itself, since the next version's
+run asks again.
+
+### 2. The verdict is an edit
+
+On an unsupportable verdict, `setup` adds `skipped-versions` entries to the
+coordinate's entry in `index.json`, each with the `version` and a `reason`
+written for a reader who has not seen the analysis, because reasons are
+published verbatim in the index and the pull request. The entries include the
+target version and cover only the range of step 5. `setup` then makes no
+dependency or image edit and changes nothing else, and it writes no report. On
+a repairable verdict it adds no entry.
+
+### 3. The skip record is the run's outcome
+
+The setup tail keeps `skipped-versions` additions on the three `fails-*` labels
+and reverts them on every other label (§AR-forge-workflow-pipeline.4.1). When
+the index gained an entry for the target version, `repair` turns the run into
+the skip record before anything else. The coordinate's paths return to the
+pinned base — the version `prepare` added, its tests, metadata, and stats are
+dropped, as §root/FS-contribution-contract.5.4 requires of a skip record — the
+entries are written onto the base index, `validateIndexFiles` and the
+pre-publication gate (§FS-local-ci-equivalent-verification.2) accept it, and
+the commit is checkpointed. `repair` then exits `21` and the run goes straight
+to `publish`: no repair, exploration, native check, or finalization runs.
+
+`publish` pushes the index-only tree with its descriptor and writes no
+execution metrics for the skipped version, because the stats gate checks
+execution metrics against tested versions. The trusted publisher renders the
+skip record from the tree (§FS-forge-publication-readiness), so the record is
+the run's successful outcome.
+
+A verdict that cannot be applied — a rejected index, or a target version
+already recorded — is reverted, and the run falls through to the normal repair,
+so a redundant or malformed verdict costs nothing beyond the setup turn.
 
 ## FS-forge-chunked-dynamic-access: Chunked dynamic-access semantics
 
-- `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` configures the class-count threshold
-  used by `forge_metadata.py` for `library-new-request` issues and
-  `library-update-request` issues routed to dynamic-access coverage improvement,
-  and the post-repair exploration decision for `fails-javac-compile` and
-  `fails-java-run` issues.
-  The implementation-defined default is `15`.
-  Java-fix reports cannot be generated before their primary repair succeeds, so
-  `forge_metadata.py` passes the threshold to their shared driver; the composite
-  workflow evaluates it immediately after the repair and skips oversized
-  exploration. Before the verified push, Forge creates or reuses a new
-  `library-update-request` for the fixed version, parks it until the repair
-  merges, and records the issue number as a typed follow-up fact in the
-  descriptor; the Actions publisher only references it. That issue then enters
-  the ordinary library-update workflow, where its selected exploration workflow
-  owns the chunk boundary. The skip is decided exactly once: the composite
-  records it on the continuation marker's `explore` phase, and descriptor
-  creation reads that phase instead of regenerating a report. The marker also
-  records the created issue number, so retries of one publication ID reuse one
-  follow-up issue.
+The class boundary keeps each chunk a reviewable pull request
+(§FS-forge-issue-resolution-goal). It is the run input `defer_classes`, default
+`15` (§AR-forge-workflow-pipeline.7). `analyze` measures the dynamic-access report
+once, after `repair` has made the version work, counts the classes with
+uncovered calls less those an earlier chunk processed, and makes the whole
+decision from that count:
 
-For `library-new-request` issues and `library-update-request` issues routed to
-dynamic-access coverage improvement, `forge_metadata.py` must invoke the
-matching orchestration script with the issue number and, for a chunked issue,
-its class boundary. An iterative-only workflow may use a dispatcher-refreshed report to
-reduce that value to the current remaining class count before it starts.
+- A `fails-*` issue above the boundary does not explore. Before the verified
+  push, `publish` creates or reuses a `library-update-request` for the fixed
+  version, parks it until the repair merges, and records its number as a typed
+  follow-up fact in the descriptor; the Actions publisher only references it.
+  That issue then explores as an ordinary library update.
+- A `library-new-request` or `library-update-request` issue above the boundary,
+  or one that already carries the `chunked-dynamic-access` label or a
+  coordinate-local exhaust report, is chunked. A chunked run spends at most the
+  boundary's number of classes — completed and exhausted classes both count —
+  and the next class ends the chunk.
+- Every other issue explores without a boundary, and its PR is never a chunk PR.
 
-Preparation is not the decision. Before it decides anything, `forge_metadata.py`
-must prepare the same dynamic-access report input for every chunk-eligible
-issue, whichever workflow was selected: it materializes the coordinate's test
-project — scaffolding a new library, or resolving the library-update target —
-and refreshes the report from it. A run resumed on a preserved tree keeps that
-tree and only refreshes the report. No workflow starts against a report that
-was never built (§AR-dynamic-access-fallback-and-failure).
+A run is a chunk only once it publishes: `publish` records the chunk in the
+exhaust report and applies the `chunked-dynamic-access` label when the chunk is
+not the last. A run that ends before publishing leaves no label and no exhaust
+report behind, so the next claim decides afresh. A chunk is the last when its
+run left no target uncovered and unexhausted; a bulk pass only lowers the count,
+so a library at or below the boundary never needs a later chunk.
 
-Two decisions follow, and they are made at different times. Whether the issue is
-chunked is decided once, when the issue is claimed, from the prepared report and
-for every workflow alike. Where the current chunk ends is decided later, by the
-workflow, once its progress is known.
-
-The issue is chunked when it already carries the `chunked-dynamic-access` label
-or a coordinate-local exhaust report, or when the prepared report's uncovered
-class count exceeds the threshold. A newly chunked issue receives the label and
-its exhaust report at claim, before any workflow runs, so its PR is a chunk PR
-even when the whole library is finished in one run. Such a run publishes a
-single final chunk. An issue that is not chunked at claim runs without a class
-boundary and without an exhaust report, and its PR is never a chunk PR. A bulk
-phase only lowers the uncovered class count, so a library at or below the
-threshold can never need a later chunk. The decision is logged with the
-measured uncovered class count alongside the threshold.
-
-The label applied at claim is provisional until a chunk is published. When
-Forge releases a claim before any chunk of the issue has been published — the
-exhaust report records no chunk publication — it removes the label again, so a
-failed, interrupted, or externally aborted run does not leave a labelled issue
-without the exhaust report the next claim requires. The next claim then decides
-afresh from the prepared report.
-
-A chunked run with a bulk phase must decide where its chunk ends after the bulk
-iteration budget and its native-test gates. The bulk phase keeps its
-initial report as the baseline and uses the last successful iteration's already
-refreshed report as the final report; it must not run another report solely for
-the chunk boundary. Classes uncovered in the baseline and covered in the final
-report are completed by bulk. The remaining set is the final report's uncovered
-classes minus the exhaust report and continuation marker's processed set.
-
-For an optimistic composite, `--chunk-class-count` is the total class
-boundary for one non-final run across both phases. If the final remainder is no
-larger than the configured boundary, iterative exploration finishes that
-remainder. Otherwise, if bulk completed at least the boundary, the workflow
-returns chunk-ready without starting iterative exploration. If bulk completed
-less, iterative exploration receives only the shortfall. Its completed,
-skipped, exhausted, and failed classes all count toward that shortfall. Thus,
-with a boundary of `15`, a bulk pass that completes `10` classes is followed by
-at most `5` iterative terminal classes, while a bulk pass that completes `20`
-classes stops before iterative exploration unless no more than `15` classes
-remain.
-
-A pure-bulk strategy has no iterative phase with which to fill a shortfall. It
-returns chunk-ready after a productive run when more than the threshold remain;
-if bulk covers no new class, or the remainder is no larger than the threshold,
-the run is final so Forge cannot publish an unbounded sequence of identical
-bulk chunks.
-
-Chunked mode is automatic after the issue is marked with the
-`chunked-dynamic-access` label. The normal project status remains the run-state
-signal: `Todo` means Forge may claim the next chunk, `In Progress` means a chunk
-is currently being generated or reviewed, and the final PR's `Fixes: #<issue>`
-transition moves the issue to `Done`. Forge must not require an explicit
-resume-state CLI flag; the exhaust report
-location must be derived from the coordinate and loaded automatically by the
-orchestration scripts, as specified by §AR-dynamic-access-exhaust-report. When
-the issue is being resumed from a preserved failed-run continuation marker,
-Forge may proceed without a coordinate-local exhaust report and use
-`explore.exhaustedClasses` from the marker as the processed-class set for the
-resumed run (§FS-forge-run-continuation.2).
+Chunked mode is automatic once the issue carries the `chunked-dynamic-access`
+label. The normal project status remains the run-state signal: `Todo` means
+Forge may claim the next chunk, `In Progress` means a chunk is being generated
+or reviewed, and the final PR's `Fixes: #<issue>` transition moves the issue to
+`Done`. The exhaust report's location is derived from the coordinate and loaded
+by `prepare`, as specified by §AR-dynamic-access-exhaust-report.
 
 When a non-final chunk PR merges, Forge releases the linked issue for the next
 chunk by moving it to `Todo`, clearing its assignees, and removing the
@@ -885,32 +792,18 @@ to store a GitHub-assigned PR number.
 
 ## FS-forge-workflow-spec-catalog: Workflow specifications
 
-The whole workflow system contract is §AR-forge-workflow-system. Each supported
-queue (§FS-forge-scope) is entered by a deterministic workflow driver
-(§AR-forge-drivers) that prepares one run and delegates to the workflow
-engine governed by a workflow spec. The driver scripts and the workflow specs
-they run:
+Every supported queue (§FS-forge-scope) is one route of the `forge-metadata`
+Rhei template (§AR-forge-workflow-pipeline.3). The issue label picks the route:
 
-| Queue | Driver script | Workflow spec |
-| --- | --- | --- |
-| `library-new-request` | `add_new_library_support.py` | new library support (§AR-forge-driver-queues.1), which runs dynamic-access generation plus native metadata tracing and verification |
-| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§AR-forge-driver-queues.2), Java repair (§AR-java-fail-fix-workflow), or native-image run repair (§AR-forge-driver-queues.4) depending on the compatibility probe |
-| `fails-javac-compile` | `fix_javac_fail.py` | Java failure repair (§AR-java-fail-fix-workflow) |
-| `fails-java-run` | `fix_java_run_fail.py` | Java failure repair (§AR-java-fail-fix-workflow) |
-| `fails-native-image-run` | `fix_ni_run.py` | native-image run repair (§AR-forge-driver-queues.4) |
-| code coverage improvement (planned) | — | code coverage improvement (§AR-code-coverage-improvement) |
+| Queue | Route |
+| --- | --- |
+| `library-new-request` | scaffold, then exploration; no repair |
+| `library-update-request` | add the version, repair, then exploration |
+| `fails-javac-compile`, `fails-java-run`, `fails-native-image-run` | one shared route: repair, then exploration |
+| `code-coverage-improvement` | its own template (§AR-code-coverage-improvement) |
 
-Each engine is bound to a named configuration bundle defined by
-§FS-forge-predefined-strategy-contract. The `basic_iterative` engine is not a
-separate queue: it is the most basic workflow and the fallback the dynamic-access
-workflow delegates to when a library turns out to have no dynamic access
-(§AR-basic-iterative).
-
-Forge benchmarking is a top-level benchmark contract because it compares
-generation strategies across multiple `library-new-request` targets
-(§FS-forge-generation-benchmarking) and records cost (in service of
-§GOAL-minimize-generation-cost), token, iteration, LOC, coverage (in service
-of §GOAL-maximize-library-coverage), dynamic-access, and metadata metrics.
+Exploration always tries bulk passes before class passes, and `analyze` picks
+the mode from the measured report (§AR-forge-workflow-pipeline.7).
 
 The implementation roadmap orders the first known Forge spec gaps to close; see
 §ROADMAP-forge-implementation.

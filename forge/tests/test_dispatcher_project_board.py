@@ -16,7 +16,7 @@ class ProjectItemStatusTests(unittest.TestCase):
             self.assertEqual(
                 common_git.get_issue_project_item_status(
                     config.REPO,
-                    forge_metadata.PROJECT_NUMBER,
+                    dispatcher_config.PROJECT_NUMBER,
                     1412,
                     config.STATUS_FIELD_NAME,
                 ),
@@ -40,7 +40,7 @@ class ProjectItemStatusTests(unittest.TestCase):
 
         get_issue_project_item_status.assert_called_once_with(
             config.REPO,
-            forge_metadata.PROJECT_NUMBER,
+            dispatcher_config.PROJECT_NUMBER,
             1412,
             config.STATUS_FIELD_NAME,
         )
@@ -58,7 +58,7 @@ class ProjectItemStatusTests(unittest.TestCase):
         self.assertIn(
             (
                 "[project-item] Issue #1412 is linked to GitHub project item project-item "
-                f"in project {forge_metadata.PROJECT_NUMBER} with Status '{config.STATUS_TODO}'"
+                f"in project {dispatcher_config.PROJECT_NUMBER} with Status '{config.STATUS_TODO}'"
             ),
             stdout.getvalue(),
         )

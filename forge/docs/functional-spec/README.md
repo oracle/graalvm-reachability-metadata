@@ -18,11 +18,10 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-functional-spec](functional-spec.md#fs-forge-functional-spec-forge-functional-specification) | Forge functional specification |
 | [§FS-forge-issue-resolution-goal](functional-spec.md#fs-forge-issue-resolution-goal-forge-issue-resolution-goal) | Forge issue resolution goal |
 | [§FS-forge-scope](functional-spec.md#fs-forge-scope-supported-issue-queues) | Supported issue queues |
-| [§FS-foreign-metadata-owner-follow-ups](functional-spec.md#fs-foreign-metadata-owner-follow-ups-foreign-metadata-owner-follow-ups) | Foreign metadata owner follow-ups |
 | [§FS-forge-glossary](functional-spec.md#fs-forge-glossary-glossary) | Glossary |
 | [§FS-forge-requirements](functional-spec.md#fs-forge-requirements-requirement-gates) | Requirement gates |
 | [§FS-forge-host-requirements](functional-spec.md#fs-forge-host-requirements-host-requirements) | Host requirements |
-| [§FS-forge-agent-runtime-selection](functional-spec.md#fs-forge-agent-runtime-selection-configurable-agent-roles) | Configurable agent roles |
+| [§FS-forge-agent-runtime-selection](functional-spec.md#fs-forge-agent-runtime-selection-two-agent-inputs) | Two agent inputs |
 | [§FS-forge-run-requirements](functional-spec.md#fs-forge-run-requirements-run-requirements) | Run requirements |
 | [§FS-forge-outputs](functional-spec.md#fs-forge-outputs-run-outputs) | Run outputs |
 | [§FS-forge-run-metrics](functional-spec.md#fs-forge-run-metrics-per-run-metrics-record) | Per-run metrics record |
@@ -31,25 +30,19 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-publication-readiness](publication.md#fs-forge-publication-readiness-publication-readiness) | Publication readiness |
 | [§FS-local-ci-equivalent-verification](publication.md#fs-local-ci-equivalent-verification-local-pre-publication-verification) | Local pre-publication verification |
 | [§FS-native-test-verification-gate](publication.md#fs-native-test-verification-gate-native-test-verification-gate) | Native test verification gate |
-| [§FS-local-branch-review](publication.md#fs-local-branch-review-local-pre-push-branch-review) | Local pre-push branch review |
+| [§FS-local-branch-review](publication.md#fs-local-branch-review-local-pre-push-audit) | Local pre-push audit |
 | [§FS-library-update-tested-version-split](tested-version-split.md#fs-library-update-tested-version-split-library-update-tested-version-split) | Library-update tested-version split |
 | [§FS-human-intervention-policy](publication.md#fs-human-intervention-policy-human-intervention-policy) | Human intervention policy |
-| [§FS-automated-pr-review](publication.md#fs-automated-pr-review-automated-pull-request-review) | Automated pull request review |
+| [§FS-published-pr-ci-failures](published-pr-ci.md#fs-published-pr-ci-failures-failing-ci-on-a-published-pull-request) | Failing CI on a published pull request |
 | [§FS-forge-run-status](functional-spec.md#fs-forge-run-status-run-status-semantics) | Run status semantics |
-| [§FS-unsupportable-version-diagnosis](functional-spec.md#fs-unsupportable-version-diagnosis-pre-generation-unsupportable-version-diagnosis) | Pre-generation unsupportable-version diagnosis |
+| [§FS-unsupportable-version-diagnosis](functional-spec.md#fs-unsupportable-version-diagnosis-unsupportable-version-verdict-in-setup) | Unsupportable-version verdict in setup |
 | [§FS-forge-run-output-legibility](functional-spec.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |
 | [§FS-forge-chunked-dynamic-access](functional-spec.md#fs-forge-chunked-dynamic-access-chunked-dynamic-access-semantics) | Chunked dynamic-access semantics |
 | [§FS-forge-workflow-spec-catalog](functional-spec.md#fs-forge-workflow-spec-catalog-workflow-specifications) | Workflow specifications catalog |
-| [§FS-forge-run-continuation](continuation.md#fs-forge-run-continuation-run-continuation-and-resume) | Run continuation and resume |
-| [§FS-workflow-strategy-registry](strategies.md#fs-workflow-strategy-registry-predefined-strategy-configuration-architecture) | Predefined strategy configuration architecture |
-| [§FS-forge-predefined-strategy-contract](strategies.md#fs-forge-predefined-strategy-contract-predefined-strategy-configuration-contract) | Predefined strategy configuration contract |
-| [§FS-predefined-strategy-loader](strategies.md#fs-predefined-strategy-loader-strategy-loading-boundary) | Strategy loading boundary |
-| [§FS-predefined-strategy-fields](strategies.md#fs-predefined-strategy-fields-strategy-bundle-fields) | Strategy bundle fields |
-| [§FS-predefined-strategy-example](strategies.md#fs-predefined-strategy-example-representative-predefined-strategy-bundle) | Representative predefined strategy bundle |
-| [§FS-predefined-strategy-parameter-families](strategies.md#fs-predefined-strategy-parameter-families-parameter-families) | Parameter families |
-| [§FS-java-fail-fix-composite-strategy-config](strategies.md#fs-java-fail-fix-composite-strategy-config-java-fail-fix-composite-strategy-configuration) | Java fail-fix composite strategy configuration |
-| [§FS-predefined-strategy-extension](strategies.md#fs-predefined-strategy-extension-adding-or-changing-a-strategy-bundle) | Adding or changing a strategy bundle |
-| [§FS-forge-generation-benchmarking](benchmarking.md#fs-forge-generation-benchmarking-forge-generation-benchmarking) | Forge generation benchmarking |
+| [§FS-workflow-strategy-registry](strategies.md#fs-workflow-strategy-registry-predefined-strategy-registry-retired) | Predefined strategy registry (retired) |
+| [§FS-forge-predefined-strategy-contract](strategies.md#fs-forge-predefined-strategy-contract-predefined-strategy-contract-retired) | Predefined strategy contract (retired) |
+| [§FS-predefined-strategy-parameter-families](strategies.md#fs-predefined-strategy-parameter-families-parameter-families-retired) | Parameter families (retired) |
+| [§FS-forge-generation-benchmarking](benchmarking.md#fs-forge-generation-benchmarking-forge-generation-benchmarking-retired) | Forge generation benchmarking (retired) |
 | [§FS-code-coverage-benchmarking](benchmarking.md#fs-code-coverage-benchmarking-code-coverage-improvement-benchmarking) | Code coverage improvement benchmarking |
 
 This index is navigational. Cite the specific declaration ID rather than this
@@ -60,11 +53,8 @@ Files:
 - [functional-spec.md](functional-spec.md) — the specification itself:
   requirements, outputs, verification, and the policies that decide a run's
   outcome. Start here.
-- [continuation.md](continuation.md) — the continuation marker, and how a failed
-  run resumes at the phase that failed.
 - [tested-version-split.md](tested-version-split.md) — how a library-update run
   splits the entries that can no longer share its regenerated suite.
-- [strategies.md](strategies.md) — what a strategy bundle must declare, and how
-  one is loaded, extended, and bound to a workflow engine.
-- [benchmarking.md](benchmarking.md) — what a generation benchmark must measure
-  and record when comparing strategies.
+- [strategies.md](strategies.md) — retired: strategies are fixed per label.
+- [benchmarking.md](benchmarking.md) — what the code coverage benchmark must
+  measure and record when comparing agent configurations.

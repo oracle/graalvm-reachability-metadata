@@ -70,26 +70,6 @@ User-approved: 65 lines over budget; the review trio (local-branch-review, autom
 human-intervention-policy) moves out whenever the file is next substantively edited.
 """
 [[exceptions]]
-path = "forge/ai_workflows/core/dynamic_access_iterative_strategy.py"
-match = "exact"
-rules = ["source"]
-kind = "structural"
-max_accepted = { value = 1300, unit = "lines" }
-until = "indefinite"
-reason = """
-User-approved: one iterative strategy class whose phases share run state through self; the previous split into mixin bases sharing self was reverted in review as a boundary that existed only on disk. No seam short of redesigning the class.
-"""
-[[exceptions]]
-path = "forge/ai_workflows/core/workflow_strategy.py"
-match = "exact"
-rules = ["source"]
-kind = "structural"
-max_accepted = { value = 1100, unit = "lines" }
-until = "indefinite"
-reason = """
-User-approved: the workflow strategy base class with its issue-requested-metadata and finalization phases; all phases read and write the same self state, so the reverted mixin split moved lines, not responsibility.
-"""
-[[exceptions]]
 path = "forge/utility_scripts/fixture_github.py"
 match = "exact"
 rules = ["source"]
@@ -108,46 +88,6 @@ max_accepted = { value = 900, unit = "lines" }
 until = "indefinite"
 reason = """
 User-approved: final-evidence assembly, report reading, and target-outcome classification are one flow over the same report data; the reverted splits re-imported their names back wholesale.
-"""
-[[exceptions]]
-path = "forge/git_scripts/local_branch_review.py"
-match = "exact"
-rules = ["source"]
-kind = "structural"
-max_accepted = { value = 1000, unit = "lines" }
-until = "indefinite"
-reason = """
-User-approved: the verdict records and reviewer session mechanics are inseparable from the review flow that drives them; the reverted splits re-imported their names back wholesale.
-"""
-[[exceptions]]
-path = "forge/ai_workflows/drivers/add_new_library_support.py"
-match = "exact"
-rules = ["source"]
-kind = "structural"
-max_accepted = { value = 800, unit = "lines" }
-until = "indefinite"
-reason = """
-User-approved: one driver flow from scaffold through metrics publication; the reverted setup/metrics split was re-imported back by the driver and dispatcher, so the file boundary added hops without separating responsibility.
-"""
-[[exceptions]]
-path = "forge/ai_workflows/drivers/improve_library_coverage.py"
-match = "exact"
-rules = ["source"]
-kind = "structural"
-max_accepted = { value = 900, unit = "lines" }
-until = "indefinite"
-reason = """
-User-approved: the coverage-improvement driver and the library-update target preparation it owns are one flow; the reverted split was re-imported back by the driver, router, and dispatcher.
-"""
-[[exceptions]]
-path = "forge/utility_scripts/library_preparation_preflight.py"
-match = "exact"
-rules = ["source"]
-kind = "structural"
-max_accepted = { value = 900, unit = "lines" }
-until = "indefinite"
-reason = """
-User-approved: the preflight run, its record parsing, and the deterministic setup application are one flow over the same record shapes; the reverted setup split ended up reachable only through this module's own re-export shim.
 """
 [[exceptions]]
 path = "forge/utility_scripts/local_ci_verification.py"

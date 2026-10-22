@@ -1547,12 +1547,32 @@ def _format_local_ci_verification_section(verification: dict[str, Any] | None) -
         f"- Commands run: {command_count}\n"
         f"- Fixup attempts: {fixup_count}\n"
     )
+    body += _format_test_matrix(verification.get("test_matrix"))
     if verification.get("human_intervention_required"):
         body += "- Human intervention: required because repository-level files changed during verification.\n"
     if repo_fix_list:
         body += "- Repository-level fix paths:\n"
         body += "".join(f"  - `{path}`\n" for path in repo_fix_list[:20])
     return body
+
+
+def _format_test_matrix(matrix: Any) -> str:
+    """The changed-metadata matrix the run reproduced locally, one line per entry.
+
+    §forge/FS-local-ci-equivalent-verification.2.1
+    """
+    if not isinstance(matrix, list) or not matrix:
+        return ""
+    lines = ["- Native test matrix run locally:\n"]
+    for entry in matrix[:30]:
+        if not isinstance(entry, dict):
+            continue
+        reason = f" ({entry['reason']})" if entry.get("reason") else ""
+        lines.append(
+            f"  - Java `{entry.get('java')}`, `{entry.get('nativeImageMode')}`: `{entry.get('coordinates')}` "
+            f"{_format_version_list(entry.get('versions'))} — {entry.get('status')}{reason}\n"
+        )
+    return "".join(lines)
 
 
 def _format_dynamic_access_entry(stats: dict[str, Any]) -> str:

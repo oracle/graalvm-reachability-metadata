@@ -25,7 +25,6 @@ from git_scripts.common_git import (
     run_git_transport,
     stage_and_commit as stage_and_commit_common,
 )
-from git_scripts.local_branch_review import run_local_branch_review
 from git_scripts.publication_descriptor import (
     PublicationDescriptorInput,
     build_publication_branch,
@@ -38,21 +37,15 @@ from utility_scripts.local_ci_verification import (
     fetch_pr_base_ref,
     run_local_ci_verification,
 )
-from utility_scripts.continuation_marker import (
-    CONTINUATION_MARKER_FILENAME,
-    PHASE_PUBLICATION,
-    ContinuationMarker,
-    continuation_marker_path,
-    load_continuation_marker,
-)
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
-from utility_scripts.run_location import STEP_LOCAL_CI_CHECK, run_step
+from utility_scripts.run_location import PHASE_PUBLICATION, STEP_LOCAL_CI_CHECK, run_step
 
 REPO: str = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH: str = "master"
 LIBRARY_UPDATE_TARGET_FILENAME: str = ".library_update_target.json"
+# Run-helper files a published branch never carries.
 PRESERVATION_ONLY_PATHS: set[str] = {
-    f"forge/{CONTINUATION_MARKER_FILENAME}",
+    "forge/.continuation-marker.json",
 }
 LOCAL_PUBLICATION_INPUT_PATHS: set[str] = {
     f"forge/{PENDING_METRICS_FILENAME}",
@@ -65,61 +58,6 @@ PRESERVATION_ONLY_DIRECTORIES: tuple[str, ...] = (
 MAX_PR_BODY_CHARS: int = 60_000
 MAX_INLINE_TEST_DIFF_CHARS: int = 12_000
 PR_BODY_REQUIRED_TAIL_CHARS: int = 12_000
-LOCAL_REVIEW_EXCLUDED_TASK_TYPES: frozenset[str] = frozenset({
-    "code-coverage-improvement",
-})
-
-
-def _publication_resume_marker(repo_path: str) -> ContinuationMarker | None:
-    """Return the publication continuation marker when this run resumes publication."""
-    marker = load_continuation_marker(continuation_marker_path(repo_path))
-    if marker is None or marker.continue_from != PHASE_PUBLICATION:
-        return None
-    return marker
-
-
-def _record_publication_pushed(
-        repo_path: str,
-        branch: str,
-        marker: ContinuationMarker | None = None,
-) -> None:
-    """Record the push boundary in the continuation marker if one exists."""
-    marker_path = continuation_marker_path(repo_path)
-    active_marker = marker or load_continuation_marker(marker_path)
-    if active_marker is None:
-        return
-    active_marker.record_publication_pushed(branch)
-    active_marker.save(marker_path)
-
-
-def _record_publication_branch(
-        repo_path: str,
-        branch: str,
-        marker: ContinuationMarker | None = None,
-) -> None:
-    """Record the branch namespace before publication reaches the push."""
-    marker_path = continuation_marker_path(repo_path)
-    active_marker = marker or load_continuation_marker(marker_path)
-    if active_marker is None:
-        return
-    active_marker.record_publication_branch(branch)
-    active_marker.save(marker_path)
-
-
-def _record_publication_identity(
-        repo_path: str,
-        publication_id: str,
-        branch: str,
-        timestamp: str,
-        marker: ContinuationMarker | None = None,
-) -> None:
-    """Persist the stable publication identity before any branch push."""
-    marker_path = continuation_marker_path(repo_path)
-    active_marker = marker or load_continuation_marker(marker_path)
-    if active_marker is None:
-        return
-    active_marker.record_publication_identity(publication_id, branch, timestamp)
-    active_marker.save(marker_path)
 
 
 def _has_staged_changes(repo_path: str) -> bool:
@@ -171,25 +109,6 @@ def _remove_preservation_only_files(repo_path: str) -> None:
     _restore_local_publication_inputs(repo_path, local_input_snapshots)
 
 
-def _commit_preservation_artifact_clearance(repo_path: str) -> None:
-    """Commit removal of resume helper artifacts when publication resumes."""
-    _remove_preservation_only_files(repo_path)
-    if _has_staged_changes(repo_path):
-        subprocess.run(["git", "commit", "-m", "Clear resume helper artifacts"], check=True, cwd=repo_path)
-
-
-def _prepare_unpushed_publication_resume_branch(
-        repo_path: str,
-        branch: str,
-        marker: ContinuationMarker,
-) -> None:
-    """Create the PR branch from the resumed preserved branch and clear helpers."""
-    subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
-    _record_publication_branch(repo_path, branch, marker)
-    _commit_preservation_artifact_clearance(repo_path)
-    _record_publication_branch(repo_path, branch, marker)
-
-
 def publish_branch(
         repo_path: str,
         branch_suffix: str,
@@ -203,57 +122,29 @@ def publish_branch(
 ) -> tuple[str, LocalCIVerificationResult]:
     """Create, stage, rebase, verify, and push the publication branch.
 
-    The one shared path from a verified worktree to a pushed PR branch
-    (§AR-shared-publication-pipeline): publishers supply only their staging
-    policy (§AR-expected-paths) and optional pre-rebase hooks. Local
-    CI-equivalent verification always runs before the push that makes the branch
-    PR-eligible (§AR-pr-eligibility).
+    The one shared path from a verified worktree to a pushed PR branch for the
+    publishers that still use it (§AR-shared-publication-pipeline): publishers
+    supply only their staging policy (§AR-expected-paths) and optional
+    pre-rebase hooks. Local CI-equivalent verification always runs before the
+    push that makes the branch PR-eligible (§AR-pr-eligibility).
     """
-    resume_marker = _publication_resume_marker(repo_path)
-    resume_branch = None if resume_marker is None or not resume_marker.publication_is_pushed() else resume_marker.publication_branch()
-    if resume_branch is not None:
-        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
-        return resume_branch, LocalCIVerificationResult(
-            status="skipped-publication-resume",
-            base_commit=commit,
-            final_commit=commit,
-        )
-
     publication_remote = find_remote_for_github_repo(REPO, cwd=repo_path)
     base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
     resolved_descriptor_input = descriptor_input() if callable(descriptor_input) else descriptor_input
-    publication_timestamp = None if resume_marker is None else resume_marker.publication_timestamp()
-    if resolved_descriptor_input is not None and publication_timestamp is not None:
-        resolved_descriptor_input = replace(resolved_descriptor_input, timestamp=publication_timestamp)
-    branch = None if resume_marker is None else resume_marker.publication_branch()
-    publication_id = None if resume_marker is None else resume_marker.publication_id()
+    publication_id: str | None = None
     if resolved_descriptor_input is not None:
-        expected_publication_id = build_publication_id(
+        publication_id = build_publication_id(
             resolved_descriptor_input.issue_number,
             resolved_descriptor_input.timestamp,
             coordinates,
             resolved_descriptor_input.task_type,
         )
-        if publication_id is not None and publication_id != expected_publication_id:
-            raise ValueError("Continuation publication ID does not match durable run inputs")
-        publication_id = expected_publication_id
-        producer = get_authenticated_login(cwd=repo_path)
-        expected_branch = build_publication_branch(producer, branch_suffix, publication_id)
-        if branch is not None and branch != expected_branch:
-            raise ValueError("Continuation publication branch does not match durable run inputs")
-        branch = expected_branch
-        _record_publication_identity(
-            repo_path, publication_id, branch, resolved_descriptor_input.timestamp, resume_marker,
-        )
-    elif branch is None:
-        branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
-    _record_publication_branch(repo_path, branch, resume_marker)
-    delete_remote_branch_if_exists(branch, remote=publication_remote, cwd=repo_path)
-    if resume_marker is None:
-        subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
-        _remove_preservation_only_files(repo_path)
+        branch = build_publication_branch(get_authenticated_login(cwd=repo_path), branch_suffix, publication_id)
     else:
-        _prepare_unpushed_publication_resume_branch(repo_path, branch, resume_marker)
+        branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
+    delete_remote_branch_if_exists(branch, remote=publication_remote, cwd=repo_path)
+    subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
+    _remove_preservation_only_files(repo_path)
     if before_stage is not None:
         if publication_id is None:
             raise ValueError("Publication identity callback requires a descriptor")
@@ -276,75 +167,33 @@ def publish_branch(
             metrics_repo_path=metrics_repo_path,
         )
     if resolved_descriptor_input is not None:
-        if publication_id is None:
-            raise ValueError("Publication descriptor requires a publication ID")
-        review_descriptor_input = (
-            descriptor_input() if callable(descriptor_input) else resolved_descriptor_input
-        )
-        if review_descriptor_input.timestamp != resolved_descriptor_input.timestamp:
-            review_descriptor_input = replace(
-                review_descriptor_input, timestamp=resolved_descriptor_input.timestamp,
-            )
-        review_publication_id = build_publication_id(
-            review_descriptor_input.issue_number,
-            review_descriptor_input.timestamp,
-            coordinates,
-            review_descriptor_input.task_type,
-        )
-        if review_publication_id != publication_id:
-            raise ValueError("Publication descriptor identity changed during finalization")
-
-        local_review_payload: dict | None = None
-        if review_descriptor_input.task_type not in LOCAL_REVIEW_EXCLUDED_TASK_TYPES:
-            # Code-coverage runs retain phase-boundary reports that cannot yet be
-            # regenerated correctly after reviewer test edits, so that route is
-            # excluded until it has phase snapshots. §FS-local-branch-review
-            review_outcome = run_local_branch_review(
-                repo_path=repo_path,
-                coordinates=coordinates,
-                base_commit=base_ref,
-                task_type=review_descriptor_input.task_type,
-                local_ci_verification=local_ci_verification,
-                descriptor_input=review_descriptor_input,
-                metrics_repo_path=metrics_repo_path,
-            )
-            local_ci_verification = review_outcome.local_ci_verification
-            local_review_payload = review_outcome.to_descriptor_payload()
-
-        final_descriptor_input = (
-            descriptor_input() if callable(descriptor_input) else review_descriptor_input
-        )
+        final_descriptor_input = descriptor_input() if callable(descriptor_input) else resolved_descriptor_input
         if final_descriptor_input.timestamp != resolved_descriptor_input.timestamp:
-            final_descriptor_input = replace(
-                final_descriptor_input, timestamp=resolved_descriptor_input.timestamp,
-            )
-        final_publication_id = build_publication_id(
-            final_descriptor_input.issue_number,
-            final_descriptor_input.timestamp,
-            coordinates,
-            final_descriptor_input.task_type,
-        )
-        if final_publication_id != publication_id:
-            raise ValueError("Publication descriptor identity changed after local review")
+            final_descriptor_input = replace(final_descriptor_input, timestamp=resolved_descriptor_input.timestamp)
+        if build_publication_id(
+                final_descriptor_input.issue_number,
+                final_descriptor_input.timestamp,
+                coordinates,
+                final_descriptor_input.task_type,
+        ) != publication_id:
+            raise ValueError("Publication descriptor identity changed during finalization")
         descriptor_path = write_publication_descriptor(
             repo_path=repo_path,
             coordinates=coordinates,
             producer=get_authenticated_login(cwd=repo_path),
             branch=branch,
-            publication_id=publication_id,
+            publication_id=str(publication_id),
             base_commit=base_ref,
             descriptor_input=final_descriptor_input,
             local_ci_verification=local_ci_verification,
-            local_review=local_review_payload,
+            local_review=None,
         )
-        descriptor_relative_path = os.path.relpath(descriptor_path, repo_path)
         stage_and_commit_common(
-            [descriptor_relative_path],
+            [os.path.relpath(descriptor_path, repo_path)],
             "Add Forge publication descriptor",
             cwd=repo_path,
         )
     run_git_transport(["push", publication_remote, branch], cwd=repo_path)
-    _record_publication_pushed(repo_path, branch, resume_marker)
     return branch, local_ci_verification
 
 

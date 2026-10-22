@@ -209,9 +209,8 @@ public final class LibraryStatsSchemaValidator {
 
     /// Forge commits its publication descriptor beside the stats it publishes. Both sides of the
     /// publication handoff already schema-validate it, so this validator only has to recognize the
-    /// file instead of rejecting it as stray JSON (§forge/AR-actions-publication). Benchmark
-    /// results scope the descriptor by publication id so concurrent runs of one coordinate merge
-    /// independently (§forge/FS-forge-generation-benchmarking.3), adding one path component.
+    /// file instead of rejecting it as stray JSON (§forge/AR-actions-publication). The descriptor
+    /// sits beside `stats.json` in the version directory (§forge/AR-publication-descriptor).
     private static boolean isForgePublicationFile(Path relativePath) {
         int nameCount = relativePath.getNameCount();
         return nameCount == 4

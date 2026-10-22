@@ -302,7 +302,7 @@ class TestProjectWiringTests(unittest.TestCase):
     def test_deep_measure_passes_the_resolved_test_project(self) -> None:
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_path: str = os.path.join(
-            forge_root, ".agents", "rhei", "templates", "code-coverage-improvement", "states.yaml",
+            forge_root, ".agent-grounds", "rhei", "templates", "code-coverage-improvement", "states.yaml",
         )
         with open(states_path, encoding="utf-8") as states_file:
             states: dict = yaml.safe_load(re.sub(r"\{\{[^{}]+\}\}", "1", states_file.read()))["states"]

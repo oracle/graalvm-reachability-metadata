@@ -17,7 +17,6 @@ from utility_scripts.gradle_daemons import (
     stop_gradle_daemons,
 )
 from utility_scripts.gradle_environment import gradle_user_home_for_repo
-from utility_scripts.library_finalization import _run_gradle_command_with_output
 from utility_scripts.logged_command import LoggedCommandResult
 
 STALE_DAEMON_OUTPUT = """
@@ -127,28 +126,6 @@ class GradleDaemonRecyclingTests(unittest.TestCase):
         self.assertEqual(failed.returncode, 1)
         self.assertEqual(passed.returncode, 0)
         stop_daemons.assert_not_called()
-
-    def test_finalization_gate_recycles_stale_daemon_and_reruns_once(self) -> None:
-        """§FS-local-ci-equivalent-verification.1: a stale daemon is not a metadata verdict."""
-        command = ["./gradlew", "checkMetadataFiles", "-Pcoordinates=org.example:demo:1.0.0"]
-        attempts = [
-            _result(command, 1, STALE_DAEMON_OUTPUT),
-            _result(command, 0, "BUILD SUCCESSFUL"),
-        ]
-        with patch("utility_scripts.library_finalization.require_complete_reachability_repo"), \
-                patch("utility_scripts.library_finalization.gradle_command_environment", return_value={}), \
-                patch("utility_scripts.library_finalization.run_logged_command", side_effect=attempts) as run_command, \
-                patch("utility_scripts.gradle_daemons.stop_gradle_daemons", return_value=True) as stop_daemons, \
-                contextlib.redirect_stdout(io.StringIO()):
-            result = _run_gradle_command_with_output("/repo", command)
-
-        self.assertEqual(result.returncode, 0)
-        self.assertEqual(run_command.call_count, 2)
-        for call in run_command.call_args_list:
-            self.assertEqual(call.args[0], command)
-            self.assertEqual(call.kwargs["subject"], "org.example:demo:1.0.0")
-        stop_daemons.assert_called_once_with("/repo", "org.example:demo:1.0.0", "stale daemon failure")
-
 
 if __name__ == "__main__":
     unittest.main()

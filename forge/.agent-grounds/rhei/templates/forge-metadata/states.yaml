@@ -1,0 +1,513 @@
+# State machine of the forge-metadata workflow (§AR-forge-workflow-pipeline.3).
+#
+#   prepare -- 0 --> setup --> repair
+#   repair -- 0, 20 (new library) --> analyze; 10 --> fix; 21 (skip recorded) --> publish
+#   analyze -- 10 --> cover --> measure; 20 (nothing to explore, deferred) --> native
+#   measure -- 10 --> cover; 11 (JVM tests fail) --> fix; 0 (goal), 20 (budget) --> native
+#   native -- 0 --> finalize; 10 --> fix
+#   finalize -- 0 --> audit; 10 --> fix
+#   audit -- 10 (first visit) --> fix; 0 --> publish
+#   fix --> fix-route -- 30/31/32/33/34 --> repair/measure/native/finalize/audit
+#   fix-route -- 40 (cannot fix) --> human-intervention
+#   repair, measure, native, finalize, audit -- 12 (failing after its fix) --> human-intervention
+#   publish -- 0 --> completed; 20 (nothing changed) --> nothing-to-publish
+#   every program -- 2 (bad input), 3 (infrastructure), or a crash --> failed
+#
+# setup, cover, and fix are agent states with one outgoing edge each; every
+# other state is a program whose exit code is the whole decision
+# (§AR-forge-strategy-agent-boundary). Programs run from the source checkout's
+# programs/ directory with the Rhei workspace as their working directory, and
+# every program exit writes the result file a final state requires.
+
+name: forge-metadata
+version: 1.0.0
+
+states:
+  prepare:
+    description: Read the issue, pin the base, spawn and attach the worktree, add the version.
+    initial: true
+    program: >-
+      python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" prepare
+      --issue-number {{issue_number}}
+      --setup-agent "{{setup_agent}}"
+      --worker-agent "{{worker_agent}}"
+      --bulk-min-classes {{bulk_min_classes}}
+      --bulk-passes {{bulk_passes}}
+      --class-attempts {{class_attempts}}
+      --defer-classes {{defer_classes}}
+      --explore-passes {{explore_passes}}
+      --repo-checkout "{{repo_checkout}}"
+      --worktree-root "{{worktree_root}}"
+    program_timeout: 60m
+    outputs:
+      - name: state
+        path: runtime/forge/state.json
+        description: The run state every later program reads.
+      - name: run
+        path: runtime/forge/run.md
+        description: The issue, route, coordinate, and paths every agent state reads first.
+
+  setup:
+    description: Fill the missing artifact URLs and declare the libraries and Docker images the tests will need.
+    target: "{{setup_agent}}"
+    inputs:
+      - name: run
+        path: runtime/forge/run.md
+    instructions: |
+      Read `{input.run.path}` first: it names the issue, the coordinate (written
+      `<coordinate>` below), and the absolute path of every file you edit.
+
+      You prepare `<coordinate>` before any test is written
+      (§FS-forge-agent-runtime-selection). Your working directory is the run
+      worktree. Work in this order, and do not start a step before the one
+      before it is done.
+
+      0. Verdict. Only when `{input.run.path}` has an "Unsupportable-version
+         verdict" section, follow it first (§FS-unsupportable-version-diagnosis).
+         On an unsupportable verdict, record it as that section says and stop:
+         skip the steps below.
+      1. URLs. Run the URL discovery command `{input.run.path}` names, from the
+         worktree root, in the foreground. If the coordinate's entry in the index
+         file still lacks `source-code-url`, `test-code-url`, `documentation-url`,
+         or `repository-url`, find it on Maven Central and the project's
+         repository and documentation, and write it, with `$version$` wherever
+         the URL changes by version. Leave present URLs as they are.
+      2. Companions. Declare in the build file each library the tests will need
+         beside the target, at a version compatible with it, never pinning the
+         tested library's own version (§root/FS-test-contract.2.5,
+         §root/FS-test-contract.3.4).
+      3. Images. List each Docker image the tests will need in the Docker image
+         list, choosing only from
+         `tests/tck-build-logic/src/main/resources/allowed-docker-images/`.
+
+      Run no test task, and change nothing else: a program reverts every other
+      edit. The edited files are your result; write no report.
+
+  repair:
+    description: Run the setup tail once, then make the version work - javaTest and the native check.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" repair
+    program_timeout: 180m
+    outputs:
+      - name: fix-request
+        kind: handoff
+        path: runtime/forge/fix-request.md
+        description: The failing commands the fix agent receives.
+
+  analyze:
+    description: List the dynamic-access call sites once, correlate JaCoCo, pick the explore mode, write the first cover prompt.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" analyze
+    program_timeout: 180m
+    outputs:
+      - name: cover-prompt
+        kind: handoff
+        path: runtime/forge/cover-prompt.md
+        description: The mode and targets of the first cover pass.
+
+  cover:
+    description: Write tests that reach the listed dynamic-access call sites and make them pass on the JVM.
+    target: "{{worker_agent}}"
+    inputs:
+      - name: run
+        path: runtime/forge/run.md
+    handoff:
+      inherit:
+        - from: transition.previous
+          name: cover-prompt
+          required: true
+    instructions: |
+      Read `{input.run.path}` first: it names the coordinate (written
+      `<coordinate>` below), the test project, the allowed packages, and the
+      main sources. The handoff below lists this pass's targets. Your working
+      directory is the run worktree. Work in this order, and do not start a step
+      before the one before it is done.
+
+      1. Read the targets, the existing tests in the test project, and the main
+         sources of each target class.
+      2. Write every test for every listed target, through the library's public
+         API the way a user would (§root/FS-test-contract.1.3), one test file per
+         dynamic-access class (§root/FS-test-contract.1.8), straightforward call
+         sites first (§root/FS-test-contract.3.1). Follow the test contract
+         (§root/FS-test-contract.2, §root/FS-test-contract.4): no reflection
+         shortcuts, no code in the library's packages, no hardcoded versions,
+         and nothing that skips or tolerates Native Image. Never write metadata.
+         Edit only files under the test project. Run no Gradle task while
+         writing.
+      3. Only once all tests are written, run
+         `./gradlew javaTest -Pcoordinates=<coordinate>` from the worktree root,
+         in the foreground, and fix the tests until it passes. Run no native task.
+      4. Only after `javaTest` has passed, write the report.
+
+      Before your final message, write `{output.report.path}` as JSON:
+      `{"targets": ["<class or call site you wrote a test for>"]}`.
+    outputs:
+      - name: report
+        path: runtime/forge/reports/cover-{visit_count}.json
+        description: The targets this pass wrote tests for.
+
+  measure:
+    description: Rerun the JVM tests with JaCoCo against the stored call sites, keep or reset the pass, and advance the mode.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" measure
+    program_timeout: 120m
+    outputs:
+      - name: fix-request
+        kind: handoff
+        path: runtime/forge/fix-request.md
+        description: The failing JVM tests the fix agent receives.
+      - name: cover-prompt
+        kind: handoff
+        path: runtime/forge/cover-prompt.md
+        description: The mode and targets of the next cover pass.
+
+  native:
+    description: The native check - generateMetadata, then checkMetadataFiles and nativeTest.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" native
+    program_timeout: 180m
+    outputs:
+      - name: fix-request
+        kind: handoff
+        path: runtime/forge/fix-request.md
+        description: Every failing native-check output the fix agent receives.
+
+  finalize:
+    description: spotlessApply, then spotlessCheck, checkstyle, generateLibraryStats, the reviewer gates, and the pre-publication gate with the coordinate's three native lanes, each once.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" finalize
+    # The gates plus three native lanes; a lane is at most 7 five-minute Gradle calls when it fails.
+    program_timeout: 180m
+    outputs:
+      - name: fix-request
+        kind: handoff
+        path: runtime/forge/fix-request.md
+        description: The first failing check the fix agent receives.
+
+  audit:
+    description: Once - send the audit fix request, then publish an unchanged tree or rerun the checks over a changed one.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" audit
+    # Its rerun after an edit is the native check plus finalize's lane, native lanes included.
+    program_timeout: 240m
+    outputs:
+      - name: fix-request
+        kind: handoff
+        path: runtime/forge/fix-request.md
+        description: The audit request the fix agent receives.
+
+  fix:
+    description: Make the failing commands of the request pass, under the repository's rules, once.
+    target: "{{worker_agent}}"
+    agent_timeout: 2h
+    inputs:
+      - name: run
+        path: runtime/forge/run.md
+    handoff:
+      inherit:
+        - from: transition.previous
+          name: fix-request
+          required: true
+    instructions: |
+      The request below lists failing commands, their output, a brief for each
+      recognized error, and the files you may edit. Read `{input.run.path}` for
+      the coordinate, the allowed packages, and the paths. Your working
+      directory is the run worktree. Work in this order, and do not start a step
+      before the one before it is done.
+
+      1. Read the request and the files it names.
+      2. Make every change the briefs and the output call for. Run no Gradle
+         task while editing.
+      3. Only once every change is made, rerun the failing commands from the
+         worktree root, in the foreground, and repeat steps 2 and 3 until they
+         all pass or nothing within the rules below can make them pass.
+      4. Only then write the report.
+
+      Scope
+      - Edit only the files the request lists (§root/FS-contribution-contract.5.2).
+      - A defect in shared infrastructure is not yours to fix: report
+        `cannot-fix` and name it (§root/FS-contribution-contract.5.3).
+
+      Tests
+      - Follow the test contract: what a test must have, must not do, and should
+        do (§root/FS-test-contract.1, §root/FS-test-contract.2, §root/FS-test-contract.3).
+      - Fix minimally and keep coverage (§root/FS-test-contract.3.6); use only the
+        tested version's API (§root/FS-test-contract.1.4); no hardcoded versions
+        (§root/FS-test-contract.2.5); never assert known-broken behavior
+        (§root/FS-test-contract.2.6).
+
+      Metadata
+      - When `nativeTest` reports a missing registration, add exactly the entry
+        it names to the shipped metadata file, never under
+        `src/test/resources` (§root/FS-test-contract.2.7).
+      - Every entry has a `typeReached` condition naming a type in the allowed
+        packages that is reached before the access, and no entry names a
+        test-only type (§root/FS-metadata.2).
+      - Fix what `checkMetadataFiles` reports with the harness tasks first:
+        `splitTestOnlyMetadata` and `routeForeignMetadata` (§root/FS-metadata.2).
+      - Metadata lives only in `reachability-metadata.json`; never write a legacy
+        `*-config.json` file, test-only included (§root/FS-contribution-contract.2).
+
+      Native Image
+      - Never skip or tolerate a Native Image failure (§root/FS-test-contract.4.1,
+        §root/FS-test-contract.4.2); the only exception is open-ended dynamic
+        class loading (§root/FS-test-contract.4.3).
+      - Reshape or delete a test that needs runtime class definition
+        (§root/FS-test-contract.4.5).
+      - A `graalvmNative` flag is allowed only when it is on the allowed list
+        below and the failure shows the library needs it; use its narrowest form.
+        A forbidden flag is never added (§root/FS-test-contract.2.7.1,
+        §root/FS-test-contract.2.7.2).
+        Allowed:
+        - `--enable-url-protocols=<protocols>`, listing only the protocols the library opens.
+        - `--initialize-at-run-time=<class>`, for a named library class.
+        - `--initialize-at-build-time=<class>`, one class the library itself forces, never a package.
+        - `-H:+AddAllCharsets`, `-H:IncludeLocales=`, `-H:IncludeResourceBundles=`, for what the library needs.
+        - `-H:AdditionalSecurityProviders=<provider>`, for a provider the library registers.
+        - `--add-opens`, `--add-exports`, naming the package the library needs.
+        - `-H:+SharedArenaSupport`, `--future-defaults=<feature>`, when the error names the feature.
+        - a run-time `-D<property>` a consumer must set for the library to work.
+        Forbidden:
+        - `--report-unsupported-elements-at-runtime`.
+        - `--allow-incomplete-classpath` and `--link-at-build-time` relaxations.
+        - anything that turns off missing-registration errors.
+        - `-H:ReflectionConfigurationFiles=`, `-H:ConfigurationFileDirectories=`, or any metadata passed as an option.
+        - a package-wide or library-wide `--initialize-at-*`.
+        - JVM toolchain or compatibility overrides (§root/FS-test-contract.2.8).
+        - `native-image.properties` or any bundled directive (§root/FS-repository-functional-spec.3).
+      - A version Native Image cannot support is `cannot-fix` with that reason
+        (§root/FS-contribution-contract.5.4).
+
+      Before your final message, write `{output.report.path}` as JSON:
+      `{"result": "fixed" | "cannot-fix", "changed": ["<path relative to the worktree>"], "summary": "<one line>"}`.
+    outputs:
+      - name: report
+        path: runtime/forge/reports/fix-{visit_count}.json
+        description: Whether the fix believes it helped, what it changed, and why.
+
+  fix-route:
+    description: Return to the request's sender, or stop when the fix reported it could not help.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" fix-route
+    program_timeout: 5m
+
+  publish:
+    description: Commit the coordinate's paths, write the run metrics and the descriptor, rebase, and push the publication branch.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" publish
+    program_timeout: 30m
+
+  completed:
+    description: The publication branch is pushed for the trusted publisher to open the pull request.
+    final: true
+
+  nothing-to-publish:
+    description: The coordinate's paths are unchanged; there is nothing to publish.
+    final: true
+
+  human-intervention:
+    description: A check still fails after its fix, or the fix reported that nothing within the rules helps.
+    final: true
+
+  failed:
+    description: A program step failed - a bad input, the infrastructure, or a crash.
+    final: true
+
+  cancelled:
+    description: The run was cancelled by hand.
+    final: true
+    role: cancellation
+
+transitions:
+  - from: prepare
+    to: setup
+    exit_code: 0
+    description: The worktree is attached and the version added.
+
+  - from: prepare
+    to: failed
+    exit_code: nonzero
+    description: A bad input, a worktree conflict, or a failed scaffold.
+
+  - from: setup
+    to: repair
+    description: Setup's turn ended; repair keeps only what setup may change.
+
+  - from: repair
+    to: analyze
+    exit_code: [0, 20]
+    description: The version works, or a new library has nothing to repair.
+
+  - from: repair
+    to: fix
+    exit_code: 10
+    description: The version fails; one fix request follows.
+
+  - from: repair
+    to: publish
+    exit_code: 21
+    description: Setup's verdict is recorded as a skip; nothing is repaired or explored.
+
+  - from: repair
+    to: human-intervention
+    exit_code: 12
+    description: The version still fails after its fix.
+
+  - from: repair
+    to: failed
+    exit_code: nonzero
+    description: A missing URL, an unresolvable declaration, or the infrastructure.
+
+  - from: analyze
+    to: cover
+    exit_code: 10
+    description: The first cover prompt is written.
+
+  - from: analyze
+    to: native
+    exit_code: 20
+    description: Nothing to explore, or exploration is deferred.
+
+  - from: analyze
+    to: failed
+    exit_code: nonzero
+    description: The call sites or the first coverage report could not be produced.
+
+  - from: cover
+    to: measure
+    description: The pass's turn ended; measure decides whether it gained.
+
+  - from: measure
+    to: cover
+    exit_code: 10
+    description: Targets remain; the next cover prompt is written.
+
+  - from: measure
+    to: fix
+    exit_code: 11
+    description: The pass broke the JVM tests; one fix request follows.
+
+  - from: measure
+    to: native
+    exit_code: [0, 20]
+    description: The explore goal is met, or the budget is spent.
+
+  - from: measure
+    to: human-intervention
+    exit_code: 12
+    description: The JVM tests still fail and no explore checkpoint exists.
+
+  - from: measure
+    to: failed
+    exit_code: nonzero
+    description: The coverage report failed while the JVM tests pass.
+
+  - from: native
+    to: finalize
+    exit_code: 0
+    description: The native check passes.
+
+  - from: native
+    to: fix
+    exit_code: 10
+    description: The native check fails; one fix request with every failing output follows.
+
+  - from: native
+    to: human-intervention
+    exit_code: 12
+    description: The native check still fails after its fix.
+
+  - from: native
+    to: failed
+    exit_code: nonzero
+    description: The native check could not run.
+
+  - from: finalize
+    to: audit
+    exit_code: 0
+    description: Every check, the reviewer gates, and the pre-publication gate pass.
+
+  - from: finalize
+    to: fix
+    exit_code: 10
+    description: A check fails; one fix request follows.
+
+  - from: finalize
+    to: human-intervention
+    exit_code: 12
+    description: The check still fails after its fix.
+
+  - from: finalize
+    to: failed
+    exit_code: nonzero
+    description: The checks could not run.
+
+  - from: audit
+    to: fix
+    exit_code: 10
+    description: The first visit sends the audit fix request.
+
+  - from: audit
+    to: publish
+    exit_code: 0
+    description: The audit left the tree unchanged, or the checks pass over its edit.
+
+  - from: audit
+    to: human-intervention
+    exit_code: 12
+    description: The checks fail over the audit's edit; there is no second audit.
+
+  - from: audit
+    to: failed
+    exit_code: nonzero
+    description: The checks could not run.
+
+  - from: fix
+    to: fix-route
+    description: The fix's turn ended; fix-route returns to the sender.
+
+  - from: fix-route
+    to: repair
+    exit_code: 30
+    description: Back to repair, which reruns its check.
+
+  - from: fix-route
+    to: measure
+    exit_code: 31
+    description: Back to measure, which reruns the JVM tests.
+
+  - from: fix-route
+    to: native
+    exit_code: 32
+    description: Back to native, which reruns the native check.
+
+  - from: fix-route
+    to: finalize
+    exit_code: 33
+    description: Back to finalize, which reruns its checks.
+
+  - from: fix-route
+    to: audit
+    exit_code: 34
+    description: Back to audit, which compares the tree with its checkpoint.
+
+  - from: fix-route
+    to: human-intervention
+    exit_code: 40
+    description: The fix reported that nothing within the rules helps.
+
+  - from: fix-route
+    to: failed
+    exit_code: nonzero
+    description: No open fix request to return to.
+
+  - from: publish
+    to: completed
+    exit_code: 0
+    description: The branch is pushed; the trusted publisher opens the pull request.
+
+  - from: publish
+    to: nothing-to-publish
+    exit_code: 20
+    description: The coordinate's paths are unchanged.
+
+  - from: publish
+    to: failed
+    exit_code: nonzero
+    description: The commit, the rebase, or the push failed.
+
+  - from: "*"
+    to: cancelled
+    description: Cancel any non-final task by hand.

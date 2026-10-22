@@ -40,14 +40,14 @@ whether a document describes structure or behavior.
 - [grund.md](grund.md) — `GRUND-forge-motivation`: why Forge exists.
 - [goals.md](goals.md) — `GOAL-forge-direction` and the outcome goals beneath it.
 - [functional-spec/functional-spec.md](functional-spec/functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
-- [functional-spec/continuation.md](functional-spec/continuation.md) — `FS-forge-run-continuation`: resuming a failed run at the phase that failed, and the continuation marker contract.
 - [architecture/architecture.md](architecture/architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
+- [architecture/workflow-pipeline.md](architecture/workflow-pipeline.md) — `AR-forge-workflow-pipeline`: the Rhei state machine of one issue run.
+- [architecture/workflow-prompts.md](architecture/workflow-prompts.md) — `AR-forge-workflow-prompts`: what each agent state is told.
 - [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its backend adapters.
-- [architecture/do-work.md](architecture/do-work.md) — `AR-do-work-loop`: the long-running worker loop.
-- [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) — `AR-forge-orchestration`.
+- [architecture/dispatcher-package.md](architecture/dispatcher-package.md) — `AR-forge-dispatcher-decomposition`: the launcher's GitHub side.
 - [architecture/git-scripts.md](architecture/git-scripts.md) — `AR-forge-publication`: PR eligibility, body, issue linking, and publication.
-- [functional-spec/strategies.md](functional-spec/strategies.md) — `FS-workflow-strategy-registry`: strategy registry, contract, and fields.
-- [functional-spec/benchmarking.md](functional-spec/benchmarking.md) — `FS-forge-generation-benchmarking`.
+- [functional-spec/strategies.md](functional-spec/strategies.md) — `FS-workflow-strategy-registry`: retired; strategies are fixed per label.
+- [functional-spec/benchmarking.md](functional-spec/benchmarking.md) — `FS-code-coverage-benchmarking`.
 - [roadmap.md](roadmap.md) — `ROADMAP-forge-implementation` and the planned improvements beneath it.
 
 ### A component still awaiting its split
@@ -55,8 +55,7 @@ whether a document describes structure or behavior.
 [architecture/code-coverage/workflow.md](architecture/code-coverage/workflow.md)
 keeps behavior and architecture in one document. It is
 the only component documented that way. The split — behavior into the functional
-spec, engine into [architecture/workflows.md](architecture/workflows.md), driver
-into [architecture/drivers.md](architecture/drivers.md) — happens in a later
+spec, the rest into the architecture folder — happens in a later
 change, and the document says so in its opening paragraph. Cite `CC-` IDs
 normally in the meantime; they are stable until that change renames them.
 

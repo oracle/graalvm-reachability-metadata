@@ -22,7 +22,7 @@ Applying the principle:
 - When an agent or reviewer makes the same decision repeatedly, promote that
   decision into deterministic code and leave the agent only the judgment that
   remains.
-- Prompt instructions and review skills are the fallback for what genuinely
+- Prompt instructions are the fallback for what genuinely
   requires judgment, and even then each instruction cites the spec point it
   enforces, so every rule keeps one checkable home.
 

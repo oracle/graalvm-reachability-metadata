@@ -9,9 +9,8 @@ and how it handles Native Image particularities. It makes the requirements of
 writing or fixing a test.
 
 The Forge prompt templates under [`forge/prompt_templates/`](../../forge/prompt_templates)
-and the review skills under [`skills/`](../../skills) restate points of this
-contract for generation and review; those restatements cite the points here, so
-a change to the contract starts in this file.
+restate points of this contract for generation and repair; those restatements
+cite the points here, so a change to the contract starts in this file.
 
 Each point below carries an example. Examples are illustrative, not exhaustive:
 the rule text is the contract.
@@ -225,15 +224,47 @@ reachable only through broken behavior, it stays uncovered.
 }
 ```
 
-### 2.7 No hand-written reachability metadata
+### 2.7 Hand-written metadata and native flags only within these bounds
 
 Tests and test authors never generate, write, or modify reachability metadata
-or Native Image config entries: no creating or editing
+or Native Image config entries in the test project: no creating or editing
 `reachability-metadata.json`, `reflect-config.json`, `resource-config.json`,
 `proxy-config.json`, `serialization-config.json`, `jni-config.json`,
 `predefined-classes-config.json`, or any other file under
 `src/test/resources/META-INF/native-image`. Metadata is collected from the
-tests and merged by the harness and Forge (§FS-repository-functional-spec.5.1).
+tests and merged by the harness and Forge (§FS-repository-functional-spec.5.1),
+and the shipped files change by hand only in the two cases below.
+
+**Missing registrations after generation.** When `generateMetadata` has run
+and `nativeTest` still reports a missing registration, the entry the error
+names may be added by hand to the coordinate's shipped
+`metadata/<group>/<artifact>/<version>/reachability-metadata.json`. The test
+that fails without the entry is its justification. The entry is the exact one
+the error names, nothing broader; it has a `typeReached` condition naming a
+type inside the artifact's `allowed-packages` that is reached before the
+access occurs; and it names no test-only type (§FS-metadata.2).
+
+**Reporter-requested needs generation missed.** A need inferred from a
+reported issue is mandatory (§FS-test-contract.1.5), so when a test drives the
+requested access through a public API path and `generateMetadata` still does
+not trace the entry, the entry is written by hand into the same shipped files,
+with the same condition rule. It is written only for needs inferred from the
+issue, only after generation has been run and missed them, and never in place
+of the test.
+
+No other author or phase hand-writes metadata, and nothing under
+`src/test/resources/META-INF/native-image` is ever written by hand.
+
+```text
+Bad: a PR diff adding
+  tests/src/.../src/test/resources/META-INF/native-image/reflect-config.json
+
+Good: generateMetadata ran, nativeTest still fails with a missing
+  registration for org.example.Codec, so the run adds that one entry to
+  metadata/org.example/lib/2.0.0/reachability-metadata.json with a
+  typeReached condition on org.example.CodecFactory
+```
+
 **Native build and run flags.** All `graalvmNative` configuration in
 `build.gradle` — build arguments and run arguments alike — is held to one
 uniform rule: a flag may be present only when the test can only be written and
@@ -251,43 +282,54 @@ all three conditions hold together:
 3. the flag is the narrowest one that resolves the necessity, naming only what
    forces it, never a package or the library at large.
 
-A flag is never a repair. A failing native image build or run is evidence of
-missing metadata until conditions 1 and 2 are demonstrated, so a flag is never
-added to make a build pass, and never in place of a metadata entry. The
-metadata bundle itself ships no build-time directive of any kind:
-`native-image.properties` and every other bundled directive remain forbidden,
-and the additivity invariant they protect is unchanged
-(§FS-repository-functional-spec.3).
+A flag on the allowed list below is a repair when the failure shows the
+library needs it: a native build or run error that names the need — an
+unsupported URL protocol, a class that must initialize at run time, a missing
+charset — is the evidence for conditions 1 and 2, and the flag is added in its
+narrowest form. Any other failing native build or run is evidence of missing
+metadata, and no flag is added in place of a metadata entry. A flag on the
+forbidden list is never added. The metadata bundle itself ships no build-time
+directive of any kind: `native-image.properties` and every other bundled
+directive remain forbidden, and the additivity invariant they protect is
+unchanged (§FS-repository-functional-spec.3).
 
 ```text
-Bad: a PR diff adding
-  tests/src/.../src/test/resources/META-INF/native-image/reflect-config.json
-
-Bad: --initialize-at-build-time=<library types> added so nativeTestCompile
+Bad: --initialize-at-build-time=<library package> added so nativeTestCompile
   passes, when a differently shaped test needs no flag at all
 
-Good: --future-defaults=run-time-initialize-file-system-providers, with
-  evidence that every test shape fails without it because the library jar
-  registers FileSystemProviders via META-INF/services
+Good: --enable-url-protocols=https, after the native run fails because the
+  library opens an https URL
 ```
 
-The single exception is the reporter-requested metadata phase. A need inferred
-from a reported issue is mandatory (§FS-test-contract.1.5), so when the phase has
-written a test that drives the requested access through a public API path and
-`generateMetadata` still does not trace the entry, the entry is written by hand
-into the coordinate's shipped `metadata/<group>/<artifact>/<version>/` files.
-The exception is bounded: only for needs inferred from the issue, only after
-generation has been run and missed them, and never in place of the test. Every
-hand-written entry must have a `typeReached` condition naming a type reached
-before the access occurs; no other condition kind is permitted. Nothing under
-`src/test/resources/META-INF/native-image` is ever written, and no other phase
-or author may hand-write metadata.
+#### 2.7.1 Allowed flags
 
-```text
-Good: generateMetadata missed the reporter's entry, so the phase adds it to
-  metadata/org.apache.kafka/kafka-streams/4.3.1/reachability-metadata.json
-  with a typeReached condition, alongside the test that drives it
-```
+Each flag is allowed when the failure shows the library needs it, in its
+narrowest form:
+
+| Flag | Allowed when |
+| --- | --- |
+| `--enable-url-protocols=http,https` | the library opens URLs of that protocol; list only those protocols |
+| `--initialize-at-run-time=<class>` | a named library class must initialize at run time |
+| `--initialize-at-build-time=<class>` | the library itself forces it; one named class, never a package |
+| `-H:+AddAllCharsets`, `-H:IncludeLocales=`, `-H:IncludeResourceBundles=` | the library needs charsets, locales, or bundles that are not included by default |
+| `-H:AdditionalSecurityProviders=<provider>` | the library registers a security provider |
+| `--add-opens`, `--add-exports` | the library needs that module access; name the package |
+| `-H:+SharedArenaSupport`, `--future-defaults=<feature>` | the library uses that feature; the error names it |
+| run-time `-D<property>` | a consumer must set that property for the library to work |
+
+#### 2.7.2 Forbidden flags
+
+Each flag below silences a check or hides a failure, so it is never added:
+
+| Flag | Why |
+| --- | --- |
+| `--report-unsupported-elements-at-runtime` | defers build failures to run time |
+| `--allow-incomplete-classpath`, `--link-at-build-time` relaxations | hide a missing or broken classpath |
+| anything that turns off missing-registration errors | hides the metadata the test is meant to prove |
+| `-H:ReflectionConfigurationFiles=`, `-H:ConfigurationFileDirectories=`, any metadata passed as an option | metadata belongs in `metadata/`, not in flags |
+| a package-wide or library-wide `--initialize-at-*` | not the narrowest form |
+| JVM toolchain or compatibility overrides | §FS-test-contract.2.8 |
+| `native-image.properties` or any bundled directive | §FS-repository-functional-spec.3 |
 
 ### 2.8 No JVM toolchain or compatibility overrides
 

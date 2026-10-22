@@ -26,41 +26,6 @@ from utility_scripts.native_image_artifact import ARTIFACT_REPOSITORY_URLS
 
 
 class HostAccessChecksTests(unittest.TestCase):
-    def test_custom_agent_alias_uses_family_for_state_and_provider_checks(self) -> None:
-        environment = {"HOME": "/operator"}
-        host_requirements = HostRequirements(
-            "/repo/forge",
-            "python3",
-            environment=environment,
-            requirements=QueueRequirements(
-                issue_work=False,
-                review_work=True,
-                github_work=False,
-            ),
-            analysis_agent="cdx",
-            analysis_family="codex",
-            analysis_model="gpt-5.6-terra",
-        )
-        with patch(
-                "utility_scripts.host_access_checks.probe_write_access",
-                return_value=(True, "writable"),
-        ), patch.object(
-            host_requirements,
-            "_check_git_remote_access",
-        ), patch(
-            "utility_scripts.host_access_checks.probe_tcp_host",
-            return_value=(True, "reachable"),
-        ) as probe_host:
-            host_requirements._check_write_permissions()
-            host_requirements._check_network()
-
-        result_by_name = {result.name: result for result in host_requirements.results}
-        self.assertIn("codex state", result_by_name)
-        self.assertIn("/operator/.codex", result_by_name["codex state"].remediation)
-        probed_hosts = [call.args[0] for call in probe_host.call_args_list]
-        self.assertIn("chatgpt.com", probed_hosts)
-        self.assertNotIn("opencode.ai", probed_hosts)
-
     def test_github_permission_results_name_each_required_mutation_boundary(self) -> None:
         environment = {
             "FORGE_WORK_LIMIT": "1",

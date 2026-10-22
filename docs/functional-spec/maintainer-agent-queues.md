@@ -63,5 +63,5 @@ The agent takes the first disposition that applies:
    it was written for, so the queue does not spend again on that head until
    a new push arrives.
 
-The queue never merges. Merging stays with the review automation and its
-gates (§forge/FS-automated-pr-review).
+The queue never merges. Merging stays with a maintainer once CI is green
+(§forge/FS-published-pr-ci-failures).

@@ -21,8 +21,9 @@ this document describes the test-project contract.
   image can reach its own helper types without those entries reaching consumers
   (§FS-metadata, §FS-repository-functional-spec.5.1).
 - `build.gradle` may add test dependencies and, under `graalvmNative`, only
-  flags the test can only be written and executed with — the uniform
-  necessity rule of §FS-test-contract.2.7.
+  the flags §FS-test-contract.2.7 allows: one from its allowed list when the
+  failure shows the library needs it, or one meeting the uniform necessity
+  rule, never one from its forbidden list.
 - Test assertions use standard Java or library exceptions, not Gradle-only
   failure types such as `GradleException`.
 
