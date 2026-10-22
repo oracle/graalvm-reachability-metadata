@@ -92,9 +92,10 @@ The descriptor contains data, never GitHub instructions:
   reference and publication metrics, local verification evidence, optional
   post-generation intervention, and Forge revision evidence;
 - typed flags for chunking, final-chunk state, and human-intervention evidence;
-- the authoritative pre-push review verdict as its own object
-  (§FS-local-branch-review). It carries `approved`, or `rejected` with the
-  required `human-intervention` or `close` action, plus the review comment,
+- optionally, a pre-push review verdict as its own object, which a
+  `forge-metadata` run never writes because its review happens on the pull
+  request (§FS-automated-pr-review). It carries `approved`, or `rejected` with
+  the required `human-intervention` or `close` action, plus the review comment,
   finding, fix note, model and session provenance, and changed-path evidence;
 - typed follow-up facts for deferred dynamic-access coverage or a tested-version
   split, each carrying the number of the issue Forge already opened locally, so
