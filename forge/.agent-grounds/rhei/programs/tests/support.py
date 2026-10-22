@@ -20,6 +20,7 @@ import subprocess
 import sys
 import tempfile
 from typing import Any, Iterator
+from unittest.mock import patch
 
 TESTS: str = os.path.dirname(os.path.abspath(__file__))
 PROGRAMS: str = os.path.dirname(TESTS)
@@ -94,12 +95,23 @@ class FakeRepository:
         bin_dir: str = os.path.join(self.tmp, "bin")
         os.makedirs(bin_dir)
         _executable(os.path.join(bin_dir, "gh"), FAKE_GH)
+        # No image is ever pulled, so the matrix's no-new-image check sees an empty list.
+        _executable(os.path.join(bin_dir, "docker"), "#!/bin/sh\nexit 0\n")
+        script: str = os.path.join(".github", "workflows", "scripts", "run-consecutive-tests.sh")
+        os.makedirs(os.path.dirname(os.path.join(self.repo, script)))
+        shutil.copyfile(os.path.join(REPOSITORY, script), os.path.join(self.repo, script))
         self.saved_environment: dict[str, str] = dict(os.environ)
         os.environ["PATH"] = bin_dir + os.pathsep + os.environ["PATH"]
         os.environ["FAKE_FORGE_CONTROL"] = self.control_path
         os.environ["FORGE_GRADLE_USER_HOME"] = os.path.join(self.tmp, "gradle-home")
         os.environ["RHEI_TASK_ID"] = "ws.forge"
         os.environ["RHEI_RESULT_PATH"] = os.path.join(self.workspace, "runtime", "results", "ws.forge.md")
+        os.environ["GRAALVM_HOME_25_0"] = self.graalvm("graalvm-25")
+        os.environ["GRAALVM_HOME_LATEST_EA"] = self.graalvm("graalvm-ea")
+        # The Spring AOT smoke tests are never cloned from GitHub.
+        self.clone = patch("utility_scripts.local_ci_verification.run_git_transport",
+                           side_effect=lambda args, cwd: os.makedirs(args[-1], exist_ok=True))
+        self.clone.start()
         for command in (("init", "-q", "-b", "master"), ("config", "user.email", "t@example.com"),
                         ("config", "user.name", "Test"), ("config", "commit.gpgsign", "false")):
             _git(self.repo, *command)
@@ -108,7 +120,20 @@ class FakeRepository:
         _git(self.repo, "remote", "add", "origin", self.remote)
         self.commit("base")
 
+    def graalvm(self, name: str) -> str:
+        """A GraalVM home whose `java` and `native-image` succeed, with the metadata schema."""
+        home: str = os.path.join(self.tmp, name)
+        os.makedirs(os.path.join(home, "bin"))
+        for executable in ("java", "native-image"):
+            _executable(os.path.join(home, "bin", executable), "#!/bin/sh\nexit 0\n")
+        schema: str = os.path.join(home, "lib", "svm", "schemas", "reachability-metadata-schema.json")
+        os.makedirs(os.path.dirname(schema))
+        with open(schema, "w", encoding="utf-8") as handle:
+            handle.write("{}\n")
+        return home
+
     def close(self) -> None:
+        self.clone.stop()
         os.environ.clear()
         os.environ.update(self.saved_environment)
         shutil.rmtree(self.tmp, ignore_errors=True)

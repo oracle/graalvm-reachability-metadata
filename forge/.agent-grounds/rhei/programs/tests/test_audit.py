@@ -40,7 +40,8 @@ TEMPLATE: str = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.
 REQUEST: str = 'It fails at runtime; please add:\n```json\n{"reflection": [{"type": "org.example.lib.Codec"}]}\n```\n'
 
 
-class AuditTest(unittest.TestCase):
+class FinalizedRun(unittest.TestCase):
+    """A fake run brought up to `finalize`, and the steps that play the agents after it."""
 
     def setUp(self) -> None:
         self.fake: FakeRepository = FakeRepository()
@@ -86,6 +87,10 @@ class AuditTest(unittest.TestCase):
         """Finalize, send the audit, play `fix`, and route back."""
         self.assertEqual(OK, self.step("finalize"))
         self.assertEqual(AGENT_WORK, self.step("audit"))
+        return self.routed(result)
+
+    def routed(self, result: str = "fixed") -> int:
+        """Play the audit's `fix` and route back."""
         write_json(runtime_path(self.fake.workspace, "reports", "fix-1.json"),
                    {"result": result, "changed": [], "summary": "played"})
         return self.step("fix-route")
@@ -93,6 +98,9 @@ class AuditTest(unittest.TestCase):
     def gradle_calls(self, task: str) -> int:
         with open(self.state.path("gradle-calls.log"), encoding="utf-8") as handle:
             return sum(1 for line in handle if line.split()[0] == task)
+
+
+class AuditTest(FinalizedRun):
 
     def test_the_audit_request_is_an_ordinary_fix_request(self) -> None:
         self.repaired()

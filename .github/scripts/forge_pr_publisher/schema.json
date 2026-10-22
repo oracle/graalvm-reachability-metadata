@@ -586,6 +586,21 @@
           "items": {
             "type": "string"
           }
+        },
+        "test_matrix": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["coordinates", "versions", "java", "nativeImageMode", "status"],
+            "properties": {
+              "coordinates": {"type": "string"},
+              "versions": {"type": "array", "items": {"type": "string"}},
+              "java": {"type": "string"},
+              "nativeImageMode": {"type": "string"},
+              "status": {"enum": ["passed", "failed", "skipped"]},
+              "reason": {"type": "string"}
+            }
+          }
         }
       }
     },

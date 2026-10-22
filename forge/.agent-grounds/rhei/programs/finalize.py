@@ -8,8 +8,10 @@
 `spotlessApply` runs first, then `spotlessCheck`, `checkstyle`, and
 `generateLibraryStats` over the coordinate, then the reviewer gates
 (§FS-local-ci-equivalent-verification.1.1), and then the pre-publication gate
-(§FS-local-ci-equivalent-verification.2) with no agent fixup of its own; the
-first failing step becomes the fix request (§AR-forge-workflow-pipeline.4).
+(§FS-local-ci-equivalent-verification.2) with the full changed-metadata test
+matrix and no agent fixup of its own; the first failing step becomes the fix
+request, a failing matrix entry with its exact reproduction command
+(§AR-forge-workflow-pipeline.4.4).
 `audit` reruns the same lane over its edit (§AR-forge-workflow-pipeline.4.3).
 """
 from __future__ import annotations
@@ -18,6 +20,7 @@ from utility_scripts.local_ci_verification import (
     CommandRecord,
     LocalCIVerificationError,
     LocalCIVerificationResult,
+    reproduction_command,
     run_local_ci_verification,
 )
 
@@ -34,6 +37,8 @@ STEPS: tuple[list[str], ...] = (
     ["checkstyle"],
     ["generateLibraryStats"],
 )
+# Java lanes run only when their GraalVM is installed (§FS-local-ci-equivalent-verification.2.1).
+OPTIONAL_JAVA_VERSIONS: frozenset[str] = frozenset({"latest-ea"})
 
 
 def step_arguments(step: list[str], state: RunState) -> list[str]:
@@ -64,12 +69,14 @@ def run_lane(workspace: str, state: RunState, prefix: str) -> list[handoff.Failu
             coordinates=state.coordinate,
             base_commit=state.base_commit,
             max_fixup_attempts=0,
+            reproduce_full_ci=True,
+            optional_java_versions=OPTIONAL_JAVA_VERSIONS,
         )
     except LocalCIVerificationError as error:
         if not error.result.commands:
             return [handoff.Failure(f"pre-publication gate {error.result.failure_gate}", str(error))]
         failed: CommandRecord = error.result.commands[-1]
-        return [handoff.Failure(" ".join(failed.command), failed.output_excerpt)]
+        return [handoff.Failure(reproduction_command(failed), failed.output_excerpt)]
     state.local_ci = verification.to_metrics()
     return []
 

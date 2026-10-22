@@ -59,16 +59,16 @@ BRIEFS: tuple[Brief, ...] = (
     Brief("missing registration",
           re.compile(r"Missing\w*RegistrationError|MissingReflectionRegistration|MissingResourceRegistration"),
           "Add the entry the error names to the shipped metadata, with a `typeReached` condition in the "
-          "allowed packages.", ("nativeTest",)),
+          "allowed packages.", ("nativeTest", "test")),
     Brief("runtime class definition or bytecode generation",
           re.compile(r"cannot be defined at run ?time|Defining (hidden )?classes at runtime|"
                      r"No classes have been predefined|bytecode generation|ByteBuddy|Byte Buddy", re.IGNORECASE),
-          "Reshape the test to avoid it, or delete that test.", ("nativeTest", "nativeTestCompile")),
+          "Reshape the test to avoid it, or delete that test.", ("nativeTest", "nativeTestCompile", "test")),
     Brief("the native build or run names a flag",
           re.compile(r"--enable-url-protocols|URL protocol .* (is not|was not) (supported|enabled)|"
                      r"--initialize-at-(run|build)-time|AddAllCharsets|IncludeLocales|IncludeResourceBundles|"
                      r"AdditionalSecurityProviders|--add-opens|--add-exports|SharedArenaSupport|--future-defaults"),
-          "Add it if it is on the allowed list, in its narrowest form.", ("nativeTest", "nativeTestCompile")),
+          "Add it if it is on the allowed list, in its narrowest form.", ("nativeTest", "nativeTestCompile", "test")),
     Brief("style violation",
           re.compile(r"."),
           "Run `spotlessApply`, then fix what `checkstyle` reports.", ("spotlessCheck", "checkstyle"), True),
@@ -118,9 +118,12 @@ def briefs_for(failure: Failure, packages: set[str]) -> list[str]:
 
 
 def task_name(command: str) -> str:
-    """The Gradle task of `./gradlew <task> ...`."""
+    """The Gradle task of `[env NAME=value ...] ./gradlew [clean] <task> ...`, as a matrix entry reruns it."""
     words: list[str] = command.split()
-    return words[1] if len(words) > 1 else command
+    if "./gradlew" not in words:
+        return words[1] if len(words) > 1 else command
+    tasks: list[str] = [word for word in words[words.index("./gradlew") + 1:] if not word.startswith("-")]
+    return next((task for task in tasks if task != "clean"), command)
 
 
 def editable_paths(state: RunState, sender: str) -> list[str]:
