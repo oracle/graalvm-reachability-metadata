@@ -15,6 +15,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // HTTPS URL values need protocol support (§FS-real-use-test-generation.2.5).
+            buildArgs.add("--enable-url-protocols=https")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
