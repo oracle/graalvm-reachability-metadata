@@ -201,8 +201,9 @@ bounds `fix`.
 
 The strategy registry, per-label drivers, the library-update router, the
 continuation marker, the native trace gate and program-side metadata merging,
-per-class native runs, the pre-push local review, and every per-site repair
-budget are gone: strategies are fixed per label, Rhei resumes a run at its
+per-class native runs, the pre-push local review, the library preparation
+preflight with its not-for-native-image and unsupportable-version verdicts,
+foreign-owner follow-up issues, and every per-site repair budget are gone: strategies are fixed per label, Rhei resumes a run at its
 state and the run branch holds the checkpoints, and each former repair site is
 one fix request. The issue-form rules, the claim, bulk-then-class exploration,
 the dynamic-access report as the only oracle, the pre-publication gate, and the

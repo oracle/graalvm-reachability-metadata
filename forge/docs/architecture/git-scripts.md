@@ -17,7 +17,7 @@ the local Forge process receives the publisher App credentials.
 Chunked dynamic-access runs identify each part before the push
 (§AR-chunked-linking). Local finalization runs after workflow generation and
 the verification required by §FS-local-ci-equivalent-verification, never during
-the strategy loop.
+exploration.
 
 ## AR-pr-eligibility: PR eligibility boundary
 
@@ -284,7 +284,7 @@ workflow is metadata-first and does not produce agent token metrics, so its body
 omits them. It reports the previous and new library-coverage percentages, a
 stats diff between the previous and new coordinate, a severe-metadata-drop note
 when the new version's metadata shrank suspiciously, and the local
-CI-equivalent verification section (§AR-forge-driver-queues.4).
+CI-equivalent verification section (§AR-forge-workflow-pipeline.5).
 
 ### Not-for-native-image
 
@@ -384,9 +384,11 @@ readable during migration.
 
 ## AR-not-for-native-image-publication: Not-for-native-image publication
 
-The `not-for-native-image` route handles artifacts that the
-`library-new-request` driver judged not to be GraalVM Native Image targets
-(§AR-forge-drivers). Local finalization stages the marker
+The `not-for-native-image` route handles artifacts judged not to be GraalVM
+Native Image targets. A `forge-metadata` run no longer makes that judgment: the
+library preparation preflight that made it was retired
+(§AR-forge-workflow-pipeline.9), so only an existing descriptor that names the
+route still reaches this publisher path. Local finalization stages the marker
 `metadata/<group>/<artifact>/index.json`, its publication stats path, and the
 descriptor, then runs the same verification and push boundary as other routes.
 

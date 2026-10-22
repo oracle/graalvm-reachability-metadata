@@ -11,14 +11,6 @@ citation of each is removed with the code it describes.
 
 Retired with the registry (§FS-workflow-strategy-registry).
 
-## FS-predefined-strategy-loader: Strategy loading boundary (retired)
-
-Retired with the registry (§FS-workflow-strategy-registry).
-
-## FS-predefined-strategy-fields: Strategy bundle fields (retired)
-
-Retired with the registry (§FS-workflow-strategy-registry).
-
 ## FS-predefined-strategy-parameter-families: Parameter families (retired)
 
 Retired with the registry (§FS-workflow-strategy-registry).

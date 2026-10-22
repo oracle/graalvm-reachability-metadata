@@ -28,22 +28,15 @@ output and failure output cannot disagree about what a phase or a step is
 called (§FS-forge-run-location-reporting). A Rhei run names its own location:
 the state it is in (§AR-forge-workflow-pipeline).
 
-**One table, no parallel enum.** The five durable phases are imported from
-`utility_scripts/continuation_marker.py`, which already owns them for
-continuation (§FS-forge-run-continuation.1); `run_location` adds only `claim`,
-the dispatcher-side segment that exists before continuation state does. The
-phase-to-steps table is the only place a step name is written, which is what
-makes `(<n>/<total>)` derivable rather than hand-counted, and makes an
-unregistered step name a hard error at the step boundary instead of a wrong
-label in a log.
-
-The table lists the steps the pipeline enters today, in the order it enters
-them, not the full set of pseudo-methods §AR-forge-workflow-pipeline names. Two
-of those — `check_setup()` and `local_review()` — are still folded into larger
-methods, so registering them would make `<total>` count a step that never runs;
-they join the table when §ROADMAP-forge-algorithmic-then-neural-setup and the
-local-review work split them out. A step name may appear under several phases,
-because more than one phase runs `generate_tests()` and `native_trace_gate()`.
+**One table, no parallel enum.** `run_location` declares the phases and the
+phase-to-steps table itself. `claim` is the launcher's; the other phases are
+entered by the native trace gate, local CI verification, and branch publication
+that the code coverage workflow still runs. The table is the only place a step
+name is written, which is what makes `(<n>/<total>)` derivable rather than
+hand-counted, and makes an unregistered step name a hard error at the step
+boundary instead of a wrong label in a log. A step name may appear under several
+phases, because more than one phase runs `generate_tests()` and
+`native_trace_gate()`.
 
 **Steps are marked, not narrated.** A step is entered through the `run_step()`
 context manager — or the `pipeline_step()` decorator, which is the same thing
@@ -56,53 +49,39 @@ The decorator resolves its operand from the call's arguments **by parameter
 name**, binding the wrapped signature rather than indexing `args`, so a keyword
 call and a positional call of the same function locate identically.
 
-The state is thread-local because runs execute concurrently on a pool
-(§AR-forge-control-plane): each lifecycle resets it, names its run, and points
-it at that run's continuation marker, so two runs never read each other's
-location and interleaved banners say which run they belong to.
+The state is thread-local, so two runs in one process never read each other's
+location, and `bind_run_context()` names the run so interleaved banners say
+which run they belong to.
 
 **Failures propagate their location, they do not format it.** `run_step()`
 annotates a propagating exception with the location it was raised in and
 re-raises the original exception object. Annotating rather than wrapping is
-required: `forge_metadata` classifies external failures by exception type
+required: callers classify external failures by exception type
 (§FS-human-intervention-policy), and a wrapper would erase that type. The
 annotation is written once by the innermost step and never overwritten, so a
 location survives every intermediate `except` on the way out. A `KeyboardInterrupt`
-travels unmarked: an interrupt is not a run failure, and marking it would put a
-failure location on the marker of a run the operator stopped.
+travels unmarked: an interrupt is not a run failure.
 
-Status-code failures — the many Forge paths that return `RUN_STATUS_FAILURE`
-rather than raise — call `record_step_failure()` instead. Both routes write to
-the same run-local failure slot, so the lifecycle boundary reads one location
-regardless of how the failure travelled.
+Status-code failures — the paths that return a failure status rather than
+raise — call `record_step_failure()` instead. Both routes write to the same
+run-local failure slot, so the boundary reads one location regardless of how
+the failure travelled.
 
-**The location crosses process and phase boundaries in the marker.**
-`ContinuationMarker` carries a `failure` object with the phase, step, and
-operand, written when the failure is recorded. That is what puts the same pair
-on the preserved branch, in the resumed run's log, and in the human-intervention
-comment.
+**An unlocated failure is loud.** When a boundary reports a failure that no
+step claimed, it reports the step as `<unlocated-step>` and prints a defect
+notice: a code path raising outside the step boundaries is a bug in Forge, and
+the report says so rather than quietly omitting the step.
 
-**An unlocated failure is loud.** When the lifecycle boundary reports a failure
-that no step claimed, it reports the step as `<unlocated-step>` and prints a
-defect notice: a code path raising outside the pipeline's step boundaries is a
-bug in Forge, and the report says so rather than quietly omitting the step.
-
-**The line is printed once.** A run has one terminal failure, and it passes
-several boundaries on the way out — the driver's status code, the workflow run
-result, the failed-issue handler. The reporter is idempotent for the run, so the
-boundary nearest the error owns the line and the rest add nothing.
+**The line is printed once.** A run has one terminal failure, and it may pass
+several boundaries on the way out. The reporter is idempotent for the run, so
+the boundary nearest the error owns the line and the rest add nothing.
 
 **Verbose narration is separate from failure output.** `stage_logger` owns the
 process-wide verbose level, enabled by `--verbose`/`FORGE_VERBOSE`; the older
-`FORGE_DEBUG_LOGGING` switch remains an alias. The worker forwards the setting
-to its host-check and workflow-driver processes rather than threading a boolean
-through workflow functions. Normal detail follows the phase most recently
-announced by `enter_phase()`, rather than the outer Python call stack, because
-`run_workflow_engine()` changes from compact `setup` into `fix` or `explore`
-before returning to its driver, and every successful driver later enters compact
-`finalization`. Git commands capture their output and replay it only on failure
-or under verbose output, so the default failed-run output is the location, the
-error, and the preserved branch
+`FORGE_DEBUG_LOGGING` switch remains an alias. Normal detail follows the phase
+most recently announced by `enter_phase()`, rather than the outer Python call
+stack. Git commands capture their output and replay it only on failure or under
+verbose output, so the default failed-run output is the location and the error
 (§FS-forge-run-location-reporting.4, §FS-forge-run-output-legibility.5).
 
 ## AR-forge-control-plane: The launcher owns queue control

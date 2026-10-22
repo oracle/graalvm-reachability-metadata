@@ -18,7 +18,6 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-functional-spec](functional-spec.md#fs-forge-functional-spec-forge-functional-specification) | Forge functional specification |
 | [§FS-forge-issue-resolution-goal](functional-spec.md#fs-forge-issue-resolution-goal-forge-issue-resolution-goal) | Forge issue resolution goal |
 | [§FS-forge-scope](functional-spec.md#fs-forge-scope-supported-issue-queues) | Supported issue queues |
-| [§FS-foreign-metadata-owner-follow-ups](functional-spec.md#fs-foreign-metadata-owner-follow-ups-foreign-metadata-owner-follow-ups) | Foreign metadata owner follow-ups |
 | [§FS-forge-glossary](functional-spec.md#fs-forge-glossary-glossary) | Glossary |
 | [§FS-forge-requirements](functional-spec.md#fs-forge-requirements-requirement-gates) | Requirement gates |
 | [§FS-forge-host-requirements](functional-spec.md#fs-forge-host-requirements-host-requirements) | Host requirements |
@@ -36,17 +35,14 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-human-intervention-policy](publication.md#fs-human-intervention-policy-human-intervention-policy) | Human intervention policy |
 | [§FS-automated-pr-review](publication.md#fs-automated-pr-review-automated-pull-request-review) | Automated pull request review |
 | [§FS-forge-run-status](functional-spec.md#fs-forge-run-status-run-status-semantics) | Run status semantics |
-| [§FS-unsupportable-version-diagnosis](functional-spec.md#fs-unsupportable-version-diagnosis-pre-generation-unsupportable-version-diagnosis) | Pre-generation unsupportable-version diagnosis |
+| [§FS-unsupportable-version-diagnosis](functional-spec.md#fs-unsupportable-version-diagnosis-pre-generation-unsupportable-version-diagnosis-retired) | Pre-generation unsupportable-version diagnosis (retired) |
 | [§FS-forge-run-output-legibility](functional-spec.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |
 | [§FS-forge-chunked-dynamic-access](functional-spec.md#fs-forge-chunked-dynamic-access-chunked-dynamic-access-semantics) | Chunked dynamic-access semantics |
 | [§FS-forge-workflow-spec-catalog](functional-spec.md#fs-forge-workflow-spec-catalog-workflow-specifications) | Workflow specifications catalog |
-| [§FS-forge-run-continuation](continuation.md#fs-forge-run-continuation-run-continuation-retired) | Run continuation (retired) |
 | [§FS-workflow-strategy-registry](strategies.md#fs-workflow-strategy-registry-predefined-strategy-registry-retired) | Predefined strategy registry (retired) |
 | [§FS-forge-predefined-strategy-contract](strategies.md#fs-forge-predefined-strategy-contract-predefined-strategy-contract-retired) | Predefined strategy contract (retired) |
-| [§FS-predefined-strategy-loader](strategies.md#fs-predefined-strategy-loader-strategy-loading-boundary-retired) | Strategy loading boundary (retired) |
-| [§FS-predefined-strategy-fields](strategies.md#fs-predefined-strategy-fields-strategy-bundle-fields-retired) | Strategy bundle fields (retired) |
 | [§FS-predefined-strategy-parameter-families](strategies.md#fs-predefined-strategy-parameter-families-parameter-families-retired) | Parameter families (retired) |
-| [§FS-forge-generation-benchmarking](benchmarking.md#fs-forge-generation-benchmarking-forge-generation-benchmarking) | Forge generation benchmarking |
+| [§FS-forge-generation-benchmarking](benchmarking.md#fs-forge-generation-benchmarking-forge-generation-benchmarking-retired) | Forge generation benchmarking (retired) |
 | [§FS-code-coverage-benchmarking](benchmarking.md#fs-code-coverage-benchmarking-code-coverage-improvement-benchmarking) | Code coverage improvement benchmarking |
 
 This index is navigational. Cite the specific declaration ID rather than this
@@ -57,9 +53,8 @@ Files:
 - [functional-spec.md](functional-spec.md) — the specification itself:
   requirements, outputs, verification, and the policies that decide a run's
   outcome. Start here.
-- [continuation.md](continuation.md) — retired: Rhei resumes a run at its state.
 - [tested-version-split.md](tested-version-split.md) — how a library-update run
   splits the entries that can no longer share its regenerated suite.
 - [strategies.md](strategies.md) — retired: strategies are fixed per label.
-- [benchmarking.md](benchmarking.md) — what a generation benchmark must measure
-  and record when comparing strategies.
+- [benchmarking.md](benchmarking.md) — what the code coverage benchmark must
+  measure and record when comparing agent configurations.

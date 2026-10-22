@@ -129,8 +129,8 @@ The gate closes those gaps with **runtime truth** rather than more inference. It
 runs a real native image with metadata tracing enabled, records what the
 execution actually touches, and re-supplies it until the binary stops missing
 metadata. It is what proves a coordinate's test binary passes on Native Image,
-and every workflow ends on it (§AR-forge-workflow-engine.2,
-§AR-native-test-verification-callers). Native Image must always work, so `FAILED`
+and the code coverage workflow ends on it (§AR-code-coverage-improvement); a
+`forge-metadata` run uses its own native check (§AR-forge-workflow-pipeline.5). Native Image must always work, so `FAILED`
 is a hard error: the caller returns a failure status and resets its branch to its
 checkpoint.
 
@@ -148,12 +148,10 @@ next build makes the next cycle aware of the previously missed access. Iterating
 walks the metadata from the agent's approximation to the exact set the image
 requires; exit `0` means nothing missed.
 
-Recovery is therefore ordered: **JVM agent, then native tracing, then Codex.**
+Recovery is therefore ordered: **JVM agent, then native tracing, then the analysis agent.**
 Tracing must not run before the agent step. Only when the loop still cannot make
-the binary pass does the residual failure go to Codex, because at that point it
-is evidence of a code or test defect rather than a metadata gap. Pi is never
-invoked — its role elsewhere is to remove failing tests, exactly the wrong move
-when the failure is a real defect that must surface.
+the binary pass does the residual failure go to the analysis agent, because at
+that point it is evidence of a code or test defect rather than a metadata gap.
 
 ### 2. Inputs and budget
 
@@ -176,9 +174,7 @@ frequently not Java package roots — an `org.apache.tomcat.embed` artifact exec
 tracing needs a condition class that is actually on the access stack before the
 access occurs.
 
-The outer budget is the strategy parameter
-`max-native-test-verification-iterations`, default 40
-(§FS-predefined-strategy-parameter-families). Convergence is expected within a
+The outer budget is the caller's cycle limit, default 40. Convergence is expected within a
 handful of cycles; the default is a soft cap, not a target, and each cycle
 rebuilds the image, so wall-clock cost is dominated by build time. A per-cycle
 timeout, default 30 minutes, caps the preflight test invocation and each trace
@@ -192,12 +188,12 @@ invocation, so no stale entry leaks across runs.
 The agent step runs first, always. If it fails, tracing starts with no accepted
 trace directories. If it succeeds, the coordinate is tested against the staged
 agent metadata; a failure *before* the native tests is a code or test problem and
-goes straight to Codex, and a native-test failure enters the trace loop.
+goes straight to the analysis agent, and a native-test failure enters the trace loop.
 
 **A pass must survive finalization.** When the coordinate passes against staged
 metadata, the gate merges it into durable repository metadata and re-runs the
 tests *without* staged directories. Only that durable re-run returns `PASSED`;
-otherwise the finalized metadata goes to Codex. This catches merge-time condition
+otherwise the finalized metadata goes to the analysis agent. This catches merge-time condition
 invalidation, where raw staged metadata passes but the merged result leaves an
 access behind an unsatisfied condition. A trace-backed pass takes the same route:
 merge accepted trace directories, merge into durable metadata, re-run.
@@ -209,17 +205,17 @@ flowchart TD
     Test -- pass --> FinalA[Merge into durable metadata]
     FinalA --> DurA[Re-run without staged dirs]
     DurA -- pass --> PassA([PASSED])
-    DurA -- fail --> Codex
-    Test -- fails before native tests --> Codex
+    DurA -- fail --> Fixer
+    Test -- fails before native tests --> Fixer
     Test -- native tests fail --> Outer{budget left?}
-    Outer -- no --> Codex
+    Outer -- no --> Fixer
     Outer -- yes --> Run[One trace cycle]
     Run --> Route{exit code}
     Route -- 0 --> MergeT[Merge accepted trace dirs] --> FinalA
     Route -- "172, new entries" --> Accept[Accept dir] --> Outer
-    Route -- "172, none" --> Codex
-    Route -- other --> Codex
-    Codex[Codex] --> Ok{converged?}
+    Route -- "172, none" --> Fixer
+    Route -- other --> Fixer
+    Fixer[analysis agent] --> Ok{converged?}
     Ok -- yes --> PassI([PASSED_WITH_INTERVENTION])
     Ok -- no --> Fail([FAILED])
 ```
@@ -231,8 +227,8 @@ directory so far, and routes on the binary's exit code:
 | --- | --- | --- |
 | `0` | accumulated metadata and the code under test are sufficient | merge, finalize, return `PASSED` |
 | `172`, new entries | the cycle captured a missing access | accept the directory, continue |
-| `172`, no new entries | tracing stalled: the run reported a miss it did not record | open a Native Image tracing ticket, route to Codex |
-| other non-zero | the code is broken in a way more metadata cannot fix | route to Codex |
+| `172`, no new entries | tracing stalled: the run reported a miss it did not record | open a Native Image tracing ticket, route to the analysis agent |
+| other non-zero | the code is broken in a way more metadata cannot fix | route to the analysis agent |
 
 A `172` with no new entries is a Native Image tracing defect, not a library
 metadata gap — the run already proved the access happens and named it. The gate
@@ -253,28 +249,28 @@ log path with the binary's parsed exit code — the log path is **required** whe
 the status is `FAILED`, and callers surface it in run metrics and the PR body
 (§FS-forge-run-metrics).
 
-### 4. Codex, and the one carve-out
+### 4. The analysis agent, and the one carve-out
 
-Codex is terminal when invoked. It has full repository write access through the
+The analysis agent is terminal when invoked. It has full repository write access through the
 `fix-missing-reachability-metadata` skill, validates its own work, and the gate
 does not re-verify or re-run a trace cycle afterwards — that would produce a
-Codex/verify ping-pong on a real code defect. Its exit decides between
+agent/verify ping-pong on a real code defect. Its exit decides between
 `PASSED_WITH_INTERVENTION` and `FAILED`.
 
-Everything reaching Codex — exhausted budget (reason `metadata-gap-exhausted`),
+Everything reaching the analysis agent — exhausted budget (reason `metadata-gap-exhausted`),
 stalled progress, trace timeouts, non-172 failures — arrives with a reproduction
-command including the accepted trace directories. The Codex process and its
+command including the accepted trace directories. The agent process and its
 instructions must pin the GraalVM and Java homes and the full native-image version
 to the exact distribution the failed command used, and must fail rather than
 reproduce or verify against a different installation. Accumulated directories are
-not discarded before Codex runs; its fixes are additive.
+not discarded before the analysis agent runs; its fixes are additive.
 
 **Final merge failures are the only carve-out.** If the trace-output merge or the
 final durable merge fails, the gate returns `FAILED` directly without invoking
-Codex. These are infrastructure problems downstream of a successful validation
-path — a merge task, a filesystem write, malformed metadata input — and Codex
+the analysis agent. These are infrastructure problems downstream of a successful validation
+path — a merge task, a filesystem write, malformed metadata input — and the analysis agent
 cannot repair the metadata pipeline itself. Every other failure mode routes
-through Codex first.
+through the analysis agent first.
 
 ### 5. Gradle task contract
 
@@ -355,7 +351,7 @@ add it. Valid cases include:
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
 origin, not by log keywords: a workflow failure is **logical** — and gets the
-label — when it comes from the driver script, the core workflow, or the local
+label — when it comes from a run's programs or agent states, or the local
 CI-equivalent verification (compile, test, native-test, and finalization gates),
 which includes the rare case of an agent timeout. A workflow failure is
 **external** — and must not get the label — only when it surfaces as a typed
