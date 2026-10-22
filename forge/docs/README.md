@@ -41,6 +41,7 @@ whether a document describes structure or behavior.
 - [goals.md](goals.md) — `GOAL-forge-direction` and the outcome goals beneath it.
 - [functional-spec/functional-spec.md](functional-spec/functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
 - [functional-spec/continuation.md](functional-spec/continuation.md) — `FS-forge-run-continuation`: resuming a failed run at the phase that failed, and the continuation marker contract.
+- [functional-spec/isolated-host.md](functional-spec/isolated-host.md) — `FS-forge-isolated-host`: running Forge in a disposable Incus VM that passes the host gate unchanged.
 - [architecture/architecture.md](architecture/architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
 - [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its backend adapters.
 - [architecture/do-work.md](architecture/do-work.md) — `AR-do-work-loop`: the long-running worker loop.

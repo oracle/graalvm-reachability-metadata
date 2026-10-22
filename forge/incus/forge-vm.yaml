@@ -1,0 +1,70 @@
+# Incus profile for a single-use Forge virtual machine (§FS-forge-isolated-host).
+#
+# Import it once per host, then launch disposable VMs from it:
+#
+#   incus profile create forge
+#   incus profile edit forge < forge/incus/forge-vm.yaml
+#   incus launch images:ubuntu/24.04/cloud forge-vm --vm --profile forge
+#
+# The profile is self-contained: it carries the NIC and root disk, so it is
+# used on its own rather than stacked on `default`. Resource values are the
+# validated minimums for one issue run; raise them for `--parallelism` above 1.
+# `pool` and `network` are the names `incus admin init --minimal` creates.
+#
+# cloud-init installs only the root-level tools on first boot. Everything the
+# Forge user owns — the repository clone, the GraalVM lanes, the agent CLIs —
+# is installed afterwards by `provision.sh`, so a version change never needs a
+# new profile. Credentials are deliberately absent; see incus/README.md.
+name: forge
+description: Forge single-use metadata-generation VM
+config:
+  limits.cpu: "4"
+  limits.memory: 16GiB
+  # The images: remote ships unsigned kernels; secure boot would refuse to boot them.
+  security.secureboot: "false"
+  cloud-init.user-data: |
+    #cloud-config
+    users:
+      - name: forge
+        shell: /bin/bash
+        lock_passwd: true
+    package_update: true
+    packages:
+      - git
+      - curl
+      - ca-certificates
+      - gnupg
+      - unzip
+      - zip
+      - tar
+      - python3
+      - python3-venv
+      - python3-pip
+      - build-essential
+      - zlib1g-dev
+      - docker.io
+    runcmd:
+      - systemctl enable --now docker
+      # GitHub CLI from GitHub's repository; Ubuntu's package predates flags the host gate uses.
+      - install -d -m 755 /etc/apt/keyrings
+      - curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
+      - chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+      - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list
+      - apt-get update
+      - apt-get install -y gh
+      - usermod -aG docker forge
+      # Node.js 22 for the npm-distributed agent CLIs; Ubuntu's nodejs is too old.
+      - curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+      - apt-get install -y nodejs
+      # Same pinned grype release the repository's CLAUDE.md and the host gate require.
+      - curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sh -s -- -b /usr/local/bin v0.104.0
+      - touch /var/lib/cloud/forge-root-tools-ready
+devices:
+  eth0:
+    type: nic
+    network: incusbr0
+  root:
+    type: disk
+    path: /
+    pool: default
+    size: 64GiB
