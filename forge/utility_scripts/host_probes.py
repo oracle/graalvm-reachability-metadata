@@ -14,7 +14,6 @@ import shutil
 import socket
 import subprocess
 import tempfile
-import tomllib
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -235,25 +234,11 @@ def resolve_pi_state_root(environment: Mapping[str, str]) -> str:
     return os.path.join(os.path.expanduser(environment.get("HOME", "~")), ".pi", "agent")
 
 
-def resolve_codex_state_root(environment: Mapping[str, str]) -> str:
-    """Return Codex's writable state directory."""
-    override = environment.get("CODEX_HOME")
-    if override:
-        return os.path.abspath(os.path.expanduser(override))
-    return os.path.join(os.path.expanduser(environment.get("HOME", "~")), ".codex")
-
-
 def resolve_agent_state_root(backend: str, environment: Mapping[str, str]) -> str:
     """Resolve the writable state root for a selected backend."""
     if backend == "pi":
         return resolve_pi_state_root(environment)
-    if backend == "codex":
-        return resolve_codex_state_root(environment)
-    home = os.path.expanduser(environment.get("HOME", "~"))
-    if backend == "claude-code":
-        return os.path.join(home, ".claude")
-    data_home = environment.get("XDG_DATA_HOME") or os.path.join(home, ".local", "share")
-    return os.path.join(os.path.expanduser(data_home), "opencode")
+    return os.path.join(os.path.expanduser(environment.get("HOME", "~")), ".claude")
 
 
 def agent_provider_host(
@@ -262,8 +247,6 @@ def agent_provider_host(
         provider: str | None = None,
 ) -> str:
     """Return the provider transport host implied by a backend/model selection."""
-    if backend == "codex":
-        return "chatgpt.com"
     if backend == "claude-code":
         return "api.anthropic.com"
     selected_provider = (
@@ -275,54 +258,4 @@ def agent_provider_host(
         "openai": "api.openai.com",
         "openai-codex": "chatgpt.com",
         "openrouter": "openrouter.ai",
-    }.get(selected_provider, "opencode.ai")
-
-
-def codex_doctor_provider_status(output: str) -> tuple[bool, str]:
-    """Extract the provider reachability result from `codex doctor --json`."""
-    try:
-        payload = json.loads(output)
-        check = payload["checks"]["network.provider_reachability"]
-        status = str(check["status"])
-        summary = str(check["summary"])
-    except (json.JSONDecodeError, KeyError, TypeError):
-        return False, "codex doctor did not return provider reachability data"
-    return status == "ok", f"status={status}, {summary}"
-
-
-def codex_unattended_policy_status(codex_home: str) -> tuple[bool, str]:
-    """Detect cached enterprise requirements incompatible with Forge Codex exec."""
-    bundle_path = os.path.join(codex_home, "cloud-config-bundle-cache.json")
-    if not os.path.isfile(bundle_path):
-        return True, "no cached enterprise requirements conflict was found"
-    try:
-        with open(bundle_path, "rb") as bundle_file:
-            bundle = json.load(bundle_file)
-        requirement_entries = bundle.get("requirements_toml", {}).get("enterprise_managed", [])
-    except (OSError, json.JSONDecodeError, AttributeError):
-        return False, f"could not read managed Codex requirements from {bundle_path}"
-
-    conflicts: list[str] = []
-    policies: list[str] = []
-    for entry in requirement_entries:
-        if not isinstance(entry, dict) or not isinstance(entry.get("contents"), str):
-            continue
-        name = str(entry.get("name") or entry.get("id") or "enterprise policy")
-        try:
-            requirements = tomllib.loads(entry["contents"])
-        except tomllib.TOMLDecodeError:
-            conflicts.append(f"{name}: requirements TOML is invalid")
-            continue
-        approvals = requirements.get("allowed_approval_policies")
-        sandboxes = requirements.get("allowed_sandbox_modes")
-        policies.append(name)
-        if isinstance(approvals, list) and "never" not in approvals:
-            conflicts.append(f"{name}: approval policy `never` is disallowed ({approvals})")
-        if isinstance(sandboxes, list) and "workspace-write" not in sandboxes:
-            conflicts.append(f"{name}: sandbox `workspace-write` is disallowed ({sandboxes})")
-
-    if conflicts:
-        return False, "; ".join(conflicts)
-    if policies:
-        return True, f"managed policies compatible with unattended recovery: {', '.join(policies)}"
-    return True, "no cached enterprise requirements conflict was found"
+    }.get(selected_provider, "chatgpt.com")

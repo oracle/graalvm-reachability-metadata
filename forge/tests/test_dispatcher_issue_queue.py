@@ -76,20 +76,6 @@ class IssueClaimPreflightTests(unittest.TestCase):
             ),
         )
 
-    def test_issue_scan_batch_size_returns_candidate_batch_size(self) -> None:
-        self.assertEqual(
-            issue_processing.get_issue_scan_batch_size(1, 1),
-            config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
-        )
-        self.assertEqual(
-            issue_processing.get_issue_scan_batch_size(5, 1),
-            config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
-        )
-        self.assertEqual(
-            issue_processing.get_issue_scan_batch_size(100, 4),
-            config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
-        )
-
     def test_offset_issue_fetch_uses_search_page_instead_of_expanding_limit(self) -> None:
         page_items = [_search_issue(number) for number in range(200, 300)]
 

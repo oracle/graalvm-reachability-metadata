@@ -13,12 +13,9 @@ from typing import Sequence
 from ai_workflows.agents.agent_runtime import default_agent_for_backend
 from utility_scripts.host_probes import (
     check_pi_authentication,
-    codex_doctor_provider_status,
-    codex_unattended_policy_status,
     first_output_line,
     parse_gradle_version,
     parse_grype_version,
-    resolve_codex_state_root,
     resolve_executable,
     resolve_gradle_state_root,
     run_command,
@@ -230,54 +227,8 @@ class ToolchainChecks:
         """Run a backend-specific authentication probe that never invokes a model."""
         if backend == "pi":
             return check_pi_authentication(model, self.environment, agent, provider)
-        if backend == "codex":
-            result = run_command([agent, "login", "status"], self.environment)
-            return result.returncode == 0, first_output_line(result) or "codex login status failed"
-        if backend == "claude-code":
-            result = run_command([agent, "auth", "status", "--json"], self.environment)
-            return result.returncode == 0, first_output_line(result) or "claude auth status failed"
-        result = run_command([agent, "auth", "list"], self.environment)
-        return result.returncode == 0, first_output_line(result) or "opencode auth list failed"
-
-    def _check_codex(self) -> None:
-        if not self.requirements.issue_work:
-            self._add("agent", "Codex recovery", False, None, "not required by this run")
-            return
-        if resolve_executable("codex") is None:
-            self._add("agent", "Codex recovery", True, False, "Codex is unavailable", "Install and authenticate Codex.")
-            return
-
-        login = run_command(["codex", "login", "status"], self.environment)
-        self._add(
-            "agent",
-            "Codex authentication",
-            True,
-            login.returncode == 0,
-            first_output_line(login) or "codex login status returned no output",
-            "Run `codex login` before starting Forge.",
-        )
-
-        doctor = run_command(["codex", "doctor", "--json"], self.environment, timeout=30)
-        provider_ok, doctor_detail = codex_doctor_provider_status(doctor.stdout)
-        self._add(
-            "agent",
-            "Codex provider network",
-            True,
-            provider_ok,
-            doctor_detail,
-            "Allow Codex provider HTTPS/WebSocket access; run `codex doctor --json` for the complete diagnosis.",
-        )
-
-        compatible, policy_detail = codex_unattended_policy_status(resolve_codex_state_root(self.environment))
-        self._add(
-            "agent",
-            "Codex unattended command permissions",
-            True,
-            compatible,
-            policy_detail,
-            "Forge Codex recovery requires approval policy `never` and sandbox `workspace-write`; "
-            "change the managed Codex requirements or replace the remaining Codex recovery lane.",
-        )
+        result = run_command([agent, "auth", "status", "--json"], self.environment)
+        return result.returncode == 0, first_output_line(result) or "claude auth status failed"
 
     def _check_docker(self) -> None:
         if not self.requirements.build_work:

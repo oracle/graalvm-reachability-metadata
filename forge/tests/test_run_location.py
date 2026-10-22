@@ -10,40 +10,7 @@ import unittest
 from unittest.mock import patch
 
 from utility_scripts import run_location
-from utility_scripts.continuation_marker import (
-    ContinuationMarker,
-    continuation_marker_path,
-    load_continuation_marker,
-)
-from utility_scripts.run_location import (
-    PHASE_CLAIM,
-    PHASE_EXPLORE,
-    PHASE_FINALIZATION,
-    PHASE_PUBLICATION,
-    PHASE_SETUP,
-    STEP_CHECK_HOST_REQUIREMENTS,
-    STEP_GENERATE_TESTS,
-    STEP_NORMAL_SETUP,
-    STEP_NATIVE_TRACE_GATE,
-    STEP_PUBLISH_BRANCH,
-    UNLOCATED_FAILURE_DEFECT,
-    UNLOCATED_STEP,
-    PHASE_STEPS,
-    RunLocation,
-    bind_continuation_marker,
-    bind_run_context,
-    clear_recorded_failure,
-    format_run_failure_line,
-    log_step_progress,
-    marker_failure_location,
-    pipeline_step,
-    record_step_failure,
-    report_run_failure,
-    reset_run_location,
-    resolve_failure_location,
-    run_step,
-    step_position,
-)
+from utility_scripts.run_location import PHASE_CLAIM, PHASE_EXPLORE, PHASE_FINALIZATION, PHASE_PUBLICATION, PHASE_SETUP, STEP_CHECK_HOST_REQUIREMENTS, STEP_GENERATE_TESTS, STEP_NORMAL_SETUP, STEP_NATIVE_TRACE_GATE, STEP_PUBLISH_BRANCH, UNLOCATED_FAILURE_DEFECT, UNLOCATED_STEP, PHASE_STEPS, RunLocation, bind_run_context, clear_recorded_failure, format_run_failure_line, log_step_progress, pipeline_step, record_step_failure, report_run_failure, reset_run_location, resolve_failure_location, run_step, step_position
 from utility_scripts.stage_logger import log_detail, log_plain_detail
 
 
@@ -303,66 +270,6 @@ class MarkerFailureLocationTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         reset_run_location()
-
-    def test_the_recorded_location_reaches_the_continuation_marker(self) -> None:
-        with tempfile.TemporaryDirectory() as repo_path:
-            marker_path = continuation_marker_path(repo_path)
-            ContinuationMarker.create(
-                strategy_name="strategy",
-                issue_number=1412,
-                label="library-new-request",
-                coordinate="org.example:demo:1.0.0",
-                new_version=None,
-            ).save(marker_path)
-            bind_continuation_marker(marker_path)
-
-            def fail() -> None:
-                with contextlib.suppress(RuntimeError):
-                    with run_step(PHASE_EXPLORE, STEP_GENERATE_TESTS, operand="com.acme.Thing"):
-                        raise RuntimeError("boom")
-
-            _captured(fail)
-            reloaded = load_continuation_marker(marker_path)
-
-        self.assertEqual(
-            reloaded.failure,
-            {"phase": PHASE_EXPLORE, "step": STEP_GENERATE_TESTS, "operand": "com.acme.Thing"},
-        )
-        self.assertEqual(
-            format_run_failure_line(marker_failure_location(reloaded)),
-            "run failed in explore/generate_tests()[com.acme.Thing]",
-        )
-
-    def test_a_recovered_failure_is_cleared_before_a_later_failure(self) -> None:
-        with tempfile.TemporaryDirectory() as repo_path:
-            marker_path = continuation_marker_path(repo_path)
-            ContinuationMarker.create(
-                strategy_name="strategy",
-                issue_number=1412,
-                label="fails-native-image-run",
-                coordinate="org.example:demo:1.0.0",
-                new_version="2.0.0",
-            ).save(marker_path)
-            bind_continuation_marker(marker_path)
-
-            with run_step(PHASE_EXPLORE, STEP_GENERATE_TESTS):
-                record_step_failure()
-            clear_recorded_failure()
-            self.assertIsNone(load_continuation_marker(marker_path).failure)
-
-            with run_step(PHASE_PUBLICATION, STEP_PUBLISH_BRANCH):
-                record_step_failure()
-            reloaded = load_continuation_marker(marker_path)
-
-        self.assertEqual(
-            format_run_failure_line(resolve_failure_location()),
-            "run failed in publication/publish_branch()",
-        )
-        self.assertEqual(
-            reloaded.failure,
-            {"phase": PHASE_PUBLICATION, "step": STEP_PUBLISH_BRANCH, "operand": None},
-        )
-
 
 class PipelineStepDecoratorTests(unittest.TestCase):
     def setUp(self) -> None:

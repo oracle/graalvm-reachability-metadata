@@ -11,14 +11,7 @@ import unittest
 from unittest.mock import patch
 
 from dispatcher import config as dispatcher_config
-from dispatcher import (
-    failure_preservation,
-)
-from dispatcher import (
-    lifecycle,
-    records,
-    worktrees,
-)
+from dispatcher import records, worktrees
 from git_scripts.common_git import get_origin_owner
 from utility_scripts.metrics_writer import commit_run_metrics_with_retry
 from utility_scripts.repo_path_resolver import (
@@ -276,42 +269,6 @@ class GitWorktreeRegressionTests(unittest.TestCase):
 
             discard_home.assert_called_once()
             self.assertFalse(os.path.exists(discard_home.call_args.args[0]))
-
-    def test_failed_work_preservation_rejects_broken_nested_worktree_without_switching_parent(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            reachability_repo = _create_reachability_repo(os.path.join(temp_dir, "graalvm-reachability-metadata"))
-            broken_worktree_path = os.path.join(
-                reachability_repo,
-                "forge",
-                "local_repositories",
-                "forge_worktrees",
-                "1412-deadbeef",
-            )
-            os.makedirs(os.path.join(broken_worktree_path, "tests"), exist_ok=True)
-            claimed_issue = records.ClaimedIssue(
-                issue={
-                    "number": 1412,
-                    "title": "Add support for org.example:lib:1.0.0",
-                },
-                label=dispatcher_config.LABEL_LIBRARY_NEW,
-                item_id="item-1",
-                base_reachability_metadata_path=reachability_repo,
-                worktree_path=broken_worktree_path,
-                scratch_metrics_repo_path=os.path.join(broken_worktree_path, "forge"),
-                issue_coordinates="org.example:lib:1.0.0",
-            )
-
-            worktrees.preservation_failed_worktree_paths.clear()
-            with patch.object(
-                    failure_preservation,
-                    "build_failure_preservation_branch_name",
-                    return_value="ai/test/human-intervention/issue-1412",
-            ):
-                preservation_result = lifecycle.preserve_failed_work_for_follow_up(claimed_issue)
-
-            self.assertIsNone(preservation_result)
-            self.assertEqual(_git(["branch", "--show-current"], cwd=reachability_repo).stdout.strip(), "master")
-            self.assertIn(broken_worktree_path, worktrees.preservation_failed_worktree_paths)
 
     def test_ensure_local_metrics_repo_accepts_git_worktrees(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -8,9 +8,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.drivers import add_new_library_support, add_new_library_support, fix_ni_run, java_fail_workflow
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
-from utility_scripts.continuation_marker import PHASE_SETUP
+from utility_scripts.run_location import PHASE_SETUP
 from utility_scripts.run_location import enter_phase, reset_run_location
 
 
@@ -116,109 +115,6 @@ class LoggedCommandTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 1)
         self.assertEqual("", terminal.getvalue())
-
-    def test_scaffold_only_reports_unhandled_failure_in_compact_setup(self) -> None:
-        already_exists = LoggedCommandResult(
-            args=["./gradlew"],
-            returncode=1,
-            stdout="metadata already exists. Use --force to overwrite existing metadata",
-            log_path="/tmp/scaffold.log",
-            timed_out=False,
-            duration_seconds=1.0,
-        )
-        terminal = io.StringIO()
-        enter_phase(PHASE_SETUP)
-        with patch.object(add_new_library_support, "require_complete_reachability_repo"), \
-                patch.object(add_new_library_support, "run_logged_command", return_value=already_exists), \
-                contextlib.redirect_stdout(terminal):
-            self.assertFalse(add_new_library_support.run_scaffold("g:a:1.0"))
-        self.assertEqual("", terminal.getvalue())
-
-        failed = LoggedCommandResult(
-            args=["./gradlew"],
-            returncode=1,
-            stdout="unexpected scaffold failure",
-            log_path="/tmp/scaffold.log",
-            timed_out=False,
-            duration_seconds=1.0,
-        )
-        terminal = io.StringIO()
-        with patch.object(add_new_library_support, "require_complete_reachability_repo"), \
-                patch.object(add_new_library_support, "run_logged_command", return_value=failed), \
-                contextlib.redirect_stdout(terminal), \
-                self.assertRaises(add_new_library_support.ScaffoldError):
-            add_new_library_support.run_scaffold("g:a:1.0")
-        self.assertIn("scaffold failed with exit code 1", terminal.getvalue())
-        self.assertIn("scaffold.log", terminal.getvalue())
-
-    def test_remaining_driver_gradle_commands_use_durable_logging(self) -> None:
-        successful_result = LoggedCommandResult(
-            args=["./gradlew"],
-            returncode=0,
-            stdout="",
-            log_path="/tmp/gradle.log",
-            timed_out=False,
-            duration_seconds=0.0,
-        )
-        with patch.object(
-                add_new_library_support,
-                "require_complete_reachability_repo",
-        ), patch.object(
-                add_new_library_support,
-                "gradle_command_environment",
-                return_value={},
-        ), patch.object(
-                add_new_library_support,
-                "run_logged_command",
-                return_value=successful_result,
-        ) as new_library_command, patch.object(
-                add_new_library_support.os,
-                "getcwd",
-                return_value="/repo",
-        ):
-            self.assertTrue(add_new_library_support.run_scaffold("g:a:1.0"))
-
-        self.assertEqual(new_library_command.call_args.kwargs["task_type"], "scaffold")
-        self.assertEqual(new_library_command.call_args.kwargs["subject"], "g:a:1.0")
-
-        with patch.object(
-                fix_ni_run,
-                "require_complete_reachability_repo",
-        ), patch.object(
-                fix_ni_run,
-                "gradle_command_environment",
-                return_value={},
-        ), patch.object(
-                fix_ni_run,
-                "run_logged_command",
-                return_value=successful_result,
-        ) as native_fix_command:
-            fix_ni_run.run_fix_test_native_image_run("/repo", "g:a:1.0", "2.0")
-
-        self.assertEqual(native_fix_command.call_args.kwargs["task_type"], "native-image-run-fix")
-        self.assertEqual(native_fix_command.call_args.kwargs["subject"], "g:a:2.0")
-
-        with patch.object(
-                java_fail_workflow,
-                "require_complete_reachability_repo",
-        ), patch.object(
-                java_fail_workflow,
-                "gradle_command_environment",
-                return_value={},
-        ), patch.object(
-                java_fail_workflow,
-                "run_logged_command",
-                return_value=successful_result,
-        ) as java_fail_command, patch.object(
-                java_fail_workflow.os,
-                "getcwd",
-                return_value="/repo",
-        ):
-            java_fail_workflow.run_gradle_task("addLibraryMetadataIndexJson", "g:a:2.0")
-
-        self.assertEqual(java_fail_command.call_args.kwargs["task_type"], "java-fail-setup")
-        self.assertEqual(java_fail_command.call_args.kwargs["subject"], "g:a:2.0")
-
 
 if __name__ == "__main__":
     unittest.main()

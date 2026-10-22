@@ -16,29 +16,25 @@ from ai_workflows.agents.agent import Agent, send_agent_prompt
 from utility_scripts.task_logs import build_task_log_path
 
 
-SUPPORTED_AGENT_BACKENDS = ("claude-code", "pi", "codex", "opencode")
+# Codex and OpenCode are not supported (§FS-forge-agent-runtime-selection).
+SUPPORTED_AGENT_BACKENDS = ("claude-code", "pi")
 #: Fallback for any worker-configured role that names nothing of its own.
-DEFAULT_AGENT = "codex"
-#: Backends that route a model through a named provider. Codex and Claude Code
-#: reach their own provider through the CLI's own login, so a provider is
-#: meaningless to them and is never passed.
-PROVIDER_AWARE_BACKENDS = ("pi", "opencode")
+DEFAULT_AGENT = "pi"
+#: Backends that route a model through a named provider. Claude Code reaches its
+#: own provider through the CLI's own login, so a provider is never passed to it.
+PROVIDER_AWARE_BACKENDS = ("pi",)
 DEFAULT_AGENT_PROVIDER = "openai-codex"
 DEFAULT_MODEL_BY_BACKEND = {
     "claude-code": "sonnet",
-    "codex": "gpt-5.6-luna",
+    "pi": "gpt-5.6-luna",
 }
 DEFAULT_AGENT_BY_BACKEND = {
     "claude-code": "claude",
     "pi": "pi",
-    "codex": "codex",
-    "opencode": "opencode",
 }
-# Codex and Claude Code run unattended with the writable tool access required
-# by Forge. Claude Code's `dontAsk` mode would deny every tool that is not
-# pre-allowed in settings, and Forge worktrees allow none.
-# §FS-forge-host-requirements
-CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG = "--dangerously-bypass-approvals-and-sandbox"
+# Claude Code runs unattended with the writable tool access required by Forge.
+# Its `dontAsk` mode would deny every tool that is not pre-allowed in settings,
+# and Forge worktrees allow none. §FS-forge-host-requirements
 CLAUDE_CODE_BYPASS_PERMISSIONS_FLAGS = ("--permission-mode", "bypassPermissions")
 GITHUB_CREDENTIAL_ENV_VARS = (
     "GH_TOKEN",
@@ -106,7 +102,6 @@ def normalize_backend_name(value: str) -> str:
     normalized = value.strip().lower().replace("_", "-")
     aliases = {
         "claude": "claude-code",
-        "open-code": "opencode",
     }
     normalized = aliases.get(normalized, normalized)
     if normalized not in SUPPORTED_AGENT_BACKENDS:
@@ -128,10 +123,10 @@ def default_agent_for_backend(backend: str) -> str:
 def resolve_provider(backend: str, configured: str | None) -> str | None:
     """Return the provider a backend should use, or None if it takes none.
 
-    Pi and OpenCode address a model through a provider, so one is always
-    resolved for them and defaults to `openai-codex`. The other backends
-    authenticate their own provider, so a configured value is dropped rather
-    than passed to a CLI that has no such flag.
+    Pi addresses a model through a provider, so one is always resolved for it
+    and defaults to `openai-codex`. Claude Code authenticates its own provider,
+    so a configured value is dropped rather than passed to a CLI that has no
+    such flag.
     """
     if normalize_backend_name(backend) not in PROVIDER_AWARE_BACKENDS:
         return None
@@ -163,9 +158,7 @@ def _role_selection(env: dict[str, str], prefix: str) -> AgentSelection:
         backend=backend,
         model=model,
         family=backend,
-        thinking_level=configured("THINKING_LEVEL") or (
-            "high" if backend == "codex" and model == "gpt-5.6-luna" else None
-        ),
+        thinking_level=configured("THINKING_LEVEL") or None,
         agent=named_agent or default_agent_for_backend(backend),
         provider=resolve_provider(
             backend,

@@ -11,8 +11,12 @@ import json
 import os
 import sys
 from typing import Optional
-from dispatcher.human_intervention import repo_relative_path
 from utility_scripts.metadata_index import extract_coordinate_parts
+
+def repo_relative_path(path: str, repo_path: str) -> str:
+    """Return a path relative to the given repository root."""
+    return os.path.relpath(os.path.abspath(path), os.path.abspath(repo_path))
+
 
 def extract_maven_coordinates(title: str) -> Optional[str]:
     """

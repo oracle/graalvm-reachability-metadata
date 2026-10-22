@@ -69,7 +69,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def outcome(step: str, code: int) -> dict[str, str] | None:
-    """The final state an exit leads to, for the launcher's close-out, or `None` when the run goes on."""
+    """The final state an exit leads to, for the launcher's close-out, or `None` when the run goes on.
+
+    §FS-forge-run-status
+    """
     if code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": f"{step} still fails after its fix"}
     if step == "fix-route" and code == CANNOT_FIX:

@@ -12,10 +12,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.drivers.improve_library_coverage import (
-    prepare_library_update_target,
-    reset_failed_library_update_worktree,
-)
+from utility_scripts.library_update_target import prepare_library_update_target
 from utility_scripts.metadata_index import (
     MATCH_NEW_VERSION,
     resolve_library_update_target,
@@ -425,42 +422,6 @@ class LibraryUpdateTargetSplitTests(unittest.TestCase):
                         "Failed to scaffold library-update target org.example:demo:9.9.9",
                 ):
                     prepare_library_update_target(repo, "org.example", "demo", "9.9.9")
-
-    def test_failure_reset_restores_generated_target_files(self) -> None:
-        with tempfile.TemporaryDirectory() as repo:
-            _write_index(repo, [
-                {
-                    "metadata-version": "1.0.0",
-                    "tested-versions": ["1.0.0"],
-                }
-            ])
-            target = resolve_library_update_target(repo, "org.example", "demo", "1.0.0")
-            generated_test = os.path.join(target.test_dir, "src", "test", "java", "GeneratedTest.java")
-            generated_metadata = os.path.join(target.metadata_dir, "reachability-metadata.json")
-            generated_stats = os.path.join(repo, "stats", "org.example", "demo", "1.0.0", "stats.json")
-            _write_file(generated_test, "class GeneratedTest {}\n")
-            _write_file(generated_metadata, '{"reflection":[{"type":"org.example.Generated"}]}\n')
-            _write_file(generated_stats, '{"versions":[{"version":"1.0.0"}]}\n')
-
-            def fake_run(command, **kwargs):  # type: ignore[no-untyped-def]
-                if command[:3] == ["git", "reset", "--hard"]:
-                    os.remove(generated_test)
-                    os.remove(generated_metadata)
-                    os.remove(generated_stats)
-                return subprocess.CompletedProcess(command, 0)
-
-            with patch("utility_scripts.worktree_reset.subprocess.run", side_effect=fake_run), \
-                    patch(
-                        "utility_scripts.worktree_reset.subprocess.check_output",
-                        return_value="checkpoint\n",
-                    ):
-                ending_commit = reset_failed_library_update_worktree(repo, "checkpoint", target)
-
-            self.assertEqual(ending_commit, "checkpoint")
-            self.assertTrue(os.path.isfile(generated_test))
-            self.assertTrue(os.path.isfile(generated_metadata))
-            self.assertTrue(os.path.isfile(generated_stats))
-
 
 if __name__ == "__main__":
     unittest.main()

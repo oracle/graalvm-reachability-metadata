@@ -27,7 +27,7 @@ from git_scripts.publication_descriptor import (
     build_publication_id,
     write_publication_descriptor,
 )
-from git_scripts.publish_new_library_support import load_dynamic_access_metadata_evidence
+from git_scripts.publication_evidence import load_dynamic_access_metadata_evidence
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport, dynamic_access_exhaust_report_path
 from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_measurements import (

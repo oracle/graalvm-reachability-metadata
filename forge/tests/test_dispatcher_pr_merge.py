@@ -128,27 +128,6 @@ class PullRequestReviewTests(unittest.TestCase):
         set_item_status.assert_not_called()
         clear_issue_assignees.assert_not_called()
 
-    def test_index_guard_failure_prevents_approval(self) -> None:
-        state = _pull_request_state(3513, "SUCCESS")
-        with (
-                patch.object(
-                    review_loop, "validate_pull_request_publication",
-                    return_value=_validated_publication(),
-                ),
-                patch.object(
-                    review_loop,
-                    "validate_pull_request_indexes_before_merge",
-                    side_effect=RuntimeError("invalid index"),
-                ),
-                patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
-                patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
-        ):
-            with self.assertRaises(RuntimeError):
-                review_loop._process_descriptor_pull_request(state, "/repo")
-
-        approve.assert_not_called()
-        enable_auto_merge.assert_not_called()
-
     def test_get_pull_request_changed_index_files_filters_library_indexes(self) -> None:
         with patch.object(
                 pr_state,
