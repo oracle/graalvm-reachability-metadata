@@ -417,7 +417,7 @@ class LibraryUpdateTargetSplitTests(unittest.TestCase):
 
             failed_result = subprocess.CompletedProcess(["./gradlew"], 17)
             with patch(
-                    "ai_workflows.drivers.improve_library_coverage.run_logged_command",
+                    "utility_scripts.library_update_target.run_logged_command",
                     return_value=failed_result,
             ):
                 with self.assertRaisesRegex(

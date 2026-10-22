@@ -78,6 +78,18 @@ _QUALIFIER_RANK = {
 }
 
 
+def extract_coordinate_parts(title: str) -> tuple[str, str, str] | None:
+    """Return the first `group:artifact:version` an issue title names, as its three parts.
+
+    The issue title is the only place an issue names its coordinate
+    (§FS-forge-run-requirements.3).
+    """
+    match = re.search(r"([\w.\-]+):([\w.\-]+):([\w.\-]+)", title)
+    if match:
+        return match.group(1), match.group(2), match.group(3)
+    return None
+
+
 def coordinate_parts(coordinate: str) -> tuple[str, str, str | None]:
     """Parse group:artifact[:version] coordinates."""
     parts = coordinate.split(":")

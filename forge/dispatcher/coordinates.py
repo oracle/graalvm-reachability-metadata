@@ -9,20 +9,10 @@
 
 import json
 import os
-import re
 import sys
 from typing import Optional
 from dispatcher.human_intervention import repo_relative_path
-
-def extract_coordinate_parts(title: str) -> Optional[tuple[str, str, str]]:
-    """
-    Extract Maven coordinate parts (groupId, artifactId, version) from an issue title.
-    """
-    match = re.search(r'([\w.\-]+):([\w.\-]+):([\w.\-]+)', title)
-    if match:
-        return match.group(1), match.group(2), match.group(3)
-    return None
-
+from utility_scripts.metadata_index import extract_coordinate_parts
 
 def extract_maven_coordinates(title: str) -> Optional[str]:
     """
