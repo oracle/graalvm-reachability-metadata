@@ -30,7 +30,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-publication-readiness](publication.md#fs-forge-publication-readiness-publication-readiness) | Publication readiness |
 | [§FS-local-ci-equivalent-verification](publication.md#fs-local-ci-equivalent-verification-local-pre-publication-verification) | Local pre-publication verification |
 | [§FS-native-test-verification-gate](publication.md#fs-native-test-verification-gate-native-test-verification-gate) | Native test verification gate |
-| [§FS-local-branch-review](publication.md#fs-local-branch-review-local-pre-push-branch-review-retired) | Local pre-push branch review (retired) |
+| [§FS-local-branch-review](publication.md#fs-local-branch-review-local-pre-push-audit) | Local pre-push audit |
 | [§FS-library-update-tested-version-split](tested-version-split.md#fs-library-update-tested-version-split-library-update-tested-version-split) | Library-update tested-version split |
 | [§FS-human-intervention-policy](publication.md#fs-human-intervention-policy-human-intervention-policy) | Human intervention policy |
 | [§FS-automated-pr-review](publication.md#fs-automated-pr-review-automated-pull-request-review) | Automated pull request review |

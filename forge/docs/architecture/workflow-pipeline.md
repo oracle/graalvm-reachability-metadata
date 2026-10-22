@@ -54,11 +54,11 @@ the label's `skills/review-*` rules (§FS-automated-pr-review).
 | `0` | proceed |
 | `10` | work for an agent: a cover prompt or a fix request is written |
 | `11` | `measure` only: the JVM tests fail and a fix request is written |
-| `12` | the check still fails right after its own fix |
+| `12` | the check still fails right after its own fix, or after the audit's edit |
 | `20` | nothing to do: no target, exploration deferred, explore budget spent, or nothing to publish |
 | `21` | `repair` only: the setup verdict is recorded as a skip; go straight to `publish` |
 | `2` / `3` | bad input / infrastructure or crash |
-| `30`–`33` | `fix-route` only: return to `repair`, `measure`, `native`, `finalize` |
+| `30`–`34` | `fix-route` only: return to `repair`, `measure`, `native`, `finalize`, `audit` |
 | `40` | `fix-route` only: the fix reported that it could not help |
 
 Every program also routes any other non-zero exit to `failed`, and every exit
@@ -66,7 +66,7 @@ writes Rhei's result file, which an edge into a final state requires.
 
 ## 3. State machine
 
-Eight programs, three agent states, four final states:
+Nine programs, three agent states, four final states:
 
 ```mermaid
 stateDiagram-v2
@@ -92,18 +92,22 @@ stateDiagram-v2
     measure --> native: 0, 20
     native --> finalize: 0
     native --> fix: 10
-    finalize --> publish: 0
+    finalize --> audit: 0
     finalize --> fix: 10
+    audit --> fix: 10 first visit
+    audit --> publish: 0
     fix --> route
     route --> repair: 30
     route --> measure: 31
     route --> native: 32
     route --> finalize: 33
+    route --> audit: 34
     route --> human: 40
     repair --> human: 12
     measure --> human: 12
     native --> human: 12
     finalize --> human: 12
+    audit --> human: 12
     publish --> completed: 0
     publish --> nothing: 20
     completed --> [*]
@@ -112,8 +116,10 @@ stateDiagram-v2
     failed --> [*]
 ```
 
-A cover pass costs two transitions and a fix three, so the default explore
-budget of 20 passes stays inside the host's transition limit of 80.
+A cover pass costs two transitions and a fix three. In the worst case every
+sender, each cover pass, and the audit send one fix, so a run takes
+`20 + 5 × explore_passes` transitions: 120 at the default 20 passes, inside the
+template's `transition_limit`.
 
 ## 4. Programs
 
@@ -124,7 +130,8 @@ budget of 20 passes stays inside the host's transition limit of 80.
 | `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt |
 | `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
 | `native` | The native check over the tests exploration added |
-| `finalize` | `spotlessApply`, then `spotlessCheck`, `checkstyle`, `generateLibraryStats`, and the pre-publication gate (§FS-local-ci-equivalent-verification.2), each once; the first failure becomes the fix request |
+| `finalize` | `spotlessApply`, then `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate (§FS-local-ci-equivalent-verification.2), each once; the first failure becomes the fix request |
+| `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns the native check and `finalize` once over a changed one (§AR-forge-workflow-pipeline.4.3) |
 | `fix-route` | Reads the request's return code and the fix report: `cannot-fix` exits `40`, anything else the return code |
 | `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), rebases onto `master`, and pushes the publication branch; a deferred exploration opens its follow-up issue first |
 
@@ -155,6 +162,20 @@ in the workspace; every later correlation passes that copy to
 `generateDynamicAccessCoverageReport` and runs only JaCoCo
 (§root/AR-test-harness.8).
 
+### 4.3 The audit
+
+`audit` reuses `fix` unchanged: its first visit commits the tree as the audit
+checkpoint, records it in the run state, and writes an ordinary fix request
+whose commands are the native check and the finalization lane, whose editable
+files are the test project and the shipped metadata, and whose one brief is the
+audit of §FS-local-branch-review.2; its return code is `34`. `fix` edits, reruns
+the commands, and reports, and `fix-route` returns to `audit` or stops on
+`cannot-fix` as for any sender. The return visit compares the coordinate's paths
+with the checkpoint: unchanged exits `0`; changed reruns the native check and
+`finalize`'s steps and gates from the program, and exits `0` on a pass or `12`
+on a failure. The run state, not a Rhei visit count, records the audit, so it
+happens once.
+
 ## 5. The native check
 
 `generateMetadata` runs the JVM tests under the native-image agent and merges
@@ -171,7 +192,8 @@ A sender records in the run state that it sent a request. When its check fails
 again on its very next run, it exits `12` instead of asking again; a later,
 unrelated failure is a new request. `measure` has one exception: it resets to
 the last passing explore checkpoint and continues, so a cover pass that cannot
-be fixed costs that pass, not the run. Nothing else bounds `fix`: one turn is
+be fixed costs that pass, not the run. `audit` sends its request once and
+never asks again: a failure after its edit exits `12`. Nothing else bounds `fix`: one turn is
 bounded by its agent timeout and the run by Rhei's transition limit.
 
 ## 7. The explore decision
@@ -212,7 +234,8 @@ bounds `fix`.
 
 The strategy registry, per-label drivers, the library-update router, the
 continuation marker, the native trace gate and program-side metadata merging,
-per-class native runs, the pre-push local review, the library preparation
+per-class native runs, the pre-push review agent (its review is now the
+`audit` fix request, §FS-local-branch-review), the library preparation
 preflight with its not-for-native-image verdict (its unsupportable-version
 verdict moved into `setup`, §FS-unsupportable-version-diagnosis),
 foreign-owner follow-up issues, and every per-site repair budget are gone: strategies are fixed per label, Rhei resumes a run at its

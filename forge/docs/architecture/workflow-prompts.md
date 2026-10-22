@@ -40,13 +40,14 @@ other label sees it.
 | --- | --- | --- |
 | `setup` | how to find the four URLs, declare companion libraries, choose Docker images, and record a verdict when `run.md` names the bar | none; `run.md` only |
 | `cover` | the step order, how a test reaches a call site, and the test rules | the mode and the exact targets |
-| `fix` | the general rules for scope, tests, metadata, and Native Image | failing commands, output, briefs, editable files, return code |
+| `fix` | the general rules for scope, tests, metadata, and Native Image | failing commands, output, briefs, editable files, return code; for `audit`, the audit brief |
 
 The `fix` rules hold for every failure, which is why they live in the
 instruction: scope (§root/FS-contribution-contract.5.2,
 §root/FS-contribution-contract.5.3), the test contract
 (§root/FS-test-contract.1, §root/FS-test-contract.2, §root/FS-test-contract.3),
-metadata (§root/FS-test-contract.2.7, §root/FS-metadata.2), and Native Image
+metadata (§root/FS-test-contract.2.7, §root/FS-metadata.2,
+§root/FS-contribution-contract.2), and Native Image
 (§root/FS-test-contract.4, §root/FS-test-contract.2.7.1,
 §root/FS-test-contract.2.7.2, §root/FS-contribution-contract.5.4). A new check
 needs a brief row at most, never a new rule block or state.
@@ -82,8 +83,11 @@ unmatched failure gets the default brief:
 | `nativeTest`: runtime class definition or bytecode generation | reshape the test to avoid it, or delete that test |
 | a native build or run names a flag, such as a URL protocol | add it if it is on the allowed list, in its narrowest form |
 | `spotlessCheck` or `checkstyle` | run `spotlessApply`, then fix what `checkstyle` reports |
+| a reviewer gate (§FS-local-ci-equivalent-verification.1.1) | the gate's own one line: cover more call sites, add the requested entries, or revert the out-of-scope paths |
 | anything else | make the command pass |
 
 The instruction orders the work: read the request and the files it names, make
 every change with no Gradle run, rerun the failing commands until they pass or
 nothing inside the rules helps, and only then report `fixed` or `cannot-fix`.
+The audit's request (§FS-local-branch-review.2) is the same shape with no
+failing output: every command passes, and its one brief is the audit.

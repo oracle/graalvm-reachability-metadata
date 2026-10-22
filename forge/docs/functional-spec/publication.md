@@ -68,6 +68,35 @@ verdict: Forge stops the daemons of the worktree's Gradle user home
 rerun's outcome reach metadata repair or human intervention
 (§FS-human-intervention-policy).
 
+#### 1.1 Reviewer gates
+
+Finalization also enforces, as programs, the contribution-contract gates a
+reviewer would otherwise apply by hand (§root/PRCPL-prefer-algorithmic). Each
+runs after the stats are regenerated, and a failure is a fix request whose
+brief names the gate, so the outcome is decided by the gate's next run and
+never by the repair's account. A gate another task already enforces, such as
+`checkMetadataFiles`' conditions and test-only types, is not repeated.
+
+1. **Dynamic-access coverage.** The regenerated stats meet the label's gate of
+   §root/FS-contribution-contract.3, compared with the previous version's
+   stats: above 20% for a new library with calls to cover; no drop in the
+   coverage ratio for a library update; the ordered repair comparison over the
+   overall report and every breakdown for the `fixes-*` labels, with `N/A` as
+   `0/0`; and only a nonzero covered-call count for a chunk
+   (§FS-forge-chunked-dynamic-access). A breach the repair cannot close ends
+   in `human-intervention`, where a maintainer weighs the explanation the
+   contract allows.
+2. **Reporter-requested metadata.** Every entry the reporter's issue body
+   states as explicit metadata JSON — a type or a resource glob — is in the
+   shipped metadata (§root/FS-test-contract.1.5). A request made only in prose
+   or a stack trace cannot be checked mechanically and stays with the cover
+   prompt and the audit (§FS-local-branch-review).
+3. **Diff scope.** The paths publication commits stay inside the closed file
+   set of §root/FS-contribution-contract.2: the coordinate's test project, its
+   version's `reachability-metadata.json`, its `index.json`, and the stats,
+   execution-metrics, and descriptor files of its version's stats directory.
+   A legacy split-config file fails the gate wherever it appears.
+
 ### 2. Pre-publication gate
 
 Before a task may produce a PR-eligible result, Forge must also pass a
@@ -303,12 +332,51 @@ The gate is composed from these tasks and owns no domain logic of its own. It
 must not depend on any workflow implementation or on the post-generation
 intervention lane, so that every caller gets identical behavior.
 
-## FS-local-branch-review: Local pre-push branch review (retired)
+## FS-local-branch-review: Local pre-push audit
 
-Retired. A `forge-metadata` run publishes without a pre-push review: its
-semantic review is the launcher's review of the open pull request, with the
-label's checked-in review rules (§FS-automated-pr-review). This declaration
-stays only until the last citation of it is removed with the code it describes.
+Before a `forge-metadata` run pushes, a local audit checks every test and
+metadata change the run made against the rules a reviewer may block on
+(§root/FS-contribution-contract.1), and repairs each violation it finds. A
+generated contribution has no author to answer a review, so a violation the
+run can still repair is repaired before the push rather than reported after it
+(§root/FS-contribution-contract.5.1, §FS-forge-issue-resolution-goal).
+
+### 1. Placement
+
+The audit runs once, after finalization and its gates have passed
+(§FS-local-ci-equivalent-verification.1) and before publication. A skip record
+(§FS-unsupportable-version-diagnosis.3) ships no test or metadata and bypasses
+it.
+
+### 2. The audit is an ordinary fix request
+
+The audit adds no agent and no instruction: it sends the run's one repair agent
+an ordinary fix request. The commands are the native check and the
+finalization lane, the editable files are the coordinate's test project and
+shipped metadata, and the one brief is to check every change against the test
+contract (§root/FS-test-contract.1, §root/FS-test-contract.2,
+§root/FS-test-contract.3, §root/FS-test-contract.4), the bounds on hand-written
+metadata and native flags (§root/FS-test-contract.2.7), and the cheating
+patterns (§root/FS-contribution-contract.4) — scaffold-only or superficial
+tests, tests that bypass the public API, pinned tested-library versions,
+test-only types in shipped metadata, hand-added entries beyond what 2.7 allows,
+forbidden flags, and legacy `*-config.json` files — and fix each violation.
+
+### 3. No verdict
+
+The audit records no verdict and no finding: the agent's report is evidence,
+never a decision (§root/PRCPL-prefer-algorithmic). The tree decides. When the
+audit left the coordinate's paths unchanged, the run publishes. When it changed
+them, the native check and finalization with its gates run again, once: a pass
+publishes, and a failure ends the run in `human-intervention`. A `cannot-fix`
+report ends the run in `human-intervention` as any other fix does
+(§FS-human-intervention-policy).
+
+### 4. One pass
+
+There is no second audit. The run state records that the audit was sent, so a
+resumed run does not audit twice, and an audit edit that breaks a gate is not
+repaired again.
 
 ## FS-human-intervention-policy: Human intervention policy
 
