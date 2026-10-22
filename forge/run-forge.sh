@@ -12,7 +12,7 @@ readonly REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 readonly DEFAULT_SETUP_AGENT="claude-code[medium]:sonnet"
 readonly DEFAULT_WORKER_AGENT="pi[high]:openai-codex/gpt-5.6-luna"
 
-# Claim and run Forge issues until stopped, reviewing the open Forge pull requests.
+# Claim and run Forge issues until stopped, handling failing CI on the open Forge pull requests.
 # §FS-forge-issue-resolution-goal §AR-forge-workflow-pipeline.1
 
 usage() {
@@ -22,17 +22,19 @@ Usage: $0 [--setup-agent TARGET] [--worker-agent TARGET] [--label LABEL]... [-- 
 Purpose:
   Check the host, then until stopped: claim the most urgent eligible Forge
   issue and run its forge-metadata Rhei workspace with the browser dashboard.
-  Every third run, and when no issue can be claimed, review up to three open
-  Forge pull requests with the worker agent and the label's review skill.
+  Every third run, and when no issue can be claimed, run the CI pass: each open
+  Forge pull request whose CI fails on a new head gets one diagnosis by the
+  setup agent that ends in a rerun, a pushed fix, or an issue.
 
 Options:
   -h, --help
       Show this help text.
   --setup-agent TARGET
-      Rhei target of the setup state; it needs web search, so a claude-code target.
+      Rhei target of the setup state and the CI diagnosis; both need web search,
+      so a claude-code target.
       Default: $DEFAULT_SETUP_AGENT
   --worker-agent TARGET
-      Rhei target of the cover and fix states and of the review, with agent pi or claude-code.
+      Rhei target of the cover and fix states, with agent pi or claude-code.
       Default: $DEFAULT_WORKER_AGENT
   --label LABEL
       Fetch only this queue; repeat for several. Default: every queue.
@@ -105,12 +107,12 @@ forge_metadata() {
     "$python" "$SCRIPT_DIR/forge_metadata.py" --setup-agent "$setup_agent" --worker-agent "$worker_agent" "$@"
 }
 
-review() {
-    forge_metadata --review || printf 'WARNING: The review failed; the next review reads the queue again.\n' >&2
+ci_pass() {
+    forge_metadata --ci || printf 'WARNING: The CI pass failed; the next pass reads the pull requests again.\n' >&2
 }
 
 readonly IDLE_SECONDS=600
-readonly REVIEW_EVERY=3
+readonly CI_EVERY=3
 cd "$SCRIPT_DIR"
 runs=0
 while true; do
@@ -121,12 +123,12 @@ while true; do
     status=0
     forge_metadata "${label_arguments[@]}" -- "$@" || status=$?
     if (( status == 1 )); then
-        review
+        ci_pass
         printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
         sleep "$IDLE_SECONDS"
         continue
     fi
     (( status == 0 )) || printf 'ERROR: The cycle failed with status %s.\n' "$status" >&2
     runs=$((runs + 1))
-    (( runs % REVIEW_EVERY != 0 )) || review
+    (( runs % CI_EVERY != 0 )) || ci_pass
 done

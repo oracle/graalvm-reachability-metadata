@@ -12,7 +12,7 @@ run on [ephor](https://github.com/agent-grounds/ephor) and its runtime
 | `implement.md` | The implement queue's instructions, read as a recipe `brief_file` |
 | `hi-collect.sh` | The drain queue's first state: reads the gate before any model is spent |
 | `hi-checkouts.sh` | Makes the branch workspaces the drain queue needs; run before each sweep |
-| `ci-failures.sh`, `ci-restart.sh` | The `failures` and `restart` gate verbs, bound in `../ephor.json` |
+| `ci-failures.sh`, `ci-restart.sh` | The `failures` and `restart` gate verbs, bound in `../ephor.json`; Forge's CI pass runs them too |
 
 The repository decides how the work is done. Whether agents spend your budget
 on it is yours to decide, so nothing here runs until you adopt the queues in

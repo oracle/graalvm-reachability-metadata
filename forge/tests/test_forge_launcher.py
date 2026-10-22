@@ -3,10 +3,10 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for the launcher: fetch, targets, close-out, and the pull-request review.
+"""Tests for the launcher: fetch, targets, close-out, and the CI pass's entry.
 
 §AR-forge-workflow-pipeline.1 fixes the fetch and the close-out, and
-§FS-published-pr-ci-failures the review's eligibility and its one agent turn.
+§FS-published-pr-ci-failures the CI pass and its agent target.
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ import unittest
 from unittest.mock import patch
 
 import forge_metadata
-from dispatcher import issue_fetch, pr_review, run_launch
+from dispatcher import issue_fetch, pr_ci, run_launch
 
 FORGE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -131,39 +131,22 @@ class CloseOutTest(unittest.TestCase):
         self.assertEqual("infrastructure", run_launch.read_outcome(tempfile.mkdtemp())["kind"])
 
 
-class ReviewTest(unittest.TestCase):
-
-    def pull(self, **changes: object) -> dict:
-        values: dict = {"number": 11, "headRefName": "ai/bot/add-lib-support-x", "headRefOid": "abc",
-                        "headRepository": {"nameWithOwner": "oracle/graalvm-reachability-metadata"},
-                        "reviewDecision": "", "labels": [{"name": "GenAI"}, {"name": "library-new-request"}]}
-        values.update(changes)
-        return values
-
-    def test_forge_route_pull_request_is_reviewed(self) -> None:
-        self.assertIsNone(pr_review.skip_reason(self.pull()))
-        self.assertEqual("library-new-request", pr_review.route_label(self.pull()))
-
-    def test_ineligible_pull_requests_are_skipped(self) -> None:
-        self.assertEqual("approved", pr_review.skip_reason(self.pull(reviewDecision="APPROVED")))
-        self.assertEqual("not a Forge branch", pr_review.skip_reason(self.pull(headRefName="feature/x")))
-        self.assertEqual("from another repository",
-                         pr_review.skip_reason(self.pull(headRepository={"nameWithOwner": "fork/repo"})))
-        held = self.pull(labels=[{"name": "library-new-request"}, {"name": "human-intervention"}])
-        self.assertEqual("held for a maintainer", pr_review.skip_reason(held))
-        self.assertEqual("not a reviewed Forge route", pr_review.skip_reason(self.pull(labels=[{"name": "GenAI"}])))
+class CIPassEntryTest(unittest.TestCase):
 
     def test_agent_command_follows_the_target(self) -> None:
         self.assertEqual(["pi", "--no-session", "--model", "gpt-5.6-luna", "--provider", "openai-codex",
                           "--thinking", "high", "-p", "do"],
-                         pr_review.agent_command("pi[high]:openai-codex/gpt-5.6-luna", "do"))
-        self.assertEqual(["claude", "--permission-mode", "bypassPermissions", "--model", "sonnet", "-p", "do"],
-                         pr_review.agent_command("claude-code:sonnet", "do"))
+                         pr_ci.agent_command("pi[high]:openai-codex/gpt-5.6-luna", "do"))
+        self.assertEqual(["claude", "--permission-mode", "bypassPermissions", "--model", "sonnet", "--effort",
+                          "medium", "-p", "do"], pr_ci.agent_command("claude-code[medium]:sonnet", "do"))
 
-    def test_prompt_names_the_label_skill_and_the_exact_head(self) -> None:
-        text = pr_review.prompt(11, "fixes-javac-fail", "ai/bot/x", "abc")
-        self.assertIn("skills/review-fixes-javac-fail/SKILL.md", text)
-        self.assertIn("only for head abc", text)
+    def test_ci_runs_the_pass_with_the_setup_agent(self) -> None:
+        with patch.object(forge_metadata, "ci_pass", return_value=1) as ci_pass, \
+                patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
+                contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(forge_metadata.RAN, forge_metadata.main(["--ci", "--dry-run", "--pr", "9628"]))
+        ci_pass.assert_called_once_with(forge_metadata.REPO_DIR, forge_metadata.DEFAULT_SETUP_AGENT, "forge-bot", True,
+                                        [9628])
 
 
 class ShellLauncherTest(unittest.TestCase):
