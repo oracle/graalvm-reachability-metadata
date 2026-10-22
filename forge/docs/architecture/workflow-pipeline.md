@@ -130,7 +130,7 @@ template's `transition_limit`.
 | `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt |
 | `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
 | `native` | The native check over the tests exploration added |
-| `finalize` | `spotlessApply`, then `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate (§FS-local-ci-equivalent-verification.2), each once; the first failure becomes the fix request |
+| `finalize` | `spotlessApply`, then `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the full changed-metadata test matrix (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request |
 | `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns the native check and `finalize` once over a changed one (§AR-forge-workflow-pipeline.4.3) |
 | `fix-route` | Reads the request's return code and the fix report: `cannot-fix` exits `40`, anything else the return code |
 | `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), rebases onto `master`, and pushes the publication branch; a deferred exploration opens its follow-up issue first |
@@ -175,6 +175,24 @@ with the checkpoint: unchanged exits `0`; changed reruns the native check and
 `finalize`'s steps and gates from the program, and exits `0` on a pass or `12`
 on a failure. The run state, not a Rhei visit count, records the audit, so it
 happens once.
+
+### 4.4 The test matrix
+
+`finalize` runs the pre-publication gate with `reproduce_full_ci`, the existing
+runner of the per-PR matrix (§FS-local-ci-equivalent-verification.2.1):
+`generateChangedMetadataTestMatrix` expands the changed metadata into entries of
+coordinate, tested versions, native-image mode, and Java version from
+`ci.json`, and each entry runs `checkMetadataFiles` and
+`run-consecutive-tests.sh` under that mode and the JDK its `GRAALVM_HOME_*`
+variable names, followed by the affected Spring AOT smoke tests. `latest-ea` is
+optional: an entry whose GraalVM is not installed is skipped and recorded, not
+run. Every entry's outcome is kept in the gate's record, which `finalize` stores
+in the run state and `publish` puts in the descriptor for the pull request body.
+The first failing entry becomes the fix request; its command is the failing
+stage's own reproduction line from `run-consecutive-tests.sh` — version and mode
+— with the entry's JDK prefixed. The cost is about versions × modes × Java
+versions native builds, which is why `finalize` and `audit` have an eight-hour
+program timeout.
 
 ## 5. The native check
 
