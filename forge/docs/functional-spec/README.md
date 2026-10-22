@@ -22,6 +22,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-glossary](functional-spec.md#fs-forge-glossary-glossary) | Glossary |
 | [§FS-forge-requirements](functional-spec.md#fs-forge-requirements-requirement-gates) | Requirement gates |
 | [§FS-forge-host-requirements](functional-spec.md#fs-forge-host-requirements-host-requirements) | Host requirements |
+| [§FS-forge-isolated-host](isolated-host.md#fs-forge-isolated-host-disposable-forge-host) | Disposable Forge host |
 | [§FS-forge-agent-runtime-selection](functional-spec.md#fs-forge-agent-runtime-selection-configurable-agent-roles) | Configurable agent roles |
 | [§FS-forge-run-requirements](functional-spec.md#fs-forge-run-requirements-run-requirements) | Run requirements |
 | [§FS-forge-outputs](functional-spec.md#fs-forge-outputs-run-outputs) | Run outputs |
@@ -62,6 +63,8 @@ Files:
   outcome. Start here.
 - [continuation.md](continuation.md) — the continuation marker, and how a failed
   run resumes at the phase that failed.
+- [isolated-host.md](isolated-host.md) — the disposable Incus VM an operator
+  runs Forge in, and what it must and must not contain.
 - [tested-version-split.md](tested-version-split.md) — how a library-update run
   splits the entries that can no longer share its regenerated suite.
 - [strategies.md](strategies.md) — what a strategy bundle must declare, and how
