@@ -83,8 +83,11 @@ class ReportArtifactsTest(unittest.TestCase):
             self.assertTrue(os.path.isfile(os.path.join(self.output_dir, name)), name)
         with open(os.path.join(self.output_dir, "discovery-report-1.md"), encoding="utf-8") as md_file:
             markdown = md_file.read()
-        self.assertIn("## Observed (sampled guidance only)", markdown)
+        self.assertIn("## Observed\n\nObserved (sampled):\n", markdown)
         self.assertIn("`Registry.init() → resolve(...)`", markdown)
+        # Without recorded contexts the report says why routes are sampled
+        # (§AR-code-coverage-deep-navigation.2).
+        self.assertTrue(any("no recorded calling contexts" in c for c in report["caveats"]))
         # `parse` is routed from a public entry only: it stays ranked in the
         # JSON and out of the prompt (§AR-code-coverage-deep-navigation.2).
         parse = next(entry for entry in report["uncoveredPaths"] if entry["id"] == PARSE_ID)
@@ -218,16 +221,16 @@ class ReportArtifactsTest(unittest.TestCase):
         with open(markdown_path, encoding="utf-8") as markdown_file:
             markdown = markdown_file.read()
         first_group = (
-            "Observed:\n"
+            "Observed (sampled):\n"
             "`Library.dispatch() → parseJson()`\n\n"
             "Uncovered paths:\n"
             "`Library.dispatch() → parseAlternative0()`\n"
         )
-        self.assertIn("## Observed (sampled guidance only)\n\n" + first_group, markdown)
-        self.assertEqual(markdown.count("Observed:\n"), 21)
+        self.assertIn("## Observed\n\n" + first_group, markdown)
+        self.assertEqual(markdown.count("Observed (sampled):\n"), 21)
         # A thematic break separates each pair of consecutive groups, and a
         # blank line before it keeps Markdown from reading a setext heading.
-        self.assertEqual(markdown.count("\n\n---\n\nObserved:\n"), 20)
+        self.assertEqual(markdown.count("\n\n---\n\nObserved (sampled):\n"), 20)
         self.assertEqual(markdown.count("---"), 20)
         self.assertIn(
             "`Library.dispatch() → parseAlternative20()`",

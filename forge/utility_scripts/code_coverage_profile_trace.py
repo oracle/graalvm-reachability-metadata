@@ -248,6 +248,12 @@ class SampleTrace:
             self._groups[divergence] = self._trace(divergence)
         return self._groups[divergence]
 
+    def recorded(self, sample: Sample, path_index: int) -> GroupTrace:
+        """The trace of one recorded stack down to the frame at `path_index`: a
+        recorded route shows its own stack (§AR-code-coverage-deep-navigation.2)."""
+        end: int = sample.path_full_indexes[path_index]
+        return self._chain(_Candidate(sample, sample.count, end, end))
+
     def _trace(self, divergence: tuple[int, ...]) -> GroupTrace:
         # One stack per distinct path from the root down to the divergence.
         stacks: dict[tuple, _Candidate] = {}

@@ -192,6 +192,56 @@ class DeepCorrelationTest(unittest.TestCase):
         self.assertEqual(by_id[RELOAD_ID]["joinKind"], "none")
         self.assertIn(LOAD_ID, moved["promptTargetIds"])
 
+    def test_recorded_context_routes_from_its_shortest_tested_stack(self) -> None:
+        """A recorded stack into a covered caller routes the target with no
+        static hop; the shortest stack wins, a tested one before an untested
+        one of the same length (§AR-code-coverage-deep-navigation.2)."""
+        init_id = self.graph.key_to_id[INIT_ID]
+        reload_id = self.graph.key_to_id[RELOAD_ID]
+        init_ref = self.graph.methods[init_id]
+        reload_ref = self.graph.methods[reload_id]
+        test_ref = MethodRef("com.example.RegistryTest", "covers", (), "void")
+        self.profile.contexts = [
+            Sample(
+                context_id="context-long", raw_context="",
+                path=[(reload_id, 7), (init_id, 0)],
+                full_path=[(test_ref, 3), (reload_ref, 7), (init_ref, 0)],
+                path_full_indexes=[1, 2], count=9,
+            ),
+            Sample(
+                context_id="context-bare", raw_context="",
+                path=[(init_id, 0)], full_path=[(init_ref, 0)],
+                path_full_indexes=[0], count=50,
+            ),
+            Sample(
+                context_id="context-short", raw_context="",
+                path=[(init_id, 0)], full_path=[(test_ref, 3), (init_ref, 0)],
+                path_full_indexes=[1], count=1,
+            ),
+        ]
+        report, prompt_records = self._run()
+        by_id = {entry["id"]: entry for entry in report["uncoveredPaths"]}
+        resolve = by_id[RESOLVE_ID]
+        self.assertEqual(resolve["joinKind"], "recorded")
+        self.assertEqual(resolve["reachingPath"], [INIT_ID, RESOLVE_ID])
+        # test → init → resolve: the distance starts at the test frame.
+        self.assertEqual(resolve["stepsRemaining"], 2)
+        self.assertEqual(resolve["sampleContextId"], "context-short")
+        self.assertEqual(resolve["sampleCount"], 1)
+        # With recorded contexts, only recorded routes are prompted.
+        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID])
+        self.assertEqual(report["summary"]["recordedJoins"], 1)
+        self.assertEqual(report["summary"]["sampledJoins"], 0)
+        self.assertEqual(report["summary"]["recordedContexts"], 3)
+        self.assertFalse(any("no recorded calling contexts" in c for c in report["caveats"]))
+        self.assertEqual(
+            next(record for record in prompt_records if record.target_ref.canonical_id == RESOLVE_ID)
+            .sampled_join_path_index,
+            0,
+        )
+        # A target none of whose callers was recorded keeps its static route.
+        self.assertEqual(by_id[PARSE_ID]["joinKind"], "public-entry")
+
     def test_covered_call_site_is_dispatched_elsewhere_and_never_fork(self) -> None:
         caller = MethodRef("example.Router", "route", (), "void")
         target = MethodRef("example.Handler$1", "handle", (), "void")
