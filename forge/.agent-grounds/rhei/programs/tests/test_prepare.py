@@ -44,7 +44,7 @@ class PrepareTest(unittest.TestCase):
         self.fake.issue("library-new-request")
         self.assertEqual(OK, self.prepare())
         state = load(self.fake.workspace)
-        self.assertEqual((ROUTE_NEW, COORDINATE, "rhei/forge-lib-2.0.0"), (state.route, state.coordinate, state.branch))
+        self.assertEqual((ROUTE_NEW, COORDINATE, "rhei/forge-org.example-lib-2.0.0"), (state.route, state.coordinate, state.branch))
         self.assertTrue(os.path.isdir(state.path(state.test_dir)))
         log: str = subprocess.run(["git", "log", "--format=%s", "-1"], cwd=state.worktree, check=True,
                                   stdout=subprocess.PIPE, text=True).stdout.strip()
@@ -108,6 +108,21 @@ class PrepareTest(unittest.TestCase):
         first = load(self.fake.workspace)
         self.assertEqual(OK, self.prepare())
         self.assertEqual(first.checkpoint, load(self.fake.workspace).checkpoint)
+
+    def test_a_leftover_run_branch_restarts_from_the_pinned_base(self) -> None:
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        first = load(self.fake.workspace)
+        # The launcher retires the workspace; the run branch and its worktree may outlive it.
+        os.remove(runtime_path(self.fake.workspace, "state.json"))
+        self.fake.commit("master moved on")
+        self.assertEqual(OK, self.prepare())
+        second = load(self.fake.workspace)
+        self.assertNotEqual(first.base_commit, second.base_commit)
+        self.assertEqual(second.base_commit, subprocess.run(
+            ["git", "rev-parse", "HEAD~1"], cwd=second.worktree, check=True, stdout=subprocess.PIPE, text=True).stdout.strip())
+        self.assertNotEqual(0, subprocess.run(["git", "merge-base", "--is-ancestor", first.checkpoint, "HEAD"],
+                                              cwd=second.worktree).returncode)
 
     def test_validate_inputs_rejects_non_positive_budgets(self) -> None:
         namespace = argparse.Namespace(bulk_min_classes=0, bulk_passes=3, class_attempts=3, defer_classes=15,

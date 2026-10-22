@@ -68,22 +68,18 @@ def pin_base(repo: str) -> str:
 
 
 def spawn_worktree(repo: str, path: str, branch: str, base: str) -> None:
-    """Create the run worktree on its branch, or reuse it when a resumed run already made it."""
+    """Create the run worktree on its branch, reset to the pinned base.
+
+    A leftover of an earlier run of the coordinate, its worktree or its branch
+    alone, is removed first: a run never carries old commits over a new base
+    (§AR-forge-workflow-pipeline.4). A resumed run never gets here, because
+    `run` keeps a worktree its own state names.
+    """
+    git(repo, "worktree", "prune")
     if os.path.exists(path):
-        current: str = git(path, "rev-parse", "--abbrev-ref", "HEAD").strip()
-        if current != branch:
-            raise ValueError(f"{path} exists on branch {current}, expected {branch}")
-        return
+        git(repo, "worktree", "remove", "--force", path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    branch_exists: bool = subprocess.run(
-        ["git", "rev-parse", "--verify", "--quiet", f"refs/heads/{branch}"],
-        cwd=repo,
-        stdout=subprocess.DEVNULL,
-    ).returncode == 0
-    if branch_exists:
-        git(repo, "worktree", "add", "--quiet", path, branch)
-    else:
-        git(repo, "worktree", "add", "--quiet", "-b", branch, path, base)
+    git(repo, "worktree", "add", "--quiet", "-B", branch, path, base)
 
 
 def attach_worktree(workspace: str, worktree: str) -> None:
@@ -185,14 +181,14 @@ def run(args: argparse.Namespace) -> int:
     except ValueError as error_value:
         print(f"ERROR: issue #{args.issue_number}: {error_value}", file=sys.stderr)
         return BAD_INPUT
-    _, artifact, version = parsed.coordinate.split(":")
+    run_name: str = "forge-" + parsed.coordinate.replace(":", "-")
     # Resolved like git's own top-level path, which the worktree ref must name.
-    worktree: str = os.path.realpath(os.path.join(_resolve(workspace, args.worktree_root), f"forge-{artifact}-{version}"))
-    branch: str = f"rhei/forge-{artifact}-{version}"
+    worktree: str = os.path.realpath(os.path.join(_resolve(workspace, args.worktree_root), run_name))
+    branch: str = f"rhei/{run_name}"
     base: str = pin_base(repo)
     try:
         spawn_worktree(repo, worktree, branch, base)
-    except (ValueError, subprocess.CalledProcessError) as error_value:
+    except subprocess.CalledProcessError as error_value:
         print(f"ERROR: worktree: {error_value}", file=sys.stderr)
         return BAD_INPUT
     state = RunState(

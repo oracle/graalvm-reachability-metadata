@@ -41,7 +41,7 @@ def run_state(route: str = ROUTE_NEW, worktree: str = "/tmp/worktree", **changes
     """A run state for unit tests that never touch the worktree."""
     state: RunState = RunState(
         issue_number=7, label="library-new-request", route=route, coordinate=COORDINATE,
-        repo_checkout=REPOSITORY, worktree=worktree, branch="rhei/forge-lib-2.0.0", base_commit="base",
+        repo_checkout=REPOSITORY, worktree=worktree, branch="rhei/forge-org.example-lib-2.0.0", base_commit="base",
         checkpoint="base", started_at="2026-10-22T10:00:00+00:00",
         setup_agent="claude-code[medium]:sonnet", worker_agent="pi[high]:openai-codex/gpt-5.6-luna",
         budgets=Budgets(**vars(BUDGETS)),
