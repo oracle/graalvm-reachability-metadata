@@ -111,6 +111,10 @@ def main(argv: list[str] | None = None) -> int:
     args.workspace = os.getcwd()
     try:
         code: int = prepare.run(args) if args.step == "prepare" else STEPS[args.step](args.workspace)
+    except SystemExit as early_exit:
+        # Shared helpers quit with `SystemExit`; the result file is owed all the same (§AR-forge-workflow-pipeline.2).
+        print(f"ERROR: {args.step} quit early with exit status {early_exit.code}.", file=sys.stderr)
+        code = INFRASTRUCTURE
     except Exception:
         traceback.print_exc()
         code = INFRASTRUCTURE

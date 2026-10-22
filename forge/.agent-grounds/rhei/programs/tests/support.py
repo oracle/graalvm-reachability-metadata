@@ -104,6 +104,8 @@ class FakeRepository:
         os.environ["PATH"] = bin_dir + os.pathsep + os.environ["PATH"]
         os.environ["FAKE_FORGE_CONTROL"] = self.control_path
         os.environ["FORGE_GRADLE_USER_HOME"] = os.path.join(self.tmp, "gradle-home")
+        # The fake index names unreachable URLs; the setup tail must not pause between download attempts.
+        os.environ["FORGE_SOURCE_RETRY_SECONDS"] = "0"
         os.environ["RHEI_TASK_ID"] = "ws.forge"
         os.environ["RHEI_RESULT_PATH"] = os.path.join(self.workspace, "runtime", "results", "ws.forge.md")
         os.environ["GRAALVM_HOME_25_0"] = self.graalvm("graalvm-25")

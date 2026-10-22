@@ -18,10 +18,11 @@ from __future__ import annotations
 import os
 import re
 import sys
+import time
 from typing import Any
 
 from utility_scripts.metadata_index import find_index_entry_for_version
-from utility_scripts.source_context import prepare_source_contexts
+from utility_scripts.source_context import PreparedSourceContext, prepare_source_contexts
 
 import handoff
 import native_check
@@ -35,6 +36,11 @@ URL_FIELDS: tuple[str, ...] = ("source-code-url", "test-code-url", "documentatio
 DECLARATION_FILES: tuple[str, ...] = ("build.gradle", "required-docker-images.txt")
 FILTER: str = "user-code-filter.json"
 UNRESOLVED: re.Pattern[str] = re.compile(r"Could not resolve|Could not find [\w.-]+:[\w.-]+")
+# A source download the network denies is retried after a pause (§AR-forge-workflow-pipeline.4.1).
+SOURCE_ATTEMPTS: int = 3
+SOURCE_RETRY_SECONDS: int = 300
+# The pause's override, so a test with unreachable URLs does not wait.
+SOURCE_RETRY_VARIABLE: str = "FORGE_SOURCE_RETRY_SECONDS"
 
 
 def keep_url_edits(state: RunState, keep_skips: bool) -> None:
@@ -77,6 +83,34 @@ def revert_out_of_scope(state: RunState) -> list[str]:
     return reverted
 
 
+def retry_seconds() -> int:
+    """The pause before a denied download is retried."""
+    return int(os.environ.get(SOURCE_RETRY_VARIABLE, SOURCE_RETRY_SECONDS))
+
+
+def download_sources(state: RunState) -> list[str]:
+    """Download the main sources into the run's source context; return the types still missing.
+
+    A download the index names a URL for but the network denies is retried
+    after a pause; a source with no URL is final. The run goes on without the
+    sources it could not get: they only sharpen the cover prompts.
+    """
+    for attempt in range(1, SOURCE_ATTEMPTS + 1):
+        prepared: PreparedSourceContext = prepare_source_contexts(
+            os.path.join(state.worktree, "forge"), state.worktree, state.coordinate, ["main"])
+        denied: list[str] = [artifact.source_type for artifact in prepared.artifacts
+                             if artifact.url is not None and not artifact.available]
+        if not denied:
+            return []
+        if attempt == SOURCE_ATTEMPTS:
+            print(f"[repair] the {', '.join(denied)} sources could not be downloaded; continuing without them")
+            return denied
+        print(f"[repair] the {', '.join(denied)} sources could not be downloaded (attempt {attempt} of "
+              f"{SOURCE_ATTEMPTS}); retrying in {retry_seconds()}s")
+        time.sleep(retry_seconds())
+    return []
+
+
 def missing_urls(state: RunState) -> list[str]:
     entry: dict[str, Any] = find_index_entry_for_version(state.worktree, state.group, state.artifact, state.version) or {}
     return [field for field in URL_FIELDS if not str(entry.get(field) or "").strip()]
@@ -95,7 +129,7 @@ def apply_setup(workspace: str, state: RunState) -> int:
     if missing:
         print(f"ERROR: {state.coordinate} has no {', '.join(missing)} in {state.index_path}.", file=sys.stderr)
         return BAD_INPUT
-    prepare_source_contexts(os.path.join(state.worktree, "forge"), state.worktree, state.coordinate, ["main"])
+    download_sources(state)
     if not os.path.isfile(state.path(os.path.join(state.test_dir, FILTER))):
         generated: TaskResult = run_gradle(
             state.worktree,
