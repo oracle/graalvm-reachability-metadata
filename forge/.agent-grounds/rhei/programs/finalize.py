@@ -8,13 +8,15 @@
 `spotlessApply` runs first, then `spotlessCheck`, `checkstyle`, and
 `generateLibraryStats` over the coordinate, then the reviewer gates
 (§FS-local-ci-equivalent-verification.1.1), and then the pre-publication gate
-(§FS-local-ci-equivalent-verification.2) with the full changed-metadata test
-matrix and no agent fixup of its own; the first failing step becomes the fix
-request, a failing matrix entry with its exact reproduction command
-(§AR-forge-workflow-pipeline.4.4).
+(§FS-local-ci-equivalent-verification.2) with the coordinate's native lanes and
+no agent fixup of its own; the first failing step becomes the fix request, a
+failing lane with its exact reproduction command (§AR-forge-workflow-pipeline.4.4).
 `audit` reruns the same lane over its edit (§AR-forge-workflow-pipeline.4.3).
 """
 from __future__ import annotations
+
+import json
+from typing import Any
 
 from utility_scripts.local_ci_verification import (
     CommandRecord,
@@ -37,12 +39,29 @@ STEPS: tuple[list[str], ...] = (
     ["checkstyle"],
     ["generateLibraryStats"],
 )
-# Java lanes run only when their GraalVM is installed (§FS-local-ci-equivalent-verification.2.1).
-OPTIONAL_JAVA_VERSIONS: frozenset[str] = frozenset({"latest-ea"})
+# The CI matrix whose pairings of mode and Java version the native lanes take.
+MATRIX_SECTION: str = "generateChangedMetadataTestMatrix"
+# The lane runs only when its GraalVM is installed (§FS-local-ci-equivalent-verification.2.1).
+OPTIONAL_JAVA: str = "latest-ea"
 
 
 def step_arguments(step: list[str], state: RunState) -> list[str]:
     return step if step[0].startswith("spotless") else coordinate_task(step[0], state.coordinate)
+
+
+def native_lanes(state: RunState) -> list[dict[str, Any]]:
+    """The coordinate's native lanes: each `ci.json` mode on each Java version the matrix allows it.
+
+    Only the run's coordinate and version run (§FS-local-ci-equivalent-verification.2.1).
+    """
+    with open(state.path("ci.json"), encoding="utf-8") as handle:
+        ci: dict[str, Any] = json.load(handle)
+    javas: list[str] = ci[MATRIX_SECTION]["java"]
+    modes: list[str] = ci[MATRIX_SECTION].get("native-image-modes", list(ci["nativeImageModes"]))
+    allowed: dict[str, list[str]] = ci.get("nativeImageModeJavaVersions", {})
+    return [{"coordinates": state.coordinate, "versions": [state.version], "version": java,
+             "nativeImageMode": mode, "optional": java == OPTIONAL_JAVA}
+            for java in javas for mode in modes if java in allowed.get(mode, javas)]
 
 
 def lane_commands(workspace: str, state: RunState) -> list[str]:
@@ -69,8 +88,7 @@ def run_lane(workspace: str, state: RunState, prefix: str) -> list[handoff.Failu
             coordinates=state.coordinate,
             base_commit=state.base_commit,
             max_fixup_attempts=0,
-            reproduce_full_ci=True,
-            optional_java_versions=OPTIONAL_JAVA_VERSIONS,
+            test_lanes=native_lanes(state),
         )
     except LocalCIVerificationError as error:
         if not error.result.commands:

@@ -3,11 +3,11 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The changed-metadata CI matrix `finalize` reproduces (§AR-forge-workflow-pipeline.4.4).
+"""The coordinate's native lanes `finalize` runs (§AR-forge-workflow-pipeline.4.4).
 
-The fake harness serves the matrix and runs the real `run-consecutive-tests.sh`,
-so a failing entry's fix request carries the command the script itself prints,
-with the entry's JDK in front.
+The lanes come from the real `ci.json`, and the fake harness runs the real
+`run-consecutive-tests.sh`, so a failing lane's fix request carries the command
+the script itself prints, with the lane's JDK in front.
 """
 from __future__ import annotations
 
@@ -25,12 +25,6 @@ from exit_codes import AGENT_WORK, OK, RETURN_AUDIT  # noqa: E402
 from run_state import RunState, read_json  # noqa: E402
 
 COORDINATE: str = "org.example:lib:2.0.0"
-MATRIX: list[dict[str, Any]] = [
-    {"coordinates": COORDINATE, "versions": ["2.0.0"], "version": "25", "nativeImageMode": "current-defaults"},
-    {"coordinates": COORDINATE, "versions": ["2.0.0"], "version": "latest-ea", "nativeImageMode": "current-defaults"},
-    {"coordinates": COORDINATE, "versions": ["2.0.0"], "version": "latest-ea",
-     "nativeImageMode": "future-defaults-all"},
-]
 
 
 def load_publisher() -> Any:
@@ -44,28 +38,29 @@ def load_publisher() -> Any:
 
 class MatrixTest(FinalizedRun):
 
-    def setUp(self) -> None:
-        super().setUp()
-        self.fake.control({"matrix": MATRIX})
-
     def lanes(self) -> list[str]:
-        """The `test` runs of the matrix, as `<version> <mode> <JAVA_HOME>`."""
+        """The `test` runs of the lanes, as `<version> <mode> <JAVA_HOME>`; each is the run's coordinate."""
         with open(self.state.path("gradle-calls.log"), encoding="utf-8") as handle:
-            return [line.split("[", 1)[1].rstrip("]\n") for line in handle if line.startswith("clean test ")]
+            runs: list[str] = [line.rstrip("]\n") for line in handle if line.startswith("clean test ")]
+        self.assertEqual({f"clean test -Pcoordinates={COORDINATE}"}, {run.split(" [", 1)[0] for run in runs})
+        return [run.split(" [", 1)[1] for run in runs]
 
     def statuses(self, state: RunState) -> list[tuple[str, str, str]]:
         return [(entry["java"], entry["nativeImageMode"], entry["status"]) for entry in state.local_ci["test_matrix"]]
 
-    def test_finalize_runs_the_whole_matrix(self) -> None:
-        self.repaired()
+    def test_finalize_runs_the_three_lanes_of_the_coordinate_only(self) -> None:
+        self.repaired("library-update-request")
         self.assertEqual(OK, self.step("finalize"))
         ea: str = os.environ["GRAALVM_HOME_LATEST_EA"]
         self.assertEqual([f"2.0.0 current-defaults {os.environ['GRAALVM_HOME_25_0']}",
                           f"2.0.0 current-defaults {ea}", f"2.0.0 future-defaults-all {ea}"], self.lanes())
         self.assertEqual([("25", "current-defaults", "passed"), ("latest-ea", "current-defaults", "passed"),
                           ("latest-ea", "future-defaults-all", "passed")], self.statuses(self.state))
+        # Neither the changed-metadata matrix nor Spring AOT runs.
+        for task in ("generateChangedMetadataTestMatrix", "generateAffectedSpringTestMatrix"):
+            self.assertEqual(0, self.gradle_calls(task))
 
-    def test_a_failing_entry_is_a_fix_request_that_reruns_exactly_it(self) -> None:
+    def test_a_failing_lane_is_a_fix_request_that_reruns_exactly_it(self) -> None:
         self.repaired()
         self.fake.control({"matrixFails": "future-defaults-all"})
         self.assertEqual(AGENT_WORK, self.step("finalize"))
@@ -78,7 +73,7 @@ class MatrixTest(FinalizedRun):
         rerun = subprocess.run(command, shell=True, cwd=self.state.worktree, stdout=subprocess.PIPE, text=True)
         self.assertEqual(1, rerun.returncode)
         self.assertEqual(f"2.0.0 future-defaults-all {ea}", self.lanes()[-1])
-        # The next visit runs the whole matrix again.
+        # The next visit runs every lane again.
         self.fake.control({"matrixFails": None})
         before: int = len(self.lanes())
         self.assertEqual(OK, self.step("finalize"))
@@ -103,7 +98,7 @@ class MatrixTest(FinalizedRun):
         self.assertIn("Java `latest-ea`, `future-defaults-all`: `org.example:lib:2.0.0` `2.0.0` — skipped "
                       "(GRAALVM_HOME_LATEST_EA is not set)", body)
 
-    def test_the_audit_rerun_includes_the_matrix(self) -> None:
+    def test_the_audit_rerun_includes_the_lanes(self) -> None:
         self.repaired()
         self.assertEqual(RETURN_AUDIT, self.audited())
         state: RunState = self.state

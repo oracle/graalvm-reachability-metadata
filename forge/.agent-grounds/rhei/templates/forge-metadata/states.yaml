@@ -169,10 +169,10 @@ states:
         description: Every failing native-check output the fix agent receives.
 
   finalize:
-    description: spotlessApply, then spotlessCheck, checkstyle, generateLibraryStats, the reviewer gates, and the pre-publication gate with the full CI test matrix, each once.
+    description: spotlessApply, then spotlessCheck, checkstyle, generateLibraryStats, the reviewer gates, and the pre-publication gate with the coordinate's three native lanes, each once.
     program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" finalize
-    # The full changed-metadata matrix: about versions x modes x JDKs native builds.
-    program_timeout: 480m
+    # The gates plus three native lanes; a lane is at most 7 five-minute Gradle calls when it fails.
+    program_timeout: 180m
     outputs:
       - name: fix-request
         kind: handoff
@@ -182,8 +182,8 @@ states:
   audit:
     description: Once - send the audit fix request, then publish an unchanged tree or rerun the checks over a changed one.
     program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" audit
-    # Its rerun after an edit includes the full changed-metadata matrix.
-    program_timeout: 480m
+    # Its rerun after an edit is the native check plus finalize's lane, native lanes included.
+    program_timeout: 240m
     outputs:
       - name: fix-request
         kind: handoff

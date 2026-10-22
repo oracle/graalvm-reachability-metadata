@@ -10,10 +10,9 @@ the post-rebase, cross-cutting checks a single-library generation cannot settle
 on its own. Library-scoped verification (metadata, style, stats, and the native
 test lanes) is owned by the generation/finalization tier
 (§FS-local-ci-equivalent-verification.1) and is not repeated here by default. The
-`reproduce_full_ci` flag additionally reproduces the expensive per-PR CI
+opt-in `reproduce_full_ci` flag additionally reproduces the expensive per-PR CI
 surface locally — the whole changed-metadata native test matrix and the Spring
-AOT smoke tests; a `forge-metadata` run always sets it, with `latest-ea` as an
-optional Java lane (§FS-local-ci-equivalent-verification.2.1).
+AOT smoke tests.
 """
 
 from __future__ import annotations
@@ -112,8 +111,8 @@ class LocalCIVerificationResult:
     human_intervention_required: bool = False
     failure_gate: str | None = None
     failure_command: list[str] | None = None
-    # Every changed-metadata matrix entry of a full reproduction and its outcome:
-    # passed, failed, or skipped when its optional Java lane is not installed.
+    # Every matrix entry the gate ran and its outcome: passed, failed, or skipped
+    # when an optional entry's GraalVM is not installed.
     test_matrix: list[dict] = field(default_factory=list)
 
     def to_metrics(self) -> dict:
@@ -158,23 +157,23 @@ def run_local_ci_verification(
         metrics_repo_path: str | None = None,
         max_fixup_attempts: int = MAX_FIXUP_ATTEMPTS,
         reproduce_full_ci: bool = False,
-        optional_java_versions: frozenset[str] = frozenset(),
+        test_lanes: list[dict] | None = None,
 ) -> LocalCIVerificationResult:
     """Run local verification, fixing and retrying when possible.
 
     When `reproduce_full_ci` is set, the pre-publication gate additionally
     reproduces the per-PR CI surface locally — the whole changed-metadata native
     test matrix and the Spring AOT smoke tests — instead of leaving those to
-    repository CI (§FS-local-ci-equivalent-verification.2). A matrix entry on one
-    of `optional_java_versions` is skipped and recorded when its GraalVM is not
-    installed.
+    repository CI (§FS-local-ci-equivalent-verification.2). `test_lanes` are a
+    caller's own matrix entries, run after the cross-cutting checks
+    (§FS-local-ci-equivalent-verification.2.1).
     """
     result = LocalCIVerificationResult(status="running", base_commit=base_commit)
     _log_local_ci(f"Starting local CI verification for {coordinates}")
     for attempt in range(max_fixup_attempts + 1):
         _log_local_ci(f"Verification attempt {attempt + 1}/{max_fixup_attempts + 1}", indent_level=1)
         failed_command = _run_verification_once(repo_path, base_commit, result, reproduce_full_ci=reproduce_full_ci,
-                                                optional_java_versions=optional_java_versions)
+                                                test_lanes=test_lanes)
         if failed_command is None:
             result.status = "success"
             result.final_commit = _git_stdout(repo_path, ["rev-parse", "HEAD"])
@@ -298,7 +297,7 @@ def _run_verification_once(
         base_commit: str,
         result: LocalCIVerificationResult,
         reproduce_full_ci: bool = False,
-        optional_java_versions: frozenset[str] = frozenset(),
+        test_lanes: list[dict] | None = None,
 ) -> CommandRecord | None:
     # Pre-publication gate (§FS-local-ci-equivalent-verification.2): run only the
     # cross-cutting checks a single-library generation cannot settle on its own —
@@ -328,10 +327,12 @@ def _run_verification_once(
     # leaves to repository CI (§FS-local-ci-equivalent-verification.2): the whole
     # changed-metadata native test matrix and the Spring AOT smoke tests.
     if reproduce_full_ci:
-        failed = _run_full_ci_reproduction(repo_path, base_commit, changed_files, result, optional_java_versions)
+        failed = _run_full_ci_reproduction(repo_path, base_commit, changed_files, result)
         if failed is not None:
             return failed
 
+    if test_lanes:
+        return _run_test_matrix_entries(repo_path, test_lanes, result)
     return None
 
 
@@ -340,7 +341,6 @@ def _run_full_ci_reproduction(
         base_commit: str,
         changed_files: list[str],
         result: LocalCIVerificationResult,
-        optional_java_versions: frozenset[str] = frozenset(),
 ) -> CommandRecord | None:
     """Reproduce the expensive per-PR CI surface locally: native matrix + Spring AOT."""
     _log_local_ci("Full CI reproduction: changed-metadata native test matrix and Spring AOT", indent_level=1)
@@ -357,7 +357,7 @@ def _run_full_ci_reproduction(
 
     test_entries = _matrix_entries(changed_metadata_matrix)
     _log_local_ci(f"Changed-metadata test matrix entries: {len(test_entries)}", indent_level=1)
-    failed = _run_test_matrix_entries(repo_path, test_entries, result, optional_java_versions)
+    failed = _run_test_matrix_entries(repo_path, test_entries, result)
     if failed is not None:
         return failed
 
@@ -789,7 +789,6 @@ def _run_test_matrix_entries(
         repo_path: str,
         entries: list[dict],
         result: LocalCIVerificationResult,
-        optional_java_versions: frozenset[str] = frozenset(),
 ) -> CommandRecord | None:
     result.test_matrix = []
     if not entries:
@@ -837,7 +836,8 @@ def _run_test_matrix_entries(
             "java": java_version,
             "nativeImageMode": str(entry.get("nativeImageMode") or "").strip(),
         }
-        missing = missing_graalvm(java_version) if java_version in optional_java_versions else None
+        # `optional` entries need an installed GraalVM (§FS-local-ci-equivalent-verification.2.1).
+        missing = missing_graalvm(java_version) if entry.get("optional") else None
         if missing is not None:
             _log_local_ci(f"Skipping the Java {java_version} matrix entry for {coordinates}: {missing}", indent_level=1)
             result.test_matrix.append({**outcome, "status": "skipped", "reason": missing})

@@ -16,8 +16,7 @@ from __future__ import annotations
 # nativeFails (until the shipped metadata names `Fixed`), checkFails,
 # styleFails (the failing style task), listFails, coverageFails, indexFails, and
 # stats (the dynamicAccess generateLibraryStats writes; else the coverage report's),
-# matrix (the changed-metadata matrix entries), and matrixFails (the native-image
-# mode whose `test` fails, as a missing registration).
+# and matrixFails (the native-image mode whose `test` fails, as a missing registration).
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
 import glob, json, os, sys
 args = sys.argv[1:]
@@ -35,9 +34,6 @@ mode = os.environ.get("GVM_TCK_NATIVE_IMAGE_MODE")
 lane = " [%s %s %s]" % (os.environ.get("GVM_TCK_LV"), mode, os.environ.get("JAVA_HOME")) if mode else ""
 with open(os.path.join(root, "gradle-calls.log"), "a") as log:
     log.write(" ".join(args) + lane + "\n")
-def output(matrix):
-    with open(os.environ["GITHUB_OUTPUT"], "a") as handle:
-        handle.write("matrix=" + json.dumps({"include": matrix}) + "\n")
 if task == "scaffold":
     os.makedirs(os.path.join(project, "src", "test", "java", "org_example"), exist_ok=True)
     open(os.path.join(project, "build.gradle"), "w").write("// scaffold\n")
@@ -96,10 +92,6 @@ elif task == "generateDynamicAccessCoverageReport":
     out = os.path.join(project, "build", "reports", "dynamic-access")
     os.makedirs(out, exist_ok=True)
     json.dump(report, open(os.path.join(out, "dynamic-access-coverage.json"), "w"))
-elif task == "generateChangedMetadataTestMatrix":
-    output(control.get("matrix", []))
-elif task == "generateAffectedSpringTestMatrix":
-    output([])
 elif task == "test":
     if mode is not None and control.get("matrixFails") == mode:
         print("org.graalvm.nativeimage.MissingReflectionRegistrationError: org.example.lib.Codec")

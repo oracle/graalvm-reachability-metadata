@@ -20,7 +20,6 @@ import subprocess
 import sys
 import tempfile
 from typing import Any, Iterator
-from unittest.mock import patch
 
 TESTS: str = os.path.dirname(os.path.abspath(__file__))
 PROGRAMS: str = os.path.dirname(TESTS)
@@ -100,6 +99,7 @@ class FakeRepository:
         script: str = os.path.join(".github", "workflows", "scripts", "run-consecutive-tests.sh")
         os.makedirs(os.path.dirname(os.path.join(self.repo, script)))
         shutil.copyfile(os.path.join(REPOSITORY, script), os.path.join(self.repo, script))
+        shutil.copyfile(os.path.join(REPOSITORY, "ci.json"), os.path.join(self.repo, "ci.json"))
         self.saved_environment: dict[str, str] = dict(os.environ)
         os.environ["PATH"] = bin_dir + os.pathsep + os.environ["PATH"]
         os.environ["FAKE_FORGE_CONTROL"] = self.control_path
@@ -108,10 +108,6 @@ class FakeRepository:
         os.environ["RHEI_RESULT_PATH"] = os.path.join(self.workspace, "runtime", "results", "ws.forge.md")
         os.environ["GRAALVM_HOME_25_0"] = self.graalvm("graalvm-25")
         os.environ["GRAALVM_HOME_LATEST_EA"] = self.graalvm("graalvm-ea")
-        # The Spring AOT smoke tests are never cloned from GitHub.
-        self.clone = patch("utility_scripts.local_ci_verification.run_git_transport",
-                           side_effect=lambda args, cwd: os.makedirs(args[-1], exist_ok=True))
-        self.clone.start()
         for command in (("init", "-q", "-b", "master"), ("config", "user.email", "t@example.com"),
                         ("config", "user.name", "Test"), ("config", "commit.gpgsign", "false")):
             _git(self.repo, *command)
@@ -133,7 +129,6 @@ class FakeRepository:
         return home
 
     def close(self) -> None:
-        self.clone.stop()
         os.environ.clear()
         os.environ.update(self.saved_environment)
         shutil.rmtree(self.tmp, ignore_errors=True)
