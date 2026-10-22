@@ -117,13 +117,14 @@ The gate intentionally does not re-run the library-scoped checks that
 finalization (§FS-local-ci-equivalent-verification.1) already established, and by
 default it does not re-run the native test matrix or the Spring AOT smoke tests,
 which the generation lanes and repository CI cover. Forge must, however, expose
-a full-reproduction option (`reproduce_full_ci`) that reproduces the expensive
-per-PR CI surface locally: when enabled, the gate additionally expands the
-changed-metadata native test matrix, pre-pulls Docker images for coordinates
-that declare them, runs the generated tests under the CI native-image mode
-matrix, and runs Spring AOT smoke verification when metadata changes affect
-Spring AOT projects. It is opt-in for operators and other callers, and always on
-for a `forge-metadata` run (§FS-local-ci-equivalent-verification.2.1).
+an opt-in full-reproduction option (`reproduce_full_ci`) for operators and
+programmatic callers that need to reproduce the expensive per-PR CI surface
+locally: when enabled, the gate additionally expands the changed-metadata native
+test matrix, pre-pulls Docker images for coordinates that declare them, runs the
+generated tests under the CI native-image mode matrix, and runs Spring AOT smoke
+verification when metadata changes affect Spring AOT projects. A
+`forge-metadata` run does not enable it; its gate runs the coordinate's own
+native lanes instead (§FS-local-ci-equivalent-verification.2.1).
 
 If the gate fails, Forge must run one bounded agent repair before the run is
 handed off, on the same terms as every other agent repair in the pipeline: the
@@ -144,28 +145,30 @@ evidence. Publication may add `human-intervention` only when the resulting
 review decision is `rejected` with action `human-intervention`, following
 §FS-human-intervention-policy.
 
-#### 2.1 The full matrix in a `forge-metadata` run
+#### 2.1 The coordinate's native lanes in a `forge-metadata` run
 
-A `forge-metadata` run does not leave the per-PR test matrix to repository CI:
-its finalization always runs the gate with the full reproduction, so a run that
-passes locally also passes the changed-metadata CI workflow. Every tested
-version that shares the changed metadata runs in every native-image mode of
-`ci.json`, on each Java version its changed-metadata matrix lists — today `25`
-and `latest-ea` — and the Spring AOT smoke tests run when the change affects
-them. The cost is one native build per version, mode, and Java version.
+A `forge-metadata` run's finalization runs the gate with the coordinate's own
+native lanes: the run's coordinate, at its own version only, in each pairing of
+native-image mode and Java version that `ci.json` defines for the
+changed-metadata matrix — `nativeImageModes`, restricted by
+`nativeImageModeJavaVersions`. Today these are three lanes: `25` with
+`current-defaults`, `latest-ea` with `current-defaults`, and `latest-ea` with
+`future-defaults-all`. Other tested versions that share the metadata and the
+Spring AOT smoke tests stay with repository CI. The cost is one native build per
+lane.
 
 The `25` lane is a host requirement (§FS-forge-host-requirements). The
-`latest-ea` lane runs only when a usable GraalVM is installed at
-`GRAALVM_HOME_LATEST_EA`; otherwise its entries are skipped with a log line
-saying so, and its absence never fails the run. The verification record lists
-every matrix entry — coordinate, versions, mode, Java version, and whether it
-passed, failed, or was skipped — and the pull request description states it, so
-a reader knows which axes were verified locally.
+`latest-ea` lanes run only when a usable GraalVM is installed at
+`GRAALVM_HOME_LATEST_EA`; otherwise they are skipped with a log line saying so,
+and their absence never fails the run. The verification record lists every
+lane — coordinate, version, mode, Java version, and whether it passed, failed,
+or was skipped — and the pull request description states it, so a reader knows
+which lanes were verified locally.
 
-The first failing entry is an ordinary fix request whose command reproduces
-exactly that entry: the coordinate, the version, the mode, and the JDK.
-Rerunning that entry is enough for the repair; the next finalization runs the
-whole matrix again, and so does the rerun after an audit edit
+The first failing lane is an ordinary fix request whose command reproduces
+exactly that lane: the coordinate, the version, the mode, and the JDK.
+Rerunning that lane is enough for the repair; the next finalization runs every
+lane again, and so does the rerun after an audit edit
 (§FS-local-branch-review.3).
 
 ## FS-native-test-verification-gate: Native test verification gate
