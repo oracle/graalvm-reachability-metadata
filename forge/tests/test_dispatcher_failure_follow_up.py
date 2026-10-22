@@ -41,7 +41,7 @@ class RunFailureLocationTests(unittest.TestCase):
         self.assertEqual(format_run_failure_line(forwarded), expected_line)
 
     def test_human_intervention_comment_leads_with_the_same_pair(self) -> None:
-        claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
+        claimed_issue = _claimed_issue(dispatcher_config.LABEL_JAVAC_FAIL)
         failure_location = run_location.RunLocation(
             run_location.PHASE_EXPLORE,
             run_location.STEP_NATIVE_TRACE_GATE,
@@ -77,7 +77,7 @@ class RunFailureLocationTests(unittest.TestCase):
 
 class FailedRunFollowUpTests(unittest.TestCase):
     def test_publication_marker_applies_publication_failure_follow_up(self) -> None:
-        claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
+        claimed_issue = _claimed_issue(dispatcher_config.LABEL_JAVAC_FAIL)
 
         with tempfile.TemporaryDirectory() as repo_path:
             marker = ContinuationMarker.create(
@@ -115,7 +115,7 @@ class FailedRunFollowUpTests(unittest.TestCase):
         self.assertEqual(post_follow_up.call_args.kwargs, {"resumable": True})
 
     def test_setup_marker_does_not_apply_publication_failure_follow_up(self) -> None:
-        claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
+        claimed_issue = _claimed_issue(dispatcher_config.LABEL_JAVAC_FAIL)
 
         with tempfile.TemporaryDirectory() as repo_path:
             marker = ContinuationMarker.create(

@@ -36,7 +36,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
             marker = ContinuationMarker.create(
                 strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
                 issue_number=1412,
-                label=forge_metadata.LABEL_LIBRARY_NEW,
+                label=dispatcher_config.LABEL_LIBRARY_NEW,
                 coordinate="org.example:lib:1.0.0",
                 new_version=None,
             )
@@ -50,7 +50,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
             claimed_issue = records.ClaimedIssue(
                 issue={"number": 1412},
-                label=forge_metadata.LABEL_LIBRARY_NEW,
+                label=dispatcher_config.LABEL_LIBRARY_NEW,
                 item_id="project-item",
                 base_reachability_metadata_path=repo_path,
                 worktree_path=repo_path,
@@ -80,7 +80,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
             marker = ContinuationMarker.create(
                 strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
                 issue_number=1412,
-                label=forge_metadata.LABEL_LIBRARY_NEW,
+                label=dispatcher_config.LABEL_LIBRARY_NEW,
                 coordinate="org.example:lib:1.0.0",
                 new_version=None,
             )
@@ -88,7 +88,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
             claimed_issue = records.ClaimedIssue(
                 issue={"number": 1412},
-                label=forge_metadata.LABEL_LIBRARY_NEW,
+                label=dispatcher_config.LABEL_LIBRARY_NEW,
                 item_id="project-item",
                 base_reachability_metadata_path=repo_path,
                 worktree_path=repo_path,

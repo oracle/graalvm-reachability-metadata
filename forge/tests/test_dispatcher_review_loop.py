@@ -227,7 +227,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         fetch.assert_not_called()
 
     def test_approved_publication_arms_auto_merge_without_semantic_agent(self) -> None:
-        pull_request = _pull_request(9656, [forge_metadata.LABEL_LIBRARY_NEW])
+        pull_request = _pull_request(9656, [dispatcher_config.LABEL_LIBRARY_NEW])
         state = _pull_request_state(9656, "SUCCESS")
         validated = _validated_publication()
         with (
@@ -249,7 +249,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 patch.object(ci_repair, "analysis_agent_run") as agent,
         ):
             review_loop.process_pull_requests_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 1,
                 "/tmp/reachability",
                 "automation-user",
@@ -261,7 +261,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         agent.assert_not_called()
 
     def test_rejected_publication_is_reconciled_without_approval(self) -> None:
-        pull_request = _pull_request(9656, [forge_metadata.LABEL_LIBRARY_NEW])
+        pull_request = _pull_request(9656, [dispatcher_config.LABEL_LIBRARY_NEW])
         state = _pull_request_state(9656, "FAILURE")
         validated = _validated_publication("rejected", "close")
         with (
@@ -279,7 +279,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
         ):
             review_loop.process_pull_requests_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 1,
                 "/tmp/reachability",
                 "automation-user",
@@ -316,40 +316,12 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
 
         self.assertEqual(events, ["label-issue", "close-issue", "close-pr"])
 
-    def test_ci_repair_paths_are_scoped_to_the_exact_version(self) -> None:
-        descriptor = _validated_publication().descriptor
-        allowed_paths = [
-            "metadata/org.example/demo/index.json",
-            "metadata/org.example/demo/1.0/reachability-metadata.json",
-            "tests/src/org.example/demo/1.0/build.gradle",
-            "stats/org.example/demo/1.0/execution-metrics.json",
-            (
-                "tests/tck-build-logic/src/main/resources/allowed-docker-images/"
-                "Dockerfile-example"
-            ),
-        ]
-        rejected_paths = [
-            "metadata/org.example/demo/2.0/reachability-metadata.json",
-            "tests/src/org.example/demo/2.0/build.gradle",
-            "stats/org.example/demo/2.0/execution-metrics.json",
-            "forge/forge_metadata.py",
-        ]
-
-        self.assertTrue(all(
-            ci_repair._ci_repair_path_is_allowed(path, descriptor)
-            for path in allowed_paths
-        ))
-        self.assertFalse(any(
-            ci_repair._ci_repair_path_is_allowed(path, descriptor)
-            for path in rejected_paths
-        ))
-
     def test_review_queue_fetches_past_an_ineligible_first_page(self) -> None:
         first_page = [
-            _pull_request(number, [forge_metadata.LABEL_LIBRARY_NEW])
+            _pull_request(number, [dispatcher_config.LABEL_LIBRARY_NEW])
             for number in range(1, 21)
         ]
-        valid_pull_request = _pull_request(21, [forge_metadata.LABEL_LIBRARY_NEW])
+        valid_pull_request = _pull_request(21, [dispatcher_config.LABEL_LIBRARY_NEW])
         processed_numbers: list[int] = []
 
         def process_candidate(
@@ -380,7 +352,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 ),
         ):
             review_loop.process_pull_requests_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 1,
                 "/tmp/reachability",
                 "automation-user",

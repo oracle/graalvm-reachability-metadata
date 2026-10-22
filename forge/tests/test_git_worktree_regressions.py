@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-import forge_metadata
+from dispatcher import config as dispatcher_config
 from dispatcher import (
     failure_preservation,
 )
@@ -293,7 +293,7 @@ class GitWorktreeRegressionTests(unittest.TestCase):
                     "number": 1412,
                     "title": "Add support for org.example:lib:1.0.0",
                 },
-                label=forge_metadata.LABEL_LIBRARY_NEW,
+                label=dispatcher_config.LABEL_LIBRARY_NEW,
                 item_id="item-1",
                 base_reachability_metadata_path=reachability_repo,
                 worktree_path=broken_worktree_path,

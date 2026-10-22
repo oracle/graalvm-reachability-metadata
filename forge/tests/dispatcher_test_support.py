@@ -17,7 +17,7 @@ import unittest
 from collections.abc import Callable
 from unittest.mock import call, patch
 
-import forge_metadata
+from dispatcher import config as dispatcher_config
 from dispatcher import (
     env_config,
     issue_admin,
@@ -98,7 +98,7 @@ def _project_item_status_response(status: str) -> dict:
                             },
                             {
                                 "id": "project-item",
-                                "project": {"number": forge_metadata.PROJECT_NUMBER},
+                                "project": {"number": dispatcher_config.PROJECT_NUMBER},
                                 "fieldValues": {
                                     "nodes": [
                                         {
@@ -249,7 +249,7 @@ def _preflight(
     )
 
 
-def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
+def _claimed_issue(label: str = dispatcher_config.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
     return records.ClaimedIssue(
         issue={
             "number": 1412,
@@ -264,7 +264,7 @@ def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> records.Cla
     )
 
 
-def _claimed_issue_in(base_path: str, label: str = forge_metadata.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
+def _claimed_issue_in(base_path: str, label: str = dispatcher_config.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
     """Build a claimed issue whose base checkout path exists on disk."""
     return dataclasses.replace(_claimed_issue(label), base_reachability_metadata_path=base_path)
 
@@ -304,7 +304,7 @@ def _form_issue(
         "url": f"https://github.com/example/repo/issues/{number}",
         "labels": [
             {"name": name}
-            for name in (label_names if label_names is not None else [forge_metadata.LABEL_LIBRARY_NEW])
+            for name in (label_names if label_names is not None else [dispatcher_config.LABEL_LIBRARY_NEW])
         ],
         "assignees": [{"login": login} for login in (assignees or [])],
     }
@@ -331,9 +331,9 @@ def _fixture_form_issue(
         author="external-user",
         body="",
         state="OPEN",
-        labels=list(label_names if label_names is not None else [forge_metadata.LABEL_LIBRARY_NEW]),
+        labels=list(label_names if label_names is not None else [dispatcher_config.LABEL_LIBRARY_NEW]),
         assignees=list(assignees or []),
-        project_number=forge_metadata.PROJECT_NUMBER,
+        project_number=dispatcher_config.PROJECT_NUMBER,
         project_item_id=f"item-{number}",
         project_status=project_status,
         blockers=[],
@@ -360,7 +360,7 @@ __all__ = [
     "Callable",
     "call",
     "patch",
-    "forge_metadata",
+    "dispatcher_config",
     "env_config",
     "issue_admin",
     "ARTIFACT_REPOSITORY_URLS",

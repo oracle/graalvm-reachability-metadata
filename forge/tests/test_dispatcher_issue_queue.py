@@ -37,7 +37,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         ) as get_issues:
             for _ in range(4):
                 issues, scan_state = issue_queue.get_prioritized_issues_with_label(
-                    forge_metadata.LABEL_LIBRARY_NEW,
+                    dispatcher_config.LABEL_LIBRARY_NEW,
                     25,
                     scan_state,
                 )
@@ -61,7 +61,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
                 patch.object(issue_queue, "gh_json", return_value={"items": []}) as gh_json:
             issue_queue.search_issues_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 25,
                 excluded_labels=[config.LABEL_HIGH_PRIORITY],
             )
@@ -70,7 +70,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             gh_json.call_args.args[5],
             (
                 f"q=repo:{config.REPO} is:issue is:open "
-                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" '
+                f'label:"{dispatcher_config.LABEL_LIBRARY_NEW}" '
                 f'-label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}" '
                 f'-label:"{config.LABEL_HIGH_PRIORITY}"'
             ),
@@ -100,7 +100,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                         return_value={"items": page_items},
                 ) as gh_json:
             issues = issue_queue.get_issues_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 1,
                 211,
             )
@@ -110,7 +110,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "api", "--method", "GET", "/search/issues",
             "-f", (
                 f"q=repo:{config.REPO} is:issue is:open "
-                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}"'
+                f'label:"{dispatcher_config.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}"'
             ),
             "-f", "sort=created",
             "-f", "order=desc",
@@ -127,7 +127,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
                 patch.object(issue_queue, "gh_json", return_value={"items": page_items}) as gh_json:
             issues = issue_queue.get_issues_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 2,
                 user_requested_only=True,
             )
@@ -140,7 +140,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "api", "--method", "GET", "/search/issues",
             "-f", (
                 f"q=repo:{config.REPO} is:issue is:open "
-                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}"'
+                f'label:"{dispatcher_config.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}"'
             ),
             "-f", "sort=created",
             "-f", "order=desc",
@@ -167,13 +167,13 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with patch.object(issue_queue, "get_issues_with_label", return_value=issues) as get_issues:
             filtered, scan_state = issue_queue.get_prioritized_issues_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 25,
                 user_requested_only=True,
             )
 
         get_issues.assert_called_once_with(
-            forge_metadata.LABEL_LIBRARY_NEW,
+            dispatcher_config.LABEL_LIBRARY_NEW,
             25,
             0,
             [config.LABEL_HIGH_PRIORITY],
@@ -191,7 +191,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with patch.object(issue_queue, "get_issues_with_label", side_effect=batches) as get_issues:
             filtered, scan_state = issue_queue.get_prioritized_issues_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 25,
                 user_requested_only=True,
             )
@@ -201,45 +201,6 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertEqual(scan_state.scanned_count, 2)
         self.assertFalse(scan_state.exhausted)
 
-    def test_random_issue_scan_offset_uses_open_issue_count(self) -> None:
-        with patch.object(issue_processing, "count_issues_with_label", return_value=500), \
-                patch.object(random, "randrange", return_value=123) as randrange:
-            self.assertEqual(
-                forge_metadata.resolve_random_issue_scan_offset(forge_metadata.LABEL_LIBRARY_NEW),
-                123,
-            )
-
-        randrange.assert_called_once_with(500)
-
-    def test_random_issue_scan_offset_uses_user_requested_count(self) -> None:
-        with patch.object(issue_processing, "count_issues_with_label", return_value=500) as count_issues, \
-                patch.object(random, "randrange", return_value=123):
-            forge_metadata.resolve_random_issue_scan_offset(
-                forge_metadata.LABEL_LIBRARY_NEW,
-                user_requested_only=True,
-            )
-
-        count_issues.assert_called_once_with(
-            forge_metadata.LABEL_LIBRARY_NEW,
-            user_requested_only=True,
-        )
-
-    def test_random_issue_scan_offset_counts_only_selected_priority_tier(self) -> None:
-        with patch.object(issue_processing, "count_issues_with_label", return_value=50) as count_issues, \
-                patch.object(random, "randrange", return_value=12):
-            offset = forge_metadata.resolve_random_issue_scan_offset(
-                forge_metadata.LABEL_LIBRARY_NEW,
-                priority=config.PRIORITY_NORMAL,
-            )
-
-        self.assertEqual(offset, 12)
-        count_issues.assert_called_once_with(
-            forge_metadata.LABEL_LIBRARY_NEW,
-            [],
-            False,
-            [config.LABEL_HIGH_PRIORITY, config.LABEL_PRIORITY],
-        )
-
     def test_fixture_issue_listing_can_exclude_non_user_authors(self) -> None:
         state = FixtureGitHubState([
             FixtureIssue(
@@ -248,9 +209,9 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 author="external-user",
                 body="",
                 state="OPEN",
-                labels=[forge_metadata.LABEL_LIBRARY_NEW],
+                labels=[dispatcher_config.LABEL_LIBRARY_NEW],
                 assignees=[],
-                project_number=forge_metadata.PROJECT_NUMBER,
+                project_number=dispatcher_config.PROJECT_NUMBER,
                 project_item_id="item-1",
                 project_status=config.STATUS_TODO,
                 blockers=[],
@@ -266,9 +227,9 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 author="graalvmbot",
                 body="",
                 state="OPEN",
-                labels=[forge_metadata.LABEL_LIBRARY_NEW],
+                labels=[dispatcher_config.LABEL_LIBRARY_NEW],
                 assignees=[],
-                project_number=forge_metadata.PROJECT_NUMBER,
+                project_number=dispatcher_config.PROJECT_NUMBER,
                 project_item_id="item-2",
                 project_status=config.STATUS_TODO,
                 blockers=[],
@@ -281,7 +242,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         ])
 
         issues = state.list_open_issues_by_label(
-            forge_metadata.LABEL_LIBRARY_NEW,
+            dispatcher_config.LABEL_LIBRARY_NEW,
             limit=10,
             excluded_authors=config.NON_USER_REQUESTED_ISSUE_AUTHORS,
         )

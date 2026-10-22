@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+from dispatcher import fixture_support, issue_cache
 from dispatcher_test_support import *  # noqa: F401,F403 - shared dispatcher test fixtures
 
 
@@ -13,7 +14,7 @@ class IssueFormGateTests(unittest.TestCase):
         with patch.object(issue_form, "artifact_is_published", return_value=True):
             verdict = issue_form.check_issue_form(
                 _form_issue(),
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 "/nonexistent",
             )
 
@@ -23,8 +24,8 @@ class IssueFormGateTests(unittest.TestCase):
     def test_two_workflow_labels_are_rejected_naming_both(self) -> None:
         issue = _form_issue(
             label_names=[
-                forge_metadata.LABEL_LIBRARY_NEW,
-                forge_metadata.LABEL_JAVAC_FAIL,
+                dispatcher_config.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_JAVAC_FAIL,
                 config.LABEL_PRIORITY,
             ],
         )
@@ -32,14 +33,14 @@ class IssueFormGateTests(unittest.TestCase):
         with patch.object(issue_form, "artifact_is_published") as is_published:
             verdict = issue_form.check_issue_form(
                 issue,
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 "/nonexistent",
             )
 
         self.assertEqual(verdict.rejection.rule, config.ISSUE_FORM_RULE_SINGLE_WORKFLOW_LABEL)
         self.assertEqual(
             verdict.rejection.offending_value,
-            f"{forge_metadata.LABEL_JAVAC_FAIL}, {forge_metadata.LABEL_LIBRARY_NEW}",
+            f"{dispatcher_config.LABEL_JAVAC_FAIL}, {dispatcher_config.LABEL_LIBRARY_NEW}",
         )
         # A rule decidable from the payload never reaches for the network.
         is_published.assert_not_called()
@@ -50,7 +51,7 @@ class IssueFormGateTests(unittest.TestCase):
         with patch.object(issue_form, "artifact_is_published") as is_published:
             verdict = issue_form.check_issue_form(
                 issue,
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 "/nonexistent",
             )
 
@@ -69,9 +70,9 @@ class IssueFormGateTests(unittest.TestCase):
                 verdict = issue_form.check_issue_form(
                     _form_issue(
                         title="Fix javac failure for org.example:widget:1.2.3",
-                        label_names=[forge_metadata.LABEL_JAVAC_FAIL],
+                        label_names=[dispatcher_config.LABEL_JAVAC_FAIL],
                     ),
-                    forge_metadata.LABEL_JAVAC_FAIL,
+                    dispatcher_config.LABEL_JAVAC_FAIL,
                     repo_path,
                 )
 
@@ -93,9 +94,9 @@ class IssueFormGateTests(unittest.TestCase):
                 verdict = issue_form.check_issue_form(
                     _form_issue(
                         title="Fix javac failure for org.example:widget:1.9.0",
-                        label_names=[forge_metadata.LABEL_JAVAC_FAIL],
+                        label_names=[dispatcher_config.LABEL_JAVAC_FAIL],
                     ),
-                    forge_metadata.LABEL_JAVAC_FAIL,
+                    dispatcher_config.LABEL_JAVAC_FAIL,
                     repo_path,
                 )
 
@@ -117,9 +118,9 @@ class IssueFormGateTests(unittest.TestCase):
                 verdict = issue_form.check_issue_form(
                     _form_issue(
                         title="Fix javac failure for org.example:widget:2.1.0",
-                        label_names=[forge_metadata.LABEL_JAVAC_FAIL],
+                        label_names=[dispatcher_config.LABEL_JAVAC_FAIL],
                     ),
-                    forge_metadata.LABEL_JAVAC_FAIL,
+                    dispatcher_config.LABEL_JAVAC_FAIL,
                     repo_path,
                 )
 
@@ -129,7 +130,7 @@ class IssueFormGateTests(unittest.TestCase):
         with patch.object(issue_form, "artifact_is_published", return_value=False):
             verdict = issue_form.check_issue_form(
                 _form_issue(),
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 "/nonexistent",
             )
 
@@ -142,7 +143,7 @@ class IssueFormGateTests(unittest.TestCase):
         with patch.object(issue_form, "artifact_is_published", return_value=None):
             verdict = issue_form.check_issue_form(
                 _form_issue(),
-                forge_metadata.LABEL_LIBRARY_NEW,
+                dispatcher_config.LABEL_LIBRARY_NEW,
                 "/nonexistent",
             )
 
@@ -156,13 +157,13 @@ class IssueFormRejectionTests(unittest.TestCase):
 
     def setUp(self) -> None:
         self.addCleanup(setattr, fixture_support, "fixture_github_state", None)
-        self.addCleanup(forge_metadata.clear_issue_caches)
+        self.addCleanup(issue_cache.clear_issue_caches)
 
     def _reject(self, state: FixtureGitHubState, issue: dict) -> issue_form.IssueFormRejection:
-        forge_metadata.configure_fixture_testing(fixture_state=state)
+        fixture_support.configure_fixture_testing(fixture_state=state)
         rejection = issue_form.check_issue_form(
             issue,
-            forge_metadata.LABEL_LIBRARY_NEW,
+            dispatcher_config.LABEL_LIBRARY_NEW,
             "/nonexistent",
         ).rejection
         issue_form.reject_issue_form(issue, rejection)

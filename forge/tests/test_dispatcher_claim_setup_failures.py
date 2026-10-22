@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+from dispatcher import claim_setup
 from dispatcher_test_support import *  # noqa: F401,F403 - shared dispatcher test fixtures
 
 
@@ -47,7 +48,7 @@ def _claim_with_patched_preparation(
         stack.enter_context(patch.object(claim_setup, "cleanup_claim_preparation_workspace"))
         if captured is not None:
             captured.update(revert=revert, release=release)
-        claimed_issue = forge_metadata.claim_issue_for_processing(
+        claimed_issue = claim_setup.claim_issue_for_processing(
             issue,
             _issue_label_name(issue),
             "/repo",
@@ -90,7 +91,7 @@ class ClaimSetupFailureClassificationTests(unittest.TestCase):
         revert.assert_called_once_with("item-4242", 4242, "claim setup failure (RuntimeError)")
 
     def test_resumable_issue_without_marker_is_labeled(self) -> None:
-        issue = _form_issue(label_names=[forge_metadata.LABEL_LIBRARY_NEW, config.LABEL_RESUMABLE])
+        issue = _form_issue(label_names=[dispatcher_config.LABEL_LIBRARY_NEW, config.LABEL_RESUMABLE])
 
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             claimed_issue, revert, release = _claim_with_patched_preparation(issue, {})
@@ -135,7 +136,7 @@ class ClaimSetupFailureFollowUpTests(unittest.TestCase):
                 patch.object(failure_follow_up, "record_issue_claim_cache_observations", calls.cache):
             failure_follow_up.release_claim_after_logical_setup_failure(
                 issue,
-                forge_metadata.LABEL_LIBRARY_UPDATE,
+                dispatcher_config.LABEL_LIBRARY_UPDATE,
                 "item-4242",
                 "chunked-dynamic-access setup",
                 "RuntimeError: missing report",
@@ -144,7 +145,7 @@ class ClaimSetupFailureFollowUpTests(unittest.TestCase):
         return calls
 
     def test_labels_then_releases_then_caches(self) -> None:
-        calls = self._release(_form_issue(label_names=[forge_metadata.LABEL_LIBRARY_UPDATE]))
+        calls = self._release(_form_issue(label_names=[dispatcher_config.LABEL_LIBRARY_UPDATE]))
 
         self.assertEqual(
             [recorded[0] for recorded in calls.mock_calls],
@@ -164,7 +165,7 @@ class ClaimSetupFailureFollowUpTests(unittest.TestCase):
 
     def test_removes_resumable_so_the_label_takes_effect(self) -> None:
         calls = self._release(_form_issue(label_names=[
-            forge_metadata.LABEL_LIBRARY_UPDATE,
+            dispatcher_config.LABEL_LIBRARY_UPDATE,
             config.LABEL_RESUMABLE,
         ]))
 
@@ -176,7 +177,7 @@ class FixQueueHumanInterventionCandidateTests(unittest.TestCase):
     """A logical workflow failure is labeled on every queue. §FS-human-intervention-policy"""
 
     def test_fix_queue_failure_is_a_candidate(self) -> None:
-        claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
+        claimed_issue = _claimed_issue(dispatcher_config.LABEL_JAVAC_FAIL)
 
         with patch.object(human_intervention, "load_pending_run_metrics", return_value=None), \
                 patch.object(
@@ -195,7 +196,7 @@ class FixQueueHumanInterventionCandidateTests(unittest.TestCase):
         load_report.assert_not_called()
 
     def test_successful_fix_queue_run_is_not_a_candidate(self) -> None:
-        claimed_issue = _claimed_issue(forge_metadata.LABEL_NI_RUN_FAIL)
+        claimed_issue = _claimed_issue(dispatcher_config.LABEL_NI_RUN_FAIL)
 
         with patch.object(
                 human_intervention,

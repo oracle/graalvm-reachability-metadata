@@ -118,7 +118,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
     def test_library_preflight_dispatches_without_a_strategy(self) -> None:
         claimed_issue = records.ClaimedIssue(
             issue={"number": 1412, "title": "Update org.example:lib:1.0.0"},
-            label=forge_metadata.LABEL_LIBRARY_UPDATE,
+            label=dispatcher_config.LABEL_LIBRARY_UPDATE,
             item_id="item-1",
             base_reachability_metadata_path="/tmp/reachability",
             worktree_path="/tmp/reachability-worktree",
@@ -190,27 +190,12 @@ class LibraryUpdateIssueTests(unittest.TestCase):
             {"prompt_path", "raw_response_path", "session_log_path"} & set(record), set(),
         )
 
-    def test_issue_lookup_does_not_request_body_for_generic_claiming(self) -> None:
-        issue_payload = {
-            "number": 1412,
-            "title": "Update support for org.example:lib:1.0.0",
-            "labels": [{"name": forge_metadata.LABEL_LIBRARY_UPDATE}],
-            "assignees": [],
-        }
-
-        with patch.object(issue_queue, "gh_json", return_value=issue_payload) as gh_json:
-            issue, label = forge_metadata.get_issue_by_number(1412)
-
-        self.assertEqual(label, forge_metadata.LABEL_LIBRARY_UPDATE)
-        self.assertNotIn("body", issue)
-        self.assertNotIn("body", gh_json.call_args.args[-1])
-
     def test_claim_payload_does_not_request_body_for_generic_claiming(self) -> None:
         issue_payload = {
             "number": 1412,
             "title": "Update support for org.example:lib:1.0.0",
             "state": "OPEN",
-            "labels": [{"name": forge_metadata.LABEL_LIBRARY_UPDATE}],
+            "labels": [{"name": dispatcher_config.LABEL_LIBRARY_UPDATE}],
             "assignees": [],
         }
 
@@ -254,7 +239,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
 
         claim_metadata = claim_setup.build_claim_metadata(
             issue,
-            forge_metadata.LABEL_LIBRARY_UPDATE,
+            dispatcher_config.LABEL_LIBRARY_UPDATE,
             "/tmp/reachability",
         )
 
@@ -288,7 +273,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
 
             claim_metadata = claim_setup.build_claim_metadata(
                 issue,
-                forge_metadata.LABEL_NI_RUN_FAIL,
+                dispatcher_config.LABEL_NI_RUN_FAIL,
                 repo,
             )
 
@@ -322,7 +307,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertIn("Related coordinate", context)
 
     def test_library_update_passes_issue_requested_metadata_context_to_workflow(self) -> None:
-        claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_UPDATE)
+        claimed_issue = _claimed_issue(label=dispatcher_config.LABEL_LIBRARY_UPDATE)
 
         with patch.object(pipeline_execution, "require_claimed_issue_worktree"), \
                 patch.object(pipeline_execution, "run_library_preparation_preflight", return_value=None), \
@@ -355,7 +340,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertIn("org.example.Demo.setName", context)
 
     def test_library_new_passes_issue_requested_metadata_context_to_workflow(self) -> None:
-        claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_NEW)
+        claimed_issue = _claimed_issue(label=dispatcher_config.LABEL_LIBRARY_NEW)
 
         with patch.object(pipeline_execution, "require_claimed_issue_worktree"), \
                 patch.object(pipeline_execution, "run_library_preparation_preflight", return_value=None), \
@@ -375,7 +360,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertIn("org.example.Demo", context)
 
     def test_routed_javac_repair_passes_issue_requested_metadata_context_to_workflow(self) -> None:
-        claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_UPDATE)
+        claimed_issue = _claimed_issue(label=dispatcher_config.LABEL_LIBRARY_UPDATE)
 
         with patch.object(pipeline_execution, "require_claimed_issue_worktree"), \
                 patch.object(pipeline_execution, "run_library_preparation_preflight", return_value=None), \

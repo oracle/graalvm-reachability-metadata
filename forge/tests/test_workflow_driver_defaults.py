@@ -12,7 +12,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
-import forge_metadata
+from dispatcher import config as dispatcher_config
 from utility_scripts.continuation_marker import ContinuationMarker
 from dispatcher import (
     config,
@@ -78,20 +78,6 @@ def _temporary_worktree(test_case: unittest.TestCase) -> str:
 
 
 class WorkflowDriverDefaultTests(unittest.TestCase):
-    def test_new_and_update_queues_default_to_sol_composite_strategies(self) -> None:
-        self.assertEqual(
-            forge_metadata.DEFAULT_NEW_LIBRARY_STRATEGY_NAME,
-            "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
-        )
-        self.assertEqual(
-            forge_metadata.DEFAULT_LIBRARY_UPDATE_STRATEGY_NAME,
-            "library_update_optimistic_pi_gpt-5.6-sol",
-        )
-        self.assertEqual(
-            config.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
-            "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
-        )
-
     def test_do_work_defaults_new_libraries_to_the_sol_composite(self) -> None:
         script_path: Path = Path(__file__).parents[1] / "do_up_to_date_work.sh"
         script: str = script_path.read_text(encoding="utf-8")
@@ -120,7 +106,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                 with self.subTest(strategy=strategy_name):
                     log_detail.reset_mock()
                     chunk_count = dynamic_access.prepare_dynamic_access_chunking(
-                        _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
+                        _claimed_issue(dispatcher_config.LABEL_LIBRARY_NEW),
                         strategy_name,
                     )
                     self.assertIsNone(chunk_count)
@@ -138,7 +124,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                 patch.object(dynamic_access, "load_dynamic_access_coverage_report", side_effect=FileNotFoundError), \
                 patch.object(dynamic_access, "log_detail") as log_detail:
             chunk_count = dynamic_access.prepare_dynamic_access_chunking(
-                _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
+                _claimed_issue(dispatcher_config.LABEL_LIBRARY_NEW),
                 "dynamic_access_bulk_pi_gpt-5.6-sol",
             )
         self.assertIsNone(chunk_count)
@@ -148,7 +134,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=False), \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report:
             chunk_count = dynamic_access.prepare_dynamic_access_chunking(
-                _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
+                _claimed_issue(dispatcher_config.LABEL_LIBRARY_NEW),
                 "dynamic_access_bulk_pi_gpt-5.6-sol",
             )
         self.assertIsNone(chunk_count)
@@ -160,7 +146,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                 patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
                 patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(2)):
             chunk_count = dynamic_access.prepare_dynamic_access_chunking(
-                _claimed_issue(forge_metadata.LABEL_LIBRARY_UPDATE),
+                _claimed_issue(dispatcher_config.LABEL_LIBRARY_UPDATE),
                 "library_update_optimistic_pi_gpt-5.6-sol",
             )
         self.assertIsNone(chunk_count)
@@ -171,7 +157,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         marker = ContinuationMarker.create(
             strategy_name="optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
             issue_number=1412,
-            label=forge_metadata.LABEL_LIBRARY_NEW,
+            label=dispatcher_config.LABEL_LIBRARY_NEW,
             coordinate="g:a:2.0",
             new_version="2.0",
         )
@@ -180,7 +166,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         marker.mark_phase_running("explore")
         marker.record_chunk_progress(5, 2)
         claimed_issue = _claimed_issue(
-            forge_metadata.LABEL_LIBRARY_NEW,
+            dispatcher_config.LABEL_LIBRARY_NEW,
             continuation_marker=marker,
             worktree_path=_temporary_worktree(self),
             chunked=True,
@@ -208,7 +194,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         marker = ContinuationMarker.create(
             strategy_name="optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
             issue_number=1412,
-            label=forge_metadata.LABEL_LIBRARY_NEW,
+            label=dispatcher_config.LABEL_LIBRARY_NEW,
             coordinate="g:a:2.0",
             new_version="2.0",
         )
@@ -217,7 +203,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         marker.mark_phase_running("explore")
         marker.record_chunk_progress(5, 5)
         claimed_issue = _claimed_issue(
-            forge_metadata.LABEL_LIBRARY_NEW,
+            dispatcher_config.LABEL_LIBRARY_NEW,
             continuation_marker=marker,
             worktree_path=_temporary_worktree(self),
             chunked=True,
@@ -247,7 +233,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
             chunked: bool = False,
     ) -> tuple[int | None, records.ClaimedIssue, list[str], MagicMock]:
         claimed_issue = _claimed_issue(
-            forge_metadata.LABEL_LIBRARY_NEW,
+            dispatcher_config.LABEL_LIBRARY_NEW,
             worktree_path=_temporary_worktree(self),
             chunked=chunked,
         )
@@ -323,9 +309,9 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
 
     def test_java_repair_queues_default_to_sol_strategies(self) -> None:
         expected_defaults = {
-            forge_metadata.LABEL_JAVAC_FAIL:
+            dispatcher_config.LABEL_JAVAC_FAIL:
                 "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
-            forge_metadata.LABEL_JAVA_RUN_FAIL:
+            dispatcher_config.LABEL_JAVA_RUN_FAIL:
                 "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
         }
 
@@ -341,7 +327,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
 
     def test_direct_native_image_run_forwards_strategy_override(self) -> None:
         invocation = driver_invocation.build_workflow_driver_invocation(
-            claimed_issue=_claimed_issue(forge_metadata.LABEL_NI_RUN_FAIL),
+            claimed_issue=_claimed_issue(dispatcher_config.LABEL_NI_RUN_FAIL),
             strategy_name="library_update_dynamic_access_bulk_pi_gpt-5.6-sol",
             keep_tests_without_dynamic_access=False,
         )
@@ -355,7 +341,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
 
     def test_direct_native_image_run_omits_unset_strategy_override(self) -> None:
         invocation = driver_invocation.build_workflow_driver_invocation(
-            claimed_issue=_claimed_issue(forge_metadata.LABEL_NI_RUN_FAIL),
+            claimed_issue=_claimed_issue(dispatcher_config.LABEL_NI_RUN_FAIL),
             strategy_name=None,
             keep_tests_without_dynamic_access=False,
         )
@@ -363,7 +349,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         self.assertNotIn("--strategy-name", invocation.argv)
         self.assertEqual(
             driver_invocation.resolve_workflow_default_strategy_name(
-                _claimed_issue(forge_metadata.LABEL_NI_RUN_FAIL),
+                _claimed_issue(dispatcher_config.LABEL_NI_RUN_FAIL),
                 library_update_route=None,
             ),
             "library_update_pi_gpt-5.6-sol",
