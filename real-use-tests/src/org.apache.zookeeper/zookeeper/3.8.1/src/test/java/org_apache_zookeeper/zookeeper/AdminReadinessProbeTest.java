@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
+import java.net.BindException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.zookeeper.server.NIOServerCnxnFactory;
 import org.apache.zookeeper.server.ZooKeeperServer;
+import org.apache.zookeeper.server.admin.AdminServer.AdminServerException;
 import org.apache.zookeeper.server.admin.JettyAdminServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -43,17 +45,10 @@ public class AdminReadinessProbeTest {
         NIOServerCnxnFactory listener = new NIOServerCnxnFactory();
         try {
             listener.configure(new InetSocketAddress("127.0.0.1", 0), 10);
-            int adminPort;
-            try (ServerSocket available = new ServerSocket()) {
-                available.bind(new InetSocketAddress("127.0.0.1", 0));
-                adminPort = available.getLocalPort();
-            }
-            JettyAdminServer admin = new JettyAdminServer("127.0.0.1", adminPort, 10000,
-                    "/commands", JettyAdminServer.DEFAULT_HTTP_VERSION, false, false);
+            AdminEndpoint endpoint = startAdmin(server);
+            JettyAdminServer admin = endpoint.admin();
             try {
-                admin.setZooKeeperServer(server);
-                admin.start();
-                URI commands = URI.create("http://127.0.0.1:" + adminPort + "/commands/");
+                URI commands = endpoint.commands();
                 ObjectMapper json = new ObjectMapper();
 
                 JsonNode starting = request(commands.resolve("is_read_only"), json);
@@ -89,6 +84,36 @@ public class AdminReadinessProbeTest {
             server.shutdown();
             server.getTxnLogFactory().close();
         }
+    }
+
+    private static AdminEndpoint startAdmin(ZooKeeperServer server) throws Exception {
+        for (int attempt = 0; ; attempt++) {
+            int port;
+            try (ServerSocket available = new ServerSocket()) {
+                available.bind(new InetSocketAddress("127.0.0.1", 0));
+                port = available.getLocalPort();
+            }
+            JettyAdminServer admin = new JettyAdminServer("127.0.0.1", port, 10000,
+                    "/commands", JettyAdminServer.DEFAULT_HTTP_VERSION, false, false);
+            admin.setZooKeeperServer(server);
+            try {
+                admin.start();
+                return new AdminEndpoint(admin, URI.create("http://127.0.0.1:" + port + "/commands/"));
+            } catch (AdminServerException failure) {
+                admin.shutdown();
+                Throwable cause = failure;
+                while (cause != null && !(cause instanceof BindException)) {
+                    cause = cause.getCause();
+                }
+                // Another process can claim the probed port before Jetty binds it.
+                if (cause == null || attempt >= 2) {
+                    throw failure;
+                }
+            }
+        }
+    }
+
+    private record AdminEndpoint(JettyAdminServer admin, URI commands) {
     }
 
     private static JsonNode request(URI endpoint, ObjectMapper json) throws Exception {
