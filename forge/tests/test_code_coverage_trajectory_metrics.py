@@ -25,7 +25,7 @@ class CodeCoverageTrajectoryMetricTests(unittest.TestCase):
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         roots: dict[str, tuple[str, ...]] = {
             os.path.join(
-                forge_root, ".agents", "rhei", "templates", "code-coverage-improvement"
+                forge_root, ".agent-grounds", "rhei", "templates", "code-coverage-improvement"
             ): ("api", "deep", "naive"),
             os.path.join(forge_root, "examples", "code-coverage-improvement-example"): (
                 "api",

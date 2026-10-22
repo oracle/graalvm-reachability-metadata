@@ -23,7 +23,7 @@ class CodeCoveragePromptLayerTests(unittest.TestCase):
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         roots: tuple[str, ...] = (
-            os.path.join(forge_root, ".agents", "rhei", "templates", "code-coverage-improvement"),
+            os.path.join(forge_root, ".agent-grounds", "rhei", "templates", "code-coverage-improvement"),
             os.path.join(forge_root, "examples", "code-coverage-improvement-example"),
         )
         loop_task: re.Pattern = re.compile(
