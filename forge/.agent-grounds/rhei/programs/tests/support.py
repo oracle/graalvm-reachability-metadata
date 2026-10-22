@@ -156,23 +156,40 @@ class FakeRepository:
         _git(self.repo, "commit", "-q", "--allow-empty", "-m", message)
         _git(self.repo, "push", "-q", "origin", "HEAD:master")
 
-    def supported_library(self) -> None:
+    def supported_library(self, tested_versions: tuple[str, ...] = ("1.5.0",)) -> None:
         """`org.example:lib:1.5.0` already supported, with tests, metadata, and stats."""
-        self.write("metadata/org.example/lib/index.json", json.dumps([{
-            "metadata-version": "1.5.0", "tested-versions": ["1.5.0"], "latest": True,
-            "allowed-packages": ["org.example"], "source-code-url": "https://example.org/src",
-            "test-code-url": "https://example.org/test", "documentation-url": "https://example.org/doc",
-            "repository-url": "https://example.org/repo"}], indent=2))
-        self.write("metadata/org.example/lib/1.5.0/reachability-metadata.json", "{}\n")
-        self.write("tests/src/org.example/lib/1.5.0/build.gradle", "// lib 1.5.0\n")
-        self.write("tests/src/org.example/lib/1.5.0/gradle.properties", "library.version = 1.5.0\n")
-        self.write("tests/src/org.example/lib/1.5.0/user-code-filter.json", '{"rules": []}\n')
-        self.write("tests/src/org.example/lib/1.5.0/src/test/java/org_example/CodecTest.java",
-                   "package org_example;\npublic class CodecTest {}\n")
-        self.write("stats/org.example/lib/1.5.0/stats.json", json.dumps({"versions": [{
-            "version": "1.5.0", "dynamicAccess": {"coveredCalls": 2, "totalCalls": 6, "coverageRatio": 0.33,
-                                                  "breakdown": {}}}]}))
+        self.write("metadata/org.example/lib/index.json", json.dumps([self.index_entry("1.5.0", tested_versions)], indent=2))
+        self.supported_files("1.5.0", covered=2, total=6)
         self.commit("support lib 1.5.0")
+
+    def supported_version(self, version: str, covered: int, total: int) -> None:
+        """A further supported version with its own metadata, tests, and stats, now the latest."""
+        with open(os.path.join(self.repo, "metadata/org.example/lib/index.json"), encoding="utf-8") as handle:
+            entries: list[dict[str, Any]] = json.load(handle)
+        for entry in entries:
+            entry["latest"] = False
+        entries.append(self.index_entry(version, (version,)))
+        self.write("metadata/org.example/lib/index.json", json.dumps(entries, indent=2))
+        self.supported_files(version, covered, total)
+        self.commit(f"support lib {version}")
+
+    @staticmethod
+    def index_entry(version: str, tested_versions: tuple[str, ...]) -> dict[str, Any]:
+        return {"metadata-version": version, "tested-versions": list(tested_versions), "latest": True,
+                "allowed-packages": ["org.example"], "source-code-url": "https://example.org/src",
+                "test-code-url": "https://example.org/test", "documentation-url": "https://example.org/doc",
+                "repository-url": "https://example.org/repo"}
+
+    def supported_files(self, version: str, covered: int, total: int) -> None:
+        self.write(f"metadata/org.example/lib/{version}/reachability-metadata.json", "{}\n")
+        self.write(f"tests/src/org.example/lib/{version}/build.gradle", f"// lib {version}\n")
+        self.write(f"tests/src/org.example/lib/{version}/gradle.properties", f"library.version = {version}\n")
+        self.write(f"tests/src/org.example/lib/{version}/user-code-filter.json", '{"rules": []}\n')
+        self.write(f"tests/src/org.example/lib/{version}/src/test/java/org_example/CodecTest.java",
+                   "package org_example;\npublic class CodecTest {}\n")
+        self.write(f"stats/org.example/lib/{version}/stats.json", json.dumps({"versions": [{
+            "version": version, "dynamicAccess": {"coveredCalls": covered, "totalCalls": total,
+                                                  "coverageRatio": round(covered / max(total, 1), 2), "breakdown": {}}}]}))
 
     def issue(self, label: str, title: str = f"Support {COORDINATE}", author: str = "reporter",
               body: str = "", extra_labels: tuple[str, ...] = ()) -> None:

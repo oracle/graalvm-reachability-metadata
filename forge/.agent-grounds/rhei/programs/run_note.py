@@ -42,7 +42,8 @@ def url_discovery_command(state: RunState) -> str:
 def route_line(state: RunState) -> str:
     if state.route == ROUTE_NEW:
         return "Route: new library: scaffolded; explore until no actionable dynamic-access class remains."
-    goal: str = (f"at least {state.goal_covered_calls} covered dynamic-access calls, the previous version's"
+    goal: str = (f"at least the previous version's dynamic-access coverage ratio, "
+                 f"{state.goal_covered_calls}/{state.goal_total_calls} of its calls"
                  if state.goal_covered_calls is not None else "no actionable dynamic-access class left")
     repair: str = "repair the version, then explore" if state.route == ROUTE_REPAIR else "add the version, then explore"
     return f"Route: {repair}; goal: {goal}."

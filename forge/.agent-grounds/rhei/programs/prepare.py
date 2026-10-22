@@ -29,7 +29,12 @@ from utility_scripts.dynamic_access_exhaust_report import (
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.library_update_target import prepare_library_update_target
-from utility_scripts.metadata_index import is_not_for_native_image, resolve_version_backfill_baseline
+from utility_scripts.metadata_index import (
+    VersionBackfillBaseline,
+    is_not_for_native_image,
+    nearest_prior_supported_version,
+    resolve_version_backfill_baseline,
+)
 
 import gates
 import issue
@@ -99,12 +104,31 @@ def reporter_request(payload: dict[str, Any]) -> str:
     return body if len(body) <= MAX_REQUEST_CHARS else body[:MAX_REQUEST_CHARS].rstrip() + "\n[truncated]"
 
 
-def previous_covered_calls(worktree: str, coordinate: str) -> int | None:
-    """Covered dynamic-access calls the coordinate's stats record, the explore goal of an update."""
+def previous_coverage(worktree: str, coordinate: str) -> tuple[int, int] | None:
+    """Covered and total dynamic-access calls the coordinate's stats record, the explore goal of an update."""
     group, artifact, version = coordinate.split(":")
     entry: dict[str, Any] | None = load_library_stats_entry(worktree, group, artifact, version)
     dynamic_access: Any = (entry or {}).get("dynamicAccess")
-    return int(dynamic_access["coveredCalls"]) if isinstance(dynamic_access, dict) else None
+    if not isinstance(dynamic_access, dict):
+        return None
+    return int(dynamic_access.get("coveredCalls") or 0), int(dynamic_access.get("totalCalls") or 0)
+
+
+def previous_version(state: RunState, baseline: VersionBackfillBaseline | None) -> str | None:
+    """The version the run is measured against (§AR-forge-workflow-pipeline.7).
+
+    A version the index does not list yet is measured against the baseline it
+    is added beside. A version the index already lists is measured against its
+    entry's metadata version, or, when it owns that metadata itself, against
+    the nearest earlier supported version.
+    """
+    if baseline is None:
+        return None
+    if baseline.supported_version != state.version:
+        return baseline.supported_version
+    if baseline.metadata_version != state.version:
+        return baseline.metadata_version
+    return nearest_prior_supported_version(state.worktree, state.group, state.artifact, state.version)
 
 
 def add_version(state: RunState, workspace: str) -> int:
@@ -120,12 +144,14 @@ def add_version(state: RunState, workspace: str) -> int:
             print(f"ERROR: scaffolding {state.coordinate} failed:\n{scaffold.tail}", file=sys.stderr)
             return INFRASTRUCTURE
         return OK
-    baseline = resolve_version_backfill_baseline(state.worktree, state.group, state.artifact, state.version)
-    if baseline is not None:
-        if baseline.supported_version != state.version:
-            state.previous_coordinate = f"{state.group}:{state.artifact}:{baseline.supported_version}"
-        state.goal_covered_calls = previous_covered_calls(
-            state.worktree, f"{state.group}:{state.artifact}:{baseline.supported_version}")
+    baseline: VersionBackfillBaseline | None = resolve_version_backfill_baseline(
+        state.worktree, state.group, state.artifact, state.version)
+    previous: str | None = previous_version(state, baseline)
+    if previous is not None:
+        state.previous_coordinate = f"{state.group}:{state.artifact}:{previous}"
+        goal: tuple[int, int] | None = previous_coverage(state.worktree, state.previous_coordinate)
+        if goal is not None:
+            state.goal_covered_calls, state.goal_total_calls = goal
     prepare_library_update_target(state.worktree, state.group, state.artifact, state.version)
     if not os.path.isdir(state.path(state.test_dir)):
         print(f"ERROR: no test project for {state.coordinate} after adding the version", file=sys.stderr)

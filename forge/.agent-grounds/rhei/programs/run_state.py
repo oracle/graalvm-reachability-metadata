@@ -88,8 +88,10 @@ class RunState:
     worker_agent: str
     budgets: Budgets
     previous_coordinate: str | None = None
-    # Covered dynamic-access calls of the previous version: the explore goal of every non-new route.
+    # Covered and total dynamic-access calls of the previous version: its ratio is the explore goal
+    # of every non-new route.
     goal_covered_calls: int | None = None
+    goal_total_calls: int | None = None
     has_reporter_request: bool = False
     # The explicit metadata the reporter asked for (§FS-local-ci-equivalent-verification.1.1).
     requested_metadata: dict[str, list[str]] = field(default_factory=dict)

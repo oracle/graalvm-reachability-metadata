@@ -52,8 +52,22 @@ def open_classes(report: DynamicAccessCoverageReport, skip: set[str]) -> list[st
     return [entry.class_name for entry in report.classes if entry.uncovered_calls > 0 and entry.class_name not in skip]
 
 
+def goal_met(report: DynamicAccessCoverageReport, goal_covered_calls: int | None, goal_total_calls: int | None) -> bool:
+    """Whether the report reaches the previous version's coverage ratio (§AR-forge-workflow-pipeline.7).
+
+    The ratio is what the finalize gate checks, so the goal and the gate agree
+    however many call sites the new version has. Stats without a total fall
+    back to the covered-call count.
+    """
+    if goal_covered_calls is None:
+        return False
+    if not goal_total_calls:
+        return report.covered_calls >= goal_covered_calls
+    return report.covered_calls * goal_total_calls >= goal_covered_calls * report.total_calls
+
+
 def decide(route: str, report: DynamicAccessCoverageReport, budgets: Budgets, chunk: Chunk,
-           goal_covered_calls: int | None, has_reporter_request: bool) -> Decision:
+           goal_covered_calls: int | None, goal_total_calls: int | None, has_reporter_request: bool) -> Decision:
     """Pick the explore mode from the first measured report."""
     targets: tuple[str, ...] = tuple(open_classes(report, set(chunk.processed)))
     nothing_left: str = MODE_BASIC if has_reporter_request else MODE_SKIP
@@ -62,9 +76,10 @@ def decide(route: str, report: DynamicAccessCoverageReport, budgets: Budgets, ch
         return Decision(mode, (), False, "the library reports no dynamic-access calls")
     if not targets:
         return Decision(nothing_left, (), False, "every dynamic-access class is covered or processed")
-    if route != ROUTE_NEW and goal_covered_calls is not None and report.covered_calls >= goal_covered_calls:
+    if route != ROUTE_NEW and goal_met(report, goal_covered_calls, goal_total_calls):
         return Decision(nothing_left, (), False,
-                        f"{report.covered_calls} covered calls already meet the previous version's {goal_covered_calls}")
+                        f"{report.covered_calls}/{report.total_calls} covered calls already meet the previous "
+                        f"version's {goal_covered_calls}/{goal_total_calls}")
     if route == ROUTE_REPAIR and len(targets) > budgets.defer_classes:
         return Decision(MODE_DEFER, targets, False,
                         f"{len(targets)} classes to cover exceed defer_classes {budgets.defer_classes}")
@@ -100,8 +115,7 @@ def advance(state: RunState, report: DynamicAccessCoverageReport, pass_gained: b
     explore.completed = [name for name in explore.targets if class_covered(report, name)]
     if explore.mode == MODE_BASIC:
         return OK
-    if (state.route != ROUTE_NEW and state.goal_covered_calls is not None
-            and report.covered_calls >= state.goal_covered_calls):
+    if state.route != ROUTE_NEW and goal_met(report, state.goal_covered_calls, state.goal_total_calls):
         return OK
     if explore.mode == MODE_BULK:
         explore.bulk_passes += 1
@@ -188,7 +202,7 @@ def analyze(workspace: str) -> int:
         return INFRASTRUCTURE
     report: DynamicAccessCoverageReport = accept_report(workspace, state)
     decision: Decision = decide(state.route, report, state.budgets, state.chunk,
-                                state.goal_covered_calls, state.has_reporter_request)
+                                state.goal_covered_calls, state.goal_total_calls, state.has_reporter_request)
     state.explore = Explore(mode=decision.mode, targets=list(decision.targets), covered_calls=report.covered_calls,
                             total_calls=report.total_calls, checkpoint=head(state.worktree))
     print(f"[analyze] {decision.mode}: {decision.reason}")

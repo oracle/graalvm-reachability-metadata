@@ -62,12 +62,30 @@ class PrepareTest(unittest.TestCase):
         self.fake.issue("library-update-request")
         self.assertEqual(OK, self.prepare())
         state = load(self.fake.workspace)
-        self.assertEqual((ROUTE_UPDATE, PREVIOUS, 2), (state.route, state.previous_coordinate, state.goal_covered_calls))
+        self.assertEqual((ROUTE_UPDATE, PREVIOUS, 2, 6),
+                         (state.route, state.previous_coordinate, state.goal_covered_calls, state.goal_total_calls))
         self.assertTrue(os.path.isfile(state.path(os.path.join(state.test_dir, "src", "test", "java", "org_example",
                                                                "CodecTest.java"))))
         with open(state.path(state.index_path), encoding="utf-8") as handle:
             versions = [entry["metadata-version"] for entry in json.load(handle)]
         self.assertEqual(["1.5.0", "2.0.0"], versions)
+
+    def test_a_tested_version_is_measured_against_its_metadata_version(self) -> None:
+        self.fake.supported_library(tested_versions=("1.5.0", "1.5.1"))
+        self.fake.issue("fails-javac-compile", title="Fails org.example:lib:1.5.1")
+        self.assertEqual(OK, self.prepare())
+        state = load(self.fake.workspace)
+        self.assertEqual((ROUTE_REPAIR, PREVIOUS, 2, 6),
+                         (state.route, state.previous_coordinate, state.goal_covered_calls, state.goal_total_calls))
+
+    def test_a_version_owning_its_metadata_is_measured_against_the_one_before(self) -> None:
+        self.fake.supported_library()
+        self.fake.supported_version("2.0.0", covered=5, total=5)
+        self.fake.issue("fails-native-image-run")
+        self.assertEqual(OK, self.prepare())
+        state = load(self.fake.workspace)
+        self.assertEqual((ROUTE_REPAIR, PREVIOUS, 2, 6),
+                         (state.route, state.previous_coordinate, state.goal_covered_calls, state.goal_total_calls))
 
     def test_fails_labels_share_the_repair_route(self) -> None:
         self.fake.supported_library()

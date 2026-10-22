@@ -42,9 +42,10 @@ def classes(count: int, covered: int = 0) -> dict[str, tuple[int, int]]:
 
 class DecideTest(unittest.TestCase):
 
-    def decide(self, route: str, measured: DynamicAccessCoverageReport, goal: int | None = None,
+    def decide(self, route: str, measured: DynamicAccessCoverageReport, goal: tuple[int, int] | None = None,
                request: bool = False, chunk: Chunk | None = None) -> explore.Decision:
-        return explore.decide(route, measured, BUDGETS, chunk or Chunk(), goal, request)
+        covered, total = goal or (None, None)
+        return explore.decide(route, measured, BUDGETS, chunk or Chunk(), covered, total, request)
 
     def test_new_library_without_dynamic_access_gets_a_basic_pass(self) -> None:
         self.assertEqual(MODE_BASIC, self.decide(ROUTE_NEW, report({})).mode)
@@ -59,7 +60,15 @@ class DecideTest(unittest.TestCase):
         self.assertEqual(explore.MODE_SKIP, self.decide(ROUTE_NEW, report(classes(3, covered=2))).mode)
 
     def test_previous_coverage_already_met_is_skipped(self) -> None:
-        self.assertEqual(explore.MODE_SKIP, self.decide(ROUTE_UPDATE, report(classes(6, covered=1)), goal=6).mode)
+        self.assertEqual(explore.MODE_SKIP, self.decide(ROUTE_UPDATE, report(classes(6, covered=1)), goal=(6, 12)).mode)
+
+    def test_the_goal_is_the_previous_ratio_not_its_count(self) -> None:
+        # Six covered of eighteen is below the previous 6/12, however many calls that was.
+        sparse: dict[str, tuple[int, int]] = {f"p.C{index}": (1, 3) for index in range(6)}
+        self.assertEqual(MODE_BULK, self.decide(ROUTE_UPDATE, report(sparse), goal=(6, 12)).mode)
+
+    def test_a_goal_without_a_total_is_a_count(self) -> None:
+        self.assertEqual(explore.MODE_SKIP, self.decide(ROUTE_UPDATE, report(classes(6, covered=1)), goal=(6, 0)).mode)
 
     def test_oversized_repair_is_deferred(self) -> None:
         decision = self.decide(ROUTE_REPAIR, report(classes(16)))
@@ -139,7 +148,7 @@ class AdvanceTest(unittest.TestCase):
 
     def test_previous_coverage_met_ends_an_update(self) -> None:
         state = self.state(MODE_BULK, 6, ROUTE_UPDATE)
-        state.goal_covered_calls = 6
+        state.goal_covered_calls, state.goal_total_calls = 6, 12
         self.assertEqual(OK, explore.advance(state, report(classes(6, covered=1)), True))
 
     def test_explore_passes_spent(self) -> None:
