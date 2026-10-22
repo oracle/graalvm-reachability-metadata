@@ -5,7 +5,9 @@
 
 """The `repair` program: the setup tail once, then "make this version work".
 
-The setup tail keeps only what `setup` may change, verifies the four URLs,
+The setup tail keeps only what `setup` may change, turns a `fails-*` verdict
+into the run's skip record before anything else (§FS-unsupportable-version-diagnosis.3),
+verifies the four URLs,
 downloads the main sources, writes the filter from the library JAR, and
 checkpoints (§AR-forge-workflow-pipeline.4.1). A new library then has nothing
 to repair; every other route runs `javaTest` and the native check, and any
@@ -13,7 +15,6 @@ failure is one fix request (§AR-forge-workflow-pipeline.4).
 """
 from __future__ import annotations
 
-import json
 import os
 import re
 import sys
@@ -24,9 +25,10 @@ from utility_scripts.source_context import prepare_source_contexts
 
 import handoff
 import native_check
-from build_tools import TaskResult, changed_paths, checkpoint, coordinate_task, git, restore_paths, run_gradle
-from exit_codes import AGENT_WORK, BAD_INPUT, INFRASTRUCTURE, NOTHING_TO_DO, OK, STILL_FAILING
-from run_state import ROUTE_NEW, RunState, load, runtime_path, save
+import skip_record
+from build_tools import TaskResult, changed_paths, checkpoint, coordinate_task, restore_paths, run_gradle
+from exit_codes import AGENT_WORK, BAD_INPUT, INFRASTRUCTURE, NOTHING_TO_DO, OK, SKIP_RECORDED, STILL_FAILING
+from run_state import ROUTE_NEW, ROUTE_REPAIR, RunState, load, runtime_path, save
 
 SENDER: str = "repair"
 URL_FIELDS: tuple[str, ...] = ("source-code-url", "test-code-url", "documentation-url", "repository-url")
@@ -35,29 +37,40 @@ FILTER: str = "user-code-filter.json"
 UNRESOLVED: re.Pattern[str] = re.compile(r"Could not resolve|Could not find [\w.-]+:[\w.-]+")
 
 
-def keep_url_edits(state: RunState) -> None:
-    """Restore `index.json` to the checkpoint except the four URL fields of each entry."""
-    with open(state.path(state.index_path), encoding="utf-8") as handle:
-        edited: list[dict[str, Any]] = json.load(handle)
-    base: list[dict[str, Any]] = json.loads(git(state.worktree, "show", f"{state.checkpoint}:{state.index_path}"))
+def keep_url_edits(state: RunState, keep_skips: bool) -> None:
+    """Restore `index.json` to the checkpoint except the four URL fields of each entry.
+
+    With `keep_skips`, the `skipped-versions` records `setup` added survive too
+    (§FS-unsupportable-version-diagnosis.2).
+    """
+    edited: list[dict[str, Any]] = skip_record.read_index(state)
+    base: list[dict[str, Any]] = skip_record.read_index(state, state.checkpoint)
     by_version: dict[str, dict[str, Any]] = {str(entry.get("metadata-version")): entry for entry in edited}
+    kept: list[dict[str, Any]] = []
     for entry in base:
         source: dict[str, Any] = by_version.get(str(entry.get("metadata-version")), {})
         for field in URL_FIELDS:
             if source.get(field):
                 entry[field] = source[field]
-    with open(state.path(state.index_path), "w", encoding="utf-8") as handle:
-        json.dump(base, handle, indent=2)
-        handle.write("\n")
+        if keep_skips:
+            gained: list[dict[str, str]] = skip_record.added([source], base)
+            if gained:
+                entry = skip_record.with_skips(entry, list(entry.get(skip_record.FIELD) or []) + gained)
+        kept.append(entry)
+    skip_record.write_index(state, kept)
 
 
 def revert_out_of_scope(state: RunState) -> list[str]:
-    """Revert every `setup` edit outside the declarations and the URL fields; return what was reverted."""
+    """Revert every `setup` edit outside its scope; return what was reverted.
+
+    The scope is the declarations, the URL fields, and on a `fails-*` label the
+    verdict's `skipped-versions` records (§AR-forge-workflow-pipeline.4.1).
+    """
     allowed: set[str] = {os.path.join(state.test_dir, name) for name in DECLARATION_FILES}
     reverted: list[str] = []
     for path in changed_paths(state.worktree, state.checkpoint):
         if path == state.index_path:
-            keep_url_edits(state)
+            keep_url_edits(state, keep_skips=state.route == ROUTE_REPAIR)
         elif path not in allowed:
             reverted.append(path)
     restore_paths(state.worktree, state.checkpoint, reverted)
@@ -74,6 +87,10 @@ def apply_setup(workspace: str, state: RunState) -> int:
     reverted: list[str] = revert_out_of_scope(state)
     if reverted:
         print(f"[repair] reverted setup edits outside its scope: {', '.join(reverted)}")
+    if state.route == ROUTE_REPAIR:
+        skipped: int | None = skip_record.apply(workspace, state)
+        if skipped is not None:
+            return skipped
     missing: list[str] = missing_urls(state)
     if missing:
         print(f"ERROR: {state.coordinate} has no {', '.join(missing)} in {state.index_path}.", file=sys.stderr)
@@ -102,6 +119,8 @@ def repair(workspace: str) -> int:
         save(workspace, state)
         if code != OK:
             return code
+    if state.skip_recorded:
+        return SKIP_RECORDED
     if state.route == ROUTE_NEW:
         print("[repair] a new library has no version to repair")
         return NOTHING_TO_DO

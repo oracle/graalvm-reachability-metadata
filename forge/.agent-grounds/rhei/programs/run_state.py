@@ -92,6 +92,8 @@ class RunState:
     goal_covered_calls: int | None = None
     has_reporter_request: bool = False
     setup_applied: bool = False
+    # The run is the skip record of the setup verdict (§FS-unsupportable-version-diagnosis.3).
+    skip_recorded: bool = False
     # The sender of the open fix request, for the loop guard (§AR-forge-workflow-pipeline.6).
     pending_request: str | None = None
     explore: Explore = field(default_factory=Explore)

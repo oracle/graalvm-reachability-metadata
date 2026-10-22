@@ -14,7 +14,7 @@ from __future__ import annotations
 # Control keys: classes (class -> total dynamic-access calls; a test file whose
 # name starts with the class's simple name covers one call), javaFails,
 # nativeFails (until the shipped metadata names `Fixed`), checkFails,
-# styleFails (the failing style task), listFails, coverageFails.
+# styleFails (the failing style task), listFails, coverageFails, indexFails.
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
 import glob, json, os, sys
 args = sys.argv[1:]
@@ -88,6 +88,10 @@ elif task == "generateDynamicAccessCoverageReport":
     out = os.path.join(project, "build", "reports", "dynamic-access")
     os.makedirs(out, exist_ok=True)
     json.dump(report, open(os.path.join(out, "dynamic-access-coverage.json"), "w"))
+elif task == "validateIndexFiles":
+    if control.get("indexFails"):
+        print("ERROR: index.json does not validate")
+        sys.exit(1)
 elif task in ("spotlessApply", "spotlessCheck", "checkstyle"):
     if control.get("styleFails") == task:
         print("[ERROR] Test.java:1: bad style")

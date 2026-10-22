@@ -1,7 +1,7 @@
 # State machine of the forge-metadata workflow (§AR-forge-workflow-pipeline.3).
 #
 #   prepare -- 0 --> setup --> repair
-#   repair -- 0, 20 (new library) --> analyze; 10 --> fix
+#   repair -- 0, 20 (new library) --> analyze; 10 --> fix; 21 (skip recorded) --> publish
 #   analyze -- 10 --> cover --> measure; 20 (nothing to explore, deferred) --> native
 #   measure -- 10 --> cover; 11 (JVM tests fail) --> fix; 0 (goal), 20 (budget) --> native
 #   native -- 0 --> finalize; 10 --> fix
@@ -61,6 +61,10 @@ states:
       worktree. Work in this order, and do not start a step before the one
       before it is done.
 
+      0. Verdict. Only when `{input.run.path}` has an "Unsupportable-version
+         verdict" section, follow it first (§FS-unsupportable-version-diagnosis).
+         On an unsupportable verdict, record it as that section says and stop:
+         skip the steps below.
       1. URLs. Run the URL discovery command `{input.run.path}` names, from the
          worktree root, in the foreground. If the coordinate's entry in the index
          file still lacks `source-code-url`, `test-code-url`, `documentation-url`,
@@ -315,6 +319,11 @@ transitions:
     to: fix
     exit_code: 10
     description: The version fails; one fix request follows.
+
+  - from: repair
+    to: publish
+    exit_code: 21
+    description: Setup's verdict is recorded as a skip; nothing is repaired or explored.
 
   - from: repair
     to: human-intervention

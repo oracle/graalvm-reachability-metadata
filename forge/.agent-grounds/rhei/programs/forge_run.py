@@ -38,6 +38,7 @@ from exit_codes import (  # noqa: E402
     INFRASTRUCTURE,
     JVM_TESTS_FAIL,
     NOTHING_TO_DO,
+    SKIP_RECORDED,
     OK,
     RETURN_CODES,
     STILL_FAILING,
@@ -56,7 +57,8 @@ STEPS: dict[str, Callable[[str], int]] = {
 OUTCOME: str = "outcome.json"
 # Every other exit a program takes is a declared route to a non-final state.
 KNOWN_ROUTES: frozenset[int] = frozenset(
-    {OK, AGENT_WORK, JVM_TESTS_FAIL, STILL_FAILING, NOTHING_TO_DO, CANNOT_FIX, *RETURN_CODES.values()})
+    {OK, AGENT_WORK, JVM_TESTS_FAIL, STILL_FAILING, NOTHING_TO_DO, SKIP_RECORDED, CANNOT_FIX,
+     *RETURN_CODES.values()})
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -11,7 +11,9 @@ the descriptor are written (§FS-forge-run-metrics, §AR-publication-descriptor)
 and the pushed `ai/**` branch is the whole handoff to the trusted publisher
 (§AR-forge-verification-publication-boundary). A deferred exploration opens its
 follow-up issue first, and a chunk records its identity for the next run
-(§FS-forge-chunked-dynamic-access).
+(§FS-forge-chunked-dynamic-access). A skip record ships only its index and
+descriptor, with no execution metrics for the skipped version
+(§FS-unsupportable-version-diagnosis.3).
 """
 from __future__ import annotations
 
@@ -138,8 +140,9 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
     """The schema-validated per-run record (§FS-forge-run-metrics)."""
     usage: run_tokens.Usage = run_tokens.total_usage(workspace)
     agent, model = worker_model(state)
+    measured: bool = not state.skip_recorded
     coverage_percent, lines_covered = collect_version_coverage_metrics(
-        state.worktree, state.group, state.artifact, state.version)
+        state.worktree, state.group, state.artifact, state.version) if measured else (0.0, 0)
     metrics: dict[str, Any] = build_run_metrics_dict(
         package=state.group,
         artifact=state.artifact,
@@ -153,16 +156,17 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
         cost_usd=calc_model_session_cost(model.rsplit("/", 1)[-1], usage.input, usage.cached, usage.output),
         lines_covered=lines_covered,
         coverage_percent=coverage_percent,
-        total_entries=count_metadata_entries(state.worktree, state.group, state.artifact, state.version),
+        total_entries=count_metadata_entries(state.worktree, state.group, state.artifact, state.version) if measured else 0,
         test_only_metadata_entries=count_test_only_metadata_entries(
-            state.worktree, state.group, state.artifact, state.version),
-        metadata_file=resolve_metadata_artifact_path(state.worktree, state.group, state.artifact, state.version),
+            state.worktree, state.group, state.artifact, state.version) if measured else 0,
+        metadata_file=resolve_metadata_artifact_path(
+            state.worktree, state.group, state.artifact, state.version) if measured else state.index_path,
         starting_commit=state.base_commit,
         ending_commit=head(state.worktree),
         previous_library=state.previous_coordinate,
         agent_name=agent,
         model_name=model,
-        stats=load_library_stats_snapshot(state.worktree, state.group, state.artifact, state.version),
+        stats=load_library_stats_snapshot(state.worktree, state.group, state.artifact, state.version) if measured else None,
     )
     metrics["timestamp"] = state.started_at
     return metrics
@@ -170,12 +174,15 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
 
 def render(workspace: str, state: RunState, chunk_summary: dict[str, Any] | None) -> dict[str, Any]:
     """What the trusted publisher renders into the pull request (§AR-pr-body)."""
-    evidence = load_dynamic_access_metadata_evidence(state.worktree, state.coordinate)
+    measured: bool = not state.skip_recorded
+    evidence = load_dynamic_access_metadata_evidence(state.worktree, state.coordinate) if measured else None
     values: dict[str, Any] = {
-        "library_stats": load_library_stats_entry(state.worktree, state.group, state.artifact, state.version),
-        "current_metadata_entries": count_metadata_entries(state.worktree, state.group, state.artifact, state.version),
+        "library_stats": load_library_stats_entry(
+            state.worktree, state.group, state.artifact, state.version) if measured else None,
+        "current_metadata_entries": count_metadata_entries(
+            state.worktree, state.group, state.artifact, state.version) if measured else None,
         "current_test_only_entries": count_test_only_metadata_entries(
-            state.worktree, state.group, state.artifact, state.version),
+            state.worktree, state.group, state.artifact, state.version) if measured else None,
         "dynamic_access": chunk_summary,
         "dynamic_access_evidence": None if evidence is None else {
             "covered_call_sites": evidence.covered_call_sites,
@@ -230,16 +237,18 @@ def publish(workspace: str) -> int:
         print(f"[publish] {state.coordinate} is unchanged; nothing to publish")
         return NOTHING_TO_DO
     task_type: str = issue.TASK_TYPES[state.label]
-    final: bool = chunk_is_final(workspace, state)
+    final: bool = state.skip_recorded or chunk_is_final(workspace, state)
     status: str = STATUS_SUCCESS if final else STATUS_CHUNK_READY
     producer: str = get_authenticated_login(cwd=state.worktree)
     publication_id: str = build_publication_id(state.issue_number, state.started_at, state.coordinate, task_type)
     suffix: str = f"{'add-lib-support' if state.route == ROUTE_NEW else task_type}-{state.group}-{state.artifact}-{state.version}"
     branch: str = build_publication_branch(producer, suffix, publication_id)
-    chunk_summary: dict[str, Any] | None = record_chunk(state, final, publication_id, branch)
+    chunk_summary: dict[str, Any] | None = None if state.skip_recorded else record_chunk(
+        state, final, publication_id, branch)
     descriptor_follow_ups: list[dict[str, Any]] = follow_ups(state)
     metrics: dict[str, Any] = run_metrics(workspace, state, status)
-    append_execution_metrics(state.worktree, metrics, task_type)
+    if not state.skip_recorded:
+        append_execution_metrics(state.worktree, metrics, task_type)
     checkpoint(state.worktree, state.coordinate_paths, _subject(f"Record the Forge run for {state.coordinate}"))
     try:
         base_ref: str = rebase(state)

@@ -16,6 +16,7 @@ import re
 
 from utility_scripts.metadata_index import find_index_entry_for_version
 
+import skip_record
 from run_state import ROUTE_NEW, ROUTE_REPAIR, RunState, runtime_path, write_text
 
 TARGET: re.Pattern[str] = re.compile(r"^(pi|claude-code)(?:\[([A-Za-z0-9_-]+)\])?:(?:(.*)/)?([^/]+)$")
@@ -68,4 +69,7 @@ def write(workspace: str, state: RunState) -> None:
         if state.has_reporter_request else "- Reporter-requested metadata: none",
         "",
     ]
+    if state.route == ROUTE_REPAIR:
+        # Only the `fails-*` labels see the bar (§FS-unsupportable-version-diagnosis).
+        lines += [skip_record.bar(state.version)]
     write_text(runtime_path(workspace, "run.md"), "\n".join(lines))

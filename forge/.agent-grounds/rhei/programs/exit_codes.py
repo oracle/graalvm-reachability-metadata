@@ -17,6 +17,8 @@ AGENT_WORK: int = 10
 JVM_TESTS_FAIL: int = 11
 STILL_FAILING: int = 12
 NOTHING_TO_DO: int = 20
+# `repair` only: the setup verdict is recorded as a skip (§FS-unsupportable-version-diagnosis.3).
+SKIP_RECORDED: int = 21
 CANNOT_FIX: int = 40
 
 # The `fix-route` exits, one per sender (§AR-forge-workflow-pipeline.2).
