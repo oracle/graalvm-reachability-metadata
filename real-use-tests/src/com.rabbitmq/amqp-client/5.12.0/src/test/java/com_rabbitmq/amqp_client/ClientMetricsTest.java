@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /// real broker.
 public class ClientMetricsTest {
 
-    private static final String IMAGE = "rabbitmq:4.3";
+    private static final String IMAGE = "rabbitmq:4.4";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 

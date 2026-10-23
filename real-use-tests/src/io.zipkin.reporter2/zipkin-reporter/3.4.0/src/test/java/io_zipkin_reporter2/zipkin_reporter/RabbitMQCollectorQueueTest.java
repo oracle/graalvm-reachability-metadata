@@ -50,7 +50,7 @@ import zipkin2.reporter.amqp.RabbitMQSender;
  */
 public class RabbitMQCollectorQueueTest {
 
-    private static final String IMAGE = "rabbitmq:4.3";
+    private static final String IMAGE = "rabbitmq:4.4";
     private static final String USER = "tracer";
     private static final String PASSWORD = "tr4ce-only";
     private static final String VHOST = "observability";

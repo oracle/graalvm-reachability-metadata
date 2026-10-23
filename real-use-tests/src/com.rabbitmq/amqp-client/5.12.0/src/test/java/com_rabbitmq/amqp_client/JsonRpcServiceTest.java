@@ -47,7 +47,7 @@ import static org.assertj.core.api.Assertions.catchThrowableOfType;
 /// through a typed proxy and by procedure name, and observes service errors.
 public class JsonRpcServiceTest {
 
-    private static final String IMAGE = "rabbitmq:4.3";
+    private static final String IMAGE = "rabbitmq:4.4";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 

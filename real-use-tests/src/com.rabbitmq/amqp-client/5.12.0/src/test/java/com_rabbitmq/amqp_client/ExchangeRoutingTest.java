@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /// publisher, and expired messages are dead-lettered into a parking queue.
 public class ExchangeRoutingTest {
 
-    private static final String IMAGE = "rabbitmq:4.3";
+    private static final String IMAGE = "rabbitmq:4.4";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 
