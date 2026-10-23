@@ -12,9 +12,27 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.hibernate.orm:hibernate-core:$libraryVersion"
+
+    testImplementation 'com.h2database:h2:2.3.232'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.19.2'
+    testImplementation 'org.hibernate.validator:hibernate-validator:9.0.1.Final'
+    testImplementation 'org.glassfish.expressly:expressly:6.0.0'
+
+    testImplementation "org.hibernate.orm:hibernate-hikaricp:$libraryVersion"
+    testImplementation 'com.zaxxer:HikariCP:6.3.0'
+
+    testImplementation "org.hibernate.orm:hibernate-jcache:$libraryVersion"
+    testImplementation 'com.github.ben-manes.caffeine:jcache:3.2.2'
+    testImplementation 'com.github.ben-manes.caffeine:caffeine:3.2.2'
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('-H:ServiceLoaderFeatureExcludeServices=org.hibernate.bytecode.spi.BytecodeProvider')
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
