@@ -55,7 +55,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /// an outbox atomically, against a real broker.
 public class TransactionsAndClientHooksTest {
 
-    private static final String IMAGE = "rabbitmq:4.3";
+    private static final String IMAGE = "rabbitmq:4.4";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 

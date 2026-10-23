@@ -46,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /// direct reply-to pseudo-queue against a real broker.
 public class RequestReplyRpcTest {
 
-    private static final String IMAGE = "rabbitmq:4.3";
+    private static final String IMAGE = "rabbitmq:4.4";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 

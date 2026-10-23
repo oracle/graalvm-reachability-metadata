@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /// application opts into replicated or append-only storage against a real broker.
 public class QueueTypesTest {
 
-    private static final String IMAGE = "rabbitmq:4.3";
+    private static final String IMAGE = "rabbitmq:4.4";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 

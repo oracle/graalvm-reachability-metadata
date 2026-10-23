@@ -50,7 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /// IO thread pool, and moves large, frame-split messages through a real broker.
 public class NioTransportTest {
 
-    private static final String IMAGE = "rabbitmq:4.3";
+    private static final String IMAGE = "rabbitmq:4.4";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 
