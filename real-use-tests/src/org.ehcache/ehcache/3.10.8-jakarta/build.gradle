@@ -11,7 +11,14 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.ehcache:ehcache:$libraryVersion"
+    testImplementation("org.ehcache:ehcache:${libraryVersion.split('-')[0]}") {
+        capabilities {
+            requireCapability('org.ehcache:ehcache-jakarta')
+        }
+    }
+    testImplementation 'javax.cache:cache-api:1.1.1'
+    testImplementation 'ch.qos.logback:logback-classic:1.2.11'
+    testImplementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
 }
 
 graalvmNative {
