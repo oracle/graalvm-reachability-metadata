@@ -30,12 +30,13 @@ import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
 import io.undertow.util.PathTemplateMatch;
 import io.undertow.util.StatusCodes;
-import io.undertow.util.StringReadChannelListener;
 import io.undertow.util.StringWriteChannelListener;
+import io.undertow.websockets.core.UTF8Output;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
@@ -53,6 +54,7 @@ import org.xnio.Options;
 import org.xnio.Xnio;
 import org.xnio.XnioWorker;
 import org.xnio.channels.StreamSinkChannel;
+import org.xnio.channels.StreamSourceChannel;
 
 /**
  * Undertow's own client stack, `UndertowClient` with `ClientConnection`, `ClientRequest` and
@@ -302,18 +304,27 @@ public class WarehouseSyncUndertowClientTest {
             exchange.setResponseListener(new ClientCallback<>() {
                 @Override
                 public void completed(ClientExchange answered) {
-                    new StringReadChannelListener(answered.getConnection().getBufferPool()) {
-                        @Override
-                        protected void stringDone(String content) {
-                            reply.complete(new Reply(answered.getResponse().getResponseCode(),
-                                    answered.getResponse().getResponseHeaders(), content));
-                        }
-
-                        @Override
-                        protected void error(IOException e) {
+                    StreamSourceChannel channel = answered.getResponseChannel();
+                    ByteBuffer buffer = ByteBuffer.allocate(8192);
+                    UTF8Output content = new UTF8Output();
+                    channel.getReadSetter().set(readable -> {
+                        try {
+                            int read;
+                            while ((read = readable.read(buffer)) > 0) {
+                                buffer.flip();
+                                content.write(buffer);
+                                // The 2.3.0 string reader omits this, stalling on split chunks.
+                                buffer.clear();
+                            }
+                            if (read == -1) {
+                                reply.complete(new Reply(answered.getResponse().getResponseCode(),
+                                        answered.getResponse().getResponseHeaders(), content.extract()));
+                            }
+                        } catch (IOException e) {
                             reply.completeExceptionally(e);
                         }
-                    }.setup(answered.getResponseChannel());
+                    });
+                    channel.wakeupReads();
                 }
 
                 @Override
