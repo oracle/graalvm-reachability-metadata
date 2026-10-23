@@ -28,11 +28,18 @@ public abstract class JarUtils {
     private static final String META_INF_VERSIONS = "META-INF/versions/";
 
     /**
-     * Returns whether a resolved artifact is the unclassified main JAR eligible
-     * for the coverage denominator. §AR-test-harness.8
+     * Returns whether a resolved artifact is the main JAR eligible for the coverage
+     * denominator: the unclassified one, or the one classified as the suffix by which
+     * the requested version names a published variant. §AR-test-harness.8
      */
-    public static boolean isUnclassifiedMainJar(String extension, String classifier) {
-        return "jar".equals(extension) && (classifier == null || classifier.isEmpty());
+    public static boolean isMainJar(String extension, String classifier, String requestedVersion, String resolvedVersion) {
+        if (!"jar".equals(extension)) {
+            return false;
+        }
+        if (classifier == null || classifier.isEmpty()) {
+            return true;
+        }
+        return requestedVersion.equals(resolvedVersion + "-" + classifier);
     }
 
     /**
