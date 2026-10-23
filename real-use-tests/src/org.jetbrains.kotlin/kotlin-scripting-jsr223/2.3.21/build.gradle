@@ -41,11 +41,19 @@ String findRuntimeClasspathJar(String prefix) {
 graalvmNative {
     binaries {
         test {
+            // The shaded compiler retains JLine properties but omits the files they reference.
+            buildArgs.addAll("--exclude-config", "kotlin-compiler-embeddable-.*\\.jar",
+                    "META-INF/native-image/org\\.jline/.*\\.properties")
             // The engine compiles scripts against these JARs, which a native image has no path to.
             runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
             runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
             runtimeArgs("-Dkotlin.java.stdlib.jar=${findRuntimeClasspathJar('kotlin-stdlib-')}")
         }
+    }
+    // The harness supplies task arguments, so binary runtime defaults are not inherited.
+    tasks.named("nativeTest") {
+        runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+        runtimeArgs.add("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
     }
     agent {
         defaultMode = "conditional"
