@@ -25,12 +25,20 @@ class JarUtilsTests {
     Path tempDir;
 
     @Test
-    void unclassifiedMainJarExcludesClassifiedAndNonJarArtifacts() {
-        assertThat(JarUtils.isUnclassifiedMainJar("jar", null)).isTrue();
-        assertThat(JarUtils.isUnclassifiedMainJar("jar", "")).isTrue();
-        assertThat(JarUtils.isUnclassifiedMainJar("jar", "test")).isFalse();
-        assertThat(JarUtils.isUnclassifiedMainJar("jar", "sources")).isFalse();
-        assertThat(JarUtils.isUnclassifiedMainJar("pom", null)).isFalse();
+    void mainJarExcludesClassifiedAndNonJarArtifacts() {
+        assertThat(JarUtils.isMainJar("jar", null, "1.0", "1.0")).isTrue();
+        assertThat(JarUtils.isMainJar("jar", "", "1.0", "1.0")).isTrue();
+        assertThat(JarUtils.isMainJar("jar", "test", "1.0", "1.0")).isFalse();
+        assertThat(JarUtils.isMainJar("jar", "sources", "1.0", "1.0")).isFalse();
+        assertThat(JarUtils.isMainJar("pom", null, "1.0", "1.0")).isFalse();
+    }
+
+    @Test
+    void mainJarOfVariantCoordinateIsClassifiedAsTheVersionSuffix() {
+        assertThat(JarUtils.isMainJar("jar", "jakarta", "3.10.8-jakarta", "3.10.8")).isTrue();
+        assertThat(JarUtils.isMainJar("jar", "sources", "3.10.8-jakarta", "3.10.8")).isFalse();
+        assertThat(JarUtils.isMainJar("jar", "jakarta", "3.10.8", "3.10.8")).isFalse();
+        assertThat(JarUtils.isMainJar("pom", "jakarta", "3.10.8-jakarta", "3.10.8")).isFalse();
     }
 
     @Test
