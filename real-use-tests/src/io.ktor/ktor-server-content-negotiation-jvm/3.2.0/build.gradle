@@ -7,6 +7,7 @@
 plugins {
     id "org.graalvm.internal.tck"
     alias(libs.plugins.kotlin.jvm)
+    id "org.jetbrains.kotlin.plugin.serialization" version "2.3.20"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
@@ -14,6 +15,16 @@ int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "io.ktor:ktor-server-content-negotiation-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-test-host-jvm:3.2.0"
+    testImplementation "io.ktor:ktor-client-content-negotiation-jvm:3.2.0"
+    testImplementation "io.ktor:ktor-server-status-pages-jvm:3.2.0"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-json-jvm:3.2.0"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-xml-jvm:3.2.0"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-cbor-jvm:3.2.0"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-protobuf-jvm:3.2.0"
+    testImplementation "io.ktor:ktor-serialization-jackson-jvm:3.2.0"
+    testImplementation "io.ktor:ktor-serialization-gson-jvm:3.2.0"
+    testImplementation "org.assertj:assertj-core:3.22.0"
 }
 
 kotlin {
