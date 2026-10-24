@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-21 — org.apache.aries.proxy:org.apache.aries.proxy.api:0.3 (#10969)
+
+**Test-local proxy implementation creates false library coverage**
+
+The generated proxy scenarios instantiated a test-local SimpleProxyManager, called java.lang.reflect.Proxy directly, and asserted the test implementation's behavior rather than behavior implemented by org.apache.aries.proxy.api. This violated FS-test-contract.1.3 and FS-test-contract.2.1 and produced test-only proxy metadata that did not justify target-library behavior.
+
 ## 2026-10-13 — org.springframework.modulith:spring-modulith-starter-jpa:2.1.0 (#10691)
 
 **Not-for-native-image review repairs leave stale descriptor guidance**
