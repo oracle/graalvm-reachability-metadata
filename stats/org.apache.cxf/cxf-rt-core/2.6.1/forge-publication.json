@@ -1,0 +1,162 @@
+{
+  "base_commit": "5e8a45a023cb9371e28277614e3564f1c54e73ec",
+  "branch": "ai/kimeta/add-lib-support-org.apache.cxf-cxf-rt-core-2.6.1-forge-10984-20261020214428411145-1a9d4d0a8bc9",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "eb1d0f030f1ab6d2e0cdc976000a93ff8138c0da",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10984,
+  "library": {
+    "artifact": "cxf-rt-core",
+    "coordinates": "org.apache.cxf:cxf-rt-core:2.6.1",
+    "group": "org.apache.cxf",
+    "version": "2.6.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "5e8a45a023cb9371e28277614e3564f1c54e73ec",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpuewhxjkk"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10984-444ec9e2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.cxf:cxf-rt-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.cxf/cxf-rt-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10984-444ec9e2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "722f51b4ca2c974023dc007f8186900bf89fa7a8",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "FS-test-contract.4.5 forbids tests that target URL/plugin/OSGi class-loader paths. BundleDelegatingClassLoaderTest directly constructs CXF's OSGi BundleDelegatingClassLoader with a fake Bundle and custom ResourceAliasClassLoader, then invokes loadClass and getResource (lines 30-48); build.gradle adds org.osgi.core solely for that scenario. I considered a contribution-local repair, but the scenario itself is forbidden and it currently passes all recorded lanes, so deleting or rewriting it to unrelated behavior would weaken a passing generated test, which FS-contribution-contract.5.1 also forbids. The sanctioned unsupported-scenario removal does not apply because there is no unverifiable Native Image refusal. A maintainer must decide how to reconcile this passing OSGi fallback scenario with the contract.",
+    "finding_title": "Generated test directly targets an OSGi class-loader path",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff, test sources, build configuration, metadata-file shape, local gate records, and resolved statistics. The index gates passed and dynamic-access coverage is 48/50 (96%), but the OSGi class-loader test violates the Native Image test contract, so the contribution cannot be approved.",
+    "session_id": "31dbcb3f270b4a26"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.cxf/cxf-rt-core/2.6.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 14188800,
+      "code_coverage_percent": 30.58,
+      "cost_usd": 12.7434,
+      "generated_loc": 1149,
+      "input_tokens_used": 604176,
+      "iterations": 21,
+      "metadata_entries": 252,
+      "output_tokens_used": 87602,
+      "test_only_metadata_entries": 87,
+      "tested_library_loc": 2251
+    },
+    "timestamp": "2026-10-20T21:44:28.411145Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10984-20261020214428411145-1a9d4d0a8bc9",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.apache.cxf.service.factory.DefaultServiceConfiguration.getHolderType(DefaultServiceConfiguration.java:270) (line 270)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.apache.cxf.service.factory.DefaultServiceConfiguration.isHolder(DefaultServiceConfiguration.java:246) (line 246)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.apache.cxf.service.factory.DefaultServiceConfiguration.getDefaultLocalName(DefaultServiceConfiguration.java:113) (line 113)",
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- org.apache.cxf.service.factory.ReflectionServiceFactoryBean.createDefaultDataBinding(ReflectionServiceFactoryBean.java:225) (line 225)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.apache.cxf.service.factory.ReflectionServiceFactoryBean.createFaultForException(ReflectionServiceFactoryBean.java:2079) (line 2079)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.apache.cxf.service.factory.ReflectionServiceFactoryBean.getBeanClass(ReflectionServiceFactoryBean.java:2097) (line 2097)",
+        "[reflection] java.lang.Class#getMethods() <- org.apache.cxf.service.factory.ReflectionServiceFactoryBean.checkServiceClassAnnotations(ReflectionServiceFactoryBean.java:2367) (line 2367)",
+        "[reflection] java.lang.Class#getMethods() <- org.apache.cxf.service.factory.ReflectionServiceFactoryBean.createInterface(ReflectionServiceFactoryBean.java:943) (line 943)",
+        "... and 40 more"
+      ],
+      "metadata_rules": [
+        "when `org.apache.cxf.staxutils.StaxUtils` is reached, make `com.ctc.wstx.stax.WstxInputFactory` available for reflection",
+        "when `org.apache.cxf.test.TestUtilities` is reached, make `com.ctc.wstx.stax.WstxInputFactory` available for reflection",
+        "when `org.apache.cxf.wsdl11.WSDLManagerImpl` is reached, make `com.ibm.wsdl.extensions.http.HTTPAddressImpl` available for reflection",
+        "when `org.apache.cxf.wsdl11.WSDLManagerImpl` is reached, make `com.ibm.wsdl.extensions.http.HTTPBindingImpl` available for reflection",
+        "when `org.apache.cxf.wsdl11.WSDLManagerImpl` is reached, make `com.ibm.wsdl.extensions.http.HTTPOperationImpl` available for reflection",
+        "when `org.apache.cxf.wsdl11.WSDLManagerImpl` is reached, make `com.ibm.wsdl.extensions.http.HTTPUrlEncodedImpl` available for reflection",
+        "when `org.apache.cxf.wsdl11.WSDLManagerImpl` is reached, make `com.ibm.wsdl.extensions.http.HTTPUrlReplacementImpl` available for reflection",
+        "when `org.apache.cxf.wsdl11.WSDLManagerImpl` is reached, make `com.ibm.wsdl.extensions.mime.MIMEContentImpl` available for reflection",
+        "... and 91 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.956522,
+            "coveredCalls": 44,
+            "totalCalls": 46
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.96,
+        "coveredCalls": 48,
+        "totalCalls": 50
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10402,
+          "missed": 22423,
+          "ratio": 0.316893,
+          "total": 32825
+        },
+        "line": {
+          "covered": 2251,
+          "missed": 5109,
+          "ratio": 0.305842,
+          "total": 7360
+        },
+        "method": {
+          "covered": 408,
+          "missed": 852,
+          "ratio": 0.32381,
+          "total": 1260
+        }
+      },
+      "version": "2.6.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-20T21:44:28.411145Z"
+}

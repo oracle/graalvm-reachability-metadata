@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-20 — org.apache.cxf:cxf-rt-core:2.6.1 (#10984)
+
+**Generated test directly targets an OSGi class-loader path**
+
+FS-test-contract.4.5 forbids tests that target URL/plugin/OSGi class-loader paths. BundleDelegatingClassLoaderTest directly constructs CXF's OSGi BundleDelegatingClassLoader with a fake Bundle and custom ResourceAliasClassLoader, then invokes loadClass and getResource (lines 30-48); build.gradle adds org.osgi.core solely for that scenario. I considered a contribution-local repair, but the scenario itself is forbidden and it currently passes all recorded lanes, so deleting or rewriting it to unrelated behavior would weaken a passing generated test, which FS-contribution-contract.5.1 also forbids. The sanctioned unsupported-scenario removal does not apply because there is no unverifiable Native Image refusal. A maintainer must decide how to reconcile this passing OSGi fallback scenario with the contract.
 ## 2026-10-21 — org.apache.aries.proxy:org.apache.aries.proxy.api:0.3 (#10969)
 
 **Test-local proxy implementation creates false library coverage**
