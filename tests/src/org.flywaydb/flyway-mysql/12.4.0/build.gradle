@@ -13,9 +13,17 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation "org.flywaydb:flyway-mysql:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+    testImplementation 'com.mysql:mysql-connector-j:26.7.0'
+    testImplementation 'org.mariadb.jdbc:mariadb-java-client:3.5.10'
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--enable-url-protocols=https')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
