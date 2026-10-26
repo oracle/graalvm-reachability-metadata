@@ -1,0 +1,34 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.jooq:jooq:$libraryVersion"
+    // Keep the JDBC driver and logging backend pinned as in the existing jOOQ tests.
+    testImplementation 'com.h2database:h2:2.1.214'
+    testImplementation 'ch.qos.logback:logback-classic:1.4.5'
+    // jOOQ's JSON-to-POJO mapping uses Jackson when it is on the application classpath.
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    // Embedded reactive execution uses jOOQ 3.18's R2DBC 1.0 API and the same H2 version.
+    testImplementation 'io.r2dbc:r2dbc-h2:1.0.0.RELEASE'
+    testImplementation 'io.projectreactor:reactor-core:3.5.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

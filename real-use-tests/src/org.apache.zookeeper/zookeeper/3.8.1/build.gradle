@@ -1,0 +1,44 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.zookeeper:zookeeper:$libraryVersion"
+
+    // Server metrics and snapshot compression, pinned as in the existing ZooKeeper tests.
+    testImplementation "io.dropwizard.metrics:metrics-core:4.2.25"
+    testImplementation "org.xerial.snappy:snappy-java:1.1.10.5"
+
+    // ZooKeeper's HTTP administration server and JSON command responses.
+    testImplementation "org.eclipse.jetty:jetty-server:9.4.49.v20220914"
+    testImplementation "org.eclipse.jetty:jetty-servlet:9.4.49.v20220914"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
+
+    // ZooKeeper's operational CLI commands and shell completion.
+    testImplementation "commons-cli:commons-cli:1.5.0"
+    testImplementation "jline:jline:2.14.6"
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("--enable-url-protocols=http")
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

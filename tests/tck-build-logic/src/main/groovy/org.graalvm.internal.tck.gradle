@@ -456,12 +456,13 @@ Closure<List<Map<String, String>>> resolveTestedLibraryDependencyArtifacts = {
 }
 
 Closure<List<File>> resolveTestedLibraryMainJars = {
+    String requestedVersion = libraryGAV.split(":")[2]
     List<ResolvedArtifact> mainArtifacts = resolveTestedLibraryArtifacts().findAll { ResolvedArtifact artifact ->
-        JarUtils.isUnclassifiedMainJar(artifact.extension, artifact.classifier)
+        JarUtils.isMainJar(artifact.extension, artifact.classifier, requestedVersion, artifact.moduleVersion.id.version)
     }
     if (mainArtifacts.isEmpty()) {
         throw new GradleException(
-                "No unclassified main JAR found on the classpath for ${libraryGAV}.\n" +
+                "No main JAR found on the classpath for ${libraryGAV}.\n" +
                         "Please verify that the coordinate publishes a main JAR."
         )
     }

@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InventoryEventBusTest {
 
-    private static final String NATS_IMAGE = "nats:2.15.0";
+    private static final String NATS_IMAGE = "nats:2.15.1";
 
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(5);
 

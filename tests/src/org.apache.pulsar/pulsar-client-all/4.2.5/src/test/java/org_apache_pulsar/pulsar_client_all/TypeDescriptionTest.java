@@ -25,7 +25,29 @@ public class TypeDescriptionTest {
         assertThat(settings.name).isEqualTo("configured");
     }
 
+    @Test
+    void createsConfiguredImplementationClass() {
+        TypeDescription description = new TypeDescription(SettingsContract.class, Settings.class);
+        Yaml yaml = new Yaml(new Constructor(description, new LoaderOptions()));
+
+        SettingsContract settings = yaml.load("name: implemented");
+
+        assertThat(settings).isInstanceOf(Settings.class);
+        assertThat(settings.getName()).isEqualTo("implemented");
+    }
+
     public static class DescribedSettings {
         public String name;
+    }
+
+    public abstract static class SettingsContract {
+        public String name;
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    public static class Settings extends SettingsContract {
     }
 }

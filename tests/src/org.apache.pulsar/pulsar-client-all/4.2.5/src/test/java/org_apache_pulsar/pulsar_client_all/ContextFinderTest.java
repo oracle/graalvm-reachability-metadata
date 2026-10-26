@@ -35,6 +35,23 @@ public class ContextFinderTest {
     }
 
     @Test
+    void invokesContextPathFactoryWithProperties() throws Exception {
+        String previous = System.getProperty(JAXBContext.JAXB_CONTEXT_FACTORY);
+        System.setProperty(JAXBContext.JAXB_CONTEXT_FACTORY, TestContextFactory.class.getName());
+        try {
+            JAXBContext context = JAXBContext.newInstance(
+                    "org_apache_pulsar.pulsar_client_all",
+                    getClass().getClassLoader(),
+                    Map.of("mode", "client"));
+
+            assertThat(context).isInstanceOf(StubContext.class);
+            assertThat(((StubContext) context).source).isEqualTo("path");
+        } finally {
+            restoreFactory(previous);
+        }
+    }
+
+    @Test
     void invokesLegacyContextPathFactoryContract() throws Exception {
         String previous = System.getProperty(JAXBContext.JAXB_CONTEXT_FACTORY);
         System.setProperty(JAXBContext.JAXB_CONTEXT_FACTORY, LegacyContextFactory.class.getName());
