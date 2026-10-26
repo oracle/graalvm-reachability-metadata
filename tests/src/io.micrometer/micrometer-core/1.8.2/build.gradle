@@ -15,7 +15,17 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+// ExecutorServiceMetrics unwraps JDK executor wrappers through a private field.
+tasks.withType(Test).configureEach {
+    jvmArgs '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED'
+}
+
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('--add-opens=java.base/java.util.concurrent=ALL-UNNAMED')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
