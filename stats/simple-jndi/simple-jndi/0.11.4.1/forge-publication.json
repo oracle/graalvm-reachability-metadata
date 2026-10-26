@@ -1,0 +1,144 @@
+{
+  "base_commit": "8d1794180bca08893212a08e97cafb2b6ff03239",
+  "branch": "ai/kimeta/add-lib-support-simple-jndi-simple-jndi-0.11.4.1-forge-10933-20261026164813196795-2b077e26efc8",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "dffe626e4ec654fcff0ad78b4915e3e4c1581d90",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10933,
+  "library": {
+    "artifact": "simple-jndi",
+    "coordinates": "simple-jndi:simple-jndi:0.11.4.1",
+    "group": "simple-jndi",
+    "version": "0.11.4.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "8d1794180bca08893212a08e97cafb2b6ff03239",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpdf5a52jr"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.agent-worktrees/issue-10933/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=simple-jndi:simple-jndi"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/simple-jndi/simple-jndi/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.agent-worktrees/issue-10933/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "aa66a49b4073204746704efd218a5498a1702681",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "claude-opus-5-5",
+    "review_comment": "Reviewed SimpleContextTest, its two fixtures (a Person JavaBean and a self-registering RecordingDriver), the generated library metadata (7 reflection entries and 1 resource entry) and the test-only split (5 reflection entries and 3 resource entries). All metadata is agent-generated and conditioned on simple-jndi classes. It covers the InitialContextFactory service lookup and MemoryContextFactory instantiation in SimpleContext, and JndiLoader's instantiation of the named BeanConverter, ConstructorConverter and MapConverter. It also covers the String constructors of Integer and Boolean that ConstructorConverter uses, and the TreeMap that MapConverter creates. Test types (Person, RecordingDriver, SimpleContextFactory named from the test) and the test's service and jndi.properties probes stay in the test-only file. The test writes its property files to a temp directory at runtime and loads them once in a @BeforeAll, so every lookup shares one JndiLoader call path. When each test loaded its own root, the agent's conditional merge dropped the JndiLoader converter registrations. Dynamic access coverage is 15/15, and library line coverage is 37.64%. All three native lanes (GraalVM 25, latest, latest future-defaults-all), checkstyle and spotlessCheck pass. No scenarios were dropped. The test does not close the context, because SimpleContext.close throws ContextNotEmptyException for a populated context, which is library behavior and not a metadata gap.",
+    "session_id": "253c8020ffb87342"
+  },
+  "metrics": {
+    "agent": "claude-code",
+    "model": "claude-opus-5-5",
+    "path": "stats/simple-jndi/simple-jndi/0.11.4.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 6180643,
+      "code_coverage_percent": 37.64,
+      "cost_usd": 18.8997,
+      "generated_loc": 200,
+      "input_tokens_used": 88576,
+      "iterations": 2,
+      "metadata_entries": 15,
+      "output_tokens_used": 7671,
+      "test_only_metadata_entries": 14,
+      "tested_library_loc": 358
+    },
+    "timestamp": "2026-10-26T16:48:13.196795Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10933-20261026164813196795-2b077e26efc8",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.osjava.sj.loader.convert.ConstructorConverter` is reached, make `java.lang.Boolean.<init>(java.lang.String)` available for reflection",
+        "when `org.osjava.sj.loader.convert.ConstructorConverter` is reached, make `java.lang.Integer.<init>(java.lang.String)` available for reflection",
+        "when `org.osjava.sj.loader.convert.MapConverter` is reached, make `java.util.TreeMap.<init>()` available for reflection",
+        "when `org.osjava.sj.loader.JndiLoader` is reached, make `org.osjava.sj.loader.convert.BeanConverter.<init>()` available for reflection",
+        "when `org.osjava.sj.loader.JndiLoader` is reached, make `org.osjava.sj.loader.convert.ConstructorConverter.<init>()` available for reflection",
+        "when `org.osjava.sj.loader.JndiLoader` is reached, make `org.osjava.sj.loader.convert.MapConverter.<init>()` available for reflection",
+        "when `org.osjava.sj.SimpleContext` is reached, make `org.osjava.sj.memory.MemoryContextFactory.<init>()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 15,
+            "totalCalls": 15
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 15,
+        "totalCalls": 15
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1452,
+          "missed": 2731,
+          "ratio": 0.347119,
+          "total": 4183
+        },
+        "line": {
+          "covered": 358,
+          "missed": 593,
+          "ratio": 0.376446,
+          "total": 951
+        },
+        "method": {
+          "covered": 67,
+          "missed": 154,
+          "ratio": 0.303167,
+          "total": 221
+        }
+      },
+      "version": "0.11.4.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_claude-code_opus",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-26T16:48:13.196795Z"
+}
