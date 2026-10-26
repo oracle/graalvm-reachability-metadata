@@ -40,7 +40,8 @@ public class PropertySubstituteTest {
         PropertySubstitute listProperty = new PropertySubstitute(
                 "items", List.class, null, "addItem", String.class);
         listProperty.setTargetType(FillerBean.class);
-        listProperty.set(bean, new String[] {"one", "two"});
+        listProperty.set(bean, List.of("one", "two"));
+        listProperty.set(bean, new String[] {"three", "four"});
 
         PropertySubstitute mapProperty = new PropertySubstitute(
                 "entries", Map.class, null, "putEntry", String.class, Integer.class);
@@ -50,7 +51,7 @@ public class PropertySubstituteTest {
         expectedEntries.put("right", 2);
         mapProperty.set(bean, expectedEntries);
 
-        assertThat(bean.items).containsExactly("one", "two");
+        assertThat(bean.items).containsExactly("one", "two", "three", "four");
         assertThat(bean.entries).containsExactlyEntriesOf(expectedEntries);
     }
 

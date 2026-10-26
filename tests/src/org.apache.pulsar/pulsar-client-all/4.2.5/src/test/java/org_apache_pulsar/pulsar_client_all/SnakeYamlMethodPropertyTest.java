@@ -21,6 +21,7 @@ public class SnakeYamlMethodPropertyTest {
         MethodSettings settings = yaml.load("name: method-value");
 
         assertThat(settings.getName()).isEqualTo("method-value");
+        assertThat(yaml.dump(settings)).contains("name: method-value");
     }
 
     public static class MethodSettings {

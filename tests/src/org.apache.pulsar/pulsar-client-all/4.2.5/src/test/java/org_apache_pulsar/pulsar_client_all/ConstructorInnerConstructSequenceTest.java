@@ -24,6 +24,16 @@ public class ConstructorInnerConstructSequenceTest {
         assertThat(value.priority).isEqualTo(5);
     }
 
+    @Test
+    void selectsCompatibleConstructorWhenSeveralHaveSameArity() {
+        Yaml yaml = new Yaml(new Constructor(MultiConstructorValue.class, new LoaderOptions()));
+
+        MultiConstructorValue value = yaml.load("[message, 5]");
+
+        assertThat(value.text).isEqualTo("message");
+        assertThat(value.priority).isEqualTo(5);
+    }
+
     public static class SequenceValue {
         private final String text;
         private final int priority;
@@ -31,6 +41,21 @@ public class ConstructorInnerConstructSequenceTest {
         public SequenceValue(String text, int priority) {
             this.text = text;
             this.priority = priority;
+        }
+    }
+
+    public static class MultiConstructorValue {
+        private final String text;
+        private final int priority;
+
+        public MultiConstructorValue(String text, Integer priority) {
+            this.text = text;
+            this.priority = priority;
+        }
+
+        public MultiConstructorValue(StringBuilder text, Long priority) {
+            this.text = text.toString();
+            this.priority = priority.intValue();
         }
     }
 }
