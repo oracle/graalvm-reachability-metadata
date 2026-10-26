@@ -19,10 +19,12 @@ public class SnakeYamlFieldPropertyTest {
     void readsAndWritesFieldBackedProperty() {
         Constructor constructor = new Constructor(FieldSettings.class, new LoaderOptions());
         constructor.getPropertyUtils().setBeanAccess(BeanAccess.FIELD);
+        Yaml yaml = new Yaml(constructor);
 
-        FieldSettings settings = new Yaml(constructor).load("name: field-value");
+        FieldSettings settings = yaml.load("name: field-value");
 
         assertThat(settings.name).isEqualTo("field-value");
+        assertThat(yaml.dump(settings)).contains("name: field-value");
     }
 
     public static class FieldSettings {

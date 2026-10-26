@@ -8,6 +8,7 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Map;
 
 import org.apache.pulsar.shade.org.glassfish.hk2.utilities.reflection.BeanReflectionHelper;
@@ -25,6 +26,23 @@ public class BeanReflectionHelperTest {
             assertThat(properties).containsEntry("mode", "persistent").containsEntry("retries", 3);
         } finally {
             helper.clean(new ClientSettings("unused", 0).getClass());
+        }
+    }
+
+    @Test
+    void comparesBeanGettersAcrossInstances() {
+        ClassReflectionHelperImpl helper = new ClassReflectionHelperImpl();
+        try {
+            PropertyChangeEvent[] changes = BeanReflectionHelper.getChangeEvents(
+                    helper,
+                    new ClientSettings("persistent", 3),
+                    new ClientSettings("non-persistent", 4));
+
+            assertThat(changes)
+                    .extracting(PropertyChangeEvent::getPropertyName)
+                    .contains("mode", "retries");
+        } finally {
+            helper.dispose();
         }
     }
 
