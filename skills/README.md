@@ -16,11 +16,6 @@ It runs the target tests, identifies missing metadata entries from the error out
 Closes new-library support pull requests.
 It finds the issue linked by the PR, removes the issue assignee, rolls the linked project item from `In Progress` back to `Todo`, and preserves `Done` when another PR has already completed the issue.
 
-### `close-human-intervention-and-failing-ci-prs`
-
-Closes batches of open pull requests that have the `human-intervention` label or failing CI.
-It resolves each linked issue, clears all assignees, and moves project status back to `Todo`.
-
 ### `ipr`
 
 Creates a GitHub issue and pull request for `oracle/graalvm-reachability-metadata`, links the PR to the issue, and requests reviews from the standard reviewers other than the PR author.

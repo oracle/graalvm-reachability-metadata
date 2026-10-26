@@ -236,7 +236,15 @@ states:
         `src/test/resources` (§root/FS-test-contract.2.7).
       - Every entry has a `typeReached` condition naming a type in the allowed
         packages that is reached before the access, and no entry names a
-        test-only type (§root/FS-metadata.2).
+        test-only type (§root/FS-metadata.2). Take that type from the error's
+        stack trace: the first frame whose class shares the library's leading
+        package (`org.hibernate.resource...` for `org.hibernate.orm`).
+      - When the error says matching metadata exists but its condition was not
+        satisfied, that condition is reached too late: move or duplicate the
+        entry under the narrowest library type reached before the access, never
+        under the same unsatisfied condition.
+      - Never duplicate an entry: when the type is already registered, add only
+        the missing method, field, or flag to it.
       - Fix what `checkMetadataFiles` reports with the harness tasks first:
         `splitTestOnlyMetadata` and `routeForeignMetadata` (§root/FS-metadata.2).
       - Metadata lives only in `reachability-metadata.json`; never write a legacy
