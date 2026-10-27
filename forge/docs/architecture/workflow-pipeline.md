@@ -222,7 +222,11 @@ what the filter allows into the shipped metadata; `checkMetadataFiles` and
 runs the coordinate's JVM and Native Image tests as CI does. The program judges only pass or fail and never
 merges, filters, or edits metadata itself. Whatever still fails goes to `fix` as
 one request with every failing output, where an exact missing registration or a
-listed native flag is a legal repair (§root/FS-test-contract.2.7). `repair`
+listed native flag is a legal repair (§root/FS-test-contract.2.7). A failed
+`generateMetadata` stops the check, because the checks after it would judge
+stale metadata; the request then names those checks as ones `fix` must also
+pass, since the guard (§AR-forge-workflow-pipeline.6) gives no second request
+for a failure no agent was shown. `repair`
 runs the same check after `javaTest`; `native` runs it after exploration, and
 it is the first native build that must pass when `analyze` could not list the
 call sites.

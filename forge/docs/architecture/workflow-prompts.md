@@ -68,9 +68,9 @@ needs a brief row at most, never a new rule block or state.
 ## 5. The fix request
 
 `handoff.py` writes it for every sender. It carries the facts of this failure
-and nothing else: the return code, the failing commands, a one-line brief per
-recognized error, the last 200 lines of each command's output, and the files
-the agent may edit. Each output is matched against a small table, and an
+and nothing else: the return code, the failing commands, the commands a failure
+kept from running, a one-line brief per recognized error, the last 200 lines of
+each command's output, and the files the agent may edit. Each output is matched against a small table, and an
 unmatched failure gets the default brief:
 
 | Error in the output | Brief |
@@ -87,7 +87,8 @@ unmatched failure gets the default brief:
 | anything else | make the command pass |
 
 The instruction orders the work: read the request and the files it names, make
-every change with no Gradle run, rerun the failing commands until they pass or
-nothing inside the rules helps, and only then report `fixed` or `cannot-fix`.
+every change with no Gradle run, rerun the failing commands and then the ones
+they kept from running until all pass or nothing inside the rules helps, and
+only then report `fixed` or `cannot-fix`.
 The audit's request (§FS-local-branch-review.2) is the same shape with no
 failing output: every command passes, and its one brief is the audit.
