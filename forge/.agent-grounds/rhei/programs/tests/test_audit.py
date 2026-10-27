@@ -23,6 +23,7 @@ from support import FakeRepository, working_directory
 from test_prepare import prepare_arguments
 from test_workflow import URLS
 
+import audit  # noqa: E402
 import forge_run  # noqa: E402
 import gates  # noqa: E402
 from exit_codes import (  # noqa: E402
@@ -115,6 +116,23 @@ class AuditTest(FinalizedRun):
         self.assertNotIn("## Output", request)
         self.assertNotIn("stats/org.example", request.split("## You may edit")[1])
         self.assertEqual("audit", self.state.pending_request)
+
+    def test_the_audit_brief_sets_the_scaffold_and_zero_call_bars(self) -> None:
+        self.repaired()
+        self.assertEqual(OK, self.step("finalize"))
+        self.assertEqual(AGENT_WORK, self.step("audit"))
+        request: str = self.read("fix-request.md")
+        self.assertIn("never rewrite a test\n  because it looks thin", request)
+        self.assertIn("reports no dynamic-access calls", request)
+        self.assertIn("reporter-request.md", request)
+
+    def test_an_update_audits_only_what_the_run_changed(self) -> None:
+        self.repaired()
+        state: RunState = self.state
+        state.previous_coordinate = "org.example:lib:1.0.0"
+        text: str = audit.brief(state)
+        self.assertIn("tests/src/org.example/lib/1.0.0/", text)
+        self.assertNotIn("since `", text)
 
     def test_an_audit_with_no_edits_publishes(self) -> None:
         self.repaired()

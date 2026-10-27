@@ -81,14 +81,14 @@ def repair_scope_passes(previous: Scope, new: Scope) -> bool:
     return previous.ratio - new.ratio <= 0.20
 
 
-def _dynamic_access(state: RunState, version: str) -> Any:
+def dynamic_access(state: RunState, version: str) -> Any:
     entry: dict[str, Any] | None = load_library_stats_entry(state.worktree, state.group, state.artifact, version)
     return (entry or {}).get("dynamicAccess")
 
 
 def coverage_breach(state: RunState) -> str | None:
     """Why the regenerated stats miss the label's coverage gate, or `None`."""
-    new: dict[str, Scope] = scopes(_dynamic_access(state, state.version))
+    new: dict[str, Scope] = scopes(dynamic_access(state, state.version))
     overall: Scope = new[OVERALL]
     if state.chunk.active:
         # Only zero coverage fails a chunk (§FS-forge-chunked-dynamic-access).
@@ -100,7 +100,7 @@ def coverage_breach(state: RunState) -> str | None:
     if state.previous_coordinate is None:
         return None
     previous_version: str = state.previous_coordinate.split(":")[2]
-    previous: dict[str, Scope] = scopes(_dynamic_access(state, previous_version))
+    previous: dict[str, Scope] = scopes(dynamic_access(state, previous_version))
     if state.route == ROUTE_UPDATE:
         before: Scope = previous[OVERALL]
         if overall.total and before.total and overall.covered * before.total < before.covered * overall.total:

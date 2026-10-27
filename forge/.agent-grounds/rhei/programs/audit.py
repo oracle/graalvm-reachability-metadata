@@ -16,6 +16,7 @@ from __future__ import annotations
 import os
 
 import finalize
+import gates
 import handoff
 import native_check
 from build_tools import changed_paths, checkpoint, coordinate_task
@@ -26,18 +27,42 @@ SENDER: str = "audit"
 NATIVE_TASKS: tuple[str, ...] = ("generateMetadata", "checkMetadataFiles", "nativeTest")
 
 
+PATTERNS: str = """
+Check against the test contract (§root/FS-test-contract.1, §root/FS-test-contract.2,
+§root/FS-test-contract.3, §root/FS-test-contract.4, §root/FS-test-contract.2.7) and the
+cheating patterns of §root/FS-contribution-contract.4, each at the bar it sets:
+- scaffold: only a test whose body is still the unmodified TCK placeholder; never rewrite a test
+  because it looks thin;
+- Native Image dodging: native skips, early returns, a bare `catch (Error)`, or
+  `isUnsupportedFeatureError` outside open-ended dynamic class loading;
+- fake requested coverage: the metadata in `reporter-request.md` must be reached through the
+  library's public API, not by direct reflection, class literals, or `getResource`;
+- coverage bought by asserting a known bug, pinned tested-library versions, tests in the library's
+  own package, and stubs of library types;
+- fix by weakening: deleted or disabled tests, removed assertions, swallowed exceptions;
+- a `typeReached` condition reached after the access, test-only types in shipped metadata,
+  hand-added entries beyond what 2.7 allows, forbidden flags, and legacy `*-config.json` files.
+Fix each violation, then rerun the commands; change nothing that follows the rules.
+""".strip()
+
+
 def brief(state: RunState) -> str:
     """The audit's one brief (§FS-local-branch-review.2).
 
     The rules themselves are the `fix` instruction's.
     """
-    return (f"Check every test and metadata change since `{state.base_commit}` against the repository rules "
-            "(§root/FS-test-contract.1, §root/FS-test-contract.2, §root/FS-test-contract.3, "
-            "§root/FS-test-contract.4, §root/FS-test-contract.2.7) and the cheating patterns of "
-            "§root/FS-contribution-contract.4 - scaffold-only or superficial tests, tests that bypass the public "
-            "API, pinned tested-library versions, test-only types in shipped metadata, hand-added entries beyond "
-            "what 2.7 allows, forbidden flags, and legacy `*-config.json` files - and fix each violation, "
-            "then rerun the commands; change nothing that follows the rules.")
+    parts: list[str] = []
+    if state.previous_coordinate is None:
+        parts.append(f"Check every test and metadata change since `{state.base_commit}`.")
+    else:
+        previous: str = state.previous_coordinate.split(":")[2]
+        parts.append(f"Check only the tests and metadata this run changed or added: tests carried over "
+                     f"unchanged from `{previous}` (compare with `tests/src/{state.group}/{state.artifact}/"
+                     f"{previous}/`) are not yours to review.")
+    if gates.scopes(gates.dynamic_access(state, state.version))[gates.OVERALL].total == 0:
+        parts.append("This version reports no dynamic-access calls, so its tests matter less: test "
+                     "depth is not a violation, and you add or deepen no test for it.")
+    return "\n\n".join([*parts, PATTERNS])
 
 
 def commands(workspace: str, state: RunState) -> list[handoff.Failure]:
