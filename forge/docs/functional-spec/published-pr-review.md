@@ -79,6 +79,10 @@ offered only when the program read every check as passed.
 Every failing job died of something the change cannot have caused: the network,
 the runner, Gradle plugin resolution, a Docker pull, or a cancellation. The
 agent reruns the failed jobs of each such run: `gh run rerun <run-id> --failed`.
+This case is checked before every other failure, Spring AOT included. A
+connection error is transient only when nothing in its stack points at Native
+Image: a channel that cannot be created reflectively, or a class initializer that
+fails, is a metadata miss that looks like the network.
 
 ### 4.3 A library test lane failed
 
@@ -100,15 +104,14 @@ dependent library. The agent finds the cause.
 
 ### 4.4 A Spring AOT smoke test failed
 
-The agent first tries to fix the pull request's metadata. A smoke test that
-cannot pass because of Native Image behavior, or that is flaky — a failure that
-recurs on unrelated pull requests touching the same library — is removed from
-the gate through the repository's Spring AOT exclusion list
-(§root/FS-repository-functional-spec.5.3), with its reason. A cause in a
-dependent library, or a Native Image 25.0 bug, cannot be fixed in the
-repository, and the outcome is an issue (§FS-published-pr-review.4.6). Spring
-smoke tests run on the newest GraalVM LTS, so a fix that exists only in a newer
-release is such a bug.
+A smoke test that did not fail transiently (§FS-published-pr-review.4.2) has
+two outcomes. When the failure is a metadata miss of the pull request's library,
+the agent fixes it under the `fix` state's rules, verifies it by running that
+smoke test locally, and pushes. Otherwise the outcome is an issue
+(§FS-published-pr-review.4.6) that names the pull request, the failing Spring
+AOT project and branch, and the error, and asks its assignee to find whether the
+bug is on the Native Image side or the Spring side. The review does not decide
+that itself, and it never removes a smoke test from the gate.
 
 ### 4.5 Fix first
 
@@ -122,9 +125,10 @@ Native Image error in something that usually works is investigated in the
 
 An issue in `oracle/graalvm-reachability-metadata` carries the whole diagnosis:
 the failing lane (JDK, native-image mode, library version), the error quoted,
-the local reproduction with exact versions, the suspected Native Image cause
-with `oracle/graal` commit and pull request links, and why the cause is not the
-pull request's metadata. Its signature is a short stable key of the failure, the
+and why the cause is not the pull request's metadata. For a library lane it adds
+the local reproduction with exact versions and the suspected Native Image cause
+with `oracle/graal` commit and pull request links; for a Spring AOT smoke test,
+the open question of §FS-published-pr-review.4.4. Its signature is a short stable key of the failure, the
 same for every pull request it breaks; an open issue carrying the same
 signature is reused instead of opening a second
 (§root/FS-contribution-contract.5.3). The pull request links the issue and is
