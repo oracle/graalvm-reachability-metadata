@@ -58,8 +58,8 @@ claimed, reviews the open Forge pull requests with the `review_agent`
 | `10` | work for an agent: a cover prompt or a fix request is written |
 | `11` | `measure` only: the JVM tests fail and a fix request is written |
 | `12` | the check still fails right after its own fix, or after the audit's edit |
-| `20` | nothing to do: no target, exploration deferred, explore budget spent, or nothing to publish |
-| `21` | `repair` only: the setup verdict is recorded as a skip; go straight to `publish` |
+| `20` | nothing to do: a new library has no version to repair, no target, exploration deferred, explore budget spent, or nothing to publish |
+| `21` | `setup-check` only: the setup verdict is recorded as a skip; go straight to `publish` |
 | `2` / `3` | bad input / infrastructure or crash |
 | `30`–`34` | `fix-route` only: return to `repair`, `measure`, `native`, `finalize`, `audit` |
 | `40` | `fix-route` only: the fix reported that it could not help |
@@ -70,7 +70,7 @@ a `SystemExit` from a shared helper included, is an infrastructure exit.
 
 ## 3. State machine
 
-Nine programs, three agent states, four final states:
+Ten programs, three agent states, four final states:
 
 ```mermaid
 stateDiagram-v2
@@ -84,10 +84,14 @@ stateDiagram-v2
     [*] --> prepare
     prepare --> setup: 0
     prepare --> failed: 2 or 3
-    setup --> repair
-    repair --> analyze: 0, 20 new library
+    state "setup-check" as check
+    setup --> check
+    check --> repair: 0
+    check --> analyze: 20 new library
+    check --> publish: 21 skip recorded
+    check --> failed: 2 or 3
+    repair --> analyze: 0
     repair --> fix: 10
-    repair --> publish: 21 skip recorded
     analyze --> cover: 10
     analyze --> native: 20
     cover --> measure
@@ -130,25 +134,28 @@ template's `transition_limit`.
 | State | Does |
 | --- | --- |
 | `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<group>-<artifact>-<version>`, reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate, and attaches it to the task; scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
-| `repair` | Runs the setup tail once (§AR-forge-workflow-pipeline.4.1), which exits `21` on a recorded skip; then a new library exits `20`, and every other route runs the version check, `javaTest`, and the native check (§AR-forge-workflow-pipeline.5); a failure is one "make this version work" fix request |
-| `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt |
+| `setup-check` | Once, right after `setup`: the setup tail (§AR-forge-workflow-pipeline.4.1); a recorded skip exits `21`, a new library, which has no version to repair, exits `20` to `analyze`, and every other route exits `0` to `repair` |
+| `repair` | Only for a version that already has tests: runs the version check, `javaTest`, and the native check (§AR-forge-workflow-pipeline.5); a failure is one "make this version work" fix request |
+| `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt; a listing that cannot be produced takes the basic mode instead |
 | `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
 | `native` | The native check over the tests exploration added |
 | `finalize` | `spotlessApply`, then `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the coordinate's three native lanes (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request |
 | `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns the native check and `finalize` once over a changed one (§AR-forge-workflow-pipeline.4.3) |
 | `fix-route` | Reads the request's return code and the fix report: `cannot-fix` exits `40`, anything else the return code |
-| `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), rebases onto `master`, and pushes the publication branch; a deferred exploration opens its follow-up issue first |
+| `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), and pushes the publication branch `finalize` rebased; a deferred exploration opens its follow-up issue first |
 
 ### 4.1 The setup tail
 
 `setup` may change only the coordinate entry's four URL fields in `index.json`,
-the test project's `build.gradle`, and its `required-docker-images.txt`. The
-first `repair` reverts every other edit, verifies the four URLs, downloads the
-main sources into the run's source context — a failed download is retried after
-a pause of a few minutes, three attempts in all — writes the user-code filter
-and `allowed-packages` from the library JAR when the project has no filter yet,
-and checkpoints. A missing URL, or a declaration that does not resolve, is a bad
-input.
+the test project's `build.gradle`, and its `required-docker-images.txt`.
+`setup-check`, the program that follows it, finishes the setup once: it
+reverts every other edit, verifies the four URLs, downloads the main sources
+into the run's source context — a failed download is retried after a pause of a
+few minutes, three attempts in all — writes the user-code filter and
+`allowed-packages` from the library JAR when the project has no filter yet, and
+checkpoints. A missing URL, or a declaration that does not resolve, is a bad
+input. A new library then exits `20` to `analyze`, since it has no version to
+repair; every other route exits `0` to `repair`.
 
 On the three `fails-*` labels `setup` may also add `skipped-versions` entries,
 its unsupportable-version verdict (§FS-unsupportable-version-diagnosis.2); on
@@ -208,7 +215,9 @@ what the filter allows into the shipped metadata; `checkMetadataFiles` and
 merges, filters, or edits metadata itself. Whatever still fails goes to `fix` as
 one request with every failing output, where an exact missing registration or a
 listed native flag is a legal repair (§root/FS-test-contract.2.7). `repair`
-runs the same check after `javaTest`; `native` runs it after exploration.
+runs the same check after `javaTest`; `native` runs it after exploration, and
+it is the first native build that must pass when `analyze` could not list the
+call sites.
 
 ## 6. The loop guard
 
@@ -228,6 +237,7 @@ processed.
 
 | Condition | Mode | Exit |
 | --- | --- | --- |
+| the call sites cannot be listed, because the native test image does not build yet | basic, measured by `javaTest` alone; the cause is printed as an unavailable listing, never as a library without dynamic access | `10` |
 | no dynamic-access calls, new library | basic: tests of the main public API | `10` |
 | no dynamic-access calls, or `uncovered` is 0, or the previous version's coverage is already met | skip, unless the reporter requested metadata, which gets one basic pass | `20` |
 | `fails-*` label and `uncovered` above `defer_classes` | defer: `publish` opens the follow-up library-update issue | `20` |

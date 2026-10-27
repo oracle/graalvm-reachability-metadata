@@ -727,7 +727,7 @@ a repairable verdict it adds no entry.
 
 The setup tail keeps `skipped-versions` additions on the three `fails-*` labels
 and reverts them on every other label (§AR-forge-workflow-pipeline.4.1). When
-the index gained an entry for the target version, `repair` turns the run into
+the index gained an entry for the target version, `setup-check` turns the run into
 the skip record before anything else. The coordinate's paths return to the
 pinned base — the version `prepare` added, its tests, metadata, and stats are
 dropped, as §root/FS-contribution-contract.5.4 requires of a skip record — the
