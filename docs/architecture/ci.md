@@ -93,6 +93,16 @@ compute impacted Spring AOT projects, then runs triaged native tests via
 `run-spring-aot-triaged-test.sh` (§AR-shared-scripts). Only runs when metadata
 changes actually affect a Spring AOT project (§FS-repository-functional-spec.5.3).
 
+A failed project passes when the repository excludes it, when its upstream
+`build.gradle` carries `expectedToFail` at the pinned smoke-test commit, or when
+its upstream workflow fails too. The repository's exclusion list is
+`.github/spring-aot-excluded-tests.json`, an object from the Gradle project path
+to the reason, such as `{":integration:spring-pulsar": "..."}`. The triage
+script reads it before running anything, so a listed project is skipped with a
+warning rather than built. It lives outside `ci.json` and the harness, so adding
+an entry is not an infrastructure change that reruns the whole matrix
+(§AR-matrix-source), and the pull request that adds one changes its own gate.
+
 ### AR-index-file-validation: Validate index.json files
 
 Triggers on PRs touching `metadata/*/*/index.json`. Runs
