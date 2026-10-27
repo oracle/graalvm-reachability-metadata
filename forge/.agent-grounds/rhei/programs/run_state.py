@@ -59,6 +59,8 @@ class Explore:
     feedback: str = ""
     # Set when `analyze` defers exploration of a `fails-*` issue.
     deferred_classes: int | None = None
+    # False when the call sites could not be listed: basic mode, measured by `javaTest` alone.
+    listed: bool = True
 
 
 @dataclass
@@ -99,7 +101,6 @@ class RunState:
     has_reporter_request: bool = False
     # The explicit metadata the reporter asked for (§FS-local-ci-equivalent-verification.1.1).
     requested_metadata: dict[str, list[str]] = field(default_factory=dict)
-    setup_applied: bool = False
     # The run is the skip record of the setup verdict (§FS-unsupportable-version-diagnosis.3).
     skip_recorded: bool = False
     # The sender of the open fix request, for the loop guard (§AR-forge-workflow-pipeline.6).

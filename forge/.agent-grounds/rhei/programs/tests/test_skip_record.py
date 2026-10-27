@@ -7,7 +7,7 @@
 
 A recorded skip goes from `repair` straight to `publish` with an index-only
 tree, a skip edit on any other label is reverted, and a verdict the index
-rejects falls through to the normal repair.
+rejects falls through to the normal setup and repair.
 """
 from __future__ import annotations
 
@@ -68,6 +68,11 @@ class SkipRecordTest(unittest.TestCase):
         with open(state.path(state.index_path), "w", encoding="utf-8") as handle:
             json.dump(entries, handle, indent=2)
 
+    def repaired(self) -> None:
+        """The setup tail falls through, and `repair` runs the version."""
+        self.assertEqual(OK, self.step("setup-check"))
+        self.assertEqual(OK, self.step("repair"))
+
     def test_run_note_names_the_bar_only_on_fails_labels(self) -> None:
         self.prepare("fails-java-run")
         with open(runtime_path(self.fake.workspace, "run.md"), encoding="utf-8") as handle:
@@ -77,7 +82,7 @@ class SkipRecordTest(unittest.TestCase):
         self.prepare("fails-javac-compile")
         self.setup_verdict()
 
-        self.assertEqual(SKIP_RECORDED, self.step("repair"))
+        self.assertEqual(SKIP_RECORDED, self.step("setup-check"))
         state: RunState = self.state
         self.assertTrue(state.skip_recorded)
         self.assertNotIn("javaTest", self.gradle_calls())
@@ -86,9 +91,7 @@ class SkipRecordTest(unittest.TestCase):
         entry: dict[str, Any] = self.index()[-1]
         self.assertEqual(["1.5.0"], entry["tested-versions"])
         self.assertEqual([{"version": "2.0.0", "reason": REASON}], entry["skipped-versions"])
-        self.assertIsNone(forge_run.outcome("repair", SKIP_RECORDED))
-        # A second visit keeps the decision instead of repairing.
-        self.assertEqual(SKIP_RECORDED, self.step("repair"))
+        self.assertIsNone(forge_run.outcome("setup-check", SKIP_RECORDED))
 
         self.assertEqual(OK, self.step("publish"))
         state = self.state
@@ -109,7 +112,7 @@ class SkipRecordTest(unittest.TestCase):
         self.prepare("library-update-request")
         self.setup_verdict()
 
-        self.assertEqual(OK, self.step("repair"))
+        self.repaired()
         entry: dict[str, Any] = self.index()[-1]
         self.assertNotIn("skipped-versions", entry)
         self.assertEqual(URLS["source-code-url"], entry["source-code-url"])
@@ -121,7 +124,7 @@ class SkipRecordTest(unittest.TestCase):
         self.setup_verdict()
         self.fake.control({"indexFails": True})
 
-        self.assertEqual(OK, self.step("repair"))
+        self.repaired()
         state: RunState = self.state
         self.assertFalse(state.skip_recorded)
         self.assertTrue(os.path.isdir(state.path(state.test_dir)))
@@ -148,7 +151,7 @@ class SkipRecordTest(unittest.TestCase):
         with open(state.path(state.index_path), "w", encoding="utf-8") as handle:
             json.dump(entries, handle, indent=2)
 
-        self.assertEqual(OK, self.step("repair"))
+        self.repaired()
         self.assertFalse(self.state.skip_recorded)
         recorded = next(entry for entry in self.index() if "skipped-versions" in entry)
         self.assertEqual(["2.0.0"], [record["version"] for record in recorded["skipped-versions"]])

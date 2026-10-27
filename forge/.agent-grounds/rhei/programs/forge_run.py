@@ -32,6 +32,7 @@ import native_check  # noqa: E402
 import prepare  # noqa: E402
 import publish  # noqa: E402
 import repair  # noqa: E402
+import setup_check  # noqa: E402
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
@@ -47,6 +48,7 @@ from exit_codes import (  # noqa: E402
 from run_state import runtime_path, write_json  # noqa: E402
 
 STEPS: dict[str, Callable[[str], int]] = {
+    "setup-check": setup_check.setup_check,
     "repair": repair.repair,
     "analyze": explore.analyze,
     "measure": explore.measure,

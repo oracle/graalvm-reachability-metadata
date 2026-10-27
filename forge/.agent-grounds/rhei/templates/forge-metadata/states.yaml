@@ -1,14 +1,14 @@
 # State machine of the forge-metadata workflow (§AR-forge-workflow-pipeline.3).
 #
-#   prepare -- 0 --> setup --> repair
-#   repair -- 0, 20 (new library) --> analyze; 10 --> fix; 21 (skip recorded) --> publish
+#   prepare -- 0 --> setup --> setup-check
+#   setup-check -- 0 --> repair; 20 (new library) --> analyze; 21 (skip recorded) --> publish
+#   repair -- 0 --> analyze; 10 --> fix
 #   analyze -- 10 --> cover --> measure; 20 (nothing to explore, deferred) --> native
 #   measure -- 10 --> cover; 11 (JVM tests fail) --> fix; 0 (goal), 20 (budget) --> native
 #   native -- 0 --> finalize; 10 --> fix
 #   finalize -- 0 --> audit; 10 --> fix
 #   audit -- 10 (first visit) --> fix; 0 --> publish
-#   fix --> fix-route -- 30/31/32/33/34 --> repair/measure/native/finalize/audit
-#   fix-route -- 40 (cannot fix) --> human-intervention
+#   fix --> fix-route -- 30-34 --> repair/measure/native/finalize/audit; 40 --> human-intervention
 #   repair, measure, native, finalize, audit -- 12 (failing after its fix) --> human-intervention
 #   publish -- 0 --> completed; 20 (nothing changed) --> nothing-to-publish
 #   every program -- 2 (bad input), 3 (infrastructure), or a crash --> failed
@@ -83,8 +83,13 @@ states:
       Run no test task, and change nothing else: a program reverts every other
       edit. The edited files are your result; write no report.
 
+  setup-check:
+    description: Finish the setup once - keep only setup's allowed edits, check the URLs, download the sources, write the filter.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" setup-check
+    program_timeout: 60m
+
   repair:
-    description: Run the setup tail once, then make the version work - javaTest and the native check.
+    description: Make a version that already has tests work - javaTest and the native check.
     program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" repair
     program_timeout: 180m
     outputs:
@@ -330,23 +335,38 @@ transitions:
     description: A bad input, a worktree conflict, or a failed scaffold.
 
   - from: setup
+    to: setup-check
+    description: Setup's turn ended; setup-check keeps only what setup may change.
+
+  - from: setup-check
     to: repair
-    description: Setup's turn ended; repair keeps only what setup may change.
+    exit_code: 0
+    description: The setup is done and the version has tests to repair.
+
+  - from: setup-check
+    to: analyze
+    exit_code: 20
+    description: The setup is done; a new library has no version to repair.
+
+  - from: setup-check
+    to: publish
+    exit_code: 21
+    description: Setup's verdict is recorded as a skip; nothing is repaired or explored.
+
+  - from: setup-check
+    to: failed
+    exit_code: nonzero
+    description: A missing URL, an unresolvable declaration, or the infrastructure.
 
   - from: repair
     to: analyze
-    exit_code: [0, 20]
-    description: The version works, or a new library has nothing to repair.
+    exit_code: 0
+    description: The version works.
 
   - from: repair
     to: fix
     exit_code: 10
     description: The version fails; one fix request follows.
-
-  - from: repair
-    to: publish
-    exit_code: 21
-    description: Setup's verdict is recorded as a skip; nothing is repaired or explored.
 
   - from: repair
     to: human-intervention
@@ -356,7 +376,7 @@ transitions:
   - from: repair
     to: failed
     exit_code: nonzero
-    description: A missing URL, an unresolvable declaration, or the infrastructure.
+    description: An unresolvable declaration, a missing index entry, or the infrastructure.
 
   - from: analyze
     to: cover
@@ -371,7 +391,7 @@ transitions:
   - from: analyze
     to: failed
     exit_code: nonzero
-    description: The call sites or the first coverage report could not be produced.
+    description: The first coverage report failed over listed call sites.
 
   - from: cover
     to: measure

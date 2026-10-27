@@ -10,7 +10,9 @@ sites, keeps a copy, correlates JaCoCo against it, and picks the mode;
 `measure` reruns only the JVM tests with JaCoCo against that copy, keeps a pass
 that gained, resets one that did not, and advances the mode
 (§AR-forge-workflow-pipeline.4.2, §AR-forge-workflow-pipeline.7). The
-dynamic-access report is the only oracle (§FS-forge-chunked-dynamic-access).
+dynamic-access report is the only oracle (§FS-forge-chunked-dynamic-access);
+when the image does not build, there is none, and one basic pass that keeps
+`javaTest` green is all exploration does.
 """
 from __future__ import annotations
 
@@ -185,7 +187,7 @@ def list_call_sites(workspace: str, state: RunState) -> bool:
     )
     output: str = state.path(os.path.join(state.test_dir, "build", "native", "nativeTestCompile", "dynamic-access"))
     if not listed.ok or not os.path.isdir(output):
-        print(f"ERROR: the dynamic-access call sites could not be listed:\n{listed.tail}", file=sys.stderr)
+        print(f"[analyze] the dynamic-access call sites could not be listed:\n{listed.tail}")
         return False
     copy: str = call_sites_dir(workspace)
     shutil.rmtree(copy, ignore_errors=True)
@@ -197,7 +199,12 @@ def analyze(workspace: str) -> int:
     state: RunState = load(workspace)
     cover_prompts.write_placeholder(workspace)
     if not list_call_sites(workspace, state):
-        return INFRASTRUCTURE
+        # An unavailable listing, not a library without calls (§AR-forge-workflow-pipeline.7).
+        state.explore = Explore(mode=MODE_BASIC, listed=False, checkpoint=head(state.worktree))
+        print("[analyze] basic: the native test image does not build yet; the native check owns it")
+        cover_prompts.write_prompt(workspace, state, None)
+        save(workspace, state)
+        return AGENT_WORK
     measured: TaskResult = correlate(workspace, state, "analyze-coverage.log")
     if not measured.ok:
         print(f"ERROR: the first coverage report failed:\n{measured.tail}", file=sys.stderr)
@@ -223,10 +230,40 @@ def analyze(workspace: str) -> int:
     return AGENT_WORK
 
 
+def measure_unlisted(workspace: str, state: RunState) -> int:
+    """Keep the basic pass over an unlisted library when `javaTest` passes.
+
+    §AR-forge-workflow-pipeline.7
+    """
+    explore: Explore = state.explore
+    tested: TaskResult = run_gradle(
+        state.worktree, coordinate_task("javaTest", state.coordinate),
+        runtime_path(workspace, "logs", f"measure-{explore.passes + 1}-javaTest.log"),
+    )
+    if not tested.ok and not handoff.guard_tripped(state, SENDER):
+        handoff.write_fix_request(workspace, state, SENDER, [handoff.Failure(tested.command, tested.tail)])
+        save(workspace, state)
+        print("[measure] the cover pass broke the JVM tests; a fix request follows")
+        return JVM_TESTS_FAIL
+    state.pending_request = None
+    explore.passes += 1
+    if tested.ok:
+        explore.checkpoint = checkpoint(state.worktree, state.coordinate_paths,
+                                        f"Cover {state.coordinate}, pass {explore.passes}")
+    else:
+        reset_to(state.worktree, explore.checkpoint, [state.test_dir])
+    state.checkpoint = explore.checkpoint
+    save(workspace, state)
+    print(f"[measure] basic pass {'kept' if tested.ok else 'reset'}; next: native")
+    return OK
+
+
 def measure(workspace: str) -> int:
     state: RunState = load(workspace)
     handoff.write_placeholder(workspace, SENDER)
     cover_prompts.write_placeholder(workspace)
+    if not state.explore.listed:
+        return measure_unlisted(workspace, state)
     before: DynamicAccessCoverageReport = accepted_report(workspace)
     measured: TaskResult = correlate(workspace, state, f"measure-{state.explore.passes + 1}.log")
     explore: Explore = state.explore

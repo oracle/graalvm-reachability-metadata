@@ -91,11 +91,12 @@ def class_prompt(workspace: str, state: RunState, report: DynamicAccessCoverageR
 
 
 def basic_prompt(workspace: str, state: RunState) -> str:
+    why: str = ("No dynamic-access call site is left to target." if state.explore.listed else
+                "The dynamic-access call sites could not be listed: the native test image does not build yet.")
     lines: list[str] = [
         f"# Cover: {state.coordinate}",
         "",
-        "No dynamic-access call site is left to target. Write tests for the main public API in the "
-        "allowed packages.",
+        f"{why} Write tests for the main public API in the allowed packages.",
         "",
         "## Reporter-requested metadata",
         "",

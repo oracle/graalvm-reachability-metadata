@@ -91,7 +91,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.setup_agent(stray=True)
 
-        self.assertEqual(NOTHING_TO_DO, self.step("repair"))
+        self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
         state = self.state
         self.assertFalse(os.path.exists(state.path("README.md")))
         with open(state.path(state.index_path), encoding="utf-8") as handle:
@@ -153,6 +153,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.setup_agent()
 
+        self.assertEqual(OK, self.step("setup-check"))
         self.assertEqual(AGENT_WORK, self.step("repair"))
         self.assertIn("Return: 30", self.read("fix-request.md"))
         self.assertIn("JVM test failure", self.read("fix-request.md"))
@@ -167,6 +168,7 @@ class WorkflowTest(unittest.TestCase):
         self.fake.control({"classes": {"org.example.lib.Codec": 6}})
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.setup_agent()
+        self.assertEqual(OK, self.step("setup-check"))
         self.assertEqual(OK, self.step("repair"))
         self.assertEqual(AGENT_WORK, self.step("analyze"))
 
@@ -187,15 +189,51 @@ class WorkflowTest(unittest.TestCase):
         self.fake.control({"classes": {"org.example.lib.Codec": 3}})
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.setup_agent()
+        self.assertEqual(OK, self.step("setup-check"))
         self.assertEqual(OK, self.step("repair"))
         # With the copied CodecTest, two tests cover the previous version's two calls.
         self.cover("CodecSecondTest")
         self.assertEqual(NOTHING_TO_DO, self.step("analyze"))
 
+    def test_a_library_whose_image_does_not_build_yet_takes_one_basic_pass(self) -> None:
+        self.fake.issue("library-new-request")
+        self.fake.control({"classes": {"org.example.lib.Codec": 1}, "listFails": True, "nativeFails": True})
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
+
+        self.assertEqual(AGENT_WORK, self.step("analyze"))
+        self.assertEqual(("basic", False), (self.state.explore.mode, self.state.explore.listed))
+        self.assertIn("could not be listed", self.read("cover-prompt.md"))
+
+        self.cover("ApiTest")
+        self.assertEqual(OK, self.step("measure"))
+        self.assertIn("ApiTest.java", subprocess.run(
+            ["git", "show", "--name-only", "--format=", "HEAD"], cwd=self.state.worktree, check=True,
+            stdout=subprocess.PIPE, text=True).stdout)
+        self.assertEqual(AGENT_WORK, self.step("native"))
+        self.assertIn("Return: 32", self.read("fix-request.md"))
+
+    def test_a_basic_pass_that_breaks_the_tests_asks_for_a_fix(self) -> None:
+        self.fake.issue("library-new-request")
+        self.fake.control({"listFails": True})
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
+        self.assertEqual(AGENT_WORK, self.step("analyze"))
+        self.cover("BrokenTest")
+        self.fake.control({"listFails": True, "javaFails": True})
+        self.assertEqual(JVM_TESTS_FAIL, self.step("measure"))
+        self.fix("fixed", 1)
+        self.assertEqual(RETURN_MEASURE, self.step("fix-route"))
+        self.assertEqual(OK, self.step("measure"))
+        self.assertFalse(os.path.exists(self.state.path(os.path.join(
+            self.state.test_dir, "src", "test", "java", "org_example", "BrokenTest.java"))))
+
     def test_missing_url_is_a_bad_input(self) -> None:
         self.fake.issue("library-new-request")
         self.assertEqual(OK, self.step(*prepare_arguments()))
-        self.assertEqual(BAD_INPUT, self.step("repair"))
+        self.assertEqual(BAD_INPUT, self.step("setup-check"))
         self.assertEqual("failed", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["outcome"])
 
     def test_unchanged_coordinate_has_nothing_to_publish(self) -> None:

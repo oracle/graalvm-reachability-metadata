@@ -82,7 +82,10 @@ class FinalizedRun(unittest.TestCase):
             entry.update(URLS)
         with open(state.path(state.index_path), "w", encoding="utf-8") as handle:
             json.dump(entries, handle, indent=2)
-        self.assertIn(self.step("repair"), (OK, NOTHING_TO_DO))
+        checked: int = self.step("setup-check")
+        self.assertIn(checked, (OK, NOTHING_TO_DO))
+        if checked == OK:
+            self.assertEqual(OK, self.step("repair"))
 
     def audited(self, result: str = "fixed") -> int:
         """Finalize, send the audit, play `fix`, and route back."""
@@ -210,7 +213,7 @@ class AuditTest(FinalizedRun):
             transitions: list[dict[str, Any]] = yaml.safe_load(handle)["transitions"]
         into_publish: set[tuple[str, Any]] = {(edge["from"], edge.get("exit_code")) for edge in transitions
                                               if edge["to"] == "publish"}
-        self.assertEqual({("repair", 21), ("audit", 0)}, into_publish)
+        self.assertEqual({("setup-check", 21), ("audit", 0)}, into_publish)
         self.assertIn({"from": "fix-route", "to": "audit", "exit_code": RETURN_AUDIT},
                       [{key: edge.get(key) for key in ("from", "to", "exit_code")} for edge in transitions])
 

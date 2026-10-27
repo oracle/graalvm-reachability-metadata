@@ -18,7 +18,7 @@ from support import run_state, working_directory
 from utility_scripts.source_context import PreparedSourceContext, SourceArtifactContext
 
 import forge_run  # noqa: E402
-import repair  # noqa: E402
+import setup_check  # noqa: E402
 from exit_codes import INFRASTRUCTURE  # noqa: E402
 from run_state import read_json, runtime_path  # noqa: E402
 
@@ -32,21 +32,21 @@ class DownloadSourcesTest(unittest.TestCase):
 
     def download(self, *outcomes: PreparedSourceContext) -> tuple[list[str], list[int]]:
         pauses: list[int] = []
-        with mock.patch.object(repair, "prepare_source_contexts", side_effect=list(outcomes)), \
-                mock.patch.object(repair.time, "sleep", side_effect=pauses.append):
-            return repair.download_sources(run_state()), pauses
+        with mock.patch.object(setup_check, "prepare_source_contexts", side_effect=list(outcomes)), \
+                mock.patch.object(setup_check.time, "sleep", side_effect=pauses.append):
+            return setup_check.download_sources(run_state()), pauses
 
     def test_a_denied_download_is_retried_after_a_pause(self) -> None:
         missing, pauses = self.download(prepared("https://example.org/src", False), prepared("https://example.org/src", True))
-        self.assertEqual(([], [repair.retry_seconds()]), (missing, pauses))
+        self.assertEqual(([], [setup_check.retry_seconds()]), (missing, pauses))
 
     def test_a_source_without_a_url_is_not_retried(self) -> None:
         self.assertEqual(([], []), self.download(prepared(None, False)))
 
     def test_the_run_goes_on_after_the_last_attempt(self) -> None:
         denied: PreparedSourceContext = prepared("https://example.org/src", False)
-        missing, pauses = self.download(*[denied] * repair.SOURCE_ATTEMPTS)
-        self.assertEqual((["main"], repair.SOURCE_ATTEMPTS - 1), (missing, len(pauses)))
+        missing, pauses = self.download(*[denied] * setup_check.SOURCE_ATTEMPTS)
+        self.assertEqual((["main"], setup_check.SOURCE_ATTEMPTS - 1), (missing, len(pauses)))
 
 
 class EarlyExitTest(unittest.TestCase):
@@ -59,9 +59,9 @@ class EarlyExitTest(unittest.TestCase):
         def quit_early(_: str) -> int:
             raise SystemExit(1)
 
-        with mock.patch.dict(forge_run.STEPS, {"repair": quit_early}), \
+        with mock.patch.dict(forge_run.STEPS, {"setup-check": quit_early}), \
                 mock.patch.dict(os.environ, {"RHEI_RESULT_PATH": result_path}), working_directory(workspace):
-            self.assertEqual(INFRASTRUCTURE, forge_run.main(["repair"]))
+            self.assertEqual(INFRASTRUCTURE, forge_run.main(["setup-check"]))
         self.assertTrue(os.path.isfile(result_path))
         outcome = read_json(runtime_path(workspace, forge_run.OUTCOME))
         self.assertEqual(("failed", "infrastructure"), (outcome["outcome"], outcome["kind"]))

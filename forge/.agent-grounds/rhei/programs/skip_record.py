@@ -9,7 +9,7 @@ On a `fails-*` label `setup` may record its verdict as `skipped-versions`
 entries in `index.json` (§FS-unsupportable-version-diagnosis.2). Before anything
 else the setup tail turns an entry for the target version into an index-only
 tree on the pinned base, validates it, and exits `SKIP_RECORDED` to `publish`;
-a verdict that cannot be applied is reverted and the repair goes on
+a verdict that cannot be applied is reverted and the run goes on
 (§FS-unsupportable-version-diagnosis.3, §AR-forge-workflow-pipeline.4.1).
 """
 from __future__ import annotations
@@ -147,21 +147,21 @@ def _gate(state: RunState) -> LocalCIVerificationResult | None:
         return run_local_ci_verification(repo_path=state.worktree, coordinates=state.coordinate,
                                          base_commit=state.base_commit, max_fixup_attempts=0)
     except LocalCIVerificationError as error:
-        print(f"[repair] the pre-publication gate rejected the skip record: {error}")
+        print(f"[setup-check] the pre-publication gate rejected the skip record: {error}")
         return None
 
 
 def apply(workspace: str, state: RunState) -> int | None:
-    """Turn a verdict for the target version into the run's skip record; `None` falls through to repair."""
+    """Turn a verdict for the target version into the run's skip record; `None` lets the setup tail go on."""
     records: list[dict[str, str]] = added(read_index(state), read_index(state, state.checkpoint))
     if not any(record["version"] == state.version for record in records):
         if records:
-            print(f"[repair] dropped skip entries that do not name {state.version}")
+            print(f"[setup-check] dropped skip entries that do not name {state.version}")
             strip(state)
         return None
     base: list[dict[str, Any]] = read_index(state, state.base_commit)
     if state.version in recorded_versions(base) or any(not record["reason"] for record in records):
-        print(f"[repair] {state.version} is already recorded as skipped, or a reason is empty; repairing instead")
+        print(f"[setup-check] {state.version} is already recorded as skipped, or a reason is empty; going on without it")
         strip(state)
         return None
     prepared: str = state.checkpoint
@@ -187,11 +187,10 @@ def apply(workspace: str, state: RunState) -> int | None:
         if gate is not None:
             state.local_ci = gate.to_metrics()
             state.skip_recorded = True
-            state.setup_applied = True
-            print(f"[repair] recorded {', '.join(r['version'] for r in records)} as skipped at {state.checkpoint}")
+            print(f"[setup-check] recorded {', '.join(r['version'] for r in records)} as skipped at {state.checkpoint}")
             return SKIP_RECORDED
     else:
-        print(f"[repair] validateIndexFiles rejected the skip record:\n{validated.tail}")
+        print(f"[setup-check] validateIndexFiles rejected the skip record:\n{validated.tail}")
     # The reset leaves the rebased run, so the run is back on the base it was pinned to.
     state.base_commit, state.checkpoint = pinned, prepared
     reset_to(state.worktree, setup_commit, state.coordinate_paths)
