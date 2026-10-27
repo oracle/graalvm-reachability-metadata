@@ -63,6 +63,15 @@ descriptor. Shared repository edits are allowed only when local verification
 (§FS-local-ci-equivalent-verification) proved them necessary, and those paths
 must be listed in descriptor verification evidence for maintainer review.
 
+A `forge-metadata` run and the review of its published pull request decide the
+file set with one resolver: it admits exactly what
+§root/FS-contribution-contract.2 admits for the coordinate — the version's own
+files, an allowed-Docker-image file whose image the test lists, routed owner
+metadata in the contract's added-only shape, and the new directories that move a
+version off a shared suite. The scope gate, every checkpoint, publication, and
+the check of a review fix all ask it, so an edit outside the set fails the scope
+gate as a fix request and is never reverted silently.
+
 ## AR-publication-descriptor: Durable publication descriptor
 
 Local finalization writes schema version `1` to

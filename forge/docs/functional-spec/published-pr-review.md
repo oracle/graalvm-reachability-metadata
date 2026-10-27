@@ -58,7 +58,10 @@ receives the pull request's number, branch, head, route label, and coordinate;
 its body, which renders the local review from the descriptor; the head's check
 results with the tail of each failed log; the bounds left
 (§FS-published-pr-review.5); and the Metadata and Native Image rules of the
-run's `fix` state, which bind its repairs exactly as they bind a run's.
+run's `fix` state, which bind its repairs exactly as they bind a run's. A pushed
+fix stays inside the contribution's file set (§root/FS-contribution-contract.2):
+the program checks every path the fix changed, apart from what a merge of
+`master` brought, and a fix outside the set becomes an issue.
 
 The agent approves, arms auto-merge, reruns jobs, and pushes with `gh` and `git`
 itself. It does not label, comment, or open issues: it reports its outcome and,
