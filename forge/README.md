@@ -122,6 +122,12 @@ fast instead of prompting for an administrator password if a command or script
 would require elevated privileges.
 §FS-local-ci-equivalent-verification
 
+To keep generated tests — and the Docker containers, windows, and file writes
+they produce — off your workstation, run Forge inside a disposable Incus VM.
+[incus/README.md](incus/README.md) holds the profile, the provisioning script,
+and the setup steps; the VM passes the same host-requirements gate unchanged.
+§FS-forge-isolated-host
+
 Forge scopes `GRADLE_USER_HOME` per reachability-repo worktree so worktrees do
 not share Gradle daemons, and shares downloaded dependencies between them
 through Gradle's read-only dependency cache (`GRADLE_RO_DEP_CACHE`), published
