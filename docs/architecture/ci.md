@@ -93,16 +93,6 @@ compute impacted Spring AOT projects, then runs triaged native tests via
 `run-spring-aot-triaged-test.sh` (§AR-shared-scripts). Only runs when metadata
 changes actually affect a Spring AOT project (§FS-repository-functional-spec.5.3).
 
-A failed project passes when the repository excludes it, when its upstream
-`build.gradle` carries `expectedToFail` at the pinned smoke-test commit, or when
-its upstream workflow fails too. The repository's exclusion list is
-`.github/spring-aot-excluded-tests.json`, an object from the Gradle project path
-to the reason, such as `{":integration:spring-pulsar": "..."}`. The triage
-script reads it before running anything, so a listed project is skipped with a
-warning rather than built. It lives outside `ci.json` and the harness, so adding
-an entry is not an infrastructure change that reruns the whole matrix
-(§AR-matrix-source), and the pull request that adds one changes its own gate.
-
 ### AR-index-file-validation: Validate index.json files
 
 Triggers on PRs touching `metadata/*/*/index.json`. Runs
@@ -280,11 +270,11 @@ Sunday metadata sweep (§AR-test-all-metadata) and the Monday release
 Serves §FS-repository-functional-spec.5.4 — the Crema lane is a Native Image mode.
 
 The scheduled run takes every input's default — all coordinates over 85 shards on
-the `crema` lane with assertions cleared — because the `inputs` context is empty
-on a `schedule` event; the workflow restates each default rather than resolving
-an empty matrix. The weekly trigger is confined to the canonical repository so a
-fork does not sweep on its own schedule, while manual dispatch stays available
-everywhere.
+the `crema` lane with the normal test configuration — because the `inputs`
+context is empty on a `schedule` event; the workflow restates each default rather
+than resolving an empty matrix. The weekly trigger is confined to the canonical
+repository so a fork does not sweep on its own schedule, while manual dispatch
+stays available everywhere.
 
 The JDK is built once by a dedicated job via §AR-setup-crema-jdk and shared with
 every shard as an artifact, because the macro build takes about ten minutes and
@@ -341,17 +331,6 @@ attributed per coordinate and published as NDJSON plus log artifacts in the same
 shape as §AR-test-all-metadata, so the existing failure tooling applies. The
 matrix comes from `generateMatrixBatchedCoordinates` (§AR-test-harness.7) via
 the `batches` input; `coordinates` narrows a run to one shard or one library.
-
-Crema currently rejects `-ea` at VM startup, and Gradle puts `-ea` on every test
-worker, so leaving it in place fails every coordinate identically before any test
-executes and the sweep returns one finding repeated per coordinate instead of a
-survey. The `disable-assertions` input therefore defaults to true, clearing
-Gradle's `enableAssertions` (§AR-test-harness.3.1) so the sweep reaches the
-failures behind that blocker. Setting it false re-checks whether the blocker is
-still present. Because assertions do not fire under this default, tests that
-verify via `assert` pass vacuously: a green coordinate here means Crema ran the
-code, never that the library is supported.
-
 
 ## Event-triggered automation
 

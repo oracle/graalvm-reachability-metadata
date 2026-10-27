@@ -47,9 +47,6 @@ CLAUDE_TARGET: re.Pattern[str] = re.compile(r"^claude-code(?:\[([A-Za-z0-9_-]+)\
 OUTCOMES: tuple[str, ...] = ("approve", "rerun", "fix", "issue")
 SIGNATURE: str = "forge-ci-signature"
 EVIDENCE_LIMIT: int = 6000
-# A repair may touch the contribution and one Spring AOT exclusion
-# (§root/FS-contribution-contract.2).
-SPRING_EXCLUSIONS: str = ".github/spring-aot-excluded-tests.json"
 FORGE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE: str = os.path.join(FORGE_DIR, "prompt_templates", "pr_review", "review.md")
 STATES: str = os.path.join(FORGE_DIR, ".agent-grounds", "rhei", "templates", "forge-metadata", "states.yaml")
@@ -214,7 +211,7 @@ def foreign_paths(path: str, head: str, commit: str, coordinate: str) -> list[st
     changed: list[str] = git("diff", "--name-only", head, commit, cwd=path).splitlines()
     unlike_master: set[str] = set(git("diff", "--name-only", "origin/master", commit, cwd=path).splitlines())
     return [name for name in changed
-            if name in unlike_master and not name.startswith(allowed) and name != SPRING_EXCLUSIONS]
+            if name in unlike_master and not name.startswith(allowed)]
 
 
 class Review:

@@ -23,17 +23,6 @@ if [ ! -d "$SPRING_DIR" ]; then
   exit 1
 fi
 
-# A project on the repository's exclusion list is not run and passes the gate
-# (§FS-repository-functional-spec.5.3).
-EXCLUSIONS="$(cd "$SPRING_DIR/.." && pwd)/.github/spring-aot-excluded-tests.json"
-if [ -f "$EXCLUSIONS" ]; then
-  REASON=$(jq -r --arg p "$P" '.[$p] // empty' "$EXCLUSIONS")
-  if [ -n "$REASON" ]; then
-    echo "::warning:: $P is excluded by .github/spring-aot-excluded-tests.json: $REASON. Skipping."
-    exit 0
-  fi
-fi
-
 echo "Running native tests for project '$P' in '$SPRING_DIR' (branch=$BRANCH)"
 cd "$SPRING_DIR"
 

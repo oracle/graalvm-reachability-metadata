@@ -25,7 +25,10 @@ Take the first case below that applies (§FS-published-pr-review.4).
 Every failing job died of something the change cannot have caused: the network,
 the runner, Gradle plugin resolution, a Docker pull, or a cancelled job. Rerun the
 failed jobs of each such run with `gh run rerun <run-id> --repo {repo} --failed`
-(§FS-published-pr-review.4.2).
+(§FS-published-pr-review.4.2). Check this case first for every failure, Spring
+AOT included. A connection error is transient only when nothing in its stack
+points at Native Image: `Unable to create Channel from class ...EpollSocketChannel`
+or an `ExceptionInInitializerError` is a metadata miss that looks like the network.
 
 ## 3. A library test lane failed
 
@@ -54,38 +57,41 @@ for this library or a dependent one. Find the cause (§FS-published-pr-review.4.
 
 ## 4. A Spring AOT smoke test failed
 
-A job named `<project> @ spring-aot:<branch> (GraalVM JDK <jdk>)` failed
-(§FS-published-pr-review.4.4). First try to fix this pull request's metadata,
-under the rules below.
+A job named `<project> @ spring-aot:<branch> (GraalVM JDK <jdk>)` failed, and
+case 2 does not apply (§FS-published-pr-review.4.4). There are two outcomes:
 
-- When the test cannot work because of Native Image behavior, or is flaky — the
-  same failure recurs on unrelated pull requests touching the same library, as
-  the spring-pulsar and spring-amqp-rabbit startup failures do across Netty pull
-  requests — remove it from this pull request's gate: add
-  `"<project>": "<reason, with the evidence>"` to the JSON object in
-  `.github/spring-aot-excluded-tests.json` (§root/FS-repository-functional-spec.5.3),
-  commit, and push as in case 3.
-- When the cause is a bug in a dependent library or in Native Image 25.0, it
-  cannot be fixed here: the outcome is an issue (case 6). Spring smoke tests run
-  on the newest GraalVM LTS, so a Native Image fix that is only on master is such
-  a bug.
+- **A metadata miss of `{coordinate}`**: fix it under the metadata rules below.
+  Reproduce and verify with the job's own script: check out
+  `spring-projects/spring-aot-smoke-tests` at the `ref` pinned in
+  `.github/workflows/test-affected-spring-aot-main.yml` into
+  `~/.cache/forge-review/spring-aot-smoke-tests`, then run
+  `bash .github/workflows/scripts/run-spring-aot-triaged-test.sh <that path>
+  '<project>' <branch>` from the repository root. Commit and push as in case 3.
+- **Anything else**: the outcome is an issue (case 6). Do not decide whether
+  the bug is in Native Image or in Spring, and do not search the `oracle/graal`
+  history: the issue names this pull request, the failing project and branch,
+  and the error, and asks its assignee to find whether the bug is on the Native
+  Image side or the Spring side.
 
 ## 5. Fix first
 
 Always try to fix the pull request first (§FS-published-pr-review.4.5). A test of
 ours under `tests/src` that fails only because Native Image does not support a
 behavior is deleted or re-scoped under §root/FS-test-contract.4.3.2. Anything else
-you cannot fix that looks like a Native Image error in something that usually
-works: investigate the `oracle/graal` history, and the outcome is an issue.
+in a library lane that you cannot fix and that looks like a Native Image error in
+something that usually works: investigate the `oracle/graal` history, and the
+outcome is an issue.
 
 ## 6. The issue
 
 Do not open it yourself; describe it in your answer, and the program reuses an
 open issue with the same signature or opens it, then labels the pull request
 (§FS-published-pr-review.4.6). The body names the failing lane (JDK, mode, library
-version), quotes the error, gives the local reproduction with exact versions, the
-suspected Native Image cause with `oracle/graal` commit and pull request links,
-and why it is not our metadata. The signature is a short stable key of the
+version), quotes the error, and says why it is not our metadata. For a library
+lane it adds the local reproduction with exact versions and the suspected Native
+Image cause with `oracle/graal` commit and pull request links. For a Spring AOT
+smoke test it adds the project and branch, and asks the assignee to find whether
+the bug is on the Native Image side or the Spring side. The signature is a short stable key of the
 failure, the same for every pull request it breaks, such as
 `ni-25.0-spring-security-type-not-found`.
 
@@ -101,7 +107,7 @@ Do not label the pull request, comment on it, or open issues: the program does
 that from your answer. Never rebase or force-push: to bring `master` in, merge
 `origin/master`, so your commit descends from `{head}`. Change only
 `metadata/{group}/{artifact}/`, `tests/src/{group}/{artifact}/`,
-`stats/{group}/{artifact}/`, and `.github/spring-aot-excluded-tests.json`.
+and `stats/{group}/{artifact}/`.
 
 ## Your answer
 
@@ -110,7 +116,7 @@ Before your final message, write `{outcome}` as JSON:
 - `outcome`: `approve`, `rerun`, `fix`, or `issue` — what you did{did_suffix}.
 - `case`: the number of the case above that applied.
 - `cause`: one line naming the cause, such as `metadata miss`,
-  `Native Image 25.0 bug`, `flaky smoke test`, or `Gradle plugin resolution`.
+  `Native Image 25.0 bug`, `Spring AOT smoke test`, or `Gradle plugin resolution`.
 - `summary`: the evidence in a few sentences, naming the failing job.
 - For `issue` only, `issue`: an object with `title`, `body`, and `signature`.
 
