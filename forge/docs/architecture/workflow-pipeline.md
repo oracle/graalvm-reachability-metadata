@@ -38,7 +38,11 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    (§FS-forge-run-requirements.3).
 4. **Run.** `rhei instantiate forge-metadata` with the issue number and the two
    agent targets (§FS-forge-agent-runtime-selection), then `rhei run` with the
-   dashboard. A workspace that cannot be created releases the claim.
+   dashboard. A workspace that cannot be created releases the claim. Each
+   attempt at an issue has its own workspace, `runs/forge-<issue>-<attempt>`:
+   an interrupted attempt is resumed, and one that reached a final state gives
+   up its worktree and stays as the record, because Rhei keys a workspace's
+   budget ledger by its path and refuses a new workspace on a used one.
 5. **Close out.** The final state decides the issue's bookkeeping:
    `completed` leaves it `In Progress` for the pull request to close;
    `human-intervention` and a bad input label it `human-intervention` with the
