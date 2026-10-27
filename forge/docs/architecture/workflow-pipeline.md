@@ -47,7 +47,7 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
 
 `run-forge.sh` loops cycles until stopped, checks the host before each claim
 (§FS-forge-host-requirements), and every third run, and whenever nothing can be
-claimed, runs the CI pass over the open Forge pull requests
+claimed, reviews the open Forge pull requests with the `review_agent`
 (§FS-published-pr-review, §AR-forge-dispatcher-decomposition.1).
 
 ## 2. Exit codes

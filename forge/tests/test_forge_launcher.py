@@ -3,10 +3,10 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for the launcher: fetch, targets, close-out, and the CI pass's entry.
+"""Tests for the launcher: fetch, targets, close-out, and the review's entry.
 
 §AR-forge-workflow-pipeline.1 fixes the fetch and the close-out, and
-§FS-published-pr-review the CI pass and its agent target.
+§FS-published-pr-review the review and its agent target.
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ import unittest
 from unittest.mock import patch
 
 import forge_metadata
-from dispatcher import issue_fetch, pr_ci, run_launch
+from dispatcher import issue_fetch, pr_review, run_launch
 
 FORGE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -131,22 +131,39 @@ class CloseOutTest(unittest.TestCase):
         self.assertEqual("infrastructure", run_launch.read_outcome(tempfile.mkdtemp())["kind"])
 
 
-class CIPassEntryTest(unittest.TestCase):
+class ReviewEntryTest(unittest.TestCase):
 
-    def test_agent_command_follows_the_target(self) -> None:
-        self.assertEqual(["pi", "--no-session", "--model", "gpt-5.6-luna", "--provider", "openai-codex",
-                          "--thinking", "high", "-p", "do"],
-                         pr_ci.agent_command("pi[high]:openai-codex/gpt-5.6-luna", "do"))
-        self.assertEqual(["claude", "--permission-mode", "bypassPermissions", "--model", "sonnet", "--effort",
-                          "medium", "-p", "do"], pr_ci.agent_command("claude-code[medium]:sonnet", "do"))
+    def test_agent_command_follows_the_claude_code_target(self) -> None:
+        self.assertEqual(["claude", "--permission-mode", "bypassPermissions", "--model", "opus", "--effort",
+                          "high", "-p", "do"], pr_review.agent_command("claude-code[high]:opus", "do"))
+        self.assertEqual(["claude", "--permission-mode", "bypassPermissions", "--model", "sonnet", "-p", "do"],
+                         pr_review.agent_command("claude-code:sonnet", "do"))
 
-    def test_ci_runs_the_pass_with_the_setup_agent(self) -> None:
-        with patch.object(forge_metadata, "ci_pass", return_value=1) as ci_pass, \
+    def test_the_review_agent_must_be_claude_code(self) -> None:
+        for target in ("pi[high]:openai-codex/gpt-5.6-luna", "codex:gpt-5.6-luna", "claude-code:anthropic/opus"):
+            self.assertIn("must be a claude-code target", pr_review.review_target_error(target))
+            with self.assertRaises(ValueError):
+                pr_review.agent_command(target, "do")
+            with contextlib.redirect_stderr(io.StringIO()) as logged:
+                self.assertEqual(forge_metadata.BAD_ARGUMENTS,
+                                 forge_metadata.main(["--review", "--review-agent", target]))
+            self.assertIn("--review-agent", logged.getvalue())
+        self.assertIsNone(pr_review.review_target_error(forge_metadata.DEFAULT_REVIEW_AGENT))
+
+    def test_review_runs_the_pass_with_the_review_agent(self) -> None:
+        with patch.object(forge_metadata, "review_pass", return_value=1) as review_pass, \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 contextlib.redirect_stderr(io.StringIO()):
-            self.assertEqual(forge_metadata.RAN, forge_metadata.main(["--ci", "--dry-run", "--pr", "9628"]))
-        ci_pass.assert_called_once_with(forge_metadata.REPO_DIR, forge_metadata.DEFAULT_SETUP_AGENT, "forge-bot", True,
-                                        [9628])
+            self.assertEqual(forge_metadata.RAN, forge_metadata.main(
+                ["--review", "--dry-run", "--pr", "9628", "--head", "a" * 40]))
+        review_pass.assert_called_once_with(forge_metadata.REPO_DIR, forge_metadata.DEFAULT_REVIEW_AGENT,
+                                            "forge-bot", True, [9628], "a" * 40)
+
+    def test_a_head_replays_one_pull_request_in_a_dry_run_only(self) -> None:
+        for argv in (["--review", "--pr", "1", "--head", "a" * 40],
+                     ["--review", "--dry-run", "--pr", "1", "--pr", "2", "--head", "a" * 40]):
+            with contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(forge_metadata.BAD_ARGUMENTS, forge_metadata.main(argv))
 
 
 class ShellLauncherTest(unittest.TestCase):
@@ -165,6 +182,14 @@ class ShellLauncherTest(unittest.TestCase):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
         )
         self.assertEqual(2, completed.returncode)
+
+    def test_review_agent_must_be_claude_code(self) -> None:
+        completed = subprocess.run(
+            [os.path.join(FORGE_DIR, "run-forge.sh"), "--review-agent", "pi[high]:openai-codex/gpt-5.6-luna"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        )
+        self.assertEqual(2, completed.returncode)
+        self.assertIn("--review-agent", completed.stderr)
 
 
 if __name__ == "__main__":

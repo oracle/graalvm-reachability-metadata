@@ -11,31 +11,37 @@ readonly REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # The template's default agent targets.
 readonly DEFAULT_SETUP_AGENT="claude-code[medium]:sonnet"
 readonly DEFAULT_WORKER_AGENT="pi[high]:openai-codex/gpt-5.6-luna"
+readonly DEFAULT_REVIEW_AGENT="claude-code[high]:opus"
 
-# Claim and run Forge issues until stopped, handling failing CI on the open Forge pull requests.
-# §FS-forge-issue-resolution-goal §AR-forge-workflow-pipeline.1
+# Claim and run Forge issues until stopped, reviewing the open Forge pull requests.
+# §FS-forge-issue-resolution-goal §AR-forge-workflow-pipeline.1 §FS-published-pr-review.1
 
 usage() {
     cat <<USAGE
-Usage: $0 [--setup-agent TARGET] [--worker-agent TARGET] [--label LABEL]... [-- RHEI_RUN_OPTIONS...]
+Usage: $0 [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET] [--label LABEL]...
+          [-- RHEI_RUN_OPTIONS...]
 
 Purpose:
   Check the host, then until stopped: claim the most urgent eligible Forge
   issue and run its forge-metadata Rhei workspace with the browser dashboard.
-  Every third run, and when no issue can be claimed, run the CI pass: each open
-  Forge pull request whose CI fails on a new head gets one diagnosis by the
-  setup agent that ends in a rerun, a pushed fix, or an issue.
+  Every third run, and when no issue can be claimed, review up to three open
+  Forge pull requests, oldest first, whose checks have finished: approve and
+  arm auto-merge on a green one, or rerun, push a fix, or file an issue.
 
 Options:
   -h, --help
       Show this help text.
   --setup-agent TARGET
-      Rhei target of the setup state and the CI diagnosis; both need web search,
-      so a claude-code target.
+      Rhei target of the setup state; it needs web search, so a claude-code
+      target.
       Default: $DEFAULT_SETUP_AGENT
   --worker-agent TARGET
       Rhei target of the cover and fix states, with agent pi or claude-code.
       Default: $DEFAULT_WORKER_AGENT
+  --review-agent TARGET
+      Target of the pull-request review; it needs the web and the GraalVM
+      history, so a claude-code target.
+      Default: $DEFAULT_REVIEW_AGENT
   --label LABEL
       Fetch only this queue; repeat for several. Default: every queue.
   -- RHEI_RUN_OPTIONS...
@@ -45,6 +51,7 @@ USAGE
 
 setup_agent="$DEFAULT_SETUP_AGENT"
 worker_agent="$DEFAULT_WORKER_AGENT"
+review_agent="$DEFAULT_REVIEW_AGENT"
 label_arguments=()
 while (( $# > 0 )); do
     case "$1" in
@@ -52,7 +59,7 @@ while (( $# > 0 )); do
             usage
             exit 0
             ;;
-        --setup-agent|--worker-agent|--label)
+        --setup-agent|--worker-agent|--review-agent|--label)
             if (( $# < 2 )); then
                 printf 'ERROR: %s needs a value.\n' "$1" >&2
                 exit 2
@@ -60,6 +67,7 @@ while (( $# > 0 )); do
             case "$1" in
                 --setup-agent) setup_agent="$2" ;;
                 --worker-agent) worker_agent="$2" ;;
+                --review-agent) review_agent="$2" ;;
                 --label) label_arguments+=(--label "$2") ;;
             esac
             shift 2
@@ -93,6 +101,11 @@ if [[ ! "$setup_agent" =~ $TARGET_PATTERN || "${BASH_REMATCH[1]}" != "claude-cod
     exit 2
 fi
 setup_model="${BASH_REMATCH[5]}"
+# §FS-forge-agent-runtime-selection: the review needs the web and the GraalVM history.
+if [[ ! "$review_agent" =~ ^claude-code(\[[A-Za-z0-9_-]+\])?:[^/]+$ ]]; then
+    printf 'ERROR: --review-agent %s: the review must be a claude-code target.\n' "$review_agent" >&2
+    exit 2
+fi
 
 # Gradle and the native-image agent run on JAVA_HOME, so both name the checked GraalVM.
 export GRAALVM_HOME="${GRAALVM_HOME:-${JAVA_HOME:-}}"
@@ -107,12 +120,14 @@ forge_metadata() {
     "$python" "$SCRIPT_DIR/forge_metadata.py" --setup-agent "$setup_agent" --worker-agent "$worker_agent" "$@"
 }
 
-ci_pass() {
-    forge_metadata --ci || printf 'WARNING: The CI pass failed; the next pass reads the pull requests again.\n' >&2
+review() {
+    forge_metadata --review --review-agent "$review_agent" \
+        || printf 'WARNING: The review failed; the next review reads the queue again.\n' >&2
 }
 
+# §FS-published-pr-review.1: review every third run and whenever nothing can be claimed.
 readonly IDLE_SECONDS=600
-readonly CI_EVERY=3
+readonly REVIEW_EVERY=3
 cd "$SCRIPT_DIR"
 runs=0
 while true; do
@@ -123,12 +138,12 @@ while true; do
     status=0
     forge_metadata "${label_arguments[@]}" -- "$@" || status=$?
     if (( status == 1 )); then
-        ci_pass
+        review
         printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
         sleep "$IDLE_SECONDS"
         continue
     fi
     (( status == 0 )) || printf 'ERROR: The cycle failed with status %s.\n' "$status" >&2
     runs=$((runs + 1))
-    (( runs % CI_EVERY != 0 )) || ci_pass
+    (( runs % REVIEW_EVERY != 0 )) || review
 done

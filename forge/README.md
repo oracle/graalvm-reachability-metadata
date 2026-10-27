@@ -16,21 +16,29 @@ Use `run-forge.sh` for unattended operation (`do-work.sh` only starts it). Each
 cycle checks the host, fetches the issue queues with `gh issue list`, claims the
 most urgent eligible issue, checks its form, and runs its `forge-metadata` Rhei
 workspace under `runs/` with the browser dashboard. Every third run, and when
-nothing can be claimed, it runs the CI pass: each open Forge pull request whose
-CI fails on a new head gets one diagnosis that ends in a rerun, a pushed fix,
-or an issue.
-§AR-forge-workflow-pipeline.1
+nothing can be claimed, it reviews up to three open Forge pull requests whose
+checks have finished, with the `--review-agent` (default
+`claude-code[high]:opus`): a green one is approved and auto-merged, and any
+other ends in a rerun, a pushed fix, or an issue and the `human-intervention`
+label. A terminal outcome adds `reviewed`, so the pull request is not reviewed
+again. `python3 forge_metadata.py --review --dry-run --pr <n> [--head <sha>]`
+replays the review of one pull request, open or closed, and writes nothing on
+GitHub.
+§AR-forge-workflow-pipeline.1 §FS-published-pr-review
 
 ```console
-./run-forge.sh [--setup-agent TARGET] [--worker-agent TARGET] [--label LABEL]... [-- RHEI_RUN_OPTIONS...]
+./run-forge.sh [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET] [--label LABEL]...
+    [-- RHEI_RUN_OPTIONS...]
 ```
 
-The two agent targets are the only run-time choice
+The agent targets are the only run-time choice
 (§FS-forge-agent-runtime-selection): `--setup-agent` defaults to
 `claude-code[medium]:sonnet` and must be a Claude Code target, because setup
 needs web search; `--worker-agent` defaults to
-`pi[high]:openai-codex/gpt-5.6-luna` and serves the cover and fix states and the
-review. Codex and OpenCode are not supported.
+`pi[high]:openai-codex/gpt-5.6-luna` and serves the cover and fix states;
+`--review-agent` defaults to `claude-code[high]:opus` and must be a Claude Code
+target, because the review needs the web and the GraalVM history. Codex and
+OpenCode are not supported.
 
 To see what one cycle would claim without claiming anything:
 
@@ -148,7 +156,7 @@ forge/
 - `forge_metadata.py`: one launcher cycle: fetch, claim, form check, and the Rhei run.
 - `.agent-grounds/rhei/templates/forge-metadata/`: the issue workflow's Rhei template.
 - `.agent-grounds/rhei/programs/`: the programs its states run, and their tests.
-- `dispatcher/`: the claim, the issue-form gate, the board, and the CI pass over published pull requests.
+- `dispatcher/`: the claim, the issue-form gate, the board, and the review of published pull requests.
 - `ai_workflows/agents/`: the Pi and Claude Code adapters the code coverage workflow still uses.
 - `benchmarks/`: the code coverage benchmark. §FS-code-coverage-benchmarking
 - `git_scripts/`: branch, descriptor, and publication helpers.

@@ -45,10 +45,8 @@ if [ "$nfailed" -eq 0 ] && [ "$pending" -gt 0 ]; then
 fi
 
 if [ -n "${EPHOR_ANSWER:-}" ]; then
-  # `pending` lets Forge's CI pass wait for a running head
-  # (§forge/FS-published-pr-review.2).
-  jq -n --argjson f "$failed" --arg s "$nfailed failing check(s)" --argjson p "$pending" \
-    '{v: 1, summary: $s, pending: $p, failures: [$f[] | {job: .name, url: .url}]}' > "$EPHOR_ANSWER"
+  jq -n --argjson f "$failed" --arg s "$nfailed failing check(s)" \
+    '{v: 1, summary: $s, failures: [$f[] | {job: .name, url: .url}]}' > "$EPHOR_ANSWER"
 fi
 
 echo "## Failing checks on $repo#$number @ $(jq -r .headRefOid <<<"$pr")"
