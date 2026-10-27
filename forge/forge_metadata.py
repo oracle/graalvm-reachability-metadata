@@ -52,6 +52,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--review-agent", default=DEFAULT_REVIEW_AGENT,
                         help=f"Target of the pull-request review, a claude-code target. "
                              f"Default: {DEFAULT_REVIEW_AGENT}")
+    parser.add_argument("--take-blocked-issues", action="store_true",
+                        help="Claim issues with open blockers; every other claim condition still holds "
+                             "(§FS-forge-run-requirements.2).")
     parser.add_argument("--issues-fixture", help="JSON list of issue payloads that stands in for the fetch.")
     parser.add_argument("--dry-run", action="store_true",
                         help="Print the fetch commands and the candidates, and claim nothing; with --review, "
@@ -77,7 +80,7 @@ def run_cycle(args: argparse.Namespace) -> int:
         return RAN if candidates else NOTHING_CLAIMED
     user: str = resolve_authenticated_user()
     for label, issue in candidates:
-        claimed: Claim | None = claim(issue, label, user, REPO_DIR)
+        claimed: Claim | None = claim(issue, label, user, REPO_DIR, args.take_blocked_issues)
         if claimed is None:
             continue
         print(f"Claimed {label} issue #{issue['number']}.")

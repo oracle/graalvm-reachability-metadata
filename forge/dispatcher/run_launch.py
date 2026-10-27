@@ -73,11 +73,14 @@ def pinned_index(repo: str, title: str) -> Iterator[str]:
         yield root
 
 
-def claim(issue: dict[str, Any], label: str, user: str, repo: str) -> Claim | None:
-    """Claim one candidate and pass its form gate, or leave GitHub as it was."""
+def claim(issue: dict[str, Any], label: str, user: str, repo: str, take_blocked: bool = False) -> Claim | None:
+    """Claim one candidate and pass its form gate, or leave GitHub as it was.
+
+    `take_blocked` lifts only the open-blocker condition (§FS-forge-run-requirements.2).
+    """
     if not refresh_issue_payload_for_claim(issue, label, user):
         return None
-    item_id: str | None = try_claim_issue(issue, user, label)
+    item_id: str | None = try_claim_issue(issue, user, label, take_blocked)
     if item_id is None:
         return None
     try:

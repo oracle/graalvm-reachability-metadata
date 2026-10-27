@@ -17,7 +17,7 @@ import os
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import ANY, patch
 
 import forge_metadata
 from dispatcher import issue_fetch, pr_review, run_launch
@@ -95,6 +95,24 @@ class TargetTest(unittest.TestCase):
         claim.assert_not_called()
         self.assertIn("--label fails-javac-compile --label high-priority", output.getvalue())
         self.assertIn("#5 [fails-javac-compile]", output.getvalue())
+
+
+    def test_blocked_issues_are_claimed_only_on_request(self) -> None:
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as handle:
+            json.dump([issue(5, "fails-javac-compile")], handle)
+        self.addCleanup(os.remove, handle.name)
+        for extra, expected in (([], False), (["--take-blocked-issues"], True)):
+            with patch.object(forge_metadata, "claim", return_value=None) as claim, \
+                    patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                forge_metadata.main(["--issues-fixture", handle.name, *extra])
+            self.assertEqual(expected, claim.call_args.args[4])
+
+    def test_the_claim_forwards_the_blocker_override(self) -> None:
+        with patch.object(run_launch, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(run_launch, "try_claim_issue", return_value=None) as try_claim:
+            run_launch.claim(issue(5, "fails-javac-compile"), "fails-javac-compile", "forge-bot", FORGE_DIR, True)
+        try_claim.assert_called_once_with(ANY, "forge-bot", "fails-javac-compile", True)
 
 
 class CloseOutTest(unittest.TestCase):

@@ -19,7 +19,7 @@ readonly DEFAULT_REVIEW_AGENT="claude-code[high]:opus"
 usage() {
     cat <<USAGE
 Usage: $0 [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET] [--label LABEL]...
-          [-- RHEI_RUN_OPTIONS...]
+          [--take-blocked-issues] [-- RHEI_RUN_OPTIONS...]
 
 Purpose:
   Check the host, then until stopped: claim the most urgent eligible Forge
@@ -44,6 +44,9 @@ Options:
       Default: $DEFAULT_REVIEW_AGENT
   --label LABEL
       Fetch only this queue; repeat for several. Default: every queue.
+  --take-blocked-issues
+      Claim issues with open blockers too; every other claim condition still
+      holds. Default: off.
   -- RHEI_RUN_OPTIONS...
       Forward options to rhei run. The dashboard is always enabled.
 USAGE
@@ -52,12 +55,16 @@ USAGE
 setup_agent="$DEFAULT_SETUP_AGENT"
 worker_agent="$DEFAULT_WORKER_AGENT"
 review_agent="$DEFAULT_REVIEW_AGENT"
-label_arguments=()
+claim_arguments=()
 while (( $# > 0 )); do
     case "$1" in
         -h|--help)
             usage
             exit 0
+            ;;
+        --take-blocked-issues)
+            claim_arguments+=(--take-blocked-issues)
+            shift
             ;;
         --setup-agent|--worker-agent|--review-agent|--label)
             if (( $# < 2 )); then
@@ -68,7 +75,7 @@ while (( $# > 0 )); do
                 --setup-agent) setup_agent="$2" ;;
                 --worker-agent) worker_agent="$2" ;;
                 --review-agent) review_agent="$2" ;;
-                --label) label_arguments+=(--label "$2") ;;
+                --label) claim_arguments+=(--label "$2") ;;
             esac
             shift 2
             ;;
@@ -136,7 +143,7 @@ while true; do
         "$worker_family" "$worker_executable" "$worker_model" "$worker_provider" \
         claude-code claude "$setup_model"
     status=0
-    forge_metadata "${label_arguments[@]}" -- "$@" || status=$?
+    forge_metadata "${claim_arguments[@]}" -- "$@" || status=$?
     if (( status == 1 )); then
         review
         printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
