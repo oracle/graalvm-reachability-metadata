@@ -214,6 +214,23 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(AGENT_WORK, self.step("native"))
         self.assertIn("Return: 32", self.read("fix-request.md"))
 
+    def test_a_failed_metadata_generation_names_the_checks_it_kept_from_running(self) -> None:
+        self.fake.issue("library-new-request")
+        self.fake.control({"listFails": True})
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
+        self.assertEqual(AGENT_WORK, self.step("analyze"))
+        self.cover("ApiTest")
+        self.assertEqual(OK, self.step("measure"))
+
+        self.fake.control({"javaFails": True})
+        self.assertEqual(AGENT_WORK, self.step("native"))
+        request: str = self.read("fix-request.md")
+        self.assertIn("- ./gradlew generateMetadata -Pcoordinates=", request.split("## Then run")[0])
+        for task in ("checkMetadataFiles", "test"):
+            self.assertIn(f"- ./gradlew {task} -Pcoordinates={self.state.coordinate}", request.split("## Then run")[1])
+
     def test_a_basic_pass_that_breaks_the_tests_asks_for_a_fix(self) -> None:
         self.fake.issue("library-new-request")
         self.fake.control({"listFails": True})

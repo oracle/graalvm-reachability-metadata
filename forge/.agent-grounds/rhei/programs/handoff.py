@@ -33,6 +33,8 @@ class Failure:
     output: str
     # A program check names its own brief instead of matching the table.
     brief: str | None = None
+    # The commands this failure kept from running, which `fix` must pass too.
+    blocked: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -148,6 +150,11 @@ def render(state: RunState, sender: str, failures: list[Failure], briefs: list[s
     lines: list[str] = [f"# Fix: {state.coordinate}", f"Return: {RETURN_CODES[sender]}", "",
                         "## Failing commands" if briefs is None else "## Commands"]
     lines += [f"- {command}" for command in dict.fromkeys(failure.command for failure in failures)]
+    blocked: list[str] = list(dict.fromkeys(command for failure in failures for command in failure.blocked))
+    if blocked:
+        # No later request covers what no agent was shown (§AR-forge-workflow-pipeline.5).
+        lines += ["", "## Then run", "", "These did not run because a command above failed; they must pass too."]
+        lines += [f"- {command}" for command in blocked]
     lines += ["", "## Briefs"]
     if briefs is not None:
         lines += [f"- {sender}: {brief}" for brief in briefs]
@@ -173,7 +180,7 @@ def write_fix_request(workspace: str, state: RunState, sender: str, failures: li
 
 def write_placeholder(workspace: str, sender: str) -> None:
     """A declared output must exist when its program exits 0; a placeholder is never handed to `fix`."""
-    write_text(runtime_path(workspace, FIX_REQUEST), f"No fix request: `{sender}` passed.\n")
+    write_text(runtime_path(workspace, FIX_REQUEST), f"No fix request from `{sender}`.\n")
 
 
 def guard_tripped(state: RunState, sender: str) -> bool:

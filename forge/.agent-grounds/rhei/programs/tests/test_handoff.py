@@ -96,6 +96,17 @@ class RequestTest(unittest.TestCase):
         self.assertIn(os.path.join(self.worktree, "metadata", "org.example", "lib") + "/**", text)
         self.assertEqual("native", state.pending_request)
 
+    def test_request_names_the_commands_a_failure_kept_from_running(self) -> None:
+        state = run_state(ROUTE_REPAIR, self.worktree)
+        blocked = ("./gradlew checkMetadataFiles -Pcoordinates=" + COORDINATE, "./gradlew test -Pcoordinates=" + COORDINATE)
+        handoff.write_fix_request(self.workspace, state, "native",
+                                  [Failure("./gradlew generateMetadata -Pcoordinates=" + COORDINATE, "failed", blocked=blocked)])
+        with open(runtime_path(self.workspace, handoff.FIX_REQUEST), encoding="utf-8") as handle:
+            text: str = handle.read()
+        then_run: str = text.split("## Then run", 1)[1].split("## Briefs", 1)[0]
+        self.assertEqual([f"- {command}" for command in blocked],
+                         [line for line in then_run.splitlines() if line.startswith("- ")])
+
     def test_measure_may_edit_only_the_tests(self) -> None:
         state = run_state(ROUTE_REPAIR, self.worktree)
         self.assertEqual([os.path.join(self.worktree, state.test_dir) + "/**"],

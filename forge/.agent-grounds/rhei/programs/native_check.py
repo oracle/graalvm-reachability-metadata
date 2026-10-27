@@ -14,11 +14,12 @@ only pass or fail and never edits metadata itself; whatever still fails goes to 
 from __future__ import annotations
 
 import handoff
-from build_tools import TaskResult, checkpoint, coordinate_task, run_gradle
+from build_tools import TaskResult, checkpoint, coordinate_task, gradle_display, run_gradle
 from exit_codes import AGENT_WORK, OK, STILL_FAILING
 from run_state import RunState, load, runtime_path, save
 
 SENDER: str = "native"
+CHECKS: tuple[str, ...] = ("checkMetadataFiles", "test")
 
 
 def run_native_check(workspace: str, state: RunState, prefix: str) -> list[handoff.Failure]:
@@ -29,9 +30,10 @@ def run_native_check(workspace: str, state: RunState, prefix: str) -> list[hando
     )
     if not generated.ok:
         # The JVM tests failed under the agent; the checks would only judge stale metadata.
-        return [handoff.Failure(generated.command, generated.tail)]
+        blocked: tuple[str, ...] = tuple(gradle_display(coordinate_task(task, state.coordinate)) for task in CHECKS)
+        return [handoff.Failure(generated.command, generated.tail, blocked=blocked)]
     failures: list[handoff.Failure] = []
-    for task in ("checkMetadataFiles", "test"):
+    for task in CHECKS:
         result: TaskResult = run_gradle(
             state.worktree, coordinate_task(task, state.coordinate),
             runtime_path(workspace, "logs", f"{prefix}-{task}.log"),

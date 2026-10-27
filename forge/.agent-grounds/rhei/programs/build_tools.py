@@ -39,10 +39,15 @@ class TaskResult:
         return "\n".join(self.output.splitlines()[-TAIL_LINES:])
 
 
+def gradle_display(arguments: list[str]) -> str:
+    """The command as an agent would type it from the worktree root."""
+    return " ".join(["./gradlew", *arguments])
+
+
 def run_gradle(worktree: str, arguments: list[str], log_path: str) -> TaskResult:
     """Run `./gradlew <arguments>` in the worktree and keep its full output in `log_path`."""
     command: list[str] = [os.path.join(worktree, "gradlew"), *arguments, "--console=plain"]
-    display: str = " ".join(["./gradlew", *arguments])
+    display: str = gradle_display(arguments)
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
     print(f"[gradle] {display}", flush=True)
     completed: subprocess.CompletedProcess[str] = subprocess.run(
