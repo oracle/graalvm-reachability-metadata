@@ -6,21 +6,31 @@
  */
 package com_github_stephengold.Libbulletjme_Linux64;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.ArrayList;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.bullet.util.NativeLibrary;
 import com.jme3.math.Vector3f;
+import com.jme3.math.Transform;
+import com.jme3.bullet.collision.PhysicsSweepTestResult;
+import com.jme3.bullet.objects.PhysicsGhostObject;
+import com.jme3.bullet.collision.PhysicsRayTestResult;
+import com.jme3.bullet.PhysicsTickListener;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import com.jme3.bullet.PhysicsTickListener;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class Libbulletjme_Linux64Test {
 
@@ -212,18 +222,154 @@ void nativeCollisionCallbackThroughPairTest() {
     }
 }
 
+@Test
+void nativeRaycastReturnsJavaResults() {
+    PhysicsSpace space = new PhysicsSpace(
+            PhysicsSpace.BroadphaseType.DBVT);
+
+    try {
+        SphereCollisionShape shape =
+                new SphereCollisionShape(1f);
+
+        PhysicsRigidBody target =
+                new PhysicsRigidBody(shape, 0f);
+
+        target.setPhysicsLocation(
+                new Vector3f(0f, 0f, 0f));
+
+        space.addCollisionObject(target);
+
+        List<PhysicsRayTestResult> hits = space.rayTest(
+                new Vector3f(-3f, 0f, 0f),
+                new Vector3f(3f, 0f, 0f));
+
+        assertFalse(hits.isEmpty(),
+                "Native raycast returned no hits");
+
+        PhysicsRayTestResult first = hits.get(0);
+
+        assertSame(target, first.getCollisionObject(),
+                "JNI returned the wrong collision object");
+
+        assertEquals(1f / 3f, first.getHitFraction(), 0.01f,
+                "Unexpected raycast hit fraction");
+
+        // Negative control: ray passes above the sphere.
+        List<PhysicsRayTestResult> misses = space.rayTest(
+                new Vector3f(-3f, 3f, 0f),
+                new Vector3f(3f, 3f, 0f));
+
+        assertTrue(misses.isEmpty(),
+                "Ray should miss the sphere");
+
+    } finally {
+        space.destroy();
+    }
+}
+
+
+@Test
+void nativeSweepReturnsJavaResults() {
+    PhysicsSpace space = new PhysicsSpace(
+            PhysicsSpace.BroadphaseType.DBVT);
+
+    try {
+        SphereCollisionShape targetShape =
+                new SphereCollisionShape(1f);
+
+        PhysicsRigidBody target =
+                new PhysicsRigidBody(targetShape, 0f);
+
+        target.setPhysicsLocation(
+                new Vector3f(0f, 0f, 0f));
+
+        space.addCollisionObject(target);
+
+        SphereCollisionShape movingShape =
+                new SphereCollisionShape(0.25f);
+
+        Transform start = new Transform();
+        start.setTranslation(new Vector3f(-3f, 0f, 0f));
+
+        Transform end = new Transform();
+        end.setTranslation(new Vector3f(3f, 0f, 0f));
+
+        List<PhysicsSweepTestResult> hits = new ArrayList<>();
+
+        space.sweepTest(
+                movingShape, start, end, hits, 0f);
+
+        assertFalse(hits.isEmpty(),
+                "Native sweep returned no hits");
+
+        PhysicsSweepTestResult first = hits.get(0);
+
+        assertSame(target, first.getCollisionObject(),
+                "JNI returned incorrect target");
+
+        assertTrue(first.getHitFraction() > 0f,
+                "Sweep hit must occur after start");
+
+        assertTrue(first.getHitFraction() < 1f,
+                "Sweep hit must occur before end");
+
+        // Negative control: sweep above the target.
+        start.setTranslation(new Vector3f(-3f, 4f, 0f));
+        end.setTranslation(new Vector3f(3f, 4f, 0f));
+
+        hits.clear();
+
+        space.sweepTest(
+                movingShape, start, end, hits, 0f);
+
+        assertTrue(hits.isEmpty(),
+                "Sweep should miss the target");
+
+    } finally {
+        space.destroy();
+    }
+}
 
 
 
+@Test
+void nativeGhostOverlapReturnsJavaObjects() {
+    PhysicsSpace space = new PhysicsSpace(
+            PhysicsSpace.BroadphaseType.DBVT);
 
+    try {
+        PhysicsRigidBody target = new PhysicsRigidBody(
+                new SphereCollisionShape(0.5f), 0f);
 
+        target.setPhysicsLocation(
+                new Vector3f(0f, 0f, 0f));
 
+        PhysicsGhostObject ghost = new PhysicsGhostObject(
+                new SphereCollisionShape(1f));
 
+        ghost.setPhysicsLocation(
+                new Vector3f(0f, 0f, 0f));
 
+        space.addCollisionObject(target);
+        space.addCollisionObject(ghost);
 
+        space.update(0.02f, 0);
 
+        assertTrue(
+                ghost.getOverlappingObjects().contains(target),
+                "JNI did not return the overlapping Java object");
 
+        // Negative control: remove the overlapping object.
+        space.removeCollisionObject(target);
+        space.update(0.02f, 0);
 
+        assertTrue(
+                ghost.getOverlappingObjects().isEmpty(),
+                "Ghost should not report a removed object");
 
+    } finally {
+        space.destroy();
+    }
+}
 
 }
