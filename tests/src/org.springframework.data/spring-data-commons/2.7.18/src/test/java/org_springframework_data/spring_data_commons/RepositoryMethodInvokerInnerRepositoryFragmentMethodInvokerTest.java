@@ -9,6 +9,7 @@ package org_springframework_data.spring_data_commons;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.EmptyCoroutineContext;
@@ -34,22 +35,24 @@ public class RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void adaptsSuspendingRepositoryMethodToReactiveFragmentMethod() throws Exception {
         ReactiveCounter fragment = new ReactiveCounter();
-        Method declaredMethod = CoroutineCrudRepository.class.getMethod("count", Continuation.class);
         Method baseMethod = ReactiveCounter.class.getMethod("count");
         RepositoryFragments fragments = RepositoryFragments.just(fragment);
+        // Spring Data exposes repositories as interface proxies; invoking the suspending `count` through one
+        // routes the call to the reactive fragment exactly as a real coroutine repository would.
+        CoroutineCrudRepository<Object, Object> repository = (CoroutineCrudRepository<Object, Object>) Proxy
+                .newProxyInstance(CoroutineCrudRepository.class.getClassLoader(),
+                        new Class<?>[] {CoroutineCrudRepository.class },
+                        (proxy, method, arguments) -> fragments.invoke(method, baseMethod, arguments));
 
         Long result = BuildersKt.runBlocking(EmptyCoroutineContext.INSTANCE,
                 new Function2<CoroutineScope, Continuation<? super Long>, Object>() {
 
                     @Override
                     public Object invoke(CoroutineScope scope, Continuation<? super Long> continuation) {
-                        try {
-                            return fragments.invoke(declaredMethod, baseMethod, new Object[] {continuation });
-                        } catch (Throwable throwable) {
-                            throw new IllegalStateException(throwable);
-                        }
+                        return repository.count(continuation);
                     }
                 });
 
