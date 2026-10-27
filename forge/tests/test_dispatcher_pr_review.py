@@ -274,6 +274,22 @@ class ReviewTest(unittest.TestCase):
         self.run_pass()
         self.assertIn("changes README.md", self.state()["issues"][0]["body"])
 
+    def test_a_fix_is_judged_by_its_own_paths_not_the_head_s(self) -> None:
+        _git("checkout", "-q", BRANCH, cwd=self.repo)
+        self.write("metadata/org.example/sibling/1.0.0/reachability-metadata.json", "{}\n")
+        _git("add", "-A", cwd=self.repo)
+        _git("commit", "-q", "-m", "sibling split", cwd=self.repo)
+        self.head = _git("rev-parse", "HEAD", cwd=self.repo)
+        _git("push", "-q", "origin", BRANCH, f"{BRANCH}:refs/pull/{NUMBER}/head", cwd=self.repo)
+        _git("checkout", "-q", "master", cwd=self.repo)
+        state: dict[str, Any] = self.state()
+        state["checks"][self.head] = [check("test (25)", conclusion="failure")]
+        self.save(state)
+        self.plan({"answer": self.answer("fix"), "files": {TEST: "class LibTest { }\n"},
+                   "commands": [["git", "push", "-q", "origin", "HEAD:refs/heads/{branch}",
+                                 f"HEAD:refs/pull/{NUMBER}/head"]]})
+        self.assertIn("fix: pushed", self.run_pass())
+
     def test_an_issue_reuses_its_signature_and_ends_the_review(self) -> None:
         state: dict[str, Any] = self.state()
         state["issues"].append({"number": 42, "state": "OPEN", "title": "NI 25.0 bug",

@@ -201,15 +201,16 @@ def open_issue(title: str, body: str) -> int:
     return int(url.rstrip("/").rsplit("/", 1)[1])
 
 
-def foreign_paths(path: str, commit: str, coordinate: str) -> list[str]:
-    """The commit's paths a repair may not change, diffed against `master`.
+def foreign_paths(path: str, head: str, commit: str, coordinate: str) -> list[str]:
+    """The paths the repair from `head` to `commit` changed that it may not change.
+
+    Only the repair is checked: what the head already changed is the contribution under review.
 
     §FS-published-pr-review.4
     """
     group, artifact, _ = coordinate.split(":")
     allowed: tuple[str, ...] = tuple(f"{root}/{group}/{artifact}/" for root in ("metadata", "tests/src", "stats"))
-    base: str = git("merge-base", "origin/master", commit, cwd=path)
-    changed: list[str] = git("diff", "--name-only", base, commit, cwd=path).splitlines()
+    changed: list[str] = git("diff", "--name-only", head, commit, cwd=path).splitlines()
     return [name for name in changed if not name.startswith(allowed) and name != SPRING_EXCLUSIONS]
 
 
@@ -234,6 +235,7 @@ class Review:
         pull["coordinate"] = state.coordinate(pull)
         if pull["coordinate"] is None:
             return self.escalate(pull, found, "no-descriptor", "The pull request carries no publication descriptor.")
+        print(f"[review] #{number} at {head}: invoking the agent", file=sys.stderr)
         self.lock(number, True)
         with checkout(self.repo, number, head) as (parent, path):
             answer: dict[str, Any] | None = self.run_agent(pull, found, green, reruns_left, pushes_left, parent, path)
@@ -349,7 +351,7 @@ class Review:
         if commit == head:
             return self.escalate(pull, found, "unverified", "The fix left no new commit on the head.", summary)
         descends: bool = subprocess.run(["git", "merge-base", "--is-ancestor", head, commit], cwd=path).returncode == 0
-        outside: list[str] = foreign_paths(path, commit, str(pull["coordinate"])) if descends else []
+        outside: list[str] = foreign_paths(path, head, commit, str(pull["coordinate"])) if descends else []
         if not descends or outside:
             reason: str = "does not descend from the head" if not descends else f"changes {', '.join(outside)}"
             return self.escalate(pull, found, "unverified", f"The fix {commit[:12]} {reason}.", summary)
@@ -435,7 +437,6 @@ def review_pass(repo: str, target: str, login: str, dry_run: bool = False, numbe
         if reason is not None:
             print(f"[review] #{number} is {reason}; skipping", file=sys.stderr)
             continue
-        print(f"[review] #{number} at {pull['headRefOid']}: invoking the agent", file=sys.stderr)
         try:
             outcome: Outcome = reviewer.review(pull, checks)
         except (RuntimeError, subprocess.CalledProcessError) as error:

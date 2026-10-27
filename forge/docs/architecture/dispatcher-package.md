@@ -53,7 +53,7 @@ so both agents follow one copy, and its evidence (`evidence.md`,
 `cause`, `summary`, and, for an issue, the issue's `title`, `body`, and
 `signature`. The program confirms the outcome against GitHub — the approval of
 exactly the head with auto-merge armed, a restarted run on the head, a new head
-that descends from the reviewed one and changes only the contribution's paths
+that descends from the reviewed one and, since it, changes only the contribution's paths
 and `.github/spring-aot-excluded-tests.json` — and files the issue after a
 search for an open one whose body carries the same `forge-ci-signature`. An
 outcome it refuses or cannot confirm becomes an issue the program writes from
