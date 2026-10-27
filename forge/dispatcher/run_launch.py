@@ -136,7 +136,8 @@ def release_worktree(repo: str, workspace: str) -> None:
     if os.path.isfile(state_path):
         with open(state_path, encoding="utf-8") as handle:
             state: dict[str, Any] = json.load(handle)
-        subprocess.run(["git", "worktree", "remove", "--force", state["worktree"]], cwd=repo, check=False)
+        if os.path.isdir(state["worktree"]):
+            subprocess.run(["git", "worktree", "remove", "--force", state["worktree"]], cwd=repo, check=False)
         subprocess.run(["git", "branch", "-D", state["branch"]], cwd=repo, check=False,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
