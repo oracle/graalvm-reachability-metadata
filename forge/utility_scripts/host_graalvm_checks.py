@@ -24,6 +24,8 @@ GRAALVM_EA_RELEASE_ENDPOINT = (
     "repos/graalvm/oracle-graalvm-ea-builds/contents/versions/latest-ea.json"
 )
 GRAALVM_SCHEMA_PATH = "lib/svm/schemas/reachability-metadata-schema.json"
+# Merges the native-image agent's trace output into metadata (§FS-forge-host-requirements).
+METADATA_MERGE_TOOL = "native-image-utils"
 ISSUE_GRAALVM_ENV_VARS = ("GRAALVM_HOME", "GRAALVM_HOME_25_0", "GRAALVM_HOME_LATEST_EA")
 GRAALVM_VERSION_CHECK_MODES = ("strict", "warn", "off")
 DEFAULT_GRAALVM_VERSION_CHECK = "strict"
@@ -47,19 +49,25 @@ class GraalVMVersions:
 def check_graalvm_installation(
         graalvm_home: str,
         environment: Mapping[str, str] | None = None,
+        generates_metadata: bool = False,
 ) -> list[str]:
     """Return the reasons a GraalVM home cannot run Forge work; empty when it can.
 
     This is the single definition of a Forge-usable GraalVM distribution: it must
     run Java and Native Image, load the native-image agent, and carry the
     reachability-metadata schema that the repository validates generated metadata
-    against (§FS-forge-host-requirements).
+    against (§FS-forge-host-requirements). The home that generates metadata also
+    needs `native-image-utils`, which merges the agent's trace output.
     """
     problems: list[str] = []
     for executable in ("java", "native-image"):
         path = os.path.join(graalvm_home, "bin", executable)
         if not os.path.isfile(path) or not os.access(path, os.X_OK):
             problems.append(f"{os.path.join('bin', executable)} is missing or not executable")
+    if generates_metadata and not any(
+            os.access(os.path.join(graalvm_home, *directory, METADATA_MERGE_TOOL), os.X_OK)
+            for directory in (("bin",), ("lib", "svm", "bin"))):
+        problems.append(f"{METADATA_MERGE_TOOL} is missing from bin and lib/svm/bin")
     if not os.path.isfile(os.path.join(graalvm_home, GRAALVM_SCHEMA_PATH)):
         problems.append(f"{GRAALVM_SCHEMA_PATH} is missing")
     if not problems:
@@ -476,7 +484,7 @@ class GraalVMEnvironmentChecks:
                 f"{GRAALVM_SCHEMA_PATH}, then export `{variable}=/absolute/path/to/that/distribution`.",
             )
             return
-        problems = check_graalvm_installation(value, self.environment)
+        problems = check_graalvm_installation(value, self.environment, generates_metadata=variable == "GRAALVM_HOME")
         if problems:
             self._add(
                 "environment",

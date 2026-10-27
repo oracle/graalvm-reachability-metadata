@@ -27,10 +27,11 @@ from utility_scripts.host_requirements import COVERAGE_REQUIREMENTS, HostRequire
 
 
 @contextmanager
-def _graalvm_home(native_image: bool = True, schema: bool = True) -> Iterator[str]:
-    """Create a GraalVM home whose Native Image and schema presence can be controlled."""
+def _graalvm_home(native_image: bool = True, schema: bool = True, utils: bool = True) -> Iterator[str]:
+    """Create a GraalVM home whose Native Image, merge tool, and schema presence can be controlled."""
     with tempfile.TemporaryDirectory() as temp_dir:
         executables = ["java", "native-image"] if native_image else ["java"]
+        executables += ["native-image-utils"] if utils else []
         bin_dir = Path(temp_dir) / "bin"
         bin_dir.mkdir()
         for executable in executables:
@@ -314,6 +315,13 @@ class HostGraalVMChecksTests(unittest.TestCase):
             ],
             problems,
         )
+
+    def test_only_the_generating_home_needs_the_merge_tool(self) -> None:
+        with _graalvm_home(utils=False) as graalvm_home, \
+                patch("utility_scripts.host_graalvm_checks.probe_native_image_agent", return_value=None):
+            self.assertEqual([], check_graalvm_installation(graalvm_home))
+            self.assertEqual(["native-image-utils is missing from bin and lib/svm/bin"],
+                             check_graalvm_installation(graalvm_home, generates_metadata=True))
 
 
 if __name__ == "__main__":
