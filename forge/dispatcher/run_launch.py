@@ -157,11 +157,18 @@ def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: st
     return workspace
 
 
-def read_outcome(workspace: str) -> dict[str, str]:
-    """The run's terminal outcome, or an infrastructure failure when it never reached one."""
+def record_outcome(workspace: str) -> dict[str, str]:
+    """The run's terminal outcome, recording an infrastructure failure when it never reached one.
+
+    A halted run is finished: Rhei never re-runs a state whose attempts are spent
+    (§AR-forge-workflow-pipeline.1).
+    """
     path: str = os.path.join(workspace, OUTCOME)
     if not os.path.isfile(path):
-        return {"outcome": "failed", "kind": "infrastructure", "reason": "the run stopped before a final state"}
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as handle:
+            json.dump({"outcome": "failed", "kind": "infrastructure",
+                       "reason": "the run stopped before a final state"}, handle)
     with open(path, encoding="utf-8") as handle:
         return json.load(handle)
 

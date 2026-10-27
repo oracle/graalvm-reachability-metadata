@@ -146,7 +146,7 @@ class CloseOutTest(unittest.TestCase):
         self.assertEqual(1, len(reverts))
 
     def test_a_run_without_an_outcome_is_an_infrastructure_failure(self) -> None:
-        self.assertEqual("infrastructure", run_launch.read_outcome(tempfile.mkdtemp())["kind"])
+        self.assertEqual("infrastructure", run_launch.record_outcome(tempfile.mkdtemp())["kind"])
 
 
 class WorkspaceTest(unittest.TestCase):
@@ -176,6 +176,12 @@ class WorkspaceTest(unittest.TestCase):
             self.attempt(number, finished=True)
         self.assertEqual(os.path.join(self.forge, "runs", "forge-7-11"), run_launch.workspace_path(self.forge, 7))
         self.assertEqual([], run_launch.attempts(self.forge, 70))
+
+    def test_a_halted_attempt_is_finished_once_its_outcome_is_recorded(self) -> None:
+        halted: str = self.attempt(1, finished=False)
+        run_launch.record_outcome(halted)
+        self.assertEqual(os.path.join(self.forge, "runs", "forge-7-2"), run_launch.workspace_path(self.forge, 7))
+
 
 class ReviewEntryTest(unittest.TestCase):
 
