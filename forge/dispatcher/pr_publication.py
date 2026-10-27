@@ -4,7 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """Publication validation, Forge approval, and auto-merge control
-(§AR-forge-dispatcher-decomposition, §FS-published-pr-ci-failures).
+(§AR-forge-dispatcher-decomposition, §FS-published-pr-review).
 """
 
 
@@ -70,7 +70,7 @@ def validate_pull_request_publication(
 ) -> Any:
     """Validate the trusted descriptor on the exact current PR head.
 
-    §FS-published-pr-ci-failures
+    §FS-published-pr-review
     """
     pr_number = pull_request.get("number")
     head_sha = pull_request.get("headRefOid")
@@ -178,7 +178,7 @@ def approve_pull_request_from_descriptor(pull_request: dict) -> None:
 def enable_pull_request_auto_merge(pull_request: dict) -> None:
     """Enable auto-merge without allowing a different head to be merged.
 
-    §FS-published-pr-ci-failures
+    §FS-published-pr-review
     """
     pr_number = pull_request.get("number")
     head_sha = pull_request.get("headRefOid")
@@ -245,7 +245,7 @@ def dismiss_forge_approval_reviews(
 
 
 def ensure_pull_request_unapproved(pull_request: dict) -> None:
-    """Withdraw Forge merge readiness. §FS-published-pr-ci-failures"""
+    """Withdraw Forge merge readiness. §FS-published-pr-review"""
     disable_pull_request_auto_merge(pull_request)
     dismiss_forge_approval_reviews(pull_request)
 

@@ -63,5 +63,6 @@ The agent takes the first disposition that applies:
    it was written for, so the queue does not spend again on that head until
    a new push arrives.
 
-The queue never merges. Merging stays with a maintainer once CI is green
-(§forge/FS-published-pr-ci-failures).
+The queue never merges. Once its fix swaps the label for
+`human-intervention-fixed`, Forge's review takes the pull request up again and
+approves and arms auto-merge when CI is green (§forge/FS-published-pr-review.2).

@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The launcher's CI pass over published Forge pull requests (§FS-published-pr-ci-failures).
+"""The launcher's CI pass over published Forge pull requests (§FS-published-pr-review).
 
 Merged pull requests first release their issues; then each eligible open Forge
 pull request whose head fails CI, oldest first and at most `CI_LIMIT` of them,
@@ -41,7 +41,7 @@ ROUTE_LABELS: tuple[str, ...] = (
     "fixes-java-run-fail",
     "fixes-native-image-run-fail",
 )
-# The action each cause allows (§FS-published-pr-ci-failures.3).
+# The action each cause allows (§FS-published-pr-review.4).
 CAUSE_ACTIONS: dict[str, str] = {"transient": "rerun", "defect": "push", "flaky": "push", "outside": "issue"}
 MARKER: re.Pattern[str] = re.compile(r"<!-- forge-ci:([0-9a-f]{40}):(rerun|push|issue) -->")
 SIGNATURE: str = "forge-ci-signature"
@@ -50,7 +50,7 @@ EVIDENCE_LIMIT: int = 6000
 # A hung agent ends as an unverified diagnosis, not a stuck launcher.
 AGENT_TIMEOUT_SECONDS: int = 2 * 60 * 60
 # A dry run's agent gets no GitHub credential and no push URL, so it cannot write
-# even against its instruction (§FS-published-pr-ci-failures.5).
+# even against its instruction (§FS-published-pr-review.6).
 DRY_RUN_ENVIRONMENT: dict[str, str] = {"GH_TOKEN": "forge-ci-dry-run", "GIT_CONFIG_COUNT": "1",
                                        "GIT_CONFIG_KEY_0": "remote.origin.pushurl",
                                        "GIT_CONFIG_VALUE_0": "forge-ci-dry-run:no-push"}
@@ -96,7 +96,7 @@ def route_label(pull: dict[str, Any]) -> str | None:
 def skip_reason(pull: dict[str, Any]) -> str | None:
     """Why the pass skips `pull`, or `None` when it looks at it.
 
-    §FS-published-pr-ci-failures.1
+    §FS-published-pr-review.1
     """
     labels: set[str] = {label["name"] for label in pull.get("labels", [])}
     if (pull.get("headRepository") or {}).get("nameWithOwner", REPO) != REPO:
@@ -136,7 +136,7 @@ def pull_requests(numbers: list[int] | None = None) -> list[dict[str, Any]]:
 def failing(repo: str, number: int) -> Failing | None:
     """The head's failing jobs, or `None` while a check runs or when every check passed.
 
-    §FS-published-pr-ci-failures.2
+    §FS-published-pr-review.2
     """
     with tempfile.NamedTemporaryFile(prefix="forge-ci-answer-", suffix=".json") as answer:
         completed: subprocess.CompletedProcess[str] = subprocess.run(
@@ -214,7 +214,7 @@ def signature(text: str) -> str:
 def foreign_paths(path: str, commit: str, coordinate_text: str) -> list[str]:
     """The commit's paths outside the contribution's file set, diffed against `master`.
 
-    §FS-published-pr-ci-failures.4
+    §FS-published-pr-review.5
     """
     group, artifact, _ = coordinate_text.split(":")
     allowed: tuple[str, ...] = tuple(f"{root}/{group}/{artifact}/" for root in ("metadata", "tests/src", "stats"))
@@ -259,7 +259,7 @@ class Pass:
             path: str) -> Outcome:
         """Carry out the diagnosis, or escalate when it is malformed or its action is refused.
 
-        §FS-published-pr-ci-failures.4
+        §FS-published-pr-review.5
         """
         cause: str = str((answer or {}).get("cause", ""))
         summary: str = str((answer or {}).get("summary", "")).strip()
@@ -359,7 +359,7 @@ def marker(key: str) -> str:
 
 
 def find_issue(key: str) -> int | None:
-    """An open issue whose body carries the signature (§FS-published-pr-ci-failures.3.4)."""
+    """An open issue whose body carries the signature (§FS-published-pr-review.4.6)."""
     issues: list[dict[str, Any]] = gh_json(
         "issue", "list", "--repo", REPO, "--state", "open", "--search", f"\"{SIGNATURE}: {key}\" in:body",
         "--limit", "20", "--json", "number,body")

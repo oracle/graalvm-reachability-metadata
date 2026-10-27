@@ -10,7 +10,7 @@ issue whose form is valid, runs its `forge-metadata` Rhei workspace, and closes
 it out; every decision about the issue is the run's
 (§AR-forge-workflow-pipeline.1, §FS-forge-issue-resolution-goal). `--ci` runs
 the CI pass over published pull requests instead, and `--ci --dry-run` acts on
-none of them (§FS-published-pr-ci-failures).
+none of them (§FS-published-pr-review).
 
 Usage:
   python3 forge_metadata.py [--label LABEL]... [--setup-agent TARGET] [--worker-agent TARGET]

@@ -5,7 +5,7 @@ two lifecycles with opposite directions: a producer lifecycle that turns a
 labeled issue into one Rhei run — queue fetching, the live claim, the issue-form
 gate, starting the run, and closing it out (§FS-forge-issue-resolution-goal) —
 and a consumer lifecycle that watches the CI of the pull requests those runs
-produce (§FS-published-pr-ci-failures). Its implementation is therefore a package,
+produce (§FS-published-pr-review). Its implementation is therefore a package,
 `dispatcher/`, whose module boundaries follow those lifecycles rather than
 call-graph proximity; `forge_metadata.py` stays the single CLI entry point that
 parses arguments and wires them together (§AR-forge-workflow-pipeline.1).
@@ -28,7 +28,7 @@ patchable in isolation by the tests.
 
 ## 1. The CI pass
 
-`forge_metadata.py --ci` runs one pass (§FS-published-pr-ci-failures). The
+`forge_metadata.py --ci` runs one pass (§FS-published-pr-review). The
 failing state and its evidence come from the scripts the maintainer queues
 already use (§root/FS-maintainer-agent-queues.1): `.ephor/ci-failures.sh` reads
 the head's check rollup, reports the failing jobs with the tail of each failed

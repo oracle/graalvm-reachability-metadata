@@ -6,7 +6,7 @@
 """Tests for the launcher: fetch, targets, close-out, and the CI pass's entry.
 
 §AR-forge-workflow-pipeline.1 fixes the fetch and the close-out, and
-§FS-published-pr-ci-failures the CI pass and its agent target.
+§FS-published-pr-review the CI pass and its agent target.
 """
 from __future__ import annotations
 

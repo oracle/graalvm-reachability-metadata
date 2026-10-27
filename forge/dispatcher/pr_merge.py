@@ -4,7 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """Pre-merge index validation, merge follow-ups, and conflict resolution
-(§AR-forge-dispatcher-decomposition, §FS-published-pr-ci-failures)."""
+(§AR-forge-dispatcher-decomposition, §FS-published-pr-review)."""
 
 
 import json
@@ -202,7 +202,7 @@ def pull_request_needs_merge_follow_up(pull_request: dict) -> bool:
 
 
 def mark_pull_request_merge_follow_up_pending(pull_request: dict) -> None:
-    """Persist post-merge work before auto-merge completes. §FS-published-pr-ci-failures"""
+    """Persist post-merge work before auto-merge completes. §FS-published-pr-review"""
     if not pull_request_needs_merge_follow_up(pull_request):
         return
     if pull_request_has_label(pull_request, LABEL_FORGE_MERGE_FOLLOW_UP):
@@ -241,7 +241,7 @@ def apply_unblocked_issue_merge_follow_up(pr: dict) -> None:
 
 
 def reconcile_auto_merged_pull_request_follow_ups(fetch_limit: int = 100) -> None:
-    """Apply durable follow-ups for auto-merged PRs. §FS-published-pr-ci-failures"""
+    """Apply durable follow-ups for auto-merged PRs. §FS-published-pr-review"""
     merged_pull_requests = get_pull_requests_with_labels(
         [LABEL_FORGE_MERGE_FOLLOW_UP],
         fetch_limit,
@@ -272,7 +272,7 @@ def is_pull_request_mergeability_unsettled(pull_request: dict) -> bool:
     """Return True when GitHub has not yet answered whether the head merges cleanly.
 
     An `UNKNOWN` answer that outlived its backoff is an unanswered question, not a
-    clean head, so the pull request waits for a later pass (§FS-published-pr-ci-failures)."""
+    clean head, so the pull request waits for a later pass (§FS-published-pr-review)."""
     return pull_request.get("mergeable") == "UNKNOWN"
 
 
@@ -298,7 +298,7 @@ def resolve_benchmark_results_conflict(worktree_path: str, path: str) -> bool:
     The file's entries are keyed by run ID and the only legal edit is adding
     one, so concurrent publications conflict textually while never actually
     disagreeing; the resolution is the base side's entries plus the entries
-    the head added (§FS-published-pr-ci-failures). It may never modify or drop an
+    the head added (§FS-published-pr-review). It may never modify or drop an
     existing entry, and a run ID on both sides with different content is a
     real disagreement, so this returns False and the caller escalates.
     """
@@ -351,7 +351,7 @@ def resolve_pull_request_merge_conflict(
 
     Returns True only when the merge left no conflict behind and the result
     reached the head branch. Anything git could not resolve on its own is a real
-    disagreement over content and stays for a maintainer (§FS-published-pr-ci-failures).
+    disagreement over content and stays for a maintainer (§FS-published-pr-review).
     """
     pr_number = pull_request.get("number")
     head_ref_name = pull_request.get("headRefName")
@@ -425,7 +425,7 @@ def resolve_pull_request_merge_conflict(
                 f"Failed to list unresolved conflicts for PR #{pr_number}",
             ).stdout.split()
             # Benchmark results conflict textually while never disagreeing, so
-            # they are resolved, not escalated (§FS-published-pr-ci-failures).
+            # they are resolved, not escalated (§FS-published-pr-review).
             resolvable = bool(conflicted_paths) and all(
                 _BENCHMARK_RESULTS_PATH_PATTERN.match(path)
                 for path in conflicted_paths

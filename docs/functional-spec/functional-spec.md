@@ -19,7 +19,7 @@ Reachability metadata describes reflection, JNI, resource access, serialization,
 | --- | --- | --- |
 | **Application developer** using GraalVM Native Image | Build a native image of an application that depends on third-party libraries without writing reachability metadata by hand; check whether a given library is supported; request support for a missing library. | Consumes metadata indirectly — the GraalVM Gradle/Maven plugin downloads it from this repository at build time. Checks support via `curl … check-library-support.sh \| bash -s "<group>:<artifact>:<version>"` or by browsing [the libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/). Requests a new library by filing a [`01_support_new_library`](../../.github/ISSUE_TEMPLATE/01_support_new_library.yml) issue, or updates an existing one via [`02_update_existing_library`](../../.github/ISSUE_TEMPLATE/02_update_existing_library.yml). |
 | **Community contributor** | Add support for a missing library or update an existing entry to a newer library version. | Files a "library-new-request" or "update existing library" issue; the automation picks it up, optionally guided by custom instructions the contributor supplies. |
-| **Reviewer / Maintainer** of this repo | Sign off on PRs after automated checks have enforced licensing, security, and metadata quality rules. | Forge audits its own pull requests against the contribution contract before the push (§forge/FS-local-branch-review) and handles their failing CI after it (§forge/FS-published-pr-ci-failures); CI runs the gates. The reviewer applies the [REVIEWING.md](../REVIEWING.md) checklist, does the final human check, and merges. |
+| **Reviewer / Maintainer** of this repo | Sign off on PRs after automated checks have enforced licensing, security, and metadata quality rules. | Forge audits its own pull requests against the contribution contract before the push (§forge/FS-local-branch-review) and reviews them after it, approving and arming auto-merge on a green head or ending in a fix, a rerun, or an issue (§forge/FS-published-pr-review); CI runs the gates. The reviewer applies the [REVIEWING.md](../REVIEWING.md) checklist to everything else and to what Forge hands over. |
 | **Repository automation (Forge)** | Generate or repair metadata using LLM-driven pipelines. | Per issue, one run of the `forge-metadata` Rhei template ([workflow pipeline](../../forge/docs/architecture/workflow-pipeline.md)) adds or repairs the library version in a dedicated worktree, covers its dynamic-access call sites with generated tests, proves the metadata on Native Image, audits the result against the contribution contract, appends a schema-validated metrics record, and pushes a verified branch that trusted GitHub Actions turn into a PR for human review. See [forge/docs/functional-spec/functional-spec.md](../../forge/docs/functional-spec/functional-spec.md). |
 
 ## 3. Hard Constraints
@@ -131,8 +131,10 @@ GitHub labels are part of the public triage surface for issues and PRs. Pipeline
 | `rhei` | PR | PR was produced by a Rhei workflow, including compact code coverage benchmark results. |
 | `high-priority` | Issue | Highest work-queue urgency marker. Compatibility automation adds it to failed updates for artifacts whose latest index entry sets `high-priority: true`, and Forge processes it before `priority` and regular issues in the same pipeline batch. |
 | `chunked-dynamic-access` | Issue | Forge split dynamic-access generation for this issue into class-aligned chunks because the uncovered class count exceeded the configured threshold. Normal project status controls whether Forge may claim the next chunk. |
-| `human-intervention` | Issue / PR | Automation could not safely complete the work without manual follow-up, or a failing CI it could not fix has its own issue. |
-| `human-intervention-fixed` | PR | Manual follow-up has fixed a PR previously requiring intervention; review automation may approve and merge it after merge gates pass. |
+| `human-intervention` | Issue / PR | Automation could not safely complete the work without manual follow-up, or Forge's review of the PR found a cause it could not fix and filed its own issue. |
+| `human-intervention-fixed` | PR | Manual follow-up has fixed a PR previously requiring intervention; Forge's review takes it up again and may approve and merge it after merge gates pass. |
+| `in-review` | PR | A review agent holds the PR — Forge's review (§forge/FS-published-pr-review.3) or the real-use review (§real-use-tests/FS-real-use-test-generation.4); a label older than three hours is stale and may be taken over. |
+| `reviewed` | PR | Forge's review reached a terminal outcome — approved with auto-merge armed, or an issue filed with `human-intervention` — and does not review the PR again until `human-intervention-fixed` is added (§forge/FS-published-pr-review.5). |
 
 ### 4.7 Consumption by native-build-tools
 
@@ -247,6 +249,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Docker isolation.** Docker images used in tests are pre-pulled from `allowed-docker-images`, after which the runner disables Docker networking for deterministic, isolated test runs.
 - **Release style gate.** The release workflow runs `spotlessCheck` before packaging.
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
+- **Spring AOT exclusions.** The smoke tests live upstream, so the repository keeps its own exclusion list of Spring AOT projects, each entry naming the project and the reason. A listed project is not run and passes the gate. A project is listed only when it cannot pass because of Native Image behavior, or when it is flaky, failing on pull requests that change nothing it exercises; a failure the metadata can fix is fixed instead. The upstream `expectedToFail` mark and the upstream-also-failing pardon still apply to every project the list does not name.
 - **Compatibility budget.** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **Docker tag sync.** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
 - **Full sweep.** `test-all-metadata` runs only on a weekly Sunday schedule or manual dispatch in the main repository, uses 85 batches, isolates failed batches down to concrete library versions, publishes result and failure-log artifacts, and fails affected matrix batches. It surfaces sweep regressions but does not gate the scheduled release (§4.4).
@@ -360,8 +363,10 @@ entry points in §8.4.
 
 Reviewers apply the [REVIEWING.md](../REVIEWING.md) checklist before the final
 human approval and merge. Forge's pull requests arrive audited
-(§forge/FS-local-branch-review), and Forge answers their failing CI itself
-(§forge/FS-published-pr-ci-failures). CI enforces the same gates, so review is a
+(§forge/FS-local-branch-review), and Forge reviews them itself once their CI
+has finished: it approves and arms auto-merge on a green head, and otherwise
+fixes, reruns, or files an issue and hands the pull request to a maintainer
+(§forge/FS-published-pr-review). CI enforces the same gates, so review is a
 judgment layer on top of automated checks, not a substitute for them.
 
 ### 8.4 Repository automation (Forge) — generate and repair

@@ -9,7 +9,7 @@ The run that produced this pull request already passed the coordinate's own
 native lanes, so the cause is most likely something those lanes do not cover:
 the Spring AOT smoke tests, another tested version that shares the metadata,
 `master` moving under the pull request, transient infrastructure, or a flaky
-test (§FS-published-pr-ci-failures).
+test (§FS-published-pr-review).
 
 Find the root cause. Reproduce the failing job locally when that helps, read the
 library's and GraalVM's sources, issues, and release notes on the web when the
@@ -19,19 +19,19 @@ failure may come from them. Then classify it as exactly one cause.
 
 1. **`transient`**: a runner failure, a network or Docker-pull failure, or a
    cancelled job the change cannot have caused
-   (§FS-published-pr-ci-failures.3.1). Change nothing; the failed jobs are rerun.
+   (§FS-published-pr-review.4.2). Change nothing; the failed jobs are rerun.
 2. **`defect`**: the contribution's own files cause it — a test, the metadata,
    another tested version sharing the metadata, or an `index.json` that `master`
-   moved under (§FS-published-pr-ci-failures.3.2). Repair it in this checkout,
+   moved under (§FS-published-pr-review.4.3). Repair it in this checkout,
    inside the contribution's file set only: `metadata/{group}/{artifact}/`,
    `tests/src/{group}/{artifact}/`, and `stats/{group}/{artifact}/`
    (§root/FS-contribution-contract.5.2).
 3. **`flaky`**: a test fails without a change to its inputs
-   (§FS-published-pr-ci-failures.3.3). Make it deterministic under
+   (§FS-published-pr-review.4.5). Make it deterministic under
    §root/FS-test-contract; never delete, disable, or weaken it.
 4. **`outside`**: a GraalVM change or regression, a Spring AOT failure caused by
    GraalVM, a harness or workflow defect, or anything else the contribution's
-   files cannot fix (§FS-published-pr-ci-failures.3.4). Change nothing; describe
+   files cannot fix (§FS-published-pr-review.4.6). Change nothing; describe
    the issue to open.
 
 Fix pushes left on this pull request: {pushes_left}. With none left, still

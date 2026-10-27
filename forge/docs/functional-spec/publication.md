@@ -7,7 +7,7 @@ the tested-version split its result must record
 (§FS-library-update-tested-version-split), the review it receives before the
 push (§FS-local-branch-review), when the result needs maintainer judgment rather
 than another automated attempt (§FS-human-intervention-policy), and what Forge
-does when the published PR's CI fails (§FS-published-pr-ci-failures).
+does with the published PR (§FS-published-pr-review).
 
 Publication readiness is consumed once per publication branch. After the
 trusted publisher opens the matching Forge pull request, identified by the
@@ -416,7 +416,7 @@ generated code, repository automation, metadata, or library behavior.
 A run that cannot finish — a check still failing after its fix, or a fix that
 reports nothing within the rules can help — publishes nothing and labels the
 issue with the reason (§AR-forge-workflow-pipeline.1). On a published pull
-request the label comes from the CI handling of §FS-published-pr-ci-failures, or from a
+request the label comes from the review of §FS-published-pr-review, or from a
 descriptor that still carries an older pre-push verdict of `rejected` with
 action `human-intervention`; no other descriptor flag or inferred condition may
 add it. Valid cases include:
@@ -436,10 +436,10 @@ add it. Valid cases include:
   shared file and does not raise this case.
 - Publication detects a severe metadata, test, or coverage anomaly that makes
   the PR unsafe to auto-review as a normal generated result.
-- Failing CI on a published pull request could not be fixed inside the
-  contribution: the cause lies outside it, the fix pushes are spent, a rerun
-  failed again, or the diagnosis could not be confirmed. The pull request links
-  the issue that carries the diagnosis (§FS-published-pr-ci-failures.4).
+- The review of a published pull request could not fix it: the cause lies in
+  a dependent library or in Native Image, a bound on reruns or fix pushes is
+  spent, or the review's outcome could not be confirmed. The pull request links
+  the issue that carries the diagnosis (§FS-published-pr-review.5).
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
@@ -470,7 +470,8 @@ maintainer to continue. On a pull request, it means Forge produced a reviewable
 artifact, but some part of the result needs explicit maintainer judgment before
 normal review automation may treat it as safe. The companion
 `human-intervention-fixed` PR label means a maintainer has addressed the manual
-follow-up and review automation may resume after normal merge gates pass. The
+follow-up and the review of §FS-published-pr-review may resume, even on a pull
+request it already labeled `reviewed`. The
 resulting labeled backlog is drained by automated resolution, not per-item
 manual triage. The run's worktree and branch stay on the host, so a maintainer
 can continue from the last checkpoint.

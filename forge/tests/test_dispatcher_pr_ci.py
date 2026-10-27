@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The CI pass over published pull requests (§FS-published-pr-ci-failures).
+"""The CI pass over published pull requests (§FS-published-pr-review).
 
 A fake `gh` keeps the GitHub side in a JSON file and answers the real
 `.ephor/ci-failures.sh` and `.ephor/ci-restart.sh`; the pull request's branch
