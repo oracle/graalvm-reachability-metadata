@@ -394,7 +394,7 @@ the audit from rewriting tests that are fine:
    added tests are (§root/FS-contribution-contract.4).
 2. **The exact scaffold bar.** A test is scaffold only while its body is the
    unmodified TCK placeholder; a test is never rewritten for looking thin
-   (§root/FS-contribution-contract.4.1).
+   (§root/FS-contribution-contract.4).
 3. **No depth bar without calls.** When the version reports no dynamic-access
    calls, test depth is not a violation: the audit adds or deepens no test for
    it.
