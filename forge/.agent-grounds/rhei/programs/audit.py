@@ -72,9 +72,8 @@ def commands(workspace: str, state: RunState) -> list[handoff.Failure]:
 
 
 def changed(state: RunState) -> list[str]:
-    """The published paths that differ from the audit checkpoint."""
-    return [path for path in changed_paths(state.worktree, state.audit_checkpoint)
-            if any(path == root or path.startswith(root.rstrip("/") + "/") for root in state.coordinate_paths)]
+    """Every path that differs from the audit checkpoint: an edit outside the file set fails the rerun."""
+    return changed_paths(state.worktree, state.audit_checkpoint)
 
 
 def audit(workspace: str) -> int:
@@ -84,7 +83,7 @@ def audit(workspace: str) -> int:
         print("[audit] already passed")
         return OK
     if not state.audit_checkpoint:
-        state.audit_checkpoint = checkpoint(state.worktree, state.coordinate_paths, f"Audit {state.coordinate}")
+        state.audit_checkpoint = checkpoint(state.worktree, state.contribution_paths(), f"Audit {state.coordinate}")
         handoff.write_fix_request(workspace, state, SENDER, commands(workspace, state), [brief(state)])
         save(workspace, state)
         print(f"[audit] the audit request follows, from {state.audit_checkpoint}")

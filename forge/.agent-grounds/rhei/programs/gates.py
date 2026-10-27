@@ -22,17 +22,13 @@ from typing import Any
 if __name__ == "__main__":
     sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
 
+from utility_scripts.contribution_paths import stray_paths  # noqa: E402
 from utility_scripts.library_stats import load_library_stats_entry  # noqa: E402
 
 import handoff  # noqa: E402
 from build_tools import changed_paths  # noqa: E402
 from run_state import ROUTE_NEW, ROUTE_UPDATE, RunState, load  # noqa: E402
 
-LEGACY_CONFIGS: frozenset[str] = frozenset({
-    "reflect-config.json", "resource-config.json", "proxy-config.json", "serialization-config.json",
-    "jni-config.json", "predefined-classes-config.json",
-})
-STATS_FILES: frozenset[str] = frozenset({"stats.json", "execution-metrics.json", "forge-publication.json"})
 TYPE_SECTIONS: tuple[str, ...] = ("reflection", "jni", "serialization")
 FENCED: re.Pattern[str] = re.compile(r"```[A-Za-z]*\n(.*?)```", re.DOTALL)
 OVERALL: str = "overall"
@@ -41,7 +37,7 @@ COVERAGE_BRIEF: str = ("dynamic-access coverage gate: Cover more call sites thro
                        "gate passes; rerun `generateLibraryStats` before the gate.")
 REQUESTED_BRIEF: str = ("reporter-requested metadata gate: Add the requested entries to the shipped metadata, "
                         "each with a test that reaches it through the library's public API.")
-SCOPE_BRIEF: str = ("diff-scope gate: Revert the paths outside the coordinate's version, and move legacy "
+SCOPE_BRIEF: str = ("diff-scope gate: Revert the paths outside the contribution's file set, and move legacy "
                     "`*-config.json` content into `reachability-metadata.json`.")
 
 
@@ -165,25 +161,13 @@ def requested_breach(state: RunState) -> str | None:
     return f"the shipped metadata lacks {', '.join(missing)}" if missing else None
 
 
-def _inside(path: str, root: str) -> bool:
-    return path == root or path.startswith(root.rstrip("/") + "/")
-
-
 def scope_breach(state: RunState) -> str | None:
-    """Which published paths leave the closed file set, or `None`.
+    """Which changed paths, anywhere in the worktree, leave the closed file set, or `None`.
 
     §root/FS-contribution-contract.2
     """
-    stats_dir: str = os.path.join("stats", state.group, state.artifact, state.version)
-    allowed: set[str] = {state.index_path, os.path.join(state.metadata_dir, "reachability-metadata.json")}
-    published: list[str] = [path for path in changed_paths(state.worktree, state.base_commit)
-                            if any(_inside(path, root) for root in state.coordinate_paths)]
-    stray: list[str] = [
-        path for path in published
-        if os.path.basename(path) in LEGACY_CONFIGS
-        or not (path in allowed or _inside(path, state.test_dir)
-                or (os.path.dirname(path) == stats_dir and os.path.basename(path) in STATS_FILES))
-    ]
+    stray: list[str] = stray_paths(state.worktree, state.coordinate, state.base_commit,
+                                   changed_paths(state.worktree, state.base_commit))
     return f"outside the closed file set: {', '.join(stray)}" if stray else None
 
 

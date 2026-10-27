@@ -3,11 +3,13 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The `publish` program: commit the coordinate's paths, describe the run, rebase, and push.
+"""The `publish` program: commit the contribution, describe the run, and push.
 
-Publication checks nothing itself: `finalize` ran every check before it. Only
-the coordinate's paths are committed (§AR-expected-paths), the run metrics and
-the descriptor are written (§FS-forge-run-metrics, §AR-publication-descriptor),
+Publication checks nothing itself: `finalize` ran every check before it, on the
+run rebased onto fresh `master`, so the pushed tree is the verified one
+(§FS-local-ci-equivalent-verification.2). Only the contribution's file set is
+committed, and a path outside it stops the run (§AR-expected-paths); the run
+metrics and the descriptor are written (§FS-forge-run-metrics, §AR-publication-descriptor),
 and the pushed `ai/**` branch is the whole handoff to the trusted publisher
 (§AR-forge-verification-publication-boundary). A deferred exploration opens its
 follow-up issue first, and a chunk records its identity for the next run
@@ -30,6 +32,7 @@ from git_scripts.publication_descriptor import (
     write_publication_descriptor,
 )
 from git_scripts.publication_evidence import load_dynamic_access_metadata_evidence
+from utility_scripts.contribution_paths import stray_paths
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport, dynamic_access_exhaust_report_path
 from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_measurements import (
@@ -48,12 +51,10 @@ from utility_scripts.token_costs import calc_model_session_cost
 import explore
 import issue
 import run_tokens
-from build_tools import changed_paths, checkpoint, git, head, restore_paths
+from build_tools import changed_paths, checkpoint, git, head, upstream_remote
 from exit_codes import INFRASTRUCTURE, NOTHING_TO_DO, OK
-from prepare import upstream_remote
 from run_state import ROUTE_NEW, RunState, load, runtime_path, save, write_text
 
-BASE_BRANCH: str = "master"
 STATUS_SUCCESS: str = "success"
 STATUS_CHUNK_READY: str = "chunk_ready"
 MAX_SUBJECT: int = 60
@@ -63,16 +64,14 @@ def _subject(text: str) -> str:
     return text if len(text) <= MAX_SUBJECT else text[: MAX_SUBJECT - 3] + "..."
 
 
-def _inside(path: str, roots: list[str]) -> bool:
-    return any(path == root or path.startswith(root.rstrip("/") + "/") for root in roots)
+def stray(state: RunState) -> list[str]:
+    """The changed paths outside the contribution's file set; `finalize` and `audit` leave none."""
+    return stray_paths(state.worktree, state.coordinate, state.base_commit,
+                       changed_paths(state.worktree, state.base_commit))
 
 
-def keep_coordinate_paths(state: RunState) -> None:
-    """Drop every edit outside the coordinate's paths, then checkpoint what is inside them."""
-    outside: list[str] = [path for path in changed_paths(state.worktree, "HEAD")
-                          if not _inside(path, state.coordinate_paths)]
-    restore_paths(state.worktree, "HEAD", outside)
-    state.checkpoint = checkpoint(state.worktree, state.coordinate_paths, _subject(f"Finish {state.coordinate}"))
+def commit_contribution(state: RunState, message: str) -> str:
+    return checkpoint(state.worktree, state.contribution_paths(), _subject(message))
 
 
 def has_changes(state: RunState) -> bool:
@@ -112,7 +111,7 @@ def record_chunk(state: RunState, final: bool, publication_id: str, branch: str)
     else:
         report.record_publication_identity(publication_id, branch)
         report.save(path)
-    checkpoint(state.worktree, state.coordinate_paths, _subject(f"Record the chunk of {state.coordinate}"))
+    commit_contribution(state, f"Record the chunk of {state.coordinate}")
     return summary
 
 
@@ -215,18 +214,6 @@ def verification(state: RunState) -> LocalCIVerificationResult:
     return LocalCIVerificationResult(**raw)
 
 
-def rebase(state: RunState) -> str:
-    """Rebase the run onto upstream `master` and return the base ref."""
-    remote: str = upstream_remote(state.worktree)
-    git(state.worktree, "fetch", "--quiet", remote, BASE_BRANCH)
-    try:
-        git(state.worktree, "rebase", "--quiet", f"{remote}/{BASE_BRANCH}")
-    except subprocess.CalledProcessError:
-        subprocess.run(["git", "rebase", "--abort"], cwd=state.worktree, check=False, capture_output=True)
-        raise
-    return f"{remote}/{BASE_BRANCH}"
-
-
 def label_chunked(state: RunState) -> None:
     """A published non-final chunk keeps the issue in chunked mode for its next claim."""
     subprocess.run(["gh", "issue", "edit", str(state.issue_number), "--repo", issue.REPOSITORY,
@@ -235,7 +222,11 @@ def label_chunked(state: RunState) -> None:
 
 def publish(workspace: str) -> int:
     state: RunState = load(workspace)
-    keep_coordinate_paths(state)
+    outside: list[str] = stray(state)
+    if outside:
+        print(f"ERROR: paths outside the contribution's file set: {', '.join(outside)}", file=sys.stderr)
+        return INFRASTRUCTURE
+    state.checkpoint = commit_contribution(state, f"Finish {state.coordinate}")
     if not has_changes(state):
         print(f"[publish] {state.coordinate} is unchanged; nothing to publish")
         return NOTHING_TO_DO
@@ -252,19 +243,14 @@ def publish(workspace: str) -> int:
     metrics: dict[str, Any] = run_metrics(workspace, state, status)
     if not state.skip_recorded:
         append_execution_metrics(state.worktree, metrics, task_type)
-    checkpoint(state.worktree, state.coordinate_paths, _subject(f"Record the Forge run for {state.coordinate}"))
-    try:
-        base_ref: str = rebase(state)
-    except subprocess.CalledProcessError as error:
-        print(f"ERROR: cannot rebase onto upstream {BASE_BRANCH}: {error}", file=sys.stderr)
-        return INFRASTRUCTURE
+    commit_contribution(state, f"Record the Forge run for {state.coordinate}")
     write_publication_descriptor(
         repo_path=state.worktree,
         coordinates=state.coordinate,
         producer=producer,
         branch=branch,
         publication_id=publication_id,
-        base_commit=base_ref,
+        base_commit=state.base_commit,
         descriptor_input=PublicationDescriptorInput(
             issue_number=state.issue_number,
             task_type=task_type,
@@ -281,7 +267,7 @@ def publish(workspace: str) -> int:
         local_ci_verification=verification(state),
         local_review=None,
     )
-    checkpoint(state.worktree, state.coordinate_paths, "Add Forge publication descriptor")
+    commit_contribution(state, "Add Forge publication descriptor")
     remote: str = upstream_remote(state.worktree)
     git(state.worktree, "push", "--quiet", "--force", remote, f"HEAD:refs/heads/{branch}")
     if not final:

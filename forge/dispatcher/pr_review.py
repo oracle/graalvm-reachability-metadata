@@ -37,6 +37,7 @@ from dispatcher.issue_admin import (
     remove_pull_request_label,
 )
 from dispatcher.pr_merge import reconcile_auto_merged_pull_request_follow_ups
+from utility_scripts.contribution_paths import stray_paths
 
 REVIEW_LIMIT: int = 3
 FIX_PUSH_LIMIT: int = 2
@@ -199,19 +200,16 @@ def open_issue(title: str, body: str) -> int:
 
 
 def foreign_paths(path: str, head: str, commit: str, coordinate: str) -> list[str]:
-    """The paths the repair from `head` to `commit` changed that it may not change.
+    """The paths the repair from `head` to `commit` changed outside the contribution's file set.
 
     Only the repair is checked: what the head already changed is the contribution under review,
     and a path the repair left as `origin/master` has it came in with a merge of `master`.
 
     §FS-published-pr-review.4
     """
-    group, artifact, _ = coordinate.split(":")
-    allowed: tuple[str, ...] = tuple(f"{root}/{group}/{artifact}/" for root in ("metadata", "tests/src", "stats"))
     changed: list[str] = git("diff", "--name-only", head, commit, cwd=path).splitlines()
     unlike_master: set[str] = set(git("diff", "--name-only", "origin/master", commit, cwd=path).splitlines())
-    return [name for name in changed
-            if name in unlike_master and not name.startswith(allowed)]
+    return stray_paths(path, coordinate, head, [name for name in changed if name in unlike_master], head=commit)
 
 
 class Review:

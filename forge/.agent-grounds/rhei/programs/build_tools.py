@@ -21,6 +21,8 @@ from utility_scripts.gradle_environment import gradle_command_environment
 
 # The output tail a fix request carries per failing command (§AR-forge-workflow-prompts.5).
 TAIL_LINES: int = 200
+UPSTREAM: str = "oracle/graalvm-reachability-metadata"
+BASE_BRANCH: str = "master"
 
 
 @dataclass
@@ -70,6 +72,31 @@ def git(worktree: str, *args: str) -> str:
         stdout=subprocess.PIPE,
         text=True,
     ).stdout
+
+
+def upstream_remote(repo: str) -> str:
+    """The remote that points at the upstream repository, `origin` when none names it."""
+    for line in git(repo, "remote", "-v").splitlines():
+        name, url = line.split()[:2]
+        if UPSTREAM in url.removesuffix(".git"):
+            return name
+    return "origin"
+
+
+def rebase_onto_upstream(worktree: str) -> str:
+    """Rebase the run branch onto fresh upstream `master` and return that commit; a conflict raises.
+
+    The pre-publication gate then verifies the tree that is pushed
+    (§FS-local-ci-equivalent-verification.2).
+    """
+    remote: str = upstream_remote(worktree)
+    git(worktree, "fetch", "--quiet", remote, BASE_BRANCH)
+    try:
+        git(worktree, "rebase", "--quiet", f"{remote}/{BASE_BRANCH}")
+    except subprocess.CalledProcessError:
+        subprocess.run(["git", "rebase", "--abort"], cwd=worktree, check=False, capture_output=True)
+        raise
+    return git(worktree, "rev-parse", f"{remote}/{BASE_BRANCH}").strip()
 
 
 def head(worktree: str) -> str:

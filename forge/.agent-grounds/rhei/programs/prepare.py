@@ -39,12 +39,10 @@ from utility_scripts.metadata_index import (
 import gates
 import issue
 import run_note
-from build_tools import checkpoint, git, head, run_gradle
+from build_tools import BASE_BRANCH, checkpoint, git, head, run_gradle, upstream_remote
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, OK
 from run_state import ROUTE_NEW, Budgets, Chunk, RunState, load, runtime_path, save, write_text
 
-UPSTREAM: str = "oracle/graalvm-reachability-metadata"
-BASE_BRANCH: str = "master"
 # <agent>[<mode>]:<model> with agent pi or claude-code (§FS-forge-agent-runtime-selection).
 TARGET: re.Pattern[str] = re.compile(r"^(pi|claude-code)(\[[A-Za-z0-9_-]+\])?:.+$")
 # Issues the compatibility automation opens carry no reporter request (§root/FS-test-contract.1.5).
@@ -54,15 +52,6 @@ MAX_REQUEST_CHARS: int = 50_000
 
 def _resolve(workspace: str, path: str) -> str:
     return path if os.path.isabs(path) else os.path.normpath(os.path.join(workspace, path))
-
-
-def upstream_remote(repo: str) -> str:
-    """The remote that points at the upstream repository, `origin` when none names it."""
-    for line in git(repo, "remote", "-v").splitlines():
-        name, url = line.split()[:2]
-        if UPSTREAM in url.removesuffix(".git"):
-            return name
-    return "origin"
 
 
 def pin_base(repo: str) -> str:

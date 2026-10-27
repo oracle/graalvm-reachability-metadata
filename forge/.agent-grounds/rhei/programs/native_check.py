@@ -48,7 +48,7 @@ def native(workspace: str) -> int:
     failures: list[handoff.Failure] = run_native_check(workspace, state, SENDER)
     if not failures:
         state.pending_request = None
-        state.checkpoint = checkpoint(state.worktree, state.coordinate_paths, f"Collect metadata for {state.coordinate}")
+        state.checkpoint = checkpoint(state.worktree, state.contribution_paths(), f"Collect metadata for {state.coordinate}")
         save(workspace, state)
         print(f"[native] the native check passes at {state.checkpoint}")
         return OK

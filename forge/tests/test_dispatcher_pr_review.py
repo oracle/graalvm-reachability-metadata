@@ -274,6 +274,35 @@ class ReviewTest(unittest.TestCase):
         self.run_pass()
         self.assertIn("changes README.md", self.state()["issues"][0]["body"])
 
+    def test_a_fix_to_another_version_is_escalated(self) -> None:
+        other: str = "tests/src/org.example/lib/0.9.0/LibTest.java"
+        self.plan({"answer": self.answer("fix"), "files": {other: "class LibTest { }\n"},
+                   "commands": [["git", "push", "-q", "origin", "HEAD:refs/heads/{branch}",
+                                 f"HEAD:refs/pull/{NUMBER}/head"]]})
+        self.run_pass()
+        self.assertIn(f"changes {other}", self.state()["issues"][0]["body"])
+
+    def test_a_fix_may_route_metadata_to_its_owner(self) -> None:
+        owner: str = "metadata/org.example/owner/2.0.0/reachability-metadata.json"
+        _git("checkout", "-q", BRANCH, cwd=self.repo)
+        self.write("metadata/org.example/owner/index.json",
+                   json.dumps([{"metadata-version": "2.0.0", "allowed-packages": ["org.example.owner"]}]))
+        self.write(owner, json.dumps({"reflection": []}))
+        _git("add", "-A", cwd=self.repo)
+        _git("commit", "-q", "-m", "owner hosted", cwd=self.repo)
+        self.head = _git("rev-parse", "HEAD", cwd=self.repo)
+        _git("push", "-q", "origin", BRANCH, f"{BRANCH}:refs/pull/{NUMBER}/head", cwd=self.repo)
+        _git("checkout", "-q", "master", cwd=self.repo)
+        state: dict[str, Any] = self.state()
+        state["checks"][self.head] = [check("test (25)", conclusion="failure")]
+        self.save(state)
+        routed: dict[str, Any] = {"reflection": [{"type": "org.example.owner.Codec",
+                                                  "condition": {"typeReached": "org.example.owner.Api"}}]}
+        self.plan({"answer": self.answer("fix"), "files": {owner: json.dumps(routed)},
+                   "commands": [["git", "push", "-q", "origin", "HEAD:refs/heads/{branch}",
+                                 f"HEAD:refs/pull/{NUMBER}/head"]]})
+        self.assertIn("fix: pushed", self.run_pass())
+
     def test_a_fix_is_judged_by_its_own_paths_not_the_head_s(self) -> None:
         _git("checkout", "-q", BRANCH, cwd=self.repo)
         self.write("metadata/org.example/sibling/1.0.0/reachability-metadata.json", "{}\n")

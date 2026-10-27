@@ -7,10 +7,11 @@
 
 Each runs once. `spotlessApply` runs first, then `spotlessCheck`, `checkstyle`, and
 `generateLibraryStats` over the coordinate, then the reviewer gates
-(§FS-local-ci-equivalent-verification.1.1), and then the pre-publication gate
-(§FS-local-ci-equivalent-verification.2) with the coordinate's native lanes and
-no agent fixup of its own; the first failing step becomes the fix request, a
-failing lane with its exact reproduction command (§AR-forge-workflow-pipeline.4.4).
+(§FS-local-ci-equivalent-verification.1.1), and then, on the run rebased onto
+fresh `master`, the pre-publication gate (§FS-local-ci-equivalent-verification.2)
+with the coordinate's native lanes and no agent fixup of its own; the first
+failing step becomes the fix request, a failing lane with its exact reproduction
+command (§AR-forge-workflow-pipeline.4.4).
 `audit` reruns the same lane over its edit (§AR-forge-workflow-pipeline.4.3).
 """
 from __future__ import annotations
@@ -28,7 +29,7 @@ from utility_scripts.local_ci_verification import (
 
 import gates
 import handoff
-from build_tools import TaskResult, checkpoint, coordinate_task, run_gradle
+from build_tools import TaskResult, checkpoint, coordinate_task, head, rebase_onto_upstream, run_gradle
 from exit_codes import AGENT_WORK, OK, STILL_FAILING
 from run_state import RunState, load, runtime_path, save
 
@@ -81,7 +82,9 @@ def run_lane(workspace: str, state: RunState, prefix: str) -> list[handoff.Failu
     breached: list[handoff.Failure] = gates.failures(workspace, state)
     if breached:
         return breached
-    state.checkpoint = checkpoint(state.worktree, state.coordinate_paths, f"Finalize {state.coordinate}")
+    checkpoint(state.worktree, state.contribution_paths(), f"Finalize {state.coordinate}")
+    state.base_commit = rebase_onto_upstream(state.worktree)
+    state.checkpoint = head(state.worktree)
     try:
         verification: LocalCIVerificationResult = run_local_ci_verification(
             repo_path=state.worktree,

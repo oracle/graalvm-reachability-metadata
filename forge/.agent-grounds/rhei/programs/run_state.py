@@ -16,6 +16,10 @@ import os
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
+from utility_scripts.contribution_paths import contribution_paths, roots
+
+from build_tools import changed_paths
+
 RUNTIME_DIR: str = os.path.join("runtime", "forge")
 
 ROUTE_NEW: str = "new"
@@ -79,7 +83,7 @@ class RunState:
     repo_checkout: str
     worktree: str
     branch: str
-    # The pinned `origin/master` the run branched from.
+    # The upstream `master` the run sits on: pinned by `prepare`, moved by the rebase before the gate.
     base_commit: str
     # The latest checkpoint on the run branch.
     checkpoint: str
@@ -134,12 +138,13 @@ class RunState:
 
     @property
     def coordinate_paths(self) -> list[str]:
-        """The repository paths a run may publish (§AR-expected-paths)."""
-        return [
-            self.test_dir,
-            os.path.join("metadata", self.group, self.artifact),
-            os.path.join("stats", self.group, self.artifact),
-        ]
+        """The coordinate's own roots, every version included, which resets and restores cover."""
+        return roots(self.coordinate)
+
+    def contribution_paths(self) -> list[str]:
+        """What a checkpoint stages: the coordinate's roots and each admitted path outside them."""
+        return contribution_paths(self.worktree, self.coordinate, self.base_commit,
+                                  changed_paths(self.worktree, self.base_commit))
 
     def path(self, relative: str) -> str:
         return os.path.join(self.worktree, relative)

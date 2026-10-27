@@ -105,9 +105,11 @@ These are the rules of the run's `fix` state, and they bind your repair:
 
 Do not label the pull request, comment on it, or open issues: the program does
 that from your answer. Never rebase or force-push: to bring `master` in, merge
-`origin/master`, so your commit descends from `{head}`. Change only
-`metadata/{group}/{artifact}/`, `tests/src/{group}/{artifact}/`,
-and `stats/{group}/{artifact}/`.
+`origin/master`, so your commit descends from `{head}`. Stay inside the
+contribution's file set (§root/FS-contribution-contract.2): the version's own
+metadata, index, stats, and tests; routed owner metadata that only adds entries
+conditioned on the owner's packages; and an allowed-Docker-image file the test
+lists. The program rejects a fix that changes anything else.
 
 ## Your answer
 

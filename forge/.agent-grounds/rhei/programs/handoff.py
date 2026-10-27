@@ -127,10 +127,16 @@ def task_name(command: str) -> str:
 
 
 def editable_paths(state: RunState, sender: str) -> list[str]:
-    """The files the fix may edit: the test project, and the shipped metadata past `javaTest`."""
+    """The files the fix may edit: the test project, and the shipped metadata past `javaTest`.
+
+    Past `javaTest`, metadata another library owns goes to that owner, entries only added
+    (§root/FS-contribution-contract.2).
+    """
     paths: list[str] = [state.path(state.test_dir) + "/**"]
     if sender != "measure":
         paths.append(state.path(os.path.join("metadata", state.group, state.artifact)) + "/**")
+        paths.append("the owner's `metadata/<group>/<artifact>/<version>/reachability-metadata.json`, "
+                     "through `routeForeignMetadata` only")
     if sender == "finalize":
         paths.append(state.path(os.path.join("stats", state.group, state.artifact)) + "/**")
     return paths
