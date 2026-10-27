@@ -204,14 +204,17 @@ def open_issue(title: str, body: str) -> int:
 def foreign_paths(path: str, head: str, commit: str, coordinate: str) -> list[str]:
     """The paths the repair from `head` to `commit` changed that it may not change.
 
-    Only the repair is checked: what the head already changed is the contribution under review.
+    Only the repair is checked: what the head already changed is the contribution under review,
+    and a path the repair left as `origin/master` has it came in with a merge of `master`.
 
     §FS-published-pr-review.4
     """
     group, artifact, _ = coordinate.split(":")
     allowed: tuple[str, ...] = tuple(f"{root}/{group}/{artifact}/" for root in ("metadata", "tests/src", "stats"))
     changed: list[str] = git("diff", "--name-only", head, commit, cwd=path).splitlines()
-    return [name for name in changed if not name.startswith(allowed) and name != SPRING_EXCLUSIONS]
+    unlike_master: set[str] = set(git("diff", "--name-only", "origin/master", commit, cwd=path).splitlines())
+    return [name for name in changed
+            if name in unlike_master and not name.startswith(allowed) and name != SPRING_EXCLUSIONS]
 
 
 class Review:

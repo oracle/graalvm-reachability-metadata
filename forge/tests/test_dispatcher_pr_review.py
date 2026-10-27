@@ -290,6 +290,17 @@ class ReviewTest(unittest.TestCase):
                                  f"HEAD:refs/pull/{NUMBER}/head"]]})
         self.assertIn("fix: pushed", self.run_pass())
 
+    def test_a_fix_may_merge_master(self) -> None:
+        self.write("README.md", "moved on\n")
+        _git("commit", "-q", "-am", "master moves", cwd=self.repo)
+        _git("push", "-q", "origin", "master", cwd=self.repo)
+        self.plan({"answer": self.answer("fix"), "files": {TEST: "class LibTest { }\n"},
+                   "commands": [["git", "-c", "user.name=A", "-c", "user.email=a@example.com", "merge", "-q",
+                                 "--no-edit", "origin/master"],
+                                ["git", "push", "-q", "origin", "HEAD:refs/heads/{branch}",
+                                 f"HEAD:refs/pull/{NUMBER}/head"]]})
+        self.assertIn("fix: pushed", self.run_pass())
+
     def test_an_issue_reuses_its_signature_and_ends_the_review(self) -> None:
         state: dict[str, Any] = self.state()
         state["issues"].append({"number": 42, "state": "OPEN", "title": "NI 25.0 bug",
