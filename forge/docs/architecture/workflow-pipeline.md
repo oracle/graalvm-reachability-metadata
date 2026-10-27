@@ -23,7 +23,10 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
 
 1. **Fetch.** One `gh issue list` per label and priority tier, every cycle, with
    no cache: `high-priority`, then `priority`, then the rest, oldest first,
-   unassigned, excluding `not-for-native-image`. The labels are
+   unassigned, excluding `not-for-native-image`. Each tier excludes the labels
+   of the tiers above it, so an issue carrying both priority labels is served
+   once, in its highest tier, as the repository status classifies it
+   (§root/FS-repository-status-report.1). The labels are
    `library-new-request`, `library-update-request`, `fails-javac-compile`,
    `fails-java-run`, and `fails-native-image-run` (§FS-forge-scope). A fixture
    file can stand in for GitHub.

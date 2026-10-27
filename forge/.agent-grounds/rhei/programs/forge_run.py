@@ -73,7 +73,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def outcome(step: str, code: int) -> dict[str, str] | None:
-    """The final state an exit leads to, for the launcher's close-out, or `None` when the run goes on.
+    """The final state an exit leads to, for the launcher's close-out, or `None` to go on.
 
     §FS-forge-run-status
     """
@@ -112,7 +112,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         code: int = prepare.run(args) if args.step == "prepare" else STEPS[args.step](args.workspace)
     except SystemExit as early_exit:
-        # Shared helpers quit with `SystemExit`; the result file is owed all the same (§AR-forge-workflow-pipeline.2).
+        # Shared helpers quit with `SystemExit`; the result file is owed all the same
+        # (§AR-forge-workflow-pipeline.2).
         print(f"ERROR: {args.step} quit early with exit status {early_exit.code}.", file=sys.stderr)
         code = INFRASTRUCTURE
     except Exception:

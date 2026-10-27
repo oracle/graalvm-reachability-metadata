@@ -3,9 +3,9 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The `finalize` program: style, stats, the reviewer gates, and the pre-publication gate, each once.
+"""The `finalize` program: style, stats, the reviewer gates, and the pre-publication gate.
 
-`spotlessApply` runs first, then `spotlessCheck`, `checkstyle`, and
+Each runs once. `spotlessApply` runs first, then `spotlessCheck`, `checkstyle`, and
 `generateLibraryStats` over the coordinate, then the reviewer gates
 (§FS-local-ci-equivalent-verification.1.1), and then the pre-publication gate
 (§FS-local-ci-equivalent-verification.2) with the coordinate's native lanes and

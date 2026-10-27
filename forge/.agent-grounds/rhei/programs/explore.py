@@ -53,7 +53,9 @@ def open_classes(report: DynamicAccessCoverageReport, skip: set[str]) -> list[st
 
 
 def goal_met(report: DynamicAccessCoverageReport, goal_covered_calls: int | None, goal_total_calls: int | None) -> bool:
-    """Whether the report reaches the previous version's coverage ratio (§AR-forge-workflow-pipeline.7).
+    """Whether the report reaches the previous version's coverage ratio.
+
+    §AR-forge-workflow-pipeline.7
 
     The ratio is what the finalize gate checks, so the goal and the gate agree
     however many call sites the new version has. Stats without a total fall

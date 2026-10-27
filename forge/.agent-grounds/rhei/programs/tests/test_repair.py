@@ -3,7 +3,10 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for the setup tail's source download (§AR-forge-workflow-pipeline.4.1) and the result file on an early exit."""
+"""Tests for the setup tail's source download and the result file on an early exit.
+
+§AR-forge-workflow-pipeline.4.1
+"""
 from __future__ import annotations
 
 import os
