@@ -99,8 +99,26 @@ def claim(issue: dict[str, Any], label: str, user: str, repo: str, take_blocked:
     return Claim(issue=issue, label=label, item_id=item_id)
 
 
+def attempts(forge_dir: str, issue_number: int) -> list[str]:
+    """The issue's attempt workspaces, oldest first."""
+    runs: str = os.path.join(forge_dir, "runs")
+    pattern: re.Pattern[str] = re.compile(rf"^forge-{issue_number}-(\d+)$")
+    numbered: list[tuple[int, str]] = [(int(match.group(1)), name) for name in os.listdir(runs)
+                                       if (match := pattern.match(name))] if os.path.isdir(runs) else []
+    return [os.path.join(runs, name) for _, name in sorted(numbered)]
+
+
 def workspace_path(forge_dir: str, issue_number: int) -> str:
-    return os.path.join(forge_dir, "runs", f"forge-{issue_number}")
+    """The attempt to run: the latest one while it is unfinished, else a new one.
+
+    Rhei keys a workspace's budget ledger by its path, so a finished attempt's
+    path is never reused (§AR-forge-workflow-pipeline.1).
+    """
+    found: list[str] = attempts(forge_dir, issue_number)
+    if found and not os.path.isfile(os.path.join(found[-1], OUTCOME)):
+        return found[-1]
+    number: int = int(found[-1].rsplit("-", 1)[1]) + 1 if found else 1
+    return os.path.join(forge_dir, "runs", f"forge-{issue_number}-{number}")
 
 
 def instantiate_command(issue_number: int, setup_agent: str, worker_agent: str, workspace: str) -> list[str]:
@@ -108,8 +126,8 @@ def instantiate_command(issue_number: int, setup_agent: str, worker_agent: str, 
             f"worker_agent={worker_agent}", "--output", workspace]
 
 
-def retire_workspace(repo: str, workspace: str) -> None:
-    """Set aside a workspace whose run already ended, and drop its worktree and branch.
+def release_worktree(repo: str, workspace: str) -> None:
+    """Drop a finished attempt's worktree and branch; its workspace stays as the record.
 
     A re-claimed issue starts a fresh run from a freshly pinned base rather than
     resuming a run that reached a final state.
@@ -121,21 +139,21 @@ def retire_workspace(repo: str, workspace: str) -> None:
         subprocess.run(["git", "worktree", "remove", "--force", state["worktree"]], cwd=repo, check=False)
         subprocess.run(["git", "branch", "-D", state["branch"]], cwd=repo, check=False,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    os.rename(workspace, f"{workspace}.{int(os.path.getmtime(workspace))}")
 
 
-def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: str, rhei_args: list[str]) -> bool:
-    """Instantiate and run the issue's workspace; `False` when the workspace could not be created."""
+def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: str,
+              rhei_args: list[str]) -> str | None:
+    """Instantiate and run the issue's attempt; its workspace, or `None` when it could not be created."""
     number: int = claimed.issue["number"]
     workspace: str = workspace_path(forge_dir, number)
-    if os.path.isfile(os.path.join(workspace, OUTCOME)):
-        retire_workspace(os.path.dirname(forge_dir), workspace)
     if not os.path.isdir(workspace):
+        for finished in attempts(forge_dir, number):
+            release_worktree(os.path.dirname(forge_dir), finished)
         created = subprocess.run(instantiate_command(number, setup_agent, worker_agent, workspace), cwd=forge_dir)
         if created.returncode != 0:
-            return False
+            return None
     subprocess.run(["rhei", "run", workspace, "--dashboard", *rhei_args], cwd=forge_dir)
-    return True
+    return workspace
 
 
 def read_outcome(workspace: str) -> dict[str, str]:

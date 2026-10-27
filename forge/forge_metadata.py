@@ -28,7 +28,7 @@ import sys
 from dispatcher.github_api import resolve_authenticated_user
 from dispatcher.issue_fetch import QUEUE_LABELS, fetch_candidates, fetch_commands
 from dispatcher.pr_review import review_pass, review_target_error
-from dispatcher.run_launch import Claim, claim, close_out, read_outcome, start_run, target_error, workspace_path
+from dispatcher.run_launch import Claim, claim, close_out, read_outcome, start_run, target_error
 
 FORGE_DIR: str = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR: str = os.path.dirname(FORGE_DIR)
@@ -84,11 +84,12 @@ def run_cycle(args: argparse.Namespace) -> int:
         if claimed is None:
             continue
         print(f"Claimed {label} issue #{issue['number']}.")
-        if not start_run(FORGE_DIR, claimed, args.setup_agent, args.worker_agent, args.rhei_args):
+        workspace: str | None = start_run(FORGE_DIR, claimed, args.setup_agent, args.worker_agent, args.rhei_args)
+        if workspace is None:
             print(f"ERROR: Cannot create the workspace for issue #{issue['number']}.", file=sys.stderr)
             close_out(claimed, {"outcome": "failed", "kind": "infrastructure", "reason": "workspace not created"})
             return RAN
-        close_out(claimed, read_outcome(workspace_path(FORGE_DIR, issue["number"])))
+        close_out(claimed, read_outcome(workspace))
         return RAN
     print("No eligible issue could be claimed.", file=sys.stderr)
     return NOTHING_CLAIMED

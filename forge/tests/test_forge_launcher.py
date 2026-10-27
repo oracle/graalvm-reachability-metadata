@@ -149,6 +149,34 @@ class CloseOutTest(unittest.TestCase):
         self.assertEqual("infrastructure", run_launch.read_outcome(tempfile.mkdtemp())["kind"])
 
 
+class WorkspaceTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.forge: str = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, self.forge, True)
+
+    def attempt(self, number: int, finished: bool) -> str:
+        workspace: str = os.path.join(self.forge, "runs", f"forge-7-{number}")
+        os.makedirs(os.path.dirname(os.path.join(workspace, run_launch.OUTCOME)))
+        if finished:
+            with open(os.path.join(workspace, run_launch.OUTCOME), "w", encoding="utf-8") as handle:
+                json.dump({"outcome": "failed"}, handle)
+        return workspace
+
+    def test_the_first_attempt_is_numbered_one(self) -> None:
+        self.assertEqual(os.path.join(self.forge, "runs", "forge-7-1"), run_launch.workspace_path(self.forge, 7))
+
+    def test_an_unfinished_attempt_is_resumed(self) -> None:
+        self.attempt(1, finished=True)
+        unfinished: str = self.attempt(2, finished=False)
+        self.assertEqual(unfinished, run_launch.workspace_path(self.forge, 7))
+
+    def test_a_finished_attempt_never_gives_its_path_to_the_next(self) -> None:
+        for number in (1, 2, 10):
+            self.attempt(number, finished=True)
+        self.assertEqual(os.path.join(self.forge, "runs", "forge-7-11"), run_launch.workspace_path(self.forge, 7))
+        self.assertEqual([], run_launch.attempts(self.forge, 70))
+
 class ReviewEntryTest(unittest.TestCase):
 
     def test_agent_command_follows_the_claude_code_target(self) -> None:
