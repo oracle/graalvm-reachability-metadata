@@ -7,8 +7,8 @@
 
 `generateMetadata` runs the JVM tests under the native-image agent and merges
 what the filter allows into the shipped metadata; `checkMetadataFiles` and
-`nativeTest` then run once each. The program judges only pass or fail and never
-edits metadata itself; whatever still fails goes to one fix request
+`test`, the JVM and Native Image tests, then run once each. The program judges
+only pass or fail and never edits metadata itself; whatever still fails goes to one fix request
 (§AR-forge-workflow-pipeline.5).
 """
 from __future__ import annotations
@@ -31,7 +31,7 @@ def run_native_check(workspace: str, state: RunState, prefix: str) -> list[hando
         # The JVM tests failed under the agent; the checks would only judge stale metadata.
         return [handoff.Failure(generated.command, generated.tail)]
     failures: list[handoff.Failure] = []
-    for task in ("checkMetadataFiles", "nativeTest"):
+    for task in ("checkMetadataFiles", "test"):
         result: TaskResult = run_gradle(
             state.worktree, coordinate_task(task, state.coordinate),
             runtime_path(workspace, "logs", f"{prefix}-{task}.log"),

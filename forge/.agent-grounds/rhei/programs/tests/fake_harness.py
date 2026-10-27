@@ -63,6 +63,9 @@ elif task == "checkMetadataFiles":
         print("ERROR: In file x\nEntry: e\nTypeReached: org.other.Type\ndoesn't belong to any of the specified packages: [org.example]")
         sys.exit(1)
 elif task == "nativeTest":
+    print("Task 'nativeTest' is ambiguous in root project 'reachability-metadata'.")
+    sys.exit(1)
+elif task == "test" and mode is None:
     fixed = os.path.exists(metadata) and "Fixed" in open(metadata).read()
     if control.get("nativeFails") and not fixed:
         print("org.graalvm.nativeimage.MissingReflectionRegistrationError: org.example.lib.Codec")

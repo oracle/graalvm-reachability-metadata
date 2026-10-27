@@ -24,7 +24,7 @@ from exit_codes import AGENT_WORK, OK, STILL_FAILING
 from run_state import RunState, load, save
 
 SENDER: str = "audit"
-NATIVE_TASKS: tuple[str, ...] = ("generateMetadata", "checkMetadataFiles", "nativeTest")
+NATIVE_TASKS: tuple[str, ...] = ("generateMetadata", "checkMetadataFiles", "test")
 
 
 PATTERNS: str = """

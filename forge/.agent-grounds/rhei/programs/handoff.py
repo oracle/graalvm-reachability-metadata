@@ -59,16 +59,16 @@ BRIEFS: tuple[Brief, ...] = (
     Brief("missing registration",
           re.compile(r"Missing\w*RegistrationError|MissingReflectionRegistration|MissingResourceRegistration"),
           "Add the entry the error names to the shipped metadata, with a `typeReached` condition in the "
-          "allowed packages.", ("nativeTest", "test")),
+          "allowed packages.", ("test",)),
     Brief("runtime class definition or bytecode generation",
           re.compile(r"cannot be defined at run ?time|Defining (hidden )?classes at runtime|"
                      r"No classes have been predefined|bytecode generation|ByteBuddy|Byte Buddy", re.IGNORECASE),
-          "Reshape the test to avoid it, or delete that test.", ("nativeTest", "nativeTestCompile", "test")),
+          "Reshape the test to avoid it, or delete that test.", ("nativeTestCompile", "test")),
     Brief("the native build or run names a flag",
           re.compile(r"--enable-url-protocols|URL protocol .* (is not|was not) (supported|enabled)|"
                      r"--initialize-at-(run|build)-time|AddAllCharsets|IncludeLocales|IncludeResourceBundles|"
                      r"AdditionalSecurityProviders|--add-opens|--add-exports|SharedArenaSupport|--future-defaults"),
-          "Add it if it is on the allowed list, in its narrowest form.", ("nativeTest", "nativeTestCompile", "test")),
+          "Add it if it is on the allowed list, in its narrowest form.", ("nativeTestCompile", "test")),
     Brief("style violation",
           re.compile(r"."),
           "Run `spotlessApply`, then fix what `checkstyle` reports.", ("spotlessCheck", "checkstyle"), True),

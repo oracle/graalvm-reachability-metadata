@@ -36,7 +36,7 @@ class BriefTest(unittest.TestCase):
         self.assertTrue(briefs[0].startswith("JVM test failure:"))
 
     def test_missing_registration_adds_the_entry(self) -> None:
-        briefs = self.briefs("./gradlew nativeTest -Pcoordinates=x",
+        briefs = self.briefs("./gradlew test -Pcoordinates=x",
                              "org.graalvm.nativeimage.MissingReflectionRegistrationError: org.example.Codec")
         self.assertEqual(1, len(briefs))
         self.assertIn("typeReached", briefs[0])
@@ -47,13 +47,13 @@ class BriefTest(unittest.TestCase):
         self.assertEqual([handoff.DEFAULT_BRIEF], briefs)
 
     def test_url_protocol_names_a_flag(self) -> None:
-        briefs = self.briefs("./gradlew nativeTest -Pcoordinates=x",
+        briefs = self.briefs("./gradlew test -Pcoordinates=x",
                              "Accessing an URL protocol that was not enabled; add --enable-url-protocols=https")
         self.assertIn("the native build or run names a flag: Add it if it is on the allowed list, "
                       "in its narrowest form.", briefs)
 
     def test_runtime_class_definition_reshapes_the_test(self) -> None:
-        briefs = self.briefs("./gradlew nativeTest -Pcoordinates=x", "Classes cannot be defined at runtime")
+        briefs = self.briefs("./gradlew test -Pcoordinates=x", "Classes cannot be defined at runtime")
         self.assertTrue(any(brief.startswith("runtime class definition") for brief in briefs))
 
     def test_condition_outside_allowed_packages_regenerates(self) -> None:
@@ -84,13 +84,13 @@ class RequestTest(unittest.TestCase):
     def test_request_carries_return_code_commands_briefs_output_and_scope(self) -> None:
         state = run_state(ROUTE_REPAIR, self.worktree)
         failures = [Failure("./gradlew checkMetadataFiles -Pcoordinates=" + COORDINATE, "all fine?"),
-                    Failure("./gradlew nativeTest -Pcoordinates=" + COORDINATE, "MissingReflectionRegistrationError")]
+                    Failure("./gradlew test -Pcoordinates=" + COORDINATE, "MissingReflectionRegistrationError")]
         handoff.write_fix_request(self.workspace, state, "native", failures)
         with open(runtime_path(self.workspace, handoff.FIX_REQUEST), encoding="utf-8") as handle:
             text: str = handle.read()
         self.assertTrue(text.startswith(f"# Fix: {COORDINATE}\nReturn: 32\n"))
-        self.assertIn("- ./gradlew nativeTest -Pcoordinates=" + COORDINATE, text)
-        self.assertIn("- nativeTest: missing registration:", text)
+        self.assertIn("- ./gradlew test -Pcoordinates=" + COORDINATE, text)
+        self.assertIn("- test: missing registration:", text)
         self.assertIn("- checkMetadataFiles: Make the command pass.", text)
         self.assertIn("MissingReflectionRegistrationError", text)
         self.assertIn(os.path.join(self.worktree, "metadata", "org.example", "lib") + "/**", text)

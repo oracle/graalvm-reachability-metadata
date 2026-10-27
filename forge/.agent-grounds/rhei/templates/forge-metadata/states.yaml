@@ -164,7 +164,7 @@ states:
         description: The mode and targets of the next cover pass.
 
   native:
-    description: The native check - generateMetadata, then checkMetadataFiles and nativeTest.
+    description: The native check - generateMetadata, then checkMetadataFiles and the coordinate's test task.
     program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" native
     program_timeout: 180m
     outputs:
@@ -236,7 +236,7 @@ states:
         (§root/FS-test-contract.2.6).
 
       Metadata
-      - When `nativeTest` reports a missing registration, add exactly the entry
+      - When the Native Image test reports a missing registration, add exactly the entry
         it names to the shipped metadata file, never under
         `src/test/resources` (§root/FS-test-contract.2.7).
       - Every entry has a `typeReached` condition naming a type in the allowed

@@ -100,8 +100,9 @@ class FinalizedRun(unittest.TestCase):
         return self.step("fix-route")
 
     def gradle_calls(self, task: str) -> int:
+        """How often `task` ran outside a native lane, which names its mode in brackets."""
         with open(self.state.path("gradle-calls.log"), encoding="utf-8") as handle:
-            return sum(1 for line in handle if line.split()[0] == task)
+            return sum(1 for line in handle if line.split()[0] == task and "[" not in line)
 
 
 class AuditTest(FinalizedRun):
@@ -112,7 +113,7 @@ class AuditTest(FinalizedRun):
         self.assertEqual(AGENT_WORK, self.step("audit"))
         request: str = self.read("fix-request.md")
         self.assertIn("Return: 34", request)
-        for command in ("./gradlew nativeTest -Pcoordinates=org.example:lib:2.0.0", "./gradlew spotlessCheck",
+        for command in ("./gradlew test -Pcoordinates=org.example:lib:2.0.0", "./gradlew spotlessCheck",
                         "./gradlew generateLibraryStats -Pcoordinates=org.example:lib:2.0.0", "gates.py"):
             self.assertIn(command, request)
         self.assertIn("cheating patterns", request)
@@ -153,7 +154,7 @@ class AuditTest(FinalizedRun):
         self.write(os.path.join(state.test_dir, "src", "test", "java", "org_example", "CodecTest.java"),
                    "package org_example;\npublic class CodecTest {}\n")
         self.assertEqual(OK, self.step("audit"))
-        self.assertEqual((2, 1), (self.gradle_calls("generateLibraryStats"), self.gradle_calls("nativeTest")))
+        self.assertEqual((2, 1), (self.gradle_calls("generateLibraryStats"), self.gradle_calls("test")))
         self.assertIn("CodecTest.java", self.head_files())
         # A resumed run never audits twice.
         self.assertEqual(OK, self.step("audit"))
