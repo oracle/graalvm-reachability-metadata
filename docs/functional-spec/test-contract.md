@@ -90,11 +90,14 @@ meaningful public-API behavior.
 }
 ```
 
-### 1.6 A 60-second bound on every individual test
+### 1.6 A 3-minute bound on every individual test
 
-Every individual test completes in under 60 seconds. Waits are bounded, and
-every client, server, executor, and other background resource is closed so
-nothing deadlocks or keeps the JVM alive.
+Every individual test completes in under 3 minutes. The bound is generous
+because the same tests also run under the native-image agent, which slows
+reflection-heavy code such as dynamic-language runtimes by an order of
+magnitude; it still catches a hang. Waits are bounded, and every client,
+server, executor, and other background resource is closed so nothing
+deadlocks or keeps the JVM alive.
 
 ```java
 // Bad: unbounded — a hang blocks the whole lane
@@ -613,5 +616,5 @@ Recycler<Buffer> recycler = newBufferRecycler();
 Native Image particularities also shape the timing rules: the 10-second
 explicit-timeout floor (§FS-test-contract.1.7) exists because
 native-image-agent metadata collection and Native Image startup are slower than
-a warm JVM, and the 60-second bound (§FS-test-contract.1.6) still applies to
+a warm JVM, and the 3-minute bound (§FS-test-contract.1.6) still applies to
 the native lanes.

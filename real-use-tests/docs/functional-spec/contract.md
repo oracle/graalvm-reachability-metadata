@@ -115,7 +115,7 @@ These points of §root/FS-test-contract apply to every real-use test unchanged:
 | --- | --- |
 | §root/FS-test-contract.1.2 | Public, idiomatic test classes. |
 | §root/FS-test-contract.1.4 | Only the tested version's API. |
-| §root/FS-test-contract.1.6 | A 60-second bound on every individual test. |
+| §root/FS-test-contract.1.6 | A 3-minute bound on every individual test. |
 | §root/FS-test-contract.1.7 | A 10-second floor on explicit I/O timeouts. |
 | §root/FS-test-contract.2.1 | No reflection or serialization shortcuts. |
 | §root/FS-test-contract.2.2 | No tests inside the library's packages. |

@@ -60,7 +60,7 @@ summary of what they mean when writing one.
   declared, pre-pulled `allowed-docker-image` with networking disabled, and
   per-coordinate runs must not depend on or affect other coordinates
   (§FS-repository-functional-spec.6). Each individual test completes in under
-  60 seconds, using bounded waits and closing every client, server, and executor
+  3 minutes, using bounded waits and closing every client, server, and executor
   it opens.
 - **Keep test code original.** Do not copy upstream or other third-party test
   sources into this repository. Upstream tests may be used only as behavioral
