@@ -215,7 +215,8 @@ timeouts allow for.
 
 `generateMetadata` runs the JVM tests under the native-image agent and merges
 what the filter allows into the shipped metadata; `checkMetadataFiles` and
-`nativeTest` then run once each. The program judges only pass or fail and never
+`test` then run once each — the harness has no root `nativeTest`, and `test`
+runs the coordinate's JVM and Native Image tests as CI does. The program judges only pass or fail and never
 merges, filters, or edits metadata itself. Whatever still fails goes to `fix` as
 one request with every failing output, where an exact missing registration or a
 listed native flag is a legal repair (§root/FS-test-contract.2.7). `repair`

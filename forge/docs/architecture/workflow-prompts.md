@@ -79,8 +79,8 @@ unmatched failure gets the default brief:
 | JVM test failure | adapt the test to this version's behavior; drop a test only for removed API |
 | `checkMetadataFiles`: condition outside the allowed packages | regenerate through the harness tasks; route a type another artifact owns to that owner |
 | `checkMetadataFiles`: test-only type | run `splitTestOnlyMetadata` |
-| `nativeTest`: missing registration | add the entry the error names to the shipped metadata, with a `typeReached` condition in the allowed packages |
-| `nativeTest`: runtime class definition or bytecode generation | reshape the test to avoid it, or delete that test |
+| Native Image test (`test`): missing registration | add the entry the error names to the shipped metadata, with a `typeReached` condition in the allowed packages |
+| Native Image test (`test`): runtime class definition or bytecode generation | reshape the test to avoid it, or delete that test |
 | a native build or run names a flag, such as a URL protocol | add it if it is on the allowed list, in its narrowest form |
 | `spotlessCheck` or `checkstyle` | run `spotlessApply`, then fix what `checkstyle` reports |
 | a reviewer gate (§FS-local-ci-equivalent-verification.1.1) | the gate's own one line: cover more call sites, add the requested entries, or revert the out-of-scope paths |
