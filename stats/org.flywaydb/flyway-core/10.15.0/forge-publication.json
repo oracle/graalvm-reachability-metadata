@@ -1,0 +1,166 @@
+{
+  "base_commit": "c55444563c70fe8fe1d7f8afa8b73fe96f50300e",
+  "branch": "ai/kimeta/add-lib-support-org.flywaydb-flyway-core-10.15.0-forge-10518-20261005230905011501-875b53d5a62c",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64ac79c9cbbc664ebc3203af3b0caec7596fb514",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10518,
+  "library": {
+    "artifact": "flyway-core",
+    "coordinates": "org.flywaydb:flyway-core:10.15.0",
+    "group": "org.flywaydb",
+    "version": "10.15.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "c55444563c70fe8fe1d7f8afa8b73fe96f50300e",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpcmzc4_g3"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10518-088ccd66/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.flywaydb:flyway-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.flywaydb/flyway-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10518-088ccd66/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "2c5ab42273605535ec130a2ce1474ec062d006a4",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.flywaydb/flyway-core/10.15.0/stats.json",
+      "tests/src/org.flywaydb/flyway-core/10.15.0/src/test/java/org_flywaydb_flyway_core/ClassPathResourceTest.java",
+      "tests/src/org.flywaydb/flyway-core/10.15.0/src/test/java/org_flywaydb_flyway_core/VersionPrinterTest.java",
+      "tests/src/org.flywaydb/flyway-core/10.15.0/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The resolved dynamic-access report listed covered call sites in org.flywaydb.core.internal.license.VersionPrinter and org.flywaydb.core.internal.resource.classpath.ClassPathResource, but the suite had no dedicated VersionPrinterTest.java or ClassPathResourceTest.java. This violated the one-test-file-per-dynamic-access-class requirement in §FS-test-contract.1.8.",
+    "finding_title": "Dynamic-access classes lacked dedicated test files",
+    "fix_note": "Added dedicated VersionPrinterTest and ClassPathResourceTest coverage through the library APIs, without pinning the Flyway version or weakening existing scenarios. Forge finalization regenerated the affected test-only metadata and library statistics and then passed cleanly on rerun.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete coordinate-scoped diff and local evidence. The contribution stays within org.flywaydb:flyway-core:10.15.0, uses only reachability-metadata.json, and has no scaffold placeholder, Native Image dodge, version-pinned test, package overlap, legacy metadata, or unjustified native flag. Reported dynamic-access coverage is 38/39 (97.4359%), above the new-library gate, and 38 covered calls do not trigger the 293-entry mismatch threshold. After repair, the Forge finalization completed successfully with all three test lanes, metadata/style/generated-test checks, deterministic metadata routing, and refreshed statistics, with no further publishable change.",
+    "session_id": "ad17d82fe59346d5"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.flywaydb/flyway-core/10.15.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 10076160,
+      "code_coverage_percent": 43.07,
+      "cost_usd": 1.9045,
+      "generated_loc": 380,
+      "input_tokens_used": 580461,
+      "iterations": 8,
+      "metadata_entries": 259,
+      "output_tokens_used": 52738,
+      "test_only_metadata_entries": 34,
+      "tested_library_loc": 4227
+    },
+    "timestamp": "2026-10-05T23:09:05.011501Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10518-20261005230905011501-875b53d5a62c",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- org.flywaydb.core.api.configuration.ClassicConfiguration.parsePropertiesFromConfigExtension(ClassicConfiguration.java:1773) (line 1773)",
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- org.flywaydb.core.api.configuration.ClassicConfiguration.parsePropertiesFromConfigExtension(ClassicConfiguration.java:1788) (line 1788)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.flywaydb.core.api.configuration.ClassicConfiguration.determineKeysToRemoveAndRemoveFromProps(ClassicConfiguration.java:1976) (line 1976)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.flywaydb.core.api.configuration.ClassicConfiguration.parsePropertiesFromConfigExtension(ClassicConfiguration.java:1747) (line 1747)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.flywaydb.core.api.configuration.ClassicConfiguration.parsePropertiesFromConfigExtension(ClassicConfiguration.java:1770) (line 1770)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.flywaydb.core.api.configuration.ClassicConfiguration.parsePropertiesFromConfigExtension(ClassicConfiguration.java:1781) (line 1781)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- org.flywaydb.core.api.configuration.ClassicConfiguration.parsePropertiesFromConfigExtension(ClassicConfiguration.java:1773) (line 1773)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- org.flywaydb.core.api.configuration.ClassicConfiguration.parsePropertiesFromConfigExtension(ClassicConfiguration.java:1788) (line 1788)",
+        "... and 30 more"
+      ],
+      "metadata_rules": [
+        "when `org.flywaydb.core.internal.license.EncryptionUtils` is reached, make `byte[]` available for reflection",
+        "when `org.apache.logging.log4j.status.StatusLogger$PropertiesUtilsDouble` is reached, make `byte[][]` available for reflection",
+        "when `org.flywaydb.core.extensibility.ConfigurationExtension` is reached, make `com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer$Bucket[]` available for reflection",
+        "when `org.flywaydb.core.internal.configuration.TomlUtils` is reached, make `com.fasterxml.jackson.databind.deser.Deserializers[]` available for reflection",
+        "when `org.flywaydb.core.extensibility.ConfigurationExtension` is reached, make `com.fasterxml.jackson.databind.ext.Java7SupportImpl` available for reflection",
+        "when `org.flywaydb.core.internal.license.EncryptionUtils` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `org.flywaydb.core.internal.license.EncryptionUtils` is reached, make `com.sun.crypto.provider.AESParameters.<init>()` available for reflection",
+        "when `org.flywaydb.core.internal.license.EncryptionUtils` is reached, make `com.sun.crypto.provider.HmacCore$HmacSHA256.<init>()` available for reflection",
+        "... and 149 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 32,
+            "totalCalls": 32
+          },
+          "resources": {
+            "coverageRatio": 0.857143,
+            "coveredCalls": 6,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.974359,
+        "coveredCalls": 38,
+        "totalCalls": 39
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 19493,
+          "missed": 26427,
+          "ratio": 0.424499,
+          "total": 45920
+        },
+        "line": {
+          "covered": 4228,
+          "missed": 5586,
+          "ratio": 0.430813,
+          "total": 9814
+        },
+        "method": {
+          "covered": 1191,
+          "missed": 1514,
+          "ratio": 0.440296,
+          "total": 2705
+        }
+      },
+      "version": "10.15.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-05T23:09:05.011501Z"
+}

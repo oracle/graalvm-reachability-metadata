@@ -1,0 +1,339 @@
+{
+  "fix_java_run_fail:2026-07-28": {
+    "timestamp": "2026-07-28T01:38:59.071276Z",
+    "library": "org.hibernate:hibernate-core:6.1.0.Final",
+    "starting_commit": "b542ed665d94990cf734fe94d4ea75f7182af3fc",
+    "ending_commit": "b72649782bf99c741fb0c781941c870ecf658078",
+    "previous_library": "org.hibernate:hibernate-core:6.0.0.Final",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success",
+    "stats": {
+      "version": "6.1.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.103448,
+            "coveredCalls": 42,
+            "totalCalls": 406
+          },
+          "resources": {
+            "coverageRatio": 0.318182,
+            "coveredCalls": 7,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.114486,
+        "coveredCalls": 49,
+        "totalCalls": 428
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 116992,
+          "missed": 533619,
+          "ratio": 0.179819,
+          "total": 650611
+        },
+        "line": {
+          "covered": 29136,
+          "missed": 132591,
+          "ratio": 0.180155,
+          "total": 161727
+        },
+        "method": {
+          "covered": 7862,
+          "missed": 36073,
+          "ratio": 0.178946,
+          "total": 43935
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "6.0.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.113208,
+            "coveredCalls": 42,
+            "totalCalls": 371
+          },
+          "resources": {
+            "coverageRatio": 0.333333,
+            "coveredCalls": 7,
+            "totalCalls": 21
+          }
+        },
+        "coverageRatio": 0.125,
+        "coveredCalls": 49,
+        "totalCalls": 392
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 115804,
+          "missed": 511634,
+          "ratio": 0.184566,
+          "total": 627438
+        },
+        "line": {
+          "covered": 28859,
+          "missed": 127226,
+          "ratio": 0.184893,
+          "total": 156085
+        },
+        "method": {
+          "covered": 7778,
+          "missed": 34463,
+          "ratio": 0.184134,
+          "total": 42241
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 818,
+      "issue_label": "fails-java-run",
+      "library": "org.hibernate:hibernate-core:6.1.0.Final",
+      "summary": "Hibernate 6.1.0.Final OracleDialect initialization requires oracle.jdbc.OracleConnection, which is not transitively supplied; the existing H2 Oracle-mode test reaches it.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.jdbc:ojdbc11:23.2.0.0",
+          "scope": "testImplementation",
+          "reason": "Supplies oracle.jdbc.OracleConnection required by OracleArrayJdbcType static initialization in Hibernate 6.1.0.Final; this exact dependency is used by nearby Hibernate ORM TCK tests."
+        }
+      ],
+      "agent_guidance": "",
+      "risks": [
+        "The H2 Oracle-compatibility test validates dialect initialization but not connectivity to a real Oracle database or Oracle ARRAY operations."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.jdbc:ojdbc11:23.2.0.0",
+          "result": "skipped",
+          "reason": "build_gradle_absent"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#818 [Automation] java run fails for org.hibernate:hibernate-core:6.1.0.Final; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "26 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.hibernate:hibernate-core:6.0.0.Final",
+      "new_version": "6.1.0.Final",
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 29253,
+      "output_tokens_used": 1952
+    },
+    "metrics": {
+      "input_tokens_used": 16356,
+      "cached_input_tokens_used": 28160,
+      "output_tokens_used": 409,
+      "iterations": 1,
+      "cost_usd": 0.054,
+      "tested_library_loc": 29136,
+      "metadata_entries": 9,
+      "test_only_metadata_entries": 34,
+      "previous_library_metadata_entries": 542,
+      "previous_library_test_only_metadata_entries": 34,
+      "code_coverage_percent": 18.02,
+      "previous_library_coverage_percent": 18.49
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json"
+    }
+  },
+  "improve_library_coverage:2026-08-29": {
+    "timestamp": "2026-08-29T04:21:29.313756Z",
+    "library": "org.hibernate:hibernate-core:6.1.0.Final",
+    "starting_commit": "3bc59e6e8842ed9061793195893070a74baa441e",
+    "ending_commit": "17174d19ac4512ee571c6a589452044d842d608f",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.1.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.487685,
+            "coveredCalls": 198,
+            "totalCalls": 406
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 20,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.509346,
+        "coveredCalls": 218,
+        "totalCalls": 428
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 135536,
+          "missed": 515075,
+          "ratio": 0.208321,
+          "total": 650611
+        },
+        "line": {
+          "covered": 33845,
+          "missed": 127882,
+          "ratio": 0.209272,
+          "total": 161727
+        },
+        "method": {
+          "covered": 8946,
+          "missed": 34989,
+          "ratio": 0.203619,
+          "total": 43935
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "no_action",
+      "agent_guidance": "No Docker image, environment variable, or system property is required. Keep the in-memory H2 compatibility-mode tests and ensure persistence.xml and dialect reflection metadata are registered for Native Image.",
+      "applied_setup": [],
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9324 Update existing library: org.hibernate:hibernate-core:6.1.0.Final; label=library-update-request; body_chars=7629"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "26 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 1464234,
+      "issue_label": "library-update-request",
+      "issue_number": 9324,
+      "library": "org.hibernate:hibernate-core:6.1.0.Final",
+      "model": "gpt-5.6-luna",
+      "output_tokens_used": 10214,
+      "risks": [
+        "H2 compatibility modes do not validate behavior against real vendor databases.",
+        "The reported failures are missing Native Image resource/reflection metadata, not missing runtime setup."
+      ],
+      "status": "completed",
+      "summary": "No extra setup is needed: the existing scaffold already provides H2 and the JDBC classes required by the exercised dialect paths. Hibernate core itself does not bundle database drivers ([POM](https://central.sonatype.com/artifact/org.hibernate.orm/hibernate-core/6.1.0.Final))."
+    },
+    "metrics": {
+      "input_tokens_used": 849074,
+      "cached_input_tokens_used": 30880256,
+      "output_tokens_used": 123700,
+      "iterations": 9,
+      "cost_usd": 23.3965,
+      "generated_loc": 4381,
+      "tested_library_loc": 33845,
+      "metadata_entries": 841,
+      "test_only_metadata_entries": 498,
+      "code_coverage_percent": 20.93
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json"
+    }
+  },
+  "improve_library_coverage:2026-10-02": {
+    "timestamp": "2026-10-02T00:14:25.992697Z",
+    "library": "org.hibernate:hibernate-core:6.1.0.Final",
+    "starting_commit": "9bca8e5750ed3857a80f1b550a4c2104de0cd9ce",
+    "ending_commit": "fad39f96e29ce88c8749da27a3e2cf801ab239f7",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "6.1.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.660099,
+            "coveredCalls": 268,
+            "totalCalls": 406
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 20,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.672897,
+        "coveredCalls": 288,
+        "totalCalls": 428
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 141385,
+          "missed": 509226,
+          "ratio": 0.217311,
+          "total": 650611
+        },
+        "line": {
+          "covered": 35365,
+          "missed": 126362,
+          "ratio": 0.218671,
+          "total": 161727
+        },
+        "method": {
+          "covered": 9230,
+          "missed": 34705,
+          "ratio": 0.210083,
+          "total": 43935
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9119,
+      "issue_label": "library-update-request",
+      "library": "org.hibernate:hibernate-core:6.1.0.Final",
+      "summary": "The existing hibernate-core 6.1.0.Final test project already has the setup it needs: H2, Jakarta Persistence, validation-api, logback, jboss-logging, and the PostgreSQL and Oracle JDBC drivers used by dialect initialization. It already has about 105 test classes and a conditions filter. The 150 uncovered classes are a breadth problem, not a missing-setup problem. In-memory H2 runs the tests without Docker, so no Docker image is needed. I did not find anything in the project that needs an extra environment variable or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not run the tests, so this decision comes from reading the build.gradle only. Reaching more of the 150 classes will mean adding tests for more Hibernate internals (dialects, bytecode enhancement, and similar). Some of those may need extra optional dependencies, such as other JDBC drivers, which Gradle and native-image runs would show.",
+        "The existing build.gradle has a custom updateGeneratedMetadata task that rewrites typeReachable conditions. New test classes that produce reflection entries may need the same rewrite."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9119 Improve coverage for org.hibernate:hibernate-core:6.1.0.Final; label=library-update-request; body_chars=198"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 590
+    },
+    "metrics": {
+      "input_tokens_used": 499726,
+      "cached_input_tokens_used": 6307328,
+      "output_tokens_used": 41730,
+      "iterations": 12,
+      "cost_usd": 1.3808,
+      "generated_loc": 4763,
+      "tested_library_loc": 35365,
+      "metadata_entries": 934,
+      "test_only_metadata_entries": 521,
+      "code_coverage_percent": 21.87
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json"
+    }
+  }
+}

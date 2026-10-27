@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-10-02": {
+    "timestamp": "2026-10-02T03:19:50.815236Z",
+    "library": "io.micronaut.data:micronaut-data-model:5.1.3",
+    "starting_commit": "330fd8901c52c806d608641e782f43bd905d5a85",
+    "ending_commit": "6ddaf4e3117e0313ae17f513652fe187ebb15f92",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.3",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1998,
+          "missed": 33784,
+          "ratio": 0.055838,
+          "total": 35782
+        },
+        "line": {
+          "covered": 357,
+          "missed": 7387,
+          "ratio": 0.0461,
+          "total": 7744
+        },
+        "method": {
+          "covered": 143,
+          "missed": 2197,
+          "ratio": 0.061111,
+          "total": 2340
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9807,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.data:micronaut-data-model:5.1.3",
+      "summary": "micronaut-data-model is annotation/value-object/metadata only (no DB, no Docker), but it is the artifact whose whole purpose is @MappedEntity/@Introspected entities — the scaffold never adds an annotation processor automatically, and every sibling io.micronaut.data module that uses these annotations declares micronaut-inject-java manually.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.10",
+          "scope": "testImplementation",
+          "reason": "Entity classes exercising @MappedEntity/@Id/@Introspected need this processor at compile time to generate BeanIntrospection metadata; the generated build.gradle never adds an annotation processor on its own, and all onboarded io.micronaut.data siblings (micronaut-data-runtime, -jdbc, -tx-jdbc, -conn\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Favor coverage of the self-contained parts of this module: Pageable/Sort/Page, PersistentEntity/PersistentProperty reflection built from BeanIntrospection, and the annotation model itself. Be cautious with the io.micronaut.data.model.jpa.criteria.* interfaces (PersistentEntityCriteriaBuilder, PersistentEntityCriteriaQuery, PersistentEntityRoot) — the only concrete builder observed in this repo (RuntimeCriteriaBuilder) lives in the sibling micronaut-data-runtime artifact, not in micronaut-data-model itself. If no usable builder implementation ships inside micronaut-data-model, avoid pulling in micronaut-data-runtime just to exercise these interfaces, since that would attribute another artifact's code to this one's metadata; only add micronaut-data-processor as a testAnnotationProcessor if repository/DTO compile-time codegen is actually exercised, which is unlikely for a pure model-layer test.",
+      "risks": [
+        "The micronaut-inject-java version (5.1.10) was taken from sibling modules already generated against micronaut-data 5.1.3; confirm it still matches the Micronaut core BOM this generation batch pins.",
+        "No network/artifact-cache access was available in this environment to inspect the resolved POM or JAR directly, so this is based on documented module boundaries and this repo's existing sibling test code, not a direct dependency-tree resolution — local Gradle/Native Image verification should confirm before relying on it."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.10",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-model/5.1.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9807 Support for io.micronaut.data:micronaut-data-model:5.1.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 36,
+      "output_tokens_used": 21770
+    },
+    "metrics": {
+      "input_tokens_used": 372293,
+      "cached_input_tokens_used": 4003840,
+      "output_tokens_used": 30735,
+      "iterations": 6,
+      "cost_usd": 0.9571,
+      "generated_loc": 150,
+      "tested_library_loc": 357,
+      "metadata_entries": 7,
+      "test_only_metadata_entries": 6,
+      "code_coverage_percent": 4.61
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.data/micronaut-data-model/5.1.3/reachability-metadata.json"
+    }
+  }
+}

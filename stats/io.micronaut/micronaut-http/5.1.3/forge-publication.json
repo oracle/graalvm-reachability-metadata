@@ -1,0 +1,137 @@
+{
+  "base_commit": "f58f7e2e1c4a86b3368979b09d516ffa927feb9a",
+  "branch": "ai/kimeta/add-lib-support-io.micronaut-micronaut-http-5.1.3-chunked-forge-9805-20261002051714453715-f183d83256d1",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "d773dffad20105b042f49d792fb579d4a1e46adf",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9805,
+  "library": {
+    "artifact": "micronaut-http",
+    "coordinates": "io.micronaut:micronaut-http:5.1.3",
+    "group": "io.micronaut",
+    "version": "5.1.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "f58f7e2e1c4a86b3368979b09d516ffa927feb9a",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpykasqoa5"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9805-643a55af/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.micronaut:micronaut-http"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micronaut/micronaut-http/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9805-643a55af/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "948b3ade0ab6536234a2932ad3841c2322d0df93",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Approved. The diff is limited to io.micronaut:micronaut-http:5.1.3 and its allowed metadata, index, stats, and test files. The public, version-agnostic MediaType test differs from the scaffold, stays outside the library package, exercises the reported resource access through the library API, and does not skip or tolerate Native Image failures. Reported dynamic-access coverage is 1/1 (100%), with one reported metadata entry, so the coverage and entry-count gates pass. No legacy metadata, native build flags, compatibility overrides, or unrelated-coordinate changes are present. Forge finalization passed all three test lanes, metadata and style checks, and statistics generation without changing the publishable tree.",
+    "session_id": "c204614051784890"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/io.micronaut/micronaut-http/5.1.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 596992,
+      "code_coverage_percent": 1.72,
+      "cost_usd": 0.1766,
+      "generated_loc": 19,
+      "input_tokens_used": 90207,
+      "iterations": 3,
+      "metadata_entries": 1,
+      "output_tokens_used": 4443,
+      "tested_library_loc": 136
+    },
+    "timestamp": "2026-10-02T05:17:14.453715Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9805-20261002051714453715-f183d83256d1",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- io.micronaut.http.MediaType.loadMimeTypes(MediaType.java:1420) (line 1420)"
+      ],
+      "metadata_rules": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 610,
+          "missed": 33245,
+          "ratio": 0.018018,
+          "total": 33855
+        },
+        "line": {
+          "covered": 136,
+          "missed": 7765,
+          "ratio": 0.017213,
+          "total": 7901
+        },
+        "method": {
+          "covered": 11,
+          "missed": 2192,
+          "ratio": 0.004993,
+          "total": 2203
+        }
+      },
+      "version": "5.1.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-02T05:17:14.453715Z"
+}

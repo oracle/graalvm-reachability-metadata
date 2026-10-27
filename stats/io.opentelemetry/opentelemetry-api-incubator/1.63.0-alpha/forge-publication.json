@@ -1,0 +1,103 @@
+{
+  "base_commit": "7609335d931cd9232cc1f2c687cff87f34c04bcb",
+  "branch": "ai/kimeta/fix-javac-io.opentelemetry-opentelemetry-api-incubator-1.63.0-alpha-forge-10431-20261004183701915183-3bba7f74d51d",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "7609335d931cd9232cc1f2c687cff87f34c04bcb",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10431,
+  "library": {
+    "artifact": "opentelemetry-api-incubator",
+    "coordinates": "io.opentelemetry:opentelemetry-api-incubator:1.63.0-alpha",
+    "group": "io.opentelemetry",
+    "version": "1.63.0-alpha"
+  },
+  "local_ci_verification": {
+    "base_commit": "7609335d931cd9232cc1f2c687cff87f34c04bcb",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp_gtllgs7"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10431-ab2d987f/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 8s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.opentelemetry:opentelemetry-api-incubator"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.opentelemetry/opentelemetry-api-incubator/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10431-ab2d987f/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "481113db29abb11d22e04034c172568eb6fa9c9e",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is confined to the target coordinate and its new 1.63.0-alpha support files. The compile repair removes only ExtendedAttributes APIs that are absent from the resolved 1.63.0-alpha source artifact, while preserving the remaining public-API assertions; I found no native-image dodge, weakening of available behavior, prohibited test technique, legacy metadata, or unrelated change. Dynamic-access coverage passes the ordered repair gate at 0/0 to 0/0 with no breakdown scopes. The recorded index gates passed, and local target-coordinate verification passed metadata validation, checkstyle, JVM compilation/tests, native-image compilation, and all 12 native tests.",
+    "session_id": "79e7199ce47b4aff"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.opentelemetry/opentelemetry-api-incubator/1.63.0-alpha/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 411776,
+      "code_coverage_percent": 78.23,
+      "cost_usd": 0.7078,
+      "input_tokens_used": 73501,
+      "iterations": 3,
+      "metadata_entries": 0,
+      "output_tokens_used": 4479,
+      "previous_library_coverage_percent": 68.32,
+      "previous_library_metadata_entries": 0,
+      "previous_library_test_only_metadata_entries": 5,
+      "test_only_metadata_entries": 5,
+      "tested_library_loc": 327
+    },
+    "timestamp": "2026-10-04T18:37:01.915183Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "opentelemetry-api-incubator",
+    "coordinates": "io.opentelemetry:opentelemetry-api-incubator:1.61.0-alpha",
+    "group": "io.opentelemetry",
+    "version": "1.61.0-alpha"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10431-20261004183701915183-3bba7f74d51d",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-04T18:37:01.915183Z"
+}

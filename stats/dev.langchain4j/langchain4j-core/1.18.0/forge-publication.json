@@ -1,0 +1,156 @@
+{
+  "base_commit": "46f79ed5fa49c742060bee869df612c9e9f7cf1a",
+  "branch": "ai/kimeta/add-lib-support-dev.langchain4j-langchain4j-core-1.18.0-forge-9782-20261003163016745219-eee682a73fe8",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9782,
+  "library": {
+    "artifact": "langchain4j-core",
+    "coordinates": "dev.langchain4j:langchain4j-core:1.18.0",
+    "group": "dev.langchain4j",
+    "version": "1.18.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "46f79ed5fa49c742060bee869df612c9e9f7cf1a",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmplndq98fp"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9782-ea00c9c3/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=dev.langchain4j:langchain4j-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/dev.langchain4j/langchain4j-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9782-ea00c9c3/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "c0d8ce06525d33fea0f8c41a865cdc8b131dd4fa",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff, test sources and build configuration, local gate records, and resolved statistics. The tests are library-specific, use public behavior from a separate test package, run without Native Image skips or build/run flags, and contain no version-pinned assertions. The contribution uses only reachability-metadata.json, stays within the allowed coordinate paths, reports 10/10 (100%) dynamic-access coverage, and its 10 covered calls do not trigger the mismatch probe against 31 reported metadata entries. The recorded index gates and generation run succeeded, so the tree satisfies the new-library review rules.",
+    "session_id": "755bd2eb58c14715"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/dev.langchain4j/langchain4j-core/1.18.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4898304,
+      "code_coverage_percent": 6.77,
+      "cost_usd": 1.0967,
+      "generated_loc": 168,
+      "input_tokens_used": 456968,
+      "iterations": 5,
+      "metadata_entries": 21,
+      "output_tokens_used": 24989,
+      "test_only_metadata_entries": 10,
+      "tested_library_loc": 472
+    },
+    "timestamp": "2026-10-03T16:30:16.745219Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9782-20261003163016745219-eee682a73fe8",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- dev.langchain4j.classinstance.ClassInstanceLoader.createNewClassInstance(ClassInstanceLoader.java:37) (line 37)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- dev.langchain4j.classinstance.ClassInstanceLoader.createNewClassInstance(ClassInstanceLoader.java:37) (line 37)",
+        "[reflection] java.lang.Class#arrayType() <- dev.langchain4j.internal.JsonSchemaElementUtils.rawClassOf(JsonSchemaElementUtils.java:370) (line 370)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- dev.langchain4j.internal.JsonSchemaElementUtils.jsonObjectOrReferenceSchemaFrom(JsonSchemaElementUtils.java:263) (line 263)",
+        "[reflection] java.lang.Class#getPermittedSubclasses() <- dev.langchain4j.internal.PolymorphicTypes.flatten(PolymorphicTypes.java:62) (line 62)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- dev.langchain4j.internal.Utils.collectConcreteMethods(Utils.java:592) (line 592)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- dev.langchain4j.internal.Utils.collectInterfaceMethods(Utils.java:613) (line 613)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- dev.langchain4j.internal.Utils.getAnnotatedMethod(Utils.java:545) (line 545)",
+        "... and 2 more"
+      ],
+      "metadata_rules": [
+        "when `dev.langchain4j.internal.JacksonJsonCodec` is reached, make `com.fasterxml.jackson.databind.deser.Deserializers[]` available for reflection",
+        "when `dev.langchain4j.internal.JacksonJsonCodec` is reached, make `com.fasterxml.jackson.databind.ext.Java7SupportImpl.<init>()` available for reflection",
+        "when `dev.langchain4j.internal.JacksonJsonCodec` is reached, make `com.fasterxml.jackson.databind.ser.Serializers[]` available for reflection",
+        "when `dev.langchain4j.classinstance.ClassInstanceLoader` is reached, make `dev.langchain4j.data.document.Metadata.<init>()` available for reflection",
+        "when `dev.langchain4j.internal.JacksonJsonCodec` is reached, make `java.lang.Class.isRecord()` available for reflection",
+        "when `dev.langchain4j.internal.VirtualThreadUtils` is reached, make `java.lang.Thread.isVirtual()` available for reflection",
+        "when `dev.langchain4j.internal.VirtualThreadUtils` is reached, make `java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()` available for reflection",
+        "when `dev.langchain4j.internal.Utils` is reached, make `sun.security.provider.MD5.<init>()` available for reflection",
+        "... and 1 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 10,
+            "totalCalls": 10
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 10,
+        "totalCalls": 10
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2004,
+          "missed": 27719,
+          "ratio": 0.067423,
+          "total": 29723
+        },
+        "line": {
+          "covered": 472,
+          "missed": 6504,
+          "ratio": 0.067661,
+          "total": 6976
+        },
+        "method": {
+          "covered": 148,
+          "missed": 2425,
+          "ratio": 0.05752,
+          "total": 2573
+        }
+      },
+      "version": "1.18.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-03T16:30:16.745219Z"
+}

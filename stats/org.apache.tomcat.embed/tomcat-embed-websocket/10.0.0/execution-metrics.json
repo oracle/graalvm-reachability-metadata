@@ -1,0 +1,131 @@
+{
+  "fix_javac_fail:2026-09-29": {
+    "timestamp": "2026-09-29T12:26:05.867496Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.0.0",
+    "starting_commit": "d7d5e5633277ac9b515f4faec528facf2826d4b4",
+    "ending_commit": "af493ab76c20eb42d5531dbfdd522e603e6734f0",
+    "previous_library": "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.122",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "10.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.891892,
+            "coveredCalls": 33,
+            "totalCalls": 37
+          }
+        },
+        "coverageRatio": 0.891892,
+        "coveredCalls": 33,
+        "totalCalls": 37
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4059,
+          "missed": 17020,
+          "ratio": 0.192561,
+          "total": 21079
+        },
+        "line": {
+          "covered": 1015,
+          "missed": 4000,
+          "ratio": 0.202393,
+          "total": 5015
+        },
+        "method": {
+          "covered": 165,
+          "missed": 557,
+          "ratio": 0.228532,
+          "total": 722
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "9.0.122",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 31,
+        "totalCalls": 31
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3639,
+          "missed": 19385,
+          "ratio": 0.158052,
+          "total": 23024
+        },
+        "line": {
+          "covered": 919,
+          "missed": 4434,
+          "ratio": 0.171679,
+          "total": 5353
+        },
+        "method": {
+          "covered": 176,
+          "missed": 615,
+          "ratio": 0.222503,
+          "total": 791
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9372,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.0.0",
+      "summary": "The failure is a namespace mismatch, not missing setup. The 9.0.x tests import javax.servlet and javax.websocket, but tomcat-embed-websocket 10.0.0 is the Jakarta EE 9 line and uses jakarta.servlet and jakarta.websocket. Nothing beyond the normal generated test scaffold is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Write the 10.0.0 tests against the jakarta.* namespace. Replace javax.websocket.*, javax.websocket.server.* and javax.servlet.* (including javax.servlet.descriptor.*) with their jakarta.* equivalents, and do not copy the 9.0.x test sources verbatim. The existing build.gradle needs no change. It already declares the tomcat-embed-websocket dependency at the tested version, and tomcat-embed-websocket 10.0.0 should pull in tomcat-embed-core transitively, which supplies jakarta.servlet. I did not resolve the 10.0.0 POM or jar to confirm this, so if jakarta.servlet is missing at compile time, add org.apache.tomcat.embed:tomcat-embed-core at the same version as testImplementation. Keep the agent configuration with conditional mode and user-code-filter.json, and check that the filter's package names still match the test packages. Tomcat 10 also dropped some 9.x behavior, so re-check any 9.x-specific class or method usage (WsSci, WsServerContainer and the like) against the 10.0.0 sources.",
+      "risks": [
+        "The reproducer names 9.0.83 while the issue targets 10.0.0, so the harness may have copied the javax-based tests into the 10.0.0 project. The tests must be rewritten rather than reused.",
+        "I did not resolve the 10.0.0 POM or jar. Whether tomcat-embed-core arrives transitively is an assumption from Tomcat's usual packaging.",
+        "The Jakarta API surface in 10.0.0 may differ slightly from 9.x, for example in ServletContext methods that the WsSciTest stub implements, so the stubs may need adjusting."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9372 [Automation] javac compile fails for org.apache.tomcat.embed:tomcat-embed-websocket:10.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "19 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.122",
+      "new_version": "10.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1288
+    },
+    "metrics": {
+      "input_tokens_used": 466173,
+      "cached_input_tokens_used": 7399936,
+      "output_tokens_used": 32813,
+      "iterations": 12,
+      "cost_usd": 1.4031,
+      "tested_library_loc": 1015,
+      "metadata_entries": 24,
+      "test_only_metadata_entries": 105,
+      "previous_library_metadata_entries": 25,
+      "previous_library_test_only_metadata_entries": 66,
+      "code_coverage_percent": 20.24,
+      "previous_library_coverage_percent": 17.17
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-websocket/10.0.0/reachability-metadata.json"
+    }
+  }
+}

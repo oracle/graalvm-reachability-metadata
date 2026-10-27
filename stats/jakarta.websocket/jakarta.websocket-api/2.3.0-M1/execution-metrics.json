@@ -1,0 +1,117 @@
+{
+  "fix_javac_fail:2026-10-01": {
+    "timestamp": "2026-10-01T19:42:41.482985Z",
+    "library": "jakarta.websocket:jakarta.websocket-api:2.3.0-M1",
+    "starting_commit": "68ae47bece7a8a0d543926865376f29315bf4b75",
+    "ending_commit": "52fcb508520c5e78ad0972f4407db1216e39dfcb",
+    "previous_library": "jakarta.websocket:jakarta.websocket-api:2.1.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.3.0-M1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 174,
+          "missed": 83,
+          "ratio": 0.677043,
+          "total": 257
+        },
+        "line": {
+          "covered": 45,
+          "missed": 19,
+          "ratio": 0.703125,
+          "total": 64
+        },
+        "method": {
+          "covered": 18,
+          "missed": 9,
+          "ratio": 0.666667,
+          "total": 27
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.1.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 174,
+          "missed": 83,
+          "ratio": 0.677043,
+          "total": 257
+        },
+        "line": {
+          "covered": 44,
+          "missed": 19,
+          "ratio": 0.698413,
+          "total": 63
+        },
+        "method": {
+          "covered": 18,
+          "missed": 9,
+          "ratio": 0.666667,
+          "total": 27
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "no_action",
+      "agent_guidance": "",
+      "applied_setup": [],
+      "current_library": "jakarta.websocket:jakarta.websocket-api:2.1.0",
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9358 [Automation] javac compile fails for jakarta.websocket:jakarta.websocket-api:2.3.0-M1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 2,
+      "issue_label": "fails-javac-compile",
+      "issue_number": 9358,
+      "library": "jakarta.websocket:jakarta.websocket-api:2.3.0-M1",
+      "model": "sonnet",
+      "new_version": "2.3.0-M1",
+      "output_tokens_used": 683,
+      "risks": [
+        "jakarta.websocket-api:2.3.0-M1 and its jakarta.websocket-all dependency have a parent POM that points at a SNAPSHOT parent absent from Maven Central, so Gradle may fail to resolve them regardless of test setup. If it still fails after a normal attempt, the version may be unresolvable, which is a resolution problem and not a reason for skip_unsupported.",
+        "The reproducer coordinates use 2.1.0 with GVM_TCK_LV=2.3.0-M1, so the first run should confirm that the tested version actually resolves.",
+        "2.3.0-M2 is also listed; check that it resolves, since it may have a fixed parent POM."
+      ],
+      "status": "completed",
+      "summary": "The failure is a Maven POM resolution error: the 2.3.0-M1 POM chain references the unpublished parent org.eclipse.ee4j:project:2.0.0-SNAPSHOT. It is not a Native Image limitation, and no extra dependency, Docker image or system property is evidenced. I did not inspect the repository or the artifact's sources."
+    },
+    "metrics": {
+      "input_tokens_used": 195274,
+      "cached_input_tokens_used": 2760192,
+      "output_tokens_used": 16617,
+      "iterations": 10,
+      "cost_usd": 0.571,
+      "tested_library_loc": 45,
+      "metadata_entries": 0,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 70.31,
+      "previous_library_coverage_percent": 69.84
+    },
+    "artifacts": {
+      "metadata_file": "metadata/jakarta.websocket/jakarta.websocket-api/2.3.0-M1/reachability-metadata.json"
+    }
+  }
+}

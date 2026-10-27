@@ -1,0 +1,135 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T14:42:57.749486Z",
+    "library": "com.netflix.graphql.dgs:graphql-dgs-spring-graphql:10.5.0",
+    "starting_commit": "131e891b1bb065761c50a52cea4d0b38387dc02d",
+    "ending_commit": "edce95a029243f089a310d44bcd7046ec51803d7",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "10.5.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 173,
+          "missed": 3139,
+          "ratio": 0.052234,
+          "total": 3312
+        },
+        "line": {
+          "covered": 39,
+          "missed": 646,
+          "ratio": 0.056934,
+          "total": 685
+        },
+        "method": {
+          "covered": 17,
+          "missed": 234,
+          "ratio": 0.067729,
+          "total": 251
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8973,
+      "issue_label": "library-new-request",
+      "library": "com.netflix.graphql.dgs:graphql-dgs-spring-graphql:10.5.0",
+      "summary": "graphql-dgs-spring-graphql is almost entirely Spring Boot auto-configuration/interceptor glue code; its published Gradle module metadata exposes graphql-dgs, spring-graphql, spring-web and spring-boot-autoconfigure only on the runtime variant, not the api variant, so the bare resolved-artifact scaffold cannot compile any test that uses @DgsComponent/@DgsQuery or references DgsQueryExecutor/Spring GraphQL types. Upstream's own build.gradle.kts for this exact module (tag v10.5.0) confirms it: it declares spring-webmvc, spring-webflux and spring-test as compileOnly in main, and its own tests add spring-boot-starter-graphql, spring-boot-starter-test, spring-boot-starter-web and spring-webflux explicitly.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.netflix.graphql.dgs:graphql-dgs:10.5.0",
+          "scope": "testImplementation",
+          "reason": "Core DGS annotations (@DgsComponent, @DgsQuery, @DgsData) and the DgsQueryExecutor/DgsReactiveQueryExecutor interfaces this module implements live here; graphql-dgs-spring-graphql only lists it on its runtime variant, not api, so it is invisible to test compile classpath otherwise."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-test:3.5.5",
+          "scope": "testImplementation",
+          "reason": "The library's public surface is Spring Boot auto-configuration (DgsSpringGraphQLAutoConfiguration, environment post-processors); exercising it meaningfully needs Spring's test context support (e.g. ApplicationContextRunner), which isn't pulled in by the bare artifact. Version matches the spring-boot\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-web:3.5.5",
+          "scope": "testImplementation",
+          "reason": "spring-webmvc is compileOnly upstream, so DgsWebMvcGraphQLInterceptor and the MVC auto-configuration branch are unreachable without adding it explicitly."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-webflux:6.2.10",
+          "scope": "testImplementation",
+          "reason": "spring-webflux is compileOnly upstream, so DgsWebFluxGraphQLInterceptor and SpringGraphQLDgsReactiveQueryExecutor's reactive path are unreachable without adding it. Version matches the spring-web 6.2.10 this artifact already resolves transitively (same Spring Framework release train as Boot 3.5.5)."
+        }
+      ],
+      "agent_guidance": "This module's two web-stack branches (servlet vs reactive) are mutually exclusive inside one ApplicationContext (@ConditionalOnWebApplication(type=SERVLET) vs type=REACTIVE), so write two separate test contexts/classes if you want to reach both DgsWebMvcGraphQLInterceptor and DgsWebFluxGraphQLInterceptor rather than one context that imports both starters. DGS's DgsConfigurationProperties defaults schema discovery to classpath*:schema/**/*.graphqls, so a minimal .graphqls schema must exist under src/test/resources/schema/ or DgsSpringGraphQLAutoConfiguration's graphQlSource bean will fail to build. No Docker image or external service is involved; this is a pure in-process Spring/GraphQL integration.",
+      "risks": [
+        "Pinned peer versions (spring-boot 3.5.5 / spring-framework 6.2.10) were chosen to match what this artifact already resolves transitively; Gradle's conflict resolution should keep them aligned, but recheck if generateMetadata pulls a different spring-boot-autoconfigure version.",
+        "Upstream's own test build also adds caffeine and an internal graphql-dgs-spring-graphql-starter-test module; these cover the optional APQ-caching path and aren't required for baseline reachability, so they were intentionally left out.",
+        "Local Gradle/checkMetadataFiles/native-image verification remains authoritative — this is a literature/metadata-based inference, not a confirmed compile."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.netflix.graphql.dgs:graphql-dgs:10.5.0",
+          "result": "applied",
+          "target": "tests/src/com.netflix.graphql.dgs/graphql-dgs-spring-graphql/10.5.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-test:3.5.5",
+          "result": "applied",
+          "target": "tests/src/com.netflix.graphql.dgs/graphql-dgs-spring-graphql/10.5.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-web:3.5.5",
+          "result": "applied",
+          "target": "tests/src/com.netflix.graphql.dgs/graphql-dgs-spring-graphql/10.5.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-webflux:6.2.10",
+          "result": "applied",
+          "target": "tests/src/com.netflix.graphql.dgs/graphql-dgs-spring-graphql/10.5.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8973 Support for com.netflix.graphql.dgs:graphql-dgs-spring-graphql:10.5.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 26,
+      "output_tokens_used": 23073
+    },
+    "metrics": {
+      "input_tokens_used": 382023,
+      "cached_input_tokens_used": 5890560,
+      "output_tokens_used": 38780,
+      "iterations": 4,
+      "cost_usd": 1.2038,
+      "generated_loc": 66,
+      "tested_library_loc": 39,
+      "metadata_entries": 23,
+      "test_only_metadata_entries": 11,
+      "code_coverage_percent": 5.69
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.netflix.graphql.dgs/graphql-dgs-spring-graphql/10.5.0/reachability-metadata.json"
+    }
+  }
+}

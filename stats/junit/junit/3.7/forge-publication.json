@@ -1,0 +1,139 @@
+{
+  "base_commit": "32f17b503a7f7c35e85ca2fd0fa6419161ed3768",
+  "branch": "ai/kimeta/add-lib-support-junit-junit-3.7-chunked-forge-995-20260901035125981525-b7b2cba573f3",
+  "follow_ups": [],
+  "forge": {
+    "branch": "mm/concise-forge-console-output",
+    "commit": "c578761485277826b6bd3378b309b4645ca0a1d6",
+    "monitored_branch": "origin/mm/concise-forge-console-output"
+  },
+  "issue_number": 995,
+  "library": {
+    "artifact": "junit",
+    "coordinates": "junit:junit:3.7",
+    "group": "junit",
+    "version": "3.7"
+  },
+  "local_ci_verification": {
+    "base_commit": "32f17b503a7f7c35e85ca2fd0fa6419161ed3768",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "bbd1469a69359da1aa8522817ed5009c74f6adee",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Checked the local PR diff, gate evidence, and rendered statistics against every relevant enumerated new-library review rule. The change remains scoped to junit:junit:3.7, uses only reachability-metadata.json, adds library-specific public-API tests in a separate test package without version pinning or Native Image skips, and uses the sanctioned unsupported-feature check only for open-ended class-path discovery. Reported dynamic-access coverage is 20/32 (62.5%), above the required 20% gate; 20 covered calls do not trigger the entry-count mismatch check against 367 reported library-plus-test-only metadata entries. Local gate evidence reports success. No concrete rule violation was found.",
+    "session_log_path": "logs/junit:junit:3.7/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/junit/junit/3.7/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 12187136,
+      "code_coverage_percent": 14.0,
+      "cost_usd": 14.1966,
+      "generated_loc": 291,
+      "input_tokens_used": 949138,
+      "iterations": 13,
+      "metadata_entries": 269,
+      "output_tokens_used": 111911,
+      "test_only_metadata_entries": 98,
+      "tested_library_loc": 302
+    },
+    "timestamp": "2026-09-01T03:51:25.981525Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-995-20260901035125981525-b7b2cba573f3",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String) <- junit.swingui.TestRunner.class$(TestRunner.java:28) (line 28)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- junit.swingui.TestRunner.createFailureDetailView(TestRunner.java:193) (line 193)",
+        "[reflection] java.lang.Class#newInstance() <- junit.swingui.TestRunner.createFailureDetailView(TestRunner.java:194) (line 194)",
+        "[resources] java.lang.Class#getResource(java.lang.String) <- junit.swingui.TestRunner.getIconResource(TestRunner.java:793) (line 793)",
+        "[resources] java.lang.Class#getResource(java.lang.String) <- junit.awtui.Logo.loadImage(Logo.java:36) (line 36)",
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- junit.framework.TestSuite.getConstructor(TestSuite.java:144) (line 144)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- junit.framework.TestSuite.<init>(TestSuite.java:64) (line 64)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- junit.framework.TestSuite.addTestMethod(TestSuite.java:102) (line 102)",
+        "... and 12 more"
+      ],
+      "metadata_rules": [
+        "when `junit.awtui.Logo` is reached, make `java.awt.AlphaComposite` available for reflection",
+        "when `junit.awtui.Logo` is reached, make `java.awt.Color.getRGB()` available for reflection",
+        "when `junit.awtui.Logo` is reached, make `java.awt.Rectangle.<init>(int, int, int, int)` available for reflection",
+        "when `junit.awtui.Logo` is reached, make `java.awt.geom.AffineTransform` available for reflection",
+        "when `junit.awtui.Logo` is reached, make `java.awt.geom.Path2D` available for reflection",
+        "when `junit.awtui.Logo` is reached, make `java.awt.geom.Path2D$Float` available for reflection",
+        "when `junit.awtui.Logo` is reached, make `java.awt.image.BufferedImage.getRGB(int, int, int, int, int[], int, int)` available for reflection",
+        "when `junit.awtui.Logo` is reached, make `java.awt.image.BufferedImage.setRGB(int, int, int, int, int[], int, int)` available for reflection",
+        "... and 61 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.576923,
+            "coveredCalls": 15,
+            "totalCalls": 26
+          },
+          "resources": {
+            "coverageRatio": 0.833333,
+            "coveredCalls": 5,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.625,
+        "coveredCalls": 20,
+        "totalCalls": 32
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1177,
+          "missed": 7459,
+          "ratio": 0.13629,
+          "total": 8636
+        },
+        "line": {
+          "covered": 302,
+          "missed": 1855,
+          "ratio": 0.140009,
+          "total": 2157
+        },
+        "method": {
+          "covered": 77,
+          "missed": 385,
+          "ratio": 0.166667,
+          "total": 462
+        }
+      },
+      "version": "3.7"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-01T03:51:25.981525Z"
+}

@@ -102,6 +102,8 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
 
 **Optional Keys:**
 * `latest`: Boolean. If `true`, this is the default metadata version for the artifact.
+* `auto-update`: Opt-in marker whose only valid value is `true`. It may appear only on the unique `latest: true` entry and allows the daily compatibility workflow to discover and test newer upstream versions automatically. Omit it to keep the artifact out of that automation.
+* `high-priority`: Optional urgency marker whose only valid value is `true`. It may appear only on the unique `latest: true` entry and causes failed daily compatibility updates for the artifact to receive the `high-priority` issue label.
 * `requires`: An array of `groupId:artifactId` coordinates for libraries this metadata depends on.
 * `default-for`: A Java-format regex used to match library versions if no exact match exists in `tested-versions` (e.g., `"0\\.0\\..*"`).
 * `test-version`: Defines the subdirectory in `tests/src` containing the test code. Use this to share a single test suite across multiple metadata versions.
@@ -111,7 +113,7 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
 * `documentation-url`: URL to the project documentation for this index entry. Use `$version$` as the placeholder for this entry's `metadata-version` in versioned URLs.
 * `description`: A concise explanation of the library in exactly two sentences.
 * `skipped-versions`: An array of objects (with `version` and `reason`) to explicitly exclude library versions known to be broken or incompatible.
-* `override`: Boolean. If `true`, excludes outdated builtin GraalVM metadata.
+* `override`: Boolean. If `true`, native-build-tools excludes every `META-INF/native-image` config bundled in the library JAR (JSON metadata and `native-image.properties` alike), so only this repository's metadata applies. Use it when the bundled metadata is outdated or when a bundled directive such as `--initialize-at-build-time` conflicts with the shipped metadata; the coordinate's tests must then justify any registration the bundled config used to supply.
 
 #### Comprehensive Example
 

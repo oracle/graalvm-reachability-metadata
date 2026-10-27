@@ -7,6 +7,7 @@
 package io_netty.netty_codec;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
@@ -23,6 +24,7 @@ public class ObjectEncoderTest {
     void writesLengthPrefixedObjectReadableByObjectDecoder() {
         String expectedMessage = "netty object encoder message";
         EmbeddedChannel encoderChannel = new EmbeddedChannel(new ObjectEncoder());
+        encoderChannel.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
         ByteBuf encodedMessage = null;
 
         try {

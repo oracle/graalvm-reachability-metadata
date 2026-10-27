@@ -28,6 +28,21 @@ public abstract class JarUtils {
     private static final String META_INF_VERSIONS = "META-INF/versions/";
 
     /**
+     * Returns whether a resolved artifact is the main JAR eligible for the coverage
+     * denominator: the unclassified one, or the one classified as the suffix by which
+     * the requested version names a published variant. §AR-test-harness.8
+     */
+    public static boolean isMainJar(String extension, String classifier, String requestedVersion, String resolvedVersion) {
+        if (!"jar".equals(extension)) {
+            return false;
+        }
+        if (classifier == null || classifier.isEmpty()) {
+            return true;
+        }
+        return requestedVersion.equals(resolvedVersion + "-" + classifier);
+    }
+
+    /**
      * Scans the given JARs and returns all fully-qualified class names found.
      * Handles multi-release JARs by stripping the {@code META-INF/versions/N/} prefix.
      * Excludes {@code module-info.class}.
@@ -127,6 +142,12 @@ public abstract class JarUtils {
         packages = subsume(packages);
 
         return packages.stream().sorted().toList();
+    }
+
+    /// Returns the packages of the given classes, minus each one nested in another, so that
+    /// `<package>.**` rules over the result cover every package and nothing beside them.
+    public static List<String> coveringPackages(Set<String> classNames) {
+        return subsume(extractPackages(classNames)).stream().sorted().toList();
     }
 
     /// Removes any package that is subsumed by a shorter prefix in the set.

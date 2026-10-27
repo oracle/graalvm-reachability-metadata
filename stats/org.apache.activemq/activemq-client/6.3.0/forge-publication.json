@@ -1,0 +1,168 @@
+{
+  "base_commit": "a9a25b05c20daeb805238975ed619ef9d15dd16c",
+  "branch": "ai/kimeta/improve-coverage-org.apache.activemq-activemq-client-6.3.0-chunked-forge-10600-20261006135625994683-2b66bfca5b3d",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "a9a25b05c20daeb805238975ed619ef9d15dd16c",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10600,
+  "library": {
+    "artifact": "activemq-client",
+    "coordinates": "org.apache.activemq:activemq-client:6.3.0",
+    "group": "org.apache.activemq",
+    "version": "6.3.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "a9a25b05c20daeb805238975ed619ef9d15dd16c",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "b01c2eca3a24d59e3f771910e2fab07829ee10a6",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.apache.activemq/activemq-client/6.3.0/stats.json",
+      "tests/src/org.apache.activemq/activemq-client/6.3.0/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The first required Forge finalization pass changed the publishable tree and exited nonzero: it regenerated stale library instruction/line coverage values in `stats/org.apache.activemq/activemq-client/6.3.0/stats.json` and normalized section ordering in the test-only `reachability-metadata.json`. A publishable contribution must contain the deterministic finalized outputs, so this was repaired within the allowed coordinate files under FS-contribution-contract.5.1.",
+    "finding_title": "Generated statistics and test-only metadata were not fully finalized",
+    "fix_note": "Kept the Forge finalizer's regenerated statistics and canonical test-only metadata ordering, then reran the exact finalization command. The second run completed successfully without further publishable changes.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the eventual PR diff, issue/gate evidence, contribution scope, coverage, generated metadata, and all modified or added tests. Dynamic-access coverage rises from 18.3099% (13/71) to 95.7746% (68/71); changes remain within the activemq-client 6.3.0 contribution; tests exercise public ActiveMQ APIs without Native Image skips, version pinning, package bypasses, legacy metadata, or unsupported runtime class definition. The exact Forge finalizer passed current-defaults, future-defaults, and GraalVM 25 lanes plus metadata, style, generated-test, routing, and statistics checks, and its final successful run made no further publishable change.",
+    "session_id": "a89d6ff5b34940f2"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.activemq/activemq-client/6.3.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1247744,
+      "code_coverage_percent": 26.17,
+      "cost_usd": 1.2031,
+      "generated_loc": 977,
+      "input_tokens_used": 72058,
+      "iterations": 3,
+      "metadata_entries": 277,
+      "output_tokens_used": 7296,
+      "test_only_metadata_entries": 7,
+      "tested_library_loc": 9272
+    },
+    "timestamp": "2026-10-06T13:56:25.994683Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10600-20261006135625994683-2b66bfca5b3d",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 96,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.179104,
+            "coveredCalls": 12,
+            "totalCalls": 67
+          },
+          "resources": {
+            "coverageRatio": 0.25,
+            "coveredCalls": 1,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.183099,
+        "coveredCalls": 13,
+        "totalCalls": 71
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 25934,
+          "missed": 117340,
+          "ratio": 0.18101,
+          "total": 143274
+        },
+        "line": {
+          "covered": 7025,
+          "missed": 28411,
+          "ratio": 0.198245,
+          "total": 35436
+        },
+        "method": {
+          "covered": 2295,
+          "missed": 6037,
+          "ratio": 0.275444,
+          "total": 8332
+        }
+      },
+      "version": "6.3.0"
+    },
+    "baseline_test_only_entries": 1,
+    "consumer_split": null,
+    "current_metadata_entries": 277,
+    "current_test_only_entries": 7,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.955224,
+            "coveredCalls": 64,
+            "totalCalls": 67
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.957746,
+        "coveredCalls": 68,
+        "totalCalls": 71
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 35916,
+          "missed": 107358,
+          "ratio": 0.250681,
+          "total": 143274
+        },
+        "line": {
+          "covered": 9266,
+          "missed": 26170,
+          "ratio": 0.261485,
+          "total": 35436
+        },
+        "method": {
+          "covered": 2734,
+          "missed": 5598,
+          "ratio": 0.328133,
+          "total": 8332
+        }
+      },
+      "version": "6.3.0"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "6.3.0",
+      "matched_test_version": "6.3.0",
+      "requested_coordinate": "org.apache.activemq:activemq-client:6.3.0",
+      "resolved_metadata_version": "6.3.0",
+      "resolved_test_version": "6.3.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-10-06T13:56:25.994683Z"
+}

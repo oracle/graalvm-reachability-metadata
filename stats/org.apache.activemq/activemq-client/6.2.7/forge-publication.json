@@ -1,0 +1,241 @@
+{
+  "base_commit": "e1ac0cf124b5c4d2d73cd1b6ad6b153213506d68",
+  "branch": "ai/kimeta/improve-coverage-org.apache.activemq-activemq-client-6.2.7-chunked-forge-10593-20261006104603105921-549ee4e68192",
+  "follow_ups": [
+    {
+      "coordinate": "org.apache.activemq:activemq-client:6.3.0",
+      "issue_number": 10600,
+      "reason": "Tests first failed at 6.3.0",
+      "tested_version": "6.3.0",
+      "type": "tested_version_split"
+    }
+  ],
+  "forge": {
+    "branch": "master",
+    "commit": "b08121aac263958f2acda31a3667cd0dcb08f83a",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10593,
+  "library": {
+    "artifact": "activemq-client",
+    "coordinates": "org.apache.activemq:activemq-client:6.2.7",
+    "group": "org.apache.activemq",
+    "version": "6.2.7"
+  },
+  "local_ci_verification": {
+    "base_commit": "e1ac0cf124b5c4d2d73cd1b6ad6b153213506d68",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmppnzl5mxw"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10593-2c9746fd/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.activemq:activemq-client"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.activemq/activemq-client/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10593-2c9746fd/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "a0aa6c5935268a294ee560e233d352cb0274dd5b",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.apache.activemq/activemq-client/6.2.7/stats.json",
+      "tests/src/org.apache.activemq/activemq-client/6.2.7/src/test/java/org_apache_activemq/activemq_client/ActiveMQClientTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The modified ActiveMQClientTest teardown called unbounded BrokerService.waitUntilStopped() and caught and logged stop failures, violating the bounded-test requirement in FS-test-contract.1.6 and allowing cleanup failure to be hidden. This was contribution-local and repairable under FS-contribution-contract.5.1.",
+    "finding_title": "ActiveMQ test teardown waits indefinitely and suppresses shutdown failures",
+    "fix_note": "Changed the 6.2.7 teardown to propagate BrokerService.stop() failures, removed the unbounded wait, asserted that the broker stopped, and regenerated the 6.2.7 statistics. The Forge finalizer then completed successfully and made no further publishable change.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full contribution diff, the successor-range issue context, local gate evidence, and resolved statistics. The shared-suite split preserves 6.2.7/6.2.8 separately from 6.3.x, changes stay within the permitted artifact files, dynamic-access coverage rises from 18.8406% to 100%, tests exercise ActiveMQ public API paths without Native Image skips or legacy metadata, and the exact Forge finalizer passed all three test lanes, metadata validation, style checks, generated-test checks, and statistics generation without further publishable changes.",
+    "session_id": "47e24e65af9c4f84"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.activemq/activemq-client/6.2.7/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 995968,
+      "code_coverage_percent": 25.94,
+      "cost_usd": 1.1122,
+      "generated_loc": 986,
+      "input_tokens_used": 77235,
+      "iterations": 3,
+      "metadata_entries": 274,
+      "output_tokens_used": 7599,
+      "test_only_metadata_entries": 13,
+      "tested_library_loc": 9144
+    },
+    "timestamp": "2026-10-06T10:46:03.105921Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10593-20261006104603105921-549ee4e68192",
+  "render": {
+    "alias_split": {
+      "commands": [
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.apache.activemq:activemq-client:6.2.7",
+          "log_path": "logs/org.apache.activemq:activemq-client:6.2.7/library-update-alias-sweep/test-6.2.7-2026-10-06T10-46-08-655967Z.log",
+          "returncode": 0,
+          "version": "6.2.7"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.apache.activemq:activemq-client:6.2.7",
+          "log_path": "logs/org.apache.activemq:activemq-client:6.2.7/library-update-alias-sweep/test-6.2.8-2026-10-06T10-49-13-571626Z.log",
+          "returncode": 0,
+          "version": "6.2.8"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.apache.activemq:activemq-client:6.2.7",
+          "log_path": "logs/org.apache.activemq:activemq-client:6.2.7/library-update-alias-sweep/test-6.3.0-2026-10-06T10-52-11-921712Z.log",
+          "returncode": 1,
+          "version": "6.3.0"
+        }
+      ],
+      "current_coordinates": "org.apache.activemq:activemq-client:6.2.7",
+      "current_metadata_version": "6.2.7",
+      "failed_version": "6.3.0",
+      "follow_up_issue_number": 10600,
+      "original_metadata_version": "6.2.7",
+      "original_test_version": "6.2.7",
+      "passing_versions": [
+        "6.2.7",
+        "6.2.8"
+      ],
+      "requested_coordinates": "org.apache.activemq:activemq-client:6.2.7",
+      "successor_coordinates": "org.apache.activemq:activemq-client:6.3.0",
+      "successor_metadata_version": "6.3.0",
+      "successor_versions": [
+        "6.3.0",
+        "6.3.1",
+        "6.3.2"
+      ]
+    },
+    "baseline_metadata_entries": 96,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.184615,
+            "coveredCalls": 12,
+            "totalCalls": 65
+          },
+          "resources": {
+            "coverageRatio": 0.25,
+            "coveredCalls": 1,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.188406,
+        "coveredCalls": 13,
+        "totalCalls": 69
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 25419,
+          "missed": 117212,
+          "ratio": 0.178215,
+          "total": 142631
+        },
+        "line": {
+          "covered": 6889,
+          "missed": 28366,
+          "ratio": 0.195405,
+          "total": 35255
+        },
+        "method": {
+          "covered": 2273,
+          "missed": 6034,
+          "ratio": 0.273625,
+          "total": 8307
+        }
+      },
+      "version": "6.2.7"
+    },
+    "baseline_test_only_entries": 1,
+    "consumer_split": null,
+    "current_metadata_entries": 274,
+    "current_test_only_entries": 13,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 65,
+            "totalCalls": 65
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 69,
+        "totalCalls": 69
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 35038,
+          "missed": 107593,
+          "ratio": 0.245655,
+          "total": 142631
+        },
+        "line": {
+          "covered": 9062,
+          "missed": 26193,
+          "ratio": 0.257042,
+          "total": 35255
+        },
+        "method": {
+          "covered": 2696,
+          "missed": 5611,
+          "ratio": 0.324546,
+          "total": 8307
+        }
+      },
+      "version": "6.2.7"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "6.2.7",
+      "matched_test_version": "6.2.7",
+      "requested_coordinate": "org.apache.activemq:activemq-client:6.2.7",
+      "resolved_metadata_version": "6.2.7",
+      "resolved_test_version": "6.2.7"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-10-06T10:46:03.105921Z"
+}

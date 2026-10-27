@@ -1,0 +1,111 @@
+{
+  "base_commit": "7e57d96957fa680470d313a364101713c7aace29",
+  "branch": "ai/kimeta/fix-javac-org.springframework.boot-spring-boot-amqp-4.2.0-M1-forge-9468-20260902005441856857-93aa4fcd52b8",
+  "follow_ups": [],
+  "forge": {
+    "branch": "mm/concise-forge-console-output",
+    "commit": "7e761d8b435315ed8d2e79b5cd2a0c8052b691cf",
+    "monitored_branch": "origin/mm/concise-forge-console-output"
+  },
+  "issue_number": 9468,
+  "library": {
+    "artifact": "spring-boot-amqp",
+    "coordinates": "org.springframework.boot:spring-boot-amqp:4.2.0-M1",
+    "group": "org.springframework.boot",
+    "version": "4.2.0-M1"
+  },
+  "local_ci_verification": {
+    "base_commit": "7e57d96957fa680470d313a364101713c7aace29",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp0d847bkv"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-02T01-03-13-044937Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9468-a4b2a4ef/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.boot:spring-boot-amqp"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-02T01-03-14-951002Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.boot/spring-boot-amqp/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9468-a4b2a4ef/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "55e50dfc8abfcc7761e0595f3e80ffd4207e93c4",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.springframework.boot/spring-boot-amqp/4.2.0-M1/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "FS-test-contract.1.7 requires every explicit messaging timeout to be at least 10 seconds. tests/src/org.springframework.boot/spring-boot-amqp/4.2.0-M1/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java configured the AMQP client completion timeout as 750ms in both direct property setup and the auto-configuration property test.",
+    "finding_title": "Explicit messaging timeout is below the 10-second minimum",
+    "fix_note": "Changed both configured AMQP client completion-timeout values and their assertions from 750ms to 10 seconds, preserving the same binding and customization coverage while satisfying the timeout floor. Verified the correction with targeted checkstyle, compileTestJava, javaTest, and checkMetadataFiles runs.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the full eventual PR diff, the local gate evidence, and the old/new resolved statistics. The change is confined to org.springframework.boot:spring-boot-amqp:4.2.0-M1, adapts the test to the new generic AMQP API without removing assertions or dodging Native Image, uses only reachability-metadata.json, and preserves meaningful public-API coverage. Overall dynamic access is 0/0 in both 4.1.0 and 4.2.0-M1 with no breakdown scopes, so the ordered repair gate passes. The recorded index gates succeeded; after the correction, targeted checkstyle, compileTestJava, javaTest, and checkMetadataFiles also succeeded. The repaired tree is approved.",
+    "session_log_path": "logs/org.springframework.boot:spring-boot-amqp:4.2.0-M1/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework.boot/spring-boot-amqp/4.2.0-M1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 188928,
+      "code_coverage_percent": 58.73,
+      "cost_usd": 0.4614,
+      "input_tokens_used": 53599,
+      "iterations": 1,
+      "metadata_entries": 8,
+      "output_tokens_used": 3295,
+      "previous_library_coverage_percent": 40.48,
+      "previous_library_metadata_entries": 78,
+      "previous_library_test_only_metadata_entries": 218,
+      "test_only_metadata_entries": 285,
+      "tested_library_loc": 111
+    },
+    "timestamp": "2026-09-02T00:54:41.856857Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "spring-boot-amqp",
+    "coordinates": "org.springframework.boot:spring-boot-amqp:4.1.0",
+    "group": "org.springframework.boot",
+    "version": "4.1.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9468-20260902005441856857-93aa4fcd52b8",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-02T00:54:41.856857Z"
+}

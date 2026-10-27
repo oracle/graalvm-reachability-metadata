@@ -10,7 +10,7 @@ Usage:
   python3 ai_workflows/drivers/fix_javac_fail.py \
     --coordinates group:artifact:oldVersion \
     --new-version newVersion \
-    [--strategy-name "javac_iterative_with_coverage_sources_pi_gpt-5.5"] \
+    [--strategy-name "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol"] \
     [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
     [--metrics-repo-path /path/to/metrics-storage] \
     [--docs-path /path/to/docs] \
@@ -29,8 +29,8 @@ from ai_workflows.drivers.java_fail_workflow import JAVAC_CONFIG, run_java_fail_
 def main(argv=None):
     """Execute the end-to-end javac-fix driver for a version bump.
 
-    The javac-failure driver for §WF-java-fail-fix-workflow, following the
-    single-run driver contract (§WF-forge-workflow-drivers).
+    The javac-failure driver for §AR-java-fail-fix-workflow, following the
+    single-run driver contract (§AR-forge-drivers).
     """
     return run_java_fail_workflow(JAVAC_CONFIG, argv)
 

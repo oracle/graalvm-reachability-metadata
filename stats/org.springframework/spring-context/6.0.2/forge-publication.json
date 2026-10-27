@@ -1,0 +1,109 @@
+{
+  "base_commit": "8373d25fa0284b5037850218b5aed6321907bb5c",
+  "branch": "ai/kimeta/fix-javac-org.springframework-spring-context-6.0.2-forge-9400-20260907020936744968-0067c07ac305",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9864-partial-bulk-progress",
+    "commit": "6b5fc3df8434e9d85c22a92f09f560e6ae0e2db2",
+    "monitored_branch": "origin/issue-9864-partial-bulk-progress"
+  },
+  "issue_number": 9400,
+  "library": {
+    "artifact": "spring-context",
+    "coordinates": "org.springframework:spring-context:6.0.2",
+    "group": "org.springframework",
+    "version": "6.0.2"
+  },
+  "local_ci_verification": {
+    "base_commit": "8373d25fa0284b5037850218b5aed6321907bb5c",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpcq8tliej"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-07T02-09-43-352184Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9400-9d8fdb7e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework:spring-context"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-07T02-09-46-637898Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework/spring-context/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9400-9d8fdb7e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "4c5465f0472998ef9f1e7c9e659931dc60a6a457",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the specified commit diff and local evidence for org.springframework:spring-context:6.0.2. The change is scoped to the coordinate, adapts the suite to Spring 6 APIs while removing only tests for upstream-removed remoting, EJB, WebLogic, and WebSphere APIs, retains meaningful assertions, uses the permitted verified unsupported-feature catch only for open-ended class loading, and adds no native skips or legacy metadata files. The repair coverage gate passes overall (87/89, 97.75% to 53/53, 100%), for reflection (76/77, 98.70% to 42/42, 100%), and for resources (11/12, 91.67% to 11/11, 100%). Recorded index gates succeeded; local metadata validation, Checkstyle, compilation, JVM tests, native-image build, and all 28 native tests also passed.",
+    "session_log_path": "logs/org.springframework:spring-context:6.0.2/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework/spring-context/6.0.2/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4038016,
+      "code_coverage_percent": 16.29,
+      "cost_usd": 5.078,
+      "input_tokens_used": 358497,
+      "iterations": 5,
+      "metadata_entries": 363,
+      "output_tokens_used": 42215,
+      "previous_library_coverage_percent": 15.77,
+      "previous_library_metadata_entries": 196,
+      "previous_library_test_only_metadata_entries": 46,
+      "test_only_metadata_entries": 188,
+      "tested_library_loc": 2475
+    },
+    "timestamp": "2026-09-07T02:09:36.744968Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "spring-context",
+    "coordinates": "org.springframework:spring-context:5.3.15",
+    "group": "org.springframework",
+    "version": "5.3.15"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9400-20260907020936744968-0067c07ac305",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-07T02:09:36.744968Z"
+}

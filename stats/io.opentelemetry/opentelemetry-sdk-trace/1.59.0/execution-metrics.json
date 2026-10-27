@@ -1,0 +1,129 @@
+{
+  "fix_javac_fail:2026-10-01": {
+    "timestamp": "2026-10-01T23:27:29.182754Z",
+    "library": "io.opentelemetry:opentelemetry-sdk-trace:1.59.0",
+    "starting_commit": "fd688eb20614507bdecc617ef30747b4c9634b72",
+    "ending_commit": "49a9cd68ab38fed7c430a1fa42dc4fa74e54c06e",
+    "previous_library": "io.opentelemetry:opentelemetry-sdk-trace:1.55.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "1.59.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1977,
+          "missed": 6460,
+          "ratio": 0.234325,
+          "total": 8437
+        },
+        "line": {
+          "covered": 571,
+          "missed": 1555,
+          "ratio": 0.268579,
+          "total": 2126
+        },
+        "method": {
+          "covered": 164,
+          "missed": 407,
+          "ratio": 0.287215,
+          "total": 571
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.55.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1740,
+          "missed": 5924,
+          "ratio": 0.227035,
+          "total": 7664
+        },
+        "line": {
+          "covered": 486,
+          "missed": 1414,
+          "ratio": 0.255789,
+          "total": 1900
+        },
+        "method": {
+          "covered": 154,
+          "missed": 384,
+          "ratio": 0.286245,
+          "total": 538
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9350,
+      "issue_label": "fails-javac-compile",
+      "library": "io.opentelemetry:opentelemetry-sdk-trace:1.59.0",
+      "summary": "The failure is a test-source compile error: the test imports the internal class io.opentelemetry.sdk.internal.ExceptionAttributeResolver, which is not in the 1.59.0 artifact. The fix is to update the test code, not to add a dependency, Docker image, or environment setting. I did not inspect the 1.59.0 jar or sources. This conclusion rests on the javac output alone.",
+      "deterministic_setup": [],
+      "agent_guidance": "Rewrite SdkTracerProviderUtilTest so it no longer imports io.opentelemetry.sdk.internal.ExceptionAttributeResolver. The 1.59.0 artifact does not provide that class, as the javac error shows. Use the public exception attribute keys instead, such as the string keys \"exception.type\", \"exception.message\" and \"exception.stacktrace\", or the semantic-convention constants if they are on the classpath. Check the resolved 1.59.0 jar and its sources for how SdkTracerProviderUtil's exception-event customization is now exposed. Keep the test on the public or supported API for 1.59.0.",
+      "risks": [
+        "Other internal APIs used by the existing 1.55.0 tests may also have moved or been removed in 1.59.0, so more compile errors may appear after this one is fixed.",
+        "The log excerpt is truncated, so I did not see every error. There may be other failures beyond ExceptionAttributeResolver."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9350 [Automation] javac compile fails for io.opentelemetry:opentelemetry-sdk-trace:1.59.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.opentelemetry:opentelemetry-sdk-trace:1.55.0",
+      "new_version": "1.59.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 626
+    },
+    "metrics": {
+      "input_tokens_used": 43464,
+      "cached_input_tokens_used": 157184,
+      "output_tokens_used": 1812,
+      "iterations": 3,
+      "cost_usd": 0.0701,
+      "tested_library_loc": 571,
+      "metadata_entries": 13,
+      "test_only_metadata_entries": 3,
+      "previous_library_metadata_entries": 10,
+      "code_coverage_percent": 26.86,
+      "previous_library_coverage_percent": 25.58
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.opentelemetry/opentelemetry-sdk-trace/1.59.0/reachability-metadata.json"
+    }
+  }
+}

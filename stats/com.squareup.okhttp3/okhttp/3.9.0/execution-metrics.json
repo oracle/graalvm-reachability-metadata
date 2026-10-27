@@ -1,0 +1,136 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T01:44:50.431553Z",
+    "library": "com.squareup.okhttp3:okhttp:3.9.0",
+    "starting_commit": "a2e905f5ae12b5d0312072d02020c07969822014",
+    "ending_commit": "63ae92f661c894957de092816d4bde679eb2bc26",
+    "previous_library": "com.squareup.okhttp3:okhttp:3.8.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "3.9.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.931034,
+            "coveredCalls": 27,
+            "totalCalls": 29
+          }
+        },
+        "coverageRatio": 0.931034,
+        "coveredCalls": 27,
+        "totalCalls": 29
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 8641,
+          "missed": 33309,
+          "ratio": 0.205983,
+          "total": 41950
+        },
+        "line": {
+          "covered": 2062,
+          "missed": 6328,
+          "ratio": 0.245769,
+          "total": 8390
+        },
+        "method": {
+          "covered": 443,
+          "missed": 1026,
+          "ratio": 0.301566,
+          "total": 1469
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "3.8.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 24,
+            "totalCalls": 24
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 25,
+        "totalCalls": 25
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1750,
+          "missed": 39183,
+          "ratio": 0.042753,
+          "total": 40933
+        },
+        "line": {
+          "covered": 384,
+          "missed": 7794,
+          "ratio": 0.046955,
+          "total": 8178
+        },
+        "method": {
+          "covered": 74,
+          "missed": 1368,
+          "ratio": 0.051318,
+          "total": 1442
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9336,
+      "issue_label": "fails-javac-compile",
+      "library": "com.squareup.okhttp3:okhttp:3.9.0",
+      "summary": "The failure is a test-source compile error. TrustRootIndexTest in the 3.8.0 test project calls TrustRootIndex.get(trustManager), and that static method no longer exists on the TrustRootIndex interface in okhttp 3.9.0. The test code needs adapting to the 3.9.0 API; no extra dependency, Docker image, or system property is involved. The issue's failing operation is a missing symbol at javac time, not a Native Image limitation, so the version is not unsupportable.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not open the 3.9.0 sources or run the build; this rests on the compiler error in the issue log. The only error reported is the missing TrustRootIndex.get(...) symbol, but fixing it may expose other API differences once compilation proceeds.",
+        "In 3.9.0 the trust-root-index construction probably moved to the concrete classes in okhttp3.internal.tls (BasicTrustRootIndex, and AndroidTrustRootIndex on the Android path), or to Platform.buildTrustRootIndex. The test should be rewritten to use whichever of those exists in 3.9.0.",
+        "The Android-stub test classes and the Jetty ALPN stub in the 3.8.0 test project may also need checking against 3.9.0."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9336 [Automation] javac compile fails for com.squareup.okhttp3:okhttp:3.9.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "24 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.squareup.okhttp3:okhttp:3.8.0",
+      "new_version": "3.9.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 700
+    },
+    "metrics": {
+      "input_tokens_used": 141756,
+      "cached_input_tokens_used": 1477632,
+      "output_tokens_used": 9519,
+      "iterations": 5,
+      "cost_usd": 0.3467,
+      "tested_library_loc": 2062,
+      "metadata_entries": 101,
+      "test_only_metadata_entries": 128,
+      "previous_library_metadata_entries": 12,
+      "previous_library_test_only_metadata_entries": 123,
+      "code_coverage_percent": 24.58,
+      "previous_library_coverage_percent": 4.7
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.squareup.okhttp3/okhttp/3.9.0/reachability-metadata.json"
+    }
+  }
+}

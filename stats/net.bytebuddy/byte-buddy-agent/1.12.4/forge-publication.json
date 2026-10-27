@@ -1,0 +1,109 @@
+{
+  "base_commit": "54e614aa089aae5b65daa486c745c14b8cd453de",
+  "branch": "ai/kimeta/fix-java-run-net.bytebuddy-byte-buddy-agent-1.12.4-forge-9360-20260921152806687095-b813ac3b4e91",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "36568d2db2830705cecfdded8fb66f0cf58eb29f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9360,
+  "library": {
+    "artifact": "byte-buddy-agent",
+    "coordinates": "net.bytebuddy:byte-buddy-agent:1.12.4",
+    "group": "net.bytebuddy",
+    "version": "1.12.4"
+  },
+  "local_ci_verification": {
+    "base_commit": "54e614aa089aae5b65daa486c745c14b8cd453de",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpv7stebm8"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9360-71258da3/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=net.bytebuddy:byte-buddy-agent"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/net.bytebuddy/byte-buddy-agent/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9360-71258da3/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 736ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "6cc622e19ce04500bf4b4d41820fe19ebaa7195c",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/net.bytebuddy/byte-buddy-agent/1.12.4/stats.json",
+      "tests/src/net.bytebuddy/byte-buddy-agent/1.12.4/src/test/java/com/ibm/tools/attach/VirtualMachine.java",
+      "tests/src/net.bytebuddy/byte-buddy-agent/1.12.4/src/test/java/net_bytebuddy/byte_buddy_agent/ByteBuddyAgentInnerAttachmentProviderInnerAccessorInnerSimpleTest.java",
+      "tests/src/net.bytebuddy/byte-buddy-agent/1.12.4/src/test/resources/META-INF/native-image/reachability-metadata.json",
+      "tests/src/net.bytebuddy/byte-buddy-agent/1.12.4/user-code-filter.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The contribution declared tests/src/net.bytebuddy/byte-buddy-agent/1.12.4/src/test/java/com/ibm/tools/attach/VirtualMachine.java in the real com.ibm.tools.attach package to make the optional J9 attachment path available. This is a source shadow for a dependency API and violates FS-test-contract.2.3 and FS-contribution-contract.4.7.",
+    "finding_title": "Generated test shadows an optional dependency API type",
+    "fix_note": "Removed the com.ibm.tools.attach shadow class and the J9-only scenario that could not be tested without that optional API, removed its filter and test-only metadata entries, and regenerated stats. The remaining public-API tests pass all required finalization lanes and retain repair-gate-compliant coverage.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the coordinate-scoped diff, index integrity, JVM runtime repair, metadata format, test-contract guardrails, and dynamic-access evidence. After repair, overall coverage is 16/19 (84.21%) versus 17/17, reflection is 14/17 (82.35%) versus 15/15, and resources remain 2/2; each scope passes the ordered fixes-* repair gate. Forge finalization then passed all three test lanes, metadata splitting and validation, style checks, and regenerated statistics without further publishable changes.",
+    "session_id": "0da83d779af042da"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/net.bytebuddy/byte-buddy-agent/1.12.4/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1310208,
+      "code_coverage_percent": 16.78,
+      "cost_usd": 2.1693,
+      "input_tokens_used": 222734,
+      "iterations": 8,
+      "metadata_entries": 26,
+      "output_tokens_used": 13351,
+      "previous_library_coverage_percent": 16.87,
+      "previous_library_metadata_entries": 10,
+      "previous_library_test_only_metadata_entries": 2,
+      "test_only_metadata_entries": 13,
+      "tested_library_loc": 167
+    },
+    "timestamp": "2026-09-21T15:28:06.687095Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "byte-buddy-agent",
+    "coordinates": "net.bytebuddy:byte-buddy-agent:1.11.17",
+    "group": "net.bytebuddy",
+    "version": "1.11.17"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9360-20260921152806687095-b813ac3b4e91",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-09-21T15:28:06.687095Z"
+}

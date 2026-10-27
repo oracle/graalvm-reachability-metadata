@@ -172,6 +172,8 @@ class TestedVersionUpdaterTaskTests {
         );
         assertThat(indexEntries).hasSize(2);
         assertThat(indexEntries.get(0)).containsEntry("metadata-version", "1.0.0")
+                .containsEntry("auto-update", true)
+                .containsEntry("high-priority", true)
                 .containsEntry("tested-versions", List.of("1.0.0"));
         assertThat(indexEntries.get(1)).containsEntry("test-version", "1.0.0");
     }
@@ -379,6 +381,9 @@ class TestedVersionUpdaterTaskTests {
 
         List<Map<String, Object>> indexEntries = readIndex(group, artifact);
         assertThat(indexEntries.get(0)).containsEntry("tested-versions", List.of(oldVersion, newVersion));
+        assertThat(indexEntries.get(0))
+                .containsEntry("auto-update", true)
+                .containsEntry("high-priority", true);
         assertThat(Files.readString(indexFile)).isEqualTo(indexAfterFirstRun);
     }
 
@@ -403,6 +408,8 @@ class TestedVersionUpdaterTaskTests {
                 [
                   {
                     "latest": true,
+                    "auto-update": true,
+                    "high-priority": true,
                     "allowed-packages": [
                       "com.example"
                     ],

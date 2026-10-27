@@ -1,0 +1,97 @@
+# Composite action: builds Native Image's Crema VM (libjvm) into a downloaded GraalVM and makes it
+# that JDK's default VM, so a plain `java` invocation runs Crema with no VM selection flag.
+# §AR-setup-crema-jdk.
+name: "Setup Crema JDK"
+description: "Downloads a GraalVM, builds libjvm from the jvm-library macro, and selects it as the JDK's default VM."
+author: "GraalVM Reachability Metadata repository maintainers"
+
+inputs:
+  java-version:
+    description: "GraalVM version passed to setup-graalvm. Must be a build that ships the jvm-library macro."
+    required: false
+    default: "latest-ea"
+  distribution:
+    description: "Java distribution for setup-graalvm"
+    required: false
+    default: "graalvm"
+  default-vm:
+    description: "Which VM the produced JDK selects by default: 'svm' (Crema) or 'hotspot' (baseline)."
+    required: false
+    default: "svm"
+  github-token:
+    description: "GitHub token used by setup-graalvm"
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  crema-home:
+    description: "Home of the prepared JDK"
+    value: ${{ steps.build-libjvm.outputs.crema-home }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: setup-graalvm
+      name: "🔧 Download GraalVM"
+      uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
+      with:
+        distribution: ${{ inputs.distribution }}
+        java-version: ${{ inputs.java-version }}
+        set-java-home: 'true'
+        github-token: ${{ inputs.github-token }}
+
+    - id: build-libjvm
+      name: "🏗️ Build libjvm (Crema) with the jvm-library macro"
+      shell: bash
+      env:
+        INPUT_DEFAULT_VM: ${{ inputs.default-vm }}
+      run: |
+        set -euo pipefail
+
+        CREMA_HOME="$JAVA_HOME"
+
+        # Crema's build options (-H:+RuntimeClassLoading and the -H:Preserve set) come from the macro
+        # and from svm-libjvm.jar's own native-image.properties. Nothing is added here on purpose.
+        # If the JDK does not ship the jvm-library macro, this fails with a non-zero exit code.
+        "$CREMA_HOME/bin/native-image" --macro:jvm-library
+
+        LIBJVM="$CREMA_HOME/lib/svm/libjvm.so"
+        if [[ ! -f "$LIBJVM" ]]; then
+          echo "::error::native-image --macro:jvm-library did not produce $LIBJVM"
+          exit 1
+        fi
+        echo "Built $(du -h "$LIBJVM" | cut -f1) $LIBJVM"
+
+        # Keep the stock configuration so the same tree can serve as its own HotSpot baseline.
+        cp "$CREMA_HOME/lib/jvm.cfg" "$CREMA_HOME/lib/jvm.cfg.hotspot-default"
+
+        if [[ "$INPUT_DEFAULT_VM" == "svm" ]]; then
+          # Listing -svm first makes the Substrate VM this JDK's default, so callers need no flag.
+          printf -- '-svm KNOWN\n-server KNOWN\n-client IGNORE\n' > "$CREMA_HOME/lib/jvm.cfg"
+        fi
+
+        echo "crema-home=$CREMA_HOME" >> "$GITHUB_OUTPUT"
+
+    - id: verify
+      name: "✅ Verify the selected VM"
+      shell: bash
+      env:
+        INPUT_DEFAULT_VM: ${{ inputs.default-vm }}
+        CREMA_HOME: ${{ steps.build-libjvm.outputs.crema-home }}
+      run: |
+        set -euo pipefail
+
+        VERSION_OUTPUT="$("$CREMA_HOME/bin/java" -version 2>&1)"
+        echo "$VERSION_OUTPUT"
+
+        if [[ "$INPUT_DEFAULT_VM" == "svm" ]]; then
+          if ! grep -q "Substrate" <<< "$VERSION_OUTPUT"; then
+            echo "::error::Default VM is not Substrate; the run would silently measure HotSpot."
+            exit 1
+          fi
+        else
+          if grep -q "Substrate" <<< "$VERSION_OUTPUT"; then
+            echo "::error::Baseline lane requested but the default VM is Substrate."
+            exit 1
+          fi
+        fi

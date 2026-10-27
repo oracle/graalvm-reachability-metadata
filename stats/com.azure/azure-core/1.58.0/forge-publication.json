@@ -1,0 +1,161 @@
+{
+  "base_commit": "bbb0402c8a844dff34d5805ec291718c76d19e0e",
+  "branch": "ai/kimeta/add-lib-support-com.azure-azure-core-1.58.0-chunked-forge-10058-20260926171330960269-658cf521ae64",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "bbb0402c8a844dff34d5805ec291718c76d19e0e",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10058,
+  "library": {
+    "artifact": "azure-core",
+    "coordinates": "com.azure:azure-core:1.58.0",
+    "group": "com.azure",
+    "version": "1.58.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "bbb0402c8a844dff34d5805ec291718c76d19e0e",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp424xo0b_"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10058-5770bce1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.azure:azure-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.azure/azure-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10058-5770bce1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "428bcb046abde3f5ed2e7a49edc8966806a53aa7",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full single-coordinate diff and local gate evidence against the new-library rules. The tests use public library behavior from a separate package, contain no scaffold, native skip, swallowed failure, version-pinned assertion, or legacy metadata; reported dynamic-access coverage is 28/33 (84.85%), and 28 covered calls do not trigger the 259-entry mismatch guardrail. The Native Image arguments are narrowly required by azure-core's bundled initialization directives and URL handling, as confirmed by the three finalization lanes. The exact Forge finalization command completed successfully and left the publishable tree unchanged.",
+    "session_id": "72fd3639180a4fbb"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.azure/azure-core/1.58.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 14431744,
+      "code_coverage_percent": 16.66,
+      "cost_usd": 13.9921,
+      "generated_loc": 902,
+      "input_tokens_used": 964830,
+      "iterations": 24,
+      "metadata_entries": 195,
+      "output_tokens_used": 65070,
+      "test_only_metadata_entries": 64,
+      "tested_library_loc": 2112
+    },
+    "timestamp": "2026-09-26T17:13:30.960269Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10058-20260926171330960269-658cf521ae64",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#unreflect(java.lang.reflect.Method) <- com.azure.core.implementation.ReflectionUtilsMethodHandle.getMethodInvoker(ReflectionUtilsMethodHandle.java:105) (line 105)",
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#unreflectConstructor(java.lang.reflect.Constructor) <- com.azure.core.implementation.ReflectionUtilsMethodHandle.getConstructorInvoker(ReflectionUtilsMethodHandle.java:113) (line 113)",
+        "[reflection] java.lang.reflect.Proxy#newProxyInstance(java.lang.ClassLoader, java.lang.Class[], java.lang.reflect.InvocationHandler) <- com.azure.core.http.rest.RestProxy.create(RestProxy.java:141) (line 141)",
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- com.azure.core.implementation.ImplUtils.getClassByName(ImplUtils.java:395) (line 395)",
+        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- com.azure.core.implementation.ReflectionSerializable.lambda$deserializeAsJsonSerializable$0(ReflectionSerializable.java:152) (line 152)",
+        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- com.azure.core.implementation.ReflectionSerializable.lambda$deserializeAsXmlSerializable$0(ReflectionSerializable.java:294) (line 294)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- com.azure.core.implementation.ReflectionSerializable.supportsJsonSerializable(ReflectionSerializable.java:60) (line 60)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- com.azure.core.implementation.ReflectionSerializable.supportsXmlSerializable(ReflectionSerializable.java:188) (line 188)",
+        "... and 20 more"
+      ],
+      "metadata_rules": [
+        "when `com.azure.core.credential.AzureNamedKeyCredential` is reached, make `com.azure.core.credential.AzureNamedKeyCredential` available for reflection",
+        "when `com.azure.core.http.HttpPipelineNextPolicy` is reached, make `com.azure.core.http.HttpPipelineNextPolicy` available for reflection",
+        "when `com.azure.core.http.HttpRequest` is reached, make `com.azure.core.http.HttpRequest` available for reflection",
+        "when `com.azure.core.implementation.ImplUtils` is reached, make `com.azure.core.http.policy.ExponentialBackoff` available for reflection",
+        "when `com.azure.core.implementation.ImplUtils` is reached, make `com.azure.core.implementation.ImplUtils` available for reflection",
+        "when `com.azure.core.implementation.MethodHandleReflectiveInvoker` is reached, make `com.azure.core.implementation.MethodHandleReflectiveInvoker` available for reflection",
+        "when `com.azure.core.implementation.ReflectionSerializable` is reached, make `com.azure.core.implementation.ReflectionSerializable` available for reflection",
+        "when `com.azure.core.implementation.ReflectionUtils` is reached, make `com.azure.core.implementation.ReflectionUtils` available for reflection",
+        "... and 121 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.84375,
+            "coveredCalls": 27,
+            "totalCalls": 32
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.848485,
+        "coveredCalls": 28,
+        "totalCalls": 33
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 8723,
+          "missed": 46731,
+          "ratio": 0.157302,
+          "total": 55454
+        },
+        "line": {
+          "covered": 2112,
+          "missed": 10565,
+          "ratio": 0.166601,
+          "total": 12677
+        },
+        "method": {
+          "covered": 577,
+          "missed": 2681,
+          "ratio": 0.177103,
+          "total": 3258
+        }
+      },
+      "version": "1.58.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-26T17:13:30.960269Z"
+}

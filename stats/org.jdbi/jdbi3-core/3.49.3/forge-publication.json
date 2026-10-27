@@ -1,0 +1,167 @@
+{
+  "base_commit": "a2101a3a293a8e6b62caf52a666112857d9fb619",
+  "branch": "ai/kimeta/add-lib-support-org.jdbi-jdbi3-core-3.49.3-forge-9496-20260829033509101149-5324d270ea36",
+  "follow_ups": [],
+  "forge": {
+    "branch": "restore-codex-bypass-invocation",
+    "commit": "695f13b0339446cfa966f9ffbf3de90d2a20b6cb",
+    "monitored_branch": "origin/restore-codex-bypass-invocation"
+  },
+  "issue_number": 9496,
+  "library": {
+    "artifact": "jdbi3-core",
+    "coordinates": "org.jdbi:jdbi3-core:3.49.3",
+    "group": "org.jdbi",
+    "version": "3.49.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "a2101a3a293a8e6b62caf52a666112857d9fb619",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp6hjcqesv"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-08-29T03-35-14-293826Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9496-f51dfb8c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.jdbi:jdbi3-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-08-29T03-35-16-624130Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.jdbi/jdbi3-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9496-f51dfb8c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "146cea0baa1fffaf08a3ec77047f9ebf251db5c5",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-terra",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the specified diff and local evidence for org.jdbi:jdbi3-core:3.49.3. The change is scoped to one library; tests are library-specific, use a separate test package, contain no native-image skips, bare Error catches, or test-code version pinning; only reachability-metadata.json files are present. Reported dynamic-access coverage is 60/61 (98.36%), and the reported 233 total library plus test-only metadata entries do not trigger the mismatch rule. Local changed-index and index-validation records succeeded.",
+    "session_log_path": "logs/org.jdbi:jdbi3-core:3.49.3/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.jdbi/jdbi3-core/3.49.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4539904,
+      "code_coverage_percent": 27.51,
+      "cost_usd": 5.2595,
+      "generated_loc": 963,
+      "input_tokens_used": 343052,
+      "iterations": 3,
+      "metadata_entries": 132,
+      "output_tokens_used": 42474,
+      "test_only_metadata_entries": 101,
+      "tested_library_loc": 3958
+    },
+    "timestamp": "2026-08-29T03:35:09.101149Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9496-20260829033509101149-5324d270ea36",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredMethods() <- org.jdbi.v3.core.internal.AnnotationFactory.create(AnnotationFactory.java:41) (line 41)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- org.jdbi.v3.core.internal.AnnotationFactory.getInvocationHandler(AnnotationFactory.java:70) (line 70)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- org.jdbi.v3.core.internal.AnnotationFactory.valuesEqual(AnnotationFactory.java:128) (line 128)",
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#findStatic(java.lang.Class, java.lang.String, java.lang.invoke.MethodType) <- org.jdbi.v3.core.internal.AnnotationFactory.lambda$valueHash$7(AnnotationFactory.java:123) (line 123)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.jdbi.v3.core.internal.AnnotationFactory.lambda$valuesEqual$8(AnnotationFactory.java:129) (line 129)",
+        "[reflection] java.lang.reflect.Proxy#newProxyInstance(java.lang.ClassLoader, java.lang.Class[], java.lang.reflect.InvocationHandler) <- org.jdbi.v3.core.internal.AnnotationFactory.create(AnnotationFactory.java:57) (line 57)",
+        "[reflection] java.lang.Class#getField(java.lang.String) <- org.jdbi.v3.core.argument.EnumArgumentFactory.lambda$annotatedValue$1(EnumArgumentFactory.java:61) (line 61)",
+        "[reflection] java.lang.Class#getFields() <- org.jdbi.v3.core.argument.ObjectFieldArguments.lambda$static$2(ObjectFieldArguments.java:43) (line 43)",
+        "... and 52 more"
+      ],
+      "metadata_rules": [
+        "when `org.jdbi.v3.core.statement.DefineNamedBindingsStatementCustomizer$SetNullHandler` is reached, make `boolean[]` available for reflection",
+        "when `org.jdbi.v3.core.statement.DefineNamedBindingsStatementCustomizer$SetNullHandler` is reached, make `byte[]` available for reflection",
+        "when `org.jdbi.v3.core.statement.DefineNamedBindingsStatementCustomizer$SetNullHandler` is reached, make `char[]` available for reflection",
+        "when `org.jdbi.v3.core.statement.DefineNamedBindingsStatementCustomizer$SetNullHandler` is reached, make `double[]` available for reflection",
+        "when `org.jdbi.v3.core.statement.DefineNamedBindingsStatementCustomizer$SetNullHandler` is reached, make `float[]` available for reflection",
+        "when `org.jdbi.v3.core.array.ArrayColumnMapper` is reached, make `int[]` available for reflection",
+        "when `org.jdbi.v3.core.collector.ArrayBuilder` is reached, make `int[]` available for reflection",
+        "when `org.jdbi.v3.core.statement.DefineNamedBindingsStatementCustomizer$SetNullHandler` is reached, make `int[]` available for reflection",
+        "... and 83 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.983333,
+            "coveredCalls": 59,
+            "totalCalls": 60
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.983607,
+        "coveredCalls": 60,
+        "totalCalls": 61
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 17732,
+          "missed": 48967,
+          "ratio": 0.265851,
+          "total": 66699
+        },
+        "line": {
+          "covered": 3958,
+          "missed": 10428,
+          "ratio": 0.275129,
+          "total": 14386
+        },
+        "method": {
+          "covered": 1261,
+          "missed": 3141,
+          "ratio": 0.286461,
+          "total": 4402
+        }
+      },
+      "version": "3.49.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-08-29T03:35:09.101149Z"
+}

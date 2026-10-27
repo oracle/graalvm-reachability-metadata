@@ -1,0 +1,38 @@
+{
+  "issue_number": 10895,
+  "iterations": 15,
+  "library_coverage": {
+    "instruction": {
+      "covered": 8106,
+      "ratio": 0.8293431553100061,
+      "total": 9774
+    },
+    "line": {
+      "covered": 1209,
+      "ratio": 0.8857142857142857,
+      "total": 1365
+    },
+    "method": {
+      "covered": 287,
+      "ratio": 0.8670694864048338,
+      "total": 331
+    }
+  },
+  "removed": [
+    {
+      "reason": "clientCloseSendsCloseNotifySoTheServerSeesACleanEndOfUpload races Ktor's TLS closer against its record writer (ClosedWriteChannelException in TLSClientHandshake output, Render.writeRecord): the upload arrives truncated in 2 of 7 native runs and fails with bad_record_mac in 2 of 2 JVM runs under the agent; no registration is missing and no native-image option bears on a library close race",
+      "scenario": "real-use-tests/src/io.ktor/ktor-network-tls-jvm/3.4.1/src/test/kotlin/io_ktor/ktor_network_tls_jvm/TlsSessionClosureTest.kt"
+    },
+    {
+      "reason": "the same TLS close race drops the client's WebSocket close frame (close frame not seen) in 3 of 4 native runs once every registration was present; it also failed once on the JVM in generate-15; no registration is missing and no native-image option bears on it",
+      "scenario": "real-use-tests/src/io.ktor/ktor-network-tls-jvm/3.4.1/src/test/kotlin/io_ktor/ktor_network_tls_jvm/SecureWebSocketClientTest.kt"
+    }
+  ],
+  "timestamp": "2026-10-16T16:50:01+00:00",
+  "tokens": {
+    "cache_write_input": 1263887,
+    "cached_input": 18216651,
+    "input": 536,
+    "output": 224475
+  }
+}

@@ -1,0 +1,47 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    id "scala"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.pekko:pekko-actor_3:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.scala-lang:scala3-library_3:3.3.6'
+    testImplementation 'org.scala-lang:scala3-compiler_3:3.3.6'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs '--add-opens=java.base/sun.net.dns=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.nio=ALL-UNNAMED'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.add('--add-opens=java.base/sun.net.dns=ALL-UNNAMED')
+            buildArgs.add('--add-opens=java.base/java.nio=ALL-UNNAMED')
+        }
+    }
+}

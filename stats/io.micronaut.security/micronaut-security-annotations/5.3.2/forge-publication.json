@@ -1,0 +1,127 @@
+{
+  "base_commit": "a82e96a6b16e8a17a66db47f72c0548ffaeae158",
+  "branch": "ai/cugurm/add-lib-support-io.micronaut.security-micronaut-security-annotations-5.3.2-forge-10074-20260919204353020998-a59c9ba6d95c",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "a82e96a6b16e8a17a66db47f72c0548ffaeae158",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10074,
+  "library": {
+    "artifact": "micronaut-security-annotations",
+    "coordinates": "io.micronaut.security:micronaut-security-annotations:5.3.2",
+    "group": "io.micronaut.security",
+    "version": "5.3.2"
+  },
+  "local_ci_verification": {
+    "base_commit": "a82e96a6b16e8a17a66db47f72c0548ffaeae158",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp1oyibt3_"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10074-38943291/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.micronaut.security:micronaut-security-annotations"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micronaut.security/micronaut-security-annotations/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10074-38943291/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 729ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "fac020784e4cec968035d729ca71c5924791099d",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Confirmed the diff is scoped to one coordinate and uses only reachability-metadata.json; the public, version-agnostic tests exercise the target library outside its packages without scaffold code, Native Image dodges, compatibility overrides, or build/run flags. The recorded index gates pass, and the resolved 0/0 dynamic-access result is a valid no-calls case with no entry-count mismatch check required. No blocking contribution-contract violation was found.",
+    "session_id": "c5c3138488aa45d5"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.micronaut.security/micronaut-security-annotations/5.3.2/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 6823424,
+      "code_coverage_percent": 100.0,
+      "cost_usd": 6.7464,
+      "generated_loc": 192,
+      "input_tokens_used": 405541,
+      "iterations": 18,
+      "metadata_entries": 0,
+      "output_tokens_used": 43567,
+      "test_only_metadata_entries": 46,
+      "tested_library_loc": 5
+    },
+    "timestamp": "2026-09-19T20:43:53.020998Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "cugurm",
+  "publication_id": "forge-10074-20260919204353020998-a59c9ba6d95c",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 20,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 20
+        },
+        "line": {
+          "covered": 5,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 5
+        },
+        "method": {
+          "covered": 3,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 3
+        }
+      },
+      "version": "5.3.2"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-19T20:43:53.020998Z"
+}

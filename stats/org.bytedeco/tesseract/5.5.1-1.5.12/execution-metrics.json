@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T21:13:52.744419Z",
+    "library": "org.bytedeco:tesseract:5.5.1-1.5.12",
+    "starting_commit": "f2dbfefbdcab1ba70285c9816b69ea5e1c538279",
+    "ending_commit": "22096423fa568973d2fbda8ed6b9504c0c3a10d0",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.5.1-1.5.12",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 128,
+          "missed": 2200,
+          "ratio": 0.054983,
+          "total": 2328
+        },
+        "line": {
+          "covered": 26,
+          "missed": 263,
+          "ratio": 0.089965,
+          "total": 289
+        },
+        "method": {
+          "covered": 20,
+          "missed": 185,
+          "ratio": 0.097561,
+          "total": 205
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10722,
+      "issue_label": "library-new-request",
+      "library": "org.bytedeco:tesseract:5.5.1-1.5.12",
+      "summary": "org.bytedeco:tesseract follows the javacpp-presets split: the base artifact ships no native binaries, so tests need the sibling -platform artifact at runtime (same gap already hit and fixed for org.bytedeco:openblas in this repo). Separately, exercising real OCR calls (Init/SetImage/GetUTF8Text) requires trained-data files that have no Maven artifact and can't be fetched over the network under this repo's offline test policy, so the generated test must bundle a small trained-data resource itself.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.bytedeco:tesseract-platform:5.5.1-1.5.12",
+          "scope": "testRuntimeOnly",
+          "reason": "org.bytedeco:tesseract only contains the Java/JNI glue classes; the native tesseract/leptonica binaries ship in the separate -platform artifact (confirmed via the published POMs on Maven Central), exactly like the existing org.bytedeco:openblas test in this repo already does for the same reason."
+        }
+      ],
+      "agent_guidance": "TessBaseAPI.Init(datapath, \"eng\") needs real trained-data to return 0; the upstream sample (bytedeco/javacpp-presets tesseract/samples/BasicExample.java) calls Init(null, \"eng\") but that only works because it assumes a system-wide tessdata install, which this harness does not have, and tests here cannot fetch anything from the network to get one (docs/functional-spec/tests.md: 'No network except against a declared, pre-pulled allowed-docker-image with networking disabled'). Bundle a small Apache-2.0-licensed eng.traineddata (e.g. from github.com/tesseract-ocr/tessdata_fast) as a test resource under src/test/resources/tessdata/eng.traineddata, and pass its absolute resource-directory path as the datapath argument to Init(...) (or set TESSDATA_PREFIX to that directory) instead of passing null. For the image input to SetImage, prefer building a small synthetic PIX in-memory via leptonica (pixCreate + simple fill/draw) rather than bundling a second binary fixture, since OCR accuracy doesn't matter for reachability coverage, only that Init -> SetImage -> Recognize/GetUTF8Text -> iterator APIs actually execute instead of failing at Init.",
+      "risks": [
+        "If the bundled trained-data file is omitted or mis-pathed, Init() fails immediately and the test will only cover TessBaseAPI construction/Init, missing most of the OCR API surface (SetImage, Recognize, GetUTF8Text, result iterators) that this library is actually added for.",
+        "Exact JavaCPP-generated method signatures (e.g. Init's parameter types) should be confirmed against the generated classes rather than assumed from the C++ API, since javacpp-presets versions occasionally shift binding signatures.",
+        "Local Gradle (pullAllowedDockerImages/checkMetadataFiles/test) and native-image runs remain authoritative — this is advisory input to generation, not a substitute for verification."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.bytedeco:tesseract-platform:5.5.1-1.5.12",
+          "result": "applied",
+          "target": "tests/src/org.bytedeco/tesseract/5.5.1-1.5.12/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10722 Support for org.bytedeco:tesseract:5.5.1-1.5.12; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 42,
+      "output_tokens_used": 18395
+    },
+    "metrics": {
+      "input_tokens_used": 217254,
+      "cached_input_tokens_used": 2519424,
+      "output_tokens_used": 34846,
+      "iterations": 4,
+      "cost_usd": 3.3914,
+      "generated_loc": 222,
+      "tested_library_loc": 26,
+      "metadata_entries": 316,
+      "test_only_metadata_entries": 72,
+      "code_coverage_percent": 9.0
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bytedeco/tesseract/5.5.1-1.5.12/reachability-metadata.json"
+    }
+  }
+}

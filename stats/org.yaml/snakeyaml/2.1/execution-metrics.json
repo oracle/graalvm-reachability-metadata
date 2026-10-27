@@ -1,0 +1,130 @@
+{
+  "fix_javac_fail:2026-10-05": {
+    "timestamp": "2026-10-05T18:45:05.052427Z",
+    "library": "org.yaml:snakeyaml:2.1",
+    "starting_commit": "1cfdc6cfa56a17a38636597e63d2a3943e3ba5ad",
+    "ending_commit": "28343eab386f91b390b6672c9293b422bb615870",
+    "previous_library": "org.yaml:snakeyaml:2.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 36,
+            "totalCalls": 36
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 36,
+        "totalCalls": 36
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9331,
+          "missed": 21288,
+          "ratio": 0.304745,
+          "total": 30619
+        },
+        "line": {
+          "covered": 2052,
+          "missed": 4292,
+          "ratio": 0.323455,
+          "total": 6344
+        },
+        "method": {
+          "covered": 467,
+          "missed": 618,
+          "ratio": 0.430415,
+          "total": 1085
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 36,
+            "totalCalls": 36
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 36,
+        "totalCalls": 36
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9329,
+          "missed": 21176,
+          "ratio": 0.305819,
+          "total": 30505
+        },
+        "line": {
+          "covered": 2053,
+          "missed": 4270,
+          "ratio": 0.324688,
+          "total": 6323
+        },
+        "method": {
+          "covered": 466,
+          "missed": 618,
+          "ratio": 0.429889,
+          "total": 1084
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9405,
+      "issue_label": "fails-javac-compile",
+      "library": "org.yaml:snakeyaml:2.1",
+      "summary": "The compile error is a version mismatch, not missing setup. `TrustedPrefixesTagInspector` is not in snakeyaml 2.0, and the 2.0 tests import it. It was added in 2.1 and is a plain public class in the same jar. I did not run any commands or open the 2.1 jar, so this rests on what I recall of the 2.1 release. The tests need to be generated against the 2.1 API, with no extra dependency, Docker image or system property. SnakeYAML's dynamic access (reflective construction of beans via `Constructor`, property and field access) is ordinary reflection that metadata can register, so there is no Native Image blocker.",
+      "deterministic_setup": [],
+      "agent_guidance": "Generate the 2.1 tests against the 2.1 API. Where the 2.0 tests use `TrustedPrefixesTagInspector`, check the test sources compile against 2.0, which lacks that class. In 2.1 it is available via `org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector`. Keep the tests inside the `org_yaml.snakeyaml` package so the `user-code-filter.json` stays valid.",
+      "risks": [
+        "The issue title says 2.1, but the reproducer and log use the 2.0 test directory (`-Pcoordinates=org.yaml:snakeyaml:2.0`). The compile failure may come from tests that were copied or reused across versions. Confirm which coordinates the fix targets.",
+        "If `TrustedPrefixesTagInspector` turns out to be absent in 2.1, fall back to `TagInspector` or `TrustedTagInspector` from the older API."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9405 [Automation] javac compile fails for org.yaml:snakeyaml:2.1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "19 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.yaml:snakeyaml:2.0",
+      "new_version": "2.1",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 774
+    },
+    "metrics": {
+      "input_tokens_used": 41609,
+      "cached_input_tokens_used": 264960,
+      "output_tokens_used": 1853,
+      "iterations": 3,
+      "cost_usd": 0.3961,
+      "tested_library_loc": 2052,
+      "metadata_entries": 7,
+      "test_only_metadata_entries": 137,
+      "previous_library_metadata_entries": 14,
+      "previous_library_test_only_metadata_entries": 66,
+      "code_coverage_percent": 32.35,
+      "previous_library_coverage_percent": 32.47
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.yaml/snakeyaml/2.1/reachability-metadata.json"
+    }
+  }
+}

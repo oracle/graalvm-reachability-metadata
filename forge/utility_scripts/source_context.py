@@ -6,16 +6,15 @@
 """Source-context preparation for Forge workflow drivers.
 
 Predefined strategies choose source-context types
-(§STRAT-forge-predefined-strategy-contract); workflow drivers use this module to
+(§FS-forge-predefined-strategy-contract); workflow drivers use this module to
 materialize those artifacts as the read-only files the dynamic-access strategies
-read class source from (§WF-dynamic-access-strategy-family) before the strategy
+read class source from (§AR-dynamic-access-workflow) before the strategy
 starts.
 """
 
 import json
 import os
 import shutil
-import subprocess
 import sys
 import tarfile
 import urllib.parse
@@ -25,11 +24,13 @@ from dataclasses import dataclass
 from email.message import Message
 from typing import Any
 
-from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import find_index_entry_for_version, is_not_for_native_image_entry
-from utility_scripts.repo_path_resolver import require_complete_reachability_repo
-from utility_scripts.stage_logger import log_stage
-from utility_scripts.task_logs import build_task_log_path, display_log_path
+from utility_scripts.stage_logger import log_detail
+from utility_scripts.task_logs import display_log_path
+from utility_scripts.source_context_discovery import (  # noqa: F401 - re-exported for existing callers
+    populate_artifact_urls,
+    discover_artifact_metadata,
+)
 
 SOURCE_CONTEXT_FIELD_BY_TYPE = {
     "main": "source-code-url",
@@ -43,7 +44,6 @@ SOURCE_CONTEXT_LABEL_BY_TYPE = {
     "documentation": "Documentation sources",
 }
 
-DEFAULT_POPULATE_AGENT_COMMAND = "codex -a never exec -s danger-full-access"
 DEFAULT_TEST_LANGUAGE = "java"
 VERSION_PLACEHOLDER = "$version$"
 TEST_SOURCE_DIR_BY_LANGUAGE = {
@@ -121,7 +121,7 @@ def normalize_source_context_types(raw_value: Any) -> list[str]:
     """Normalize and validate the strategy's requested source-context types.
 
     Source context is selected by predefined strategy parameters
-    (§STRAT-predefined-strategy-parameter-families); this utility enforces the
+    (§FS-predefined-strategy-parameter-families); this utility enforces the
     supported type set.
     """
     if raw_value is None:
@@ -148,43 +148,6 @@ def normalize_source_context_types(raw_value: Any) -> list[str]:
     return normalized
 
 
-def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND) -> None:
-    """Populate artifact URLs in ``index.json`` before source-context download.
-
-    Satisfies the dynamic-access setup precondition that source/test/docs URLs
-    be available before the agent receives read-only context
-    (§WF-dynamic-access-workflow).
-    """
-    require_complete_reachability_repo(reachability_repo_path)
-    log_path = build_task_log_path("populate-artifact-urls", coordinate, "populate_artifact_urls.log")
-    log_path_display = display_log_path(log_path)
-    log_stage("populate-artifact-urls", f"Populating artifact URLs for {coordinate}; output: {log_path_display}")
-    command = [
-        "./gradlew",
-        "populateArtifactURLs",
-        f"--coordinates={coordinate}",
-        f"--agent-command={agent_command}",
-    ]
-    result = subprocess.run(
-        command,
-        cwd=reachability_repo_path,
-        env=gradle_command_environment(reachability_repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
-    )
-    with open(log_path, "w", encoding="utf-8") as log_file:
-        log_file.write(result.stdout)
-    if result.returncode != 0:
-        print(
-            f"ERROR: populateArtifactURLs failed for {coordinate}. See {log_path_display} for details.",
-            file=sys.stderr,
-        )
-        raise SystemExit(1)
-    log_stage("populate-artifact-urls", f"Artifact URLs populated for {coordinate}")
-
-
 def source_context_urls_available(
         reachability_repo_path: str,
         coordinate: str,
@@ -203,41 +166,6 @@ def source_context_urls_available(
     return True
 
 
-def discover_artifact_metadata(
-        reachability_repo_path: str,
-        coordinate: str,
-        agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND,
-) -> None:
-    require_complete_reachability_repo(reachability_repo_path)
-    log_path = build_task_log_path("discover-artifact-metadata", coordinate, "discover_artifact_metadata.log")
-    log_path_display = display_log_path(log_path)
-    log_stage("discover-artifact-metadata", f"Discovering artifact metadata for {coordinate}; output: {log_path_display}")
-    command = [
-        "./gradlew",
-        "discoverArtifactMetadata",
-        f"--coordinates={coordinate}",
-        f"--agent-command={agent_command}",
-    ]
-    result = subprocess.run(
-        command,
-        cwd=reachability_repo_path,
-        env=gradle_command_environment(reachability_repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
-    )
-    with open(log_path, "w", encoding="utf-8") as log_file:
-        log_file.write(result.stdout)
-    if result.returncode != 0:
-        print(
-            f"ERROR: discoverArtifactMetadata failed for {coordinate}. See {log_path_display} for details.",
-            file=sys.stderr,
-        )
-        raise SystemExit(1)
-    log_stage("discover-artifact-metadata", f"Artifact metadata discovered for {coordinate}")
-
-
 def prepare_source_contexts(
         repo_root: str,
         reachability_repo_path: str,
@@ -248,7 +176,7 @@ def prepare_source_contexts(
 
     Workflow drivers prepare this context once (§AR-forge-workflow-boundary)
     so dynamic-access strategies can pass class-targeted source files to the
-    agent without owning download policy (§WF-dynamic-access-strategy-family).
+    agent without owning download policy (§AR-dynamic-access-workflow).
     """
     index_entry = load_index_entry(reachability_repo_path, coordinate)
     _, _, requested_version = _coordinate_parts(coordinate)
@@ -264,7 +192,7 @@ def prepare_source_contexts(
         field_name = SOURCE_CONTEXT_FIELD_BY_TYPE[source_type]
         url = render_url_template(normalize_url_value(index_entry.get(field_name)), requested_version)
         if url is None:
-            log_stage("source-context", f"{source_type}: unavailable, no URL in index.json")
+            log_detail("source-context", f"{source_type}: unavailable, no URL in index.json")
             artifacts.append(SourceArtifactContext(source_type, None, None, [], False, "no URL in index.json"))
             continue
         artifacts.append(download_source_artifact(base_dir, source_type, url))
@@ -275,7 +203,7 @@ def prepare_source_contexts(
         artifacts=artifacts,
     )
     available_artifacts = [artifact for artifact in prepared_context.artifacts if artifact.available]
-    log_stage(
+    log_detail(
         "source-context",
         "Ready for {coordinate}: {available}/{total} artifact types available".format(
             coordinate=coordinate,
@@ -372,7 +300,7 @@ def render_url_template(url: str | None, version: str) -> str | None:
 
 
 def download_source_artifact(base_dir: str, source_type: str, url: str) -> SourceArtifactContext:
-    log_stage("source-context", f"Downloading {source_type} from {url}")
+    log_detail("source-context", f"Downloading {source_type} from {url}")
     target_dir = os.path.join(base_dir, source_type)
     if os.path.isdir(target_dir):
         shutil.rmtree(target_dir)
@@ -383,10 +311,10 @@ def download_source_artifact(base_dir: str, source_type: str, url: str) -> Sourc
         headers = _download_file(url, download_path)
         extracted_files = extract_downloaded_artifact(download_path, target_dir, headers)
     except Exception as exc:  # noqa: BLE001
-        log_stage("source-context", f"{source_type}: unavailable ({exc})")
+        log_detail("source-context", f"{source_type}: unavailable ({exc})")
         return SourceArtifactContext(source_type, url, None, [], False, str(exc))
 
-    log_stage(
+    log_detail(
         "source-context",
         "{source_type}: ready with {count} files at {target_dir}".format(
             source_type=source_type,

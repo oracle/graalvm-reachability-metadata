@@ -1,6 +1,6 @@
 # Spring AOT smoke gate: when a PR's metadata change affects a Spring AOT project, runs the
-# triaged native tests (run-spring-aot-triaged-test.sh, §CI-shared-scripts) for the impacted
-# projects. §CI-test-affected-spring-aot; conditional gate of §FS-repository-functional-spec.5.3.
+# triaged native tests (run-spring-aot-triaged-test.sh, §AR-shared-scripts) for the impacted
+# projects. §AR-test-affected-spring-aot; conditional gate of §FS-repository-functional-spec.5.3.
 name: "Test affected Spring AOT smoke tests (4.1.x)"
 
 on:
@@ -49,7 +49,9 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           repository: spring-projects/spring-aot-smoke-tests
-          ref: 'main'
+          # Tip of upstream `4.1.x` (Boot 4.1); `main` moved to 4.2 (#10655). This commit
+          # carries the spring-pulsar expectedToFail mark the triage script relies on.
+          ref: '5a5d78206911622815a012178563c5b1520c3788'
           path: spring-aot-smoke-tests
           fetch-depth: 0
 
@@ -92,7 +94,10 @@ jobs:
         with:
           distribution: 'graalvm'
           java-version: ${{ matrix.java }}
-          set-java-home: 'false'
+          # Spring AOT reflects on JDK types to generate hints, so it must run on the
+          # native-image JDK: a split JAVA_HOME records hints for the wrong JDK.
+          # §AR-test-affected-spring-aot.
+          set-java-home: 'true'
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -100,7 +105,9 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           repository: spring-projects/spring-aot-smoke-tests
-          ref: 'main'
+          # Tip of upstream `4.1.x` (Boot 4.1); `main` moved to 4.2 (#10655). This commit
+          # carries the spring-pulsar expectedToFail mark the triage script relies on.
+          ref: '5a5d78206911622815a012178563c5b1520c3788'
           path: spring-aot-smoke-tests
           fetch-depth: 0
 

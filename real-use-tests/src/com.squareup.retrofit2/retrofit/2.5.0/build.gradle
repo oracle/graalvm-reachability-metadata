@@ -1,0 +1,40 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "com.squareup.retrofit2:retrofit:$libraryVersion"
+    testImplementation "com.squareup.retrofit2:converter-gson:$libraryVersion"
+    testImplementation "com.squareup.retrofit2:converter-moshi:$libraryVersion"
+    testImplementation "com.squareup.retrofit2:converter-jackson:$libraryVersion"
+    testImplementation "com.squareup.retrofit2:converter-scalars:$libraryVersion"
+    testImplementation "com.squareup.retrofit2:adapter-rxjava2:$libraryVersion"
+    testImplementation "com.squareup.retrofit2:adapter-guava:$libraryVersion"
+    testImplementation "com.squareup.okhttp3:okhttp:3.12.0"
+    testImplementation "com.squareup.okhttp3:logging-interceptor:3.12.0"
+    testImplementation "com.squareup.okhttp3:mockwebserver:3.12.0"
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-H:+AddAllCharsets")
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

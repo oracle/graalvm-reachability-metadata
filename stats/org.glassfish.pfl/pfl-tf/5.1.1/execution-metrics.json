@@ -1,0 +1,95 @@
+{
+  "add_new_library_support:2026-09-29": {
+    "timestamp": "2026-09-29T23:58:43.656936Z",
+    "library": "org.glassfish.pfl:pfl-tf:5.1.1",
+    "starting_commit": "db36b6f1de1842b361bd0c2982eddf8ecbf1da5f",
+    "ending_commit": "e4326fb6ca4b8ba17e02c372e8d405bfd20096df",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1169,
+          "missed": 5614,
+          "ratio": 0.172343,
+          "total": 6783
+        },
+        "line": {
+          "covered": 305,
+          "missed": 1369,
+          "ratio": 0.182198,
+          "total": 1674
+        },
+        "method": {
+          "covered": 47,
+          "missed": 280,
+          "ratio": 0.143731,
+          "total": 327
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9944,
+      "issue_label": "library-new-request",
+      "library": "org.glassfish.pfl:pfl-tf:5.1.1",
+      "summary": "pfl-tf 5.1.1 is a self-contained tracing framework. Its POM declares asm, asm-util and pfl-dynamic, which resolve transitively. It needs no Docker image, environment variable or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The library uses ASM bytecode generation and reflection (MethodMonitor and TimingPoints machinery), so native-image runs may need extra reflection or resource metadata. That comes from the normal generate-and-verify loop, not from extra setup.",
+        "The POM lists junit as a dependency, but the generated test scaffold already provides its own test framework."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9944 Support for org.glassfish.pfl:pfl-tf:5.1.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 569
+    },
+    "metrics": {
+      "input_tokens_used": 71186,
+      "cached_input_tokens_used": 931328,
+      "output_tokens_used": 5379,
+      "iterations": 4,
+      "cost_usd": 0.1966,
+      "generated_loc": 58,
+      "tested_library_loc": 305,
+      "metadata_entries": 4,
+      "test_only_metadata_entries": 5,
+      "code_coverage_percent": 18.22
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.glassfish.pfl/pfl-tf/5.1.1/reachability-metadata.json"
+    }
+  }
+}

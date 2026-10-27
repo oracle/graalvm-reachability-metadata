@@ -1,0 +1,139 @@
+{
+  "base_commit": "98a34ce2b4a2682bbe5e0d80fdc73bba6b26e403",
+  "branch": "ai/kimeta/add-lib-support-org.springframework-spring-core-5.3.15-chunked-forge-2183-20260830033417369358-662a141c5130",
+  "follow_ups": [],
+  "forge": {
+    "branch": "mm/forge-publication-fixes",
+    "commit": "8a4907dda111971cc66334f53d8fc0da6b68bfa3",
+    "monitored_branch": "origin/mm/forge-publication-fixes"
+  },
+  "issue_number": 2183,
+  "library": {
+    "artifact": "spring-core",
+    "coordinates": "org.springframework:spring-core:5.3.15",
+    "group": "org.springframework",
+    "version": "5.3.15"
+  },
+  "local_ci_verification": {
+    "base_commit": "98a34ce2b4a2682bbe5e0d80fdc73bba6b26e403",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "d57884cc7ff650a961c29d7a00dfcd9ceca0eaa7",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the supplied commit range and local evidence. The diff stays scoped to org.springframework:spring-core:5.3.15, uses only reachability-metadata.json for metadata, and adds library-specific tests in a separate test package without scaffold code, native-image skips, bare Error catches, or version-pinned assertions. Local gate status is successful. Resolved dynamic-access coverage is 170/217 (78.34%), above the required floor; 170 covered calls do not trigger the mismatch rule against 167 library plus 196 test-only metadata entries.",
+    "session_log_path": "logs/org.springframework:spring-core:5.3.15/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework/spring-core/5.3.15/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4386304,
+      "code_coverage_percent": 16.91,
+      "cost_usd": 5.1093,
+      "generated_loc": 2216,
+      "input_tokens_used": 397369,
+      "iterations": 4,
+      "metadata_entries": 167,
+      "output_tokens_used": 30977,
+      "test_only_metadata_entries": 196,
+      "tested_library_loc": 4671
+    },
+    "timestamp": "2026-08-30T03:34:17.369358Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-2183-20260830033417369358-662a141c5130",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- org.springframework.cglib.core.ReflectUtils.getClass(ReflectUtils.java:269) (line 269)",
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- org.springframework.cglib.core.ReflectUtils.getClass(ReflectUtils.java:275) (line 275)",
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- org.springframework.cglib.core.ReflectUtils.getClass(ReflectUtils.java:290) (line 290)",
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- org.springframework.cglib.core.ReflectUtils.findConstructor(ReflectUtils.java:202) (line 202)",
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- org.springframework.cglib.core.ReflectUtils.getConstructor(ReflectUtils.java:335) (line 335)",
+        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- org.springframework.cglib.core.ReflectUtils.findDeclaredMethod(ReflectUtils.java:434) (line 434)",
+        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- org.springframework.cglib.core.ReflectUtils.findMethod(ReflectUtils.java:219) (line 219)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- org.springframework.cglib.core.ReflectUtils.addAllMethods(ReflectUtils.java:448) (line 448)",
+        "... and 162 more"
+      ],
+      "metadata_rules": [
+        "when `org.springframework.cglib.core.ReflectUtils` is reached, make `Object` available for reflection",
+        "when `org.springframework.cglib.core.ReflectUtils` is reached, make `byte[]` available for reflection",
+        "when `org.springframework.core.LocalVariableTableParameterNameDiscoverer$LocalVariableTableVisitor` is reached, make `byte[]` available for reflection",
+        "when `org.springframework.core.ConfigurableObjectInputStream` is reached, make `java.io.Closeable` available for reflection",
+        "when `org.springframework.objenesis.instantiator.basic.ObjectStreamClassInstantiator` is reached, make `java.io.ObjectStreamClass.newInstance()` available for reflection",
+        "when `org.springframework.core.ResolvableType` is reached, make `java.io.Serializable` available for reflection",
+        "when `org.springframework.core.convert.support.GenericConversionService$Converters` is reached, make `java.io.Serializable[]` available for reflection",
+        "when `org.springframework.core.ResolvableType` is reached, make `java.lang.Boolean` available for reflection",
+        "... and 120 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.769231,
+            "coveredCalls": 150,
+            "totalCalls": 195
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 20,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.78341,
+        "coveredCalls": 170,
+        "totalCalls": 217
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 19934,
+          "missed": 102057,
+          "ratio": 0.163405,
+          "total": 121991
+        },
+        "line": {
+          "covered": 4671,
+          "missed": 22957,
+          "ratio": 0.169068,
+          "total": 27628
+        },
+        "method": {
+          "covered": 1037,
+          "missed": 5059,
+          "ratio": 0.170112,
+          "total": 6096
+        }
+      },
+      "version": "5.3.15"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-08-30T03:34:17.369358Z"
+}

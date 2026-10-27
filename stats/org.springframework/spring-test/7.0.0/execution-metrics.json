@@ -1,0 +1,132 @@
+{
+  "fix_java_run_fail:2026-10-06": {
+    "timestamp": "2026-10-06T00:26:55.483808Z",
+    "library": "org.springframework:spring-test:7.0.0",
+    "starting_commit": "44f1e90d41586964bd61a82a8d463572f56e7a2f",
+    "ending_commit": "783694edf079077277a6358d2b6fa283d514b727",
+    "previous_library": "org.springframework:spring-test:6.0.0",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "7.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.9,
+            "coveredCalls": 9,
+            "totalCalls": 10
+          }
+        },
+        "coverageRatio": 0.9,
+        "coveredCalls": 9,
+        "totalCalls": 10
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4389,
+          "missed": 56818,
+          "ratio": 0.071707,
+          "total": 61207
+        },
+        "line": {
+          "covered": 1126,
+          "missed": 12846,
+          "ratio": 0.08059,
+          "total": 13972
+        },
+        "method": {
+          "covered": 306,
+          "missed": 4378,
+          "ratio": 0.065329,
+          "total": 4684
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "6.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 7,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3632,
+          "missed": 42414,
+          "ratio": 0.078878,
+          "total": 46046
+        },
+        "line": {
+          "covered": 920,
+          "missed": 9801,
+          "ratio": 0.085813,
+          "total": 10721
+        },
+        "method": {
+          "covered": 250,
+          "missed": 3360,
+          "ratio": 0.069252,
+          "total": 3610
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9401,
+      "issue_label": "fails-java-run",
+      "library": "org.springframework:spring-test:7.0.0",
+      "summary": "The only failure is one assertion in a hint-registration test. Spring 7.0.0 probably changed the hints it emits for web resource base paths. I found no evidence of a missing dependency, Docker image, or system property, and no unsupported Native Image mechanism.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not download the spring-test 7.0.0 jar or read its sources. The conclusion rests on the failing test's code and its build.gradle only.",
+        "The failure is in MergedContextConfigurationRuntimeHintsTest. It expects a resource pattern hint for the web resource base path, 'org_springframework/spring_test/webapp/*'. The MergedContextConfigurationRuntimeHints registrar may now register that hint only when the servlet API or spring-web is on the classpath. If the repair finds that, the test classpath would need a jakarta.servlet-api dependency or a rewritten assertion. I have no evidence for either yet.",
+        "The 6.0.0 test project uses JUnit 4 and old pinned test libraries (junit 4.13.2, assertj 3.22.0, commons-logging 1.1.1). Spring 7 may need updated versions, which is a possible follow-up, not a verified need.",
+        "This is a plain JVM failure of a hint-registration assertion, not a Native Image limitation, so skip_unsupported does not apply."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9401 [Automation] java run fails for org.springframework:spring-test:7.0.0; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "12 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-test:6.0.0",
+      "new_version": "7.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1121
+    },
+    "metrics": {
+      "input_tokens_used": 286293,
+      "cached_input_tokens_used": 3437056,
+      "output_tokens_used": 21725,
+      "iterations": 6,
+      "cost_usd": 3.8018,
+      "tested_library_loc": 1126,
+      "metadata_entries": 289,
+      "test_only_metadata_entries": 39,
+      "previous_library_metadata_entries": 57,
+      "previous_library_test_only_metadata_entries": 5,
+      "code_coverage_percent": 8.06,
+      "previous_library_coverage_percent": 8.58
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-test/7.0.0/reachability-metadata.json"
+    }
+  }
+}

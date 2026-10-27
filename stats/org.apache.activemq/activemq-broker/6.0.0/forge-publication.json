@@ -1,0 +1,373 @@
+{
+  "base_commit": "8373d25fa0284b5037850218b5aed6321907bb5c",
+  "branch": "ai/kimeta/improve-coverage-org.apache.activemq-activemq-broker-6.0.0-chunked-forge-8927-20260906203918644264-88b54ab79f6a",
+  "follow_ups": [
+    {
+      "coordinate": "org.apache.activemq:activemq-broker:6.3.0",
+      "issue_number": 9883,
+      "reason": "JVM compatibility first failed at 6.3.0",
+      "tested_version": "6.3.0",
+      "type": "tested_version_split"
+    }
+  ],
+  "forge": {
+    "branch": "issue-9864-partial-bulk-progress",
+    "commit": "6b5fc3df8434e9d85c22a92f09f560e6ae0e2db2",
+    "monitored_branch": "origin/issue-9864-partial-bulk-progress"
+  },
+  "issue_number": 8927,
+  "library": {
+    "artifact": "activemq-broker",
+    "coordinates": "org.apache.activemq:activemq-broker:6.0.0",
+    "group": "org.apache.activemq",
+    "version": "6.0.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "8373d25fa0284b5037850218b5aed6321907bb5c",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpzdgf2jgp"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-06T20-55-01-127371Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8927-98e19b4b/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.activemq:activemq-broker"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-06T20-55-03-303568Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.activemq/activemq-broker/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8927-98e19b4b/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "bd6c124c9ef2ae72e44a994b5cf9ab3d6fe13eae",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.apache.activemq/activemq-broker/6.0.0/src/test/java/org_apache_activemq/activemq_broker/ActivemqBrokerTest.java",
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/gradle.properties",
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/src/test/java/org_apache_activemq/activemq_broker/ActivemqBrokerTest.java"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "In `tests/src/org.apache.activemq/activemq-broker/6.3.0/src/test/java/org_apache_activemq/activemq_broker/ActivemqBrokerTest.java`, the newly added top-level test class was package-private, violating test-contract rule 1.2. That test and the modified 6.0.0 counterpart also used unbounded broker lifecycle waits and performed broker cleanup only after the connection path succeeded, violating rule 1.6. The new 6.3.0 project's `gradle.properties` additionally still identified the 6.0.0 library and metadata directories instead of its own coordinate.",
+    "finding_title": "Split test project retained an invalid baseline test contract",
+    "fix_note": "Made the 6.3.0 test class public, bounded both broker tests to 50 seconds, moved broker shutdown into `finally`, and corrected the 6.3.0 library and metadata properties. Verified with coordinate-scoped Checkstyle and JVM tests for 6.0.0 and 6.3.0.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the complete local PR diff, issue context, resolved coverage statistics, alias split, metadata format, test behavior, and gate records. Dynamic-access coverage improves from 6.25% (5/80) to 51.25% (41/80), the update remains scoped to ActiveMQ Broker and its compatibility split, no legacy metadata format or Native Image dodge was introduced, and the repaired tests pass Checkstyle and JVM execution for both 6.0.0 and 6.3.0. The resulting tree is approved.",
+    "session_log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.activemq/activemq-broker/6.0.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 19082368,
+      "code_coverage_percent": 12.7,
+      "cost_usd": 17.3772,
+      "generated_loc": 485,
+      "input_tokens_used": 856832,
+      "iterations": 18,
+      "metadata_entries": 447,
+      "output_tokens_used": 118392,
+      "test_only_metadata_entries": 18,
+      "tested_library_loc": 3332
+    },
+    "timestamp": "2026-09-06T20:39:18.644264Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8927-20260906203918644264-88b54ab79f6a",
+  "render": {
+    "alias_split": {
+      "commands": [
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.0.0-2026-09-06T20-39-26-608820Z.log",
+          "returncode": 0,
+          "version": "6.0.0"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.0.1-2026-09-06T20-39-36-649432Z.log",
+          "returncode": 0,
+          "version": "6.0.1"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.1.0-2026-09-06T20-39-49-253513Z.log",
+          "returncode": 0,
+          "version": "6.1.0"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.1.1-2026-09-06T20-39-59-369362Z.log",
+          "returncode": 0,
+          "version": "6.1.1"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.1.2-2026-09-06T20-40-10-225721Z.log",
+          "returncode": 0,
+          "version": "6.1.2"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.1.3-2026-09-06T20-40-19-421503Z.log",
+          "returncode": 0,
+          "version": "6.1.3"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.1.4-2026-09-06T20-40-29-135121Z.log",
+          "returncode": 0,
+          "version": "6.1.4"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.1.5-2026-09-06T20-40-39-213887Z.log",
+          "returncode": 0,
+          "version": "6.1.5"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.1.6-2026-09-06T20-40-50-124212Z.log",
+          "returncode": 0,
+          "version": "6.1.6"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.1.7-2026-09-06T20-41-00-342083Z.log",
+          "returncode": 0,
+          "version": "6.1.7"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.1.8-2026-09-06T20-41-10-049748Z.log",
+          "returncode": 0,
+          "version": "6.1.8"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.2.0-2026-09-06T20-41-18-898475Z.log",
+          "returncode": 0,
+          "version": "6.2.0"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.2.1-2026-09-06T20-41-28-740134Z.log",
+          "returncode": 0,
+          "version": "6.2.1"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.2.2-2026-09-06T20-41-38-900843Z.log",
+          "returncode": 0,
+          "version": "6.2.2"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.2.3-2026-09-06T20-41-49-430297Z.log",
+          "returncode": 0,
+          "version": "6.2.3"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.2.4-2026-09-06T20-41-59-301882Z.log",
+          "returncode": 0,
+          "version": "6.2.4"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.2.5-2026-09-06T20-42-09-063941Z.log",
+          "returncode": 0,
+          "version": "6.2.5"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.2.6-2026-09-06T20-42-17-964373Z.log",
+          "returncode": 0,
+          "version": "6.2.6"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.2.7-2026-09-06T20-42-27-172561Z.log",
+          "returncode": 0,
+          "version": "6.2.7"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.2.8-2026-09-06T20-42-37-034769Z.log",
+          "returncode": 0,
+          "version": "6.2.8"
+        },
+        {
+          "command": "./gradlew clean javaTest -Pcoordinates=org.apache.activemq:activemq-broker:6.0.0",
+          "log_path": "logs/org.apache.activemq:activemq-broker:6.0.0/library-update-alias-sweep/javaTest-6.3.0-2026-09-06T20-42-46-639550Z.log",
+          "returncode": 1,
+          "version": "6.3.0"
+        }
+      ],
+      "current_coordinates": "org.apache.activemq:activemq-broker:6.0.0",
+      "current_metadata_version": "6.0.0",
+      "failed_version": "6.3.0",
+      "follow_up_issue_number": 9883,
+      "original_metadata_version": "6.0.0",
+      "original_test_version": "6.0.0",
+      "passing_versions": [
+        "6.0.0",
+        "6.0.1",
+        "6.1.0",
+        "6.1.1",
+        "6.1.2",
+        "6.1.3",
+        "6.1.4",
+        "6.1.5",
+        "6.1.6",
+        "6.1.7",
+        "6.1.8",
+        "6.2.0",
+        "6.2.1",
+        "6.2.2",
+        "6.2.3",
+        "6.2.4",
+        "6.2.5",
+        "6.2.6",
+        "6.2.7",
+        "6.2.8"
+      ],
+      "requested_coordinates": "org.apache.activemq:activemq-broker:6.0.0",
+      "successor_coordinates": "org.apache.activemq:activemq-broker:6.3.0",
+      "successor_metadata_version": "6.3.0",
+      "successor_versions": [
+        "6.3.0",
+        "6.3.1",
+        "6.3.2"
+      ]
+    },
+    "baseline_metadata_entries": 62,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.068493,
+            "coveredCalls": 5,
+            "totalCalls": 73
+          },
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.0625,
+        "coveredCalls": 5,
+        "totalCalls": 80
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 8892,
+          "missed": 95838,
+          "ratio": 0.084904,
+          "total": 104730
+        },
+        "line": {
+          "covered": 2316,
+          "missed": 23920,
+          "ratio": 0.088276,
+          "total": 26236
+        },
+        "method": {
+          "covered": 534,
+          "missed": 5598,
+          "ratio": 0.087084,
+          "total": 6132
+        }
+      },
+      "version": "6.0.0"
+    },
+    "baseline_test_only_entries": 0,
+    "current_metadata_entries": 447,
+    "current_test_only_entries": 18,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.493151,
+            "coveredCalls": 36,
+            "totalCalls": 73
+          },
+          "resources": {
+            "coverageRatio": 0.714286,
+            "coveredCalls": 5,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.5125,
+        "coveredCalls": 41,
+        "totalCalls": 80
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12206,
+          "missed": 92524,
+          "ratio": 0.116547,
+          "total": 104730
+        },
+        "line": {
+          "covered": 3171,
+          "missed": 23065,
+          "ratio": 0.120864,
+          "total": 26236
+        },
+        "method": {
+          "covered": 813,
+          "missed": 5319,
+          "ratio": 0.132583,
+          "total": 6132
+        }
+      },
+      "version": "6.0.0"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "6.0.0",
+      "matched_test_version": "6.0.0",
+      "requested_coordinate": "org.apache.activemq:activemq-broker:6.0.0",
+      "resolved_metadata_version": "6.0.0",
+      "resolved_test_version": "6.0.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-06T20:39:18.644264Z"
+}

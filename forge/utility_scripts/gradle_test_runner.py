@@ -14,7 +14,7 @@ import subprocess
 import sys
 import time
 
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -46,7 +46,7 @@ def run_gradle_test_command(
     resolved_library = library or _extract_coordinates(test_cmd)
     resolved_timeout = timeout_seconds or _timeout_from_environment()
     log_path = build_timestamped_task_log_path("gradle-test", resolved_library, "gradle-test")
-    log_stage(
+    log_detail(
         "gradle-test",
         "$ {command}  (log: {log_path}, timeout: {timeout}s)".format(
             command=test_cmd,

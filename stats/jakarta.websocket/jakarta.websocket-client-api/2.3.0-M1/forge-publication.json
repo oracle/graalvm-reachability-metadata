@@ -1,0 +1,103 @@
+{
+  "base_commit": "8ecf879a89eb6671c5d29625ac976f7dd478b884",
+  "branch": "ai/kimeta/fix-javac-jakarta.websocket-jakarta.websocket-client-api-2.3.0-M1-forge-9359-20261001175654600129-24802e3d804b",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "8ecf879a89eb6671c5d29625ac976f7dd478b884",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9359,
+  "library": {
+    "artifact": "jakarta.websocket-client-api",
+    "coordinates": "jakarta.websocket:jakarta.websocket-client-api:2.3.0-M1",
+    "group": "jakarta.websocket",
+    "version": "2.3.0-M1"
+  },
+  "local_ci_verification": {
+    "base_commit": "8ecf879a89eb6671c5d29625ac976f7dd478b884",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpbst36eqt"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9359-52c9a5bb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 7s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=jakarta.websocket:jakarta.websocket-client-api"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/jakarta.websocket/jakarta.websocket-client-api/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9359-52c9a5bb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "ff854717460aed067775ad0a9c3177d70863ae6c",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/jakarta.websocket/jakarta.websocket-client-api/2.3.0-M1/src/test/java/jakarta_websocket/jakarta_websocket_client_api/Jakarta_websocket_client_apiTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The new test configured WebSocket session idle and asynchronous send timeouts to 250-1000 ms. These explicit client/messaging timeouts violated FS-test-contract.1.7, which requires at least 10 seconds.",
+    "finding_title": "Explicit messaging timeouts below the required 10-second floor",
+    "fix_note": "Raised every configured WebSocket idle/send timeout in the new-version test to 10,000 ms and updated the matching assertions, preserving the tested behavior. The exact Forge-owned finalization command then completed successfully with no further publishable change.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the base-to-head diff, local gate evidence, final stats, contribution scope, compile repair, test-contract musts, cheating patterns, metadata format, and repair coverage. The artifact-only Maven Central dependency resolution addresses the broken published POM while preserving the existing test source exactly; the contribution remains within the target coordinate. No Native Image dodge, legacy metadata, version-pinned test behavior, weakening, or unrelated change remains. Dynamic access is 0/0 with no breakdowns for both 2.1.0 and 2.3.0-M1, so the ordered repair gate passes. After the repair, Forge finalization passed current-defaults, future-defaults, and GraalVM 25 test lanes, metadata validation, style checks, generated-test validity, and statistics generation without further publishable changes.",
+    "session_id": "a7e772749537466f"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/jakarta.websocket/jakarta.websocket-client-api/2.3.0-M1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1261568,
+      "code_coverage_percent": 78.61,
+      "cost_usd": 0.2619,
+      "input_tokens_used": 85836,
+      "iterations": 6,
+      "metadata_entries": 1,
+      "output_tokens_used": 8318,
+      "previous_library_coverage_percent": 84.08,
+      "previous_library_metadata_entries": 1,
+      "tested_library_loc": 136
+    },
+    "timestamp": "2026-10-01T17:56:54.600129Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "jakarta.websocket-client-api",
+    "coordinates": "jakarta.websocket:jakarta.websocket-client-api:2.1.0",
+    "group": "jakarta.websocket",
+    "version": "2.1.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9359-20261001175654600129-24802e3d804b",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-01T17:56:54.600129Z"
+}

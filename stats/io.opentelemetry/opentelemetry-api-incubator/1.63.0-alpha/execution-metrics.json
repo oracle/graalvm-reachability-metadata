@@ -1,0 +1,118 @@
+{
+  "fix_javac_fail:2026-10-04": {
+    "timestamp": "2026-10-04T18:37:01.915183Z",
+    "library": "io.opentelemetry:opentelemetry-api-incubator:1.63.0-alpha",
+    "starting_commit": "5f4176f7e310c28b541c5115a754261669b14a92",
+    "ending_commit": "35b7b3edc63763951f6f7956d2e67b4a9143cbab",
+    "previous_library": "io.opentelemetry:opentelemetry-api-incubator:1.61.0-alpha",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.63.0-alpha",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1182,
+          "missed": 347,
+          "ratio": 0.773054,
+          "total": 1529
+        },
+        "line": {
+          "covered": 327,
+          "missed": 91,
+          "ratio": 0.782297,
+          "total": 418
+        },
+        "method": {
+          "covered": 230,
+          "missed": 45,
+          "ratio": 0.836364,
+          "total": 275
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.61.0-alpha",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1938,
+          "missed": 982,
+          "ratio": 0.663699,
+          "total": 2920
+        },
+        "line": {
+          "covered": 511,
+          "missed": 237,
+          "ratio": 0.683155,
+          "total": 748
+        },
+        "method": {
+          "covered": 292,
+          "missed": 56,
+          "ratio": 0.83908,
+          "total": 348
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10431,
+      "issue_label": "fails-javac-compile",
+      "library": "io.opentelemetry:opentelemetry-api-incubator:1.63.0-alpha",
+      "summary": "The compile failure is an API change between versions. The 1.61.0-alpha tests use ExtendedAttributes, ExtendedAttributeKey and ExtendedAttributeType, which are missing from 1.63.0-alpha. The generated build.gradle already pulls in the library and assertj. No extra dependency, Docker image or system property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not open the 1.63.0-alpha jar, so I have not confirmed which extended-attribute types were removed or renamed, or what replaces them (probably the standard Attributes API or a relocated incubator type). The generation agent should check the resolved jar's public API before porting the tests.",
+        "The tests may need larger rewrites if the incubator surface changed in other places too. Native Image verification stays authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10431 [Automation] javac compile fails for io.opentelemetry:opentelemetry-api-incubator:1.63.0-alpha; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.opentelemetry:opentelemetry-api-incubator:1.61.0-alpha",
+      "new_version": "1.63.0-alpha",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 596
+    },
+    "metrics": {
+      "input_tokens_used": 73501,
+      "cached_input_tokens_used": 411776,
+      "output_tokens_used": 4479,
+      "iterations": 3,
+      "cost_usd": 0.7078,
+      "tested_library_loc": 327,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 5,
+      "previous_library_metadata_entries": 0,
+      "previous_library_test_only_metadata_entries": 5,
+      "code_coverage_percent": 78.23,
+      "previous_library_coverage_percent": 68.32
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.opentelemetry/opentelemetry-api-incubator/1.63.0-alpha/reachability-metadata.json"
+    }
+  }
+}

@@ -7,6 +7,7 @@
 package org.graalvm.internal.tck;
 
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils;
+import org.graalvm.internal.tck.utils.MetadataIndexUpdateUtils;
 import org.graalvm.internal.tck.utils.GeneralUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ProjectLayout;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * Generates metadata for the given library coordinates and, if packages list is provided, creates a new user-code-filter.json.
  * <p>
- * Implements §TCK-test-harness.5 — the {@code generateMetadata} authoring helper.
+ * Implements §AR-test-harness.5 — the {@code generateMetadata} authoring helper.
  */
 public abstract class GenerateMetadataTask extends DefaultTask {
     private static final String GRADLEW = "gradlew";
@@ -81,6 +82,13 @@ public abstract class GenerateMetadataTask extends DefaultTask {
         return metadataOutputDir;
     }
 
+    @Input
+    @Optional
+    public String getIncludeCodeCoverageSuite() {
+        Object value = getProject().findProperty("includeCodeCoverageSuite");
+        return value == null ? null : value.toString();
+    }
+
     @TaskAction
     public void run() throws IOException {
         Path testsDirectory = GeneralUtils.computeTestsDirectory(getLayout(), coordinates);
@@ -96,8 +104,12 @@ public abstract class GenerateMetadataTask extends DefaultTask {
             MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, List.of(coordinatesValue.group()));
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         }
+        boolean includeCodeCoverageSuite = Boolean.parseBoolean(getIncludeCodeCoverageSuite());
         if (metadataOutputDir == null || metadataOutputDir.isBlank()) {
-            MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), coordinates, gradlewPath);
+            MetadataGenerationUtils.collectMetadataWithCoverageSuite(
+                    getExecOperations(), testsDirectory, getLayout(), coordinates,
+                    gradlewPath, includeCodeCoverageSuite
+            );
         } else {
             MetadataGenerationUtils.collectMetadata(
                     getExecOperations(),
@@ -105,11 +117,12 @@ public abstract class GenerateMetadataTask extends DefaultTask {
                     getLayout(),
                     coordinates,
                     gradlewPath,
-                    Path.of(metadataOutputDir)
+                    Path.of(metadataOutputDir),
+                    includeCodeCoverageSuite
             );
         }
         if (isFromJarAllowedPackages()) {
-            MetadataGenerationUtils.setAllowedPackagesInIndexJson(getLayout(), coordinatesValue, packageList);
+            MetadataIndexUpdateUtils.setAllowedPackagesInIndexJson(getLayout(), coordinatesValue, packageList);
         }
     }
 
@@ -120,7 +133,7 @@ public abstract class GenerateMetadataTask extends DefaultTask {
 
         String normalizedValue = agentAllowedPackages.trim();
         if (normalizedValue.equals(FROM_JAR)) {
-            return MetadataGenerationUtils.mergeWithAllowedPackagesInIndexJson(
+            return MetadataIndexUpdateUtils.mergeWithAllowedPackagesInIndexJson(
                     getLayout(),
                     coordinatesValue,
                     MetadataGenerationUtils.derivePackageRootsFromJar(getProject(), coordinatesValue)

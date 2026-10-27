@@ -1,0 +1,89 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T16:08:13.370877Z",
+    "library": "org.springframework.graphql:spring-graphql:1.4.1",
+    "starting_commit": "4a5cf65bba65252c2942cd6ec6bcff41baf96b88",
+    "ending_commit": "540ad03b42bac3753dd49d3f649a1817eb3e8ef0",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "1.4.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2279,
+          "missed": 25664,
+          "ratio": 0.081559,
+          "total": 27943
+        },
+        "line": {
+          "covered": 531,
+          "missed": 5812,
+          "ratio": 0.083714,
+          "total": 6343
+        },
+        "method": {
+          "covered": 144,
+          "missed": 1843,
+          "ratio": 0.072471,
+          "total": 1987
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8968,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.graphql:spring-graphql:1.4.1",
+      "summary": "spring-graphql's only dependencies (graphql-java, reactor-core, spring-context, context-propagation) are non-optional and resolve transitively via the normal testImplementation declaration. Its core API (schema building, annotated controllers, data fetchers, batch loading, exception resolution, pagination) executes fully in-memory with no database, broker, or external service, so no Docker image is needed. No environment variables or system properties gate any behavior.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The jar also ships WebMvc/WebFlux/RSocket transport adapter classes (org.springframework.graphql.server.webmvc/webflux/rsocket), but spring-webmvc/spring-webflux/RSocket are absent from both the POM and Gradle module metadata, so those transport classes are not reachable without adding those libraries separately; core schema/execution coverage does not require them."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8968 Support for org.springframework.graphql:spring-graphql:1.4.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 18,
+      "output_tokens_used": 14721
+    },
+    "metrics": {
+      "input_tokens_used": 410610,
+      "cached_input_tokens_used": 6080000,
+      "output_tokens_used": 48994,
+      "iterations": 9,
+      "cost_usd": 1.3126,
+      "generated_loc": 302,
+      "tested_library_loc": 531,
+      "metadata_entries": 30,
+      "test_only_metadata_entries": 28,
+      "code_coverage_percent": 8.37
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.graphql/spring-graphql/1.4.1/reachability-metadata.json"
+    }
+  }
+}

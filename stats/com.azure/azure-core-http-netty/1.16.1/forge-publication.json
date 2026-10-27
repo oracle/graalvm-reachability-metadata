@@ -1,0 +1,148 @@
+{
+  "base_commit": "54e614aa089aae5b65daa486c745c14b8cd453de",
+  "branch": "ai/kimeta/add-lib-support-com.azure-azure-core-http-netty-1.16.1-forge-10069-20260921174215515366-8bb0e7032070",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "36568d2db2830705cecfdded8fb66f0cf58eb29f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10069,
+  "library": {
+    "artifact": "azure-core-http-netty",
+    "coordinates": "com.azure:azure-core-http-netty:1.16.1",
+    "group": "com.azure",
+    "version": "1.16.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "54e614aa089aae5b65daa486c745c14b8cd453de",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmps3dvohvf"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10069-7f6cef50/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.azure:azure-core-http-netty"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.azure/azure-core-http-netty/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10069-7f6cef50/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 729ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "74a8a04624b4951cc5243a81f89d1507191904d9",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the one-coordinate diff and local evidence. The contribution stays within the allowed com.azure:azure-core-http-netty:1.16.1 metadata, stats, index, and test paths; uses only reachability-metadata.json; and has meaningful, version-agnostic public-API tests in a separate package with bounded timeouts and no Native Image skips or tolerated failures. Reported dynamic-access coverage is 1/1 (100%), and 1 covered call does not trigger the entry-count mismatch against 45 library plus 259 test-only entries. I also verified the narrow build-time initialization argument: removing it reproduced image-heap failures originating in transitive Jackson/SLF4J initialization, while restoring its four named classes allowed all three native lanes to pass. The exact Forge finalization command then passed current defaults, future defaults, GraalVM 25, metadata validation, style checks, generated-test validity, and library-statistics generation without changing the publishable tree.",
+    "session_id": "45693caf157a4f65"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.azure/azure-core-http-netty/1.16.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 5466496,
+      "code_coverage_percent": 39.3,
+      "cost_usd": 5.6804,
+      "generated_loc": 357,
+      "input_tokens_used": 396146,
+      "iterations": 11,
+      "metadata_entries": 45,
+      "output_tokens_used": 32218,
+      "test_only_metadata_entries": 259,
+      "tested_library_loc": 347
+    },
+    "timestamp": "2026-09-21T17:42:15.515366Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10069-20260921174215515366-8bb0e7032070",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.ClassLoader#getResources(java.lang.String) <- com.azure.core.http.netty.implementation.NettyUtility.createNettyVersionLogInformation(NettyUtility.java:155) (line 155)"
+      ],
+      "metadata_rules": [
+        "when `com.azure.core.http.netty.NettyAsyncHttpClient` is reached, make `com.azure.core.http.netty.NettyAsyncHttpClient` available for reflection",
+        "when `com.azure.core.http.netty.NettyAsyncHttpClientBuilder` is reached, make `com.azure.core.http.netty.NettyAsyncHttpClientBuilder` available for reflection",
+        "when `com.azure.core.http.netty.NettyAsyncHttpClientProvider` is reached, make `com.azure.core.http.netty.NettyAsyncHttpClientProvider` available for reflection",
+        "when `com.azure.core.http.netty.NettyAsyncHttpClientBuilder` is reached, make `com.azure.core.http.netty.implementation.AzureSdkHandler` available for reflection",
+        "when `com.azure.core.http.netty.implementation.NettyToAzureCoreHttpHeadersWrapper` is reached, make `com.azure.core.http.netty.implementation.NettyToAzureCoreHttpHeadersWrapper` available for reflection",
+        "when `com.azure.core.http.netty.implementation.NettyUtility` is reached, make `com.azure.core.http.netty.implementation.NettyUtility` available for reflection",
+        "when `com.azure.core.http.netty.implementation.NettyAsyncHttpResponse` is reached, make `com.azure.core.implementation.ImplUtils` available for reflection",
+        "when `com.azure.core.http.netty.NettyAsyncHttpClientBuilder` is reached, make `com.azure.core.util.CoreUtils` available for reflection",
+        "... and 23 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1421,
+          "missed": 2444,
+          "ratio": 0.367658,
+          "total": 3865
+        },
+        "line": {
+          "covered": 347,
+          "missed": 536,
+          "ratio": 0.392978,
+          "total": 883
+        },
+        "method": {
+          "covered": 95,
+          "missed": 162,
+          "ratio": 0.36965,
+          "total": 257
+        }
+      },
+      "version": "1.16.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-21T17:42:15.515366Z"
+}

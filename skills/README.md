@@ -32,17 +32,22 @@ It covers new-library metadata PRs, including titles like `[GenAI] Add support f
 ### `review-fixes-javac-fail`
 
 Reviews pull requests with the `fixes-javac-fail` label.
-It covers compile-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the compile fix, preserve meaningful tests, and block regressions where dynamic-access coverage drops between the previously tested version and the new version.
+It covers compile-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the compile fix, preserve meaningful tests, and apply the ordered repair coverage gate to overall and breakdown statistics.
 
 ### `review-fixes-java-run-fail`
 
 Reviews pull requests with the `fixes-java-run-fail` label.
-It covers JVM runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the Java runtime fix, preserve meaningful tests and assertions, and block regressions where dynamic-access coverage drops between the previously tested version and the new version.
+It covers JVM runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the Java runtime fix, preserve meaningful tests and assertions, and apply the ordered repair coverage gate to overall and breakdown statistics.
 
 ### `review-fixes-native-image-run-fail`
 
 Reviews pull requests with the `fixes-native-image-run-fail` label.
-It covers native-image runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: verify the native path is fixed rather than skipped, keep metadata and test changes scoped, and block regressions where dynamic-access coverage drops between the previously tested version and the new version.
+It covers native-image runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: verify the native path is fixed rather than skipped, keep metadata and test changes scoped, and apply the ordered repair coverage gate to overall and breakdown statistics.
+
+### `review-code-coverage-improvement`
+
+Reviews pull requests with the `code-coverage-improvement` label.
+It covers the Forge code coverage workflow's PRs, which add a `code-coverage-improvement` extension test suite for an already-supported library. Three acceptance rules: overall `libraryCoverage` in `stats.json` must improve, shipped metadata may gain entries but never lose them, and no type defined in a test source tree may reach shipped metadata. The last one needs a human because the coverage suite sits outside the source sets `splitTestOnlyMetadata` scans and its tests are written into library packages.
 
 ### `close-new-library-support-pr`
 

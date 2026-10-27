@@ -1,0 +1,139 @@
+{
+  "fix_java_run_fail:2026-09-20": {
+    "timestamp": "2026-09-20T17:54:13.890772Z",
+    "library": "org.aspectj:aspectjweaver:1.9.21.1",
+    "starting_commit": "3a7ed9ece69be2ff649070deb31a595e215d6c6f",
+    "ending_commit": "3312c38d2f313298f466dc7e954451ea6ced3ec0",
+    "previous_library": "org.aspectj:aspectjweaver:1.9.7",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.9.21.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.978571,
+            "coveredCalls": 137,
+            "totalCalls": 140
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 17,
+            "totalCalls": 17
+          }
+        },
+        "coverageRatio": 0.980892,
+        "coveredCalls": 154,
+        "totalCalls": 157
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 26902,
+          "missed": 244621,
+          "ratio": 0.099078,
+          "total": 271523
+        },
+        "line": {
+          "covered": 5134,
+          "missed": 54214,
+          "ratio": 0.086507,
+          "total": 59348
+        },
+        "method": {
+          "covered": 1071,
+          "missed": 8849,
+          "ratio": 0.107964,
+          "total": 9920
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.9.7",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 140,
+            "totalCalls": 140
+          },
+          "resources": {
+            "coverageRatio": 0.9375,
+            "coveredCalls": 15,
+            "totalCalls": 16
+          }
+        },
+        "coverageRatio": 0.99359,
+        "coveredCalls": 155,
+        "totalCalls": 156
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 45897,
+          "missed": 213160,
+          "ratio": 0.17717,
+          "total": 259057
+        },
+        "line": {
+          "covered": 9644,
+          "missed": 46478,
+          "ratio": 0.17184,
+          "total": 56122
+        },
+        "method": {
+          "covered": 1969,
+          "missed": 7338,
+          "ratio": 0.211561,
+          "total": 9307
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9373,
+      "issue_label": "fails-java-run",
+      "library": "org.aspectj:aspectjweaver:1.9.21.1",
+      "summary": "No dependency/Docker/env setup is needed; the only issue is that the existing ClassLoaderWeavingAdaptorTest reflects on an internal field (`defineClassMethod`) that AspectJ renamed/retyped to `defineClassMethodHandle` (a MethodHandle) between 1.9.7 and 1.9.21.1.",
+      "deterministic_setup": [],
+      "agent_guidance": "When updating/regenerating tests for org.aspectj:aspectjweaver:1.9.21.1, note that ClassLoaderWeavingAdaptor no longer has a static field named `defineClassMethod` (java.lang.reflect.Method). It was replaced by a private static `defineClassMethodHandle` (java.lang.invoke.MethodHandle), populated by the private `createDefineClassMethodHandle()` method. The test helper `installLegacyDefineClassBridge()` in ClassLoaderWeavingAdaptorTest.java must not reflectively set the old `defineClassMethod` field for this version — either remove/skip that legacy-bridge installation (since `LangUtil.is11VMOrGreater()` is always true on JDK 25, so `usesLegacyDefineClassPath()` returns false and the legacy path is never exercised anyway), or adapt it to bind a MethodHandle to the new field name if exercising that path is still desired. No extra Maven dependency, Docker image, or system property is required beyond this.",
+      "risks": [
+        "If the reflective field-name fix isn't applied, the java run (and any native-image run derived from it) will keep failing with NoSuchFieldException regardless of metadata content, masking whether metadata coverage itself is adequate."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9373 [Automation] java run fails for org.aspectj:aspectjweaver:1.9.21.1; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.aspectj:aspectjweaver:1.9.7",
+      "new_version": "1.9.21.1",
+      "model": "sonnet",
+      "input_tokens_used": 12,
+      "output_tokens_used": 5739
+    },
+    "metrics": {
+      "input_tokens_used": 489727,
+      "cached_input_tokens_used": 4484480,
+      "output_tokens_used": 30580,
+      "iterations": 10,
+      "cost_usd": 5.6082,
+      "tested_library_loc": 5134,
+      "metadata_entries": 120,
+      "test_only_metadata_entries": 79,
+      "previous_library_metadata_entries": 145,
+      "previous_library_test_only_metadata_entries": 47,
+      "code_coverage_percent": 8.65,
+      "previous_library_coverage_percent": 17.18
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.aspectj/aspectjweaver/1.9.21.1/reachability-metadata.json"
+    }
+  }
+}

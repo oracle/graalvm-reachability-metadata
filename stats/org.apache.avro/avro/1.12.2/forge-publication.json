@@ -1,0 +1,107 @@
+{
+  "base_commit": "5c6019fbc30c78ecef96ec5dab83693e83ecc23c",
+  "branch": "ai/kimeta/fix-java-run-org.apache.avro-avro-1.12.2-forge-9363-20260921114138634829-2cb9acc50683",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "36568d2db2830705cecfdded8fb66f0cf58eb29f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9363,
+  "library": {
+    "artifact": "avro",
+    "coordinates": "org.apache.avro:avro:1.12.2",
+    "group": "org.apache.avro",
+    "version": "1.12.2"
+  },
+  "local_ci_verification": {
+    "base_commit": "5c6019fbc30c78ecef96ec5dab83693e83ecc23c",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpnp21aejl"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9363-02524687/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.avro:avro"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.avro/avro/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9363-02524687/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 884ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "f8e6e2ac40dc45d96c08cf125f53da8d43073129",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "metadata/org.apache.avro/avro/1.12.2/reachability-metadata.json",
+      "tests/src/org.apache.avro/avro/1.12.2/src/test/java/org_apache_avro/avro/ReflectionUtilTest.java",
+      "tests/src/org.apache.avro/avro/1.12.2/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The positive ReflectionUtil.getConstructorAsFunction scenario had been dropped after Native Image runtime lambda definition failed, but the contribution still shipped its manually added lambda registration and retained test-only ConstructedWithString metadata. That left requested metadata without the public-API test required by FS-test-contract.1.5 and FS-test-contract.2.7. The scenario itself is a valid FS-test-contract.4.3.2 re-scope: it concretely uses runtime LambdaMetafactory class definition, Native Image reports UnsupportedFeatureError, Avro catches Throwable and returns null so the refusal cannot be verified, and the remaining public-API tests still pass the repair coverage gate.",
+    "finding_title": "Runtime-lambda re-scope left unjustified metadata",
+    "fix_note": "Removed the unjustified ReflectionUtil runtime-lambda registration, the unused ConstructedWithString helper, and both stale test-only constructor registrations. This preserves the sanctioned unsupported-scenario re-scope without shipping metadata that no surviving test justifies.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Approved after repair. The Avro serializable-package JVM/native runtime setup addresses the 1.12.2 Java failure, the contribution remains coordinate-scoped, and the regenerated overall/reflection dynamic-access report preserves 38 covered calls while improving from 38/41 (92.68%) to 38/40 (95%). The exact Forge finalization command passed unchanged across current defaults, future defaults, GraalVM 25, metadata/style checks, generated-test validity, and statistics.",
+    "session_id": "5db9f600fd8f4515"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.avro/avro/1.12.2/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1081728,
+      "code_coverage_percent": 18.65,
+      "cost_usd": 1.5492,
+      "input_tokens_used": 150869,
+      "iterations": 5,
+      "metadata_entries": 26,
+      "output_tokens_used": 8468,
+      "previous_library_coverage_percent": 18.25,
+      "previous_library_metadata_entries": 61,
+      "previous_library_test_only_metadata_entries": 53,
+      "test_only_metadata_entries": 57,
+      "tested_library_loc": 2227
+    },
+    "timestamp": "2026-09-21T11:41:38.634829Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "avro",
+    "coordinates": "org.apache.avro:avro:1.12.1",
+    "group": "org.apache.avro",
+    "version": "1.12.1"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9363-20260921114138634829-2cb9acc50683",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-09-21T11:41:38.634829Z"
+}

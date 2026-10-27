@@ -1,0 +1,131 @@
+{
+  "fix_java_run_fail:2026-10-03": {
+    "timestamp": "2026-10-03T01:57:18.510776Z",
+    "library": "io.lettuce:lettuce-core:6.7.0.RELEASE",
+    "starting_commit": "a426ff32056eb1e156e456150a281446d7009a61",
+    "ending_commit": "3b0c3740274fa0bca57dce1292515f9bdd713087",
+    "previous_library": "io.lettuce:lettuce-core:6.2.6.RELEASE",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.7.0.RELEASE",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.945455,
+            "coveredCalls": 52,
+            "totalCalls": 55
+          }
+        },
+        "coverageRatio": 0.945455,
+        "coveredCalls": 52,
+        "totalCalls": 55
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 34772,
+          "missed": 106376,
+          "ratio": 0.246351,
+          "total": 141148
+        },
+        "line": {
+          "covered": 6984,
+          "missed": 19673,
+          "ratio": 0.261995,
+          "total": 26657
+        },
+        "method": {
+          "covered": 2042,
+          "missed": 7881,
+          "ratio": 0.205785,
+          "total": 9923
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "6.2.6.RELEASE",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.945455,
+            "coveredCalls": 52,
+            "totalCalls": 55
+          }
+        },
+        "coverageRatio": 0.945455,
+        "coveredCalls": 52,
+        "totalCalls": 55
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 32327,
+          "missed": 91946,
+          "ratio": 0.260129,
+          "total": 124273
+        },
+        "line": {
+          "covered": 6614,
+          "missed": 17070,
+          "ratio": 0.27926,
+          "total": 23684
+        },
+        "method": {
+          "covered": 1937,
+          "missed": 6678,
+          "ratio": 0.22484,
+          "total": 8615
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10315,
+      "issue_label": "fails-java-run",
+      "library": "io.lettuce:lettuce-core:6.7.0.RELEASE",
+      "summary": "Lettuce 6.7.0.RELEASE needs no extra setup. The existing 6.2.6.RELEASE test project uses only lettuce-core and assertj. Its tests are unit-level and need no Redis server or Docker image. The failure is a native-image build error on latest-ea, which looks like a metadata or JDK-compatibility problem. Nothing in the issue points to a missing dependency, Docker image or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The reproducer sets GVM_TCK_LV=6.5.0.RELEASE but passes coordinates for 6.2.6.RELEASE, so the failing version is ambiguous. Confirm which version the failing build resolves.",
+        "The log is truncated, so the actual native-image build error was not visible. It may come from the latest-ea GraalVM, such as new builder flags, rather than from Lettuce.",
+        "Lettuce 6.7 may require newer Netty and Reactor versions, which Gradle resolves transitively. Check that the metadata for 6.2.6.RELEASE still covers them."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10315 [Automation] java run fails for io.lettuce:lettuce-core:6.7.0.RELEASE; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "30 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.lettuce:lettuce-core:6.2.6.RELEASE",
+      "new_version": "6.7.0.RELEASE",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 928
+    },
+    "metrics": {
+      "input_tokens_used": 304106,
+      "cached_input_tokens_used": 2950912,
+      "output_tokens_used": 15358,
+      "iterations": 8,
+      "cost_usd": 3.4567,
+      "tested_library_loc": 6984,
+      "metadata_entries": 235,
+      "test_only_metadata_entries": 63,
+      "previous_library_metadata_entries": 183,
+      "previous_library_test_only_metadata_entries": 60,
+      "code_coverage_percent": 26.2,
+      "previous_library_coverage_percent": 27.93
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.lettuce/lettuce-core/6.7.0.RELEASE/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-07": {
+    "timestamp": "2026-10-07T19:44:03.134752Z",
+    "library": "org.springframework.boot:spring-boot-opentelemetry:4.1.1",
+    "starting_commit": "0ec4e150783ac96a457638250a54b99d38274985",
+    "ending_commit": "c9c6372300c453a8032d66184a09e2d43c47073f",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 888,
+          "missed": 2056,
+          "ratio": 0.30163,
+          "total": 2944
+        },
+        "line": {
+          "covered": 233,
+          "missed": 419,
+          "ratio": 0.357362,
+          "total": 652
+        },
+        "method": {
+          "covered": 90,
+          "missed": 62,
+          "ratio": 0.592105,
+          "total": 152
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9721,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-opentelemetry:4.1.1",
+      "summary": "spring-boot-opentelemetry is an autoconfiguration library that can be exercised in-process with ApplicationContextRunner. It needs no Docker image, environment variable or system property. The existing scaffold already declares the extra dependencies the tests use: spring-boot-autoconfigure, spring-boot-test, assertj and opentelemetry-exporter-otlp.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not run Gradle or Native Image, so I did not check that the existing tests compile and pass. The test imports org.springframework.mock.env.MockEnvironment, which comes from spring-test. If that dependency is not already on the classpath transitively, it may need to be added if compilation fails.",
+        "OTLP exporter tests should use in-process configuration only. They should not make real network connections to a collector."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9721 Support for org.springframework.boot:spring-boot-opentelemetry:4.1.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 633
+    },
+    "metrics": {
+      "input_tokens_used": 263583,
+      "cached_input_tokens_used": 3933440,
+      "output_tokens_used": 20951,
+      "iterations": 5,
+      "cost_usd": 3.9131,
+      "generated_loc": 408,
+      "tested_library_loc": 233,
+      "metadata_entries": 66,
+      "test_only_metadata_entries": 353,
+      "code_coverage_percent": 35.74
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-opentelemetry/4.1.1/reachability-metadata.json"
+    }
+  }
+}

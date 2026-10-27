@@ -1,0 +1,117 @@
+{
+  "fix_javac_fail:2026-10-01": {
+    "timestamp": "2026-10-01T20:34:02.894330Z",
+    "library": "jakarta.transaction:jakarta.transaction-api:2.0.0",
+    "starting_commit": "eabbd8d26d9e2b15f84d7bfb9aa932dbcdbc8ccb",
+    "ending_commit": "7e4da0322243544ae7f446f5de52617d40f54a28",
+    "previous_library": "jakarta.transaction:jakarta.transaction-api:1.3.1",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 138,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 138
+        },
+        "line": {
+          "covered": 48,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 48
+        },
+        "method": {
+          "covered": 21,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 21
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.3.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 138,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 138
+        },
+        "line": {
+          "covered": 48,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 48
+        },
+        "method": {
+          "covered": 21,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 21
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9357,
+      "issue_label": "fails-javac-compile",
+      "library": "jakarta.transaction:jakarta.transaction-api:2.0.0",
+      "summary": "The compile errors come from the 1.3.1 test importing javax.transaction.*, while jakarta.transaction-api 2.0.0 moved those types to jakarta.transaction.*. Porting the imports fixes it, and no extra dependency, Docker image or property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Port the test sources to the 2.0.0 package namespace by changing javax.transaction imports to jakarta.transaction (Status, SystemException, TransactionalException, Transactional.TxType, UserTransaction, TransactionManager and the others). Check against the 2.0.0 jar that each API the test uses still exists. If a compile error points at a missing annotation type such as jakarta.interceptor.InterceptorBinding or jakarta.enterprise.util.Nonbinding, check the resolved 2.0.0 POM for the transitive dependency before adding anything. Do not add dependencies preemptively.",
+      "risks": [
+        "I did not open the 2.0.0 jar or POM, so this rests on the javax to jakarta rename in the 2.0.0 release and the symbol names in the log.",
+        "The reproducer command in the issue uses the 1.3.1 coordinates with GVM_TCK_LV=2.0.0, so the test directory and index.json version mapping may need checking.",
+        "The log excerpt is truncated, so compile errors beyond the namespace rename may be hidden."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9357 [Automation] javac compile fails for jakarta.transaction:jakarta.transaction-api:2.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "jakarta.transaction:jakarta.transaction-api:1.3.1",
+      "new_version": "2.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 943
+    },
+    "metrics": {
+      "input_tokens_used": 82024,
+      "cached_input_tokens_used": 540160,
+      "output_tokens_used": 1529,
+      "iterations": 4,
+      "cost_usd": 0.1452,
+      "tested_library_loc": 48,
+      "metadata_entries": 0,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 100.0,
+      "previous_library_coverage_percent": 100.0
+    },
+    "artifacts": {
+      "metadata_file": "metadata/jakarta.transaction/jakarta.transaction-api/2.0.0/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-09-30": {
+    "timestamp": "2026-09-30T15:04:03.041865Z",
+    "library": "io.micronaut.data:micronaut-data-tx:5.1.3",
+    "starting_commit": "4d8847f215455a12267afd968727170acff110c9",
+    "ending_commit": "21aea19ee2567ecb735eb088ef706f4fcca5d1c9",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.3",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 460,
+          "missed": 4380,
+          "ratio": 0.095041,
+          "total": 4840
+        },
+        "line": {
+          "covered": 113,
+          "missed": 1029,
+          "ratio": 0.098949,
+          "total": 1142
+        },
+        "method": {
+          "covered": 40,
+          "missed": 400,
+          "ratio": 0.090909,
+          "total": 440
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9815,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.data:micronaut-data-tx:5.1.3",
+      "summary": "micronaut-data-tx is the Micronaut Data transaction abstraction, with no external service to connect to. No extra dependency, Docker image or system property is needed beyond the normal scaffold. I did not open the tx-jdbc test project's user-code-filter.json or test sources, so package-filter guidance is unchecked. The repo's sibling micronaut-data-tx-jdbc:5.1.3 test project has dependencies and no Docker image in its build.gradle, and I did not check that project for a system property. Its extra test dependencies are hikari, h2, micronaut-test-junit5 and the Micronaut annotation processor. Those go beyond micronaut-data-tx itself, and I found nothing here saying they are required.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The library is mostly interfaces and annotations (SynchronousTransactionManager, @Transactional, TransactionOperations). Meaningful coverage may need a Micronaut ApplicationContext and a concrete transaction manager, which this artifact does not provide. If that is needed, the test may have to add micronaut-inject-java as an annotation processor or borrow the tx-jdbc test's dependencies.",
+        "That would be a dependency the tests add on their own. It is not a prerequisite the driver has to apply."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9815 Support for io.micronaut.data:micronaut-data-tx:5.1.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 715
+    },
+    "metrics": {
+      "input_tokens_used": 202117,
+      "cached_input_tokens_used": 1947648,
+      "output_tokens_used": 11818,
+      "iterations": 8,
+      "cost_usd": 0.4678,
+      "generated_loc": 117,
+      "tested_library_loc": 113,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 27,
+      "code_coverage_percent": 9.89
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.data/micronaut-data-tx/5.1.3/reachability-metadata.json"
+    }
+  }
+}

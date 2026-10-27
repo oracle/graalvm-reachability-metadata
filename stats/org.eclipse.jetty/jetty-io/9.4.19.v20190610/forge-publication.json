@@ -1,0 +1,103 @@
+{
+  "base_commit": "9cdc4fcd436f29800009e36574cbdd4ff0346871",
+  "branch": "ai/kimeta/fix-javac-org.eclipse.jetty-jetty-io-9.4.19.v20190610-forge-9377-20260929092929823553-0668a8ee9650",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "9cdc4fcd436f29800009e36574cbdd4ff0346871",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9377,
+  "library": {
+    "artifact": "jetty-io",
+    "coordinates": "org.eclipse.jetty:jetty-io:9.4.19.v20190610",
+    "group": "org.eclipse.jetty",
+    "version": "9.4.19.v20190610"
+  },
+  "local_ci_verification": {
+    "base_commit": "9cdc4fcd436f29800009e36574cbdd4ff0346871",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp600p9sjj"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9377-5f788051/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.eclipse.jetty:jetty-io"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.eclipse.jetty/jetty-io/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9377-5f788051/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "8e26cacfd87b5c521097dc2e30174e27593375c5",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "The exact review finalization command repeatedly exits 1 with `Review finalization changed the publishable tree` after every substantive gate passes. `publishable_tree_digest()` hashes raw `git diff --binary HEAD --` output. During `generateLibraryStats`, Git's adaptive object abbreviation grows, changing only the diff header from `index e80d11edc3..92d6c8b6b5` (1918 bytes) to `index e80d11edc34..92d6c8b6b57` (1920 bytes); the patch body and worktree content are unchanged. Because the fix belongs in shared `forge/git_scripts/review_finalization.py`, FS-contribution-contract.5.3 requires escalation rather than a contribution-local repair.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10242 (#10242)",
+    "finding_title": "Review finalization hashes unstable abbreviated Git object IDs",
+    "fix_note": "In the target test, replaced the removed `getIdleTimestamp()` check with before/after `getIdleFor()` assertions and raised asynchronous endpoint waits from 2 to 10 seconds to preserve compile-fix coverage and satisfy the explicit I/O-timeout floor.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The contribution is correctly scoped, the old and new dynamic-access reports both pass at 0/0, and repeated finalization runs passed all three test lanes, metadata validation, style checks, generated-test screening, and statistics generation. I repaired the assertion-removal and short I/O-wait violations, but the required stable finalization cannot complete because its publishable-tree digest changes on a content-identical Git diff. This is a shared Forge finalization defect under FS-contribution-contract.5.3, so maintainer intervention is required.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10242 (#10242)",
+    "session_id": "df0a926d54f14d6c"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.eclipse.jetty/jetty-io/9.4.19.v20190610/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 252416,
+      "code_coverage_percent": 25.23,
+      "cost_usd": 0.0726,
+      "input_tokens_used": 40407,
+      "iterations": 3,
+      "metadata_entries": 8,
+      "output_tokens_used": 1170,
+      "previous_library_coverage_percent": 28.01,
+      "previous_library_metadata_entries": 19,
+      "test_only_metadata_entries": 77,
+      "tested_library_loc": 696
+    },
+    "timestamp": "2026-09-29T09:29:29.823553Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "jetty-io",
+    "coordinates": "org.eclipse.jetty:jetty-io:9.4.0.RC0",
+    "group": "org.eclipse.jetty",
+    "version": "9.4.0.RC0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9377-20260929092929823553-0668a8ee9650",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-29T09:29:29.823553Z"
+}

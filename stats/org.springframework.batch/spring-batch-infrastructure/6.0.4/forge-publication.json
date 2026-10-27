@@ -1,0 +1,155 @@
+{
+  "base_commit": "367771e227b72a0df84055a2e3df4f7a52217acc",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.batch-spring-batch-infrastructure-6.0.4-forge-9285-20261008073125371934-7aca3e32c911",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "1adfe8e96e65f5044f3052ffa9017b019e0a7164",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9285,
+  "library": {
+    "artifact": "spring-batch-infrastructure",
+    "coordinates": "org.springframework.batch:spring-batch-infrastructure:6.0.4",
+    "group": "org.springframework.batch",
+    "version": "6.0.4"
+  },
+  "local_ci_verification": {
+    "base_commit": "367771e227b72a0df84055a2e3df4f7a52217acc",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmphsld_ois"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9285-8b4cab0e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 6s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.batch:spring-batch-infrastructure"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.batch/spring-batch-infrastructure/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9285-8b4cab0e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "9dd838ddbde4073afd6b646e001053805e34948c",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the base-to-head diff and local evidence for the single target coordinate. The contribution stays within the allowed metadata, stats, and test paths; uses only reachability-metadata.json; and has a valid new index entry. The six public, library-specific tests are outside the library package, map to the reported dynamic-access classes, exercise public behavior, and contain no scaffold placeholder, Native Image dodge, direct reflection shortcut, version-pinned assertion, unsupported build flag, or weakening pattern. Reported dynamic-access coverage is 8/8 (100%), above the new-library gate, and 8 covered calls do not trigger the entry-count mismatch check against 24 library plus 25 test-only entries. The recorded generation succeeded and the local changed-index and index-validation gates passed. No blocking contribution-contract violation was found.",
+    "session_id": "cc6c15799fef4517"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework.batch/spring-batch-infrastructure/6.0.4/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1137152,
+      "code_coverage_percent": 2.72,
+      "cost_usd": 1.5186,
+      "generated_loc": 168,
+      "input_tokens_used": 129870,
+      "iterations": 3,
+      "metadata_entries": 24,
+      "output_tokens_used": 10020,
+      "test_only_metadata_entries": 25,
+      "tested_library_loc": 210
+    },
+    "timestamp": "2026-10-08T07:31:25.371934Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9285-20261008073125371934-7aca3e32c911",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredMethods() <- org.springframework.batch.infrastructure.item.adapter.AbstractMethodInvokingDelegator.targetClassDeclaresTargetMethod(AbstractMethodInvokingDelegator.java:150) (line 150)",
+        "[reflection] java.lang.Class#getMethods() <- org.springframework.batch.infrastructure.item.adapter.AbstractMethodInvokingDelegator.targetClassDeclaresTargetMethod(AbstractMethodInvokingDelegator.java:149) (line 149)",
+        "[reflection] java.lang.reflect.Proxy#newProxyInstance(java.lang.ClassLoader, java.lang.Class[], java.lang.reflect.InvocationHandler) <- org.springframework.batch.infrastructure.item.database.ExtendedConnectionDataSourceProxy.getCloseSuppressingConnectionProxy(ExtendedConnectionDataSourceProxy.java:248) (line 248)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.batch.infrastructure.item.database.ExtendedConnectionDataSourceProxy$CloseSuppressingInvocationHandler.invoke(ExtendedConnectionDataSourceProxy.java:298) (line 298)",
+        "[reflection] java.lang.Class#getRecordComponents() <- org.springframework.batch.infrastructure.item.file.transform.RecordFieldExtractor.<init>(RecordFieldExtractor.java:49) (line 49)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.batch.infrastructure.item.file.transform.RecordFieldExtractor.extract(RecordFieldExtractor.java:74) (line 74)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.batch.infrastructure.support.SimpleMethodInvoker.invokeMethod(SimpleMethodInvoker.java:91) (line 91)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.batch.infrastructure.support.transaction.TransactionAwareProxyFactory$TransactionAwareInterceptor.invoke(TransactionAwareProxyFactory.java:242) (line 242)"
+      ],
+      "metadata_rules": [
+        "when `org.springframework.batch.infrastructure.support.transaction.TransactionAwareProxyFactory` is reached, make `java.io.Serializable` available for reflection",
+        "when `org.springframework.batch.infrastructure.item.database.ExtendedConnectionDataSourceProxy$CloseSuppressingInvocationHandler` is reached, make `java.sql.Connection.createStatement()` available for reflection",
+        "when `org.springframework.batch.infrastructure.support.transaction.TransactionAwareProxyFactory` is reached, make `java.util.Map` available for reflection",
+        "when `org.springframework.batch.infrastructure.support.transaction.TransactionAwareProxyFactory$TransactionAwareInterceptor` is reached, make `java.util.Map.get(java.lang.Object)` available for reflection",
+        "when `org.springframework.batch.infrastructure.support.transaction.TransactionAwareProxyFactory` is reached, make `java.util.concurrent.ConcurrentMap` available for reflection",
+        "when `org.springframework.batch.infrastructure.support.transaction.TransactionAwareProxyFactory` is reached, make `kotlinx.coroutines.reactor.MonoKt` available for reflection",
+        "when `org.springframework.batch.infrastructure.support.transaction.ResourcelessTransactionManager` is reached, make `org.apache.commons.logging.impl.Jdk14Logger.<init>(java.lang.String)` available for reflection",
+        "when `org.springframework.batch.infrastructure.support.transaction.TransactionAwareProxyFactory` is reached, make `org.apache.commons.logging.impl.Jdk14Logger.<init>(java.lang.String)` available for reflection",
+        "... and 7 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 8,
+        "totalCalls": 8
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 784,
+          "missed": 28996,
+          "ratio": 0.026326,
+          "total": 29780
+        },
+        "line": {
+          "covered": 210,
+          "missed": 7507,
+          "ratio": 0.027213,
+          "total": 7717
+        },
+        "method": {
+          "covered": 59,
+          "missed": 1891,
+          "ratio": 0.030256,
+          "total": 1950
+        }
+      },
+      "version": "6.0.4"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-08T07:31:25.371934Z"
+}

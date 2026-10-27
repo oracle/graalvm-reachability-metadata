@@ -1,0 +1,128 @@
+{
+  "add_new_library_support:2026-09-27": {
+    "timestamp": "2026-09-27T22:47:48.677267Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-grpc-1.6:2.31.1-alpha",
+    "starting_commit": "98f3cd87f7c998c8acb81bca1557e0e6242ef51f",
+    "ending_commit": "18c9be64d69e732d04b81d6d18f0d61436ce52f4",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.31.1-alpha",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1204,
+          "missed": 898,
+          "ratio": 0.572788,
+          "total": 2102
+        },
+        "line": {
+          "covered": 353,
+          "missed": 223,
+          "ratio": 0.612847,
+          "total": 576
+        },
+        "method": {
+          "covered": 85,
+          "missed": 40,
+          "ratio": 0.68,
+          "total": 125
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10228,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-grpc-1.6:2.31.1-alpha",
+      "summary": "The artifact's POM/module metadata expose no io.grpc dependencies (grpc is compileOnly upstream), yet GrpcTelemetry's public API returns io.grpc.ClientInterceptor/ServerInterceptor directly, so the generated scaffold won't even compile without adding gRPC itself as a test dependency.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.grpc:grpc-api:1.84.0",
+          "scope": "testImplementation",
+          "reason": "GrpcTelemetry.newClientInterceptor()/newServerInterceptor() return io.grpc.ClientInterceptor/ServerInterceptor; grpc-api is compileOnly upstream and not resolved transitively."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.grpc:grpc-stub:1.84.0",
+          "scope": "testImplementation",
+          "reason": "Needed to build a client stub / ServerCalls handler to make an actual RPC call through the interceptors, mirroring the io.grpc:grpc-opentelemetry test pattern."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.grpc:grpc-inprocess:1.84.0",
+          "scope": "testImplementation",
+          "reason": "In-process transport lets the test wire a real client+server call without a Docker container or real network sockets, same approach used in tests/src/io.grpc/grpc-opentelemetry/1.80.0."
+        }
+      ],
+      "agent_guidance": "GrpcTelemetry only exposes newClientInterceptor()/newServerInterceptor(); attach them via InProcessChannelBuilder.intercept(...) and ServerInterceptors.intercept(...)/InProcessServerBuilder, then drive a real unary call (a hand-rolled MethodDescriptor + Utf8-style Marshaller is enough, no protoc needed) to get meaningful coverage instead of just constructing the interceptor objects. No environment variables or system properties are required.",
+      "risks": [
+        "If newer opentelemetry-grpc-1.6 versions add optional grpc-context or grpc-netty usages beyond interceptors, additional grpc-* test dependencies could be needed — verify via local build/test run.",
+        "grpc-api/stub/inprocess versions (1.84.0) should be revisited if this pins to a much older/newer library major version at generation time."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.grpc:grpc-api:1.84.0",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-grpc-1.6/2.31.1-alpha/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.grpc:grpc-stub:1.84.0",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-grpc-1.6/2.31.1-alpha/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.grpc:grpc-inprocess:1.84.0",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-grpc-1.6/2.31.1-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10228 Support for io.opentelemetry.instrumentation:opentelemetry-grpc-1.6:2.31.1-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 24,
+      "output_tokens_used": 8664
+    },
+    "metrics": {
+      "input_tokens_used": 71344,
+      "cached_input_tokens_used": 729600,
+      "output_tokens_used": 7292,
+      "iterations": 3,
+      "cost_usd": 0.9403,
+      "generated_loc": 129,
+      "tested_library_loc": 353,
+      "metadata_entries": 30,
+      "test_only_metadata_entries": 33,
+      "code_coverage_percent": 61.28
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.opentelemetry.instrumentation/opentelemetry-grpc-1.6/2.31.1-alpha/reachability-metadata.json"
+    }
+  }
+}

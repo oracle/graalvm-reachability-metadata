@@ -10,9 +10,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from ai_workflows.drivers.java_fail_workflow import JAVAC_CONFIG, JAVA_RUN_CONFIG
 from ai_workflows.drivers.java_fail_workflow import (
-    JAVAC_CONFIG,
-    JAVA_RUN_CONFIG,
     copy_and_prepare_project_dir,
     create_project_prep_checkpoint,
     reset_failed_java_fix_worktree,

@@ -7,27 +7,12 @@ import os
 import tempfile
 import unittest
 
-from git_scripts.pr_publication import parse_pr_number
 from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
     dynamic_access_exhaust_report_path,
     find_dynamic_access_exhaust_report_path,
     resolve_workflow_exhaust_report,
 )
-
-
-class ParsePrNumberTests(unittest.TestCase):
-    def test_pr_number_extracted_from_url(self) -> None:
-        output = "https://github.com/oracle/graalvm-reachability-metadata/pull/4242\n"
-        self.assertEqual(parse_pr_number(output), 4242)
-
-    def test_pr_number_ignores_org_or_repo_with_digits(self) -> None:
-        output = "https://github.com/owner123/repo456/pull/77\n"
-        self.assertEqual(parse_pr_number(output), 77)
-
-    def test_pr_number_returns_none_when_url_absent(self) -> None:
-        self.assertIsNone(parse_pr_number(""))
-        self.assertIsNone(parse_pr_number("Pull request already exists for branch foo.\n"))
 
 
 class DynamicAccessExhaustReportTests(unittest.TestCase):
@@ -42,7 +27,8 @@ class DynamicAccessExhaustReportTests(unittest.TestCase):
             report.mark_skipped("b.B")
             report.mark_exhausted("c.C")
             report.mark_failed("d.D")
-            report.record_published_chunk("abc123", 4242)
+            report.latest_chunk_commit = "abc123"
+            report.latest_chunk_pull_request = 4242
             path = report.default_path(tmpdir)
             report.save(path)
 

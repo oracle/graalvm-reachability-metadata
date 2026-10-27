@@ -1,0 +1,95 @@
+{
+  "add_new_library_support:2026-10-03": {
+    "timestamp": "2026-10-03T17:12:10.690339Z",
+    "library": "com.microsoft.onnxruntime:onnxruntime:1.20.0",
+    "starting_commit": "d42c4e74f7db57a3bd479a8fd0ab2a9061c8d426",
+    "ending_commit": "81663ec26b313246d539adb4c15eed634a97ac45",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "1.20.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 9,
+        "totalCalls": 9
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 889,
+          "missed": 10549,
+          "ratio": 0.077723,
+          "total": 11438
+        },
+        "line": {
+          "covered": 181,
+          "missed": 2267,
+          "ratio": 0.073938,
+          "total": 2448
+        },
+        "method": {
+          "covered": 37,
+          "missed": 434,
+          "ratio": 0.078556,
+          "total": 471
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9781,
+      "issue_label": "library-new-request",
+      "library": "com.microsoft.onnxruntime:onnxruntime:1.20.0",
+      "summary": "onnxruntime is self-contained (bundled multi-platform natives, zero transitive deps, no server component); no dependency/Docker setup needed, but meaningful tests need an embedded minimal ONNX model since the Java API has no model-builder classes.",
+      "deterministic_setup": [],
+      "agent_guidance": "To exercise OrtEnvironment.createSession(...)/OrtSession.run(...) meaningfully, tests need an actual .onnx model (binary protobuf graph). The onnxruntime Java jar only exposes inference APIs, not a model builder, and there is no network access during generation/test runs to download one. Embed a tiny valid ONNX model as raw bytes (a trivial single-node graph, e.g. Identity or Add, is only ~100-200 bytes) directly in test source or as a checked-in test resource, rather than assuming a model can be fetched or built on the fly. Coverage of OrtEnvironment lifecycle, SessionOptions configuration, OnnxTensor creation from Java arrays, and exception types does not require a model and can be tested independently.",
+      "risks": [
+        "JDK 24+ (JEP 472) is tightening JNI native-access restrictions; verify locally whether JDK 25 requires --enable-native-access=ALL-UNNAMED for this JNI-based library or still only warns.",
+        "Native library extraction writes to java.io.tmpdir and loads via System.load(); if the native-image test environment ever mounts /tmp noexec, loading would fail silently with an UnsatisfiedLinkError — unlikely on standard CI runners but worth confirming during nativeTestCompile/test.",
+        "This decision covers the CPU onnxruntime artifact only; the separate onnxruntime_gpu artifact (CUDA/cuDNN) is out of scope and would need materially different setup if ever requested."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9781 Support for com.microsoft.onnxruntime:onnxruntime:1.20.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 28,
+      "output_tokens_used": 13957
+    },
+    "metrics": {
+      "input_tokens_used": 151190,
+      "cached_input_tokens_used": 1498624,
+      "output_tokens_used": 12056,
+      "iterations": 5,
+      "cost_usd": 0.3734,
+      "generated_loc": 68,
+      "tested_library_loc": 181,
+      "metadata_entries": 18,
+      "code_coverage_percent": 7.39
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.microsoft.onnxruntime/onnxruntime/1.20.0/reachability-metadata.json"
+    }
+  }
+}

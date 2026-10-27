@@ -1,0 +1,31 @@
+fissile_exceptions_version = 2
+[[exceptions]]
+path = "forge/docs/functional-spec/benchmarking.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 400, unit = "lines" }
+until = "the code coverage benchmarking contract moves to its own functional-spec document"
+reason = """
+Two benchmark contracts (generation and code coverage) share one file; the code-coverage one gains the baseline arm before its own document exists.
+"""
+[[exceptions]]
+path = "forge/docs/architecture/code-coverage/benchmarking.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "structural"
+max_accepted = { value = 300, unit = "lines" }
+until = "indefinite"
+reason = """
+The baseline arm definition and the benchmark control plane are one subject: the arm contract is exactly the benchmark's arm-invariance contract, so splitting them would separate the contract from its enforcement.
+"""
+[[exceptions]]
+path = "forge/.agents/rhei/templates/code-coverage-improvement/tasks/code-coverage-improvement.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "structural"
+max_accepted = { value = 400, unit = "lines" }
+until = "indefinite"
+reason = """
+Rhei instantiates one task-plan file per template; the guided and naive task chains must live in this single file for the template to render either arm.
+"""

@@ -1,0 +1,111 @@
+{
+  "base_commit": "0234782216e4eec07c6e651f0fd28055a746f26f",
+  "branch": "ai/kimeta/fix-javac-io.netty-netty-codec-5.0.0.Alpha1-forge-9762-20260906014723058049-dbe60503eaab",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9864-partial-bulk-progress",
+    "commit": "b601b85254d1c48b01dfab6e29ac0734df3af6f9",
+    "monitored_branch": "origin/issue-9864-partial-bulk-progress"
+  },
+  "issue_number": 9762,
+  "library": {
+    "artifact": "netty-codec",
+    "coordinates": "io.netty:netty-codec:5.0.0.Alpha1",
+    "group": "io.netty",
+    "version": "5.0.0.Alpha1"
+  },
+  "local_ci_verification": {
+    "base_commit": "0234782216e4eec07c6e651f0fd28055a746f26f",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpu3muprft"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-06T01-57-20-927654Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9762-ebc99602/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.netty:netty-codec"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-06T01-57-23-277444Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.netty/netty-codec/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9762-ebc99602/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "1d396c61706b5c6045bf7917c08535f1be0d253d",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/io.netty/netty-codec/5.0.0.Alpha1/src/test/java/io_netty/netty_codec/ClassLoaderClassResolverTest.java"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "In tests/src/io.netty/netty-codec/5.0.0.Alpha1/src/test/java/io_netty/netty_codec/ClassLoaderClassResolverTest.java, both tests caught Error and accepted NativeImageSupport.isUnsupportedFeatureError even though the target class name is fixed, the class is included in the image, and the behavior does not require a class discovered after image build. This applies the sole open-ended dynamic-class-loading exception outside its permitted scope and could make the native tests pass without executing their assertions.",
+    "finding_title": "Unsupported-feature catch masks statically available class resolution",
+    "fix_note": "Approved after removing the two unsupported-feature catch blocks, their helper, and the now-unused NativeImageSupport import so the same class-resolution behavior and assertions must pass on JVM and Native Image. Both current-defaults and future-defaults-all native test lanes pass with the correction.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the complete local PR-equivalent diff, local gate evidence, and resolved statistics. The change is scoped to io.netty:netty-codec:5.0.0.Alpha1, replaces the unavailable ProtobufDecoderNano coverage with meaningful ProtobufDecoder coverage, uses only reachability-metadata.json, preserves assertions and native execution, and keeps index integrity. Overall dynamic access and the reflection breakdown both pass the ordered repair gate because coverage remains 100% (13/13 to 8/8). After the correction, checkMetadataFiles, compileTestJava, javaTest, checkstyle, and full current-defaults and future-defaults-all test lanes pass locally.",
+    "session_log_path": "logs/io.netty:netty-codec:5.0.0.Alpha1/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.netty/netty-codec/5.0.0.Alpha1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1184896,
+      "code_coverage_percent": 14.84,
+      "cost_usd": 1.2994,
+      "input_tokens_used": 94624,
+      "iterations": 2,
+      "metadata_entries": 39,
+      "output_tokens_used": 7795,
+      "previous_library_coverage_percent": 6.63,
+      "previous_library_metadata_entries": 22,
+      "previous_library_test_only_metadata_entries": 3,
+      "test_only_metadata_entries": 37,
+      "tested_library_loc": 406
+    },
+    "timestamp": "2026-09-06T01:47:23.058049Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "netty-codec",
+    "coordinates": "io.netty:netty-codec:4.1.42.Final",
+    "group": "io.netty",
+    "version": "4.1.42.Final"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9762-20260906014723058049-dbe60503eaab",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-06T01:47:23.058049Z"
+}

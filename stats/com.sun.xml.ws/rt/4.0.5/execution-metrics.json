@@ -1,0 +1,77 @@
+{
+  "add_new_library_support:2026-09-27": {
+    "timestamp": "2026-09-27T02:43:29.274670Z",
+    "library": "com.sun.xml.ws:rt:4.0.5",
+    "starting_commit": "78e03ef87b3f92c2fdb4416f44414906c7abad53",
+    "ending_commit": "ab9eb28c2943b940dc82eeb01d4630691769d530",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.0.5",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1139,
+          "missed": 160829,
+          "ratio": 0.007032,
+          "total": 161968
+        },
+        "line": {
+          "covered": 268,
+          "missed": 37574,
+          "ratio": 0.007082,
+          "total": 37842
+        },
+        "method": {
+          "covered": 102,
+          "missed": 8700,
+          "ratio": 0.011588,
+          "total": 8802
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9945,
+      "issue_label": "library-new-request",
+      "library": "com.sun.xml.ws:rt:4.0.5",
+      "summary": "com.sun.xml.ws:rt:4.0.5 is the core JAX-WS RI runtime module; its parent POM inherits jakarta.xml.ws-api/jaxb-api/soap-api/activation-api/annotation-api as real (non-managed) dependencies, so a plain testImplementation on rt resolves everything needed, mirroring the already-supported sibling jaxws-rt which required no extra setup. No Docker service or special env/system properties apply.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "rt excludes FastInfoset and jakarta.servlet-api (both optional/provided in its POM), unlike jaxws-rt where FastInfoset is a plain compile dependency — if generated tests end up exercising FastInfoset-backed encoding or servlet-based endpoint deployment, a testImplementation on com.sun.xml.fastinfoset:FastInfoset or jakarta.servlet:jakarta.servlet-api may be needed; verify via local Gradle test run.",
+        "com.sun.xml.ws:rt is a distinct artifact from the already-supported com.sun.xml.ws:jaxws-rt (added in PR #9978) — same upstream project (metro-jax-ws) and overlapping core classes (e.g. DatabindingFactory, SOAPVersion), so review may want to confirm this isn't an unintended duplicate request before adding full new-library metadata."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9945 Support for com.sun.xml.ws:rt:4.0.5; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 30,
+      "output_tokens_used": 16136
+    },
+    "metrics": {
+      "input_tokens_used": 306976,
+      "cached_input_tokens_used": 4274432,
+      "output_tokens_used": 34524,
+      "iterations": 11,
+      "cost_usd": 4.7078,
+      "generated_loc": 112,
+      "tested_library_loc": 268,
+      "metadata_entries": 5,
+      "code_coverage_percent": 0.71
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.sun.xml.ws/rt/4.0.5/reachability-metadata.json"
+    }
+  }
+}

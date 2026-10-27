@@ -1,0 +1,107 @@
+{
+  "base_commit": "81ba718b3ee789c13489b2a88c6d57686ca7d6c0",
+  "branch": "ai/kimeta/fix-java-run-org.apache.curator-curator-client-5.8.0-forge-10317-20261003014051526742-7a37621a0faf",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "d3b71482f151b28e8ce6daf3a4dc1d64c67656b4",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10317,
+  "library": {
+    "artifact": "curator-client",
+    "coordinates": "org.apache.curator:curator-client:5.8.0",
+    "group": "org.apache.curator",
+    "version": "5.8.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "81ba718b3ee789c13489b2a88c6d57686ca7d6c0",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpklwgkv0r"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10317-31f0a06d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.curator:curator-client"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.curator/curator-client/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10317-31f0a06d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "8dcd07863c020d7d4471f622b5c7310675856d74",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.apache.curator/curator-client/5.8.0/stats.json",
+      "tests/src/org.apache.curator/curator-client/5.8.0/build.gradle",
+      "tests/src/org.apache.curator/curator-client/5.8.0/src/test/java/org_apache_curator/curator_client/CompatibilityTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The 5.8.0 test project forced ZooKeeper from Curator 5.8.0's resolved 3.9.2 dependency to 3.5.10 solely to exercise legacy Compatibility branches. This changed the tested runtime graph and added unrelated build setup rather than adapting the test to the target version, violating the no-scope-creep requirement in FS-test-contract.2.9.",
+    "finding_title": "Test forces an unrelated transitive dependency version",
+    "fix_note": "Removed the ZooKeeper 3.5.10 resolution override and updated CompatibilityTest to assert Curator 5.8.0 behavior with its declared ZooKeeper dependency. Forge finalization regenerated stats for the corrected runtime graph; covered dynamic-access calls remained at 115 and every required lane passed.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete contribution diff and local gate evidence under the fixes-java-run-fail rules. The final tree is limited to org.apache.curator:curator-client:5.8.0, uses only reachability-metadata.json, preserves meaningful RetryLoop behavior without swallowed failures or Native Image skips, and has a valid index. The repair coverage gate passes overall (109/123, 88.62% to 115/122, 94.26%), for reflection (107/119, 89.92% to 113/118, 95.76%), and for resources (2/4, 50% to 2/4, 50%). The exact Forge finalization command completed without further publishable changes after running all three test lanes, metadata splitting and validation, style checks, generated-test checks, and refreshed statistics. Approved after the contribution-local repair.",
+    "session_id": "2f24f4b7269b4dfa"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.curator/curator-client/5.8.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 8701056,
+      "code_coverage_percent": 13.23,
+      "cost_usd": 10.123,
+      "input_tokens_used": 840536,
+      "iterations": 15,
+      "metadata_entries": 230,
+      "output_tokens_used": 52328,
+      "previous_library_coverage_percent": 12.81,
+      "previous_library_metadata_entries": 148,
+      "previous_library_test_only_metadata_entries": 144,
+      "test_only_metadata_entries": 153,
+      "tested_library_loc": 5292
+    },
+    "timestamp": "2026-10-03T01:40:51.526742Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "curator-client",
+    "coordinates": "org.apache.curator:curator-client:5.0.0",
+    "group": "org.apache.curator",
+    "version": "5.0.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10317-20261003014051526742-7a37621a0faf",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-10-03T01:40:51.526742Z"
+}

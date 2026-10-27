@@ -1,0 +1,116 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T02:44:00.537974Z",
+    "library": "org.neo4j.bolt:neo4j-bolt-connection-routed:7.0.0",
+    "starting_commit": "85fed54d381cd988ae9c7faa8df5a4311bbff1cd",
+    "ending_commit": "0f85e6776462b276fa5e4db269a3797237f836f7",
+    "previous_library": "org.neo4j.bolt:neo4j-bolt-connection-routed:4.0.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "7.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1910,
+          "missed": 1798,
+          "ratio": 0.515102,
+          "total": 3708
+        },
+        "line": {
+          "covered": 455,
+          "missed": 397,
+          "ratio": 0.534038,
+          "total": 852
+        },
+        "method": {
+          "covered": 114,
+          "missed": 106,
+          "ratio": 0.518182,
+          "total": 220
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "4.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1871,
+          "missed": 1782,
+          "ratio": 0.512182,
+          "total": 3653
+        },
+        "line": {
+          "covered": 446,
+          "missed": 397,
+          "ratio": 0.529063,
+          "total": 843
+        },
+        "method": {
+          "covered": 113,
+          "missed": 106,
+          "ratio": 0.515982,
+          "total": 219
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10336,
+      "issue_label": "fails-javac-compile",
+      "library": "org.neo4j.bolt:neo4j-bolt-connection-routed:7.0.0",
+      "summary": "The failure is a javac compile error in the existing test source. The test targets the 4.0.0 API, and 7.0.0 changed several signatures: `BoltConnection.writeAndFlush`, `Rediscovery.lookupClusterComposition`, and the `RoutedBoltConnectionSource` constructor. All three now take an extra `ImmutableObservation` or `ObservationProvider` parameter. This needs test code updates, not extra dependencies, Docker images, or environment or system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "Port the test to the 7.0.0 API. Add the new `ImmutableObservation` argument to `writeAndFlush(ResponseHandler, Message or List<Message>, ImmutableObservation)` calls and to the `RecordingConnection` overrides. Update `StubRediscovery.lookupClusterComposition` to the new signature, which takes `RoutingTable`, a `Function<BoltServerAddress, BoltConnectionSource<BoltConnectionParameters>>`, `RoutedBoltConnectionParameters` and `ImmutableObservation`. Pass the new `ObservationProvider` as the last argument to the `RoutedBoltConnectionSource` constructor, and use `long` for the numeric timeout argument. Check the resolved 7.0.0 jars for the exact signatures. Any observation types that are missing should come in transitively from the neo4j-bolt-connection artifacts. If compilation shows they do not, add the owning artifact then.",
+      "risks": [
+        "I did not open the 7.0.0 jars, so the full set of changed signatures may be larger than the six compile errors in the truncated log suggest.",
+        "7.0.0 may carry further behavioral changes that only show up at runtime in the JVM or native-image tests."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10336 [Automation] javac compile fails for org.neo4j.bolt:neo4j-bolt-connection-routed:7.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.neo4j.bolt:neo4j-bolt-connection-routed:4.0.0",
+      "new_version": "7.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 792
+    },
+    "metrics": {
+      "input_tokens_used": 63504,
+      "cached_input_tokens_used": 650752,
+      "output_tokens_used": 4869,
+      "iterations": 3,
+      "cost_usd": 0.1578,
+      "tested_library_loc": 455,
+      "metadata_entries": 0,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 53.4,
+      "previous_library_coverage_percent": 52.91
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.neo4j.bolt/neo4j-bolt-connection-routed/7.0.0/reachability-metadata.json"
+    }
+  }
+}

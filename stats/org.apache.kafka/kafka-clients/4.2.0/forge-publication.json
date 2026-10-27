@@ -1,0 +1,168 @@
+{
+  "base_commit": "dc46f8b56cdf515c6c6c075ead7714d90649da3c",
+  "branch": "ai/kimeta/improve-coverage-org.apache.kafka-kafka-clients-4.2.0-chunked-forge-7506-20260920223851108367-e70ee030ce9d",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "dc46f8b56cdf515c6c6c075ead7714d90649da3c",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 7506,
+  "library": {
+    "artifact": "kafka-clients",
+    "coordinates": "org.apache.kafka:kafka-clients:4.2.0",
+    "group": "org.apache.kafka",
+    "version": "4.2.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "dc46f8b56cdf515c6c6c075ead7714d90649da3c",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "e15bb3607addfc25fd0133bc39194206f8a61b2b",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.apache.kafka/kafka-clients/4.2.0/stats.json",
+      "tests/src/org.apache.kafka/kafka-clients/4.2.0/src/test/java/org_apache_kafka/kafka_clients/KafkaClientsTest.java",
+      "tests/src/org.apache.kafka/kafka-clients/4.2.0/src/test/java/org_apache_kafka/kafka_clients/OrgApacheKafkaShadedComGoogleProtobufMessageSchemaTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The contribution deleted the existing SCRAM provider behavior test from KafkaClientsTest, contrary to the no-weakening rule, and added reportsUnavailableRawMessageInfoFields, which deliberately supplied a nonexistent protobuf field and asserted the resulting RuntimeException while exercising the reflective call site. That is coverage bought by asserting breakage under FS-contribution-contract.4.4 / FS-test-contract.2.6.",
+    "finding_title": "Coverage improvement removed baseline behavior and counted an asserted failure",
+    "fix_note": "Restored the SCRAM provider test through ScramLoginModule's public initialization path instead of direct Class.forName, and removed the malformed protobuf fixture and failure assertion. Forge finalization regenerated stats; coverage remains above baseline and the stable rerun passed without further publishable changes.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full coordinate-scoped diff, the generic coverage-improvement issue context, local gate evidence, and the contribution/test contracts. The final tree remains limited to org.apache.kafka:kafka-clients:4.2.0, introduces no legacy metadata format or native skip, and preserves dynamic-access coverage at 74.1379% versus the 53.4483% baseline. Forge finalization completed all three native lanes, metadata validation, test-only metadata splitting, style checks, generated-test checks, and regenerated statistics; a second complete pass made no further publishable change.",
+    "session_id": "35ae1dcd1c1e49b0"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.kafka/kafka-clients/4.2.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 44921600,
+      "code_coverage_percent": 6.55,
+      "cost_usd": 39.3177,
+      "generated_loc": 2641,
+      "input_tokens_used": 2174243,
+      "iterations": 55,
+      "metadata_entries": 434,
+      "output_tokens_used": 199526,
+      "test_only_metadata_entries": 115,
+      "tested_library_loc": 13892
+    },
+    "timestamp": "2026-09-20T22:38:51.108367Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-7506-20260920223851108367-e70ee030ce9d",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 245,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.539823,
+            "coveredCalls": 61,
+            "totalCalls": 113
+          },
+          "resources": {
+            "coverageRatio": 0.333333,
+            "coveredCalls": 1,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.534483,
+        "coveredCalls": 62,
+        "totalCalls": 116
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 93672,
+          "missed": 1317838,
+          "ratio": 0.066363,
+          "total": 1411510
+        },
+        "line": {
+          "covered": 12545,
+          "missed": 286736,
+          "ratio": 0.041917,
+          "total": 299281
+        },
+        "method": {
+          "covered": 2748,
+          "missed": 51732,
+          "ratio": 0.050441,
+          "total": 54480
+        }
+      },
+      "version": "4.2.0"
+    },
+    "baseline_test_only_entries": 3,
+    "current_metadata_entries": 434,
+    "current_test_only_entries": 115,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.743363,
+            "coveredCalls": 84,
+            "totalCalls": 113
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.741379,
+        "coveredCalls": 86,
+        "totalCalls": 116
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 98789,
+          "missed": 848042,
+          "ratio": 0.104336,
+          "total": 946831
+        },
+        "line": {
+          "covered": 13885,
+          "missed": 198126,
+          "ratio": 0.065492,
+          "total": 212011
+        },
+        "method": {
+          "covered": 3155,
+          "missed": 39660,
+          "ratio": 0.073689,
+          "total": 42815
+        }
+      },
+      "version": "4.2.0"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "4.2.0",
+      "matched_test_version": "4.2.0",
+      "requested_coordinate": "org.apache.kafka:kafka-clients:4.2.0",
+      "resolved_metadata_version": "4.2.0",
+      "resolved_test_version": "4.2.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-20T22:38:51.108367Z"
+}

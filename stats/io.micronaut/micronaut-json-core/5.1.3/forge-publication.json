@@ -1,0 +1,139 @@
+{
+  "base_commit": "3d4fe13d8691998c0d6c3fdf499cdccfaa928f41",
+  "branch": "ai/kimeta/add-lib-support-io.micronaut-micronaut-json-core-5.1.3-forge-9812-20261001120917571822-7cf0f0a33241",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "86f5f22f536dfec212667cb13f70b6769a2d6048",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9812,
+  "library": {
+    "artifact": "micronaut-json-core",
+    "coordinates": "io.micronaut:micronaut-json-core:5.1.3",
+    "group": "io.micronaut",
+    "version": "5.1.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "3d4fe13d8691998c0d6c3fdf499cdccfaa928f41",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp2qtm428u"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9812-b18343e0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.micronaut:micronaut-json-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micronaut/micronaut-json-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9812-b18343e0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "731b1bbb71d9079482edb36f0983ca11e454ff34",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/io.micronaut/micronaut-json-core/5.1.3/build.gradle"
+    ],
+    "decision": "approved",
+    "finding_body": "The coordinate's build.gradle hardcoded io.micronaut:micronaut-jackson-databind:5.1.3 instead of using the TCK-resolved library version. That would leave the supporting mapper implementation pinned when this version-agnostic test is reused, violating the version-pinning rule.",
+    "finding_title": "Lockstep companion dependency pinned to the requested version",
+    "fix_note": "Changed micronaut-jackson-databind to use $libraryVersion, matching the target Micronaut artifact and existing Micronaut test projects. The exact Forge-owned finalization command then completed successfully without further publishable changes.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff, public-API test behavior, package separation, Native Image execution rules, metadata file shape, index/stats evidence, and the reported 0/0 dynamic-access case. The repaired tree passed Forge finalization unchanged across all three native-test lanes, metadata validation, style checks, generated-test checks, and regenerated statistics.",
+    "session_id": "ecad1c82073d4624"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/io.micronaut/micronaut-json-core/5.1.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2150400,
+      "code_coverage_percent": 11.48,
+      "cost_usd": 0.4924,
+      "generated_loc": 103,
+      "input_tokens_used": 193315,
+      "iterations": 6,
+      "metadata_entries": 8,
+      "output_tokens_used": 14012,
+      "test_only_metadata_entries": 12,
+      "tested_library_loc": 80
+    },
+    "timestamp": "2026-10-01T12:09:17.571822Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9812-20261001120917571822-7cf0f0a33241",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `io.micronaut.json.JsonMapper` is reached, make `io.micronaut.jackson.databind.JacksonDatabindMapperSupplier` available for reflection",
+        "when `io.micronaut.json.JsonMapper` is reached, make `java.lang.Record` available for reflection",
+        "when `io.micronaut.json.JsonMapper` is reached, make `tools.jackson.databind.deser.Deserializers[]` available for reflection",
+        "when `io.micronaut.json.JsonMapper` is reached, make `tools.jackson.databind.deser.KeyDeserializers[]` available for reflection",
+        "when `io.micronaut.json.JsonMapper` is reached, make `tools.jackson.databind.deser.ValueInstantiators[]` available for reflection",
+        "when `io.micronaut.json.JsonMapper` is reached, make `tools.jackson.databind.ser.Serializers[]` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 299,
+          "missed": 2565,
+          "ratio": 0.104399,
+          "total": 2864
+        },
+        "line": {
+          "covered": 80,
+          "missed": 617,
+          "ratio": 0.114778,
+          "total": 697
+        },
+        "method": {
+          "covered": 51,
+          "missed": 175,
+          "ratio": 0.225664,
+          "total": 226
+        }
+      },
+      "version": "5.1.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-01T12:09:17.571822Z"
+}

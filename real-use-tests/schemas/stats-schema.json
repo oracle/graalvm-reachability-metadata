@@ -1,0 +1,147 @@
+{
+  "$defs": {
+    "coverage_metric": {
+      "oneOf": [
+        {
+          "const": "N/A"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "covered": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "ratio": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            "total": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "covered",
+            "total",
+            "ratio"
+          ],
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "$id": "https://github.com/oracle/graalvm-reachability-metadata/real-use-tests/schemas/stats-schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "real-use-tests/stats/<group>/<artifact>/<version>/stats.json: the generation run that last published the coordinate's real-use project (FS-real-use-tests.1).",
+  "properties": {
+    "issue_number": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "iterations": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "library_coverage": {
+      "additionalProperties": false,
+      "properties": {
+        "instruction": {
+          "$ref": "#/$defs/coverage_metric"
+        },
+        "line": {
+          "$ref": "#/$defs/coverage_metric"
+        },
+        "method": {
+          "$ref": "#/$defs/coverage_metric"
+        }
+      },
+      "required": [
+        "line",
+        "instruction",
+        "method"
+      ],
+      "type": "object"
+    },
+    "removed": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "scenario": {
+            "maxLength": 400,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario",
+          "reason"
+        ],
+        "type": "object"
+      },
+      "maxItems": 500,
+      "type": "array"
+    },
+    "timestamp": {
+      "maxLength": 64,
+      "minLength": 1,
+      "type": "string"
+    },
+    "tokens": {
+      "additionalProperties": false,
+      "properties": {
+        "cache_write_input": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "cached_input": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "input": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "output": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "input",
+        "cached_input",
+        "cache_write_input",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "issue_number",
+    "timestamp",
+    "library_coverage",
+    "tokens",
+    "iterations",
+    "removed"
+  ],
+  "title": "Real-use run stats record",
+  "type": "object"
+}

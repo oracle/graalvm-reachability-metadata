@@ -1,0 +1,133 @@
+{
+  "fix_javac_fail:2026-10-04": {
+    "timestamp": "2026-10-04T21:10:58.320817Z",
+    "library": "com.nimbusds:nimbus-jose-jwt:4.14",
+    "starting_commit": "27fa90ba0a47e5fe7d41de05f687cadb9dc01240",
+    "ending_commit": "301fb77dad007c32df65d37a3d00459530916c70",
+    "previous_library": "com.nimbusds:nimbus-jose-jwt:4.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.14",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7327,
+          "missed": 13126,
+          "ratio": 0.358236,
+          "total": 20453
+        },
+        "line": {
+          "covered": 1795,
+          "missed": 3083,
+          "ratio": 0.367979,
+          "total": 4878
+        },
+        "method": {
+          "covered": 419,
+          "missed": 555,
+          "ratio": 0.430185,
+          "total": 974
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "4.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7331,
+          "missed": 10999,
+          "ratio": 0.399945,
+          "total": 18330
+        },
+        "line": {
+          "covered": 1684,
+          "missed": 2253,
+          "ratio": 0.427737,
+          "total": 3937
+        },
+        "method": {
+          "covered": 416,
+          "missed": 453,
+          "ratio": 0.478711,
+          "total": 869
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10429,
+      "issue_label": "fails-javac-compile",
+      "library": "com.nimbusds:nimbus-jose-jwt:4.14",
+      "summary": "The 4.14 POM declares commons-io:commons-io with the version range `[2.4,]`, which Gradle can't resolve (\"Could not find commons-io:commons-io:[2.4,]\"). The test project needs a pinned commons-io and an exclusion of the range edge.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "commons-io:commons-io:2.11.0",
+          "scope": "testImplementation",
+          "reason": "nimbus-jose-jwt 4.14 depends on commons-io with the unresolvable range [2.4,]. A concrete version supplies the runtime dependency."
+        }
+      ],
+      "agent_guidance": "Pinning commons-io alone probably isn't enough. Gradle still has to evaluate the `[2.4,]` range from the library's POM edge. In the test build.gradle, declare the library dependency with `exclude group: 'commons-io', module: 'commons-io'`, and keep the explicit commons-io:2.11.0 testImplementation dependency. Do this only where the tested version is 4.14 or another version whose POM carries the same range, for example by checking `libraryVersion`. Versions up to 4.13.1 already resolve. The 4.14 POM also declares open-ended ranges on optional dependencies, such as `bcprov-jdk15on:[1.52,]` (optional). If a later resolution error names one of those, exclude it or pin a concrete version in the same way. No Docker image, system property or environment variable is needed.",
+      "risks": [
+        "If a direct dependency without an exclusion does not stop Gradle from evaluating the range, resolution will keep failing until the exclusion is applied.",
+        "Other open-ended ranges in the 4.14 POM, such as the bouncycastle ones, may surface as the next resolution failure.",
+        "The existing tests may need to stay compatible with 4.0 through 4.14. Keep the version-conditional dependency logic minimal."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "commons-io:commons-io:2.11.0",
+          "result": "skipped",
+          "reason": "build_gradle_absent"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10429 [Automation] javac compile fails for com.nimbusds:nimbus-jose-jwt:4.14; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.nimbusds:nimbus-jose-jwt:4.0",
+      "new_version": "4.14",
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1860
+    },
+    "metrics": {
+      "input_tokens_used": 38060,
+      "cached_input_tokens_used": 110208,
+      "output_tokens_used": 1165,
+      "iterations": 3,
+      "cost_usd": 0.2804,
+      "tested_library_loc": 1795,
+      "metadata_entries": 28,
+      "test_only_metadata_entries": 7,
+      "previous_library_metadata_entries": 28,
+      "previous_library_test_only_metadata_entries": 7,
+      "code_coverage_percent": 36.8,
+      "previous_library_coverage_percent": 42.77
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.nimbusds/nimbus-jose-jwt/4.14/reachability-metadata.json"
+    }
+  }
+}

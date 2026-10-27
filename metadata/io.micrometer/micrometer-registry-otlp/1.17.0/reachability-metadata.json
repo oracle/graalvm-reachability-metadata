@@ -1,0 +1,45 @@
+{
+  "reflection" : [
+    {
+      "condition" : {
+        "typeReached" : "io.micrometer.registry.otlp.OtlpCumulativeBucketHistogram"
+      },
+      "type" : "io.micrometer.core.instrument.distribution.FixedBoundaryHistogram[]"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.micrometer.registry.otlp.OtlpCumulativeTimer"
+      },
+      "type" : "io.micrometer.core.instrument.distribution.TimeWindowMax"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.micrometer.registry.otlp.OtlpMetricsSender$Request"
+      },
+      "type" : "io.opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceRequest",
+      "methods" : [
+        {
+          "name" : "getResourceMetricsList",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.micrometer.registry.otlp.OtlpMetricsSender$Request"
+      },
+      "type" : "io.opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceRequest$Builder"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.micrometer.registry.otlp.OtlpMetricsSender$Request"
+      },
+      "type" : "io.opentelemetry.proto.metrics.v1.ResourceMetrics"
+    }
+  ],
+  "resources" : [
+    {
+      "bundle" : "sun.util.logging.resources.logging"
+    }
+  ]
+}

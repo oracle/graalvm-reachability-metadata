@@ -27,8 +27,8 @@ import sys
 if __package__ in (None, ""):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-DEFAULT_JAVAC_STRATEGY = "javac_iterative_with_coverage_sources_pi_gpt-5.5"
-DEFAULT_JAVA_RUN_STRATEGY = "java_run_iterative_with_coverage_sources_pi_gpt-5.5"
+DEFAULT_JAVAC_STRATEGY = "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol"
+DEFAULT_JAVA_RUN_STRATEGY = "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol"
 
 
 def build_parser():
@@ -84,6 +84,15 @@ def build_parser():
         default=None,
         help="Optional path with additional read-only docs/sources for agent context",
     )
+    parser.add_argument(
+        "--dynamic-access-class-threshold",
+        type=int,
+        default=0,
+        help=(
+            "Skip post-repair dynamic-access exploration when the uncovered class count "
+            "exceeds this value"
+        ),
+    )
     parser.add_argument("-v", "--verbose", action="store_true", help="enable verbose mode for the configured agent")
     return parser
 
@@ -104,6 +113,13 @@ def _workflow_argv(flags):
         workflow_argv.extend(["--strategy-name", flags.strategy_name])
     if flags.docs_path:
         workflow_argv.extend(["--docs-path", flags.docs_path])
+    if flags.dynamic_access_class_threshold > 0:
+        workflow_argv.extend(
+            [
+                "--dynamic-access-class-threshold",
+                str(flags.dynamic_access_class_threshold),
+            ]
+        )
     if flags.verbose:
         workflow_argv.append("--verbose")
     return workflow_argv
@@ -112,8 +128,8 @@ def _workflow_argv(flags):
 def main(argv=None):
     """Select and run the appropriate java-fail driver based on the mode flag.
 
-    Routes to the javac or java-run variant of §WF-java-fail-fix-workflow,
-    following the single-run driver contract (§WF-forge-workflow-drivers).
+    Routes to the javac or java-run variant of §AR-java-fail-fix-workflow,
+    following the single-run driver contract (§AR-forge-drivers).
     """
     flags = build_parser().parse_args(argv if argv is not None else sys.argv[1:])
     from ai_workflows.drivers.java_fail_workflow import JAVAC_CONFIG, JAVA_RUN_CONFIG, run_java_fail_workflow

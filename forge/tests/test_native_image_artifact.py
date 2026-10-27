@@ -5,6 +5,7 @@
 
 import io
 import unittest
+import urllib.error
 from unittest.mock import patch
 import zipfile
 
@@ -95,3 +96,57 @@ class NativeImageArtifactTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ArtifactPublicationProbeTests(unittest.TestCase):
+    """The existence probe behind the issue-form gate. §FS-forge-run-requirements.3"""
+
+    def test_base_url_is_derived_entirely_from_the_coordinate(self) -> None:
+        self.assertEqual(
+            nia.artifact_base_url(nia.MAVEN_CENTRAL, "org.example.tools:widget:1.2.3"),
+            f"{nia.MAVEN_CENTRAL}/org/example/tools/widget/1.2.3/widget-1.2.3",
+        )
+
+    def test_maven_central_hit_short_circuits_the_fallback(self) -> None:
+        probed: list[str] = []
+
+        def fake_probe(pom_url: str) -> bool:
+            probed.append(pom_url)
+            return True
+
+        with patch.object(nia, "artifact_exists_in_repository", side_effect=fake_probe):
+            self.assertIs(nia.artifact_is_published("org.example:widget:1.2.3"), True)
+
+        self.assertEqual(len(probed), 1)
+        self.assertTrue(probed[0].startswith(nia.MAVEN_CENTRAL))
+
+    def test_confluent_fallback_answers_when_maven_central_has_nothing(self) -> None:
+        answers = {nia.MAVEN_CENTRAL: False, nia.CONFLUENT_MAVEN: True}
+
+        def fake_probe(pom_url: str) -> bool:
+            return answers[nia.MAVEN_CENTRAL if pom_url.startswith(nia.MAVEN_CENTRAL) else nia.CONFLUENT_MAVEN]
+
+        with patch.object(nia, "artifact_exists_in_repository", side_effect=fake_probe):
+            self.assertIs(nia.artifact_is_published("org.example:widget:1.2.3"), True)
+
+    def test_absent_from_every_repository_is_a_definite_no(self) -> None:
+        with patch.object(nia, "artifact_exists_in_repository", return_value=False):
+            self.assertIs(nia.artifact_is_published("org.example:widget:1.2.3"), False)
+
+    def test_unreachable_repository_leaves_the_answer_undecided(self) -> None:
+        def fake_probe(pom_url: str) -> bool | None:
+            return False if pom_url.startswith(nia.MAVEN_CENTRAL) else None
+
+        with patch.object(nia, "artifact_exists_in_repository", side_effect=fake_probe):
+            self.assertIsNone(nia.artifact_is_published("org.example:widget:1.2.3"))
+
+    def test_missing_pom_is_reported_as_absent_and_other_errors_as_undecided(self) -> None:
+        def http_error(code: int) -> urllib.error.HTTPError:
+            return urllib.error.HTTPError("https://example.invalid/a.pom", code, "boom", {}, None)
+
+        with patch.object(nia.urllib.request, "urlopen", side_effect=http_error(404)):
+            self.assertIs(nia.artifact_exists_in_repository("https://example.invalid/a.pom"), False)
+        with patch.object(nia.urllib.request, "urlopen", side_effect=http_error(503)):
+            self.assertIsNone(nia.artifact_exists_in_repository("https://example.invalid/a.pom"))
+        with patch.object(nia.urllib.request, "urlopen", side_effect=OSError("no route")):
+            self.assertIsNone(nia.artifact_exists_in_repository("https://example.invalid/a.pom"))

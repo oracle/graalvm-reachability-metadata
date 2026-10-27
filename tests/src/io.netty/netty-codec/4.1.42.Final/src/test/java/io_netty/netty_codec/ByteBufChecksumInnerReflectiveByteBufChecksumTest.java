@@ -13,6 +13,7 @@ import java.util.zip.GZIPOutputStream;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.compression.JdkZlibDecoder;
 import io.netty.handler.codec.compression.ZlibWrapper;
@@ -29,6 +30,7 @@ public class ByteBufChecksumInnerReflectiveByteBufChecksumTest {
         byte[] compressed = gzip(expected);
         ByteBuf input = Unpooled.directBuffer(compressed.length);
         EmbeddedChannel channel = new EmbeddedChannel(new JdkZlibDecoder(ZlibWrapper.GZIP));
+        channel.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
 
         try {
             input.writeBytes(compressed);

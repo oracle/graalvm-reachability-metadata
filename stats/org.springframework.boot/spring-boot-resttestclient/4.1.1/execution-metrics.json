@@ -1,0 +1,111 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T01:11:10.136404Z",
+    "library": "org.springframework.boot:spring-boot-resttestclient:4.1.1",
+    "starting_commit": "47859694966fb13dc01c1ea3dc1a2b22885815be",
+    "ending_commit": "6e388f1c51610ccfab5973b22f4846170996fa99",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 161,
+          "missed": 1266,
+          "ratio": 0.112824,
+          "total": 1427
+        },
+        "line": {
+          "covered": 40,
+          "missed": 149,
+          "ratio": 0.21164,
+          "total": 189
+        },
+        "method": {
+          "covered": 18,
+          "missed": 99,
+          "ratio": 0.153846,
+          "total": 117
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9713,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-resttestclient:4.1.1",
+      "summary": "spring-boot-resttestclient 4.1.1 declares only spring-boot-test, spring-boot-http-converter and spring-web. Its main APIs (RestTestClient, TestRestTemplate) also need spring-test and spring-boot-restclient, which are not declared as dependencies. No Docker image is needed, because tests can use a local JDK HttpServer or a MockMvc/MockRestServiceServer binding.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:7.0.9",
+          "scope": "testImplementation",
+          "reason": "RestTestClient and its bindings (bindToServer, bindToController, bindTo(MockMvc)) are built on spring-test. It is not a declared dependency of the artifact. 7.0.9 is the spring-framework.version managed by Boot 4.1.1."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-restclient:4.1.1",
+          "scope": "testImplementation",
+          "reason": "TestRestTemplate builds on RestTemplateBuilder and the client customizers from this module. It is not a declared dependency of the artifact. The sibling test project uses it at the same Boot version."
+        }
+      ],
+      "agent_guidance": "Use the same build.gradle pattern as tests/src/org.springframework.boot/spring-boot-restclient: derive the version from tck.testedLibraryVersion, add the assertj-core test dependency, and use the conditional agent mode with a user-code-filter.json. Run the tests against an in-process server (com.sun.net.httpserver.HttpServer on port 0) or against MockMvc/MockRestServiceServer-style bindings. Do not use a Docker container. If the tests need JSON conversion, use spring-boot-http-converter, which is already transitive. Add a Jackson dependency only if the compile or run fails for lack of one, and match the version Boot 4.1.1 manages (Jackson 3 BOM 3.1.5). Exercise TestRestTemplate (exchange, getForEntity, postForObject, the builder and its client customizers) and RestTestClient (get/post, expectStatus, expectBody) with real request and response round trips.",
+      "risks": [
+        "The extra dependency versions are inferred from Boot 4.1.1's BOM, not from a Gradle resolution run. Check them with a local compile.",
+        "TestRestTemplate and RestTestClient may need more transitive dependencies, such as an HTTP client or Jackson, which only a native-image run can show.",
+        "Reflection and proxy metadata from Spring Boot test autoconfiguration may be missing. Cover it with the agent-generated metadata, not extra setup."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:7.0.9",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-resttestclient/4.1.1/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-restclient:4.1.1",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-resttestclient/4.1.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9713 Support for org.springframework.boot:spring-boot-resttestclient:4.1.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 12,
+      "output_tokens_used": 2503
+    },
+    "metrics": {
+      "input_tokens_used": 234780,
+      "cached_input_tokens_used": 4862336,
+      "output_tokens_used": 31015,
+      "iterations": 6,
+      "cost_usd": 4.5355,
+      "generated_loc": 195,
+      "tested_library_loc": 40,
+      "metadata_entries": 28,
+      "test_only_metadata_entries": 201,
+      "code_coverage_percent": 21.16
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-resttestclient/4.1.1/reachability-metadata.json"
+    }
+  }
+}

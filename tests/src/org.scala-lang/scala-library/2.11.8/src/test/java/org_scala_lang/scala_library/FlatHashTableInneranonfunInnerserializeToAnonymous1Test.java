@@ -1,0 +1,59 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_scala_lang.scala_library;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import scala.collection.mutable.HashSet;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class FlatHashTableInneranonfunInnerserializeToAnonymous1Test {
+
+    @Test
+    void serializesEveryMutableHashSetElement() throws Exception {
+        HashSet<String> original = new HashSet<>();
+        original.$plus$eq("alpha");
+        original.$plus$eq("beta");
+
+        List<String> serializedStrings;
+        try (StringRecordingObjectOutputStream output =
+                new StringRecordingObjectOutputStream(new ByteArrayOutputStream())) {
+            output.writeObject(original);
+            serializedStrings = output.serializedStrings();
+        }
+
+        assertThat(serializedStrings).containsExactlyInAnyOrder("alpha", "beta");
+    }
+
+    private static final class StringRecordingObjectOutputStream extends ObjectOutputStream {
+        private final List<String> serializedStrings = new ArrayList<>();
+
+        private StringRecordingObjectOutputStream(ByteArrayOutputStream output) throws IOException {
+            super(output);
+            enableReplaceObject(true);
+        }
+
+        @Override
+        protected Object replaceObject(Object object) {
+            if (object instanceof String) {
+                serializedStrings.add((String) object);
+            }
+            return object;
+        }
+
+        private List<String> serializedStrings() {
+            return serializedStrings;
+        }
+    }
+}

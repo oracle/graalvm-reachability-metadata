@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * Emits a GitHub Actions matrix from top coordinates in committed library stats.
  * <p>
- * Implements §TCK-test-harness.8 — the {@code generateTopCoordinatesByMetricMatrix} reporting task.
+ * Implements §AR-test-harness.8 — the {@code generateTopCoordinatesByMetricMatrix} reporting task.
  */
 @SuppressWarnings("unused")
 public abstract class GenerateTopCoordinatesByMetricMatrixTask extends DefaultTask {

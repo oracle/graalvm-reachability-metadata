@@ -1,0 +1,31 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "io.micronaut:micronaut-management:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "io.micronaut:micronaut-http-server-netty:$libraryVersion"
+    testImplementation "io.micronaut:micronaut-http-client:$libraryVersion"
+    testImplementation "io.micronaut:micronaut-jackson-databind:$libraryVersion"
+    testImplementation "io.micronaut.sql:micronaut-jdbc:7.1.2"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

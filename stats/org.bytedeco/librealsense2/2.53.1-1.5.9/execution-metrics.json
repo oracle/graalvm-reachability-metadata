@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T22:22:29.998559Z",
+    "library": "org.bytedeco:librealsense2:2.53.1-1.5.9",
+    "starting_commit": "9957603db91b78894b76d8de05e9c0f5201d41a1",
+    "ending_commit": "2fd05c1ba5b527ff64268dc088bb0bf3f7d18e13",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.53.1-1.5.9",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 67,
+          "missed": 1293,
+          "ratio": 0.049265,
+          "total": 1360
+        },
+        "line": {
+          "covered": 15,
+          "missed": 231,
+          "ratio": 0.060976,
+          "total": 246
+        },
+        "method": {
+          "covered": 13,
+          "missed": 225,
+          "ratio": 0.054622,
+          "total": 238
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10720,
+      "issue_label": "library-new-request",
+      "library": "org.bytedeco:librealsense2:2.53.1-1.5.9",
+      "summary": "JavaCPP preset for librealsense2 needs its -platform artifact (native binaries) on the runtime classpath, or any touched class throws UnsatisfiedLinkError immediately.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.bytedeco:librealsense2-platform:2.53.1-1.5.9",
+          "scope": "testRuntimeOnly",
+          "reason": "org.bytedeco:librealsense2 only ships the Java/JNI glue; the companion -platform artifact carries the actual compiled native libraries for each OS/arch. Without it, static native-loading in any touched class fails with UnsatisfiedLinkError. The two existing bytedeco modules in this repo (javacpp, op\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "librealsense2 wraps the Intel RealSense SDK and talks to a physical USB depth camera. No such camera is attached in CI, so tests should exercise device-independent API surface (e.g. rs2::context()/device enumeration returning an empty list, pipeline/config object construction, error-path handling) rather than actual streaming/capture, which cannot run headlessly. Do not add Docker-based device emulation — no RealSense camera emulator image exists or would expose a real USB device to a container.",
+      "risks": [
+        "If librealsense2-platform does not bundle binaries for the CI runner's OS/arch, native loading will still fail even with the dependency added — verify via local Gradle run before relying on this.",
+        "Coverage will necessarily be low since the majority of the SDK's functionality requires an attached camera; this is inherent to the library, not a setup gap."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.bytedeco:librealsense2-platform:2.53.1-1.5.9",
+          "result": "applied",
+          "target": "tests/src/org.bytedeco/librealsense2/2.53.1-1.5.9/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10720 Support for org.bytedeco:librealsense2:2.53.1-1.5.9; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 26,
+      "output_tokens_used": 8779
+    },
+    "metrics": {
+      "input_tokens_used": 309132,
+      "cached_input_tokens_used": 3176832,
+      "output_tokens_used": 28600,
+      "iterations": 3,
+      "cost_usd": 3.9921,
+      "generated_loc": 295,
+      "tested_library_loc": 15,
+      "metadata_entries": 157,
+      "test_only_metadata_entries": 47,
+      "code_coverage_percent": 6.1
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bytedeco/librealsense2/2.53.1-1.5.9/reachability-metadata.json"
+    }
+  }
+}

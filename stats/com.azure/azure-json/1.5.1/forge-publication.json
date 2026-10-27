@@ -1,0 +1,142 @@
+{
+  "base_commit": "bbb0402c8a844dff34d5805ec291718c76d19e0e",
+  "branch": "ai/kimeta/add-lib-support-com.azure-azure-json-1.5.1-forge-10056-20260926182536448668-bf980e8647fa",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "bbb0402c8a844dff34d5805ec291718c76d19e0e",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10056,
+  "library": {
+    "artifact": "azure-json",
+    "coordinates": "com.azure:azure-json:1.5.1",
+    "group": "com.azure",
+    "version": "1.5.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "bbb0402c8a844dff34d5805ec291718c76d19e0e",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpr7z_8iyw"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10056-f4227f46/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.azure:azure-json"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.azure/azure-json/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10056-f4227f46/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "ea773f652a2f15387e6b736fe4467816f7526ec1",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/com.azure/azure-json/1.5.1/stats.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The first exact finalization run regenerated stats/com.azure/azure-json/1.5.1/stats.json and changed the covered instruction, line, and method counts from 10326/2450/486 to 10270/2435/484, then exited nonzero because the publishable tree changed. This contribution-local generated-evidence mismatch was repairable under §FS-contribution-contract.5.1.",
+    "finding_title": "Generated library statistics were stale",
+    "fix_note": "Accepted the deterministic generateLibraryStats refresh in the target coordinate's stats.json, inspected the resulting diff, and reran the exact finalization command successfully with no further publishable change.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff and local gate evidence. The contribution stays within the allowed com.azure:azure-json:1.5.1 files, uses only reachability-metadata.json, exercises public library APIs from a separate test package without scaffold code, version pinning, Native Image dodging, visibility bypasses, or native flags, and reports a valid 0/0 dynamic-access case. The exact finalization command passed all three native-test lanes, metadata validation, style checks, generated-test checks, and statistics generation without further publishable changes on its second run.",
+    "session_id": "4239794f5e984674"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.azure/azure-json/1.5.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2310144,
+      "code_coverage_percent": 35.78,
+      "cost_usd": 2.5667,
+      "generated_loc": 211,
+      "input_tokens_used": 195211,
+      "iterations": 6,
+      "metadata_entries": 39,
+      "output_tokens_used": 14515,
+      "test_only_metadata_entries": 2,
+      "tested_library_loc": 2450
+    },
+    "timestamp": "2026-09-26T18:25:36.448668Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10056-20260926182536448668-bf980e8647fa",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `com.azure.json.JsonProviders` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.json.JsonReader` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.json.JsonWriteContext` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.json.implementation.DefaultJsonProvider` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.json.implementation.DefaultJsonReader` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.json.implementation.DefaultJsonWriter` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.json.implementation.jackson.core.Base64Variants` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.json.implementation.jackson.core.JsonFactory` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "... and 11 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10270,
+          "missed": 20319,
+          "ratio": 0.335742,
+          "total": 30589
+        },
+        "line": {
+          "covered": 2435,
+          "missed": 4413,
+          "ratio": 0.355578,
+          "total": 6848
+        },
+        "method": {
+          "covered": 484,
+          "missed": 451,
+          "ratio": 0.517647,
+          "total": 935
+        }
+      },
+      "version": "1.5.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-26T18:25:36.448668Z"
+}

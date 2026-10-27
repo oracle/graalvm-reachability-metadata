@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * <p>
  * Run with {@code gradle scaffold --coordinates com.example:library:1.0.0}.
  * <p>
- * Implements §TCK-test-harness.5 — the {@code scaffold} authoring helper.
+ * Implements §AR-test-harness.5 — the {@code scaffold} authoring helper.
  *
  * @author Moritz Halbritter
  */
@@ -230,10 +230,18 @@ class ScaffoldTask extends DefaultTask {
         writeIndexFile(metadataIndex.toPath(), entries);
     }
 
-    private void setLatest(List<MetadataVersionsIndexEntry> list, int index, Boolean newValue) {
+    private void setLatest(
+            List<MetadataVersionsIndexEntry> list,
+            int index,
+            Boolean latest,
+            Boolean autoUpdate,
+            Boolean highPriority
+    ) {
         MetadataVersionsIndexEntry oldEntry = list.get(index);
         list.set(index, new MetadataVersionsIndexEntry(
-                newValue,
+                latest,
+                autoUpdate,
+                highPriority,
                 oldEntry.override(),
                 oldEntry.defaultFor(),
                 oldEntry.metadataVersion(),
@@ -257,6 +265,8 @@ class ScaffoldTask extends DefaultTask {
     private void updateLatestEntry(List<MetadataVersionsIndexEntry> entries) {
         int latestIndex = 0;
         VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
+        boolean autoUpdate = entries.stream().anyMatch(entry -> Boolean.TRUE.equals(entry.autoUpdate()));
+        boolean highPriority = entries.stream().anyMatch(entry -> Boolean.TRUE.equals(entry.highPriority()));
         for (int i = 1; i < entries.size(); i++) {
             VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
             if (latestVersion.compareTo(nextVersion) < 0) {
@@ -266,7 +276,14 @@ class ScaffoldTask extends DefaultTask {
         }
 
         for (int i = 0; i < entries.size(); i++) {
-            setLatest(entries, i, i == latestIndex ? true : null);
+            boolean latest = i == latestIndex;
+            setLatest(
+                    entries,
+                    i,
+                    latest ? Boolean.TRUE : null,
+                    latest && autoUpdate ? Boolean.TRUE : null,
+                    latest && highPriority ? Boolean.TRUE : null
+            );
         }
     }
 
@@ -332,6 +349,8 @@ class ScaffoldTask extends DefaultTask {
     private MetadataVersionsIndexEntry createIndexEntry(Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language, boolean latest) {
         return new MetadataVersionsIndexEntry(
                 latest ? Boolean.TRUE : null,
+                null, // auto-update
+                null, // high-priority
                 null, // override
                 null, // default-for
                 coordinates.version(), // metadata-version
@@ -361,57 +380,5 @@ class ScaffoldTask extends DefaultTask {
         }
         Files.createDirectories(Objects.requireNonNull(path.getParent()));
         Files.writeString(path, json, StandardCharsets.UTF_8);
-    }
-
-    private enum ScaffoldFlavor {
-        JAVA("/scaffold/build.gradle.template", "/scaffold/Test.java.template", "src/test/java/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.java"),
-        KOTLIN("/scaffold/build.gradle.kotlin.template", "/scaffold/Test.kt.template", "src/test/kotlin/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.kt"),
-        GROOVY("/scaffold/build.gradle.groovy.template", "/scaffold/Test.groovy.template", "src/test/groovy/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.groovy"),
-        SCALA2("/scaffold/build.gradle.scala2.template", "/scaffold/Test.scala.template", "src/test/scala/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.scala"),
-        SCALA3("/scaffold/build.gradle.scala3.template", "/scaffold/Test.scala.template", "src/test/scala/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.scala");
-
-        private final String buildTemplatePath;
-        private final String testTemplatePath;
-        private final String testFileTemplatePath;
-
-        ScaffoldFlavor(String buildTemplatePath, String testTemplatePath, String testFileTemplatePath) {
-            this.buildTemplatePath = buildTemplatePath;
-            this.testTemplatePath = testTemplatePath;
-            this.testFileTemplatePath = testFileTemplatePath;
-        }
-
-        static ScaffoldFlavor fromLanguage(LibraryLanguage language) {
-            if (language == null) {
-                return JAVA;
-            }
-            if (language.isKotlin()) {
-                return KOTLIN;
-            }
-            if (language.isGroovy()) {
-                return GROOVY;
-            }
-            if (language.isScala2()) {
-                return SCALA2;
-            }
-            if (language.isScala3()) {
-                return SCALA3;
-            }
-            if (language.isScala()) {
-                throw new IllegalStateException("Unsupported Scala version for scaffold generation: " + language.version());
-            }
-            throw new IllegalStateException("Unsupported language for scaffold generation: " + language.name());
-        }
-
-        String buildTemplatePath() {
-            return buildTemplatePath;
-        }
-
-        String testTemplatePath() {
-            return testTemplatePath;
-        }
-
-        String testFileTemplatePath() {
-            return testFileTemplatePath;
-        }
     }
 }

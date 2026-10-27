@@ -1,7 +1,77 @@
 {
-  "resources": [
+  "reflection" : [
     {
-      "glob": "logback.xml"
+      "condition" : {
+        "typeReached" : "org.apache.activemq.ActiveMQMessageTransformation"
+      },
+      "type" : "org_apache_activemq.activemq_client.ActiveMQSessionTest$ForeignMessage"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.ActiveMQSession"
+      },
+      "type" : "org_apache_activemq.activemq_client.ActiveMQSessionTest$ForeignMessage"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.command.DefaultUnresolvedDestinationTransformer"
+      },
+      "type" : "org_apache_activemq.activemq_client.DefaultUnresolvedDestinationTransformerTest$ForeignDestination",
+      "methods" : [
+        {
+          "name" : "isQueue",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "isTopic",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.util.ClassLoadingAwareObjectInputStream"
+      },
+      "type" : "org_apache_activemq.activemq_client.ClassLoadingAwareObjectInputStreamTest$Greeting"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.wireformat.ObjectStreamWireFormat"
+      },
+      "type" : "org_apache_activemq.activemq_client.ClassLoadingAwareObjectInputStreamTest$GreetingHandler",
+      "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.util.ClassLoadingAwareObjectInputStream"
+      },
+      "type" : {
+        "proxy" : [
+          "org_apache_activemq.activemq_client.ClassLoadingAwareObjectInputStreamTest$Greeting"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.wireformat.ObjectStreamWireFormat"
+      },
+      "type" : {
+        "proxy" : [
+          "org_apache_activemq.activemq_client.ClassLoadingAwareObjectInputStreamTest$Greeting"
+        ]
+      },
+      "serializable" : true
+    }
+  ],
+  "resources" : [
+    {
+      "glob" : "logback.xml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.ActiveMQSslConnectionFactory"
+      },
+      "glob" : "activemq/ssl/client-keystore.p12"
     }
   ]
 }

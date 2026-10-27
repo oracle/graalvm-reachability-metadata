@@ -15,7 +15,17 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs += '--add-opens=java.base/java.net=ALL-UNNAMED'
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--add-opens=java.base/java.net=ALL-UNNAMED')
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {

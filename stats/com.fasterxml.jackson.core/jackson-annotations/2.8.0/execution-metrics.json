@@ -1,0 +1,115 @@
+{
+  "fix_java_run_fail:2026-10-04": {
+    "timestamp": "2026-10-04T17:15:31.808905Z",
+    "library": "com.fasterxml.jackson.core:jackson-annotations:2.8.0",
+    "starting_commit": "bf300082fe489bbb3b509781d72b1423bc6b572c",
+    "ending_commit": "f4a639487c9d26095b507770d7b3ba496cee4a17",
+    "previous_library": "com.fasterxml.jackson.core:jackson-annotations:2.6.0",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.8.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1085,
+          "missed": 1846,
+          "ratio": 0.370181,
+          "total": 2931
+        },
+        "line": {
+          "covered": 169,
+          "missed": 302,
+          "ratio": 0.358811,
+          "total": 471
+        },
+        "method": {
+          "covered": 59,
+          "missed": 109,
+          "ratio": 0.35119,
+          "total": 168
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.6.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1050,
+          "missed": 634,
+          "ratio": 0.623515,
+          "total": 1684
+        },
+        "line": {
+          "covered": 165,
+          "missed": 97,
+          "ratio": 0.629771,
+          "total": 262
+        },
+        "method": {
+          "covered": 58,
+          "missed": 44,
+          "ratio": 0.568627,
+          "total": 102
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10426,
+      "issue_label": "fails-java-run",
+      "library": "com.fasterxml.jackson.core:jackson-annotations:2.8.0",
+      "summary": "The failure is a version-specific assertion in the existing 2.6.0 test, not missing setup. `JsonFormat.Shape` gained `NATURAL` in jackson-annotations 2.8, so the test's exact-order enum assertion fails against 2.8.0. The library is pure annotations with no extra dependencies, Docker images or environment needs, and nothing in the failure points to an unsupported Native Image mechanism. I did not check the library source or run anything; this rests on the log and my recall of the 2.8 change.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The 2.6.0 test hard-codes the exact `JsonFormat.Shape` values and their order. Version-specific enum assertions like this need to tolerate or account for values added in later releases, such as `NATURAL` in 2.8. Other annotation enums or attributes added after 2.6 may need the same treatment."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10426 [Automation] java run fails for com.fasterxml.jackson.core:jackson-annotations:2.8.0; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.fasterxml.jackson.core:jackson-annotations:2.6.0",
+      "new_version": "2.8.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 512
+    },
+    "metrics": {
+      "input_tokens_used": 67872,
+      "cached_input_tokens_used": 314112,
+      "output_tokens_used": 1337,
+      "iterations": 3,
+      "cost_usd": 0.5366,
+      "tested_library_loc": 169,
+      "metadata_entries": 4,
+      "previous_library_metadata_entries": 4,
+      "code_coverage_percent": 35.88,
+      "previous_library_coverage_percent": 62.98
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.fasterxml.jackson.core/jackson-annotations/2.8.0/reachability-metadata.json"
+    }
+  }
+}

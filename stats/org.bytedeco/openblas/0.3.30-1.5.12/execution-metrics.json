@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T06:53:29.243100Z",
+    "library": "org.bytedeco:openblas:0.3.30-1.5.12",
+    "starting_commit": "2568de847c62b6f8a359739462ec562db37ab1f0",
+    "ending_commit": "5e0123b21ed75bc9a51b9dff75a6d5d8ef08883c",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "0.3.30-1.5.12",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 172,
+          "missed": 1812,
+          "ratio": 0.086694,
+          "total": 1984
+        },
+        "line": {
+          "covered": 39,
+          "missed": 145,
+          "ratio": 0.211957,
+          "total": 184
+        },
+        "method": {
+          "covered": 8,
+          "missed": 87,
+          "ratio": 0.084211,
+          "total": 95
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10688,
+      "issue_label": "library-new-request",
+      "library": "org.bytedeco:openblas:0.3.30-1.5.12",
+      "summary": "org.bytedeco:openblas ships native OpenBLAS binaries only in platform-classifier jars, not the plain group:artifact:version jar the scaffold template adds; without the linux-x86_64 classifier on the test runtime classpath, JavaCPP's Loader cannot find libopenblas and any test touching the BLAS/LAPACK API throws UnsatisfiedLinkError in both JVM and native-image runs.",
+      "deterministic_setup": [],
+      "agent_guidance": "No environment variables or system properties are required for the default backend: JavaCPP's Loader auto-extracts and loads the bundled native libraries once the linux-x86_64 classifier jar above is on the test runtime classpath. (Only if a test deliberately wants to swap the BLAS backend, e.g. to Intel MKL, would it need -Dorg.bytedeco.openblas.load=<lib> — not needed for normal OpenBLAS usage.)",
+      "risks": [
+        "Chose the single linux-x86_64 classifier over the upstream-recommended org.bytedeco:openblas-platform aggregator to match repo convention and avoid pulling ~120MB of native jars for platforms the CI/native-image build never runs on; this assumes tests only need to execute on Linux x86_64, consistent with how other native-classifier libraries in this repo are set up.",
+        "Local Gradle and native-image verification remain authoritative — if generated tests end up needing additional OpenBLAS entry points not covered by the bundled libjniopenblas.so, that would surface as a runtime/link failure during verification, not from this research."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10688 Support for org.bytedeco:openblas:0.3.30-1.5.12; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 34,
+      "output_tokens_used": 16860
+    },
+    "metrics": {
+      "input_tokens_used": 68876,
+      "cached_input_tokens_used": 679040,
+      "output_tokens_used": 6484,
+      "iterations": 5,
+      "cost_usd": 0.8784,
+      "generated_loc": 36,
+      "tested_library_loc": 39,
+      "metadata_entries": 247,
+      "code_coverage_percent": 21.2
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bytedeco/openblas/0.3.30-1.5.12/reachability-metadata.json"
+    }
+  }
+}

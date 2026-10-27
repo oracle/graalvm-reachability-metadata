@@ -1,0 +1,108 @@
+{
+  "base_commit": "e0a192ea7c9b0dafb9e6d59c9406889c787f7b96",
+  "branch": "ai/kimeta/fix-javac-ch.qos.logback-logback-classic-1.6.0-forge-10311-20261002224550558016-148b0f1f7300",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "d3b71482f151b28e8ce6daf3a4dc1d64c67656b4",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10311,
+  "library": {
+    "artifact": "logback-classic",
+    "coordinates": "ch.qos.logback:logback-classic:1.6.0",
+    "group": "ch.qos.logback",
+    "version": "1.6.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "e0a192ea7c9b0dafb9e6d59c9406889c787f7b96",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpgw4irs62"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10311-691fe4e1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=ch.qos.logback:logback-classic"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/ch.qos.logback/logback-classic/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10311-691fe4e1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "23698f0132938709276c32107ad78e0ea1418e24",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/ch.qos.logback/logback-classic/1.6.0/stats.json",
+      "tests/src/ch.qos.logback/logback-classic/1.6.0/src/test/java/org/graalvm/logback/RemoteAppenderStreamClientTest.java",
+      "tests/src/ch.qos.logback/logback-classic/1.6.0/src/test/java/org/graalvm/logback/SocketNodeTest.java",
+      "tests/src/ch.qos.logback/logback-classic/1.6.0/src/test/java/org/graalvm/logback/SocketReceiverTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "FS-test-contract.1.7 requires every explicit socket, connection, and bounded I/O wait to be at least 10 seconds. RemoteAppenderStreamClientTest, SocketNodeTest, and SocketReceiverTest each set SOCKET_TIMEOUT_MILLIS to 5,000 and used it for socket operations and related bounded waits.",
+    "finding_title": "Explicit I/O timeouts below the required 10-second floor",
+    "fix_note": "Raised SOCKET_TIMEOUT_MILLIS from 5,000 to 10,000 in the three affected 1.6.0 tests and retained the regenerated 1.6.0 library statistics produced by finalization. This brings the contribution inside the timeout contract without weakening coverage.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full target-coordinate diff, local gate evidence, and resolved statistics. The 1.6.0 compile repair replaces the removed converter-map API with PatternLayout.getDefaultConverterSupplierMap() while retaining assertions for every default converter; related API adaptations preserve the existing scenarios, native-image execution remains enabled, the index and metadata use the accepted format, and the diff remains within the coordinate's allowed files. The repair coverage gate passes overall (16/16 to 16/17), for reflection (15/15 to 15/15), and for resources (1/1 to 1/2) because each new covered-call count is at least the previous count. After the timeout repair, Forge finalization passed current-defaults on latest GraalVM, future-defaults on latest GraalVM, and current-defaults on GraalVM 25, plus metadata splitting/validation, Spotless, Checkstyle, and statistics generation; the required repeat pass made no further publishable change.",
+    "session_id": "c25b63b8e0d64195"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/ch.qos.logback/logback-classic/1.6.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1390336,
+      "code_coverage_percent": 31.94,
+      "cost_usd": 1.9928,
+      "input_tokens_used": 191253,
+      "iterations": 6,
+      "metadata_entries": 36,
+      "output_tokens_used": 11376,
+      "previous_library_coverage_percent": 31.36,
+      "previous_library_metadata_entries": 241,
+      "previous_library_test_only_metadata_entries": 74,
+      "test_only_metadata_entries": 78,
+      "tested_library_loc": 1608
+    },
+    "timestamp": "2026-10-02T22:45:50.558016Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "logback-classic",
+    "coordinates": "ch.qos.logback:logback-classic:1.5.29",
+    "group": "ch.qos.logback",
+    "version": "1.5.29"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10311-20261002224550558016-148b0f1f7300",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-02T22:45:50.558016Z"
+}

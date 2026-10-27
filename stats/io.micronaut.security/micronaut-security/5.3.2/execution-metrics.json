@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-09-18": {
+    "timestamp": "2026-09-18T05:46:27.402783Z",
+    "library": "io.micronaut.security:micronaut-security:5.3.2",
+    "starting_commit": "e4296927d229654cfbd9c3b156e14e17cc044152",
+    "ending_commit": "4fa1ef97c1dc8f5c3545b840498b27af19627ddb",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.3.2",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1668,
+          "missed": 6584,
+          "ratio": 0.202133,
+          "total": 8252
+        },
+        "line": {
+          "covered": 417,
+          "missed": 1601,
+          "ratio": 0.20664,
+          "total": 2018
+        },
+        "method": {
+          "covered": 161,
+          "missed": 535,
+          "ratio": 0.231322,
+          "total": 696
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10075,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.security:micronaut-security:5.3.2",
+      "summary": "micronaut-security's core beans (e.g. SecurityFilter implements io.micronaut.http.filter.HttpServerFilter) reference io.micronaut:micronaut-http types that are not a declared dependency of micronaut-security itself (confirmed via the published Gradle module metadata for 5.3.2, which lists only micronaut-inject, micronaut-serde-api, jakarta.validation-api, micronaut-security-annotations, and micronaut-reactor). Without micronaut-http on the test classpath, even starting an ApplicationContext will fail with NoClassDefFoundError when Micronaut tries to instantiate the SecurityFilter singleton bean. The sibling module io.micronaut.security:micronaut-security-oauth2 (already in this repo) hit the same gap and added testImplementation 'io.micronaut:micronaut-http:5.1.11' as a fix; that pinned version matches the micronaut-core-bom import (5.1.11) used by micronaut-security:5.3.2.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http:5.1.11",
+          "scope": "testImplementation",
+          "reason": "micronaut-security's own compile/runtime dependencies (per its Gradle module metadata) do not include micronaut-http, yet core classes such as SecurityFilter implement io.micronaut.http.filter.HttpServerFilter and other classes reference HttpRequest/HttpAttributes/HttpMethod/HttpStatus directly. Sta\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Prefer bean-level tests via io.micronaut.context.ApplicationContext.run(...) (as done in the existing micronaut-security-jwt and micronaut-security-oauth2 tests) rather than standing up a full HTTP server — micronaut-http-server-netty is not needed for meaningful coverage of authentication providers, SecurityRule/SecurityFilter wiring, password encoders, token readers/writers, or session/cookie handlers. If a test exercises JSON serialization of security objects (e.g. login/token responses under io.micronaut.security.endpoints or io.micronaut.security.token.render), watch for whether micronaut-serde-api alone is sufficient at runtime or a serde implementation (e.g. micronaut-serde-jackson) is additionally required — verify via actual test/native-image runs rather than assuming either way.",
+      "risks": [
+        "This analysis is based on static inspection of the published POM/Gradle module metadata and jar bytecode, not an actual Gradle build; if micronaut-http is instead resolved transitively through some other already-generated dependency, the extra testImplementation entry would be redundant (harmless but unnecessary) — local Gradle verification should confirm.",
+        "If generated tests end up needing serde/Jackson support for endpoint response bodies, an additional dependency (e.g. micronaut-serde-jackson) may be needed beyond micronaut-http; this was not confirmed as required and is left as guidance to verify during generation rather than asserted as deterministic setup."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http:5.1.11",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.security/micronaut-security/5.3.2/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10075 Support for io.micronaut.security:micronaut-security:5.3.2; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 34,
+      "output_tokens_used": 10051
+    },
+    "metrics": {
+      "input_tokens_used": 243738,
+      "cached_input_tokens_used": 4032896,
+      "output_tokens_used": 22265,
+      "iterations": 9,
+      "cost_usd": 3.9031,
+      "generated_loc": 245,
+      "tested_library_loc": 417,
+      "metadata_entries": 3,
+      "test_only_metadata_entries": 67,
+      "code_coverage_percent": 20.66
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.security/micronaut-security/5.3.2/reachability-metadata.json"
+    }
+  }
+}

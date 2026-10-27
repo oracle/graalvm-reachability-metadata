@@ -109,6 +109,58 @@ class FetchExistingLibrariesWithNewerVersionsTaskTests {
         assertThat(newerVersions).containsExactly("1.1.0", "1.2.0");
     }
 
+    @Test
+    void autoUpdateRequiresTheMarkerOnTheLatestEntry() throws IOException {
+        Path disabledIndex = tempDir.resolve("disabled-index.json");
+        Files.writeString(disabledIndex, """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": ["1.0.0"],
+                    "allowed-packages": ["com.example"]
+                  }
+                ]
+                """);
+        Path staleMarkerIndex = tempDir.resolve("stale-marker-index.json");
+        Files.writeString(staleMarkerIndex, """
+                [
+                  {
+                    "auto-update": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": ["1.0.0"],
+                    "allowed-packages": ["com.example"]
+                  },
+                  {
+                    "latest": true,
+                    "metadata-version": "2.0.0",
+                    "tested-versions": ["2.0.0"],
+                    "allowed-packages": ["com.example"]
+                  }
+                ]
+                """);
+        Path enabledIndex = tempDir.resolve("enabled-index.json");
+        Files.writeString(enabledIndex, """
+                [
+                  {
+                    "latest": true,
+                    "auto-update": true,
+                    "high-priority": true,
+                    "metadata-version": "2.0.0",
+                    "tested-versions": ["2.0.0"],
+                    "allowed-packages": ["com.example"]
+                  }
+                ]
+                """);
+
+        assertThat(FetchExistingLibrariesWithNewerVersionsTask.isAutoUpdateEnabled(disabledIndex.toFile()))
+                .isFalse();
+        assertThat(FetchExistingLibrariesWithNewerVersionsTask.isAutoUpdateEnabled(staleMarkerIndex.toFile()))
+                .isFalse();
+        assertThat(FetchExistingLibrariesWithNewerVersionsTask.isAutoUpdateEnabled(enabledIndex.toFile()))
+                .isTrue();
+    }
+
     private HttpServer startServer(ThrowingExchangeHandler handler) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
         server.createContext("/", exchange -> {

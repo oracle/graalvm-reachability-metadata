@@ -1,0 +1,130 @@
+{
+  "fix_javac_fail:2026-10-03": {
+    "timestamp": "2026-10-03T06:38:24.007964Z",
+    "library": "org.eclipse.jetty:jetty-io:10.0.0",
+    "starting_commit": "b3b4da8be91ac70f9ee98b60fe711069155afbac",
+    "ending_commit": "9f6c9c838462f7d8728ca02718f6391080544592",
+    "previous_library": "org.eclipse.jetty:jetty-io:9.4.47.v20220610",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "10.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2909,
+          "missed": 9773,
+          "ratio": 0.22938,
+          "total": 12682
+        },
+        "line": {
+          "covered": 759,
+          "missed": 2346,
+          "ratio": 0.244444,
+          "total": 3105
+        },
+        "method": {
+          "covered": 210,
+          "missed": 441,
+          "ratio": 0.322581,
+          "total": 651
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "9.4.47.v20220610",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3075,
+          "missed": 11098,
+          "ratio": 0.216962,
+          "total": 14173
+        },
+        "line": {
+          "covered": 779,
+          "missed": 2515,
+          "ratio": 0.236491,
+          "total": 3294
+        },
+        "method": {
+          "covered": 224,
+          "missed": 509,
+          "ratio": 0.305593,
+          "total": 733
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10386,
+      "issue_label": "fails-javac-compile",
+      "library": "org.eclipse.jetty:jetty-io:10.0.0",
+      "summary": "The javac errors are source incompatibilities between the existing 9.4.47 tests and the 10.0.0 jetty-io API: `ChannelEndPoint` is no longer in `org.eclipse.jetty.io`, `Connection.onClose(Throwable)` is now abstract, and `IncludeExcludeConnectionStatistics.getConnectionStatisticsGroups()` is gone. The fix is to rewrite the tests against the 10.0.0 API. No extra dependency, Docker image or environment setup is needed, because jetty-io brings in jetty-util transitively and the tests only use local sockets.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The 10.0.0 tests must not be copied from the 9.4.x tests unchanged. Port them to the 10.0.0 API: use the 10.x endpoint types in place of `ChannelEndPoint`, implement `Connection.onClose(Throwable)`, and use the 10.x statistics accessors.",
+        "This conclusion comes from the failure log and my knowledge of the Jetty 9.4 to 10 API changes. I did not open the 10.0.0 jar or run a build to confirm each replacement."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10386 [Automation] javac compile fails for org.eclipse.jetty:jetty-io:10.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.eclipse.jetty:jetty-io:9.4.47.v20220610",
+      "new_version": "10.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 769
+    },
+    "metrics": {
+      "input_tokens_used": 47100,
+      "cached_input_tokens_used": 245888,
+      "output_tokens_used": 2619,
+      "iterations": 3,
+      "cost_usd": 0.437,
+      "tested_library_loc": 759,
+      "metadata_entries": 3,
+      "test_only_metadata_entries": 164,
+      "previous_library_metadata_entries": 11,
+      "previous_library_test_only_metadata_entries": 162,
+      "code_coverage_percent": 24.44,
+      "previous_library_coverage_percent": 23.65
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.eclipse.jetty/jetty-io/10.0.0/reachability-metadata.json"
+    }
+  }
+}

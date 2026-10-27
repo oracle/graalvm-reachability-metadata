@@ -16,7 +16,7 @@ Repo layout (§AR-forge-architecture):
 
 ### Repository mode
 
-Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory (§WF-forge-workflow-drivers, §FS-durable-generation-logs).
+Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory (§AR-forge-drivers, §FS-durable-generation-logs).
 
 ### Prerequisites
 
@@ -45,7 +45,7 @@ Script: `ai_workflows/drivers/fix_javac_fail.py`
 Purpose:
 - Create/update the versioned test module in reachability-metadata.
 - Run Gradle tests and, if native test fails, collect metadata and re-run.
-- Keep the test meaningful (do not trivialize), while adapting to the new library version (§WF-java-fail-fix-workflow).
+- Keep the test meaningful (do not trivialize), while adapting to the new library version (§AR-java-fail-fix-workflow).
 
 Usage:
 ```bash
@@ -77,7 +77,8 @@ python3 ai_workflows/drivers/fix_javac_fail.py \
 ```
 
 Options:
-- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `javac_iterative_with_coverage_sources_pi_gpt-5.5`.
+- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `javac_iterative_with_coverage_sources_pi_gpt-5.6-sol`.
+- `--dynamic-access-class-threshold N` skips oversized post-repair exploration; publication opens a fixed-version `library-update-request`, whose normal workflow owns chunking. `0` disables the check for direct CLI use. Issue-driven Forge runs supply `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` automatically.
 - `-v`, `--verbose` enable verbose agent output.
 
 Notes:
@@ -92,7 +93,7 @@ Purpose:
 - Iteratively generate a meaningful, cohesive JUnit test suite for library using AI.
 - Keep indices up to date and create the versioned metadata directory.
 - Generates metadata for the new library.
-- Script results are written in `output/results.json` (§WF-dynamic-access-workflow, §WF-forge-workflow-drivers).
+- Script results are written in `output/results.json` (§AR-dynamic-access-workflow, §AR-forge-drivers).
 
 Usage:
 ```bash
@@ -122,7 +123,7 @@ python3 ai_workflows/drivers/add_new_library_support.py \
 ```
 
 Options:
-- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `dynamic_access_main_sources_pi_gpt-5.5` (Pi agent).
+- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `optimistic_dynamic_access_iterative_pi_gpt-5.6-sol` (Pi agent).
 - `--keep-tests-without-dynamic-access` keeps generated tests for dynamic-access workflows even if no dynamic-access call sites are covered.
 - `-v`, `--verbose` enable verbose agent output.
 
@@ -132,13 +133,13 @@ Notes:
 
 ### Open a PR with the fixes
 
-Script: git_scripts/make_pr_javac_fix.py
+Script: git_scripts/publish_javac_fix.py
 
 Description: Push changes to your fork/branch and open a PR against oracle/graalvm-reachability-metadata.
 
 Usage:
 ```bash
-python3 git_scripts/make_pr_javac_fix.py \
+python3 git_scripts/publish_javac_fix.py \
   --coordinates <group:artifact:old_version> \
   --new-version <new_version> \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
@@ -147,7 +148,7 @@ python3 git_scripts/make_pr_javac_fix.py \
 
 Example:
 ```bash
-python3 git_scripts/make_pr_javac_fix.py \
+python3 git_scripts/publish_javac_fix.py \
   --coordinates org.postgresql:postgresql:42.7.3 \
   --new-version 42.7.4 \
   --reachability-metadata-path /path/to/graalvm-reachability-metadata \
@@ -156,17 +157,17 @@ python3 git_scripts/make_pr_javac_fix.py \
 
 Requirements:
 - gh CLI must be installed and authenticated (gh auth login).
-- Run after the fix_javac_fail.py workflow has produced a successful result and metrics (§GIT-forge-publication).
+- Run after the fix_javac_fail.py workflow has produced a successful result and metrics (§AR-forge-publication).
 
 ### Open a PR for new library support
 
-Script: git_scripts/make_pr_new_library_support.py
+Script: git_scripts/publish_new_library_support.py
 
 Description: Push changes that add support for a new library and open a PR against oracle/graalvm-reachability-metadata.
 
 Usage:
 ```bash
-python3 git_scripts/make_pr_new_library_support.py \
+python3 git_scripts/publish_new_library_support.py \
   --coordinates <group:artifact:version> \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
   [--metrics-repo-root /path/to/metrics_repo_root]
@@ -174,7 +175,7 @@ python3 git_scripts/make_pr_new_library_support.py \
 
 Example:
 ```bash
-python3 git_scripts/make_pr_new_library_support.py \
+python3 git_scripts/publish_new_library_support.py \
   --coordinates org.example:lib:1.2.3 \
   --reachability-metadata-path /path/to/graalvm-reachability-metadata \
   --metrics-repo-root /path/to/metrics_repo_root
@@ -182,13 +183,13 @@ python3 git_scripts/make_pr_new_library_support.py \
 
 Requirements:
 - gh CLI must be installed and authenticated (gh auth login).
-- Run after the add_new_library_support.py workflow has produced a successful result and metrics written under `<metrics_repo_root>/new_library_support/results.json` (§GIT-forge-publication).
+- Run after the add_new_library_support.py workflow has produced a successful result and metrics written under `<metrics_repo_root>/new_library_support/results.json` (§AR-forge-publication).
 
 ### Pipeline: Fix javac test failures + PR creation
 
 Script: complete_pipelines/fix_javac_create_pr.py
 
-Description: Attempts to run the fix workflow and, if successful, opens a PR automatically. This pipeline is experimental; prefer the explicit two-step flow above for reliability.
+Description: Attempts to run the fix workflow and, if successful, pushes the verified publication branch automatically; trusted GitHub Actions then open the PR. This pipeline is experimental; prefer the explicit two-step flow above for reliability.
 
 Usage:
 ```bash
@@ -206,7 +207,7 @@ python3 complete_pipelines/fix_javac_create_pr.py \
 
 Script: complete_pipelines/add_new_library_support_create_pr.py
 
-Description: Runs the add-new-library workflow and, if it exits successfully, opens a PR automatically. This pipeline is experimental; prefer the explicit two-step flow above for reliability.
+Description: Runs the add-new-library workflow and, if it exits successfully, pushes the verified publication branch automatically; trusted GitHub Actions then open the PR. This pipeline is experimental; prefer the explicit two-step flow above for reliability.
 
 Usage:
 ```bash
@@ -221,7 +222,7 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
 
 ### Benchmark runner
 
-Script: `benchmarks/benchmark_runner.py` (§BENCH-forge-generation-benchmarking)
+Script: `benchmarks/benchmark_runner.py` (§FS-forge-generation-benchmarking)
 
 Description:
 - Run `ai_workflows/drivers/add_new_library_support.py` for a predefined set of libraries.
@@ -268,7 +269,7 @@ These are invoked automatically by workflow drivers, but can be run standalone f
 
 ### Agent session logs
 
-Agents are registered via `Agent.register(...)` and selected per-strategy through the `agent` field in `strategies/predefined_strategies.json`; see [docs/agent.md](docs/agent.md) for the agent API and Pi adapter architecture. Supported agents:
+Agents are registered via `Agent.register(...)` and selected per-strategy through the `agent` field in `strategies/predefined_strategies.json`; see [docs/architecture/agent.md](docs/architecture/agent.md) for the agent API and Pi adapter architecture. Supported agents:
 
 - `pi` — default for the shipped strategies. Driven through `pi --mode rpc` by `PiAgent` (`ai_workflows/agents/pi_agent.py`). Per-turn transcripts are written to `logs/pi-<action>-<library>-<timestamp>.log` in this repository (see `utility_scripts/pi_logs.py`). Pi session files are stored under Pi's default session directory (`--session-dir` may override it via `PiRpcClient`). Select with strategy entries whose `agent` is `"pi"`; set `"provider": "openrouter"` to route through OpenRouter.
 - `codex` — driven through `codex` by `CodexAgent`. Codex threads act as durable session identities.
@@ -294,7 +295,6 @@ that persistent layer was configured without printing the instruction text.
       library_version="1.2.3",
       agent=None,  # Agent implementation exposing token counters
       global_iterations=3,
-      tests_root="/abs/path/to/tests/root",
       strategy_name="basic_iterative",
       status="success",
   )
@@ -358,7 +358,7 @@ If you want to run an existing workflow with a different model or tuned paramete
   "description": "Iterative strategy with higher iteration limits",
   "agent": "pi",
   "workflow": "basic_iterative",
-  "model": "oca/gpt-5.4",
+  "model": "gpt-5.4",
   "prompts": {
     "initial": "prompt_templates/initial/basic_initial.md",
     "after-successful-iteration": "prompt_templates/after-successful-iteration/basic_after_success.md",
@@ -454,7 +454,7 @@ Composite strategies (run a primary workflow, then refine dynamic-access coverag
 | Strategy name | Agent | Primary workflow |
 |---|---|---|
 | `javac_iterative_with_coverage_sources_pi_gpt-5.4` | `pi` | `javac_iterative` |
-| `optimistic_dynamic_access_iterative_pi_gpt-5.4` | `pi` | `optimistic_dynamic_access` |
+| `optimistic_dynamic_access_iterative_pi_gpt-5.4` | `pi` | `bulk_dynamic_access` |
 
 #### Running a dynamic-access strategy
 
@@ -479,7 +479,7 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
 ```
 
 For the detailed behavior, implementation entry points, and sequence diagrams,
-see `docs/workflows/dynamic-access.md`.
+see `docs/functional-spec/workflows/workflows.md`.
 
 ### Quick reference
 
@@ -488,9 +488,9 @@ see `docs/workflows/dynamic-access.md`.
 - Add support for a new library:
   `python3 ai_workflows/drivers/add_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>]`
 - Open PR with metrics:
-  `python3 git_scripts/make_pr_javac_fix.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo-root>]`
+  `python3 git_scripts/publish_javac_fix.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo-root>]`
 - Open PR for new library support:
-  `python3 git_scripts/make_pr_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-root <metrics-repo-root>]`
+  `python3 git_scripts/publish_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-root <metrics-repo-root>]`
 - Complete javac fix pipeline:
   `python3 complete_pipelines/fix_javac_create_pr.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>] [--strategy-name NAME]`
 - Complete add-new-library pipeline:

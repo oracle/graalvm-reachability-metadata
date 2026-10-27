@@ -1,0 +1,135 @@
+{
+  "fix_javac_fail:2026-09-29": {
+    "timestamp": "2026-09-29T13:43:58.393766Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-el:10.0.0",
+    "starting_commit": "d904b445ac034e3d470af221fd39b2fadb25d70f",
+    "ending_commit": "71f7b9d21301184fabcb6fc44cace7c0dab5c30e",
+    "previous_library": "org.apache.tomcat.embed:tomcat-embed-el:9.0.83",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "10.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.97561,
+            "coveredCalls": 40,
+            "totalCalls": 41
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.933333,
+        "coveredCalls": 42,
+        "totalCalls": 45
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10109,
+          "missed": 22465,
+          "ratio": 0.31034,
+          "total": 32574
+        },
+        "line": {
+          "covered": 2220,
+          "missed": 5216,
+          "ratio": 0.298548,
+          "total": 7436
+        },
+        "method": {
+          "covered": 385,
+          "missed": 674,
+          "ratio": 0.363551,
+          "total": 1059
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "9.0.83",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 41,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 41,
+        "totalCalls": 41
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10123,
+          "missed": 23176,
+          "ratio": 0.304003,
+          "total": 33299
+        },
+        "line": {
+          "covered": 2233,
+          "missed": 5494,
+          "ratio": 0.288987,
+          "total": 7727
+        },
+        "method": {
+          "covered": 384,
+          "missed": 696,
+          "ratio": 0.355556,
+          "total": 1080
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9371,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.tomcat.embed:tomcat-embed-el:10.0.0",
+      "summary": "The javac failure is not a setup problem. Tomcat 10.0.0 moved to Jakarta EE 9, so tomcat-embed-el 10.0.0 ships `jakarta.el.*` instead of `javax.el.*`. The 9.0.83 tests still import `javax.el.*` and can't compile against the 10.0.0 jar. The 10.0.0 tests need to be generated against the `jakarta.el` API, and the artifact already provides everything they need, so no extra dependency, Docker image, or system property is needed. I did not open the 10.0.0 jar or the repository, so this rests on knowledge of the Tomcat 10 namespace change.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The 9.0.83 tests can't be copied over. Write the 10.0.0 tests against `jakarta.el`, and register the service file as META-INF/services/jakarta.el.ExpressionFactory instead of the javax name.",
+        "Tomcat's internal `org.apache.el` classes still exist in 10.0.0. Other 9.x-specific internals that the old tests touch may have changed."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9371 [Automation] javac compile fails for org.apache.tomcat.embed:tomcat-embed-el:10.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "19 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.tomcat.embed:tomcat-embed-el:9.0.83",
+      "new_version": "10.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 919
+    },
+    "metrics": {
+      "input_tokens_used": 384563,
+      "cached_input_tokens_used": 4459520,
+      "output_tokens_used": 23627,
+      "iterations": 16,
+      "cost_usd": 0.9724,
+      "tested_library_loc": 2220,
+      "metadata_entries": 46,
+      "test_only_metadata_entries": 102,
+      "previous_library_metadata_entries": 44,
+      "previous_library_test_only_metadata_entries": 53,
+      "code_coverage_percent": 29.85,
+      "previous_library_coverage_percent": 28.9
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-el/10.0.0/reachability-metadata.json"
+    }
+  }
+}

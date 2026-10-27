@@ -1,0 +1,118 @@
+{
+  "fix_javac_fail:2026-10-03": {
+    "timestamp": "2026-10-03T03:00:29.473328Z",
+    "library": "org.neo4j.bolt:neo4j-bolt-connection-pooled:7.0.0",
+    "starting_commit": "58dce4e7665a28ab47e98d12685f66f26cfccabd",
+    "ending_commit": "54f660d328bc43dc2cb83e24ea221716c157b0f5",
+    "previous_library": "org.neo4j.bolt:neo4j-bolt-connection-pooled:6.0.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "7.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1263,
+          "missed": 392,
+          "ratio": 0.763142,
+          "total": 1655
+        },
+        "line": {
+          "covered": 279,
+          "missed": 109,
+          "ratio": 0.719072,
+          "total": 388
+        },
+        "method": {
+          "covered": 67,
+          "missed": 25,
+          "ratio": 0.728261,
+          "total": 92
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "6.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1298,
+          "missed": 390,
+          "ratio": 0.768957,
+          "total": 1688
+        },
+        "line": {
+          "covered": 290,
+          "missed": 107,
+          "ratio": 0.730479,
+          "total": 397
+        },
+        "method": {
+          "covered": 66,
+          "missed": 25,
+          "ratio": 0.725275,
+          "total": 91
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10388,
+      "issue_label": "fails-javac-compile",
+      "library": "org.neo4j.bolt:neo4j-bolt-connection-pooled:7.0.0",
+      "summary": "The failure is a test-source API mismatch. The 6.0.0 test uses APIs that 7.0.0 removed or changed: MetricsListener is gone, PoolObservationProvider replaces it, and writeAndFlush and connect now take an ImmutableObservation. Regenerating the test against 7.0.0 fixes it. The 7.0.0 POM lists only neo4j-bolt-connection as a compile dependency, and the rest are test-scoped, so no extra dependency, Docker image, or system property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The 7.0.0 API changed. The test must adopt the new signatures: PoolObservationProvider in place of MetricsListener, and an ImmutableObservation argument on writeAndFlush and connect.",
+        "I checked only the 7.0.0 POMs, not the 7.0.0 sources. I did not trace any dynamic-access mechanism, so there is no basis for a skip verdict."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10388 [Automation] javac compile fails for org.neo4j.bolt:neo4j-bolt-connection-pooled:7.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.neo4j.bolt:neo4j-bolt-connection-pooled:6.0.0",
+      "new_version": "7.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 809
+    },
+    "metrics": {
+      "input_tokens_used": 71206,
+      "cached_input_tokens_used": 947968,
+      "output_tokens_used": 9377,
+      "iterations": 4,
+      "cost_usd": 1.1113,
+      "tested_library_loc": 279,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 2,
+      "previous_library_metadata_entries": 0,
+      "previous_library_test_only_metadata_entries": 2,
+      "code_coverage_percent": 71.91,
+      "previous_library_coverage_percent": 73.05
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.neo4j.bolt/neo4j-bolt-connection-pooled/7.0.0/reachability-metadata.json"
+    }
+  }
+}

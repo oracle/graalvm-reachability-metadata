@@ -1,0 +1,138 @@
+{
+  "base_commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+  "branch": "ai/kimeta/add-lib-support-com.github.erosb-everit-json-schema-1.14.6-chunked-forge-10226-20260929211249860357-07400085f652",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10226,
+  "library": {
+    "artifact": "everit-json-schema",
+    "coordinates": "com.github.erosb:everit-json-schema:1.14.6",
+    "group": "com.github.erosb",
+    "version": "1.14.6"
+  },
+  "local_ci_verification": {
+    "base_commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpdhgbiai5"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10226-a69117b1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.github.erosb:everit-json-schema"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.github.erosb/everit-json-schema/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10226-a69117b1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "b6142ae0ec863e304aece77631d555ced96140e0",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is limited to com.github.erosb:everit-json-schema:1.14.6 and uses only reachability-metadata.json. The public, version-agnostic test exercises classpath schema loading and validation through the library API without Native Image skips, visibility bypasses, stubs, direct dynamic-access shortcuts, or unsupported build flags. Resolved statistics report 1/1 dynamic-access calls covered (100%) with one reported test-only metadata entry, so the coverage and mismatch gates pass. Local index gates passed, and the Forge finalization command completed all three test lanes, metadata and style checks, generated-test validation, deterministic package handling, and statistics generation without changing the publishable tree.",
+    "session_id": "46b342efdfbe45e0"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/com.github.erosb/everit-json-schema/1.14.6/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 923136,
+      "code_coverage_percent": 28.05,
+      "cost_usd": 0.1894,
+      "generated_loc": 27,
+      "input_tokens_used": 73583,
+      "iterations": 3,
+      "metadata_entries": 0,
+      "output_tokens_used": 3914,
+      "test_only_metadata_entries": 1,
+      "tested_library_loc": 1020
+    },
+    "timestamp": "2026-09-29T21:12:49.860357Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10226-20260929211249860357-07400085f652",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.Class#getResourceAsStream(java.lang.String) <- org.everit.json.schema.loader.ClassPathAwareSchemaClient.loadFromClasspath(ClassPathAwareSchemaClient.java:38) (line 38)"
+      ],
+      "metadata_rules": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4539,
+          "missed": 12022,
+          "ratio": 0.274078,
+          "total": 16561
+        },
+        "line": {
+          "covered": 1020,
+          "missed": 2617,
+          "ratio": 0.280451,
+          "total": 3637
+        },
+        "method": {
+          "covered": 363,
+          "missed": 813,
+          "ratio": 0.308673,
+          "total": 1176
+        }
+      },
+      "version": "1.14.6"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-29T21:12:49.860357Z"
+}

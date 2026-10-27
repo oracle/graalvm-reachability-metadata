@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-10-05": {
+    "timestamp": "2026-10-05T13:31:02.522821Z",
+    "library": "dev.langchain4j:langchain4j-voyage-ai:1.21.0-beta31",
+    "starting_commit": "45b88c1e7ec280e392e94bccef06a8c5278f8ba6",
+    "ending_commit": "a924aa764d1dc09e1e3db8f28d202f10c4371564",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "1.21.0-beta31",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1642,
+          "missed": 422,
+          "ratio": 0.795543,
+          "total": 2064
+        },
+        "line": {
+          "covered": 417,
+          "missed": 111,
+          "ratio": 0.789773,
+          "total": 528
+        },
+        "method": {
+          "covered": 143,
+          "missed": 40,
+          "ratio": 0.781421,
+          "total": 183
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10470,
+      "issue_label": "library-new-request",
+      "library": "dev.langchain4j:langchain4j-voyage-ai:1.21.0-beta31",
+      "summary": "Standard scaffold suffices (Jackson/http-client-jdk resolve transitively via testImplementation, no Docker/network needed); the only risk is tests silently skipping the Jackson response mapping if pointed at the real API instead of a local fake endpoint.",
+      "deterministic_setup": [],
+      "agent_guidance": "Point VoyageAiEmbeddingModel.builder().baseUrl(...) / VoyageAiScoringModel.builder().baseUrl(...) at a local fake HTTP endpoint (e.g. com.sun.net.httpserver.HttpServer, the pattern already used in ~44 other TCK tests in this repo) instead of the real https://api.voyageai.com default — the client only validates apiKey is non-blank (no real auth), so any placeholder string works for both apiKey and modelName. Have the fake endpoint return canned JSON matching Voyage's actual snake_case wire format so the reflective Jackson mapping is actually exercised: for POST /embeddings -> {\"object\":...,\"data\":[{\"object\":...,\"embedding\":[...],\"index\":0}],\"model\":...,\"usage\":{\"total_tokens\":...}} (EmbeddingResponse/EmbeddingResponse.EmbeddingData); for POST /rerank -> {\"object\":...,\"data\":[{\"object\":...,\"relevance_score\":0.9,\"index\":0}],\"model\":...,\"usage\":{\"total_tokens\":...}} (RerankResponse/RerankResponse.RerankData). Exercise both VoyageAiEmbeddingModel.embed/embedAll (via /embeddings) and VoyageAiScoringModel.scoreAll (via /rerank) if practical, since they hit distinct response DTOs. A plain JSON array for the embedding field is sufficient; no need to cover the base64-encoded alternative form.",
+      "risks": [
+        "If the generated test exercises the model against the real default baseUrl with a placeholder API key, the call fails on auth/network before ever reaching the JSON response deserialization — producing a passing-looking test that exercises none of the Jackson reflection this issue exists to cover."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10470 Support for dev.langchain4j:langchain4j-voyage-ai:1.21.0-beta31; label=library-new-request; body_chars=1225"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 26,
+      "output_tokens_used": 15089
+    },
+    "metrics": {
+      "input_tokens_used": 375210,
+      "cached_input_tokens_used": 5615616,
+      "output_tokens_used": 40114,
+      "iterations": 6,
+      "cost_usd": 1.1775,
+      "generated_loc": 315,
+      "tested_library_loc": 417,
+      "metadata_entries": 184,
+      "test_only_metadata_entries": 86,
+      "code_coverage_percent": 78.98
+    },
+    "artifacts": {
+      "metadata_file": "metadata/dev.langchain4j/langchain4j-voyage-ai/1.21.0-beta31/reachability-metadata.json"
+    }
+  }
+}

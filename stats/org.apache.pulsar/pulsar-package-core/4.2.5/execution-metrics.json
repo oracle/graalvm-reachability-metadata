@@ -1,0 +1,87 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T11:27:46.115161Z",
+    "library": "org.apache.pulsar:pulsar-package-core:4.2.5",
+    "starting_commit": "76ebd788d8b780fd3b0f58a63734622c8534a657",
+    "ending_commit": "2bffffdc6e3c95c58df9b87d035849588bd5ea04",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.2.5",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 20,
+          "missed": 1091,
+          "ratio": 0.018002,
+          "total": 1111
+        },
+        "line": {
+          "covered": 5,
+          "missed": 228,
+          "ratio": 0.021459,
+          "total": 233
+        },
+        "method": {
+          "covered": 1,
+          "missed": 61,
+          "ratio": 0.016129,
+          "total": 62
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10645,
+      "issue_label": "library-new-request",
+      "library": "org.apache.pulsar:pulsar-package-core:4.2.5",
+      "summary": "pulsar-package-core only defines storage/package-management interfaces and a default impl that delegates to an injected PackagesStorage; its own dependencies (pulsar-client-admin-api, guava, commons-lang3) are resolved transitively, and upstream's own tests use a trivial in-memory mock storage, not Docker or a real backend.",
+      "deterministic_setup": [],
+      "agent_guidance": "Implement a simple local in-memory PackagesStorage (mirroring upstream's MockedPackagesStorage pattern) to drive PackagesManagementImpl and PackageName/PackageMetadataUtil coverage — no filesystem or network backend needed.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10645 Support for org.apache.pulsar:pulsar-package-core:4.2.5; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 14,
+      "output_tokens_used": 5839
+    },
+    "metrics": {
+      "input_tokens_used": 87329,
+      "cached_input_tokens_used": 739328,
+      "output_tokens_used": 9561,
+      "iterations": 1,
+      "cost_usd": 0.2186,
+      "generated_loc": 29,
+      "tested_library_loc": 5,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 2,
+      "code_coverage_percent": 2.15
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.pulsar/pulsar-package-core/4.2.5/reachability-metadata.json"
+    }
+  }
+}

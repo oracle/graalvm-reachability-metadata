@@ -1,0 +1,140 @@
+{
+  "fix_java_run_fail:2026-10-03": {
+    "timestamp": "2026-10-03T03:49:02.367957Z",
+    "library": "com.google.guava:guava:33.7.0-jre",
+    "starting_commit": "afc1ded52d7b59a452a67a1f164dfa372f7050e0",
+    "ending_commit": "c475235c8f7ca1281751a7b640ab905323d795d1",
+    "previous_library": "com.google.guava:guava:33.6.0-jre",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "33.7.0-jre",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.982759,
+            "coveredCalls": 114,
+            "totalCalls": 116
+          },
+          "resources": {
+            "coverageRatio": 0.75,
+            "coveredCalls": 3,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.975,
+        "coveredCalls": 117,
+        "totalCalls": 120
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 19516,
+          "missed": 163740,
+          "ratio": 0.106496,
+          "total": 183256
+        },
+        "line": {
+          "covered": 4733,
+          "missed": 34630,
+          "ratio": 0.12024,
+          "total": 39363
+        },
+        "method": {
+          "covered": 1643,
+          "missed": 11429,
+          "ratio": 0.125688,
+          "total": 13072
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "33.6.0-jre",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 115,
+            "totalCalls": 115
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 119,
+        "totalCalls": 119
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 19881,
+          "missed": 163404,
+          "ratio": 0.10847,
+          "total": 183285
+        },
+        "line": {
+          "covered": 4811,
+          "missed": 34479,
+          "ratio": 0.122448,
+          "total": 39290
+        },
+        "method": {
+          "covered": 1668,
+          "missed": 11426,
+          "ratio": 0.127387,
+          "total": 13094
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10313,
+      "issue_label": "fails-java-run",
+      "library": "com.google.guava:guava:33.7.0-jre",
+      "summary": "The existing guava 33.6.0-jre scaffold already has what the library needs: guava and assertj dependencies, a jdk.unsupported patch module, an --add-opens for java.lang, and agent filters. I found no evidence of a missing dependency, Docker image or environment property. The log is truncated, so I did not verify the failure itself; it is a test-level problem to fix in the repair step. No traced mechanism rules out Native Image support.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The java-run failure log is truncated, so the cause is unconfirmed. FinalizerTest and the Unsafe-based tests are the likely area, since they depend on the jdk.unsupported patch and --add-opens settings in build.gradle.",
+        "The reproducer passes -Pcoordinates=com.google.guava:guava:33.6.0-jre with GVM_TCK_LV=33.7.0-jre. Confirm that 33.7.0-jre resolves and that the tests still compile against it."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10313 [Automation] java run fails for com.google.guava:guava:33.7.0-jre; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.google.guava:guava:33.6.0-jre",
+      "new_version": "33.7.0-jre",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 727
+    },
+    "metrics": {
+      "input_tokens_used": 138265,
+      "cached_input_tokens_used": 800512,
+      "output_tokens_used": 5742,
+      "iterations": 5,
+      "cost_usd": 1.2639,
+      "tested_library_loc": 4733,
+      "metadata_entries": 134,
+      "test_only_metadata_entries": 167,
+      "previous_library_metadata_entries": 142,
+      "previous_library_test_only_metadata_entries": 171,
+      "code_coverage_percent": 12.02,
+      "previous_library_coverage_percent": 12.24
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.guava/guava/33.7.0-jre/reachability-metadata.json"
+    }
+  }
+}

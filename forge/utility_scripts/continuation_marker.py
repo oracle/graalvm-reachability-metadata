@@ -21,6 +21,8 @@ PHASE_EXPLORE = "explore"
 PHASE_FINALIZATION = "finalization"
 PHASE_PUBLICATION = "publication"
 ORDERED_PHASES = [PHASE_SETUP, PHASE_FIX, PHASE_EXPLORE, PHASE_FINALIZATION, PHASE_PUBLICATION]
+# Phases a run resumes on the preserved tree the drivers keep as it is.
+RESUMED_TREE_PHASES = frozenset({PHASE_FIX, PHASE_EXPLORE, PHASE_FINALIZATION, PHASE_PUBLICATION})
 
 STATUS_PENDING = "pending"
 STATUS_RUNNING = "running"
@@ -58,7 +60,14 @@ def _default_phases() -> dict[str, dict[str, Any]]:
             "chunkProcessedClassCount": 0,
         },
         PHASE_FINALIZATION: {"status": STATUS_PENDING},
-        PHASE_PUBLICATION: {"status": STATUS_PENDING, "isPushed": False, "branch": None},
+        PHASE_PUBLICATION: {
+            "status": STATUS_PENDING,
+            "isPushed": False,
+            "branch": None,
+            "publicationId": None,
+            "publicationTimestamp": None,
+            "coverageFollowUpIssueNumber": None,
+        },
     }
 
 
@@ -81,6 +90,7 @@ class ContinuationMarker:
     library_update_route: dict[str, Any] | None = None
     library_preparation_preflight: dict[str, Any] | None = None
     publication_metrics: dict[str, Any] | None = None
+    failure: dict[str, Any] | None = None
     phases: dict[str, dict[str, Any]] = field(default_factory=_default_phases)
     schema_version: int = SCHEMA_VERSION
 
@@ -127,6 +137,7 @@ class ContinuationMarker:
             library_update_route=_optional_dict(payload.get("libraryUpdateRoute")),
             library_preparation_preflight=_optional_dict(payload.get("libraryPreparationPreflight")),
             publication_metrics=_optional_dict(payload.get("publicationMetrics")),
+            failure=_optional_dict(payload.get("failure")),
             phases=phases,
             schema_version=SCHEMA_VERSION,
         )
@@ -154,6 +165,7 @@ class ContinuationMarker:
             "libraryUpdateRoute": self.library_update_route,
             "libraryPreparationPreflight": self.library_preparation_preflight,
             "publicationMetrics": self.publication_metrics,
+            "failure": self.failure,
             "phases": self.phases,
         }
 
@@ -233,6 +245,25 @@ class ContinuationMarker:
         self._phase(PHASE_EXPLORE)["exhaustedClasses"] = sorted(set(exhausted_classes))
         self.recompute_continue_from()
 
+    def defer_dynamic_access_coverage(self, uncovered_class_count: int, class_threshold: int) -> None:
+        """Skip exploration and record why, so publication reuses this one decision."""
+        self.mark_phase_skipped(
+            PHASE_EXPLORE,
+            deferredUncoveredClassCount=int(uncovered_class_count),
+            deferredClassThreshold=int(class_threshold),
+        )
+
+    def deferred_dynamic_access_coverage(self) -> tuple[int, int] | None:
+        """Return the deferred uncovered class count and threshold, or None when exploration ran."""
+        phase = self.phases.get(PHASE_EXPLORE, {})
+        if phase.get("status") != STATUS_SKIPPED:
+            return None
+        uncovered_class_count = phase.get("deferredUncoveredClassCount")
+        class_threshold = phase.get("deferredClassThreshold")
+        if uncovered_class_count is None or class_threshold is None:
+            return None
+        return int(uncovered_class_count), int(class_threshold)
+
     def record_chunk_progress(
             self,
             chunk_class_count: int | None,
@@ -245,6 +276,20 @@ class ContinuationMarker:
         if chunk_processed_class_count is not None:
             phase["chunkProcessedClassCount"] = max(0, int(chunk_processed_class_count))
         self.recompute_continue_from()
+
+    def record_failure(self, phase: str, step: str, operand: str | None = None) -> None:
+        """Record where the run failed so a resume states what it is retrying.
+
+        The first recorded failure wins: the innermost step that failed is the
+        location every surface reports. §FS-forge-run-location-reporting.3
+        """
+        if self.failure is not None:
+            return
+        self.failure = {"phase": phase, "step": step, "operand": operand}
+
+    def clear_failure(self) -> None:
+        """Forget a non-terminal failure after recovery. §FS-forge-run-location-reporting.3"""
+        self.failure = None
 
     def record_preserved_branch(self, branch_name: str) -> None:
         """Record the preservation branch that carries this marker."""
@@ -285,6 +330,25 @@ class ContinuationMarker:
         self._phase(PHASE_PUBLICATION)["branch"] = branch_name
         self.recompute_continue_from()
 
+    def record_publication_identity(self, publication_id: str, branch_name: str, timestamp: str) -> None:
+        """Persist the stable Actions publication identity before the push."""
+        self._phase(PHASE_PUBLICATION).update({
+            "publicationId": publication_id,
+            "publicationTimestamp": timestamp,
+            "branch": branch_name,
+        })
+        self.recompute_continue_from()
+
+    def publication_id(self) -> str | None:
+        """Return the stable Actions publication identity, when assigned."""
+        publication_id = self._phase(PHASE_PUBLICATION).get("publicationId")
+        return str(publication_id) if publication_id else None
+
+    def publication_timestamp(self) -> str | None:
+        """Return the timestamp fixed when publication identity was assigned."""
+        timestamp = self._phase(PHASE_PUBLICATION).get("publicationTimestamp")
+        return str(timestamp) if timestamp else None
+
     def record_publication_pushed(self, branch_name: str) -> None:
         """Record that publication pushed the PR branch."""
         self._phase(PHASE_PUBLICATION).update({
@@ -310,6 +374,16 @@ class ContinuationMarker:
         """Return the recorded publication branch."""
         branch = self._phase(PHASE_PUBLICATION).get("branch")
         return str(branch) if branch else None
+
+    def record_coverage_follow_up_issue(self, issue_number: int) -> None:
+        """Record the issue opened for deferred Java-fix coverage."""
+        self._phase(PHASE_PUBLICATION)["coverageFollowUpIssueNumber"] = int(issue_number)
+        self.recompute_continue_from()
+
+    def coverage_follow_up_issue_number(self) -> int | None:
+        """Return the deferred-coverage issue already opened by this run."""
+        issue_number = self._phase(PHASE_PUBLICATION).get("coverageFollowUpIssueNumber")
+        return int(issue_number) if issue_number is not None else None
 
     def _phase(self, phase_name: str) -> dict[str, Any]:
         if phase_name not in self.phases:

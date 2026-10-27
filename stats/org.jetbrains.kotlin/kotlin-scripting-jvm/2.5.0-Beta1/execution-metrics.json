@@ -1,0 +1,141 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T11:42:01.704541Z",
+    "library": "org.jetbrains.kotlin:kotlin-scripting-jvm:2.5.0-Beta1",
+    "starting_commit": "b7a442d315c8060a56798e9cd42e7542a24d56a8",
+    "ending_commit": "05beadd033630602b5b8c7e1690cfcbc5ba7eb14",
+    "previous_library": "org.jetbrains.kotlin:kotlin-scripting-jvm:2.4.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.5.0-Beta1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 39,
+        "totalCalls": 39
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2229,
+          "missed": 4619,
+          "ratio": 0.325496,
+          "total": 6848
+        },
+        "line": {
+          "covered": 357,
+          "missed": 564,
+          "ratio": 0.387622,
+          "total": 921
+        },
+        "method": {
+          "covered": 104,
+          "missed": 171,
+          "ratio": 0.378182,
+          "total": 275
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.4.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 39,
+        "totalCalls": 39
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2183,
+          "missed": 4485,
+          "ratio": 0.327385,
+          "total": 6668
+        },
+        "line": {
+          "covered": 353,
+          "missed": 559,
+          "ratio": 0.387061,
+          "total": 912
+        },
+        "method": {
+          "covered": 104,
+          "missed": 170,
+          "ratio": 0.379562,
+          "total": 274
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10329,
+      "issue_label": "fails-javac-compile",
+      "library": "org.jetbrains.kotlin:kotlin-scripting-jvm:2.5.0-Beta1",
+      "summary": "The failure is a toolchain mismatch. The test project's Kotlin Gradle plugin (compiler 2.3.0, from libs.plugins.kotlin.jvm) can only read metadata up to 2.4.0, but kotlin-scripting-jvm:2.5.0-Beta1 pulls in kotlin-stdlib and kotlin-scripting-common 2.5.0-Beta1, which carry metadata 2.5.0. The library itself needs no extra dependency, Docker image or environment setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "The generated 2.5.0-Beta1 test project copies the 2.4.0 build.gradle, which applies alias(libs.plugins.kotlin.jvm), the Kotlin 2.3.0 compiler. That compiler rejects the 2.5.0 metadata in kotlin-stdlib, kotlin-scripting-common and the other transitive jars. Fix this in the new test project's build.gradle (not in the shared version catalog, which would affect other libraries). Preferred fix: add `-Xskip-metadata-version-check` to the Kotlin test compile options, for example `compileTestKotlin { kotlinOptions { jvmTarget = ...; freeCompilerArgs += ['-Xskip-metadata-version-check'] } }`, or the equivalent `compilerOptions` form. If that is not enough, apply the Kotlin Gradle plugin version of 2.5.0-Beta1 directly in that project's plugins block, if the repository's plugin resolution allows it. Keep the existing jvmToolchain and graalvmNative agent/userCodeFilter settings. The tests themselves should keep using the stable scripting-jvm API surface already covered by the 2.4.0 tests; the 'Unresolved reference' errors in the log (requireNotNull, getResourceRoot) are follow-on errors from the unreadable stdlib classes, not real API removals. Re-run compileTestKotlin to confirm.",
+      "risks": [
+        "Skipping the metadata version check may expose real API or ABI changes in 2.5.0-Beta1 that only show up as compile errors after the version-check errors are gone.",
+        "The 2.5.0-Beta1 stdlib and scripting artifacts are pre-release, and there may be no Kotlin Gradle plugin 2.5.0-Beta1 available from the repositories CI uses.",
+        "The native-image result is not predicted here. Only local compile, javaTest and nativeTest runs can confirm it."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10329 [Automation] javac compile fails for org.jetbrains.kotlin:kotlin-scripting-jvm:2.5.0-Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "16 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jetbrains.kotlin:kotlin-scripting-jvm:2.4.0",
+      "new_version": "2.5.0-Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1363
+    },
+    "metrics": {
+      "input_tokens_used": 108674,
+      "cached_input_tokens_used": 300544,
+      "output_tokens_used": 637,
+      "iterations": 3,
+      "cost_usd": 0.1426,
+      "tested_library_loc": 357,
+      "metadata_entries": 28,
+      "test_only_metadata_entries": 18,
+      "previous_library_metadata_entries": 29,
+      "previous_library_test_only_metadata_entries": 12,
+      "code_coverage_percent": 38.76,
+      "previous_library_coverage_percent": 38.71
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/2.5.0-Beta1/reachability-metadata.json"
+    }
+  }
+}

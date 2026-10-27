@@ -1,0 +1,90 @@
+{
+  "add_new_library_support:2026-10-06": {
+    "timestamp": "2026-10-06T12:08:16.205012Z",
+    "library": "com.couchbase.client:java-client:3.11.3",
+    "starting_commit": "be499ec4da3173df58d818d2947438fc735082c5",
+    "ending_commit": "b9fb1989d49b58ccfc8ccbb43981ddf02d5a5ecd",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "3.11.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 215,
+          "missed": 43730,
+          "ratio": 0.004892,
+          "total": 43945
+        },
+        "line": {
+          "covered": 71,
+          "missed": 8796,
+          "ratio": 0.008007,
+          "total": 8867
+        },
+        "method": {
+          "covered": 13,
+          "missed": 4258,
+          "ratio": 0.003044,
+          "total": 4271
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9737,
+      "issue_label": "library-new-request",
+      "library": "com.couchbase.client:java-client:3.11.3",
+      "summary": "No extra setup is needed. The scaffold can cover the library's reflection and resource surface without a Couchbase server, and no Couchbase Docker image is allow-listed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not run the library or check its dependency tree. The decision rests on the repo contents plus general knowledge of the client.",
+        "Real cluster, bucket and query operations need a Couchbase Server. No Couchbase image is under allowed-docker-images (only metrics-micrometer and tracing-micrometer-observation exist for com.couchbase.client), and adding one is heavy. Coverage will probably come from the offline surface instead: ClusterEnvironment/ClusterOptions building, JSON codecs and serializers, and Cluster.connect against an unreachable host with short timeouts.",
+        "The sibling tests metrics-micrometer and tracing-micrometer-observation (both 3.11.3) already use the same client family without Docker. Their micrometer dependencies and test layout are a reference for how the generated tests should be written."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9737 Support for com.couchbase.client:java-client:3.11.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 805
+    },
+    "metrics": {
+      "input_tokens_used": 93158,
+      "cached_input_tokens_used": 806400,
+      "output_tokens_used": 6183,
+      "iterations": 4,
+      "cost_usd": 1.0545,
+      "generated_loc": 54,
+      "tested_library_loc": 71,
+      "metadata_entries": 6,
+      "code_coverage_percent": 0.8
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.couchbase.client/java-client/3.11.3/reachability-metadata.json"
+    }
+  }
+}

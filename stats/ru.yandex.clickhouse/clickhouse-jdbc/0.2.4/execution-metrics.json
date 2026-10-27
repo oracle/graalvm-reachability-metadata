@@ -1,0 +1,97 @@
+{
+  "add_new_library_support:2026-10-20": {
+    "timestamp": "2026-10-20T19:54:54.523113Z",
+    "library": "ru.yandex.clickhouse:clickhouse-jdbc:0.2.4",
+    "starting_commit": "d43047321c1dde6928539976c1eeaf951c02fa32",
+    "ending_commit": "1dd2bb0ad0bf7838a3f016c8305f39f63826bb9a",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "0.2.4",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7368,
+          "missed": 21955,
+          "ratio": 0.25127,
+          "total": 29323
+        },
+        "line": {
+          "covered": 1091,
+          "missed": 3959,
+          "ratio": 0.21604,
+          "total": 5050
+        },
+        "method": {
+          "covered": 183,
+          "missed": 1259,
+          "ratio": 0.126907,
+          "total": 1442
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10987,
+      "issue_label": "library-new-request",
+      "library": "ru.yandex.clickhouse:clickhouse-jdbc:0.2.4",
+      "summary": "ru.yandex.clickhouse:clickhouse-jdbc:0.2.4 is an HTTP-only JDBC driver. Every runtime dependency it needs (httpclient, httpmime, lz4, jackson-databind/core, guava, slf4j-api, jaxb-api) is a compile-scope POM dependency and arrives transitively. Tests can reach its dynamic-access paths without a real server by running an in-JVM HTTP stub, so there is no concrete evidence that extra setup is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Without a server, a test can still cover: DriverManager/ServiceLoader registration of ru.yandex.clickhouse.ClickHouseDriver, URL and ClickHouseProperties parsing, ClickHouseDataSource, and type mapping. For query paths, start a com.sun.net.httpserver.HttpServer on 127.0.0.1 with an ephemeral port and point jdbc:clickhouse://127.0.0.1:<port>/default at it. The stub should return ClickHouse HTTP responses: TabSeparatedWithNamesAndTypes bodies for SELECTs, and JSON bodies for paths the driver parses with Jackson. Inspect the request's query or body to choose which format to answer with. Bind only to loopback. The tests need no environment variables or system properties.",
+      "risks": [
+        "No ClickHouse image is on the allow-list (tests/tck-build-logic/src/main/resources/allowed-docker-images/ has no clickhouse Dockerfile). Testing against a real server would mean adding a new clickhouse/clickhouse-server image and passing vulnerability scanning, so prefer the HTTP stub.",
+        "Recent ClickHouse servers may not be fully compatible with this 2020-era legacy driver (setting names, response formats), which is another reason to stub rather than use a real server.",
+        "The existing com.clickhouse tests in this repo are a different artifact family (the newer driver), so they don't show how to test this ru.yandex API.",
+        "The driver pins old transitive versions (jackson 2.7.3, guava 19.0, httpclient 4.5.2). Metadata may need entries for Jackson deserialization of the driver's response classes, which only appear if tests drive the JSON response paths."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10987 Support for ru.yandex.clickhouse:clickhouse-jdbc:0.2.4; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 8,
+      "output_tokens_used": 2194
+    },
+    "metrics": {
+      "input_tokens_used": 182333,
+      "cached_input_tokens_used": 1728896,
+      "output_tokens_used": 18431,
+      "iterations": 4,
+      "cost_usd": 2.329,
+      "generated_loc": 191,
+      "tested_library_loc": 1091,
+      "metadata_entries": 60,
+      "test_only_metadata_entries": 22,
+      "code_coverage_percent": 21.6
+    },
+    "artifacts": {
+      "metadata_file": "metadata/ru.yandex.clickhouse/clickhouse-jdbc/0.2.4/reachability-metadata.json"
+    }
+  }
+}

@@ -283,7 +283,9 @@ Example:
 
 These tasks support the scheduled workflow that checks newer upstream library versions and updates our metadata accordingly.
 
-1. List supported libraries that have newer upstream versions
+1. List opted-in libraries that have newer upstream versions. A library opts in
+   by setting `"auto-update": true` on its unique `"latest": true`
+   `metadata/<group>/<artifact>/index.json` entry.
     ```console
     ./gradlew fetchExistingLibrariesWithNewerVersions --quiet
     ```

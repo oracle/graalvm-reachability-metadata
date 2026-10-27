@@ -1,0 +1,104 @@
+{
+  "base_commit": "81ba718b3ee789c13489b2a88c6d57686ca7d6c0",
+  "branch": "ai/kimeta/fix-javac-com.nimbusds-nimbus-jose-jwt-4.0-forge-9334-20261002235812089520-8d0762d2ef7f",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "0649f1f2cfe534afbd123ac3ff869e9379de59dc",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9334,
+  "library": {
+    "artifact": "nimbus-jose-jwt",
+    "coordinates": "com.nimbusds:nimbus-jose-jwt:4.0",
+    "group": "com.nimbusds",
+    "version": "4.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "81ba718b3ee789c13489b2a88c6d57686ca7d6c0",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpunjcs3ak"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9334-de208f47/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.nimbusds:nimbus-jose-jwt"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.nimbusds/nimbus-jose-jwt/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9334-de208f47/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "9321063f7770c86edeb6d3df67ae180a187c13b0",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/com.nimbusds/nimbus-jose-jwt/4.0/build.gradle"
+    ],
+    "decision": "approved",
+    "finding_body": "The new 4.0 test project copied `--enable-url-protocols=https` into `build.gradle` without satisfying the native-flag necessity rule. The adapted 4.0 tests use `URI` values and perform no HTTPS URL access, so the flag was not required by the library or a transitive dependency. All three Native Image lanes passed after its removal.",
+    "finding_title": "Unjustified Native Image URL protocol flag",
+    "fix_note": "Removed the unnecessary `--enable-url-protocols=https` build argument from the 4.0 test project and ran the exact Forge-owned finalization command to a stable successful pass.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the target-only diff, the 3.10-to-4.0 API adaptations, metadata format, index integrity, test behavior, and resolved statistics. Dynamic-access coverage is 0/0 with no breakdown scopes for both versions, so the ordered repair gate passes. After the repair, the exact Forge finalization completed successfully across current-defaults, future-defaults, and GraalVM 25, followed by metadata, style, generated-test, and statistics checks without further publishable changes.",
+    "session_id": "830f8d3d7bd440c8"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.nimbusds/nimbus-jose-jwt/4.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 413696,
+      "code_coverage_percent": 42.77,
+      "cost_usd": 0.6899,
+      "input_tokens_used": 69693,
+      "iterations": 3,
+      "metadata_entries": 28,
+      "output_tokens_used": 4486,
+      "previous_library_coverage_percent": 49.39,
+      "previous_library_metadata_entries": 0,
+      "test_only_metadata_entries": 7,
+      "tested_library_loc": 1684
+    },
+    "timestamp": "2026-10-02T23:58:12.089520Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "nimbus-jose-jwt",
+    "coordinates": "com.nimbusds:nimbus-jose-jwt:3.10",
+    "group": "com.nimbusds",
+    "version": "3.10"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9334-20261002235812089520-8d0762d2ef7f",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-02T23:58:12.089520Z"
+}

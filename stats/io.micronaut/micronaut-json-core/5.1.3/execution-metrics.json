@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-10-01": {
+    "timestamp": "2026-10-01T12:09:17.571822Z",
+    "library": "io.micronaut:micronaut-json-core:5.1.3",
+    "starting_commit": "c237db22b16bed151a03ab972f27ca0bb1a51058",
+    "ending_commit": "ec2d540605ababfae917192bd6710921ac0e8f29",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.3",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 299,
+          "missed": 2565,
+          "ratio": 0.104399,
+          "total": 2864
+        },
+        "line": {
+          "covered": 80,
+          "missed": 617,
+          "ratio": 0.114778,
+          "total": 697
+        },
+        "method": {
+          "covered": 51,
+          "missed": 175,
+          "ratio": 0.225664,
+          "total": 226
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9812,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut:micronaut-json-core:5.1.3",
+      "summary": "micronaut-json-core only defines the JsonMapper API, JsonNode, JsonFeatures and related types. JsonMapper.createDefault() and the mapper-based paths need a JsonMapper implementation on the classpath, and json-core does not ship one. The nearest implementation is micronaut-jackson-databind, which is released in lockstep with micronaut-core at 5.1.3. I did not verify that the 5.1.3 artifact resolves.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-jackson-databind:5.1.3",
+          "scope": "testImplementation",
+          "reason": "Provides the JsonMapper implementation (JacksonDatabindMapper and its supplier) that json-core discovers through ServiceLoader. Without it the tests can only exercise JsonNode, so coverage stays shallow."
+        }
+      ],
+      "agent_guidance": "Use the same version for every Micronaut artifact via $libraryVersion, as the existing micronaut-core and micronaut-jackson-core tests do. Add micronaut-core, micronaut-inject and assertj-core test dependencies only if the generated tests need them. Create the mapper with JsonMapper.createDefault() or JacksonDatabindMapper. Cover reading and writing JsonNode trees, JsonMapper.readValue, writeValueAsBytes and writeValue, Argument and generic-type reads, JsonStreamConfig and JsonFeatures, and the JsonNode builders (createObjectNode, createArrayNode and the scalar nodes). No Docker image, environment variable or system property is needed.",
+      "risks": [
+        "micronaut-jackson-databind:5.1.3 was not checked against Maven Central, so its existence is unconfirmed.",
+        "jackson-databind comes in transitively. The reflection and resource metadata needed for native-image may then come from the Jackson or databind metadata and not from json-core itself.",
+        "If the test uses JsonMapper.createDefault() and the supplier is not discovered in native-image, ServiceLoader metadata may be needed."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-jackson-databind:5.1.3",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-json-core/5.1.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9812 Support for io.micronaut:micronaut-json-core:5.1.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 10,
+      "output_tokens_used": 1783
+    },
+    "metrics": {
+      "input_tokens_used": 193315,
+      "cached_input_tokens_used": 2150400,
+      "output_tokens_used": 14012,
+      "iterations": 6,
+      "cost_usd": 0.4924,
+      "generated_loc": 103,
+      "tested_library_loc": 80,
+      "metadata_entries": 8,
+      "test_only_metadata_entries": 12,
+      "code_coverage_percent": 11.48
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut/micronaut-json-core/5.1.3/reachability-metadata.json"
+    }
+  }
+}

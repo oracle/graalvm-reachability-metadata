@@ -1,0 +1,102 @@
+{
+  "base_commit": "a196462d68f90cb249084b0eb9f84072ba11fa97",
+  "branch": "ai/kimeta/fix-javac-jakarta.enterprise-jakarta.enterprise.cdi-api-3.0.0-forge-9354-20261001223511404939-a9afdf2a2ca0",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "a196462d68f90cb249084b0eb9f84072ba11fa97",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9354,
+  "library": {
+    "artifact": "jakarta.enterprise.cdi-api",
+    "coordinates": "jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0",
+    "group": "jakarta.enterprise",
+    "version": "3.0.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "a196462d68f90cb249084b0eb9f84072ba11fa97",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmphvqpepav"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9354-aa5fe1a0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 6s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=jakarta.enterprise:jakarta.enterprise.cdi-api"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9354-aa5fe1a0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 10s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "68eb2345bcc5d15bdc3ec878c2a0fce08a6dabe5",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is confined to jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0 and its index, stats, metadata, and test project. The compile repair is the narrow javax-to-jakarta AnnotationLiteral import migration and preserves the prior public-API test and assertions without native-image skips, failure tolerance, build flags, legacy metadata, or unrelated changes. Overall dynamic access and the reflection breakdown both remain 2/3 (66.6667%), so both pass the fixes-* repair gate. The supplied local gates passed, and review reruns confirmed metadata validation, Checkstyle, javac compilation, JVM execution, and Native Image execution.",
+    "session_id": "d79a4b4beb924e89"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/jakarta.enterprise/jakarta.enterprise.cdi-api/3.0.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1065472,
+      "code_coverage_percent": 9.6,
+      "cost_usd": 0.2726,
+      "input_tokens_used": 126319,
+      "iterations": 5,
+      "metadata_entries": 0,
+      "output_tokens_used": 6632,
+      "previous_library_coverage_percent": 9.71,
+      "previous_library_metadata_entries": 0,
+      "test_only_metadata_entries": 3,
+      "tested_library_loc": 53
+    },
+    "timestamp": "2026-10-01T22:35:11.404939Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "jakarta.enterprise.cdi-api",
+    "coordinates": "jakarta.enterprise:jakarta.enterprise.cdi-api:2.0.1",
+    "group": "jakarta.enterprise",
+    "version": "2.0.1"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9354-20261001223511404939-a9afdf2a2ca0",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-01T22:35:11.404939Z"
+}

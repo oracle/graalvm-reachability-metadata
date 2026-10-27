@@ -1,0 +1,117 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T07:31:25.371934Z",
+    "library": "org.springframework.batch:spring-batch-infrastructure:6.0.4",
+    "starting_commit": "3a89768e2a540b2187d1dd36897434aad1e5d72f",
+    "ending_commit": "6873fd150ffaf00b1a6db1e9650efe0d3b6cccf2",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.0.4",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 8,
+        "totalCalls": 8
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 784,
+          "missed": 28996,
+          "ratio": 0.026326,
+          "total": 29780
+        },
+        "line": {
+          "covered": 210,
+          "missed": 7507,
+          "ratio": 0.027213,
+          "total": 7717
+        },
+        "method": {
+          "covered": 59,
+          "missed": 1891,
+          "ratio": 0.030256,
+          "total": 1950
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9285,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.batch:spring-batch-infrastructure:6.0.4",
+      "summary": "spring-batch-infrastructure 6.0.4 declares spring-jdbc (and the other integrations) as optional dependencies, so the JDBC readers and writers, which are a large part of the library, can't be used without them. The flat-file, item-stream, retry and adapter classes only need the compile-scope dependencies spring-core 7.0.8, spring-retry 2.0.13 and spring-context-support 7.0.8. I read the 6.0.4 POM but did not compile or run anything.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-jdbc:7.0.8",
+          "scope": "testImplementation",
+          "reason": "Optional dependency of spring-batch-infrastructure, pinned to the same Spring Framework version as the library's POM. JdbcCursorItemReader, JdbcPagingItemReader and JdbcBatchItemWriter, and their support classes, need it to load."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.210",
+          "scope": "testImplementation",
+          "reason": "In-process database for exercising the JDBC readers and writers without Docker. Version 2.1.210 is already used by the repo's h2 tests."
+        }
+      ],
+      "agent_guidance": "Use in-memory resources only, with no Docker and no environment variables or system properties. Cover the core readers and writers: FlatFileItemReader and FlatFileItemWriter with DelimitedLineTokenizer, BeanWrapperFieldSetMapper and FieldExtractors, using temp files or ByteArrayResource. Also cover ListItemReader, CompositeItemProcessor and CompositeItemWriter, ItemStream and ExecutionContext handling, and the spring-retry integration. For the JDBC items, use a plain H2 in-memory DataSource (for example DriverManagerDataSource with jdbc:h2:mem:...) and avoid Spring Boot. Skip the optional integrations whose dependencies aren't added (JMS, Kafka, AMQP, Mongo, JPA, Hibernate, XStream and JSON mappers) unless they are added deliberately. Only add a Jackson dependency if the JSON readers and writers are exercised.",
+      "risks": [
+        "The H2 version is an older one chosen to reuse the repo's existing tested version. If the JDBC items misbehave under Spring 7, a newer H2 may be needed, which would be a separate allow-list or version decision.",
+        "The reflection-heavy parts (BeanWrapperFieldSetMapper, property access, and any proxies or SpEL in builders) are the likely source of missing-metadata failures. Local Native Image verification is needed to confirm.",
+        "Pulling in more of the optional integrations (JPA, JMS, Kafka, Mongo and others) would bring in large dependency graphs and possibly more setup. Keep the scope to spring-jdbc and H2 unless the generated tests need more."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-jdbc:7.0.8",
+          "result": "applied",
+          "target": "tests/src/org.springframework.batch/spring-batch-infrastructure/6.0.4/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.210",
+          "result": "applied",
+          "target": "tests/src/org.springframework.batch/spring-batch-infrastructure/6.0.4/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9285 Support for org.springframework.batch:spring-batch-infrastructure:6.0.4; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 2458
+    },
+    "metrics": {
+      "input_tokens_used": 129870,
+      "cached_input_tokens_used": 1137152,
+      "output_tokens_used": 10020,
+      "iterations": 3,
+      "cost_usd": 1.5186,
+      "generated_loc": 168,
+      "tested_library_loc": 210,
+      "metadata_entries": 24,
+      "test_only_metadata_entries": 25,
+      "code_coverage_percent": 2.72
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.batch/spring-batch-infrastructure/6.0.4/reachability-metadata.json"
+    }
+  }
+}

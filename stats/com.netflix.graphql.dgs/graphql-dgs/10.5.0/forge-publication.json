@@ -1,0 +1,160 @@
+{
+  "base_commit": "eda926193bd425275e0bee555a44d2a781cbcf90",
+  "branch": "ai/kimeta/add-lib-support-com.netflix.graphql.dgs-graphql-dgs-10.5.0-forge-8967-20261008161853608229-645ef59bbc6d",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "cccdc28de2c09c4d31c50cfc82b1b5e13f2f1e92",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 8967,
+  "library": {
+    "artifact": "graphql-dgs",
+    "coordinates": "com.netflix.graphql.dgs:graphql-dgs:10.5.0",
+    "group": "com.netflix.graphql.dgs",
+    "version": "10.5.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "eda926193bd425275e0bee555a44d2a781cbcf90",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpvb10ka9x"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8967-1fffef55/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.netflix.graphql.dgs:graphql-dgs"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.netflix.graphql.dgs/graphql-dgs/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8967-1fffef55/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "835332c9cde0ba09da6f5b879ab62a8a485e5026",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/com.netflix.graphql.dgs/graphql-dgs/10.5.0/build.gradle",
+      "tests/src/com.netflix.graphql.dgs/graphql-dgs/10.5.0/src/test/kotlin/com_netflix_graphql_dgs/graphql_dgs/DefaultDgsDataLoaderProviderTest.kt",
+      "tests/src/com.netflix.graphql.dgs/graphql-dgs/10.5.0/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "finding_body": "FS-test-contract.2.2 and FS-contribution-contract.4.6 (visibility bypass): DefaultDgsDataLoaderProviderTest.kt carried @file:Suppress(\"INVISIBLE_REFERENCE\", \"INVISIBLE_MEMBER\") so that it could call DefaultDgsDataLoaderProvider.findDataLoaders(). In graphql-dgs 10.5.0 that method is Kotlin `internal` (annotated @PostConstruct), so no consumer can call it directly. The covered dynamic-access call sites (addDataLoaderComponents/addDataLoaderFields reflection) were therefore reached through access nobody ships. Evidence: sources jar DefaultDgsDataLoaderProvider.kt line 106-107 `@PostConstruct internal fun findDataLoaders()`.",
+    "finding_title": "Test bypasses Kotlin internal visibility with @file:Suppress(INVISIBLE_MEMBER) to call a library-internal method",
+    "fix_note": "In DefaultDgsDataLoaderProviderTest.kt I removed the @file:Suppress and register DefaultDgsDataLoaderProvider as a Spring-managed bean (context.registerBean with a Supplier), so Spring runs its @PostConstruct discovery as a real consumer does, then call the public buildRegistry(); the same assertions remain. Spring only honours @PostConstruct when jakarta.annotation-api is on the classpath, and graphql-dgs does not declare it (Spring Boot normally supplies it), so I added testImplementation 'jakarta.annotation:jakarta.annotation-api:3.0.0' to the test project's build.gradle. That is a genuinely needed missing dependency. The stored test-only metadata did not cover the new Spring annotation-processing path, so I regenerated it from the tests with generateMetadata and finalization rewrote src/test/resources/META-INF/native-image/reachability-metadata.json (harness-generated, not hand-written); the library metadata ended unchanged. Dynamic-access stats stay 11/11. Nothing outside the contribution's files was touched.",
+    "model": "sonnet",
+    "review_comment": "Checked the single-library, single-version diff against skills/review-library-new-request and FS-contribution-contract sections 2 to 4. Shape: only the target coordinate's metadata, index.json, stats and tests/src files; only reachability-metadata.json files; the test-only metadata under src/test/resources/META-INF/native-image is harness-generated, as in the other test projects. Tests: real library behaviour through DgsSchemaProvider, GraphQL execution, DefaultDgsDataLoaderProvider and DefaultInputObjectMapper; none is scaffold-only, there are no native-image skips and no Error catches, no version pinning (build.gradle uses the TCK-resolved version), no direct test-side reflection, no native build/run flags, and the Kotlin toolchain is wired to testJvmVersion. Tests live in com_netflix_graphql_dgs.graphql_dgs, separate from the library package. One file per dynamic-access class and no '$' in names. Coverage: dynamic access 11/11 (100%), above the 20% gate; PR-reported entries 80 library + 130 test-only = 210 against 11 covered calls, so no entry-count mismatch. Library metadata contains no test-package types. Index validation passed in the local gate record. One violation was found and repaired in place (see fix_note); after the repair the Forge finalization command (all three test lanes, metadata and style checks, generated-test validity, library statistics) exited 0 with no further publishable change.",
+    "session_id": "d465239c2b5b4887"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/com.netflix.graphql.dgs/graphql-dgs/10.5.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4459520,
+      "code_coverage_percent": 30.43,
+      "cost_usd": 0.9857,
+      "generated_loc": 263,
+      "input_tokens_used": 371497,
+      "iterations": 9,
+      "metadata_entries": 80,
+      "output_tokens_used": 28029,
+      "test_only_metadata_entries": 130,
+      "tested_library_loc": 593
+    },
+    "timestamp": "2026-10-08T16:18:53.608229Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8967-20261008161853608229-645ef59bbc6d",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getFields() <- com.netflix.graphql.dgs.DgsDataFetchingEnvironment.getDataLoader(DgsDataFetchingEnvironment.kt:50) (line 50)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.netflix.graphql.dgs.internal.DataFetcherInvoker.get(DataFetcherInvoker.kt:102) (line 102)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.netflix.graphql.dgs.internal.DataFetcherInvoker.get(DataFetcherInvoker.kt:79) (line 79)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- com.netflix.graphql.dgs.internal.DefaultDgsDataLoaderProvider.addDataLoaderComponents(DefaultDgsDataLoaderProvider.kt:146) (line 146)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- com.netflix.graphql.dgs.internal.DefaultDgsDataLoaderProvider.addDataLoaderFields(DefaultDgsDataLoaderProvider.kt:117) (line 117)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- com.netflix.graphql.dgs.internal.DefaultDgsDataLoaderProvider.addDataLoaderComponents(DefaultDgsDataLoaderProvider.kt:149) (line 149)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- com.netflix.graphql.dgs.internal.DefaultDgsDataLoaderProvider.addDataLoaderFields(DefaultDgsDataLoaderProvider.kt:132) (line 132)",
+        "[reflection] java.lang.Class#getDeclaredConstructors() <- com.netflix.graphql.dgs.internal.DefaultInputObjectMapper.handleRecordClass(DefaultInputObjectMapper.kt:220) (line 220)",
+        "... and 3 more"
+      ],
+      "metadata_rules": [
+        "when `com.netflix.graphql.dgs.internal.DefaultDgsDataLoaderProvider` is reached, make `com.netflix.graphql.dgs.DgsComponent` available for reflection",
+        "when `com.netflix.graphql.dgs.internal.DgsSchemaProvider` is reached, make `com.netflix.graphql.dgs.DgsComponent` available for reflection",
+        "when `com.netflix.graphql.dgs.internal.method.AbstractInputArgumentResolver` is reached, make `com.netflix.graphql.dgs.DgsComponent` available for reflection",
+        "when `com.netflix.graphql.dgs.internal.DgsSchemaProvider$findDataFetchers$1$2` is reached, make `com.netflix.graphql.dgs.DgsData` available for reflection",
+        "when `com.netflix.graphql.dgs.internal.DefaultDgsDataLoaderProvider` is reached, make `com.netflix.graphql.dgs.DgsDataLoader` available for reflection",
+        "when `com.netflix.graphql.dgs.internal.DgsSchemaProvider$findDataFetchers$1$1` is reached, make `com.netflix.graphql.dgs.DgsQuery` available for reflection",
+        "when `com.netflix.graphql.dgs.internal.method.AbstractInputArgumentResolver` is reached, make `com.netflix.graphql.dgs.DgsQuery` available for reflection",
+        "when `com.netflix.graphql.dgs.internal.method.AbstractInputArgumentResolver` is reached, make `com.netflix.graphql.dgs.InputArgument` available for reflection",
+        "... and 48 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 11,
+            "totalCalls": 11
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 11,
+        "totalCalls": 11
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2711,
+          "missed": 7010,
+          "ratio": 0.278881,
+          "total": 9721
+        },
+        "line": {
+          "covered": 593,
+          "missed": 1356,
+          "ratio": 0.304259,
+          "total": 1949
+        },
+        "method": {
+          "covered": 124,
+          "missed": 347,
+          "ratio": 0.26327,
+          "total": 471
+        }
+      },
+      "version": "10.5.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-08T16:18:53.608229Z"
+}

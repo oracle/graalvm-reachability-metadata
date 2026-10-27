@@ -1,0 +1,135 @@
+{
+  "base_commit": "43b13290be57e8085f7fd7aa8dfb242158a3f64a",
+  "branch": "ai/kimeta/add-lib-support-jakarta.xml.ws-jakarta.xml.ws-api-4.0.3-forge-9939-20260930033808472811-f42dd7169a4d",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9939,
+  "library": {
+    "artifact": "jakarta.xml.ws-api",
+    "coordinates": "jakarta.xml.ws:jakarta.xml.ws-api:4.0.3",
+    "group": "jakarta.xml.ws",
+    "version": "4.0.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "43b13290be57e8085f7fd7aa8dfb242158a3f64a",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpakziqb17"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9939-2cb68533/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=jakarta.xml.ws:jakarta.xml.ws-api"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/jakarta.xml.ws/jakarta.xml.ws-api/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9939-2cb68533/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "fb422ee005e42c514505da9f3897fb2c0b5ed492",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Checked the single-coordinate diff, test-contract and review-skill musts, metadata format and scope, index and statistics evidence, and the reported N/A dynamic-access no-calls case. The generated tests exercise public Jakarta XML Web Services APIs without scaffold code, native-image dodging, version pinning in test behavior, or package visibility bypasses. The exact Forge finalization command passed all three native-test lanes, metadata validation, style checks, generated-test validity, and statistics generation without changing the publishable tree.",
+    "session_id": "f018162ee5384097"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/jakarta.xml.ws/jakarta.xml.ws-api/4.0.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2789376,
+      "code_coverage_percent": 27.61,
+      "cost_usd": 0.6553,
+      "generated_loc": 122,
+      "input_tokens_used": 267880,
+      "iterations": 14,
+      "metadata_entries": 43,
+      "output_tokens_used": 18078,
+      "test_only_metadata_entries": 1,
+      "tested_library_loc": 98
+    },
+    "timestamp": "2026-09-30T03:38:08.472811Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9939-20260930033808472811-f42dd7169a4d",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `jakarta.xml.ws.wsaddressing.W3CEndpointReference` is reached, make `com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl.<init>()` available for reflection",
+        "when `jakarta.xml.ws.wsaddressing.W3CEndpointReference` is reached, make `com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl.<init>()` available for reflection",
+        "when `jakarta.xml.ws.spi.ServiceLoaderUtil` is reached, make `com.sun.xml.ws.spi.ProviderImpl.<init>()` available for reflection",
+        "when `jakarta.xml.ws.wsaddressing.W3CEndpointReference` is reached, make `jakarta.xml.bind.annotation.W3CDomHandler.<init>()` available for reflection",
+        "when `jakarta.xml.ws.wsaddressing.W3CEndpointReference` is reached, make `jakarta.xml.bind.annotation.XmlAnyElement.value()` available for reflection",
+        "when `jakarta.xml.ws.wsaddressing.W3CEndpointReference` is reached, make `jakarta.xml.bind.annotation.XmlElement.type()` available for reflection",
+        "when `jakarta.xml.ws.wsaddressing.W3CEndpointReference` is reached, make `jakarta.xml.bind.annotation.XmlType.factoryClass()` available for reflection",
+        "when `jakarta.xml.ws.wsaddressing.W3CEndpointReference` is reached, make `jakarta.xml.ws.EndpointReference` available for reflection",
+        "... and 9 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": "N/A",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 315,
+          "missed": 971,
+          "ratio": 0.244946,
+          "total": 1286
+        },
+        "line": {
+          "covered": 98,
+          "missed": 257,
+          "ratio": 0.276056,
+          "total": 355
+        },
+        "method": {
+          "covered": 38,
+          "missed": 100,
+          "ratio": 0.275362,
+          "total": 138
+        }
+      },
+      "version": "4.0.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-30T03:38:08.472811Z"
+}

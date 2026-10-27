@@ -1,0 +1,147 @@
+{
+  "base_commit": "8655f0ac2ed4570b798d5e6a71ebba7d84979f29",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.boot-spring-boot-testcontainers-4.1.1-forge-9682-20260905122055033613-07f243bb5e59",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9864-partial-bulk-progress",
+    "commit": "b601b85254d1c48b01dfab6e29ac0734df3af6f9",
+    "monitored_branch": "origin/issue-9864-partial-bulk-progress"
+  },
+  "issue_number": 9682,
+  "library": {
+    "artifact": "spring-boot-testcontainers",
+    "coordinates": "org.springframework.boot:spring-boot-testcontainers:4.1.1",
+    "group": "org.springframework.boot",
+    "version": "4.1.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "8655f0ac2ed4570b798d5e6a71ebba7d84979f29",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmprl4ld0lk"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-05T12-31-21-168487Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9682-23e14ad9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.boot:spring-boot-testcontainers"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-05T12-31-23-857812Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.boot/spring-boot-testcontainers/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9682-23e14ad9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "5f46b5dd292e3170d4d6834f1a4a6c3b373cd222",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1/build.gradle"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "Review Signal #4 was violated in tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1/build.gradle: spring-boot-test was pinned to 4.1.1, so this test suite would keep using that companion module when exercised against another supported spring-boot-testcontainers version.",
+    "finding_title": "Version-pinned companion Spring Boot test dependency",
+    "fix_note": "Changed the spring-boot-test dependency to use $libraryVersion, matching the target dependency and preserving the test suite across supported library versions. The resolved dependency remains 4.1.1 for the reviewed coordinate.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the single-library diff, test source and build configuration, metadata file shape, index and reported statistics. The tests are library-specific, run without native-image skips, use a separate test package, and the reported 0/0 dynamic-access result is a valid no-calls case. No legacy metadata files or unrelated library changes are present. After the correction below, the tree is approved. Targeted checkMetadataFiles, checkstyle, and javaTest all pass.",
+    "session_log_path": "logs/org.springframework.boot:spring-boot-testcontainers:4.1.1/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework.boot/spring-boot-testcontainers/4.1.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 8114304,
+      "code_coverage_percent": 64.33,
+      "cost_usd": 7.6867,
+      "generated_loc": 224,
+      "input_tokens_used": 364900,
+      "iterations": 6,
+      "metadata_entries": 12,
+      "output_tokens_used": 60165,
+      "test_only_metadata_entries": 154,
+      "tested_library_loc": 377
+    },
+    "timestamp": "2026-09-05T12:20:55.033613Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9682-20260905122055033613-07f243bb5e59",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfigurationRegistrar` is reached, make `java.lang.Class[]` available for reflection",
+        "when `org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfigurationRegistrar` is reached, make `org.springframework.boot.data.redis.docker.compose.RedisDockerComposeConnectionDetailsFactory` available for reflection",
+        "when `org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfigurationRegistrar` is reached, make `org.springframework.boot.data.redis.testcontainers.RedisContainerConnectionDetailsFactory.<init>()` available for reflection",
+        "when `org.springframework.boot.testcontainers.service.connection.SslBundleSource` is reached, make `org.springframework.boot.io.Base64ProtocolResolver.<init>()` available for reflection",
+        "when `org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfigurationRegistrar` is reached, make `org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfiguration` available for reflection",
+        "when `org.springframework.boot.testcontainers.context.DynamicPropertySourceMethodsImporter` is reached, make `org.springframework.test.context.DynamicPropertySource` available for reflection",
+        "when `org.springframework.boot.testcontainers.context.ImportTestcontainersRegistrar` is reached, make `org.springframework.test.context.DynamicPropertySource` available for reflection",
+        "when `org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfigurationRegistrar` is reached, make `org.springframework.util.ConcurrentReferenceHashMap$Segment[]` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1677,
+          "missed": 1052,
+          "ratio": 0.614511,
+          "total": 2729
+        },
+        "line": {
+          "covered": 377,
+          "missed": 209,
+          "ratio": 0.643345,
+          "total": 586
+        },
+        "method": {
+          "covered": 110,
+          "missed": 64,
+          "ratio": 0.632184,
+          "total": 174
+        }
+      },
+      "version": "4.1.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-05T12:20:55.033613Z"
+}

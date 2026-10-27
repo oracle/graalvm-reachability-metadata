@@ -1,0 +1,90 @@
+{
+  "add_new_library_support:2026-09-30": {
+    "timestamp": "2026-09-30T07:34:34.603959Z",
+    "library": "org.glassfish.ha:ha-api:3.1.13",
+    "starting_commit": "2ff38eddde2ee0d5117390efe033572e4175b10e",
+    "ending_commit": "d53e74b02c60de85a4773faa6c9827083be06a5f",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "3.1.13",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 83,
+          "missed": 1090,
+          "ratio": 0.070759,
+          "total": 1173
+        },
+        "line": {
+          "covered": 21,
+          "missed": 247,
+          "ratio": 0.078358,
+          "total": 268
+        },
+        "method": {
+          "covered": 3,
+          "missed": 137,
+          "ratio": 0.021429,
+          "total": 140
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9936,
+      "issue_label": "library-new-request",
+      "library": "org.glassfish.ha:ha-api:3.1.13",
+      "summary": "ha-api is a small GlassFish HA SPI (BackingStore, BackingStoreFactory and related interfaces). Its only non-test dependency in the POM is org.glassfish.hk2:hk2, which is optional, and the interfaces can be exercised with plain Java. It needs no extra dependency, Docker image, or environment/system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The optional hk2 dependency is not pulled in transitively. Tests that touch HK2 annotations, such as @Contract or @Service, may hit missing classes, so keep test code to the ha-api types.",
+        "I read the POM only and did not inspect the jar contents or its documentation, so the setup decision rests on that dependency list."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9936 Support for org.glassfish.ha:ha-api:3.1.13; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 626
+    },
+    "metrics": {
+      "input_tokens_used": 60892,
+      "cached_input_tokens_used": 541184,
+      "output_tokens_used": 7559,
+      "iterations": 5,
+      "cost_usd": 0.1604,
+      "generated_loc": 94,
+      "tested_library_loc": 21,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 10,
+      "code_coverage_percent": 7.84
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.glassfish.ha/ha-api/3.1.13/reachability-metadata.json"
+    }
+  }
+}

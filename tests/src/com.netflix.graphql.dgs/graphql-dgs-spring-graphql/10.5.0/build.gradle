@@ -1,0 +1,43 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    alias(libs.plugins.kotlin.jvm)
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+
+dependencies {
+    testImplementation "com.netflix.graphql.dgs:graphql-dgs-spring-graphql:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "com.netflix.graphql.dgs:graphql-dgs:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:3.5.5"
+    testImplementation "org.springframework.boot:spring-boot-starter-web:3.5.5"
+    testImplementation "org.springframework.graphql:spring-graphql:1.4.1"
+    testImplementation "org.springframework:spring-webflux:6.2.10"
+    testImplementation "com.github.ben-manes.caffeine:caffeine:3.2.2"
+}
+
+kotlin {
+    jvmToolchain(testJvmVersion)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

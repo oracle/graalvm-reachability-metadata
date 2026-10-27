@@ -1,0 +1,85 @@
+{
+  "add_new_library_support:2026-10-15": {
+    "timestamp": "2026-10-15T13:03:05.511245Z",
+    "library": "com.azure:azure-storage-internal-avro:12.14.0",
+    "starting_commit": "05e3e051fcfe05626f18103da3c0595a4a9c1c13",
+    "ending_commit": "ea83422b46e16b3887b5bf3c0313882267e2926c",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "12.14.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2686,
+          "missed": 180,
+          "ratio": 0.937195,
+          "total": 2866
+        },
+        "line": {
+          "covered": 651,
+          "missed": 32,
+          "ratio": 0.953148,
+          "total": 683
+        },
+        "method": {
+          "covered": 156,
+          "missed": 5,
+          "ratio": 0.968944,
+          "total": 161
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10693,
+      "issue_label": "library-new-request",
+      "library": "com.azure:azure-storage-internal-avro:12.14.0",
+      "summary": "azure-storage-internal-avro is a self-contained Avro object-container parser, with no I/O, service or Docker dependency. AvroReaderFactory and AvroReader work on an in-memory Flux<ByteBuffer>. The azure-core and reactor dependencies come in transitively. Tests can build Avro bytes in memory, so the normal scaffold is enough.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "This is an internal artifact with little public documentation. Tests will have to hand-build Avro container bytes (magic header, sync marker, schema JSON) to reach the parser.",
+        "Parts of the parser may reach azure-core or Jackson types for JSON schema handling. Metadata might be needed for those classes, but that is normal agent generation and needs no extra setup.",
+        "I did not run a build or open the repository for this decision. It rests on my knowledge of the library."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10693 Support for com.azure:azure-storage-internal-avro:12.14.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 536
+    },
+    "metrics": {
+      "input_tokens_used": 292182,
+      "cached_input_tokens_used": 4519680,
+      "output_tokens_used": 26019,
+      "iterations": 8,
+      "cost_usd": 4.5013,
+      "generated_loc": 449,
+      "tested_library_loc": 651,
+      "metadata_entries": 23,
+      "test_only_metadata_entries": 33,
+      "code_coverage_percent": 95.31
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.azure/azure-storage-internal-avro/12.14.0/reachability-metadata.json"
+    }
+  }
+}

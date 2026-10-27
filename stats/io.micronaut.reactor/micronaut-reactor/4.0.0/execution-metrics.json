@@ -1,0 +1,111 @@
+{
+  "add_new_library_support:2026-09-30": {
+    "timestamp": "2026-09-30T10:33:28.641789Z",
+    "library": "io.micronaut.reactor:micronaut-reactor:4.0.0",
+    "starting_commit": "b34ab5989f3d88a601976ee1962df7b4e2e94640",
+    "ending_commit": "59a8c415c166bccfaae51449b9d97d4f1e52db47",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 163,
+          "missed": 80,
+          "ratio": 0.670782,
+          "total": 243
+        },
+        "line": {
+          "covered": 44,
+          "missed": 24,
+          "ratio": 0.647059,
+          "total": 68
+        },
+        "method": {
+          "covered": 16,
+          "missed": 9,
+          "ratio": 0.64,
+          "total": 25
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9826,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.reactor:micronaut-reactor:4.0.0",
+      "summary": "micronaut-reactor 4.0.0 pulls in only micronaut-inject 5.0.0 and reactor-core 3.8.5, both compile scope. Meaningful tests need a Micronaut ApplicationContext with bean processing, so the test project needs the Micronaut runtime and annotation processor on top of the normal scaffold.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-runtime:5.0.0",
+          "scope": "testImplementation",
+          "reason": "micronaut-reactor's POM depends only on micronaut-inject. The reactor conversion and propagation beans (ReactorConverters, ReactorInstrumentation, and similar) need a started ApplicationContext and the runtime and context modules. The version matches the micronaut-core BOM 5.0.0 that micronaut-react\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.0.0",
+          "scope": "testImplementation",
+          "reason": "Test beans need Micronaut's annotation processing, as in the sibling io.micronaut tests such as micronaut-http-client-core. This is the same artifact they use, at the 5.0.0 core version."
+        }
+      ],
+      "agent_guidance": "Also add io.micronaut:micronaut-inject-java:5.0.0 as a testAnnotationProcessor in build.gradle, as the sibling tests/src/io.micronaut/* projects do. Build an ApplicationContext in the tests, for example ApplicationContext.run(). Exercise reactor-specific features against reactor-core Flux and Mono, such as ReactorConverters type conversion (Publisher to Flux/Mono), ReactorPropagation and instrumentation, and reactive context propagation. No Docker image, environment variable or system property is needed.",
+      "risks": [
+        "Micronaut 5.0.0 artifacts are very recent and the exact runtime and context module split may differ from earlier Micronaut versions. Verify that the dependency resolves and that the test classpath compiles.",
+        "Micronaut bean definitions generated at test compile time need native-image reflection metadata. The Micronaut inject and runtime libraries may already ship it, so check the native run for missing-registration errors.",
+        "The micronaut-reactor 4.0.0 POM is based on Micronaut 5.0.0, so check that micronaut-runtime:5.0.0 is compatible with reactor-core 3.8.5."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-runtime:5.0.0",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.reactor/micronaut-reactor/4.0.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.0.0",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.reactor/micronaut-reactor/4.0.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9826 Support for io.micronaut.reactor:micronaut-reactor:4.0.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 1895
+    },
+    "metrics": {
+      "input_tokens_used": 225737,
+      "cached_input_tokens_used": 3136000,
+      "output_tokens_used": 15782,
+      "iterations": 11,
+      "cost_usd": 0.634,
+      "generated_loc": 115,
+      "tested_library_loc": 44,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 63,
+      "code_coverage_percent": 64.71
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.reactor/micronaut-reactor/4.0.0/reachability-metadata.json"
+    }
+  }
+}

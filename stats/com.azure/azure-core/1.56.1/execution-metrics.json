@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-09-23": {
+    "timestamp": "2026-09-23T10:29:00.148114Z",
+    "library": "com.azure:azure-core:1.56.1",
+    "starting_commit": "1b6f325d83b08fb456593c2994efeb19696615fc",
+    "ending_commit": "697152276be8fb4ed09fa7ddd35a2b1058a7fa2e",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.56.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.84375,
+            "coveredCalls": 27,
+            "totalCalls": 32
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.848485,
+        "coveredCalls": 28,
+        "totalCalls": 33
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 13221,
+          "missed": 41783,
+          "ratio": 0.240364,
+          "total": 55004
+        },
+        "line": {
+          "covered": 3185,
+          "missed": 9375,
+          "ratio": 0.253583,
+          "total": 12560
+        },
+        "method": {
+          "covered": 891,
+          "missed": 2353,
+          "ratio": 0.274661,
+          "total": 3244
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10065,
+      "issue_label": "library-new-request",
+      "library": "com.azure:azure-core:1.56.1",
+      "summary": "azure-core is the foundational Azure SDK library (HTTP pipeline, serialization, exceptions, Context, credential interfaces) with no calls to live Azure services. Every azure-core-based test already in this repo (azure-core-http-jdk-httpclient, azure-security-keyvault-secrets, azure-data-appconfiguration) tests exclusively against local in-process JDK HttpServer mocks and needs only the standard generated scaffold (default deps + assertj-core). No Docker image, external dependency, or environment/system property is needed for meaningful coverage.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "If generated tests end up needing an alternate HTTP client transport on the classpath (netty/okhttp) to exercise SPI discovery, that would be a test-implementation detail the agent can add via a normal test dependency, not a structural blocker — but current sibling tests (azure-core-http-jdk-httpclient) show the JDK built-in client is sufficient."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10065 Support for com.azure:azure-core:1.56.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 12,
+      "output_tokens_used": 3834
+    },
+    "metrics": {
+      "input_tokens_used": 825287,
+      "cached_input_tokens_used": 13880448,
+      "output_tokens_used": 69284,
+      "iterations": 21,
+      "cost_usd": 13.1451,
+      "generated_loc": 1019,
+      "tested_library_loc": 3185,
+      "metadata_entries": 295,
+      "test_only_metadata_entries": 67,
+      "code_coverage_percent": 25.36
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.azure/azure-core/1.56.1/reachability-metadata.json"
+    }
+  }
+}

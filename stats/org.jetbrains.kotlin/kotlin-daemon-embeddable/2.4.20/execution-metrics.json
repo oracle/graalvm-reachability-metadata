@@ -1,0 +1,125 @@
+{
+  "fix_javac_fail:2026-09-21": {
+    "timestamp": "2026-09-21T18:56:53.450407Z",
+    "library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20",
+    "starting_commit": "51217290868659f6df024e6c3a176ed38d26a389",
+    "ending_commit": "fd8efd5d5b59ff5b0de227bac7eb0a1c78ed5ddd",
+    "previous_library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.3.20",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.4.20",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2520,
+          "missed": 9245,
+          "ratio": 0.214195,
+          "total": 11765
+        },
+        "line": {
+          "covered": 367,
+          "missed": 1688,
+          "ratio": 0.178589,
+          "total": 2055
+        },
+        "method": {
+          "covered": 134,
+          "missed": 536,
+          "ratio": 0.2,
+          "total": 670
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.3.20",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1794,
+          "missed": 9451,
+          "ratio": 0.159538,
+          "total": 11245
+        },
+        "line": {
+          "covered": 235,
+          "missed": 1664,
+          "ratio": 0.123749,
+          "total": 1899
+        },
+        "method": {
+          "covered": 105,
+          "missed": 537,
+          "ratio": 0.163551,
+          "total": 642
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9926,
+      "issue_label": "fails-javac-compile",
+      "library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20",
+      "summary": "javac failure is caused by an ordinary API change in kotlin-daemon-embeddable 2.4.20 (CompilerId.digest() removed, replaced by top-level DaemonParamsKt.makeRunFileDigest(JavaLanguageVersion, List<Path>); ClientUtilsKt.walkDaemons gained a new JavaLanguageVersion parameter). No extra dependency, Docker image, or environment/system property is needed — the generated test just needs to target the new signatures, using only classes already on the library's own classpath.",
+      "deterministic_setup": [],
+      "agent_guidance": "In 2.4.20, org.jetbrains.kotlin.daemon.common.CompilerId no longer has digest(); use org.jetbrains.kotlin.daemon.common.DaemonParamsKt.makeRunFileDigest(JavaLanguageVersion, List<Path>) instead. ClientUtilsKt.walkDaemons(File, CompilerId, JavaLanguageVersion, File, Function2, Function2) now takes a JavaLanguageVersion (e.g. JavaLanguageVersion.Companion.of(int) or .parse(String)) as its 3rd argument, before the reference File.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9926 [Automation] javac compile fails for org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.3.20",
+      "new_version": "2.4.20",
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 6149
+    },
+    "metrics": {
+      "input_tokens_used": 140577,
+      "cached_input_tokens_used": 600064,
+      "output_tokens_used": 6417,
+      "iterations": 4,
+      "cost_usd": 1.1954,
+      "tested_library_loc": 367,
+      "metadata_entries": 23,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 17.86,
+      "previous_library_coverage_percent": 12.37
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.4.20/reachability-metadata.json"
+    }
+  }
+}

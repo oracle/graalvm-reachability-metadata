@@ -1,0 +1,77 @@
+{
+  "add_new_library_support:2026-09-26": {
+    "timestamp": "2026-09-26T22:28:23.459475Z",
+    "library": "com.sun.xml.ws:servlet:4.0.5",
+    "starting_commit": "67a3a24275775ff8335ed9077694974739bbf281",
+    "ending_commit": "29e17a95c2f4687e26eaee72a402c4571d46d0c1",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.0.5",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 202,
+          "missed": 1882,
+          "ratio": 0.096929,
+          "total": 2084
+        },
+        "line": {
+          "covered": 63,
+          "missed": 488,
+          "ratio": 0.114338,
+          "total": 551
+        },
+        "method": {
+          "covered": 19,
+          "missed": 123,
+          "ratio": 0.133803,
+          "total": 142
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9948,
+      "issue_label": "library-new-request",
+      "library": "com.sun.xml.ws:servlet:4.0.5",
+      "summary": "servlet is the JAX-WS RI's HTTP-servlet transport (WSServlet, WSServletContextListener, ServletAdapter, etc.). Resolving testImplementation com.sun.xml.ws:servlet:4.0.5 already transitively pulls in jakarta.servlet:jakarta.servlet-api:6.1.0 (compile-scope dependency of the artifact itself) and jakarta.jws.WebService/WebMethod/... annotations (bundled inside the transitively-pulled jakarta.xml.ws-api:4.0.3), so both the Servlet API and the JAX-WS annotations needed to write and deploy a test endpoint are already on the test classpath with no extra coordinates. This repo's existing precedent for servlet-API-consuming libraries (e.g. org.apache.commons:commons-fileupload2-javax) is to hand-write fake ServletContext/HttpServletRequest/HttpServletResponse implementations directly in the test rather than adding Mockito or a container; the same approach applies here. No Docker servlet-container image is pinned under allowed-docker-images (no tomcat/jetty entries), reinforcing that in-process \n...[truncated]",
+      "deterministic_setup": [],
+      "agent_guidance": "Write plain JUnit tests that exercise the reachable classes directly (ServletAdapterList, HttpSessionScopeFeature/HttpSessionInstanceResolver, WSServletDelegate, ServletConnectionImpl, WSServletContextListener) rather than depending on a live servlet container. Where a ServletContext/HttpServletRequest/HttpServletResponse is needed, hand-implement the interface (see tests/src/org.apache.commons/commons-fileupload2-javax/*/src/test/java/.../Commons_fileupload2_javaxTest.java for the established in-repo pattern) instead of adding a mocking library. To exercise WSServletContextListener's endpoint deployment path, a minimal test service class annotated with jakarta.jws.WebService plus an in-memory sun-jaxws.xml descriptor (served via the fake ServletContext's getResourceAsStream) is sufficient — no extra dependency is required since jakarta.jws annotations ship inside jakarta.xml.ws-api, already transitive. No special environment variables or system properties are documented as required by JAX-WS RI's servlet transport for standalone use.",
+      "risks": [
+        "If the generated tests attempt full end-to-end SOAP request dispatch (building a real SOAP envelope and asserting a response body), that pulls in more of the jaxws-rt runtime (already covered by the existing com.sun.xml.ws:jaxws-rt:4.0.5 metadata) and increases test complexity, but does not require new setup.",
+        "The servlet module registers a jakarta.servlet.ServletContainerInitializer (META-INF/services) and pulls in JMX-related transitive deps (org.glassfish.gmbal, management-api) for monitoring probes; these should initialize harmlessly in a plain JVM test but are worth watching if native-image agent tracing surfaces unexpected JMX/ASM reflection during generateMetadata."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9948 Support for com.sun.xml.ws:servlet:4.0.5; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 52,
+      "output_tokens_used": 16327
+    },
+    "metrics": {
+      "input_tokens_used": 455270,
+      "cached_input_tokens_used": 8525440,
+      "output_tokens_used": 57285,
+      "iterations": 13,
+      "cost_usd": 8.2576,
+      "generated_loc": 695,
+      "tested_library_loc": 63,
+      "metadata_entries": 17,
+      "code_coverage_percent": 11.43
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.sun.xml.ws/servlet/4.0.5/reachability-metadata.json"
+    }
+  }
+}

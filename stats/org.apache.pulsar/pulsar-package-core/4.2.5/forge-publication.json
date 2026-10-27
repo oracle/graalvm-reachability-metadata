@@ -1,0 +1,140 @@
+{
+  "base_commit": "367771e227b72a0df84055a2e3df4f7a52217acc",
+  "branch": "ai/kimeta/add-lib-support-org.apache.pulsar-pulsar-package-core-4.2.5-forge-10645-20261008112746115161-cd14018fea5d",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "367771e227b72a0df84055a2e3df4f7a52217acc",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10645,
+  "library": {
+    "artifact": "pulsar-package-core",
+    "coordinates": "org.apache.pulsar:pulsar-package-core:4.2.5",
+    "group": "org.apache.pulsar",
+    "version": "4.2.5"
+  },
+  "local_ci_verification": {
+    "base_commit": "367771e227b72a0df84055a2e3df4f7a52217acc",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp4n28f7tk"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10645-16a8420a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.pulsar:pulsar-package-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.pulsar/pulsar-package-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10645-16a8420a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "eeeec2fe85d5c64b52b10bae97022548efe367c7",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is scoped to one coordinate and the allowed metadata, stats, and test paths. The public test is outside the library package, invokes PackagesStorageProvider through its public API, asserts the instantiated provider, and contains no scaffold placeholder, version-pinned assertion, Native Image skip, compatibility override, legacy metadata file, or native build/run flag. Resolved statistics report 3/3 dynamic-access calls covered (100%, above the 20% gate); 3 covered calls versus 2 reported metadata entries does not reach the 75% mismatch threshold. The recorded index gates passed, and the exact Forge finalization command completed all three test lanes, metadata/style checks, generated-test validation, and statistics generation successfully without changing the publishable tree. The contribution satisfies the review rules and is approved.",
+    "session_id": "43f70e9fe3884b94"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.apache.pulsar/pulsar-package-core/4.2.5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 739328,
+      "code_coverage_percent": 2.15,
+      "cost_usd": 0.2186,
+      "generated_loc": 29,
+      "input_tokens_used": 87329,
+      "iterations": 1,
+      "metadata_entries": 0,
+      "output_tokens_used": 9561,
+      "test_only_metadata_entries": 2,
+      "tested_library_loc": 5
+    },
+    "timestamp": "2026-10-08T11:27:46.115161Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10645-20261008112746115161-cd14018fea5d",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.apache.pulsar.packages.management.core.PackagesStorageProvider.newProvider(PackagesStorageProvider.java:38) (line 38)",
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- org.apache.pulsar.packages.management.core.PackagesStorageProvider.newProvider(PackagesStorageProvider.java:39) (line 39)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- org.apache.pulsar.packages.management.core.PackagesStorageProvider.newProvider(PackagesStorageProvider.java:39) (line 39)"
+      ],
+      "metadata_rules": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 20,
+          "missed": 1091,
+          "ratio": 0.018002,
+          "total": 1111
+        },
+        "line": {
+          "covered": 5,
+          "missed": 228,
+          "ratio": 0.021459,
+          "total": 233
+        },
+        "method": {
+          "covered": 1,
+          "missed": 61,
+          "ratio": 0.016129,
+          "total": 62
+        }
+      },
+      "version": "4.2.5"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-08T11:27:46.115161Z"
+}

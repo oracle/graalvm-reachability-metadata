@@ -1,0 +1,122 @@
+{
+  "add_new_library_support:2026-10-20": {
+    "timestamp": "2026-10-20T13:50:37.238521Z",
+    "library": "org.apache.cxf:cxf-rt-transports-http:2.6.1",
+    "starting_commit": "3f114eb1f3ed00d4cdee2a56cca6c90b868130fa",
+    "ending_commit": "cc92458c2808f83622af24af4a09bab78b73270f",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.6.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.833333,
+            "coveredCalls": 20,
+            "totalCalls": 24
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.84,
+        "coveredCalls": 21,
+        "totalCalls": 25
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2483,
+          "missed": 14500,
+          "ratio": 0.146205,
+          "total": 16983
+        },
+        "line": {
+          "covered": 611,
+          "missed": 3152,
+          "ratio": 0.16237,
+          "total": 3763
+        },
+        "method": {
+          "covered": 143,
+          "missed": 568,
+          "ratio": 0.201125,
+          "total": 711
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10989,
+      "issue_label": "library-new-request",
+      "library": "org.apache.cxf:cxf-rt-transports-http:2.6.1",
+      "summary": "cxf-rt-transports-http 2.6.1 declares the servlet API as provided/optional, so it is not on the test classpath. The servlet-side destination, CXFNonSpringServlet and ServletController code cannot be reached without it. Creating a CXF 2.6.1 Bus on JDK 25 also needs javax.annotation, which the JDK no longer ships. The HTTP client conduit needs no Docker image because a local JDK HttpServer can serve it.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "javax.servlet:javax.servlet-api:3.1.0",
+          "scope": "testImplementation",
+          "reason": "The POM declares ${cxf.servlet-api} (geronimo-servlet_3.0_spec) as provided/optional, so it is not resolved transitively. These classes reference javax.servlet: AbstractHTTPDestination, HTTPSession, HttpServletRequestSnapshot, Servlet3ContinuationProvider (which uses AsyncContext, so Servlet 3.0 or \n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "javax.annotation:javax.annotation-api:1.3.2",
+          "scope": "testImplementation",
+          "reason": "cxf-api's ResourceInjector, used by the bus ExtensionManagerImpl, and HTTPTransportFactory (@Resource) reference javax.annotation, which was removed from the JDK in Java 11. Without it, BusFactory.newInstance().createBus() fails on JDK 25. The sibling org.apache.cxf:cxf-rt-bindings-soap:2.6.1 test p\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Do not use Docker. For the client side, start an in-process com.sun.net.httpserver.HttpServer on 127.0.0.1 with an ephemeral port. Create a Bus with BusFactory.newInstance().createBus(), get HTTPTransportFactory or ConduitInitiatorManager for \"http://cxf.apache.org/transports/http\", then open an HTTPConduit against an EndpointInfo whose address is the local server. Send messages and read the responses, and set HTTPClientPolicy timeouts and chunking so the configuration paths run. For the server side, use org.apache.cxf.transport.servlet.CXFNonSpringServlet. Do not use CXFServlet, because it needs Spring, which is optional here and absent. Drive the servlet with hand-written or java.lang.reflect.Proxy implementations of ServletConfig, ServletContext, HttpServletRequest and HttpServletResponse, and set init parameters such as 'service-list-path' or 'redirects-list' to reach ServletController, the service-list rendering and DestinationRegistry lookups. Shut the bus down in @AfterEach/@AfterAll and stop the HttpServer. Ignore the bus-extensions entries for the HTTP policy assertion builders: they are deferred/optional and need cxf-rt-ws-policy, which is not required.",
+      "risks": [
+        "Headers and AbstractHTTPDestination reference servlet types. If a test builds a native image without the servlet API, they could produce link-time or runtime NoClassDefFoundError, which is why the servlet dependency is listed even for tests that only exercise the conduit.",
+        "cxf-rt-core pulls an old JAXB 2.1-era jaxb-impl, and the parent POM excludes javax.activation from it. Code paths that touch JAXB or attachments (DataHandler) may need javax.activation on JDK 25. The HTTP conduit and servlet paths should not need it, but if a NoClassDefFoundError for javax.activation appears, add com.sun.activation:javax.activation:1.2.0.",
+        "CXF 2.6.1 is old and Bus startup does reflection-heavy extension loading from META-INF/cxf/bus-extensions.txt. The metadata will be dominated by bus/cxf-api types, so the user-code filter must stay limited to org.apache.cxf.transport.http and org.apache.cxf.transport.servlet types where appropriate."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "javax.servlet:javax.servlet-api:3.1.0",
+          "result": "applied",
+          "target": "tests/src/org.apache.cxf/cxf-rt-transports-http/2.6.1/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "javax.annotation:javax.annotation-api:1.3.2",
+          "result": "applied",
+          "target": "tests/src/org.apache.cxf/cxf-rt-transports-http/2.6.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10989 Support for org.apache.cxf:cxf-rt-transports-http:2.6.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 16,
+      "output_tokens_used": 7289
+    },
+    "metrics": {
+      "input_tokens_used": 215259,
+      "cached_input_tokens_used": 4565120,
+      "output_tokens_used": 26924,
+      "iterations": 5,
+      "cost_usd": 4.1666,
+      "generated_loc": 538,
+      "tested_library_loc": 611,
+      "metadata_entries": 129,
+      "test_only_metadata_entries": 149,
+      "code_coverage_percent": 16.24
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.cxf/cxf-rt-transports-http/2.6.1/reachability-metadata.json"
+    }
+  }
+}

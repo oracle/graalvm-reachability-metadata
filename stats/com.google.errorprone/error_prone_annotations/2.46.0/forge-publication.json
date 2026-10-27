@@ -1,0 +1,101 @@
+{
+  "base_commit": "2a1460cb42d7ced854f64c8bdc180d9a128d56ac",
+  "branch": "ai/kimeta/fix-javac-com.google.errorprone-error_prone_annotations-2.46.0-forge-9329-20261003142007420914-e55cab25ea53",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "2a1460cb42d7ced854f64c8bdc180d9a128d56ac",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9329,
+  "library": {
+    "artifact": "error_prone_annotations",
+    "coordinates": "com.google.errorprone:error_prone_annotations:2.46.0",
+    "group": "com.google.errorprone",
+    "version": "2.46.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "2a1460cb42d7ced854f64c8bdc180d9a128d56ac",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp78_rd7r2"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9329-6ba91417/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.google.errorprone:error_prone_annotations"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.google.errorprone/error_prone_annotations/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9329-6ba91417/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "ea96520b808b467bd956ef28842f2d494b0c2332",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is confined to com.google.errorprone:error_prone_annotations:2.46.0 support files and preserves the inherited test behavior while narrowly adapting RequiredModifiers and IncompatibleModifiers to the 2.46.0 Modifier API. The index has one latest entry, metadata uses only reachability-metadata.json, and no Native Image skip, failure swallowing, weakening, version-pinned assertion, or unrelated change is present. The repair coverage comparison passes because both 2.6.0 and 2.46.0 report 0/0 dynamic-access calls with no breakdown scopes. Local evidence shows changed-coordinate and index validation gates passed; I also verified metadata, Checkstyle, compilation, JVM tests, and full native tests under current defaults, future-defaults-all, and GraalVM 25, all successfully.",
+    "session_id": "b575fb33e99648f0"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.google.errorprone/error_prone_annotations/2.46.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 348032,
+      "code_coverage_percent": 0.0,
+      "cost_usd": 0.4959,
+      "input_tokens_used": 53585,
+      "iterations": 4,
+      "metadata_entries": 0,
+      "output_tokens_used": 1799,
+      "previous_library_coverage_percent": 100.0,
+      "previous_library_metadata_entries": 0,
+      "tested_library_loc": 0
+    },
+    "timestamp": "2026-10-03T14:20:07.420914Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "error_prone_annotations",
+    "coordinates": "com.google.errorprone:error_prone_annotations:2.6.0",
+    "group": "com.google.errorprone",
+    "version": "2.6.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9329-20261003142007420914-e55cab25ea53",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-03T14:20:07.420914Z"
+}

@@ -1,0 +1,396 @@
+# FS-forge-generation-benchmarking: Forge generation benchmarking
+
+Forge benchmarking measures generation quality, cost
+(§GOAL-minimize-generation-cost), and coverage (§GOAL-maximize-library-coverage)
+for strategy comparisons. It is mainly for the `library-new-request` flow
+(§FS-forge-issue-resolution-goal): the benchmark runner clears selected library
+tests/metadata, executes `ai_workflows/drivers/add_new_library_support.py` in
+benchmark mode exercising the dynamic-access workflow
+(§AR-dynamic-access-workflow), and stores durable per-library results under
+`benchmark_run_metrics/`
+(§FS-durable-generation-logs).
+
+## 1. Benchmark Scope
+
+Benchmarking must evaluate full generation runs, not isolated prompt snippets
+or mocked workflow calls. The primary subject is new-library support because it
+exercises scaffold setup, source context, test generation, metadata generation,
+verification, and benchmark metrics in one comparable process
+(§AR-forge-drivers).
+
+Other workflows may be benchmarked later, but they must define their own suite
+shape and metric compatibility before their results are compared with
+new-library benchmark runs.
+
+## 2. Suite Shape
+
+A benchmark suite must contain several real library coordinates and must be run
+across a large set of different predefined strategies. The suite should include
+libraries with different API shapes and metadata needs so strategy comparisons
+do not overfit one artifact (§FS-forge-predefined-strategy-contract).
+
+The benchmark suite file may represent one strategy per benchmark entry, but a
+benchmark campaign must include multiple entries that cover the same or
+overlapping library set with different `strategy` values. Comparing one
+strategy on one library is a smoke run, not a benchmark.
+
+## 3. Required Metrics
+
+Benchmarking must preserve every generation metric supported by the benchmark
+schemas and generated run metrics. At minimum each run must capture:
+
+- Token usage for every tracked token class, including input tokens, cached
+  input tokens when available, output tokens, and any future token fields added
+  to the run metrics schema.
+- Total cost in USD (§GOAL-minimize-generation-cost).
+- Iteration count.
+- Generated test LOC and tested library LOC.
+- Code coverage percentage.
+- Dynamic-access coverage, including covered calls, total calls, coverage
+  ratio, and the per-kind breakdown from generated library stats
+  (§GOAL-maximize-library-coverage).
+- Metadata entry counts, including generated metadata entries, test-only
+  metadata entries when present, and the original metadata count used for
+  before/after comparisons.
+- Status, timestamp, library coordinate, strategy name, agent, model,
+  starting/ending commit, and post-generation intervention details when used
+  (§FS-durable-generation-logs).
+
+If the schema gains a new generation metric, benchmark output must include it
+before benchmark results using that schema are treated as comparable.
+
+## 4. Execution Rules
+
+Benchmark runs must use `benchmarks/benchmark_runner.py`, which invokes
+`add_new_library_support.py --benchmark-mode` for each library. Directly running
+the workflow script can be useful for debugging, but it is not a benchmark
+unless the run is recorded in the benchmark metrics structure.
+
+The runner must isolate repository changes, clean existing tests/metadata for
+the target coordinates, initialize a benchmark metrics record, run every
+library with the configured strategy, and restore the repository state after the
+campaign. Durable benchmark metrics must remain under `benchmarks/benchmark_results/`.
+
+## 5. Pass Criteria
+
+A benchmark result is valid only when:
+
+- It used real library coordinates for the `library-new-request` generation
+  path.
+- It ran several libraries and was part of a campaign covering many strategy
+  variants.
+- Metrics validated against the benchmark metrics schema.
+- Dynamic-access and code coverage metrics came from generated library stats,
+  not manual estimates.
+- Cost, token, iteration, LOC, coverage, dynamic-access, metadata, status,
+  agent, model, and commit fields were all populated when available.
+
+## 6. Fail Criteria
+
+A benchmark result must not be used for strategy comparison when:
+
+- It measured only one trivial library or one strategy in isolation.
+- It skipped benchmark mode or wrote only ordinary script-run metrics.
+- It lost token, cost, iteration, LOC, coverage, dynamic-access, or metadata
+  metrics that the schema can represent.
+- It ignored a failed generation, failed validation, timeout, or repository
+  cleanup failure.
+- It compared results produced from different suite inputs without documenting
+  the difference.
+
+# FS-code-coverage-benchmarking: Code coverage improvement benchmarking
+
+Code coverage improvement benchmarking compares agent configurations by running
+the complete code coverage improvement workflow against the same already-supported
+libraries and the same repository state. Its initial contract is deliberately
+small: preserve the Rhei workspace for inspection and publish one compact metrics
+record per execution (§FS-forge-generation-benchmarking.1,
+§GOAL-maximize-library-coverage, §GOAL-minimize-generation-cost).
+
+## 1. Initial benchmark suite and baseline
+
+The initial suite contains these exact coordinates. The checked-in statistics at
+baseline commit `92a2a4fa60b2d6532fa533f2d4f8f795dd28a1cb` report the following
+method coverage; none of the five test projects contains a
+`code-coverage-improvement` suite at that commit.
+
+| Coordinate | Covered methods | All methods | Method coverage |
+| --- | ---: | ---: | ---: |
+| `io.github.resilience4j:resilience4j-core:2.3.0` | 9 | 359 | 2.51% |
+| `org.apache.commons:commons-compress:1.23.0` | 269 | 4,366 | 6.16% |
+| `org.apache.kafka:kafka-streams:3.6.0` | 1,855 | 19,283 | 9.62% |
+| `com.h2database:h2:2.1.210` | 2,412 | 11,943 | 20.20% |
+| `com.google.code.gson:gson:2.14.0` | 366 | 1,040 | 35.19% |
+
+The commit is the fixed benchmark-suite input. Every execution must create its
+source worktree from that exact commit, never from the launcher's current `HEAD`,
+`master`, or `origin/master`. A code coverage improvement merged later therefore
+does not change the input. The suite commit must not advance automatically.
+
+The benchmark runner itself may execute from a later clean commit. Every result
+records both `benchmarkSuiteCommit` and `runnerCommit`: the first identifies the
+library state being measured and the second is implementation provenance, not a
+second baseline or campaign identifier.
+
+The pinned worktree supplies the input and nothing else: the coordinate's test
+project and its metadata. Measurement is implementation, so every helper that
+analyses, ranks, classifies, renders prompts, or writes and validates metrics
+must resolve from the runner. A run whose helpers come from the pin records a
+`runnerCommit` that did not produce it, and makes a prompt or ranking change
+unmeasurable — the only way to reach the run would be to move the input, which
+changes the measured library state and invalidates comparison with every earlier
+result.
+
+The test harness is measurement too. The Gradle build that compiles, runs, and
+profiles the test project decides what a measurement collects, so it must come
+from the runner commit while the test project and metadata it builds come from
+the pin. This must hold for every Gradle invocation in the run, including the
+ones the agent issues itself, so a harness change is measurable on the fixed
+input exactly like a helper change.
+
+The checked-in totals select and describe the suite; the run's own frozen JaCoCo
+method universe is authoritative in its metrics. A difference between the
+checked-in `All methods` value and the measured universe must be recorded, not
+silently reconciled.
+
+## 2. Matrix selection and preparation
+
+The default matrix is the cross-product of five libraries, six agent/model
+configurations, and three thinking levels, for 90 executions:
+
+- Pi with `gpt-5.6-sol`, `gpt-5.6-luna`, `gpt-5.6-terra`, or `gpt-6-astra`.
+- Claude Code with the stable configuration names `sonnet-5` or `opus-5`.
+- `medium`, `high`, or `xhigh` thinking for every configuration.
+
+The launcher accepts multiple library indexes, agents, models, and thinking
+levels as filters. Unspecified dimensions retain all configured values. Unknown,
+duplicate, and agent-incompatible selections must fail before any worktree is
+created, and the complete selected matrix must be printed before the first
+mutation. With no selection flags, the launcher selects exactly 90 executions.
+
+For each execution, the launcher must:
+
+1. Validate that the coordinate belongs to the fixed suite.
+2. Allocate a unique run identifier and a unique parent directory.
+3. Create a disposable source worktree from the fixed suite commit and replace
+   its test harness with the runner commit's.
+4. Instantiate a Rhei workspace named `code-coverage-99000` below that unique
+   parent directory. `99000` is a fixed synthetic issue number used only to
+   satisfy the code coverage workspace naming contract.
+5. Prepare the conversion inputs deterministically, including the coordinate,
+   commits, run identifier, source worktree, runner Forge path, and coverage
+   suite paths expected in `runtime/code-coverage/issues/conversion.json`.
+6. Execute the existing preparation, API coverage, native metadata preparation,
+   deep coverage, and finalization behavior without claiming or reading a GitHub
+   issue.
+
+Source-worktree creation is a per-cell gate. Before attempting it, the launcher
+removes an existing linked worktree or filesystem entry only at that cell's
+exact allocated `source/` path. If creation still fails, the launcher reports
+the cell as skipped, counts it as an unsuccessful outcome, and continues with
+the next selected cell without invoking Rhei or publishing a benchmark result.
+
+Benchmark preparation must not query an issue, validate an issue label, assign
+an issue, or mutate a GitHub Project status. The coordinate supplied by the
+launcher is the complete benchmark input that replaces issue conversion. The
+normal issue-driven launcher remains unchanged. A boolean `benchmark` template
+input, defaulting to false, renders either the existing issue conversion and
+source publication tasks or deterministic benchmark conversion and metrics
+publication tasks. The middle preparation, API, native-metadata, deep, and
+finalization tasks are the same in both modes.
+
+A cell runs on one agent configuration, and that includes the repairs the
+workflow performs on its own output. The analysis role a cell resolves must be
+the cell's own agent, model, and thinking level, not the ambient default of the
+machine that launched the run. A cell whose coverage agent is one model while
+its metadata repairs are performed by another measures two agents at once and
+attributes the result to one of them, and an analysis role left to the
+environment makes the same cell produce different work on different machines.
+The launcher therefore fixes the analysis role for every cell it executes
+(§FS-forge-agent-runtime-selection).
+
+The Rhei workspace must live outside the disposable source worktree. Distinct
+run parents prevent collisions while preserving the required fixed workspace
+name.
+
+## 3. Benchmark metrics publication
+
+A benchmark workspace routes successful finalization to a deterministic
+`code-coverage-benchmark-publication` task instead of the normal publication
+task. It must not push the generated source branch or change the synthetic
+issue. It publishes the compact benchmark result through the trusted Forge
+publication boundary: the local runner pushes a same-repository `ai/**` branch
+whose only change is the appended result, and trusted default-branch Actions
+validate that exact branch and open its pull request. The local runner must
+never call the pull-request API itself.
+
+A benchmark publication carries no publication descriptor. The result entry is
+already the complete, schema-validated record of the run, keyed by its run ID,
+so a descriptor could only repeat it — and the descriptor's recorded base
+commit goes stale whenever the branch is refreshed against a moved base,
+turning correct branches into validation failures. Everything the trusted
+publisher needs it derives from the branch diff against the merge base with
+the default branch, which is computed fresh at validation time and cannot go
+stale.
+
+Benchmark publication reads the finalized coverage record and Rhei accounting
+and writes the metrics record in §FS-code-coverage-benchmarking.4. Results live
+in one JSON list per coordinate:
+
+```text
+code-coverage-benchmarks/<group>/<artifact>/<version>.json
+```
+
+Every execution is proposed immediately after it finishes, ordered by
+timestamp. Its `runId` is the idempotency key: retrying an identical result
+validates either the entry already merged into `origin/master` or the exact
+open publication branch instead of creating another pull request, while
+conflicting data for one run ID is rejected. Publication serializes local
+writers and creates a fresh disposable worktree from the latest
+`origin/master` for each result. It appends the result, validates and commits
+the complete coordinate list, and pushes the unique publication branch. The
+worktree is then removed.
+
+The trusted publisher accepts a benchmark-result branch only when its diff
+against the merge base with the default branch changes exactly one coordinate
+result list under `code-coverage-benchmarks/**` and the changed list validates
+against the benchmark-result schema. It does not reconstruct or enforce the
+base list: a removed or edited entry is visible in the pull-request diff and
+is the reviewer's to judge, like any other reviewed change. The publisher
+opens one pull request for the run, labeled `GenAI`,
+`code-coverage-improvement`, and `rhei` so the run sits in the same triage
+queue as the coverage-improvement PRs it measures, and renders the run
+identity, status, configuration, coverage gain, the final total coverage as a
+percentage of the run's method universe, and token totals from the entries the
+diff appends. Repository CI and the normal merge boundary remain
+responsible for accepting it. §FS-forge-publication-readiness
+
+When Rhei terminates before reaching benchmark publication, the launcher must
+publish nothing. It preserves the workspace and the source worktree and
+reports the run as pending human intervention, printing the workspace path and
+the failed phase when known. A record collected automatically from partial
+evidence at the stop can mask the completed outcome once the workspace is
+resumed and finalized, so a crash-time snapshot must never be published. A
+failed or partial workflow still remains a benchmark result rather than
+disappearing from the comparison, but it enters the comparison only through an
+explicit human decision: the operator either resumes the workspace until the
+workflow reaches terminal publication, or explicitly publishes the run as a
+failure, which builds the record exactly once from the evidence present at
+that moment. Every written record, success or failure, is immutable for its
+`runId`. Because a benchmark run has no GitHub issue, pending human
+intervention is launcher-local state reported on the console and derivable
+from the workspace, not the `human-intervention` label flow
+(§FS-human-intervention-policy).
+
+The normalized result must be written into the workspace before Git publication,
+and a publication marker may be written only after the publication branch is
+durable or the identical result is already merged. The source worktree may be
+removed only after that marker exists. The Rhei workspace must not be removed:
+it remains on the machine for later inspection of its reports, prompts,
+accounting, fixes, and work notes. If metrics writing, result-list validation,
+or branch pushing fails, both the source worktree and workspace remain so
+completion can be retried without losing evidence.
+
+The launcher provides a command that discovers workspaces without a publication
+marker. A workspace that already holds a written result retries its Git
+publication without rerunning coverage; a workspace without one is listed as
+pending human intervention and left untouched.
+
+## 4. Initial metrics record
+
+The initial record contains identity, status, and the API, deep, and total
+results. It publishes no Rhei runtime artifacts or logs.
+
+Identity and status must contain:
+
+- schema version, unique run identifier, and timestamp;
+- the fixed suite commit and runner commit;
+- coordinate, agent, configured model, observed model, and thinking level;
+- terminal status; and
+- for an unsuccessful execution, the phase and exit code when known.
+
+The API and deep records must each contain:
+
+- `coverPasses`, meaning invocations of that phase's cover state;
+- `fixInvocations`, meaning invocations of that phase's fix state;
+- input, cached-input-read, cached-input-write, and output tokens consumed by
+  all agent invocations in that phase, including fixes — cache writes are a
+  separately billed input class on some providers and zero on the rest, so
+  omitting them understates exactly one side of a cross-provider comparison;
+- covered methods before and after the phase;
+- methods gained and coverage percentage points gained; and
+- `allMethods`, the frozen whole-run JaCoCo method universe used as the common
+  denominator.
+
+The total record must contain the sums of API and deep cover passes, fix
+invocations, and token classes, plus run-start covered methods, final covered
+methods, total methods gained, total percentage points gained, and
+`allMethods`. Tokens from conversion, preparation, finalization, and benchmark
+completion are outside the initial token total.
+
+Coverage values must come from the existing whole-run `runCoverage` checkpoints
+and phase gains, so API starts at `runStart`, deep starts at `afterApiPhase`, and
+the total ends at `final`. All three use one denominator
+(§AR-code-coverage-improvement.5.1). Cover-pass counts come from the recorded
+phase stop decisions; fix counts and phase token usage come from Rhei invocation
+and task accounting. Cached input must remain separate from ordinary input.
+
+When a failed execution lacks a final checkpoint or another metric, the field is
+`null`, not zero. Metrics that exist before the failure must still be retained.
+
+## 5. Preserved local workspace
+
+The preserved workspace is the detailed local lookup record for an execution.
+Its stable parent is keyed by the run identifier, and it retains the rendered
+Rhei plan and the complete `runtime/` tree produced by the workflow. It is not
+committed or pushed by the initial benchmark implementation.
+
+The launcher must print the preserved workspace's absolute path when the run
+ends. The metrics record must carry its run identifier and workspace name so a
+local lookup can resolve the corresponding directory without making a
+machine-specific absolute path part of the portable comparison data.
+
+## 6. Deferred decisions
+
+The following are explicitly deferred until the base runner and metrics record
+exist:
+
+- when and how the fixed library set or baseline commit is revised;
+- execution concurrency, scheduling, and statistical replication;
+- cost calculation, timing, efficiency, quality, stability, and other advanced
+  metrics; and
+- publication or remote archival of preserved Rhei workspaces and runtime
+  artifacts.
+
+## 7. Baseline strategy arm
+
+The benchmark includes a naive baseline arm: the same fixed inputs, driven by
+an agent that receives only what an ordinary contributor would have. It is the
+control every guided arm is compared against, so harness value is measured as
+a delta over it rather than over zero (§FS-forge-generation-benchmarking.2,
+§GOAL-maximize-library-coverage).
+
+The arm must satisfy all of the following:
+
+- **Shared instrumentation.** Conversion, preparation, the JaCoCo
+  measurement, the metrics schema, and publication are the same
+  implementation every other arm uses, and the denominator is the run's
+  frozen JaCoCo method universe in every arm (§FS-code-coverage-benchmarking.1). Arms may differ in
+  treatment — the prompt the cover agent receives and the workflow stages
+  that stay enabled — never in measurement or denominator.
+- **A naive prompt as the sole interface.** The cover agent sees one rendered
+  prompt: the coordinate, the coverage-suite source root, the test command,
+  the read-only coverage report path, the current coverage numbers, and the
+  binding test contract rules (§root/FS-test-contract). No ranked targets, no
+  call-graph or PGO guidance, and no phase structure reach the agent.
+- **Bounded iteration with recorded stops.** The loop runs at most 30 cover
+  passes and ends early under the same methods-based marginal-yield rule the
+  guided phases use; the stop decision is recorded on every pass, and the
+  stopping pass is part of the published record.
+- **Naive repair.** A measurement that fails because the suite is red routes
+  to a fix pass whose prompt carries the failure output and the same contract
+  rules, nothing else. Repair never claims progress; only re-measurement moves
+  the loop.
+- **No guided tail.** The arm runs no native-metadata preparation, no deep
+  phase, and no finalization beyond metrics collection; its published record
+  names the baseline strategy so results are filterable per arm.

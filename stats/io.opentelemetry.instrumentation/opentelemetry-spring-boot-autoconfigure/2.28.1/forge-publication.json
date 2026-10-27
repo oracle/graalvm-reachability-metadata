@@ -1,0 +1,140 @@
+{
+  "base_commit": "31ef71a5a02d2b4ec306a31f9d25455adaa475e4",
+  "branch": "ai/kimeta/add-lib-support-io.opentelemetry.instrumentation-opentelemetry-spring-boot-autoconfigure-2.28.1-forge-8548-20261008204048127032-ea19bc53e07a",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "31ef71a5a02d2b4ec306a31f9d25455adaa475e4",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 8548,
+  "library": {
+    "artifact": "opentelemetry-spring-boot-autoconfigure",
+    "coordinates": "io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.28.1",
+    "group": "io.opentelemetry.instrumentation",
+    "version": "2.28.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "31ef71a5a02d2b4ec306a31f9d25455adaa475e4",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpvfo55yul"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8548-67c7086f/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.opentelemetry.instrumentation/opentelemetry-spring-boot-autoconfigure/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8548-67c7086f/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "bd3614a0e2544fb722063f3e713ece9a8e745db0",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Approved: the diff is limited to one new coordinate and its allowed metadata, stats, and test files. The public, library-specific tests replace the scaffold, exercise and assert target-library behavior, use a separate test package, remain version-agnostic in test code, and do not skip or tolerate Native Image failures, add compatibility overrides, or use legacy metadata. The resolved statistics report 0/0 dynamic-access calls, which is a valid no-calls case and makes the percentage and entry-count mismatch checks inapplicable. The recorded index validation and local CI gate passed.",
+    "session_id": "f4bc05c53b804635"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/io.opentelemetry.instrumentation/opentelemetry-spring-boot-autoconfigure/2.28.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 8620032,
+      "code_coverage_percent": 3.16,
+      "cost_usd": 1.5826,
+      "generated_loc": 95,
+      "input_tokens_used": 448087,
+      "iterations": 4,
+      "metadata_entries": 9,
+      "output_tokens_used": 45421,
+      "test_only_metadata_entries": 36,
+      "tested_library_loc": 107
+    },
+    "timestamp": "2026-10-08T20:40:48.127032Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8548-20261008204048127032-ea19bc53e07a",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `io.opentelemetry.instrumentation.spring.autoconfigure.internal.EarlyConfig` is reached, make `java.io.Serializable[]` available for reflection",
+        "when `io.opentelemetry.instrumentation.spring.autoconfigure.internal.EarlyConfig` is reached, make `java.lang.CharSequence[]` available for reflection",
+        "when `io.opentelemetry.instrumentation.spring.autoconfigure.internal.EarlyConfig` is reached, make `java.lang.Comparable[]` available for reflection",
+        "when `io.opentelemetry.instrumentation.spring.autoconfigure.internal.EarlyConfig` is reached, make `java.lang.Object[]` available for reflection",
+        "when `io.opentelemetry.instrumentation.spring.autoconfigure.internal.EarlyConfig` is reached, make `java.lang.String` available for reflection",
+        "when `io.opentelemetry.instrumentation.spring.autoconfigure.internal.EarlyConfig` is reached, make `java.lang.String[]` available for reflection",
+        "when `io.opentelemetry.instrumentation.spring.autoconfigure.internal.EarlyConfig` is reached, make `java.lang.constant.Constable[]` available for reflection",
+        "when `io.opentelemetry.instrumentation.spring.autoconfigure.internal.EarlyConfig` is reached, make `java.lang.constant.ConstantDesc[]` available for reflection",
+        "... and 1 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 374,
+          "missed": 12190,
+          "ratio": 0.029768,
+          "total": 12564
+        },
+        "line": {
+          "covered": 107,
+          "missed": 3280,
+          "ratio": 0.031591,
+          "total": 3387
+        },
+        "method": {
+          "covered": 36,
+          "missed": 1070,
+          "ratio": 0.03255,
+          "total": 1106
+        }
+      },
+      "version": "2.28.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-08T20:40:48.127032Z"
+}

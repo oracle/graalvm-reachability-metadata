@@ -1,0 +1,158 @@
+{
+  "base_commit": "91dfda3002a0655a12bf62647c8e1334939f7ccc",
+  "branch": "ai/kimeta/add-lib-support-com.azure-azure-json-1.4.0-chunked-forge-10060-20260923161115397943-37b9ab22e24a",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "c916e61a569168a6e089f968aa11f6681a84aec4",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10060,
+  "library": {
+    "artifact": "azure-json",
+    "coordinates": "com.azure:azure-json:1.4.0",
+    "group": "com.azure",
+    "version": "1.4.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "91dfda3002a0655a12bf62647c8e1334939f7ccc",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpo6asss8x"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10060-c776947c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.azure:azure-json"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.azure/azure-json/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10060-c776947c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "1dcf0371ccbe2409e98fe6839b5bdb8cd3e72e7e",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/com.azure/azure-json/1.4.0/stats.json",
+      "tests/src/com.azure/azure-json/1.4.0/src/test/java/com_azure/azure_json/VersionUtilTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The submitted stats reported 0 of 4 dynamic-access calls covered (0%), violating the requirement that a new-library contribution with calls to cover exceed 20% coverage.",
+    "finding_title": "New-library dynamic-access coverage is below the required threshold",
+    "fix_note": "Restored the coordinate-local VersionUtil test that exercises the library's reflective version discovery and resource lookup paths, then ran Forge finalization to regenerate stats at 4/4 covered calls and verify all required lanes and checks.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff against the new-library rules and contribution contract. The repaired tree has meaningful, version-agnostic tests in a separate test package, no Native Image skip or build/run workaround, no legacy metadata files, and 4/4 (100%) dynamic-access coverage. The exact Forge finalization command then completed without further publishable changes, including all three native-test lanes, metadata validation, style checks, and regenerated statistics.",
+    "session_id": "ffd737d4c3ef4926"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.azure/azure-json/1.4.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1213440,
+      "code_coverage_percent": 11.76,
+      "cost_usd": 1.1684,
+      "generated_loc": 42,
+      "input_tokens_used": 70984,
+      "iterations": 4,
+      "metadata_entries": 36,
+      "output_tokens_used": 6892,
+      "tested_library_loc": 1305
+    },
+    "timestamp": "2026-09-23T16:11:15.397943Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10060-20260923161115397943-37b9ab22e24a",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- com.azure.json.implementation.jackson.core.util.VersionUtil.versionFor(VersionUtil.java:67) (line 67)",
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- com.azure.json.implementation.jackson.core.util.VersionUtil.versionFor(VersionUtil.java:70) (line 70)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- com.azure.json.implementation.jackson.core.util.VersionUtil.versionFor(VersionUtil.java:70) (line 70)",
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- com.azure.json.implementation.jackson.core.util.VersionUtil.mavenVersionFor(VersionUtil.java:111) (line 111)"
+      ],
+      "metadata_rules": [
+        "when `com.azure.json.implementation.jackson.core.util.VersionUtil` is reached, make `com.azure.json.implementation.jackson.core.json.PackageVersion.<init>()` available for reflection",
+        "when `com.azure.json.JsonProviders` is reached, make `sun.security.rsa.RSAPublicKeyImpl.<init>(byte[])` available for reflection",
+        "when `com.azure.json.JsonProviders` is reached, make `sun.security.x509.AuthorityInfoAccessExtension.<init>(java.lang.Boolean, java.lang.Object)` available for reflection",
+        "when `com.azure.json.JsonProviders` is reached, make `sun.security.x509.AuthorityKeyIdentifierExtension.<init>(java.lang.Boolean, java.lang.Object)` available for reflection",
+        "when `com.azure.json.JsonProviders` is reached, make `sun.security.x509.BasicConstraintsExtension.<init>(java.lang.Boolean, java.lang.Object)` available for reflection",
+        "when `com.azure.json.JsonProviders` is reached, make `sun.security.x509.CRLDistributionPointsExtension.<init>(java.lang.Boolean, java.lang.Object)` available for reflection",
+        "when `com.azure.json.JsonProviders` is reached, make `sun.security.x509.CertificateAlgorithmId.<init>(sun.security.x509.AlgorithmId)` available for reflection",
+        "when `com.azure.json.JsonProviders` is reached, make `sun.security.x509.CertificateExtensions.<init>()` available for reflection",
+        "... and 9 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5896,
+          "missed": 42038,
+          "ratio": 0.123002,
+          "total": 47934
+        },
+        "line": {
+          "covered": 1352,
+          "missed": 9743,
+          "ratio": 0.121857,
+          "total": 11095
+        },
+        "method": {
+          "covered": 288,
+          "missed": 1496,
+          "ratio": 0.161435,
+          "total": 1784
+        }
+      },
+      "version": "1.4.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-23T16:11:15.397943Z"
+}

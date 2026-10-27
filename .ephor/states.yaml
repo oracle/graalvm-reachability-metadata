@@ -1,0 +1,266 @@
+# The state machine the maintainer agent queues run under. §FS-maintainer-agent-queues
+
+# Point your ephor configuration at this file (`work.states` of the project);
+# ephor copies it into each new work folder and never overwrites a copy, so a
+# change here reaches work folders made after it. Two machines share it:
+#
+#   fix ──► review ──► done                    the implement queue, spec section 2
+#   hi-collect ──0──► hi-fix ──► done          the drain queue, spec section 3
+#        └─4──► done   nothing to drain, no model spent
+#        └─75─► hi-collect   checks still running
+#
+# Scripts are called from the main checkout ({meta.root}), never from the work
+# branch: a generated pull request's branch can predate this folder.
+
+name: ephor-work
+version: 1.0
+
+states:
+  fix:
+    description: Do what the ticket asks, in the checkout it names.
+    agent: claude-code
+    agent_mode: yolo
+    agent_timeout: 2h
+    instructions: |
+      The ticket below is one item from a watch over this project — a pull
+      request, an issue, or a conversation — written down with everything the
+      watch knew about it. You are in the checkout the work belongs to.
+
+      Do what the ticket asks and no more than that. Prefer the smallest change
+      that is actually right over the one that covers the most ground. Where
+      the ticket asks a question rather than for a change, the answer is the
+      work: write it and change nothing.
+
+      Read before you write. The dossier says what the item looked like when
+      the work was asked for, which is not necessarily what the repository
+      looks like now — check the branch, the log, and the failing job before
+      trusting a line of it.
+
+      Write to {output.report.path}:
+
+      - what you changed, file by file, and why it is the right change
+      - what you ran to check it, and what it said — the whole line, not your
+        summary of it
+      - what you could not do, and what a person would have to decide
+
+      Commit in this checkout, with a message that explains the change. Do not
+      push, and do not touch the forge — no comments, no reviews, no merges,
+      no new pull requests — unless the ticket asks for it in so many words.
+    outputs:
+      - name: report
+        path: "runtime/ephor/{task_id}.report.md"
+
+  review:
+    description: Read the work against the ticket and reach a verdict.
+    agent: claude-code
+    agent_mode: yolo
+    agent_timeout: 30m
+    instructions: |
+      A previous pass worked this ticket and wrote {input.report.path}. Read
+      that, then read the ticket below, then read what actually happened in
+      this checkout — `git log` and `git diff` against the branch point say
+      more than the report does.
+
+      Check the work against what was asked, not against what you would have
+      done. Where something is wrong and small, fix it and commit. Where it is
+      wrong and not small, leave it: an unfinished ticket that says so is worth
+      more than one quietly widened until it looks finished.
+
+      Write to {output.verdict.path}. Its first line is exactly one of:
+
+          VERDICT: done — the ticket is answered and the change is right
+          VERDICT: partial — some of it is answered; the rest is named below
+          VERDICT: blocked — a person has to decide or do something first
+
+      Then, in a few lines a reader can act on: what was done, what was not,
+      and the one thing you would ask a person if you could ask one.
+    inputs:
+      - name: report
+        path: "runtime/ephor/{task_id}.report.md"
+    outputs:
+      - name: verdict
+        path: "runtime/ephor/{task_id}.verdict.md"
+
+  done:
+    description: The ticket is finished; the verdict says how.
+    final: true
+
+  cancelled:
+    description: The ticket was taken back; the result says why.
+    final: true
+
+
+  # ── drain the human-intervention label from GenAI pull requests ──────────
+  #
+  #   hi-collect ──0──► hi-fix ──► done
+  #        └─75─► hi-collect (checks still running)
+  #
+  # A script gathers the failing checks; one agent does the rest under the
+  # repository's own rules (FS-contribution-contract.5). Rounds come from
+  # ephor: when the PR moves, `ephor work sync` appends a new hi-collect ticket
+  # to the same plan, so the agent always sees what earlier rounds did.
+
+  hi-collect:
+    description: Ask GitHub what failed on this human-intervention PR, before spending a model.
+    program:
+      command: "{meta.root}/.ephor/hi-collect.sh"
+      env:
+        REPO: "{meta.repo}"
+        NUMBER: "{meta.number}"
+        REPORT: "{output.failures.path}"
+    program_timeout: 15m
+    poll:
+      interval: 10m
+      max_attempts: 36
+    outputs:
+      - name: failures
+        path: "runtime/ephor/{task_id}.failures.md"
+
+  hi-fix:
+    description: Resolve the human-intervention label the way the contribution contract says.
+    agent: claude-code
+    agent_mode: yolo
+    agent_timeout: 2h
+    inputs:
+      - name: failures
+        path: "runtime/ephor/{task_id}.failures.md"
+    instructions: |
+      You are the maintainer draining the `human-intervention` label from a
+      generated pull request whose generator has moved on. {input.failures.path}
+      holds the PR's state, labels, linked issue, failing checks and the tail
+      of each failing job's log. The plan at {plan_path} holds every earlier
+      round on this PR: read it first, never repeat what a round already tried.
+      You are in the PR's own checkout, on its head branch.
+
+      Stop at once, writing only a short report, if the PR is closed or
+      merged, is not labelled `GenAI`, no longer carries `human-intervention`,
+      or already carries `human-intervention-fixed`.
+
+      **The rules are the repository's.** Read in this checkout with
+      `grund <ID> --full` before changing anything: `FS-contribution-contract.5`
+      (the disposition ladder), `FS-contribution-contract.2` (the file set a
+      repair may touch), `FS-test-contract` (sections 2.9 and 4.3 especially)
+      and `forge/FS-human-intervention-policy`.
+
+      Decide what kind of failure this is, then take the first case that
+      applies:
+
+      1. **Transient.** Every failing job died of infrastructure the change
+         cannot have caused: a Maven Central or Docker registry timeout, a
+         GitHub 5xx, a cancelled or timed-out runner. Remove the
+         `human-intervention` label and re-run the failed jobs:
+         `gh pr edit <n> --remove-label human-intervention` and, for each
+         failed run on the head SHA, `gh run rerun <id> --failed`. Commit and
+         push nothing. If the plan shows an earlier round already re-ran the
+         same failure, it is not transient; go on.
+
+      2. **Repair** (`FS-contribution-contract.5.1`, `.5.2`). The failure is in
+         the contribution's own files — `metadata/<group>/<artifact>/…`,
+         `tests/src/<group>/<artifact>/…`, `stats/…` — and you can bring it
+         inside the rules. Look for precedent first: `skills/review-fixes-*`,
+         `skills/fix-missing-reachability-metadata`, and
+         `git log --oneline --grep='Test fix for' -30`. A test that exercises
+         behavior Native Image does not support (reflection on substituted JDK
+         internals, dynamic loading the library guards itself, Spring AOT
+         paths the harness never runs) is re-scoped per
+         `FS-test-contract.4.3.2`: name the mechanism, drop that scenario,
+         keep the rest exercising the public API with the shipped metadata.
+         Never delete tests, disable classes, drop assertions or swallow
+         exceptions to get green. Verify with the narrowest Gradle task that
+         proves it, from the repo root: `./gradlew test -Pcoordinates=g:a:v`,
+         plus `./gradlew checkMetadataFiles -Pcoordinates=g:a:v` when
+         metadata or `index.json` changed, plus `./gradlew checkstyle
+         spotlessCheck`. When you changed a test directory, also run
+         `./gradlew javaTest -Pcoordinates=g:a:<metadata-version>` for every
+         other index entry whose `test-version` points at it: CI tests those
+         entries too. Only when every command passes: commit with a subject
+         under 60 characters, push to the PR head branch, swap the labels with
+         `gh pr edit <n> --remove-label human-intervention --add-label
+         human-intervention-fixed`, and comment on the PR what you changed and
+         why under which rule. Never merge; Forge merges after the gates pass.
+
+      3. **Skip the version** (`FS-contribution-contract.5.4`). The library's
+         dynamic access is reachable only through behavior Native Image cannot
+         support, or the version is broken upstream, so no metadata and no
+         test can justify it. With an existing index entry: add
+         `skipped-versions` entries with a `reason` naming the mechanism to
+         `metadata/<group>/<artifact>/index.json` for this version and every
+         newer one sharing it; drop `metadata/<version>/`,
+         `tests/src/…/<version>/`, `stats/<version>/stats.json` and
+         `stats/<version>/execution-metrics.json`; keep
+         `stats/<version>/forge-publication.json`; label the linked issue
+         `library-unsupported-version`. Then verify, commit, push, relabel and
+         comment exactly as in case 2. The evidence bar is the mechanism shown
+         at the library's call sites, never a low number.
+
+      4. **Close** (`FS-contribution-contract.5.4`, closed path). A new library
+         with no index entry that is unsupportable. Follow
+         `skills/close-new-library-support-pr/SKILL.md`: comment the
+         mechanism, close the PR, label the linked issue
+         `library-unsupported-version` and close it. No commit.
+
+      5. **Escalate** (`FS-contribution-contract.5.3`, `.5.5`). The cause is in
+         shared infrastructure — build logic, the harness, workflows, image
+         scanning — or you cannot tell whether a must is violated. For
+         infrastructure: find or open one issue per defect, then comment on
+         the PR naming it. Otherwise comment the rule at issue, what you tried
+         and what you could not decide. Start every escalation comment with
+         an @-mention of the GitHub account running this queue
+         (`gh api user --jq .login`) so that maintainer is notified, and end
+         it with the line
+         `<!-- ephor-hi-drain:escalated:<head SHA> -->` using the PR's current
+         head commit, so later rounds leave this head alone. Leave the label
+         on. No commit.
+
+      Uncertainty is case 5, never a guess in either direction. Never push a
+      change whose verification failed: a red version must not merge.
+
+      Write {output.report.path}. Its first line is exactly one of
+      `TRANSIENT:`, `REPAIRED:`, `SKIPPED:`, `CLOSED:`, `ESCALATED:` or
+      `STOPPED:` followed by one sentence. Then: what you changed file by file
+      and under which rule, every command you ran with its real result, what
+      you did on GitHub, and what you could not do.
+    outputs:
+      - name: report
+        path: "runtime/ephor/{task_id}.report.md"
+
+transitions:
+  - from: fix
+    to: review
+    description: The work is written down; read it against the ticket.
+
+  - from: review
+    to: done
+    description: Reviewed, with a verdict.
+
+  # Named transitions lead; the wildcard is what `ephor work cancel` and the
+  # work screen's `c` take, from whichever state the ticket is in.
+  - from: "*"
+    to: cancelled
+    description: The reader took the ticket back.
+
+  # ── drain the human-intervention label ───────────────────────────────────
+  - from: hi-collect
+    to: hi-collect
+    exit_code: 75
+    description: Checks still running — wait out poll.interval and ask again.
+  - from: hi-collect
+    to: done
+    exit_code: 4
+    description: Closed, merged, not GenAI, or already resolved; nothing to drain.
+  - from: hi-collect
+    to: hi-fix
+    exit_code: 0
+    description: The failures are collected; resolve them.
+  - from: hi-collect
+    to: hi-fix
+    exit_code: nonzero
+    description: GitHub answered oddly; let the agent look anyway.
+  - from: hi-collect
+    to: hi-fix
+    condition: pollAttempts >= pollMaxAttempts
+    description: Six hours without a verdict; let the agent look.
+
+  - from: hi-fix
+    to: done
+    description: Resolved one way or another; the report's first line says how.

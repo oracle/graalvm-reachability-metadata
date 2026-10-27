@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T19:20:56.264771Z",
+    "library": "org.springframework.boot:spring-boot-quartz:4.1.0-RC1",
+    "starting_commit": "73b2a36947fdf286dfe76c7de8f40dbeff7c7899",
+    "ending_commit": "71a7bd0ad0b374049b7d2a01b1d58c4fe92dbaff",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.1.0-RC1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1090,
+          "missed": 695,
+          "ratio": 0.610644,
+          "total": 1785
+        },
+        "line": {
+          "covered": 245,
+          "missed": 171,
+          "ratio": 0.588942,
+          "total": 416
+        },
+        "method": {
+          "covered": 73,
+          "missed": 76,
+          "ratio": 0.489933,
+          "total": 149
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8723,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-quartz:4.1.0-RC1",
+      "summary": "A prior automated attempt on this exact issue (preserved on branch ai/vjovanov/human-intervention/issue-8723-...) reached BUILD SUCCESSFUL for both JVM and native tests using only standard testImplementation deps (spring-boot-quartz, spring-boot-autoconfigure, spring-boot-test, assertj-core) and the default in-memory RAMJobStore scheduler. No Docker image, non-standard dependency, or env/system property was required; the job was only flagged for human intervention due to an unrelated Forge finalization/metrics-publication bug after the library tests already passed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Quartz autoconfiguration defaults to RAMJobStore (in-memory) — no datasource/Docker container is needed for core coverage. Expect native-image metadata gaps on first fixTestNativeImageRun pass for: reflection on org.springframework.boot.quartz.autoconfigure.QuartzAutoConfiguration (constructor + quartzScheduler factory method) and QuartzProperties (all declared ctors/methods/fields); a conditional reflection entry for org.springframework.transaction.PlatformTransactionManager gated on QuartzAutoConfiguration being reached; and a conditional reflection entry for org.springframework.scheduling.quartz.ResourceLoaderClassLoadHelper gated on SchedulerFactoryBean being reached. These are normal reachability-metadata.json additions, not extra setup — add them if checkMetadataFiles/native test surfaces them. If a test injects a Spring bean into a Quartz Job instance, make sure the setter is annotated @Autowired (a prior run's test initially failed an assertion because this annotation was missing on AutowiringQuartzJob#setMessageService).",
+      "risks": [
+        "A previous run's generated test/metadata for this same coordinate is sitting on remote branch ai/vjovanov/human-intervention/issue-8723-library-new-request-org.springframework.boot-spring-boot-quartz-4.1.0-RC1-a5f67360 — it may be useful as a reference, but should be re-verified from scratch rather than reused blindly, since it was never finalized or reviewed."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8723 Support for org.springframework.boot:spring-boot-quartz:4.1.0-RC1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 46,
+      "output_tokens_used": 16237
+    },
+    "metrics": {
+      "input_tokens_used": 371053,
+      "cached_input_tokens_used": 6617600,
+      "output_tokens_used": 44745,
+      "iterations": 5,
+      "cost_usd": 1.3014,
+      "generated_loc": 194,
+      "tested_library_loc": 245,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 35,
+      "code_coverage_percent": 58.89
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-quartz/4.1.0-RC1/reachability-metadata.json"
+    }
+  }
+}

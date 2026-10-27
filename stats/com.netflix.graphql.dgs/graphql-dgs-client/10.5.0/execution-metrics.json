@@ -1,0 +1,85 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T14:06:03.200581Z",
+    "library": "com.netflix.graphql.dgs:graphql-dgs-client:10.5.0",
+    "starting_commit": "6ccc3c388a4277932c6286d73ff121cdb4140a3d",
+    "ending_commit": "8d0f7346cf60a51c919a0c3c2a95503c01394604",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "10.5.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 784,
+          "missed": 1664,
+          "ratio": 0.320261,
+          "total": 2448
+        },
+        "line": {
+          "covered": 159,
+          "missed": 306,
+          "ratio": 0.341935,
+          "total": 465
+        },
+        "method": {
+          "covered": 54,
+          "missed": 152,
+          "ratio": 0.262136,
+          "total": 206
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8972,
+      "issue_label": "library-new-request",
+      "library": "com.netflix.graphql.dgs:graphql-dgs-client:10.5.0",
+      "summary": "The core client API (DefaultGraphQLClient, GraphQLResponse, GraphQLClient.createCustom with a RequestExecutor lambda, query/response parsing via json-path and Jackson) can be tested with the artifact's own dependencies. It needs no Docker image, environment variable or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "In the 10.5.0 POM, spring-web, graphql-java and the Jackson modules are runtime-scope. Test code cannot compile against Spring classes such as RestClient or RestTemplate unless a dependency is added explicitly. The WebClient and RestClient-based client variants (WebClientGraphQLClient, RestClientGraphQLClient) would also need spring-webflux or spring-web at test compile time. Keep coverage on the RequestExecutor-based path unless the generator finds it needs those variants.",
+        "The only existing DGS test project under tests/src/com.netflix.graphql.dgs is for graphql-dgs-subscription-types 10.5.0. It adds jackson-module-kotlin and assertj as test dependencies, so it is not a template for Spring-based tests.",
+        "Local Gradle and Native Image runs remain authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8972 Support for com.netflix.graphql.dgs:graphql-dgs-client:10.5.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1242
+    },
+    "metrics": {
+      "input_tokens_used": 234525,
+      "cached_input_tokens_used": 2270720,
+      "output_tokens_used": 12359,
+      "iterations": 6,
+      "cost_usd": 0.5358,
+      "generated_loc": 131,
+      "tested_library_loc": 159,
+      "metadata_entries": 190,
+      "test_only_metadata_entries": 15,
+      "code_coverage_percent": 34.19
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.netflix.graphql.dgs/graphql-dgs-client/10.5.0/reachability-metadata.json"
+    }
+  }
+}

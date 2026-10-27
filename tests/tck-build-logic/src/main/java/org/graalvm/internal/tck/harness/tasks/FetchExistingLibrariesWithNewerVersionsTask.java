@@ -68,15 +68,23 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             }
         }
 
+        List<String> eligibleLibraries = libraries.stream()
+                .filter(library -> INFRASTRUCTURE_TESTS.stream().noneMatch(library::startsWith))
+                .filter(FetchExistingLibrariesWithNewerVersionsTask::isAutoUpdateEnabled)
+                .toList();
+        getLogger().quiet(
+                "Supported libraries: {}; opted into automatic updates: {}",
+                libraries.size(),
+                eligibleLibraries.size()
+        );
+
         List<String> newerVersions = new ArrayList<>();
-        for (String libraryName : libraries) {
-            if (INFRASTRUCTURE_TESTS.stream().noneMatch(libraryName::startsWith)) {
-                List<String> versions = getNewerVersionsFor(libraryName, getLatestLibraryVersion(libraryName));
-                List<String> skipped = getSkippedVersions(libraryName);
-                versions.removeAll(skipped);
-                for (String v : versions) {
-                    newerVersions.add(libraryName + ":" + v);
-                }
+        for (String libraryName : eligibleLibraries) {
+            List<String> versions = getNewerVersionsFor(libraryName, getLatestLibraryVersion(libraryName));
+            List<String> skipped = getSkippedVersions(libraryName);
+            versions.removeAll(skipped);
+            for (String v : versions) {
+                newerVersions.add(libraryName + ":" + v);
             }
         }
 
@@ -99,6 +107,41 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             ObjectMapper om = new ObjectMapper()
                     .setSerializationInclusion(JsonInclude.Include.NON_NULL);
             System.out.println(om.writeValueAsString(pairs));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Implements the artifact opt-in from §FS-library-version-update-automation.1.
+     */
+    static boolean isAutoUpdateEnabled(String libraryModule) {
+        String[] coordinates = libraryModule.split(":");
+        if (coordinates.length != 2) {
+            return false;
+        }
+
+        File indexFile = new File("metadata/" + coordinates[0] + "/" + coordinates[1] + "/index.json");
+        return isAutoUpdateEnabled(indexFile);
+    }
+
+    static boolean isAutoUpdateEnabled(File indexFile) {
+        if (!indexFile.exists()) {
+            return false;
+        }
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(
+                    indexFile,
+                    new TypeReference<List<MetadataVersionsIndexEntry>>() {}
+            );
+            return entries.stream().anyMatch(entry ->
+                    entry != null
+                            && Boolean.TRUE.equals(entry.latest())
+                            && Boolean.TRUE.equals(entry.autoUpdate())
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,0 +1,117 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T17:09:14.745812Z",
+    "library": "org.jetbrains.kotlin:kotlin-script-runtime:2.5.0-Beta1",
+    "starting_commit": "de364187f87cf4cb8a607294503f2d9431aebae5",
+    "ending_commit": "07d14d8696e6bf1358caf8da60185131806df586",
+    "previous_library": "org.jetbrains.kotlin:kotlin-script-runtime:2.3.20",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.5.0-Beta1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 256,
+          "missed": 281,
+          "ratio": 0.476723,
+          "total": 537
+        },
+        "line": {
+          "covered": 26,
+          "missed": 40,
+          "ratio": 0.393939,
+          "total": 66
+        },
+        "method": {
+          "covered": 37,
+          "missed": 27,
+          "ratio": 0.578125,
+          "total": 64
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.3.20",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 241,
+          "missed": 341,
+          "ratio": 0.414089,
+          "total": 582
+        },
+        "line": {
+          "covered": 23,
+          "missed": 50,
+          "ratio": 0.315068,
+          "total": 73
+        },
+        "method": {
+          "covered": 34,
+          "missed": 40,
+          "ratio": 0.459459,
+          "total": 74
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10326,
+      "issue_label": "fails-javac-compile",
+      "library": "org.jetbrains.kotlin:kotlin-script-runtime:2.5.0-Beta1",
+      "summary": "The failure is a javac source-compatibility error in the existing 2.3.20 test, not missing setup. In 2.5.0-Beta1, `DependenciesResolver` inherits an abstract `resolve(...)` from the deprecated `ScriptDependenciesResolver`, which the test's `TestDependenciesResolver` does not override. Fixing it means adjusting the test class to the new API surface. This needs no extra dependency, Docker image or system property, and does not involve any unsupported Native Image mechanism.",
+      "deterministic_setup": [],
+      "agent_guidance": "Update the test's `TestDependenciesResolver` so it compiles against both 2.3.20 and 2.5.0-Beta1. Inspect the 2.5.0-Beta1 `kotlin.script.dependencies.DependenciesResolver` and `ScriptDependenciesResolver` signatures first. Either also implement the abstract `resolve(ScriptContents, Map<String, ?>, Function3<ReportSeverity, String, Position, Unit>, KotlinScriptExternalDependencies)` overload, or switch to an API that is not abstract in both versions. Keep the test free of version-pinned assumptions.",
+      "risks": [
+        "The deprecated `kotlin.script.dependencies` API may be changed or removed further in 2.5.x, so other signatures in the test may also break at compile time.",
+        "I did not inspect the 2.5.0-Beta1 sources or jar in this session. The diagnosis rests on the javac error text in the issue."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10326 [Automation] javac compile fails for org.jetbrains.kotlin:kotlin-script-runtime:2.5.0-Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jetbrains.kotlin:kotlin-script-runtime:2.3.20",
+      "new_version": "2.5.0-Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 734
+    },
+    "metrics": {
+      "input_tokens_used": 40450,
+      "cached_input_tokens_used": 248320,
+      "output_tokens_used": 2046,
+      "iterations": 4,
+      "cost_usd": 0.3878,
+      "tested_library_loc": 26,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 1,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 39.39,
+      "previous_library_coverage_percent": 31.51
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-script-runtime/2.5.0-Beta1/reachability-metadata.json"
+    }
+  }
+}

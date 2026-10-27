@@ -1,0 +1,140 @@
+{
+  "base_commit": "aaf062964b7b5de5d1df43593225fbd7fd6997c5",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.security-spring-security-oauth2-core-7.1.0-forge-9229-20261008131644938424-6f18b8b20845",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "aaf062964b7b5de5d1df43593225fbd7fd6997c5",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9229,
+  "library": {
+    "artifact": "spring-security-oauth2-core",
+    "coordinates": "org.springframework.security:spring-security-oauth2-core:7.1.0",
+    "group": "org.springframework.security",
+    "version": "7.1.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "aaf062964b7b5de5d1df43593225fbd7fd6997c5",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpx5wp73sf"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9229-6c529b7c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.security:spring-security-oauth2-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.security/spring-security-oauth2-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9229-6c529b7c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "040d4403be8b299c30e74d366c7974a237de1ab8",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "sonnet",
+    "review_comment": "Reviewed git diff aaf06296..040d4403 for org.springframework.security:spring-security-oauth2-core:7.1.0 against every rule in skills/review-library-new-request/SKILL.md and the first matching disposition in FS-contribution-contract.5. Shape: one coordinate, 12 files, all inside the closed file set (metadata/<v>/reachability-metadata.json, index.json, stats stats.json + execution-metrics.json, tests/src/<v>/**); no build logic, workflows, other coordinates, or legacy *-config.json files. Index has one entry, one latest, tested-versions [7.1.0], allowed-packages org.springframework.security.oauth2.core; validateIndexFiles passed in the local gate record. Tests: two real JUnit classes that drive the library's public API (token/error types, grant types, authorization request/response builders, access-token converters, OAuth2/OIDC users, ClaimConversionService, DelegatingOAuth2TokenValidator, OidcUserInfo); none is the scaffold placeholder, none skips or catches errors for native image, none references the library version (grepped for 7.1), and they live in org_springframework_security.spring_security_oauth2_core, separate from the library package. build.gradle carries no native build/run flags beyond the standard conditional agent user-code-filter. Coverage: render stats report dynamic access 0/0 (valid no-calls case, rule 8), so the 20% gate and the 75% entry-count mismatch probe do not apply; library line coverage is 38%. Test-only metadata (one SimpleGrantedAuthority entry conditioned on the test class) lives in the test project's src/test/resources, not in shipped metadata, which is where splitTestOnlyMetadata puts it. No 5.4 unsupportable-behavior mechanism, no shared-infrastructure defect, no cheating pattern found. I ran the exact Forge finalization command (all three test lanes, splitTestOnlyMetadata, checkMetadataFiles, generateLibraryStats) without any manual edit; it exited 0 and produced no change to the publishable tree, and the receipt records head 040d4403.",
+    "session_id": "414c8da78216406f"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.springframework.security/spring-security-oauth2-core/7.1.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1673216,
+      "code_coverage_percent": 38.09,
+      "cost_usd": 0.4185,
+      "generated_loc": 170,
+      "input_tokens_used": 180554,
+      "iterations": 4,
+      "metadata_entries": 17,
+      "output_tokens_used": 11763,
+      "test_only_metadata_entries": 2,
+      "tested_library_loc": 510
+    },
+    "timestamp": "2026-10-08T13:16:44.938424Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9229-20261008131644938424-6f18b8b20845",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest$AbstractBuilder` is reached, make `org.apache.commons.logging.LogFactory` available for reflection",
+        "when `org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest$AbstractBuilder` is reached, make `org.apache.commons.logging.impl.Jdk14Logger.<init>(java.lang.String)` available for reflection",
+        "when `org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest$AbstractBuilder` is reached, make `org.apache.commons.logging.impl.Log4jApiLogFactory` available for reflection",
+        "when `org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest$AbstractBuilder` is reached, make `org.apache.commons.logging.impl.LogFactoryImpl.<init>()` available for reflection",
+        "when `org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest$AbstractBuilder` is reached, make `org.apache.commons.logging.impl.Slf4jLogFactory` available for reflection",
+        "when `org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest$AbstractBuilder` is reached, make `org.apache.commons.logging.impl.WeakHashtable.<init>()` available for reflection",
+        "when `org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest$AbstractBuilder` is reached, make `org.apache.logging.slf4j.SLF4JProvider` available for reflection",
+        "when `org.springframework.security.oauth2.core.converter.ClaimConversionService` is reached, make `org.springframework.util.ConcurrentReferenceHashMap$Segment[]` available for reflection",
+        "... and 2 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1980,
+          "missed": 3478,
+          "ratio": 0.36277,
+          "total": 5458
+        },
+        "line": {
+          "covered": 510,
+          "missed": 829,
+          "ratio": 0.380881,
+          "total": 1339
+        },
+        "method": {
+          "covered": 186,
+          "missed": 261,
+          "ratio": 0.416107,
+          "total": 447
+        }
+      },
+      "version": "7.1.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-08T13:16:44.938424Z"
+}

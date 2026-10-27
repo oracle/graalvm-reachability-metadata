@@ -129,6 +129,43 @@
     },
     "strategyName": {
       "type": "string"
+    },
+    "failure": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "operand": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "phase": {
+              "enum": [
+                "claim",
+                "setup",
+                "fix",
+                "explore",
+                "finalization",
+                "publication"
+              ]
+            },
+            "step": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "phase",
+            "step",
+            "operand"
+          ],
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   },
   "required": [

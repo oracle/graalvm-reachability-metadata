@@ -1,0 +1,141 @@
+{
+  "fix_java_run_fail:2026-10-04": {
+    "timestamp": "2026-10-04T20:20:17.682022Z",
+    "library": "ch.qos.logback:logback-classic:1.6.2",
+    "starting_commit": "47fe672e735b36b9629962bdc3a58791fa08dd3d",
+    "ending_commit": "e5ed3628633540f89a8434c7ae60fb57e9f24b72",
+    "previous_library": "ch.qos.logback:logback-classic:1.6.0",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.6.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.941176,
+            "coveredCalls": 16,
+            "totalCalls": 17
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 1,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.894737,
+        "coveredCalls": 17,
+        "totalCalls": 19
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6317,
+          "missed": 12721,
+          "ratio": 0.33181,
+          "total": 19038
+        },
+        "line": {
+          "covered": 1694,
+          "missed": 3539,
+          "ratio": 0.323715,
+          "total": 5233
+        },
+        "method": {
+          "covered": 414,
+          "missed": 747,
+          "ratio": 0.356589,
+          "total": 1161
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.6.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 15,
+            "totalCalls": 15
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 1,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.941176,
+        "coveredCalls": 16,
+        "totalCalls": 17
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5948,
+          "missed": 12314,
+          "ratio": 0.325704,
+          "total": 18262
+        },
+        "line": {
+          "covered": 1610,
+          "missed": 3425,
+          "ratio": 0.319762,
+          "total": 5035
+        },
+        "method": {
+          "covered": 388,
+          "missed": 723,
+          "ratio": 0.349235,
+          "total": 1111
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10425,
+      "issue_label": "fails-java-run",
+      "library": "ch.qos.logback:logback-classic:1.6.2",
+      "summary": "The failure is a JVM-mode test failure: RemoteAppenderStreamClientTest gets a Broken pipe when it writes a serialized event to the socket server. No extra dependency, Docker image or system property is evidenced, and the library uses no unsupported Native Image mechanism.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "This analysis is from the issue context only. I did not read the 1.6.2 sources or the test code.",
+        "The Broken pipe in RemoteAppenderStreamClientTest suggests the server side closes the connection early. A likely cause is a change in 1.6.2 socket-server deserialization handling, such as stricter class filtering, or a race in the test's socket lifecycle. The fix belongs in the test code or metadata, not in new setup.",
+        "88 tests ran and only 1 failed, so the rest of the scaffold works."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10425 [Automation] java run fails for ch.qos.logback:logback-classic:1.6.2; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "21 existing test file path(s) included"
+        }
+      ],
+      "current_library": "ch.qos.logback:logback-classic:1.6.0",
+      "new_version": "1.6.2",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 492
+    },
+    "metrics": {
+      "input_tokens_used": 272040,
+      "cached_input_tokens_used": 1412096,
+      "output_tokens_used": 12779,
+      "iterations": 7,
+      "cost_usd": 2.4496,
+      "tested_library_loc": 1694,
+      "metadata_entries": 33,
+      "test_only_metadata_entries": 84,
+      "previous_library_metadata_entries": 36,
+      "previous_library_test_only_metadata_entries": 78,
+      "code_coverage_percent": 32.37,
+      "previous_library_coverage_percent": 31.98
+    },
+    "artifacts": {
+      "metadata_file": "metadata/ch.qos.logback/logback-classic/1.6.2/reachability-metadata.json"
+    }
+  }
+}

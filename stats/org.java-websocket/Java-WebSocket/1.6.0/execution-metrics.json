@@ -1,0 +1,85 @@
+{
+  "add_new_library_support:2026-10-14": {
+    "timestamp": "2026-10-14T02:37:58.320548Z",
+    "library": "org.java-websocket:Java-WebSocket:1.6.0",
+    "starting_commit": "2775c492fae4f2a39899c27e58f88d0fafe955d7",
+    "ending_commit": "7360049ea82401105be96a4fc82e33cec3441844",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.6.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12136,
+          "missed": 5734,
+          "ratio": 0.679127,
+          "total": 17870
+        },
+        "line": {
+          "covered": 1729,
+          "missed": 1384,
+          "ratio": 0.555413,
+          "total": 3113
+        },
+        "method": {
+          "covered": 357,
+          "missed": 196,
+          "ratio": 0.64557,
+          "total": 553
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10696,
+      "issue_label": "library-new-request",
+      "library": "org.java-websocket:Java-WebSocket:1.6.0",
+      "summary": "I did not run any tools. This is from my own knowledge of Java-WebSocket 1.6.0. It is a self-contained WebSocket server and client library whose only runtime dependency is slf4j-api. Tests can start a WebSocketServer on localhost and connect a WebSocketClient to it, so no extra Maven dependency, Docker image, or system property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests should bind the server to port 0 or a free port and use localhost. A hard-coded port could collide with other tests.",
+        "Without an slf4j binding the library prints a NOP-logger warning. This is harmless, and the tests need no binding.",
+        "wss:// coverage would need a keystore. Generate it in test code or ship it as a test resource, because it should not need an external service."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10696 Support for org.java-websocket:Java-WebSocket:1.6.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 417
+    },
+    "metrics": {
+      "input_tokens_used": 187031,
+      "cached_input_tokens_used": 2206848,
+      "output_tokens_used": 19743,
+      "iterations": 4,
+      "cost_usd": 2.6309,
+      "generated_loc": 377,
+      "tested_library_loc": 1729,
+      "metadata_entries": 58,
+      "test_only_metadata_entries": 73,
+      "code_coverage_percent": 55.54
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.java-websocket/Java-WebSocket/1.6.0/reachability-metadata.json"
+    }
+  }
+}

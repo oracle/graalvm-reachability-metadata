@@ -1,0 +1,179 @@
+{
+  "add_new_library_support:2026-08-11": {
+    "timestamp": "2026-08-11T12:41:30.086148Z",
+    "library": "io.opentelemetry.proto:opentelemetry-proto:1.10.0-alpha",
+    "starting_commit": "43481427d2b32d982fa5763dab61d5f362170c18",
+    "ending_commit": "d623a9e89da9ba341b2c495b4ec6c39423395607",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success",
+    "stats": {
+      "version": "1.10.0-alpha",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 15845,
+          "missed": 74350,
+          "ratio": 0.175675,
+          "total": 90195
+        },
+        "line": {
+          "covered": 4479,
+          "missed": 19870,
+          "ratio": 0.18395,
+          "total": 24349
+        },
+        "method": {
+          "covered": 906,
+          "missed": 4730,
+          "ratio": 0.160752,
+          "total": 5636
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9250,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.proto:opentelemetry-proto:1.10.0-alpha",
+      "summary": "The artifact is self-contained OTLP protobuf bindings; its sole declared runtime dependency, protobuf-java 4.34.0, resolves transitively. Meaningful tests can build, serialize, and parse OTLP messages without services or configuration.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Generated gRPC service-stub classes reference io.grpc types although the published module metadata declares no gRPC dependency; avoid exercising those stubs unless a later Gradle compile/runtime failure establishes a required gRPC test dependency."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9250 Support for io.opentelemetry.proto:opentelemetry-proto:1.10.0-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 46140,
+      "output_tokens_used": 2351
+    },
+    "metrics": {
+      "input_tokens_used": 142724,
+      "cached_input_tokens_used": 853504,
+      "output_tokens_used": 11661,
+      "iterations": 3,
+      "cost_usd": 0.7451,
+      "generated_loc": 279,
+      "tested_library_loc": 4479,
+      "metadata_entries": 6,
+      "test_only_metadata_entries": 2,
+      "code_coverage_percent": 18.39
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.opentelemetry.proto/opentelemetry-proto/1.10.0-alpha/reachability-metadata.json"
+    }
+  },
+  "improve_library_coverage:2026-09-07": {
+    "timestamp": "2026-09-07T20:29:16.382974Z",
+    "library": "io.opentelemetry.proto:opentelemetry-proto:1.10.0-alpha",
+    "starting_commit": "237abc432d04c86df74aeec37c2835f74624c6ac",
+    "ending_commit": "c534536ef56f2e0af8137e86070c6e34b2ec57bc",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.10.0-alpha",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 18149,
+          "missed": 72046,
+          "ratio": 0.20122,
+          "total": 90195
+        },
+        "line": {
+          "covered": 5111,
+          "missed": 19238,
+          "ratio": 0.209906,
+          "total": 24349
+        },
+        "method": {
+          "covered": 1041,
+          "missed": 4595,
+          "ratio": 0.184705,
+          "total": 5636
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9910,
+      "issue_label": "library-update-request",
+      "library": "io.opentelemetry.proto:opentelemetry-proto:1.10.0-alpha",
+      "summary": "The proto-only scaffold cannot reach the reported OTLP registry initialization path.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micrometer:micrometer-registry-otlp:1.17.1",
+          "scope": "testImplementation",
+          "reason": "Provides the OtlpMeterRegistry integration that initializes and exports the OpenTelemetry protobuf messages."
+        }
+      ],
+      "agent_guidance": "Use OtlpMeterRegistry with a custom in-memory OtlpMetricsSender; no collector or environment variables are required. Construct the registry before any direct Exemplar reference, exercise counter/timer/summary export, capture and decode ExportMetricsServiceRequest, and close the registry deterministically.",
+      "risks": [
+        "The existing scaffold directly references Exemplar; mixing the regression path with that test may satisfy the conditional metadata and mask the initialization failure.",
+        "Avoid the default HTTP sender and background timing to prevent accidental localhost collector access or flaky tests."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micrometer:micrometer-registry-otlp:1.17.1",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.proto/opentelemetry-proto/1.10.0-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9910 Update existing library:  io.opentelemetry.proto:opentelemetry-proto:1.10.0-alpha; label=library-update-request; body_chars=3135"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 539581,
+      "output_tokens_used": 6184
+    },
+    "metrics": {
+      "input_tokens_used": 250716,
+      "cached_input_tokens_used": 1483520,
+      "output_tokens_used": 19275,
+      "iterations": 5,
+      "cost_usd": 2.5737,
+      "generated_loc": 446,
+      "tested_library_loc": 5111,
+      "metadata_entries": 13,
+      "test_only_metadata_entries": 10,
+      "code_coverage_percent": 20.99
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.opentelemetry.proto/opentelemetry-proto/1.10.0-alpha/reachability-metadata.json"
+    }
+  }
+}

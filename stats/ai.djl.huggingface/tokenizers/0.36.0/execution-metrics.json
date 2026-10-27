@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-03": {
+    "timestamp": "2026-10-03T13:50:59.256465Z",
+    "library": "ai.djl.huggingface:tokenizers:0.36.0",
+    "starting_commit": "b244d8f8a53841f6b2621fc9bfeb21ba4a75dbbb",
+    "ending_commit": "44a273989a7ac3dfd20de34acd4251cce8297849",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "0.36.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1306,
+          "missed": 12369,
+          "ratio": 0.095503,
+          "total": 13675
+        },
+        "line": {
+          "covered": 304,
+          "missed": 2499,
+          "ratio": 0.108455,
+          "total": 2803
+        },
+        "method": {
+          "covered": 77,
+          "missed": 657,
+          "ratio": 0.104905,
+          "total": 734
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9784,
+      "issue_label": "library-new-request",
+      "library": "ai.djl.huggingface:tokenizers:0.36.0",
+      "summary": "ai.djl.huggingface:tokenizers' native JNI binary (CharSpan) already runs clean in this repo's native-image harness as a transitive dep of langchain4j-embeddings-all-minilm-l6-v2, with no extra Maven dependency, Docker image, or env/system property. No deterministic setup is needed; the only risk is the generated test defaulting to a network-based tokenizer load.",
+      "deterministic_setup": [],
+      "agent_guidance": "Construct the HuggingFaceTokenizer from a small local tokenizer.json bundled as a test resource (e.g. via HuggingFaceTokenizer.newInstance(Path)) rather than HuggingFaceTokenizer.newInstance(\"<model-name>\"), which downloads from HuggingFace Hub at runtime and would make the test network-dependent and flaky. This mirrors the working pattern already in tests/src/dev.langchain4j/langchain4j-embeddings-all-minilm-l6-v2, which bundles its own tokenizer.json instead of fetching one. No DJL_CACHE_DIR or other env var is needed since the native library ships inside the tokenizers jar for common platforms (confirmed working on this CI's Linux x86_64).",
+      "risks": [
+        "DJL bundles native binaries in the jar for common platforms (linux-x86_64, osx-x86_64/aarch64, win-x86_64); if CI ever runs on an uncommon architecture, a runtime native-library download could be triggered — not expected on this repo's standard Linux x86_64 runners.",
+        "If the generated test ignores the guidance and loads a tokenizer by name instead of from a bundled resource, it will depend on live network access to huggingface.co at test time."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9784 Support for ai.djl.huggingface:tokenizers:0.36.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 24,
+      "output_tokens_used": 18872
+    },
+    "metrics": {
+      "input_tokens_used": 305337,
+      "cached_input_tokens_used": 3247104,
+      "output_tokens_used": 25793,
+      "iterations": 7,
+      "cost_usd": 0.7848,
+      "generated_loc": 252,
+      "tested_library_loc": 304,
+      "metadata_entries": 201,
+      "test_only_metadata_entries": 13,
+      "code_coverage_percent": 10.85
+    },
+    "artifacts": {
+      "metadata_file": "metadata/ai.djl.huggingface/tokenizers/0.36.0/reachability-metadata.json"
+    }
+  }
+}

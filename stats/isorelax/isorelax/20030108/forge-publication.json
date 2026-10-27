@@ -1,0 +1,154 @@
+{
+  "base_commit": "c427421cfe38d54263008842ebc9d99cea3ac068",
+  "branch": "ai/kimeta/add-lib-support-isorelax-isorelax-20030108-chunked-forge-10163-20260923024536790075-f03ac05bae87",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "5a4c37ef4d9084e227076784a252afdab697bbc2",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10163,
+  "library": {
+    "artifact": "isorelax",
+    "coordinates": "isorelax:isorelax:20030108",
+    "group": "isorelax",
+    "version": "20030108"
+  },
+  "local_ci_verification": {
+    "base_commit": "c427421cfe38d54263008842ebc9d99cea3ac068",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpfrir9gq3"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10163-cd36f131/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=isorelax:isorelax"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/isorelax/isorelax/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10163-cd36f131/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "286eb8094c969d91fd58dd00f096f35e3058b1a0",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the contribution is limited to isorelax:isorelax:20030108 and its allowed metadata, stats, index, and test files. The public, version-agnostic tests exercise library behavior under Native Image without skips, visibility bypasses, legacy metadata, JVM overrides, or unsupported build flags. Reported dynamic-access coverage is 7/7 (100%), above the new-library gate, and does not trigger the metadata-entry mismatch guardrail. The Forge finalization command passed all three native test lanes, metadata validation, style checks, generated-test checks, and statistics generation without changing the publishable tree.",
+    "session_id": "45febbb3901f4051"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/isorelax/isorelax/20030108/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 760576,
+      "code_coverage_percent": 5.33,
+      "cost_usd": 1.4371,
+      "generated_loc": 77,
+      "input_tokens_used": 145979,
+      "iterations": 5,
+      "metadata_entries": 20,
+      "output_tokens_used": 10896,
+      "test_only_metadata_entries": 16,
+      "tested_library_loc": 84
+    },
+    "timestamp": "2026-09-23T02:45:36.790075Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10163-20260923024536790075-f03ac05bae87",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.Class#getResource(java.lang.String) <- jp.gr.xml.relax.sax.RELAXEntityResolver.<init>(RELAXEntityResolver.java:12) (line 12)",
+        "[resources] java.lang.Class#getResource(java.lang.String) <- jp.gr.xml.relax.sax.RELAXEntityResolver.<init>(RELAXEntityResolver.java:16) (line 16)",
+        "[resources] java.lang.Class#getResource(java.lang.String) <- jp.gr.xml.relax.sax.RELAXEntityResolver.<init>(RELAXEntityResolver.java:20) (line 20)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.iso_relax.verifier.VerifierFactory.class$(VerifierFactory.java:320) (line 320)",
+        "[reflection] java.lang.Class#newInstance() <- org.iso_relax.verifier.VerifierFactory.providers(VerifierFactory.java:398) (line 398)",
+        "[reflection] java.lang.ClassLoader#loadClass(java.lang.String) <- org.iso_relax.verifier.VerifierFactory.providers(VerifierFactory.java:398) (line 398)",
+        "[resources] java.lang.ClassLoader#getResources(java.lang.String) <- org.iso_relax.verifier.VerifierFactory.providers(VerifierFactory.java:365) (line 365)"
+      ],
+      "metadata_rules": [
+        "when `org.iso_relax.verifier.VerifierFactory` is reached, make `com.sun.msv.verifier.jarv.FactoryLoaderImpl.<init>()` available for reflection",
+        "when `org.iso_relax.verifier.VerifierFactory` is reached, make `org.apache.xerces.jaxp.SAXParserFactoryImpl` available for reflection",
+        "when `org.iso_relax.verifier.VerifierFactory` is reached, make `org.iso_relax.verifier.VerifierFactoryLoader` available for reflection",
+        "when `jp.gr.xml.relax.sax.SimpleEntityResolver` is reached, make `sun.net.www.protocol.http.Handler.<init>()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 7,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 318,
+          "missed": 5445,
+          "ratio": 0.05518,
+          "total": 5763
+        },
+        "line": {
+          "covered": 84,
+          "missed": 1491,
+          "ratio": 0.053333,
+          "total": 1575
+        },
+        "method": {
+          "covered": 16,
+          "missed": 402,
+          "ratio": 0.038278,
+          "total": 418
+        }
+      },
+      "version": "20030108"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-23T02:45:36.790075Z"
+}

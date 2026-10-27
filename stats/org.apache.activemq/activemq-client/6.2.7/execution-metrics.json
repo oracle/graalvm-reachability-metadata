@@ -1,0 +1,95 @@
+{
+  "improve_library_coverage:2026-10-06": {
+    "timestamp": "2026-10-06T10:46:03.105921Z",
+    "library": "org.apache.activemq:activemq-client:6.2.7",
+    "starting_commit": "d60f34fe0846f77341e4b4ca68cd12f60544c483",
+    "ending_commit": "a35d22231db2746082a62c6c2baadbab2f9da13b",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.2.7",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 65,
+            "totalCalls": 65
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 69,
+        "totalCalls": 69
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 35420,
+          "missed": 107211,
+          "ratio": 0.248333,
+          "total": 142631
+        },
+        "line": {
+          "covered": 9144,
+          "missed": 26111,
+          "ratio": 0.259367,
+          "total": 35255
+        },
+        "method": {
+          "covered": 2709,
+          "missed": 5598,
+          "ratio": 0.326111,
+          "total": 8307
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10593,
+      "issue_label": "library-update-request",
+      "library": "org.apache.activemq:activemq-client:6.2.7",
+      "summary": "The existing 6.2.7 tests already declare activemq-client and activemq-broker and run an embedded BrokerService, so no Docker image, extra dependency or system property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The initial JVM test failure at 6.2.7 is probably a version-specific API or behaviour change, not missing setup. Check it against the 6.2.7 jars, which use jakarta.jms.",
+        "The embedded broker should keep persistence off and use vm:// or a localhost transport so tests stay hermetic."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10593 Update existing library: org.apache.activemq:activemq-client:6.2.7; label=library-update-request; body_chars=483"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 547
+    },
+    "metrics": {
+      "input_tokens_used": 77235,
+      "cached_input_tokens_used": 995968,
+      "output_tokens_used": 7599,
+      "iterations": 3,
+      "cost_usd": 1.1122,
+      "generated_loc": 986,
+      "tested_library_loc": 9144,
+      "metadata_entries": 274,
+      "test_only_metadata_entries": 13,
+      "code_coverage_percent": 25.94
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.activemq/activemq-client/6.2.7/reachability-metadata.json"
+    }
+  }
+}

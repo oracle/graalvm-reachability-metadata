@@ -1,0 +1,186 @@
+{
+  "base_commit": "8373d25fa0284b5037850218b5aed6321907bb5c",
+  "branch": "ai/kimeta/improve-coverage-org.jetbrains.kotlin-kotlin-stdlib-1.7.10-chunked-forge-8926-20260907014252600603-31c687d14f26",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9776-composite-bulk-success",
+    "commit": "45dafbf4a348867df2709e876b8f08541c9824e0",
+    "monitored_branch": "origin/issue-9776-composite-bulk-success"
+  },
+  "issue_number": 8926,
+  "library": {
+    "artifact": "kotlin-stdlib",
+    "coordinates": "org.jetbrains.kotlin:kotlin-stdlib:1.7.10",
+    "group": "org.jetbrains.kotlin",
+    "version": "1.7.10"
+  },
+  "local_ci_verification": {
+    "base_commit": "8373d25fa0284b5037850218b5aed6321907bb5c",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpc0e1w4ph"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-07T02-12-03-181884Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/8926-33ddcb8a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.jetbrains.kotlin:kotlin-stdlib"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-07T02-12-08-541593Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/8926-33ddcb8a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "d72664830eafc5e335f5fad51050d37b8573f2dd",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the specified commit range and local evidence under the library-update rules. The diff is confined to org.jetbrains.kotlin:kotlin-stdlib:1.7.10 support files, introduces only reachability-metadata.json metadata, adds library-specific tests without Native Image skips, swallowed failures, version-pinned assertions, package visibility bypasses, or test-side reflection shortcuts, and raises dynamic-access coverage from 5.5556% (1/18) to 100% (18/18). The recorded local index gates passed, the run evidence reports successful finalization, and focused metadata validation, Checkstyle, compilation, and JVM tests also pass in this worktree. No enumerated blocking violation was found.",
+    "session_log_path": "logs/org.jetbrains.kotlin:kotlin-stdlib:1.7.10/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 15533440,
+      "code_coverage_percent": 1.76,
+      "cost_usd": 13.7188,
+      "generated_loc": 268,
+      "input_tokens_used": 688000,
+      "iterations": 9,
+      "metadata_entries": 18,
+      "output_tokens_used": 83738,
+      "test_only_metadata_entries": 17,
+      "tested_library_loc": 360
+    },
+    "timestamp": "2026-09-07T01:42:52.600603Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8926-20260907014252600603-31c687d14f26",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 2,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.055556,
+            "coveredCalls": 1,
+            "totalCalls": 18
+          }
+        },
+        "coverageRatio": 0.055556,
+        "coveredCalls": 1,
+        "totalCalls": 18
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 790,
+          "missed": 133839,
+          "ratio": 0.005868,
+          "total": 134629
+        },
+        "line": {
+          "covered": 160,
+          "missed": 20349,
+          "ratio": 0.007801,
+          "total": 20509
+        },
+        "method": {
+          "covered": 67,
+          "missed": 7409,
+          "ratio": 0.008962,
+          "total": 7476
+        }
+      },
+      "version": "1.7.10"
+    },
+    "baseline_test_only_entries": 0,
+    "current_metadata_entries": 18,
+    "current_test_only_entries": 17,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 18,
+            "totalCalls": 18
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 18,
+        "totalCalls": 18
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1873,
+          "missed": 132756,
+          "ratio": 0.013912,
+          "total": 134629
+        },
+        "line": {
+          "covered": 360,
+          "missed": 20149,
+          "ratio": 0.017553,
+          "total": 20509
+        },
+        "method": {
+          "covered": 141,
+          "missed": 7335,
+          "ratio": 0.01886,
+          "total": 7476
+        }
+      },
+      "version": "1.7.10"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "1.7.10",
+      "matched_test_version": "1.7.10",
+      "requested_coordinate": "org.jetbrains.kotlin:kotlin-stdlib:1.7.10",
+      "resolved_metadata_version": "1.7.10",
+      "resolved_test_version": "1.7.10"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-07T01:42:52.600603Z"
+}

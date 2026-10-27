@@ -1,0 +1,111 @@
+{
+  "improve_library_coverage:2026-09-07": {
+    "timestamp": "2026-09-07T16:57:13.224162Z",
+    "library": "org.apache.activemq:artemis-jms-client:2.36.0",
+    "starting_commit": "51a8d4ea6b65f2a70f9c834bb3127e1c846b2580",
+    "ending_commit": "2ccdaf8d7ca03db49b3f1728b4a1f00b950d9cdc",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.36.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.833333,
+            "coveredCalls": 5,
+            "totalCalls": 6
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.857143,
+        "coveredCalls": 6,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2704,
+          "missed": 13090,
+          "ratio": 0.171204,
+          "total": 15794
+        },
+        "line": {
+          "covered": 733,
+          "missed": 3553,
+          "ratio": 0.171022,
+          "total": 4286
+        },
+        "method": {
+          "covered": 226,
+          "missed": 874,
+          "ratio": 0.205455,
+          "total": 1100
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8921,
+      "issue_label": "library-update-request",
+      "library": "org.apache.activemq:artemis-jms-client:2.36.0",
+      "summary": "Embedded-broker coverage requires the non-transitive Artemis server module; no Docker image or system property is needed.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.activemq:artemis-server:2.36.0",
+          "scope": "testImplementation",
+          "reason": "The existing test starts ActiveMQServerImpl and exercises JMS against an embedded broker. artemis-jms-client does not provide those server classes."
+        }
+      ],
+      "agent_guidance": "Start and stop an embedded Artemis broker in the test, using a unique or in-process connector where possible to avoid port collisions. Direct JMS resource instantiation is supported by the official Artemis 2.36.0 documentation: https://activemq.apache.org/components/artemis/documentation/2.36.0/using-jms.html",
+      "risks": [
+        "The existing scaffold binds TCP port 61616, which can conflict with parallel tests or another local broker."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.activemq:artemis-server:2.36.0",
+          "result": "already_present",
+          "target": "tests/src/org.apache.activemq/artemis-jms-client/2.36.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8921 Update existing library: org.apache.activemq:artemis-jms-client:2.36.0; label=library-update-request; body_chars=168"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 391550,
+      "output_tokens_used": 6231,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.apache.activemq:artemis-jms-client:2.36.0/library-preparation-preflight/codex-session-ixv78yp3.log"
+    },
+    "metrics": {
+      "input_tokens_used": 359764,
+      "cached_input_tokens_used": 2684544,
+      "output_tokens_used": 27671,
+      "iterations": 8,
+      "cost_usd": 3.9712,
+      "generated_loc": 297,
+      "tested_library_loc": 733,
+      "metadata_entries": 234,
+      "test_only_metadata_entries": 2,
+      "code_coverage_percent": 17.1
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "add_new_library_support:2026-09-29": {
+    "timestamp": "2026-09-29T20:35:38.118653Z",
+    "library": "org.hyperledger.fabric:fabric-gateway:1.12.1",
+    "starting_commit": "99da529916260fb244498606a64acf1e4b18c90f",
+    "ending_commit": "cbef8a9433af4b3c7551d9bc21eae6314a7a738f",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "1.12.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1672,
+          "missed": 3019,
+          "ratio": 0.356427,
+          "total": 4691
+        },
+        "line": {
+          "covered": 436,
+          "missed": 705,
+          "ratio": 0.382121,
+          "total": 1141
+        },
+        "method": {
+          "covered": 140,
+          "missed": 249,
+          "ratio": 0.359897,
+          "total": 389
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10245,
+      "issue_label": "library-new-request",
+      "library": "org.hyperledger.fabric:fabric-gateway:1.12.1",
+      "summary": "fabric-gateway 1.12.1 needs a caller-supplied io.grpc.Channel. It declares grpc-netty-shaded and grpc-inprocess only at test scope, and grpc-protobuf and grpc-stub as runtime dependencies, so no channel transport is transitive. Tests need a transport dependency to build a Gateway and exercise meaningful code.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.grpc:grpc-inprocess:1.83.1",
+          "scope": "testImplementation",
+          "reason": "Lets tests create an in-process gRPC server and channel that back the Gateway client without network, TLS, or Docker. 1.83.1 is the grpc-bom version fabric-gateway 1.12.1 is built against. It must match the grpc-api, grpc-protobuf, and grpc-stub versions that resolve transitively."
+        }
+      ],
+      "agent_guidance": "Tests should not require a real Fabric peer or Docker. Register a fake io.grpc.BindableService (or ServerServiceDefinition) for the org.hyperledger.fabric.protos.gateway.Gateway service on an InProcessServer, using generated stubs from fabric-protos, which fabric-gateway pulls in transitively. Build the channel with InProcessChannelBuilder and pass it to Gateway.newInstance().identity(...).signer(...).connection(channel).connect(). Then exercise evaluate, submit, and the commit and status calls against the fake service, plus the chaincode events and block events streams. Generate a throwaway X.509 identity and signer in the test using the transitive bcpkix/bcprov dependencies, via Identities.newX509Identity and Signers.newPrivateKeySigner, or use a lambda signer. Use a valid PEM certificate and private key generated at runtime. The library also uses gson, protobuf-java, and reflection for protobuf message parsing, so cover those paths through real message round-trips. No environment variables or system properties are needed.",
+      "risks": [
+        "The grpc-inprocess version must be aligned with the grpc-api version resolved transitively, or a mismatch could cause a NoSuchMethodError. Reuse the tested grpc version already present in the repo.",
+        "Protobuf reflection and grpc service-registration paths may need extra native-image metadata beyond what fabric-protos already ships. Verify with the local native-image run.",
+        "grpc-inprocess metadata exists in the repo only for 1.68.0. The chosen version must be permitted, or native-image tests may need an override.",
+        "The gateway's crypto and signing paths use BouncyCastle providers, which may need provider registration and can bring extra reachability metadata needs."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.grpc:grpc-inprocess:1.83.1",
+          "result": "applied",
+          "target": "tests/src/org.hyperledger.fabric/fabric-gateway/1.12.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10245 Support for org.hyperledger.fabric:fabric-gateway:1.12.1; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1966
+    },
+    "metrics": {
+      "input_tokens_used": 261409,
+      "cached_input_tokens_used": 5000192,
+      "output_tokens_used": 18791,
+      "iterations": 8,
+      "cost_usd": 0.8741,
+      "generated_loc": 315,
+      "tested_library_loc": 436,
+      "metadata_entries": 13,
+      "test_only_metadata_entries": 80,
+      "code_coverage_percent": 38.21
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hyperledger.fabric/fabric-gateway/1.12.1/reachability-metadata.json"
+    }
+  }
+}

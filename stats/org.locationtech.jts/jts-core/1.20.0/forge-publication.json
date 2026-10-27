@@ -1,0 +1,152 @@
+{
+  "base_commit": "53c4b61abbebe234dd625867b3ec026e2d521ac2",
+  "branch": "ai/kimeta/add-lib-support-org.locationtech.jts-jts-core-1.20.0-chunked-forge-9789-20261003085903374664-26464c6cca9f",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9789,
+  "library": {
+    "artifact": "jts-core",
+    "coordinates": "org.locationtech.jts:jts-core:1.20.0",
+    "group": "org.locationtech.jts",
+    "version": "1.20.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "53c4b61abbebe234dd625867b3ec026e2d521ac2",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmps2v9sjmm"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9789-ae71fa93/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.locationtech.jts:jts-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.locationtech.jts/jts-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9789-ae71fa93/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "509d13e302e77489b74d410007936fad988c3bcf",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.locationtech.jts/jts-core/1.20.0/stats.json",
+      "tests/src/org.locationtech.jts/jts-core/1.20.0/JTSTestBuilder-support.bin",
+      "tests/src/org.locationtech.jts/jts-core/1.20.0/build.gradle",
+      "tests/src/org.locationtech.jts/jts-core/1.20.0/src/test/java/org_locationtech_jts_jts_core/CoordinateArraysTest.java",
+      "tests/src/org.locationtech.jts/jts-core/1.20.0/src/test/java/org_locationtech_jts_jts_core/JtsCoreTest.java",
+      "tests/src/org.locationtech.jts/jts-core/1.20.0/src/test/java/org_locationtech_jts_jts_core/KMLReaderTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The test project added JTSTestBuilder-support.bin as a test dependency. Its embedded Maven metadata identified a jts-app 1.20.0-SNAPSHOT assembly, and the archive contained 751 org/locationtech/jts class files, including classes supplied by the target jts-core artifact. The tests could therefore execute shadow copies instead of org.locationtech.jts:jts-core:1.20.0, violating §FS-test-contract.2.3's prohibition on shadow classes for library types.",
+    "finding_title": "Bundled support JAR shadows the target library",
+    "fix_note": "Removed the opaque support archive and file dependency, replaced the optional TestBuilderProxy scenario with version-agnostic jts-core behavior, and added dedicated CoordinateArrays and KMLReader public-API tests that exercise two genuine reflection call sites. Forge finalization refreshed statistics and passed all three native lanes, metadata and style checks, generated-test validation, and library-statistics generation on a stable rerun.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Checked the single-coordinate file scope, index-validation evidence, metadata format and presence, test package separation, meaningful non-scaffold public-API coverage, version independence, Native Image execution, and the absence of skips, swallowed failures, compatibility overrides, and native build/run flags. After repair, resolved statistics report 2/9 dynamic-access calls covered (22.2222%), above the new-library gate, and the exact Forge finalization command completed successfully with no further publishable-tree changes.",
+    "session_id": "050598cadda54d00"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.locationtech.jts/jts-core/1.20.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 8671744,
+      "code_coverage_percent": 22.52,
+      "cost_usd": 1.6576,
+      "generated_loc": 168,
+      "input_tokens_used": 493509,
+      "iterations": 8,
+      "metadata_entries": 84,
+      "output_tokens_used": 49476,
+      "tested_library_loc": 6892
+    },
+    "timestamp": "2026-10-03T08:59:03.374664Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9789-20261003085903374664-26464c6cca9f",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.locationtech.jts.util.TestBuilderProxy` is reached, make `java.awt.Component.getLocationOnScreen_NoTreeLock()` available for reflection",
+        "when `org.locationtech.jts.util.TestBuilderProxy` is reached, make `java.awt.Component.getParent_NoClientCode()` available for reflection",
+        "when `org.locationtech.jts.util.TestBuilderProxy` is reached, make `java.awt.GraphicsEnvironment.isHeadless()` available for reflection",
+        "when `org.locationtech.jts.util.TestBuilderProxy` is reached, make `java.awt.event.KeyEvent` available for reflection",
+        "when `org.locationtech.jts.util.TestBuilderProxy` is reached, make `java.lang.System.load(java.lang.String)` available for reflection",
+        "when `org.locationtech.jts.util.TestBuilderProxy` is reached, make `org.locationtech.jtstest.function.AffineTransformationFunctions` available for reflection",
+        "when `org.locationtech.jts.util.TestBuilderProxy` is reached, make `org.locationtech.jtstest.function.BoundaryFunctions` available for reflection",
+        "when `org.locationtech.jts.util.TestBuilderProxy` is reached, make `org.locationtech.jtstest.function.BufferByUnionFunctions` available for reflection",
+        "... and 51 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.222222,
+            "coveredCalls": 2,
+            "totalCalls": 9
+          }
+        },
+        "coverageRatio": 0.222222,
+        "coveredCalls": 2,
+        "totalCalls": 9
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 29778,
+          "missed": 107642,
+          "ratio": 0.216693,
+          "total": 137420
+        },
+        "line": {
+          "covered": 7005,
+          "missed": 23600,
+          "ratio": 0.228884,
+          "total": 30605
+        },
+        "method": {
+          "covered": 1600,
+          "missed": 4863,
+          "ratio": 0.247563,
+          "total": 6463
+        }
+      },
+      "version": "1.20.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-03T08:59:03.374664Z"
+}

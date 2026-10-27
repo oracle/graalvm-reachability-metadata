@@ -1,0 +1,141 @@
+{
+  "base_commit": "56d7bed9eb392980c7b87d4433f2dd3da7e68e0b",
+  "branch": "ai/kimeta/add-lib-support-org.orbisgis-cts-1.7.2-chunked-forge-9792-20261003050500036698-68a9c3b1a4b9",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9792,
+  "library": {
+    "artifact": "cts",
+    "coordinates": "org.orbisgis:cts:1.7.2",
+    "group": "org.orbisgis",
+    "version": "1.7.2"
+  },
+  "local_ci_verification": {
+    "base_commit": "56d7bed9eb392980c7b87d4433f2dd3da7e68e0b",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp7qrx9tb4"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9792-c0dd47b8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.orbisgis:cts"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.orbisgis/cts/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9792-c0dd47b8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "5e40c5164e87a267f11d241fcce9681d35051000",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is confined to org.orbisgis:cts:1.7.2 and uses only reachability-metadata.json. The public, version-agnostic tests exercise CTS resource-loading APIs under a separate test package without scaffold code, Native Image skips, unsupported-feature tolerance, runtime-definition behavior, or native build/run flags. Resolved statistics report 4/4 dynamic-access calls covered (100%), above the new-library gate; the reported 3 library plus 2 test-only metadata entries do not trigger the entry-count mismatch probe. The supplied changed-index and index-validation gates passed, and the index, stats, and execution evidence are coherent.",
+    "session_id": "f9c26e7dc28a4eca"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.orbisgis/cts/1.7.2/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4316160,
+      "code_coverage_percent": 19.39,
+      "cost_usd": 0.9725,
+      "generated_loc": 82,
+      "input_tokens_used": 361235,
+      "iterations": 7,
+      "metadata_entries": 3,
+      "output_tokens_used": 29947,
+      "test_only_metadata_entries": 2,
+      "tested_library_loc": 1319
+    },
+    "timestamp": "2026-10-03T05:05:00.036698Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9792-20261003050500036698-68a9c3b1a4b9",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.Class#getResourceAsStream(java.lang.String) <- org.cts.op.transformation.Altitude2EllipsoidalHeight.<init>(Altitude2EllipsoidalHeight.java:92) (line 92)",
+        "[resources] java.lang.Class#getResource(java.lang.String) <- org.cts.op.transformation.NTv2GridShiftTransformation.createNTv2GridShiftTransformation(NTv2GridShiftTransformation.java:85) (line 85)",
+        "[resources] java.lang.Class#getResourceAsStream(java.lang.String) <- org.cts.parser.proj.ProjParser.getSupportedCodes(ProjParser.java:183) (line 183)",
+        "[resources] java.lang.Class#getResourceAsStream(java.lang.String) <- org.cts.parser.proj.ProjParser.readParameters(ProjParser.java:73) (line 73)"
+      ],
+      "metadata_rules": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6997,
+          "missed": 33864,
+          "ratio": 0.171239,
+          "total": 40861
+        },
+        "line": {
+          "covered": 1319,
+          "missed": 5483,
+          "ratio": 0.193914,
+          "total": 6802
+        },
+        "method": {
+          "covered": 221,
+          "missed": 982,
+          "ratio": 0.183707,
+          "total": 1203
+        }
+      },
+      "version": "1.7.2"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-03T05:05:00.036698Z"
+}

@@ -1,0 +1,142 @@
+{
+  "base_commit": "7a380b20b09a06176005b6b22df539c5ad2f62a1",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.boot-spring-boot-resttestclient-4.1.1-forge-9713-20261008011110136404-8fa672e637ba",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "a8d85695717f037841e031b50723f63cd0ecec3f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9713,
+  "library": {
+    "artifact": "spring-boot-resttestclient",
+    "coordinates": "org.springframework.boot:spring-boot-resttestclient:4.1.1",
+    "group": "org.springframework.boot",
+    "version": "4.1.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "7a380b20b09a06176005b6b22df539c5ad2f62a1",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp26608fp4"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9713-e4af0dfc/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 9s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.boot:spring-boot-resttestclient"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.boot/spring-boot-resttestclient/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9713-e4af0dfc/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "b59474cd60445706771d30eeddde6f8e00cad65e",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.springframework.boot/spring-boot-resttestclient/4.1.1/build.gradle"
+    ],
+    "decision": "approved",
+    "finding_body": "The test project's `build.gradle` pinned `org.springframework.boot:spring-boot-restclient` to `4.1.1`, so the suite would not follow the TCK-selected Spring Boot version, violating the version-agnostic test requirement.",
+    "finding_title": "Supporting dependency pins the target library version",
+    "fix_note": "Changed the `spring-boot-restclient` dependency to use `$libraryVersion`, then ran the exact Forge review finalization command successfully to a stable tree.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the single-coordinate diff, closed file set, library-specific public-API tests, native-image execution behavior, metadata format and scope, index integrity, and reported coverage. The 0/0 dynamic-access result is a valid no-calls case. After the repair, Forge finalization passed all three native-test lanes, metadata validation, style checks, generated-test validity, and statistics generation without further publishable changes.",
+    "session_id": "5d2505a680c84291"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework.boot/spring-boot-resttestclient/4.1.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4862336,
+      "code_coverage_percent": 21.16,
+      "cost_usd": 4.5355,
+      "generated_loc": 195,
+      "input_tokens_used": 234780,
+      "iterations": 6,
+      "metadata_entries": 28,
+      "output_tokens_used": 31015,
+      "test_only_metadata_entries": 201,
+      "tested_library_loc": 40
+    },
+    "timestamp": "2026-10-08T01:11:10.136404Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9713-20261008011110136404-8fa672e637ba",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient` is reached, make `char[]` available for reflection",
+        "when `org.springframework.boot.resttestclient.TestRestTemplate` is reached, make `java.io.IOException.<init>(java.lang.String)` available for reflection",
+        "when `org.springframework.boot.resttestclient.TestRestTemplate` is reached, make `java.io.Serializable` available for reflection",
+        "when `org.springframework.boot.resttestclient.TestRestTemplate` is reached, make `java.lang.Class` available for reflection",
+        "when `org.springframework.boot.resttestclient.TestRestTemplate` is reached, make `java.lang.Module` available for reflection",
+        "when `org.springframework.boot.resttestclient.TestRestTemplate` is reached, make `java.lang.constant.Constable` available for reflection",
+        "when `org.springframework.boot.resttestclient.TestRestTemplate` is reached, make `java.lang.invoke.TypeDescriptor$OfField` available for reflection",
+        "when `org.springframework.boot.resttestclient.TestRestTemplate` is reached, make `java.lang.reflect.AnnotatedElement` available for reflection",
+        "... and 14 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 161,
+          "missed": 1266,
+          "ratio": 0.112824,
+          "total": 1427
+        },
+        "line": {
+          "covered": 40,
+          "missed": 149,
+          "ratio": 0.21164,
+          "total": 189
+        },
+        "method": {
+          "covered": 18,
+          "missed": 99,
+          "ratio": 0.153846,
+          "total": 117
+        }
+      },
+      "version": "4.1.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-08T01:11:10.136404Z"
+}

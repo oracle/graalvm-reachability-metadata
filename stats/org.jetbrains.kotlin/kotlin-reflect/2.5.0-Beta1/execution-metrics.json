@@ -1,0 +1,217 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T18:45:27.882963Z",
+    "library": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+    "starting_commit": "76b504492bab658663770a984ce4f2e5286a99c2",
+    "ending_commit": "25f49667af86f8fe8b583909be52bf2301693d74",
+    "previous_library": "org.jetbrains.kotlin:kotlin-reflect:1.7.10",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.5.0-Beta1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.09,
+            "coveredCalls": 9,
+            "totalCalls": 100
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.09901,
+        "coveredCalls": 10,
+        "totalCalls": 101
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 50142,
+          "missed": 214350,
+          "ratio": 0.189579,
+          "total": 264492
+        },
+        "line": {
+          "covered": 8009,
+          "missed": 29195,
+          "ratio": 0.215273,
+          "total": 37204
+        },
+        "method": {
+          "covered": 2633,
+          "missed": 9582,
+          "ratio": 0.215555,
+          "total": 12215
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.7.10",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 50498,
+          "missed": 147807,
+          "ratio": 0.254648,
+          "total": 198305
+        },
+        "line": {
+          "covered": 8167,
+          "missed": 20257,
+          "ratio": 0.287328,
+          "total": 28424
+        },
+        "method": {
+          "covered": 2506,
+          "missed": 6282,
+          "ratio": 0.285162,
+          "total": 8788
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10325,
+      "issue_label": "fails-javac-compile",
+      "library": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+      "summary": "The javac failure is a Kotlin toolchain mismatch, not a Native Image limitation. The test build uses the Kotlin Gradle plugin 2.3.0 (`libs.plugins.kotlin.jvm`), and `kotlin-reflect:2.5.0-Beta1` pulls in `kotlin-stdlib:2.5.0-Beta1`. That stdlib has metadata version 2.5.0, and the 2.3.0 compiler only reads up to 2.4.0. Every error in the log (`KClass`, `KParameter.Kind`, and the follow-on 'Unresolved reference' errors) comes from this.",
+      "deterministic_setup": [],
+      "agent_guidance": "I read `build.gradle` and `gradle.properties` for the 1.7.10 test project, which has `kotlin.stdlib.default.dependency=false` and uses `kotlin-reflect:$libraryVersion` for implementation. I did not run Gradle, so none of the fixes below has been built. Before changing code, run `./gradlew compileTestJava -Pcoordinates=org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1` for the new version's test directory and confirm the same 'incompatible version of Kotlin' error.\n\nFix it in the new version's `build.gradle` only, and do not touch the shared version catalog or other libraries' tests.\n\nThe preferred fix is to let the 2.3.0 compiler read the newer stdlib metadata:\n\n```groovy\ncompileTestKotlin {\n    kotlinOptions {\n        jvmTarget = testJvmVersion.toString()\n        freeCompilerArgs += ['-Xskip-metadata-version-check']\n    }\n}\n```\n\nThe compiler flag is a workaround. If it cannot compile the test, the alternative is to constrain `kotlin-stdlib` to a version the compiler reads, for example:\n\n```groovy\nconfigurations.configureEach {\n    resolutionStrategy.force 'org.jetbrains.kotlin:kotlin-stdlib:2.3.0'\n}\n```\n\nThat may be unsafe at runtime, because `kotlin-reflect` 2.5.x can need newer stdlib APIs. Check this with `javaTest` and `nativeTestCompile`.\n\nThe tests should stay on the public `kotlin.reflect` API: `KClass.members`, `KParameter`, `createType`, and so on. Keep `--no-fallback` in `graalvmNative` and keep the AssertJ dependency.\n\nThe `-Xskip-metadata-version-check` option takes the metadata-version error out of the picture, and this is the only compile setup I'd expect to need. Check that the tests compile and pass on the JVM first. Only after that, regenerate or verify the reachability metadata.",
+      "risks": [
+        "Skipping the metadata version check can hide real incompatibilities between the 2.3.0 compiler and the 2.5 stdlib, so a failure may appear later, at runtime or in Native Image.",
+        "Forcing the stdlib down to 2.3.0 may break `kotlin-reflect` 2.5.0-Beta1 at runtime.",
+        "A Beta version may change `kotlin.reflect` internals, so the existing 1.7.10 metadata may not carry over unchanged."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10325 [Automation] javac compile fails for org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jetbrains.kotlin:kotlin-reflect:1.7.10",
+      "new_version": "2.5.0-Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1764
+    },
+    "metrics": {
+      "input_tokens_used": 47418,
+      "cached_input_tokens_used": 192896,
+      "output_tokens_used": 1600,
+      "iterations": 3,
+      "cost_usd": 0.3815,
+      "tested_library_loc": 8009,
+      "metadata_entries": 32,
+      "test_only_metadata_entries": 18,
+      "previous_library_metadata_entries": 23,
+      "previous_library_test_only_metadata_entries": 5,
+      "code_coverage_percent": 21.53,
+      "previous_library_coverage_percent": 28.73
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/reachability-metadata.json"
+    }
+  },
+  "improve_library_coverage:2026-10-03": {
+    "timestamp": "2026-10-03T10:53:13.393146Z",
+    "library": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+    "starting_commit": "eed193eff7fce6bd6ba8088b4e2ab6c24b1d2846",
+    "ending_commit": "5e0ce6ae69f30d765ef31342105aedf70a859d9c",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.5.0-Beta1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.93,
+            "coveredCalls": 93,
+            "totalCalls": 100
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.930693,
+        "coveredCalls": 94,
+        "totalCalls": 101
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 126651,
+          "missed": 137841,
+          "ratio": 0.478846,
+          "total": 264492
+        },
+        "line": {
+          "covered": 18439,
+          "missed": 18765,
+          "ratio": 0.495619,
+          "total": 37204
+        },
+        "method": {
+          "covered": 6352,
+          "missed": 5863,
+          "ratio": 0.520016,
+          "total": 12215
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10368,
+      "issue_label": "library-update-request",
+      "library": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+      "summary": "The existing kotlin-reflect 2.5.0-Beta1 test project already declares everything the library needs: kotlin-reflect as `implementation`, assertj as `testImplementation`, the Kotlin JVM plugin, the conditional agent mode and a user-code filter. kotlin-reflect is a pure in-process reflection library, so it needs no Docker image, service, environment variable or system property. The 38 classes above the threshold are a chunked coverage-expansion matter, which more tests can address without any new setup. 19 of them are already completed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The remaining classes are internal kotlin.reflect.jvm.internal.* types that are only reached indirectly through the public kotlin.reflect API. Tests need to drive them through real Kotlin reflection calls, for example KClass members, KProperty getters and setters, annotation constructors and Java record, sealed or parameter-name loaders.",
+        "I did not run Gradle or native-image. Local verification remains authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10368 Improve coverage for org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1; label=library-update-request; body_chars=206"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 510
+    },
+    "metrics": {
+      "input_tokens_used": 1243024,
+      "cached_input_tokens_used": 26687360,
+      "output_tokens_used": 131122,
+      "iterations": 35,
+      "cost_usd": 23.4925,
+      "generated_loc": 992,
+      "tested_library_loc": 18439,
+      "metadata_entries": 310,
+      "test_only_metadata_entries": 444,
+      "code_coverage_percent": 49.56
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/reachability-metadata.json"
+    }
+  }
+}

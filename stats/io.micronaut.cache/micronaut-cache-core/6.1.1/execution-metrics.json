@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-10-02": {
+    "timestamp": "2026-10-02T04:32:05.703502Z",
+    "library": "io.micronaut.cache:micronaut-cache-core:6.1.1",
+    "starting_commit": "27cec97f5b9d962eb596354147d7e654fa470112",
+    "ending_commit": "4d5dffbe624eaf2d16f5b8293f34653b6af870fe",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "6.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1259,
+          "missed": 2437,
+          "ratio": 0.340639,
+          "total": 3696
+        },
+        "line": {
+          "covered": 295,
+          "missed": 506,
+          "ratio": 0.36829,
+          "total": 801
+        },
+        "method": {
+          "covered": 78,
+          "missed": 140,
+          "ratio": 0.357798,
+          "total": 218
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9806,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.cache:micronaut-cache-core:6.1.1",
+      "summary": "micronaut-cache-core ships only the SyncCache/AsyncCache/CacheManager abstractions and the @Cacheable interceptor, with no concrete CacheManager implementation; tests need a backend bean to exercise those code paths, mirroring the micronaut-json-core -> micronaut-jackson-databind precedent already in this repo.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.cache:micronaut-cache-caffeine:6.1.1",
+          "scope": "testImplementation",
+          "reason": "micronaut-cache-core defines SyncCache/AsyncCache/CacheManager and the @Cacheable/@CachePut/@CacheInvalidate interceptor but ships no concrete CacheManager. Without a backend on the classpath there is no CacheManager bean to inject, so the interceptor and cache-abstraction code paths this library ex\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Write tests against the core abstraction types (io.micronaut.cache.SyncCache, AsyncCache, CacheManager) and the @Cacheable/@CachePut/@CacheInvalidate annotations rather than against Caffeine-specific APIs — Caffeine is only present to supply a working CacheManager bean. Scope user-code-filter.json / allowed-packages to io.micronaut.cache core classes and avoid pulling io.micronaut.cache.caffeine.** into this library's shipped metadata, since that package is already owned and covered by the sibling micronaut-cache-caffeine metadata. No extra environment variables or system properties are expected; Micronaut auto-configures the CacheManager from the single backend on the classpath.",
+      "risks": [
+        "If Gradle/Native Image verification shows micronaut-cache-core actually resolves a usable CacheManager without any backend (e.g. a built-in no-op/local default), the added caffeine dependency would be unnecessary — local verification is authoritative over this desk review.",
+        "Loose package filtering could cause Caffeine-specific classes to leak into micronaut-cache-core's shipped metadata instead of staying confined to the sibling micronaut-cache-caffeine artifact."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.cache:micronaut-cache-caffeine:6.1.1",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.cache/micronaut-cache-core/6.1.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9806 Support for io.micronaut.cache:micronaut-cache-core:6.1.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 36,
+      "output_tokens_used": 14124
+    },
+    "metrics": {
+      "input_tokens_used": 352646,
+      "cached_input_tokens_used": 4591104,
+      "output_tokens_used": 29170,
+      "iterations": 7,
+      "cost_usd": 0.9867,
+      "generated_loc": 188,
+      "tested_library_loc": 295,
+      "metadata_entries": 20,
+      "test_only_metadata_entries": 46,
+      "code_coverage_percent": 36.83
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.cache/micronaut-cache-core/6.1.1/reachability-metadata.json"
+    }
+  }
+}

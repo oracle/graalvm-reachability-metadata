@@ -1,0 +1,110 @@
+{
+  "base_commit": "e895cf32f5d1f2ec23bad095e7cbf00cbe9f048a",
+  "branch": "ai/kimeta/fix-javac-com.squareup.okhttp3-okhttp-3.9.0-forge-9336-20261002014450431553-a53a677e725c",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e895cf32f5d1f2ec23bad095e7cbf00cbe9f048a",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9336,
+  "library": {
+    "artifact": "okhttp",
+    "coordinates": "com.squareup.okhttp3:okhttp:3.9.0",
+    "group": "com.squareup.okhttp3",
+    "version": "3.9.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "e895cf32f5d1f2ec23bad095e7cbf00cbe9f048a",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmprny7px3q"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9336-212b1397/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.squareup.okhttp3:okhttp"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.squareup.okhttp3/okhttp/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9336-212b1397/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "70526219ee877ea5b02d2505aa4027aa8035f0ad",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/com.squareup.okhttp3/okhttp/3.9.0/stats.json",
+      "tests/src/com.squareup.okhttp3/okhttp/3.9.0/src/test/java/android/net/http/X509TrustManagerExtensions.java",
+      "tests/src/com.squareup.okhttp3/okhttp/3.9.0/src/test/java/android/security/NetworkSecurityPolicy.java",
+      "tests/src/com.squareup.okhttp3/okhttp/3.9.0/src/test/java/com_squareup_okhttp3/okhttp/AndroidPlatformTest.java",
+      "tests/src/com.squareup.okhttp3/okhttp/3.9.0/src/test/java/com_squareup_okhttp3/okhttp/TrustRootIndexTest.java",
+      "tests/src/com.squareup.okhttp3/okhttp/3.9.0/user-code-filter.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The added tests/src/com.squareup.okhttp3/okhttp/3.9.0/src/test/java/android/security/NetworkSecurityPolicy.java shadowed a real Android framework type, and AndroidPlatformTest depended on that fake type to activate an Android-only library path on the desktop test runtime. The contribution also changed the inherited X509TrustManagerExtensions stub to force the desired fallback. This violates FS-test-contract.2.3 and adds unrelated synthetic coverage to a javac repair rather than narrowly adapting the failing TrustRootIndex call.",
+    "finding_title": "Generated repair uses a shadow Android API to manufacture coverage",
+    "fix_note": "Removed the newly added fake-dependent Android scenario and its filter entry, restored the inherited X509TrustManagerExtensions behavior, and reduced TrustRootIndexTest to the minimal 3.9.0 API adaptation through Platform.buildTrustRootIndex while preserving the original reflective trust-manager behavior and assertions. Forge finalization regenerated the resulting statistics.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the target-coordinate-only diff, local gate evidence, test-contract musts, cheating patterns, and repair coverage. After repair, overall dynamic access is 24/28 versus 25/25 (a 14.29 percentage-point drop, within the 20-point large-report limit); reflection passes because covered calls remain 24, and the removed resources scope passes as 0/0. The exact Forge finalization command then passed current-defaults, future-defaults-all, and GraalVM 25 test lanes plus metadata, formatting, Checkstyle, generated-test, and statistics checks, and a second complete run made no publishable change.",
+    "session_id": "9d00073ca4224baf"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/com.squareup.okhttp3/okhttp/3.9.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1477632,
+      "code_coverage_percent": 24.58,
+      "cost_usd": 0.3467,
+      "input_tokens_used": 141756,
+      "iterations": 5,
+      "metadata_entries": 101,
+      "output_tokens_used": 9519,
+      "previous_library_coverage_percent": 4.7,
+      "previous_library_metadata_entries": 12,
+      "previous_library_test_only_metadata_entries": 123,
+      "test_only_metadata_entries": 128,
+      "tested_library_loc": 2062
+    },
+    "timestamp": "2026-10-02T01:44:50.431553Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "okhttp",
+    "coordinates": "com.squareup.okhttp3:okhttp:3.8.0",
+    "group": "com.squareup.okhttp3",
+    "version": "3.8.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9336-20261002014450431553-a53a677e725c",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-02T01:44:50.431553Z"
+}

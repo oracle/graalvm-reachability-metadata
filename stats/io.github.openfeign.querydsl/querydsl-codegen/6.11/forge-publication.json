@@ -1,0 +1,156 @@
+{
+  "base_commit": "2b43f1a3316af6fffc864116e84d4ce69fa69a9b",
+  "branch": "ai/kimeta/add-lib-support-io.github.openfeign.querydsl-querydsl-codegen-6.11-forge-9743-20261005095100845961-e2795840b26d",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9743,
+  "library": {
+    "artifact": "querydsl-codegen",
+    "coordinates": "io.github.openfeign.querydsl:querydsl-codegen:6.11",
+    "group": "io.github.openfeign.querydsl",
+    "version": "6.11"
+  },
+  "local_ci_verification": {
+    "base_commit": "2b43f1a3316af6fffc864116e84d4ce69fa69a9b",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp99yjk376"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9743-da31c1ed/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.github.openfeign.querydsl:querydsl-codegen"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.github.openfeign.querydsl/querydsl-codegen/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9743-da31c1ed/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "dca4d46e0587225413a248eb0c8c86a467c3d750",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full contribution diff and local evidence. The change is scoped to one new coordinate and uses only the accepted metadata format. The public, version-agnostic tests exercise the library from a separate package without scaffold code, Native Image skips, unsupported failure tolerance, visibility bypasses, compatibility overrides, or native build/run flags. The resolved statistics report 14/14 dynamic-access calls covered (100%); the reported 16 library plus 3 test-only metadata entries do not trigger the entry-count mismatch probe. The recorded index validation gates passed, and the new index has one latest entry for version 6.11.",
+    "session_id": "9130b895a21f4c72"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/io.github.openfeign.querydsl/querydsl-codegen/6.11/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2968576,
+      "code_coverage_percent": 30.55,
+      "cost_usd": 0.6699,
+      "generated_loc": 189,
+      "input_tokens_used": 291508,
+      "iterations": 3,
+      "metadata_entries": 16,
+      "output_tokens_used": 13579,
+      "test_only_metadata_entries": 3,
+      "tested_library_loc": 560
+    },
+    "timestamp": "2026-10-05T09:51:00.845961Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9743-20261005095100845961-e2795840b26d",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- com.querydsl.codegen.AbstractModule.fallbackToDefaultConstructor(AbstractModule.java:157) (line 157)",
+        "[reflection] java.lang.Class#getConstructors() <- com.querydsl.codegen.AbstractModule.createInstance(AbstractModule.java:124) (line 124)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- com.querydsl.codegen.AbstractModule.createInstance(AbstractModule.java:132) (line 132)",
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- com.querydsl.codegen.ClassPathUtils.safeClassForName(ClassPathUtils.java:73) (line 73)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- com.querydsl.codegen.GeneratedAnnotationResolver.resolve(GeneratedAnnotationResolver.java:33) (line 33)",
+        "[reflection] java.lang.Class#getConstructors() <- com.querydsl.codegen.GenericExporter.addConstructors(GenericExporter.java:389) (line 389)",
+        "[reflection] java.lang.Class#getConstructors() <- com.querydsl.codegen.GenericExporter.handleClass(GenericExporter.java:556) (line 556)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- com.querydsl.codegen.GenericExporter.addProperties(GenericExporter.java:419) (line 419)",
+        "... and 6 more"
+      ],
+      "metadata_rules": [
+        "when `com.querydsl.codegen.GenericExporter` is reached, make `com.querydsl.codegen.DefaultEmbeddableSerializer.<init>(com.querydsl.codegen.TypeMappings, java.util.Collection, java.lang.Class)` available for reflection",
+        "when `com.querydsl.codegen.GenericExporter` is reached, make `com.querydsl.codegen.DefaultEntitySerializer.<init>(com.querydsl.codegen.TypeMappings, java.util.Collection, java.lang.Class)` available for reflection",
+        "when `com.querydsl.codegen.GenericExporter` is reached, make `com.querydsl.codegen.DefaultProjectionSerializer.<init>(com.querydsl.codegen.TypeMappings, java.lang.Class)` available for reflection",
+        "when `com.querydsl.codegen.GenericExporter` is reached, make `com.querydsl.codegen.DefaultSupertypeSerializer.<init>(com.querydsl.codegen.TypeMappings, java.util.Collection, java.lang.Class)` available for reflection",
+        "when `com.querydsl.codegen.AbstractModule` is reached, make `com.querydsl.codegen.JavaTypeMappings.<init>()` available for reflection",
+        "when `com.querydsl.codegen.AbstractModule` is reached, make `com.querydsl.codegen.QueryTypeFactoryImpl.<init>(java.lang.String, java.lang.String, java.lang.String)` available for reflection",
+        "when `com.querydsl.codegen.TypeFactory` is reached, make `com.querydsl.codegen.utils.model.Type[]` available for reflection",
+        "when `com.querydsl.codegen.ClassPathUtils` is reached, make `java.lang.String` available for reflection",
+        "... and 2 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 14,
+            "totalCalls": 14
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 14,
+        "totalCalls": 14
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2857,
+          "missed": 6869,
+          "ratio": 0.293749,
+          "total": 9726
+        },
+        "line": {
+          "covered": 560,
+          "missed": 1273,
+          "ratio": 0.30551,
+          "total": 1833
+        },
+        "method": {
+          "covered": 108,
+          "missed": 202,
+          "ratio": 0.348387,
+          "total": 310
+        }
+      },
+      "version": "6.11"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-05T09:51:00.845961Z"
+}

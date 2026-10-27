@@ -1,0 +1,105 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T02:36:25.165511Z",
+    "library": "org.springframework.boot:spring-boot-restclient-test:4.1.1",
+    "starting_commit": "0c52cc4332767404eff7b8a96a08aa5251b0f7e8",
+    "ending_commit": "0285eb229cd83aca6cf904bdf6655c5394ce848f",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 197,
+          "missed": 526,
+          "ratio": 0.272476,
+          "total": 723
+        },
+        "line": {
+          "covered": 54,
+          "missed": 118,
+          "ratio": 0.313953,
+          "total": 172
+        },
+        "method": {
+          "covered": 17,
+          "missed": 42,
+          "ratio": 0.288136,
+          "total": 59
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9711,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-restclient-test:4.1.1",
+      "summary": "The artifact's POM has only two compile dependencies: spring-boot-test-autoconfigure and spring-boot-restclient. Its core feature is MockServerRestClientCustomizer, which wraps spring-test's MockRestServiceServer. spring-test is not a transitive dependency, so the scaffold alone cannot exercise that feature. Boot 4.1.1's BOM pins Spring Framework 7.0.9. The sibling spring-boot-restclient test also had to add spring-boot-http-converter by hand.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:7.0.9",
+          "scope": "testImplementation",
+          "reason": "MockRestServiceServer and MockServerRestClientCustomizer need spring-test, which restclient-test does not pull in. 7.0.9 is the Spring Framework version in the Spring Boot 4.1.1 BOM."
+        }
+      ],
+      "agent_guidance": "No Docker image, environment variable or system property is needed. Tests should run in-process with no network. Build a RestClient.Builder, apply MockServerRestClientCustomizer (and the related restclient-test classes), then bind and verify expectations with MockRestServiceServer. Follow the existing spring-boot-restclient test project (tests/src/org.springframework.boot/spring-boot-restclient): it adds spring-boot-http-converter 4.1.1 for message conversion and assertj-core 3.22.0, and uses a conditional agent with user-code-filter.json. Add spring-boot-http-converter if JSON or other body conversion is exercised. If the scaffold already resolves spring-test through another dependency, the explicit spring-test entry can be dropped.",
+      "risks": [
+        "I did not run Gradle resolution, so I did not check whether spring-test is already on the test classpath through the scaffold.",
+        "I did not check whether spring-boot-http-converter is also needed; this guidance is inferred from the sibling project.",
+        "Metadata for this artifact may overlap with the existing spring-boot-restclient and spring-boot-test-autoconfigure entries."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:7.0.9",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-restclient-test/4.1.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9711 Support for org.springframework.boot:spring-boot-restclient-test:4.1.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 10,
+      "output_tokens_used": 2168
+    },
+    "metrics": {
+      "input_tokens_used": 63306,
+      "cached_input_tokens_used": 537216,
+      "output_tokens_used": 4844,
+      "iterations": 2,
+      "cost_usd": 0.7304,
+      "generated_loc": 40,
+      "tested_library_loc": 54,
+      "metadata_entries": 2,
+      "test_only_metadata_entries": 71,
+      "code_coverage_percent": 31.4
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-restclient-test/4.1.1/reachability-metadata.json"
+    }
+  }
+}

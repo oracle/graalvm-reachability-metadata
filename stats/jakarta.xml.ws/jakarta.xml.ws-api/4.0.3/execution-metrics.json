@@ -1,0 +1,93 @@
+{
+  "add_new_library_support:2026-09-30": {
+    "timestamp": "2026-09-30T03:38:08.472811Z",
+    "library": "jakarta.xml.ws:jakarta.xml.ws-api:4.0.3",
+    "starting_commit": "d04b926e515f2855950b301d3e28ead4c6fd981f",
+    "ending_commit": "39d515fcb5a8d26f307a87b1a7edcba330c52eff",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.0.3",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 315,
+          "missed": 971,
+          "ratio": 0.244946,
+          "total": 1286
+        },
+        "line": {
+          "covered": 98,
+          "missed": 257,
+          "ratio": 0.276056,
+          "total": 355
+        },
+        "method": {
+          "covered": 38,
+          "missed": 100,
+          "ratio": 0.275362,
+          "total": 138
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9939,
+      "issue_label": "library-new-request",
+      "library": "jakarta.xml.ws:jakarta.xml.ws-api:4.0.3",
+      "summary": "jakarta.xml.ws-api is a spec-only jar. Service.create, Endpoint.create/publish and the other main entry points call Provider.provider(), which looks up a jakarta.xml.ws.spi.Provider through ServiceLoader. Without a runtime, tests can only reach exceptions, enums, annotations and similar. I did not run anything against the artifact. This rests on the API's known design and on the repo's existing jaxws-rt test.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.sun.xml.ws:jaxws-rt:4.0.5",
+          "scope": "testImplementation",
+          "reason": "Provides com.sun.xml.ws.spi.ProviderImpl, the reference Provider implementation, and it pulls in the jakarta.xml.soap and jakarta.xml.bind implementations transitively. The repo already tests this version at tests/src/com.sun.xml.ws/jaxws-rt/4.0.5, so the coordinate is known to resolve. Gradle may r\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Write tests against the jakarta.xml.ws API only: Service.create(QName), Endpoint.create(...), the BindingProvider request/response context, Dispatch, handler chains, WebServiceFeature classes such as AddressingFeature, MTOMFeature and RespectBindingFeature, EndpointReference and W3CEndpointReferenceBuilder, and the WebServiceException hierarchy. Do not import com.sun.xml.ws.* classes in the tests, so coverage is attributed to the API. Do not use Docker or external network services. Publish endpoints on the JDK's built-in HTTP server bound to 127.0.0.1 with port 0 or a free port, or use local WSDL resources for Service.create. No environment variables or system properties are required. Provider discovery should work through the ServiceLoader META-INF/services entry. If it does not, set the system property jakarta.xml.ws.spi.Provider to com.sun.xml.ws.spi.ProviderImpl.",
+      "risks": [
+        "The runtime uses reflection, JAXB and SOAP, so native-image runs may need extra reachability metadata for jaxws-rt classes. Expect to iterate with the metadata generation and fix tasks.",
+        "Endpoint.publish needs the JDK's com.sun.net.httpserver, or the jaxws-rt HTTP transport. Choose ports carefully to avoid flakiness.",
+        "The jaxws-rt 4.0.5 dependency tree may bring a newer jakarta.xml.ws-api than 4.0.3. Make sure the tested artifact is the one under test."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.sun.xml.ws:jaxws-rt:4.0.5",
+          "result": "applied",
+          "target": "tests/src/jakarta.xml.ws/jakarta.xml.ws-api/4.0.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9939 Support for jakarta.xml.ws:jakarta.xml.ws-api:4.0.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1934
+    },
+    "metrics": {
+      "input_tokens_used": 267880,
+      "cached_input_tokens_used": 2789376,
+      "output_tokens_used": 18078,
+      "iterations": 14,
+      "cost_usd": 0.6553,
+      "generated_loc": 122,
+      "tested_library_loc": 98,
+      "metadata_entries": 43,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 27.61
+    },
+    "artifacts": {
+      "metadata_file": "metadata/jakarta.xml.ws/jakarta.xml.ws-api/4.0.3/reachability-metadata.json"
+    }
+  }
+}

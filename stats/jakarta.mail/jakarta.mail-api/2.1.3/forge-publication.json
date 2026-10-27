@@ -1,0 +1,103 @@
+{
+  "base_commit": "31e6b78b3d3a098d63b725f972290eb8e324b34f",
+  "branch": "ai/kimeta/fix-java-run-jakarta.mail-jakarta.mail-api-2.1.3-forge-9355-20260921200747112195-bf555ce31d2d",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "36568d2db2830705cecfdded8fb66f0cf58eb29f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9355,
+  "library": {
+    "artifact": "jakarta.mail-api",
+    "coordinates": "jakarta.mail:jakarta.mail-api:2.1.3",
+    "group": "jakarta.mail",
+    "version": "2.1.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "31e6b78b3d3a098d63b725f972290eb8e324b34f",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpkns76dla"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9355-16e27766/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=jakarta.mail:jakarta.mail-api"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/jakarta.mail/jakarta.mail-api/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9355-16e27766/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 721ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "aaee86aa91dd7155e49cd2a3d94027b3de603ed5",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete contribution diff and local evidence under the fixes-java-run-fail rules and the contribution contract. Changes are confined to jakarta.mail:jakarta.mail-api:2.1.3 support files; the runtime repair adapts the obsolete OSGi-provider expectation to the new public API class-loader fallback without skips, swallowed failures, native-only behavior, legacy metadata, version-pinned assertions, or build/run flags. Index validation, metadata validation, style checks, JVM tests, and all recorded native lanes passed. Dynamic-access coverage passes independently overall (16/18, 88.89% to 18/20, 90%), for reflection (14/15, 93.33% to 16/17, 94.12%), and for resources (2/3, 66.67% unchanged). The contribution satisfies every applicable must and is approved.",
+    "session_id": "dc9b9dea9f944135"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/jakarta.mail/jakarta.mail-api/2.1.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2539904,
+      "code_coverage_percent": 9.18,
+      "cost_usd": 3.4894,
+      "input_tokens_used": 315574,
+      "iterations": 8,
+      "metadata_entries": 18,
+      "output_tokens_used": 21384,
+      "previous_library_coverage_percent": 8.53,
+      "previous_library_metadata_entries": 19,
+      "previous_library_test_only_metadata_entries": 5,
+      "test_only_metadata_entries": 16,
+      "tested_library_loc": 588
+    },
+    "timestamp": "2026-09-21T20:07:47.112195Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "jakarta.mail-api",
+    "coordinates": "jakarta.mail:jakarta.mail-api:2.1.0",
+    "group": "jakarta.mail",
+    "version": "2.1.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9355-20260921200747112195-bf555ce31d2d",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-09-21T20:07:47.112195Z"
+}

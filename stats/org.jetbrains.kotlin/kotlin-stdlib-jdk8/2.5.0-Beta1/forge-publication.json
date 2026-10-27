@@ -1,0 +1,102 @@
+{
+  "base_commit": "7fe9aa25ee5ed011057e92140c2a0343f139fedd",
+  "branch": "ai/kimeta/fix-javac-org.jetbrains.kotlin-kotlin-stdlib-jdk8-2.5.0-Beta1-forge-10332-20261002065818276170-f6d0d4b17dd8",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "7fe9aa25ee5ed011057e92140c2a0343f139fedd",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10332,
+  "library": {
+    "artifact": "kotlin-stdlib-jdk8",
+    "coordinates": "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.5.0-Beta1",
+    "group": "org.jetbrains.kotlin",
+    "version": "2.5.0-Beta1"
+  },
+  "local_ci_verification": {
+    "base_commit": "7fe9aa25ee5ed011057e92140c2a0343f139fedd",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpewj75rxj"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10332-7e64fc5a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 11s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10332-7e64fc5a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "1c634eed75bba659511b2c019eaf071a9ef1d1ed",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the target-only diff and the fixes-javac-fail rules. The project-local Kotlin 2.5.0-Beta1 plugin resolves the compiler/stdlib metadata mismatch without changing shared infrastructure, while the new suite preserves the baseline tests and assertions exactly. Old and new dynamic-access reports are both 0/0, so the ordered repair gate passes. Forge finalization completed all three test lanes, metadata and style checks, test-only metadata splitting, and statistics generation successfully with no publishable tree changes.",
+    "session_id": "95227000d3c84214"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.jetbrains.kotlin/kotlin-stdlib-jdk8/2.5.0-Beta1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 800256,
+      "code_coverage_percent": 100.0,
+      "cost_usd": 0.1993,
+      "input_tokens_used": 97645,
+      "iterations": 4,
+      "metadata_entries": 1,
+      "output_tokens_used": 3623,
+      "previous_library_coverage_percent": 100.0,
+      "previous_library_metadata_entries": 0,
+      "test_only_metadata_entries": 3,
+      "tested_library_loc": 0
+    },
+    "timestamp": "2026-10-02T06:58:18.276170Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "kotlin-stdlib-jdk8",
+    "coordinates": "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31",
+    "group": "org.jetbrains.kotlin",
+    "version": "1.5.31"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10332-20261002065818276170-f6d0d4b17dd8",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-02T06:58:18.276170Z"
+}

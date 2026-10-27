@@ -1,0 +1,36 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.santuario:xmlsec:$libraryVersion"
+
+    // Streaming XML Signature and XML Encryption use JAXB bindings and StAX.
+    testImplementation "jakarta.activation:jakarta.activation-api:2.1.3"
+    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:4.0.2"
+    testImplementation "org.glassfish.jaxb:jaxb-runtime:4.0.5"
+    testImplementation "com.fasterxml.woodstox:woodstox-core:7.1.0"
+
+    // Certificate-backed signatures and XML Encryption key transport.
+    testImplementation "org.bouncycastle:bcprov-jdk18on:1.80"
+    testImplementation "org.bouncycastle:bcpkix-jdk18on:1.80"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

@@ -1,0 +1,160 @@
+{
+  "base_commit": "46f79ed5fa49c742060bee869df612c9e9f7cf1a",
+  "branch": "ai/kimeta/add-lib-support-com.microsoft.onnxruntime-onnxruntime-1.20.0-chunked-forge-9781-20261003171210690339-0a73dcab4974",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9781,
+  "library": {
+    "artifact": "onnxruntime",
+    "coordinates": "com.microsoft.onnxruntime:onnxruntime:1.20.0",
+    "group": "com.microsoft.onnxruntime",
+    "version": "1.20.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "46f79ed5fa49c742060bee869df612c9e9f7cf1a",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpe9xxree7"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9781-6a1052cb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.microsoft.onnxruntime:onnxruntime"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.microsoft.onnxruntime/onnxruntime/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9781-6a1052cb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "e52e5da9afd3abf6f5c5ff549667386132238e15",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Approved. The diff is scoped to one coordinate and the allowed metadata, stats, and test paths, uses only reachability-metadata.json, and has a valid index. The public test classes are library-specific, version-agnostic, outside the library package, and contain no Native Image skips, tolerated failures, compatibility overrides, or native build/run flags. Resolved statistics report 9/9 dynamic-access calls covered (100%, including each breakdown); the reported 18 metadata entries do not trigger the mismatch guardrail. Forge finalization passed all three test lanes, metadata splitting and validation, style checks, generated-test validity, deterministic package handling, and regenerated library statistics without changing the publishable tree.",
+    "session_id": "469d873d63b04220"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/com.microsoft.onnxruntime/onnxruntime/1.20.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1498624,
+      "code_coverage_percent": 7.39,
+      "cost_usd": 0.3734,
+      "generated_loc": 68,
+      "input_tokens_used": 151190,
+      "iterations": 5,
+      "metadata_entries": 18,
+      "output_tokens_used": 12056,
+      "tested_library_loc": 181
+    },
+    "timestamp": "2026-10-03T17:12:10.690339Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9781-20261003171210690339-0a73dcab4974",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.Class#getResourceAsStream(java.lang.String) <- ai.onnxruntime.OnnxRuntime.extractFromResources(OnnxRuntime.java:394) (line 394)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int[]) <- ai.onnxruntime.OrtUtil.newBooleanArray(OrtUtil.java:96) (line 96)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int[]) <- ai.onnxruntime.OrtUtil.newByteArray(OrtUtil.java:107) (line 107)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int[]) <- ai.onnxruntime.OrtUtil.newDoubleArray(OrtUtil.java:162) (line 162)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int[]) <- ai.onnxruntime.OrtUtil.newFloatArray(OrtUtil.java:151) (line 151)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int[]) <- ai.onnxruntime.OrtUtil.newIntArray(OrtUtil.java:129) (line 129)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int[]) <- ai.onnxruntime.OrtUtil.newLongArray(OrtUtil.java:140) (line 140)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int[]) <- ai.onnxruntime.OrtUtil.newShortArray(OrtUtil.java:118) (line 118)",
+        "... and 1 more"
+      ],
+      "metadata_rules": [
+        "when `ai.onnxruntime.OrtUtil` is reached, make `boolean[][]` available for reflection",
+        "when `ai.onnxruntime.OrtUtil` is reached, make `byte[][]` available for reflection",
+        "when `ai.onnxruntime.OrtUtil` is reached, make `double[][]` available for reflection",
+        "when `ai.onnxruntime.OrtUtil` is reached, make `float[][]` available for reflection",
+        "when `ai.onnxruntime.OrtUtil` is reached, make `int[][]` available for reflection",
+        "when `ai.onnxruntime.OnnxRuntime` is reached, make `java.lang.String` available for reflection",
+        "when `ai.onnxruntime.OnnxRuntime` is reached, make `java.lang.String[]` available for reflection",
+        "when `ai.onnxruntime.OrtUtil` is reached, make `java.lang.String[][]` available for reflection",
+        "... and 4 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 9,
+        "totalCalls": 9
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 889,
+          "missed": 10549,
+          "ratio": 0.077723,
+          "total": 11438
+        },
+        "line": {
+          "covered": 181,
+          "missed": 2267,
+          "ratio": 0.073938,
+          "total": 2448
+        },
+        "method": {
+          "covered": 37,
+          "missed": 434,
+          "ratio": 0.078556,
+          "total": 471
+        }
+      },
+      "version": "1.20.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-03T17:12:10.690339Z"
+}

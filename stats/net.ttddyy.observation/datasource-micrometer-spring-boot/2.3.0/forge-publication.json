@@ -1,0 +1,140 @@
+{
+  "base_commit": "82f3e4ed28ee82f77a3356edec68479db9a6d83e",
+  "branch": "ai/kimeta/add-lib-support-net.ttddyy.observation-datasource-micrometer-spring-boot-2.3.0-forge-11171-20261027012809700817-f7b820937e39",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "82f3e4ed28ee82f77a3356edec68479db9a6d83e",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 11171,
+  "library": {
+    "artifact": "datasource-micrometer-spring-boot",
+    "coordinates": "net.ttddyy.observation:datasource-micrometer-spring-boot:2.3.0",
+    "group": "net.ttddyy.observation",
+    "version": "2.3.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "82f3e4ed28ee82f77a3356edec68479db9a6d83e",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp_j8tonnr"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.agent-worktrees/issue-11171/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=net.ttddyy.observation:datasource-micrometer-spring-boot"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/net.ttddyy.observation/datasource-micrometer-spring-boot/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.agent-worktrees/issue-11171/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "28d57c84c6d3e1978031c86e55b198c906a520c2",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "claude-opus-5-5",
+    "review_comment": "Reviewed the single-coordinate diff against the library-new-request rules and the contribution contract. Three public, version-agnostic test classes in the net_ttddyy_observation.datasource_micrometer_spring_boot package replace the scaffold placeholder and drive the starter through ApplicationContextRunner: the default auto-configuration wraps an H2 DataSource in a Spring AOP JDK proxy, and JDBC work through it produces connection, query and result-set observations, Spring JDBC events and java.util.logging query logs; the bean post-processor honours the concrete proxy type, builder customizers, excluded bean names, a creation strategy and the disable switch; @ConditionalOnTraceType gates the tracing handlers on jdbc.includes; and the OpenTelemetry auto-configuration supplies the cached JSqlParser query analyzer and connection URL parser and honours its analysis, cache, sanitize, span and metric switches. There are no native-image skips, error catches, test-side reflection, sleeps, explicit timeouts or build flags. The library JAR has no tracked dynamic-access call sites (0/0), so the coverage and entry-count gates do not apply; library line coverage is 74.73%. Only reachability-metadata.json files are present, produced by generateMetadata and split into library metadata (including the Spring AOP JDK proxies SpringJdbcProxyFactory creates and the JdbcProperties binding) and test-only metadata, with agent lambda conditions mapped to their declaring library classes. Every context that wraps a DataSource starts from one @BeforeAll, because conditional generation dropped the JdbcProperties binding when that path was reached from several test methods; metadata was generated with JaCoCo off so that JaCoCo's own message bundle, loaded when it cannot instrument JSqlParser's token manager, does not reach the shipped file. Hikari pool naming, the SLF4J, Log4j and Commons logging back ends and slow-query logging are left untested because they need further optional dependencies or a deliberately slow query. checkMetadataFiles, spotlessCheck, checkstyle, the generated-test and placeholder checks, statistics validation and all three test lanes (GraalVM 25 current defaults, latest current defaults, latest future defaults) pass.",
+    "session_id": "3ac2e7b5b25fcfd4"
+  },
+  "metrics": {
+    "agent": "claude-code",
+    "model": "claude-opus-5-5",
+    "path": "stats/net.ttddyy.observation/datasource-micrometer-spring-boot/2.3.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 27200033,
+      "code_coverage_percent": 74.73,
+      "cost_usd": 82.9118,
+      "generated_loc": 416,
+      "input_tokens_used": 346447,
+      "iterations": 2,
+      "metadata_entries": 81,
+      "output_tokens_used": 22702,
+      "test_only_metadata_entries": 390,
+      "tested_library_loc": 346
+    },
+    "timestamp": "2026-10-27T01:28:09.700817Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-11171-20261027012809700817-f7b820937e39",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `net.ttddyy.observation.boot.autoconfigure.DataSourceObservationBeanPostProcessor` is reached, make `boolean[]` available for reflection",
+        "when `net.ttddyy.observation.boot.autoconfigure.DefaultDataSourceNameResolver` is reached, make `com.zaxxer.hikari.HikariDataSource` available for reflection",
+        "when `net.ttddyy.observation.boot.autoconfigure.DataSourceObservationBeanPostProcessor` is reached, make `java.lang.AutoCloseable` available for reflection",
+        "when `net.ttddyy.observation.boot.SpringJdbcProxyFactory` is reached, make `java.sql.Connection` available for reflection",
+        "when `net.ttddyy.observation.boot.SpringJdbcProxyFactory` is reached, make `java.sql.PreparedStatement` available for reflection",
+        "when `net.ttddyy.observation.boot.SpringJdbcProxyFactory` is reached, make `java.sql.ResultSet` available for reflection",
+        "when `net.ttddyy.observation.boot.SpringJdbcProxyFactory` is reached, make `java.sql.Statement` available for reflection",
+        "when `net.ttddyy.observation.boot.SpringJdbcProxyFactory` is reached, make `javax.sql.DataSource` available for reflection",
+        "... and 54 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1439,
+          "missed": 527,
+          "ratio": 0.731943,
+          "total": 1966
+        },
+        "line": {
+          "covered": 346,
+          "missed": 117,
+          "ratio": 0.7473,
+          "total": 463
+        },
+        "method": {
+          "covered": 131,
+          "missed": 30,
+          "ratio": 0.813665,
+          "total": 161
+        }
+      },
+      "version": "2.3.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_claude-code_opus",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-27T01:28:09.700817Z"
+}

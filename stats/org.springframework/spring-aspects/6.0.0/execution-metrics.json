@@ -1,0 +1,119 @@
+{
+  "fix_ni_run:2026-10-07": {
+    "timestamp": "2026-10-07T18:38:26.644066Z",
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "starting_commit": "3d57ea962debaac21c9eebf46ad5807e5ba6fd8f",
+    "ending_commit": "a1b4758e23c760fcce304696f648f3bfb5461697",
+    "previous_library": "org.springframework:spring-aspects:5.3.31",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 160,
+          "missed": 444,
+          "ratio": 0.264901,
+          "total": 604
+        },
+        "line": {
+          "covered": 47,
+          "missed": 83,
+          "ratio": 0.361538,
+          "total": 130
+        },
+        "method": {
+          "covered": 32,
+          "missed": 42,
+          "ratio": 0.432432,
+          "total": 74
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.3.31",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 170,
+          "missed": 434,
+          "ratio": 0.281457,
+          "total": 604
+        },
+        "line": {
+          "covered": 53,
+          "missed": 77,
+          "ratio": 0.407692,
+          "total": 130
+        },
+        "method": {
+          "covered": 35,
+          "missed": 39,
+          "ratio": 0.472973,
+          "total": 74
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9399,
+      "issue_label": "fails-native-image-run",
+      "library": "org.springframework:spring-aspects:6.0.0",
+      "summary": "The issue body has no failure evidence. The existing 5.3.31 scaffold depends only on spring-aspects, spring-context, spring-tx and assertj. spring-aspects 6.0.0 pulls in aspectjweaver transitively, so it needs no extra dependency, Docker image or system property. The version bump (Spring 6 / Jakarta, Java 17+) is something the normal generation and repair flow can handle.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not read the failure log (the issue body is empty) or the 6.0.0 sources, so I traced no failing symbol. That rules out any skip_unsupported verdict.",
+        "Spring 6 moves from javax.* to jakarta.*, so the 5.3.31 tests may need a jakarta.transaction/persistence adjustment if they reference those APIs.",
+        "The 5.3.31 tests use AspectJ aspects and Spring transaction aspects. The native-image run may need new reflection metadata for 6.0.0, which the repair flow can generate."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-aspects:5.3.31",
+      "new_version": "6.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 593
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "tested_library_loc": 47,
+      "metadata_entries": 135,
+      "test_only_metadata_entries": 8,
+      "previous_library_metadata_entries": 63,
+      "previous_library_test_only_metadata_entries": 8,
+      "code_coverage_percent": 36.15,
+      "previous_library_coverage_percent": 40.77
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-aspects/6.0.0/reachability-metadata.json"
+    }
+  }
+}

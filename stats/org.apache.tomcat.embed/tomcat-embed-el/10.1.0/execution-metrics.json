@@ -1,0 +1,141 @@
+{
+  "fix_java_run_fail:2026-10-04": {
+    "timestamp": "2026-10-04T17:50:13.896728Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-el:10.1.0",
+    "starting_commit": "f1273d97dbb149c95f08ccdcae142d73abda6746",
+    "ending_commit": "3d918f1d7cfc64079221a7036b5249ebd54c61a9",
+    "previous_library": "org.apache.tomcat.embed:tomcat-embed-el:10.0.17",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "10.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.923077,
+            "coveredCalls": 36,
+            "totalCalls": 39
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.926829,
+        "coveredCalls": 38,
+        "totalCalls": 41
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12748,
+          "missed": 20519,
+          "ratio": 0.383203,
+          "total": 33267
+        },
+        "line": {
+          "covered": 2886,
+          "missed": 4942,
+          "ratio": 0.368677,
+          "total": 7828
+        },
+        "method": {
+          "covered": 505,
+          "missed": 575,
+          "ratio": 0.467593,
+          "total": 1080
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "10.0.17",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.902439,
+            "coveredCalls": 37,
+            "totalCalls": 41
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.866667,
+        "coveredCalls": 39,
+        "totalCalls": 45
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10101,
+          "missed": 23001,
+          "ratio": 0.305148,
+          "total": 33102
+        },
+        "line": {
+          "covered": 2235,
+          "missed": 5486,
+          "ratio": 0.28947,
+          "total": 7721
+        },
+        "method": {
+          "covered": 383,
+          "missed": 690,
+          "ratio": 0.356943,
+          "total": 1073
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10432,
+      "issue_label": "fails-java-run",
+      "library": "org.apache.tomcat.embed:tomcat-embed-el:10.1.0",
+      "summary": "The JVM test failure is a behavioural difference between versions, not a missing dependency, Docker image, or system property. 10.1.0 (Jakarta EL 5.0) apparently returns null from StaticFieldELResolver.getType for a public static field, where the 10.0.17 test asserts String.class. The generated tests may need version-aware assertions, and there is no unsupported Native Image mechanism.",
+      "deterministic_setup": [],
+      "agent_guidance": "Only one of the 24 tests fails on the JVM: StaticFieldELResolverTest.resolvesPublicStaticFieldType (expected String, got null). Do not add setup. When creating the 10.1.0 tests, copy the 10.0.17 tests and relax or adjust that assertion to match the 10.1.0 behaviour, for example by asserting only that the call resolves without throwing. Keep the other tests unchanged, rerun javaTest, then regenerate or verify the reachability metadata.",
+      "risks": [
+        "I did not read the 10.1.0 source or run it. The EL 5.0 getType behaviour is inferred from the failure evidence alone.",
+        "Other 10.1.0 behavioural changes may surface only in the native-image run, because the log shows only the first failing stage.",
+        "Loosening the assertion must not reduce coverage of the StaticFieldELResolver reflective paths."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10432 [Automation] java run fails for org.apache.tomcat.embed:tomcat-embed-el:10.1.0; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "18 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.tomcat.embed:tomcat-embed-el:10.0.17",
+      "new_version": "10.1.0",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1108
+    },
+    "metrics": {
+      "input_tokens_used": 450767,
+      "cached_input_tokens_used": 4945280,
+      "output_tokens_used": 34594,
+      "iterations": 13,
+      "cost_usd": 5.7642,
+      "tested_library_loc": 2886,
+      "metadata_entries": 51,
+      "test_only_metadata_entries": 82,
+      "previous_library_metadata_entries": 56,
+      "previous_library_test_only_metadata_entries": 64,
+      "code_coverage_percent": 36.87,
+      "previous_library_coverage_percent": 28.95
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-el/10.1.0/reachability-metadata.json"
+    }
+  }
+}

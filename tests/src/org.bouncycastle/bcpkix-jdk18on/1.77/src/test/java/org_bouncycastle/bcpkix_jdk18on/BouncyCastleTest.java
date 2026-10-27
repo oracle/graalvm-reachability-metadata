@@ -38,7 +38,7 @@ import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BouncyCastleTest {
+public class BouncyCastleTest {
 
     private final Provider provider = new BouncyCastleProvider();
 

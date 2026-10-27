@@ -1,0 +1,92 @@
+{
+  "add_new_library_support:2026-09-27": {
+    "timestamp": "2026-09-27T16:28:04.849859Z",
+    "library": "org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11",
+    "starting_commit": "c44e22b54136b794c14e6ab689b5939d931e7915",
+    "ending_commit": "567a0a92bf9f61a880055af62b7738c28a33d613",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.5.11",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1354,
+          "missed": 8559,
+          "ratio": 0.136588,
+          "total": 9913
+        },
+        "line": {
+          "covered": 329,
+          "missed": 2082,
+          "ratio": 0.136458,
+          "total": 2411
+        },
+        "method": {
+          "covered": 96,
+          "missed": 532,
+          "ratio": 0.152866,
+          "total": 628
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10223,
+      "issue_label": "library-new-request",
+      "library": "org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11",
+      "summary": "fabric-chaincode-shim's own idiomatic test pattern (per Hyperledger's official sample chaincode) mocks ChaincodeStub/Context with Mockito; the shim ships no test-double artifact and Mockito isn't in the default scaffold.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.mockito:mockito-core:5.24.0",
+          "scope": "testImplementation",
+          "reason": "Hyperledger's own reference chaincode tests (e.g. fabric-samples asset-transfer-basic) mock ChaincodeStub and Context with Mockito since the shim provides no built-in fake/mock for these; without it there's no practical way to drive a Contract's business-logic methods."
+        }
+      ],
+      "agent_guidance": "Write the test chaincode as a class implementing the shim's Contract API (methods annotated for invocation), and test its transaction methods directly by mocking ChaincodeStub and Context (mock(ChaincodeStub.class), mock(Context.class), when(ctx.getStub()).thenReturn(stub)) to stand in for ledger state (getState/putState/etc.), mirroring org.hyperledger.fabric.samples.assettransfer tests in the fabric-samples repo. Do not call ChaincodeBase.start()/ChaincodeServer or otherwise try to connect over gRPC to a live Fabric peer (CORE_PEER_ADDRESS, CORE_CHAINCODE_ID_NAME, etc.) — that requires a running Fabric network/orderer that isn't available here and isn't how the shim's reflection-driven contract routing (via classgraph) needs to be exercised for coverage.",
+      "risks": [
+        "fabric-chaincode-shim pulls in grpc-netty-shaded, bouncycastle, and OpenTelemetry SDK/exporter transitively; native-image reachability metadata may need to cover these even though tests never open a real gRPC channel.",
+        "Upstream compatibility docs target JDK 11+; verify no removed/changed JDK APIs cause issues when building against JDK 25 as this repo requires.",
+        "If Gradle/Native Image verification later shows the mocked-unit-test approach still fails to reach meaningful contract-routing code paths (e.g. due to classgraph-based annotation scanning at native-image build time), a Docker-based peer integration test might become necessary — but no such need is evident from research alone."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.mockito:mockito-core:5.24.0",
+          "result": "applied",
+          "target": "tests/src/org.hyperledger.fabric-chaincode-java/fabric-chaincode-shim/2.5.11/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10223 Support for org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 34,
+      "output_tokens_used": 8794
+    },
+    "metrics": {
+      "input_tokens_used": 273938,
+      "cached_input_tokens_used": 4993408,
+      "output_tokens_used": 30623,
+      "iterations": 7,
+      "cost_usd": 4.7851,
+      "generated_loc": 111,
+      "tested_library_loc": 329,
+      "metadata_entries": 32,
+      "code_coverage_percent": 13.65
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hyperledger.fabric-chaincode-java/fabric-chaincode-shim/2.5.11/reachability-metadata.json"
+    }
+  }
+}

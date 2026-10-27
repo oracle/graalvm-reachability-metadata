@@ -1,0 +1,96 @@
+{
+  "improve_library_coverage:2026-10-06": {
+    "timestamp": "2026-10-06T13:56:25.994683Z",
+    "library": "org.apache.activemq:activemq-client:6.3.0",
+    "starting_commit": "f505bd8883e078e3c98197c5cf9d272cf92b5e95",
+    "ending_commit": "8606ee340e783cb1425a4e220b923dc48e3d634e",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.3.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.955224,
+            "coveredCalls": 64,
+            "totalCalls": 67
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.957746,
+        "coveredCalls": 68,
+        "totalCalls": 71
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 35936,
+          "missed": 107338,
+          "ratio": 0.25082,
+          "total": 143274
+        },
+        "line": {
+          "covered": 9272,
+          "missed": 26164,
+          "ratio": 0.261655,
+          "total": 35436
+        },
+        "method": {
+          "covered": 2734,
+          "missed": 5598,
+          "ratio": 0.328133,
+          "total": 8332
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10600,
+      "issue_label": "library-update-request",
+      "library": "org.apache.activemq:activemq-client:6.3.0",
+      "summary": "The existing scaffold already runs against an embedded in-JVM BrokerService, with activemq-broker, assertj, logback and the JMS API on the test classpath. 6.2.7 uses an identical build.gradle, so no extra dependency, Docker image or environment setup is indicated. The 6.3.0 failure looks like a test-code or timing issue.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The 6.3.0 test differs from 6.2.7 only in timing values (optimizeAcknowledgeTimeOut=300, warnAboutUnstartedConnectionTimeout=500) and in using brokerService.waitUntilStarted() with no timeout. The first JVM failure is therefore probably a test-code issue, and a repair step should fix that.",
+        "build.gradle declares javax.jms:javax.jms-api:2.0.1, but the test imports jakarta.jms.*. The jakarta API normally comes in transitively from activemq-client 6.x. If compilation breaks on 6.3.0, check that dependency first, but I did not find concrete evidence that it does.",
+        "The test binds a fixed TCP port (61616), which may conflict in parallel runs."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10600 Update existing library: org.apache.activemq:activemq-client:6.3.0; label=library-update-request; body_chars=463"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1021
+    },
+    "metrics": {
+      "input_tokens_used": 72058,
+      "cached_input_tokens_used": 1247744,
+      "output_tokens_used": 7296,
+      "iterations": 3,
+      "cost_usd": 1.2031,
+      "generated_loc": 977,
+      "tested_library_loc": 9272,
+      "metadata_entries": 277,
+      "test_only_metadata_entries": 7,
+      "code_coverage_percent": 26.17
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.activemq/activemq-client/6.3.0/reachability-metadata.json"
+    }
+  }
+}

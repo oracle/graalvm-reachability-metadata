@@ -1,0 +1,157 @@
+{
+  "base_commit": "79917b7ed30d5c937caef66bf166da41d46233ac",
+  "branch": "ai/kimeta/add-lib-support-io.micronaut-micronaut-core-5.0.0-forge-9799-20260907151031752394-2d9747076a32",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "79917b7ed30d5c937caef66bf166da41d46233ac",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9799,
+  "library": {
+    "artifact": "micronaut-core",
+    "coordinates": "io.micronaut:micronaut-core:5.0.0",
+    "group": "io.micronaut",
+    "version": "5.0.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "79917b7ed30d5c937caef66bf166da41d46233ac",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpxswrsxid"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-07T15-36-49-731199Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9799-515938e9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.micronaut:micronaut-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-07T15-36-52-907312Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micronaut/micronaut-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9799-515938e9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "9100c986de2c94bf4b3f0efd0f9a9457331f4d19",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/io.micronaut/micronaut-core/5.0.0/stats.json",
+      "tests/src/io.micronaut/micronaut-core/5.0.0/build.gradle",
+      "tests/src/io.micronaut/micronaut-core/5.0.0/src/test/java/io_micronaut/micronaut_core/Micronaut_coreTest.java"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "Review Signal #6 was violated in stats/io.micronaut/micronaut-core/5.0.0/stats.json: dynamicAccess was N/A, while resolved evidence described dynamic-access metadata and supplied no covered call sites, so the branch had no credible evidence that non-zero dynamic access exceeded 20%. Regenerating the report exposed 83 calls and only 10 covered (12.05%) before test expansion.",
+    "finding_title": "Missing minimum dynamic-access coverage evidence",
+    "fix_note": "Added the Netty common test dependency needed for Micronaut Core's tracked native-image build, added focused public-API tests for ReflectionUtils and ArrayUtils, and regenerated stats. Coverage is now 18/83 (21.6867%), and all coordinate validation, style, JVM, and native-image checks run in this review pass succeed.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the complete eventual PR diff and local evidence against Review Signals #1-#11. The change remains scoped to io.micronaut:micronaut-core:5.0.0, uses only reachability-metadata.json, has library-specific tests in a separate package with no native skip or target-version-pinned assertion, and does not trigger the metadata/dynamic-access mismatch rule. After repair, dynamic-access coverage is 18/83 (21.6867%), above the required 20%. The coordinate passes generateDynamicAccessCoverageReport, checkMetadataFiles, validateLibraryStats, validateIndexFiles, spotlessCheck, checkstyle, and the full JVM/native test task (15 tests). The resulting tree is approved.",
+    "session_log_path": "logs/io.micronaut:micronaut-core:5.0.0/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.micronaut/micronaut-core/5.0.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 6682496,
+      "code_coverage_percent": 18.33,
+      "cost_usd": 6.0937,
+      "generated_loc": 255,
+      "input_tokens_used": 357379,
+      "iterations": 7,
+      "metadata_entries": 17,
+      "output_tokens_used": 32186,
+      "tested_library_loc": 1743
+    },
+    "timestamp": "2026-09-07T15:10:31.752394Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9799-20260907151031752394-2d9747076a32",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `io.micronaut.core.convert.DefaultMutableConversionService` is reached, make `int[]` available for reflection",
+        "when `io.micronaut.core.execution.DelayedExecutionFlowImpl` is reached, make `io.micronaut.core.execution.DelayedExecutionFlowImpl` available for reflection",
+        "when `io.micronaut.core.reflect.InstantiationUtils` is reached, make `io.micronaut.core.io.ResourceResolver.<init>()` available for reflection",
+        "when `io.micronaut.core.io.service.ServiceScanner$UrlServicesLoader` is reached, make `io.micronaut.inject.annotation.AnnotationConvertersRegistrar.<init>()` available for reflection",
+        "when `io.micronaut.core.util.CollectionUtils` is reached, make `java.util.TreeSet.<init>(java.util.Collection)` available for reflection",
+        "when `io.micronaut.core.io.IOUtils` is reached, make `jdk.internal.jrtfs.JrtFileSystemProvider` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.208333,
+            "coveredCalls": 15,
+            "totalCalls": 72
+          },
+          "resources": {
+            "coverageRatio": 0.272727,
+            "coveredCalls": 3,
+            "totalCalls": 11
+          }
+        },
+        "coverageRatio": 0.216867,
+        "coveredCalls": 18,
+        "totalCalls": 83
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7967,
+          "missed": 33665,
+          "ratio": 0.191367,
+          "total": 41632
+        },
+        "line": {
+          "covered": 1812,
+          "missed": 7696,
+          "ratio": 0.190576,
+          "total": 9508
+        },
+        "method": {
+          "covered": 447,
+          "missed": 2402,
+          "ratio": 0.156897,
+          "total": 2849
+        }
+      },
+      "version": "5.0.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-07T15:10:31.752394Z"
+}

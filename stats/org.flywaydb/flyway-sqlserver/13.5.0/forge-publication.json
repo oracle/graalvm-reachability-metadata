@@ -1,0 +1,114 @@
+{
+  "base_commit": "372ca74f8003e381505155384dfd190e3e4a8418",
+  "branch": "ai/kimeta/fix-native-image-run-org.flywaydb-flyway-sqlserver-13.5.0-forge-9843-20261007165817087636-0d246e1ff7d5",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "372ca74f8003e381505155384dfd190e3e4a8418",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9843,
+  "library": {
+    "artifact": "flyway-sqlserver",
+    "coordinates": "org.flywaydb:flyway-sqlserver:13.5.0",
+    "group": "org.flywaydb",
+    "version": "13.5.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "372ca74f8003e381505155384dfd190e3e4a8418",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp6dib52ld"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9843-45b657cb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.flywaydb:flyway-sqlserver"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.flywaydb/flyway-sqlserver/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9843-45b657cb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "42ecff013bb366b14f5a5e09450832dfbe3feebd",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete contribution diff and local evidence against the fixes-native-image-run-fail rules and contribution disposition ladder. The change is scoped to org.flywaydb:flyway-sqlserver:13.5.0 and its shared test suite, uses only reachability-metadata.json, preserves the meaningful Flyway migration assertions and native execution, and keeps index integrity. The old and new dynamic-access reports are both 0/0 with no breakdown scopes, so the ordered repair gate passes at step 1. Local index, metadata, stats, Checkstyle, and Spotless validation passed; JVM tests and native-image compile/run passed under both current-defaults and future-defaults-all.",
+    "session_id": "2a65eafd6f03414c"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.flywaydb/flyway-sqlserver/13.5.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 0,
+      "code_coverage_percent": 24.54,
+      "cost_usd": 0.0,
+      "input_tokens_used": 0,
+      "iterations": 0,
+      "metadata_entries": 113,
+      "output_tokens_used": 0,
+      "previous_library_coverage_percent": 27.71,
+      "previous_library_metadata_entries": 118,
+      "previous_library_test_only_metadata_entries": 97,
+      "test_only_metadata_entries": 97,
+      "tested_library_loc": 201
+    },
+    "timestamp": "2026-10-07T16:58:17.087636Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "flyway-sqlserver",
+    "coordinates": "org.flywaydb:flyway-sqlserver:11.8.1",
+    "group": "org.flywaydb",
+    "version": "11.8.1"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9843-20261007165817087636-0d246e1ff7d5",
+  "render": {
+    "baseline_metadata_entries": 118,
+    "baseline_stats": {
+      "coverage_percent": 27.707500000000003
+    },
+    "baseline_test_only_entries": 97,
+    "current_metadata_entries": 113,
+    "current_test_only_entries": 97,
+    "library_stats": {
+      "coverage_percent": 24.5421
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_pi_gpt-5.6-sol",
+  "task_type": "fixes-native-image-run-fail",
+  "template_type": "fixes-native-image-run-fail",
+  "timestamp": "2026-10-07T16:58:17.087636Z"
+}

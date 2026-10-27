@@ -1,0 +1,139 @@
+{
+  "base_commit": "a2101a3a293a8e6b62caf52a666112857d9fb619",
+  "branch": "ai/kimeta/add-lib-support-org.scala-lang-scala-library-2.11.8-chunked-forge-2158-20260829023410922166-94058e4ef91f",
+  "follow_ups": [],
+  "forge": {
+    "branch": "restore-codex-bypass-invocation",
+    "commit": "a53b346e2653a2f3749c6ca9a9d709cf9bd2e76c",
+    "monitored_branch": "origin/restore-codex-bypass-invocation"
+  },
+  "issue_number": 2158,
+  "library": {
+    "artifact": "scala-library",
+    "coordinates": "org.scala-lang:scala-library:2.11.8",
+    "group": "org.scala-lang",
+    "version": "2.11.8"
+  },
+  "local_ci_verification": {
+    "base_commit": "a2101a3a293a8e6b62caf52a666112857d9fb619",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "a0c82a4354502fd340bd5778c63f03ae38078930",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-terra",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the stated diff for the single scala-library coordinate. The added tests are library-specific, use a separate test package, contain no native-image skip or version-pinned assertion, and no legacy metadata files were added. Local gate evidence is successful; resolved dynamic-access coverage is 67/67 (100%), and the reported 105 library plus 74 test-only metadata entries do not trigger the mismatch threshold.",
+    "session_log_path": "logs/org.scala-lang:scala-library:2.11.8/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.scala-lang/scala-library/2.11.8/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2696704,
+      "code_coverage_percent": 8.44,
+      "cost_usd": 3.2756,
+      "generated_loc": 1013,
+      "input_tokens_used": 237599,
+      "iterations": 2,
+      "metadata_entries": 105,
+      "output_tokens_used": 24641,
+      "test_only_metadata_entries": 74,
+      "tested_library_loc": 1920
+    },
+    "timestamp": "2026-08-29T02:34:10.922166Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-2158-20260829023410922166-94058e4ef91f",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredFields() <- scala.Enumeration.scala$Enumeration$$populateNameMap(Enumeration.scala:157) (line 157)",
+        "[reflection] java.lang.Class#getField(java.lang.String) <- scala.Enumeration.readResolve(Enumeration.scala:61) (line 61)",
+        "[reflection] java.lang.Class#getMethods() <- scala.Enumeration.scala$Enumeration$$populateNameMap(Enumeration.scala:161) (line 161)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- scala.Enumeration.readResolve(Enumeration.scala:61) (line 61)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- scala.Enumeration$$anonfun$scala$Enumeration$$populateNameMap$1.apply(Enumeration.scala:168) (line 168)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- scala.Enumeration$$anonfun$scala$Enumeration$$populateNameMap$1.apply(Enumeration.scala:171) (line 171)",
+        "[reflection] java.io.ObjectInputStream#readObject() <- scala.collection.concurrent.TrieMap.readObject(TrieMap.scala:674) (line 674)",
+        "[reflection] java.io.ObjectInputStream#readObject() <- scala.collection.concurrent.TrieMap.readObject(TrieMap.scala:675) (line 675)",
+        "... and 59 more"
+      ],
+      "metadata_rules": [
+        "when `scala.collection.concurrent.TrieMap` is reached, make `java.lang.Integer` available for reflection",
+        "when `scala.collection.immutable.HashMap$SerializationProxy` is reached, make `java.lang.Integer` available for reflection",
+        "when `scala.collection.mutable.HashMap$$anonfun$readObject$1` is reached, make `java.lang.Integer` available for reflection",
+        "when `scala.collection.mutable.HashMap$$anonfun$writeObject$1` is reached, make `java.lang.Integer` available for reflection",
+        "when `scala.collection.mutable.LinkedHashMap$$anonfun$readObject$1` is reached, make `java.lang.Integer` available for reflection",
+        "when `scala.collection.parallel.mutable.ParHashMap$$anonfun$readObject$1` is reached, make `java.lang.Integer` available for reflection",
+        "when `scala.collection.concurrent.TrieMap` is reached, make `java.lang.Number` available for reflection",
+        "when `scala.collection.immutable.HashMap$SerializationProxy` is reached, make `java.lang.Number` available for reflection",
+        "... and 53 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 66,
+            "totalCalls": 66
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 67,
+        "totalCalls": 67
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12256,
+          "missed": 274420,
+          "ratio": 0.042752,
+          "total": 286676
+        },
+        "line": {
+          "covered": 1920,
+          "missed": 20821,
+          "ratio": 0.084429,
+          "total": 22741
+        },
+        "method": {
+          "covered": 1418,
+          "missed": 33583,
+          "ratio": 0.040513,
+          "total": 35001
+        }
+      },
+      "version": "2.11.8"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-08-29T02:34:10.922166Z"
+}

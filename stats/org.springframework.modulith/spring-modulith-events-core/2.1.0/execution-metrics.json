@@ -1,0 +1,90 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T19:07:52.713282Z",
+    "library": "org.springframework.modulith:spring-modulith-events-core:2.1.0",
+    "starting_commit": "25bea762d2b5b1cdb6cd664b81037320828c263d",
+    "ending_commit": "c196c73d7eba7d07d6935a6c10f26c0ed60ee095",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 116,
+          "missed": 2741,
+          "ratio": 0.040602,
+          "total": 2857
+        },
+        "line": {
+          "covered": 22,
+          "missed": 651,
+          "ratio": 0.032689,
+          "total": 673
+        },
+        "method": {
+          "covered": 8,
+          "missed": 221,
+          "ratio": 0.034934,
+          "total": 229
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10727,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.modulith:spring-modulith-events-core:2.1.0",
+      "summary": "spring-modulith-events-core ships real classes but its EventPublicationAutoConfiguration only activates DefaultEventPublicationRegistry, PersistentApplicationEventMulticaster, and CompletionRegisteringAdvisor when a concrete EventPublicationRepository bean is present (@ConditionalOnBean). The -core artifact deliberately omits that implementation (it lives in sibling spring-modulith-events-jdbc/-jpa/-mongodb, none of which are dependencies here), so a generated test that just imports -core without supplying one will boot a context where the registry/advisor/multicaster never wire up, leaving the module's most reflection-heavy code unreached.",
+      "deterministic_setup": [],
+      "agent_guidance": "In the generated test's Spring configuration, register a hand-written in-memory EventPublicationRepository bean (backed by a List/Map, implementing create/markCompleted/findIncompletePublications/deletePublications etc.) so EventPublicationAutoConfiguration's @ConditionalOnBean(EventPublicationRepository.class) condition is satisfied and DefaultEventPublicationRegistry, PersistentApplicationEventMulticaster, and CompletionRegisteringAdvisor actually get created. Then publish a domain event through the context and assert it is tracked/completed via EventPublicationRegistry to exercise the AOP completion-advisor and multicaster paths. No database, broker, or Docker image is needed — the repository interface is small enough to fake directly in test code, matching how spring-modulith's own unit tests exercise this module in isolation. No special system properties are needed; spring.modulith.events.externalization.enabled already defaults to true.",
+      "risks": [
+        "If the test only instantiates plain POJOs (TargetEventPublication, PublicationTargetIdentifier) without booting a Spring context with the fake repository bean, coverage will look fine superficially but will miss the auto-configuration, AOP advisor, and multicaster classes entirely.",
+        "The optional io.namastack:namastack-outbox-api dependency is unrelated to core registry coverage and should not be added."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10727 Support for org.springframework.modulith:spring-modulith-events-core:2.1.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 20,
+      "output_tokens_used": 11409
+    },
+    "metrics": {
+      "input_tokens_used": 82264,
+      "cached_input_tokens_used": 1243520,
+      "output_tokens_used": 10403,
+      "iterations": 1,
+      "cost_usd": 1.3452,
+      "generated_loc": 43,
+      "tested_library_loc": 22,
+      "metadata_entries": 2,
+      "test_only_metadata_entries": 219,
+      "code_coverage_percent": 3.27
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.modulith/spring-modulith-events-core/2.1.0/reachability-metadata.json"
+    }
+  }
+}

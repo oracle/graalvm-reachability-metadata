@@ -1,0 +1,110 @@
+{
+  "add_new_library_support:2026-10-20": {
+    "timestamp": "2026-10-20T21:44:28.411145Z",
+    "library": "org.apache.cxf:cxf-rt-core:2.6.1",
+    "starting_commit": "7cbe9778a91040efe4a0ecea70a3825efb4441a6",
+    "ending_commit": "5ce9fc14cb1527c20af218e37cbf4a976771055f",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.6.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.956522,
+            "coveredCalls": 44,
+            "totalCalls": 46
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.96,
+        "coveredCalls": 48,
+        "totalCalls": 50
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10402,
+          "missed": 22423,
+          "ratio": 0.316893,
+          "total": 32825
+        },
+        "line": {
+          "covered": 2251,
+          "missed": 5109,
+          "ratio": 0.305842,
+          "total": 7360
+        },
+        "method": {
+          "covered": 408,
+          "missed": 852,
+          "ratio": 0.32381,
+          "total": 1260
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10984,
+      "issue_label": "library-new-request",
+      "library": "org.apache.cxf:cxf-rt-core:2.6.1",
+      "summary": "cxf-rt-core 2.6.1 needs javax.annotation (@Resource, @PostConstruct, @PreDestroy) as soon as a Bus loads its core extensions. JDK 25 doesn't provide it and no transitive dependency does either, so tests need javax.annotation-api.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "javax.annotation:javax.annotation-api:1.3.2",
+          "scope": "testImplementation",
+          "reason": "Core bus extensions in cxf-rt-core (ResourceManagerImpl, WorkQueueManagerImpl, PhaseManagerImpl, CXFBusLifeCycleManager, ServerRegistryImpl, HeaderManagerImpl, OASISCatalogManager, ...) and cxf-api's ResourceInjector reference javax.annotation.Resource/PostConstruct/PreDestroy. JDK 25 removed javax.\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Create the bus with CXFBusFactory or BusFactory.newInstance(CXFBusFactory.class.getName()).createBus(). Spring is optional and is not on the classpath, so do not depend on SpringBusFactory or cxf.xml. Shut the bus down in @AfterEach (bus.shutdown(true)) and clear the default bus with BusFactory.setDefaultBus(null) so tests stay independent. To reach the core runtime, cover bus extension lookup (PhaseManager, WorkQueueManager, ServerRegistry, HeaderManager, ResourceManager, OASISCatalogManager), PhaseInterceptorChain with custom interceptors, and the default logging and fault interceptors. Use the cxf-rt-core API directly and do not add other CXF modules (bindings, databinding, transports).",
+      "risks": [
+        "Parts of cxf-rt-core (WSDLManagerImpl, wsdl11 service factory, QueryHandlerRegistry) need wsdl4j and JAXB on JDK 25. jaxb-api 2.1 and jaxb-impl 2.1.13 come in transitively, but old JAXB 2.1 may misbehave on JDK 25 and in Native Image; local verification decides.",
+        "Without Spring, BusFactory picks CXFBusFactory; any test that expects Spring-configured bus features will fail.",
+        "cxf-api's ASM dependency is optional and absent, so generated wrapper or proxy paths are unavailable; tests should avoid them rather than add ASM."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "javax.annotation:javax.annotation-api:1.3.2",
+          "result": "applied",
+          "target": "tests/src/org.apache.cxf/cxf-rt-core/2.6.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10984 Support for org.apache.cxf:cxf-rt-core:2.6.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 14,
+      "output_tokens_used": 5380
+    },
+    "metrics": {
+      "input_tokens_used": 604176,
+      "cached_input_tokens_used": 14188800,
+      "output_tokens_used": 87602,
+      "iterations": 21,
+      "cost_usd": 12.7434,
+      "generated_loc": 1149,
+      "tested_library_loc": 2251,
+      "metadata_entries": 252,
+      "test_only_metadata_entries": 87,
+      "code_coverage_percent": 30.58
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.cxf/cxf-rt-core/2.6.1/reachability-metadata.json"
+    }
+  }
+}
