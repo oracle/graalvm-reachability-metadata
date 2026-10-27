@@ -384,11 +384,20 @@ finalization lane, the editable files are the coordinate's test project and
 shipped metadata, and the one brief is to check every change against the test
 contract (§root/FS-test-contract.1, §root/FS-test-contract.2,
 §root/FS-test-contract.3, §root/FS-test-contract.4), the bounds on hand-written
-metadata and native flags (§root/FS-test-contract.2.7), and the cheating
-patterns (§root/FS-contribution-contract.4) — scaffold-only or superficial
-tests, tests that bypass the public API, pinned tested-library versions,
-test-only types in shipped metadata, hand-added entries beyond what 2.7 allows,
-forbidden flags, and legacy `*-config.json` files — and fix each violation.
+metadata and native flags (§root/FS-test-contract.2.7), and each cheating
+pattern at the bar §root/FS-contribution-contract.4 sets for it, and fix each
+violation. The brief names the patterns concretely, and three of its bars keep
+the audit from rewriting tests that are fine:
+
+1. **Only what the run changed.** Tests that an update or `fixes-*` run carried
+   over unchanged from the previous version are not audited; only changed and
+   added tests are (§root/FS-contribution-contract.4).
+2. **The exact scaffold bar.** A test is scaffold only while its body is the
+   unmodified TCK placeholder; a test is never rewritten for looking thin
+   (§root/FS-contribution-contract.4.1).
+3. **No depth bar without calls.** When the version reports no dynamic-access
+   calls, test depth is not a violation: the audit adds or deepens no test for
+   it.
 
 ### 3. No verdict
 
