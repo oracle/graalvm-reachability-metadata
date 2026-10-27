@@ -292,6 +292,11 @@ label, be unassigned or assigned only to the authenticated user, carry no open
 blockers, and sit in project status `Todo`. Once those live conditions hold, the
 issue is assigned and moved to `In Progress`.
 
+An operator may explicitly enable blocked-issue claiming for one invocation or
+worker configuration. The override is disabled by default and bypasses only the
+open-blocker condition: every other live claimability condition above remains
+mandatory.
+
 The branch supplying the running Forge implementation does not select the
 repository state an issue targets. The issue-form gate decides against freshly
 fetched `origin/master`, and `prepare` fetches again, pins that commit as the
