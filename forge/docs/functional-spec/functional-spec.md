@@ -145,8 +145,10 @@ The host must provide:
   build, and `GRAALVM_HOME_25_0` at the repository-pinned 25.0.x release in
   `graalvm-versions.json`. The agent probe writes to a disposable output
   directory, so it verifies the JVM capability metadata generation depends on
-  without leaving generated configuration behind. The operator updates the
-  pinned value deliberately;
+  without leaving generated configuration behind. `GRAALVM_HOME` also provides
+  `native-image-utils`, in `bin` or `lib/svm/bin`: metadata generation merges
+  the agent's trace output with it, so a distribution without it cannot produce
+  metadata. The operator updates the pinned value deliberately;
   GA and EA freshness are resolved from their authoritative release metadata on
   every run. An Oracle EA release label can advance without the GraalVM runtime
   revision its binaries report changing, so the gate accepts a published
