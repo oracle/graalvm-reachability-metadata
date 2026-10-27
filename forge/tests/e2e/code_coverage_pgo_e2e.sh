@@ -3,18 +3,16 @@
 #
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
-#
+
+set -euo pipefail
+
 # End-to-end check for the code coverage improvement helpers
 # (§AR-code-coverage-improvement.4.2, §AR-code-coverage-deep-navigation). It
 # exercises the real GraalVM instrumented and PGO-sampling path and exact
 # JaCoCo correlation against a tiny throwaway library, with no dependency on a
 # checked-in metadata coordinate.
 #
-# It mirrors exactly what the `runNativeTestPGO` harness task does
-# (`--pgo-instrument --pgo-sampling`, `-H:PGOSamplingPeriodMicros=...` where
-# the toolchain lists it, `-H:+PrintAnalysisCallTree
-# -H:PrintAnalysisCallTreeType=CSV`, then run with `-XX:ProfilesDumpFile=`),
-# then runs:
+# It mirrors the `runNativeTestPGO` instrumented/PGO-sampling path, then runs:
 #   1. code_coverage_api_inventory.py   (jar -> api-inventory.json)
 #   2. CallGraphExtractor.java          (jar -> methods/flow/types CSVs)
 #   3. code_coverage_profile_report.py  (instrumented iprof + call-tree CSVs +
@@ -26,7 +24,6 @@
 #
 # Usage:
 #   JAVA_HOME=/path/to/oracle-graalvm forge/tests/e2e/code_coverage_pgo_e2e.sh
-set -euo pipefail
 
 FORGE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export PYTHONPATH="${FORGE_DIR}${PYTHONPATH:+:${PYTHONPATH}}"

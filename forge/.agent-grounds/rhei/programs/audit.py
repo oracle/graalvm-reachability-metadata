@@ -27,7 +27,9 @@ NATIVE_TASKS: tuple[str, ...] = ("generateMetadata", "checkMetadataFiles", "nati
 
 
 def brief(state: RunState) -> str:
-    """The audit's one brief (§FS-local-branch-review.2); the rules themselves are the `fix` instruction's."""
+    """The audit's one brief (§FS-local-branch-review.2); the rules
+    themselves are the `fix` instruction's.
+    """
     return (f"Check every test and metadata change since `{state.base_commit}` against the repository rules "
             "(§root/FS-test-contract.1, §root/FS-test-contract.2, §root/FS-test-contract.3, "
             "§root/FS-test-contract.4, §root/FS-test-contract.2.7) and the cheating patterns of "

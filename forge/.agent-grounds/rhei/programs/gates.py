@@ -170,7 +170,9 @@ def _inside(path: str, root: str) -> bool:
 
 
 def scope_breach(state: RunState) -> str | None:
-    """Which published paths leave the closed file set of §root/FS-contribution-contract.2, or `None`."""
+    """Which published paths leave the closed file set of
+    §root/FS-contribution-contract.2, or `None`.
+    """
     stats_dir: str = os.path.join("stats", state.group, state.artifact, state.version)
     allowed: set[str] = {state.index_path, os.path.join(state.metadata_dir, "reachability-metadata.json")}
     published: list[str] = [path for path in changed_paths(state.worktree, state.base_commit)

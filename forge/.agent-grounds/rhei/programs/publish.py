@@ -117,7 +117,9 @@ def record_chunk(state: RunState, final: bool, publication_id: str, branch: str)
 
 
 def follow_ups(state: RunState) -> list[dict[str, Any]]:
-    """The parked library-update issue of a deferred exploration (§FS-forge-chunked-dynamic-access)."""
+    """The parked library-update issue of a deferred exploration
+    (§FS-forge-chunked-dynamic-access).
+    """
     if state.explore.deferred_classes is None:
         return []
     number: int = ensure_coverage_follow_up_issue(

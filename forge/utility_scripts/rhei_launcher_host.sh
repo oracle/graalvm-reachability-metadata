@@ -23,7 +23,8 @@ version_at_least() {
 # Usage: require_rhei_launcher_host WORKFLOW FORGE_DIR REPO_ROOT FAMILY EXECUTABLE MODEL [PROVIDER]
 #        [SETUP_FAMILY SETUP_EXECUTABLE SETUP_MODEL]
 # FAMILY is a Forge agent backend (pi, claude-code); PROVIDER only applies to pi. The optional
-# setup triple checks a second agent, the forge-metadata setup agent (§FS-forge-agent-runtime-selection).
+# setup triple checks a second agent, the forge-metadata setup agent
+# (§FS-forge-agent-runtime-selection).
 # Exits the caller when gh, python3, or rhei is missing, gh is too old to read
 # --json projectItems, or the coverage-mode host gate fails.
 require_rhei_launcher_host() {

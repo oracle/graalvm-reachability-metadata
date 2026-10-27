@@ -11,8 +11,9 @@ call-graph proximity; `forge_metadata.py` stays the single CLI entry point that
 parses arguments and wires them together (§AR-forge-workflow-pipeline.1).
 
 The producer side decomposes along the fetch-to-run path: the per-label,
-per-tier issue fetch, claim preflight against live GitHub state, the optimistic
-claim, the issue-form gate, and the run launch with its close-out each own one
+per-tier issue fetch matching the repository status classification
+(§root/FS-repository-status-report.1), claim preflight against live GitHub
+state, the optimistic claim, the issue-form gate, and the run launch each own one
 stage, so a stage's inputs come only from the stage before it. Everything about
 the issue after the claim is the run's, not the dispatcher's. The consumer side
 is merged-PR reconciliation followed by the CI pass of
