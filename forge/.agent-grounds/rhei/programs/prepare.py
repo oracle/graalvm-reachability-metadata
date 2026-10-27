@@ -39,7 +39,7 @@ from utility_scripts.metadata_index import (
 import gates
 import issue
 import run_note
-from build_tools import BASE_BRANCH, checkpoint, git, head, run_gradle, upstream_remote
+from build_tools import BASE_BRANCH, checkpoint, git, head, run_gradle, stop_gradle_daemons, upstream_remote
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, OK
 from run_state import ROUTE_NEW, Budgets, Chunk, RunState, load, runtime_path, save, write_text
 
@@ -74,6 +74,8 @@ def spawn_worktree(repo: str, path: str, branch: str, base: str) -> None:
         git(repo, "worktree", "remove", "--force", path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     git(repo, "worktree", "add", "--quiet", "-B", branch, path, base)
+    # The path's Gradle home outlives the worktree, and so do its idle daemons.
+    stop_gradle_daemons(path)
 
 
 def attach_worktree(workspace: str, worktree: str) -> None:

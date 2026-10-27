@@ -56,6 +56,11 @@ class PrepareTest(unittest.TestCase):
                       note)
         with open(os.path.join(self.fake.workspace, "runtime", "worktree-refs", "ws.forge.yaml"), encoding="utf-8") as handle:
             self.assertEqual(f"path: {state.worktree}\n", handle.read())
+        with open(state.path("gradle-calls.log"), encoding="utf-8") as handle:
+            calls: list[str] = handle.read().splitlines()
+        # An idle daemon of an earlier run would carry its build state into the scaffold.
+        self.assertEqual("--stop", calls[0])
+        self.assertTrue(calls[1].startswith("scaffold"))
 
     def test_update_adds_the_version_beside_the_supported_one(self) -> None:
         self.fake.supported_library()

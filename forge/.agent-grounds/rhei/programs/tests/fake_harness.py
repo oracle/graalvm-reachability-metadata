@@ -20,6 +20,9 @@ from __future__ import annotations
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
 import glob, json, os, sys
 args = sys.argv[1:]
+if args == ["--stop"]:
+    open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "gradle-calls.log"), "a").write("--stop\n")
+    sys.exit(0)
 task = next(arg for arg in args if not arg.startswith("-") and arg != "clean")
 control = json.load(open(os.environ["FAKE_FORGE_CONTROL"]))
 root = os.path.dirname(os.path.abspath(__file__))

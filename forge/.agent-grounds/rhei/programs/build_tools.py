@@ -58,6 +58,16 @@ def run_gradle(worktree: str, arguments: list[str], log_path: str) -> TaskResult
     return TaskResult(command=display, ok=completed.returncode == 0, log_path=log_path, output=completed.stdout)
 
 
+def stop_gradle_daemons(worktree: str) -> None:
+    """Stop the daemons of the worktree's Gradle home, so no build state of an earlier run leaks in.
+
+    §AR-forge-workflow-pipeline.4
+    """
+    subprocess.run([os.path.join(worktree, "gradlew"), "--stop"], cwd=worktree,
+                   env=gradle_command_environment(worktree), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                   check=False)
+
+
 def coordinate_task(task: str, coordinate: str, *extra: str) -> list[str]:
     """The arguments of one coordinate-scoped harness task."""
     return [task, f"-Pcoordinates={coordinate}", *extra]
