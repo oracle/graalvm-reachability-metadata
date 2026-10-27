@@ -92,21 +92,25 @@ from utility_scripts.code_coverage_profile_navigation import (
 )
 from utility_scripts.code_coverage_profile_records import (
     MAX_LISTED_METHODS,
+    PROMPTED_JOIN_KINDS,
     NearCallRecord,
     build_record,
     method_evidence,
     prompt_selection_key,
     record_rank_key,
     record_to_json,
+    settle_recorded_tie,
 )
 from utility_scripts.code_coverage_profile_render import write_lcov
 from utility_scripts.code_coverage_profile_routes import (
+    RecordedRoute,
     RouteMap,
     SampledProfile,
     execution_status,
     observed_contexts,
     observed_methods,
     public_entry_routes,
+    recorded_routes,
     sample_routes,
 )
 from utility_scripts.code_coverage_profile_trace import SampleTrace, TestProject
@@ -166,12 +170,14 @@ def correlate(
         coverage for coverage in public_coverage if not coverage.covered
     ]
     executed: dict[int, bool] = execution_status(graph, jacoco_methods)
+    recorded: dict[int, list[RecordedRoute]] = recorded_routes(graph, profile, executed)
     sampled_routes: RouteMap = sample_routes(graph, profile, executed)
     entry_routes: RouteMap = public_entry_routes(graph, inventory_status.refs, executed)
     uncovered_records: list[NearCallRecord] = [
         build_record(
             coverage,
             graph,
+            recorded,
             sampled_routes,
             entry_routes,
             effective_target_state(coverage.method_ref.canonical_id, states, attempts),
@@ -180,13 +186,18 @@ def correlate(
         for coverages, public_api in ((deep_uncovered, False), (public_uncovered, True))
         for coverage in coverages
     ]
+
+    def classify(record: NearCallRecord) -> dict:
+        return classify_miss(record, graph, jacoco_methods, lines, executed, navigation)
+
     # The diagnosis carries the reach count that breaks ranking ties, so it
     # comes first (§AR-code-coverage-deep-navigation.2.2).
     miss_classifications: dict[str, dict] = {}
-    for record in uncovered_records:
-        classification: dict = classify_miss(
-            record, graph, jacoco_methods, lines, executed, navigation
-        )
+    for index, record in enumerate(uncovered_records):
+        if record.join_kind == "recorded":
+            record = settle_recorded_tie(record, recorded, graph, classify)
+            uncovered_records[index] = record
+        classification: dict = classify(record)
         miss_classifications[record.target_ref.canonical_id] = classification
         record.reach = classification["reach"]
     uncovered_records.sort(key=record_rank_key)
@@ -216,10 +227,15 @@ def correlate(
         and not record.target_state.terminal
         and is_synthetic_method(record.target_ref)
     )
-    # Only a route from a sampled frame is prompted; public-entry routes stay
+    # A profile with recorded contexts prompts recorded routes only; sampled
+    # routes are prompted only without them, and public-entry routes stay
     # ranked in the JSON (§AR-code-coverage-deep-navigation.2).
+    prompted_kinds: tuple[str, ...] = (
+        ("recorded",) if profile.recorded_context_count else ("sampled",)
+    )
+    assert set(prompted_kinds) <= set(PROMPTED_JOIN_KINDS)
     prompt_records: list[NearCallRecord] = sorted(
-        (record for record in actionable_records if record.join_kind == "sampled"),
+        (record for record in actionable_records if record.join_kind in prompted_kinds),
         key=prompt_selection_key,
     )[:effective_limit]
     uncovered_json: list[dict] = [
@@ -285,7 +301,11 @@ def correlate(
             ),
             "listedUncovered": len(prompt_records),
             "omittedUncovered": len(uncovered_records) - len(prompt_records),
+            "recordedJoins": sum(
+                1 for record in prompt_records if record.join_kind == "recorded"
+            ),
             "sampledJoins": sum(1 for record in prompt_records if record.join_kind == "sampled"),
+            "recordedContexts": profile.recorded_context_count,
             "sampledObservedMethods": len(profile.sample_counts),
             "totalSampleCount": profile.total_sample_count,
             "samplingContexts": profile.context_count,
@@ -307,7 +327,9 @@ def correlate(
         "uncoveredPaths": uncovered_json,
         "promptTargetIds": [record.target_ref.canonical_id for record in prompt_records],
         "bulkTargets": bulk_json,
-        "caveats": report_caveats(navigation, graph, library_methods is not None),
+        "caveats": report_caveats(
+            navigation, graph, library_methods is not None, profile.recorded_context_count
+        ),
     }
     return report, prompt_records
 

@@ -65,6 +65,41 @@ class SampledProfile:
     sample_counts: dict[int, int] = field(default_factory=dict)
     total_sample_count: int = 0
     context_count: int = 0
+    #: Recorded calling contexts: every stack that entered a library method,
+    #: with its exact count (§AR-code-coverage-deep-navigation.1).
+    contexts: list[Sample] = field(default_factory=list)
+
+    @property
+    def recorded_context_count(self) -> int:
+        return len(self.contexts)
+
+
+@dataclass
+class RecordedRoute:
+    """A recorded stack whose innermost frame calls the target: the only static
+    step is the uncovered call (§AR-code-coverage-deep-navigation.2)."""
+
+    sample: Sample
+    edge: dict
+    #: Library frames from the test (or the outermost library frame) to the
+    #: target along the stack, the uncovered call included.
+    distance: int
+    tested: bool
+
+    @property
+    def join_path_index(self) -> int:
+        return len(self.sample.path) - 1
+
+    def rank_key(self, graph: CallGraph) -> tuple:
+        """Shortest first, a tested stack before an untested one, then the most
+        records; the canonical ids keep the order stable."""
+        return (
+            self.distance,
+            not self.tested,
+            -self.sample.count,
+            graph.methods[self.edge["caller"]].canonical_id,
+            self.sample.context_id,
+        )
 
 
 def _parse_ctx(ctx: str) -> list[tuple[int, int]]:
@@ -92,17 +127,39 @@ def _sampled_profile(
         )
 
     profile = SampledProfile()
-    for context_index, sampling in enumerate(document.get("samplingProfiles") or [], start=1):
-        records: list = sampling.get("records") or [0]
+    for sample in _section_samples(document, "samplingProfiles", "sample", graph, iprof_refs):
+        profile.total_sample_count += sample.count
+        profile.context_count += 1
+        profile.samples.append(sample)
+        for static_id in {static_id for static_id, _ in sample.path}:
+            profile.sample_counts[static_id] = (
+                profile.sample_counts.get(static_id, 0) + sample.count
+            )
+    # The optional section shares the sampled `{ctx, records}` form
+    # (§AR-code-coverage-deep-navigation.1).
+    profile.contexts = list(
+        _section_samples(document, "callingContexts", "context", graph, iprof_refs)
+    )
+    return profile
+
+
+def _section_samples(
+        document: dict,
+        section: str,
+        prefix: str,
+        graph: CallGraph,
+        iprof_refs: dict[int, MethodRef],
+):
+    """Each positively counted `{ctx, records}` entry of a section, root-first."""
+    for context_index, entry in enumerate(document.get(section) or [], start=1):
+        records: list = entry.get("records") or [0]
         count: int = sum(int(record) for record in records)
         if count <= 0:
             continue
-        profile.total_sample_count += count
-        profile.context_count += 1
         full_path: list[tuple[MethodRef, int]] = []
         path: list[tuple[int, int]] = []
         path_full_indexes: list[int] = []
-        for method_id, bci in _parse_ctx(sampling.get("ctx", "")):
+        for method_id, bci in _parse_ctx(entry.get("ctx", "")):
             ref: MethodRef | None = iprof_refs.get(method_id)
             if ref is None:
                 continue
@@ -111,17 +168,14 @@ def _sampled_profile(
             if static_id is not None and (not path or path[-1][0] != static_id):
                 path.append((static_id, bci))
                 path_full_indexes.append(len(full_path) - 1)
-        profile.samples.append(Sample(
-            context_id=f"sample-{context_index}",
-            raw_context=sampling.get("ctx", ""),
+        yield Sample(
+            context_id=f"{prefix}-{context_index}",
+            raw_context=entry.get("ctx", ""),
             path=path,
             full_path=full_path,
             path_full_indexes=path_full_indexes,
             count=count,
-        ))
-        for static_id in {static_id for static_id, _ in path}:
-            profile.sample_counts[static_id] = profile.sample_counts.get(static_id, 0) + count
-    return profile
+        )
 
 
 def sampled_profile_from_document(
@@ -298,6 +352,72 @@ def sample_routes(
             )
             seeds.append((static_id, seed_rank, (sample, path_index)))
     return _multi_source_routes(graph, seeds, executed)
+
+
+def _innermost_test_frame_index(full_path: list[tuple[MethodRef, int]]) -> int | None:
+    for index in range(len(full_path) - 1, -1, -1):
+        if _looks_like_existing_test_frame(full_path[index][0]):
+            return index
+    return None
+
+
+def _recorded_distance(sample: Sample, graph: CallGraph, test_index: int | None) -> int:
+    """Library frames below the innermost test frame — or from the outermost
+    library frame when the stack holds none — consecutive frames of one
+    source-level method counted once, plus the uncovered call
+    (§AR-code-coverage-deep-navigation.2.2)."""
+    start: int = test_index + 1 if test_index is not None else next(
+        (index for index, (ref, _) in enumerate(sample.full_path)
+         if not _looks_like_framework_frame(ref)),
+        len(sample.full_path),
+    )
+    frames: int = 0
+    last: str | None = None
+    for ref, _ in sample.full_path[start:]:
+        if _looks_like_framework_frame(ref):
+            continue
+        static_id: int | None = resolve_graph_id(graph, ref)
+        shown: MethodRef = translated_ref(static_id, graph) if static_id is not None else ref
+        if shown.canonical_id != last:
+            frames += 1
+            last = shown.canonical_id
+    return frames + 1
+
+
+def recorded_routes(
+        graph: CallGraph,
+        profile: SampledProfile,
+        executed: dict[int, bool],
+) -> dict[int, list[RecordedRoute]]:
+    """Every callee of a recorded stack's innermost frame, best route first.
+
+    The innermost frame is a covered caller; the stack proves how a test
+    reaches it, and the call into the callee is the only static step
+    (§AR-code-coverage-deep-navigation.2).
+    """
+    routes: dict[int, list[RecordedRoute]] = {}
+    for sample in profile.contexts:
+        # The recorded method must itself be the innermost frame; a stack whose
+        # leaf the graph does not know would stand for its caller.
+        if not sample.path or sample.path_full_indexes[-1] != len(sample.full_path) - 1:
+            continue
+        leaf: int = sample.path[-1][0]
+        if executed.get(leaf) is not True:
+            continue
+        test_index: int | None = _innermost_test_frame_index(sample.full_path)
+        distance: int = _recorded_distance(sample, graph, test_index)
+        leaf_ref_id: str = translated_ref(leaf, graph).canonical_id
+        for edge in graph.adjacency.get(leaf, []):
+            if edge["kind"] == "dispatch":
+                continue
+            if translated_ref(edge["callee"], graph).canonical_id == leaf_ref_id:
+                continue
+            routes.setdefault(edge["callee"], []).append(
+                RecordedRoute(sample, edge, distance, test_index is not None)
+            )
+    for candidates in routes.values():
+        candidates.sort(key=lambda candidate: candidate.rank_key(graph))
+    return routes
 
 
 def public_entry_routes(
