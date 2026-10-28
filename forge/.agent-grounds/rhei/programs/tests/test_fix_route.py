@@ -35,8 +35,12 @@ class RouteTest(unittest.TestCase):
             self.assertEqual(code, fix_route.route(state, {"result": "fixed"}))
 
     def test_cannot_fix_stops_the_run(self) -> None:
-        state = run_state(ROUTE_REPAIR, pending_request="native")
+        state = run_state(ROUTE_REPAIR, pending_request="native-repair")
         self.assertEqual(CANNOT_FIX, fix_route.route(state, {"result": "cannot-fix", "summary": "shared harness bug"}))
+
+    def test_cannot_fix_returns_to_native_whose_budget_decides(self) -> None:
+        state = run_state(ROUTE_REPAIR, pending_request="native")
+        self.assertEqual(RETURN_NATIVE, fix_route.route(state, {"result": "cannot-fix", "summary": "two left"}))
 
     def test_a_missing_report_is_no_verdict_so_the_sender_decides(self) -> None:
         state = run_state(ROUTE_REPAIR, pending_request="finalize")
@@ -69,7 +73,7 @@ class ReportTest(unittest.TestCase):
         self.assertEqual({}, fix_route.latest_report(self.workspace))
 
     def test_cannot_fix_records_the_human_intervention_outcome(self) -> None:
-        save(self.workspace, run_state(ROUTE_REPAIR, pending_request="native"))
+        save(self.workspace, run_state(ROUTE_REPAIR, pending_request="finalize"))
         write_json(runtime_path(self.workspace, "reports", "fix-1.json"),
                    {"result": "cannot-fix", "changed": [], "summary": "a shared harness defect"})
         with working_directory(self.workspace):

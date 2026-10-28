@@ -84,9 +84,22 @@ def native_repair(workspace: str) -> int:
 
 
 def native(workspace: str) -> int:
-    """The native check over the tests exploration added (§AR-forge-workflow-pipeline.4)."""
+    """The native check over the tests exploration added, up to `native_fixes` requests.
+
+    §AR-forge-workflow-pipeline.4, §AR-forge-workflow-pipeline.6
+    """
     state: RunState = load(workspace)
     handoff.write_placeholder(workspace, SENDER)
     failures: list[handoff.Failure] = run_native_check(workspace, state, SENDER)
-    return conclude(workspace, state, SENDER, failures, state.contribution_paths(),
-                    f"Collect metadata for {state.coordinate}")
+    if not failures:
+        return conclude(workspace, state, SENDER, failures, state.contribution_paths(),
+                        f"Collect metadata for {state.coordinate}")
+    if state.native_requests >= state.budgets.native_fixes:
+        print(f"[native] `{failures[0].command}` still fails after the last of {state.budgets.native_fixes} fixes")
+        return STILL_FAILING
+    handoff.write_fix_request(workspace, state, SENDER, failures)
+    state.native_requests += 1
+    save(workspace, state)
+    print(f"[native] `{failures[0].command}` fails; fix request {state.native_requests} of "
+          f"{state.budgets.native_fixes} follows")
+    return AGENT_WORK

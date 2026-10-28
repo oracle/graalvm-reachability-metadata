@@ -190,7 +190,7 @@ def resolve_chunk(state: RunState, labels: frozenset[str]) -> None:
 def validate_inputs(args: argparse.Namespace) -> str | None:
     """The first bad template input, or `None`."""
     for name in ("bulk_min_classes", "bulk_passes", "class_attempts", "defer_classes", "explore_passes",
-                 "finalize_fixes"):
+                 "finalize_fixes", "native_fixes"):
         if getattr(args, name) < 1:
             return f"{name} must be positive"
     for name in ("setup_agent", "worker_agent"):
@@ -244,7 +244,7 @@ def run(args: argparse.Namespace) -> int:
         setup_agent=args.setup_agent,
         worker_agent=args.worker_agent,
         budgets=Budgets(args.bulk_min_classes, args.bulk_passes, args.class_attempts,
-                        args.defer_classes, args.explore_passes, args.finalize_fixes),
+                        args.defer_classes, args.explore_passes, args.finalize_fixes, args.native_fixes),
     )
     if is_not_for_native_image(worktree, state.group, state.artifact):
         print(f"ERROR: {state.group}:{state.artifact} is marked not-for-native-image.", file=sys.stderr)
@@ -278,7 +278,7 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--setup-agent", required=True)
     parser.add_argument("--worker-agent", required=True)
     for name in ("bulk-min-classes", "bulk-passes", "class-attempts", "defer-classes", "explore-passes",
-                 "finalize-fixes"):
+                 "finalize-fixes", "native-fixes"):
         parser.add_argument(f"--{name}", type=int, required=True)
     parser.add_argument("--repo-checkout", required=True)
     parser.add_argument("--worktree-root", required=True)

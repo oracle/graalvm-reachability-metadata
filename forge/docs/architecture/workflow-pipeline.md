@@ -64,12 +64,12 @@ claimed, reviews the open Forge pull requests with the `review_agent`
 | `0` | proceed |
 | `10` | work for an agent: a cover prompt or a fix request is written |
 | `11` | `measure` only: the JVM tests fail and a fix request is written |
-| `12` | the check still fails right after its own fix, after `finalize`'s last fix, or after the audit's edit |
+| `12` | the check still fails right after its own fix, after `native`'s or `finalize`'s last fix, or after the audit's edit |
 | `20` | nothing to do: a new library has no version to repair, no target, exploration deferred, explore budget spent, or nothing to publish |
 | `21` | `setup-check` only: the setup verdict is recorded as a skip; go straight to `publish` |
 | `2` / `3` | bad input / infrastructure or crash |
 | `30`–`35` | `fix-route` only: return to `jvm`, `measure`, `native`, `finalize`, `audit`, `native-repair` |
-| `40` | `fix-route` only: the fix reported that it could not help |
+| `40` | `fix-route` only: the fix reported that it could not help, except for `native` |
 
 Every program also routes any other non-zero exit to `failed`, and every exit
 writes Rhei's result file, which an edge into a final state requires; a crash,
@@ -137,10 +137,10 @@ stateDiagram-v2
 ```
 
 A cover pass costs two transitions and a fix three. In the worst case
-`finalize` sends `finalize_fixes` fixes and every other sender, each cover
-pass, and the audit one, so a run takes
-`21 + 3 × finalize_fixes + 5 × explore_passes` transitions: 136 at the default
-5 and 20, inside the template's `transition_limit`.
+`native` sends `native_fixes` fixes, `finalize` sends `finalize_fixes`, and
+every other sender, each cover pass, and the audit one, so a run takes
+`18 + 3 × (native_fixes + finalize_fixes) + 5 × explore_passes` transitions:
+142 at the default 3, 5, and 20, inside the template's `transition_limit`.
 
 ## 4. Programs
 
@@ -255,8 +255,13 @@ the last passing explore checkpoint and continues, so a cover pass that cannot
 be fixed costs that pass, not the run. `finalize` has another: its lane stops
 at the first failing step, so fixing one step can expose the next, and each
 failure is a new request until `finalize_fixes` (default 5) are spent; a
-failure after the last exits `12`. `audit` sends its request once and never
-asks again: a failure after its edit exits `12`. Nothing else bounds `fix`: one
+failure after the last exits `12`. `native` has a budget too: the native
+build often fails in layers — a fix to `generateMetadata` exposes a `test`
+failure, a fix to some missing registrations exposes the rest — so each failure
+is a new request until `native_fixes` (default 3) are spent, and its fix
+reporting `cannot-fix` spends the next request instead of ending the run, the
+request quoting that report. `audit` sends its request once and never asks
+again: a failure after its edit exits `12`. Nothing else bounds `fix`: one
 turn is bounded by its agent timeout and the run by Rhei's transition limit.
 
 ## 7. The explore decision

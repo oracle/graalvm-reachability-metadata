@@ -7,7 +7,8 @@
 
 `jvm` and `native-repair` each send one request that names only what failed,
 `native` regenerates and tests without `checkMetadataFiles`, and `finalize`
-splits and routes before its check and may ask `finalize_fixes` times.
+splits and routes before its check and may ask `finalize_fixes` times; `native` may
+ask `native_fixes` times, and its `cannot-fix` spends the next request.
 """
 from __future__ import annotations
 
@@ -22,6 +23,7 @@ from exit_codes import (  # noqa: E402
     OK,
     RETURN_FINALIZE,
     RETURN_JVM,
+    RETURN_NATIVE,
     RETURN_NATIVE_REPAIR,
     STILL_FAILING,
 )
@@ -90,6 +92,28 @@ class CheckStateTest(FinalizedRun):
         before: int = len(self.tasks())
         self.assertEqual(OK, self.step("native"))
         self.assertEqual(["generateMetadata", "test"], self.tasks(before))
+
+    def test_native_needs_a_human_after_its_third_fix(self) -> None:
+        self.repaired()
+        self.fake.control({"nativeFails": True})
+        for visit in range(1, 4):
+            self.assertEqual(AGENT_WORK, self.step("native"), visit)
+            self.assertIn("Return: 32", self.read("fix-request.md"))
+            self.assertEqual(RETURN_NATIVE, self.fixed(visit))
+        self.assertEqual(STILL_FAILING, self.step("native"))
+        self.assertEqual("human-intervention", self.outcome())
+        self.assertEqual(3, self.state.native_requests)
+
+    def test_native_cannot_fix_spends_the_next_request_and_quotes_it(self) -> None:
+        self.repaired()
+        self.fake.control({"nativeFails": True})
+        self.assertEqual(AGENT_WORK, self.step("native"))
+        write_json(runtime_path(self.fake.workspace, "reports", "fix-1.json"),
+                   {"result": "cannot-fix", "changed": [], "summary": "two serialization failures remain"})
+        self.assertEqual(RETURN_NATIVE, self.step("fix-route"))
+        self.assertEqual(AGENT_WORK, self.step("native"))
+        self.assertIn("## The previous fix reported\n\ntwo serialization failures remain", self.read("fix-request.md"))
+        self.assertEqual(2, self.state.native_requests)
 
     def test_finalize_splits_and_routes_before_its_check(self) -> None:
         self.repaired()

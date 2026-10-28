@@ -19,6 +19,7 @@ import re
 from dataclasses import dataclass
 
 from exit_codes import RETURN_CODES
+from fix_route import latest_report
 from run_state import RunState, runtime_path, write_text
 
 FIX_REQUEST: str = "fix-request.md"
@@ -63,6 +64,11 @@ BRIEFS: tuple[Brief, ...] = (
           re.compile(r"Missing\w*RegistrationError|MissingReflectionRegistration|MissingResourceRegistration"),
           "Add the entry the error names to the shipped metadata, with a `typeReached` condition in the "
           "allowed packages.", ("test",)),
+    # The error names a JDK superclass or lookup, not the entry (§root/FS-test-contract.2.7).
+    Brief("serialization failure",
+          re.compile(r"java\.io\.Object(Input|Output)Stream"),
+          "Register the class the stream reads or writes there as `serializable`, one class per "
+          "failure, with a `typeReached` condition in the allowed packages.", ("test",)),
     Brief("runtime class definition or bytecode generation",
           re.compile(r"cannot be defined at run ?time|Defining (hidden )?classes at runtime|"
                      r"No classes have been predefined|bytecode generation|ByteBuddy|Byte Buddy", re.IGNORECASE),
@@ -183,7 +189,13 @@ def render(state: RunState, sender: str, failures: list[Failure], briefs: list[s
 def write_fix_request(workspace: str, state: RunState, sender: str, failures: list[Failure],
                       briefs: list[str] | None = None) -> None:
     """Write the request for `fix` and arm the sender's loop guard; the caller saves the state."""
-    write_text(runtime_path(workspace, FIX_REQUEST), render(state, sender, failures, briefs))
+    text: str = render(state, sender, failures, briefs)
+    if sender == "native" and state.pending_request == sender:
+        summary: str = str(latest_report(workspace).get("summary", "")).strip()
+        # Its next request starts from what the last fix did and why it stopped.
+        # §AR-forge-workflow-pipeline.6
+        text += f"\n## The previous fix reported\n\n{summary}\n" if summary else ""
+    write_text(runtime_path(workspace, FIX_REQUEST), text)
     state.pending_request = sender
 
 
