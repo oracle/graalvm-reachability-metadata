@@ -29,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GenerateMetadataTaskTests {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final String AGENT_OUTPUT_FILE = "agent-output.json";
 
     @TempDir
     Path tempDir;
@@ -124,6 +125,25 @@ class GenerateMetadataTaskTests {
         assertThat(readGradlewInvocations())
                 .contains("metadataCopy --task test --dir " + stagedMetadataDir)
                 .doesNotContain("mergeNativeTraceMetadata");
+    }
+
+    @Test
+    void runRewritesHiddenLambdaConditionsInCopiedAgentMetadata() throws IOException {
+        Coordinates coordinates = Coordinates.parse("com.example:demo:1.0.0");
+        Project project = createProject();
+        prepareTestProject(coordinates, "plugins { id 'java' }\n");
+        Files.writeString(tempDir.resolve(AGENT_OUTPUT_FILE), """
+                {"reflection": [{"condition": {"typeReached": "com.example.Binder$$Lambda/0x00000000463c8c00"}, "type": "com.example.Target"}]}
+                """, StandardCharsets.UTF_8);
+        Path stagedMetadataDir = tempDir.resolve("staged-agent-metadata");
+        TestGenerateMetadataTask task = registerGenerateMetadataTask(project, "generateMetadata", coordinates);
+        task.setMetadataOutputDir(stagedMetadataDir.toString());
+
+        task.run();
+
+        assertThat(OBJECT_MAPPER.readTree(stagedMetadataDir.resolve("reachability-metadata.json").toFile())
+                .at("/reflection/0/condition/typeReached").asText())
+                .isEqualTo("com.example.Binder");
     }
 
     @Test
@@ -283,6 +303,7 @@ class GenerateMetadataTaskTests {
 
     private void createGradlewScript() throws IOException {
         Path logFile = tempDir.resolve("gradlew-invocations.log");
+        Path agentOutput = tempDir.resolve(AGENT_OUTPUT_FILE);
         Path gradlew = tempDir.resolve("gradlew");
         Files.writeString(
                 gradlew,
@@ -293,7 +314,11 @@ class GenerateMetadataTaskTests {
                   while [ "$#" -gt 0 ]; do
                     if [ "$1" = "--dir" ]; then
                       mkdir -p "$2"
-                      printf '{}\n' > "$2/reachability-metadata.json"
+                      if [ -f '%s' ]; then
+                        cp '%s' "$2/reachability-metadata.json"
+                      else
+                        printf '{}\n' > "$2/reachability-metadata.json"
+                      fi
                       break
                     fi
                     shift
@@ -311,7 +336,7 @@ class GenerateMetadataTaskTests {
                   done
                 fi
                 exit 0
-                """.formatted(logFile),
+                """.formatted(logFile, agentOutput, agentOutput),
                 StandardCharsets.UTF_8
         );
         boolean executable = gradlew.toFile().setExecutable(true);
