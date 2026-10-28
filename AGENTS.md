@@ -131,6 +131,7 @@ Do not create a namespace for a regular module or component that still belongs t
 Cross-project citations use §alias/<ID>, one alias segment per workspace level.
 
 - [`forge`](forge/): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`graal`](graalvm-tickets/): Public snapshots of the GraalVM tickets that the repository's workarounds cite
 - [`real-use-tests`](real-use-tests/): Realistic library scenarios run on the JVM and Native Image against the shipped metadata
 
 ### Declarations and citations
@@ -187,6 +188,21 @@ is the only place the workspace alias table is in scope.
 realistic library scenarios that run against the shipped metadata without
 changing it. Cite its facts from repository docs as `§real-use-tests/<ID>` —
 for example `§real-use-tests/FS-real-use-tests`.
+
+`graal` is a third member, in [graalvm-tickets/](graalvm-tickets/AGENTS.md),
+whose only kind is `GR`: public snapshots of the GraalVM tickets that
+workarounds cite (§PRCPL-graalvm-workaround-tickets). A ticket is GraalVM's
+fact, not this repository's, so it keeps its Jira ID in a namespace of its
+own; grund would also refuse `GR` beside `GRUND`, since no citable kind may be
+a prefix of another. Cite a ticket as `<§>graal/GR-<number>` from every
+namespace; under `tests/src` and `real-use-tests/src`, where the marker cannot
+appear, name the bare `GR-<number>`. Never write a snapshot by hand:
+`grund fetch graal/GR-<number>` from the repository root writes it through
+`graalvm-tickets/fetch-graalvm-ticket.py`, which needs Oracle's `gdev-cli` with
+access to the GraalVM Jira. CI never fetches: `grund check` fails a `GR`
+citation that has no committed snapshot, and the gate fails a bare one in a
+test-source comment likewise. Delete a snapshot in the change that removes the
+last workaround citing it.
 
 ### Additional rules
 

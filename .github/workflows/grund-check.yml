@@ -31,7 +31,8 @@ jobs:
         uses: ./.github/actions/detect-file-changes
         with:
           # The union of every project's scanned roots (`[scan] include` and every scanned kind
-          # folder) and their configs; a PR that touches none of them cannot break a citation.
+          # folder) and their configs, plus the test sources the bare ticket ID check reads; a PR
+          # that touches none of them cannot break a citation.
           file-patterns: |
             - 'AGENTS.md'
             - 'README.md'
@@ -69,6 +70,9 @@ jobs:
             - 'real-use-tests/grund.toml'
             - 'real-use-tests/docs/**'
             - 'real-use-tests/.agent-grounds/rhei/**'
+            - 'graalvm-tickets/**'
+            - 'tests/src/**'
+            - 'real-use-tests/src/**'
 
       - name: "🔧 Install grund"
         if: steps.filter.outputs.changed == 'true'
@@ -86,6 +90,21 @@ jobs:
         # cross-namespace citations is in scope, so this one run covers Forge too.
         run: |
           grund check
+
+      - name: "🎫 Check bare GraalVM ticket IDs"
+        if: steps.filter.outputs.changed == 'true'
+        # grund does not read the ASCII-only test sources, so a bare GR-<number> in a comment there
+        # gets its snapshot check here (§PRCPL-graalvm-workaround-tickets.3).
+        run: |
+          missing=0
+          for id in $(git grep -h -E '(//|#|\*).*GR-[0-9]+' -- tests/src real-use-tests/src \
+              | grep -o -E '(^|[^[:alnum:]_-])GR-[0-9]+' | grep -o -E 'GR-[0-9]+' | sort -u); do
+            if ! grep -q -E "^#+ ${id}:" graalvm-tickets/tickets.md; then
+              echo "::error::${id} in a test comment has no snapshot; run grund fetch graal/${id}"
+              missing=1
+            fi
+          done
+          exit "${missing}"
 
       - name: "🔒 Check required status checks match gate jobs"
         if: steps.filter.outputs.changed == 'true'

@@ -97,6 +97,7 @@ Do not create a namespace for a regular module or component that still belongs t
 Cross-project citations use §alias/<ID>, one alias segment per workspace level.
 
 - [`forge`](../forge/): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`graal`](../graalvm-tickets/): Public snapshots of the GraalVM tickets that the repository's workarounds cite
 - [`root`](../): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
 
 ### Declarations and citations
