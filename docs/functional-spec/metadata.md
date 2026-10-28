@@ -87,12 +87,12 @@ under the inferred condition but prints the condition of its original,
 unconditional bundle record. It shows as a `bundle` with no `condition` beside
 conditional `.properties` globs of the same base name, such as
 `{"bundle": "javadoc-report"}` beside a `javadoc-report.properties` glob reached
-on `JavadocReport`. Generated bundles may therefore be unconditional, against
-the first invariant, and many shipped ones are; `checkMetadataFiles` does not
-reject them. A condition added by hand is undone by the next `generateMetadata`:
-its merge is a union, so the agent's unconditional entry returns beside the
-corrected one. The agent defect is §graal/GR-80923; its effect on this
-repository is tracked in
+on `JavadocReport`. Generation puts the condition back (§FS-metadata.2.3), but
+many bundles shipped before it did are unconditional, against the first
+invariant, and `checkMetadataFiles` does not reject them. Regenerating does not
+repair them: its merge with the shipped file is a union, so the shipped
+unconditional entry stays beside the restored one. The agent defect is
+§graal/GR-80923; its effect on this repository is tracked in
 [#11294](https://github.com/oracle/graalvm-reachability-metadata/issues/11294)
 and [#11287](https://github.com/oracle/graalvm-reachability-metadata/issues/11287).
 
@@ -139,6 +139,35 @@ routing, the router never deletes an entry merely because its condition is
 foreign, and `checkMetadataFiles` remains the independent, read-only enforcement
 gate rerun after a successful relocation.
 §FS-repository-functional-spec.5.1
+
+### 2.3 Generation restores the conditions the agent drops from resource bundles
+
+The agent defect behind the known problem above (§graal/GR-80923) loses only
+the printed condition: the agent still infers one for each bundle request and
+keeps a separate bundle record per inferred condition, which is why its output
+repeats the same unconditional `bundle`. Generation therefore takes the
+conditions from the agent's own evidence instead of guessing them. Before the
+agent's per-run call trees are discarded, the test run keeps a copy of every one
+of them in which each bundle request stands in as a resource glob, whose
+condition the agent prints correctly. Once the agent output is merged, the copy
+is merged the same way, from the same trees and with the same filters, since
+the merge attributes an entry by comparing a method's calls across all of them.
+Each unconditional `bundle` is then replaced by one entry per condition derived
+for its name, keeping its other fields. The `.properties` globs beside a
+bundle are not that evidence: the JDK looks up those files only when a bundle
+is not yet cached, so a bundle requested under several conditions leaves its
+globs under one of them, and one requested through a shared helper leaves them
+on the helper's first caller rather than on the helper.
+
+The restoration never invents a condition and never drops an entry. A bundle
+that no user code requested, so that no `typeReached` can be derived for it,
+fails generation with a message that names the bundle and the agent defect, and
+a run whose call trees were not kept fails with a message that says so;
+metadata with an unconditional bundle is never written. When the agent prints
+the condition itself there is nothing to restore and the step changes nothing.
+The step is removed once the fix reaches the GraalVM that CI runs
+(§PRCPL-graalvm-workaround-tickets.4). Bundles already shipped without a
+condition are outside this step.
 
 ## 3. Provenance
 
