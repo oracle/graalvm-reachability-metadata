@@ -11,6 +11,7 @@ import org.gradle.api.Project;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -34,6 +36,7 @@ public final class BaseLayerUtils {
     private static final String DEDICATED_LAYER_ROOT_PROPERTY = "tck.dedicatedLayerRoot";
     private static final String DEDICATED_LAYER_ROOT_ENVIRONMENT_VARIABLE =
             "GVM_TCK_DEDICATED_LAYER_ROOT";
+    private static final List<String> DYNAMIC_LIBRARY_SUFFIXES = List.of(".so", ".dylib", ".dll");
     private static final List<String> JUNIT_RUNTIME_ARTIFACT_GROUPS = List.of(
             "junit",
             "org.apiguardian",
@@ -138,6 +141,25 @@ public final class BaseLayerUtils {
             }
         }
         return List.copyOf(modules);
+    }
+
+    /// Stages base libraries beside the executable, preserving application-produced files.
+    /// Matches the layered JCK runner's runtime packaging. §FS-tests.3.5
+    public static void copyDynamicLibraries(File baseLayerFile, File outputDirectory) throws IOException {
+        Path baseDirectory = baseLayerFile.toPath().toAbsolutePath().getParent();
+        Path output = outputDirectory.toPath();
+        Files.createDirectories(output);
+        try (Stream<Path> entries = Files.list(baseDirectory)) {
+            List<Path> libraries = entries.filter(Files::isRegularFile)
+                    .filter(path -> DYNAMIC_LIBRARY_SUFFIXES.stream().anyMatch(path.getFileName().toString()::endsWith))
+                    .sorted().toList();
+            for (Path library : libraries) {
+                Path target = output.resolve(library.getFileName());
+                if (!Files.exists(target)) {
+                    Files.copy(library, target);
+                }
+            }
+        }
     }
 
     public static boolean isJUnitRuntimeArtifact(String group, String artifact) {

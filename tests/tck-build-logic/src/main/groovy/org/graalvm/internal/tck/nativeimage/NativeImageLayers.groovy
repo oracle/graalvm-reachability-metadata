@@ -140,9 +140,14 @@ class NativeImageLayers {
                 task.dependsOn(project.tasks.named("nativeLibDedicatedCompile"))
             } else if (layeredNativeImage) {
                 task.dependsOn(project.tasks.named("buildCustomSharedLayer"))
-                // Rebuilt sidecar libraries invalidate consumers as well. §FS-tests.3.3
+            }
+            if (layeredNativeImage) {
+                // Runtime libraries are tracked with the selected base in both lanes. §FS-tests.3.5
                 task.inputs.dir(project.providers.provider { baseLayerFile.parentFile })
-                        .withPropertyName("sharedLayerFiles").withPathSensitivity(PathSensitivity.RELATIVE)
+                        .withPropertyName("baseLayerFiles").withPathSensitivity(PathSensitivity.RELATIVE)
+                task.doLast {
+                    BaseLayerUtils.copyDynamicLibraries(baseLayerFile, task.outputDirectory.get().asFile)
+                }
             }
             task.doFirst { validateBaseLayer() }
         }
