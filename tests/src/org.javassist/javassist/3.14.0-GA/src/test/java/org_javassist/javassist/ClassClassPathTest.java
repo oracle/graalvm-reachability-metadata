@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.net.URL;
 
 import javassist.ClassClassPath;
+import javassist.ClassPath;
+import javassist.ClassPool;
 import javassist.bytecode.ClassFile;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +21,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ClassClassPathTest {
+    @Test
+    void readsPlatformBytecodeFromTheDefaultSystemSearchPath() throws Exception {
+        ClassPool pool = new ClassPool(false);
+        ClassPath path = pool.appendSystemPath();
+        try (InputStream input = path.openClassfile("java.lang.Object")) {
+            assertNotNull(input);
+            ClassFile file = new ClassFile(new DataInputStream(input));
+            assertEquals("java.lang.Object", file.getName());
+            assertNotNull(file.getMethod("toString"));
+            assertEquals("java.lang.Object.class", path.toString());
+        } finally {
+            pool.removeClassPath(path);
+            path.close();
+        }
+    }
+
     @Test
     void locatesClassResourcesAndReadsTheirBytecode() throws Exception {
         ClassClassPath path = new ClassClassPath(ClassFile.class);
