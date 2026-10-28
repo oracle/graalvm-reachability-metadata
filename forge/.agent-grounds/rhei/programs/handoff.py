@@ -9,18 +9,22 @@ A request carries the facts of one failure and never a hint of what to do: the
 coordinate, the return code, the failing commands and the ones they kept from
 running, each command's output tail, and the files the fix may edit
 (§AR-forge-workflow-prompts.5). The rules live in the `fix` instruction. Sending
-a request arms the loop guard (§AR-forge-workflow-pipeline.6).
+a request arms the loop guard (§AR-forge-workflow-pipeline.6). The failures of
+the last request, or those that stop the run, are also kept as data for the
+close-out comment (§AR-forge-workflow-pipeline.1).
 """
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from typing import Any
 
-from exit_codes import RETURN_CODES
+from exit_codes import RETURN_CODES, STILL_FAILING
 from fix_route import latest_report
-from run_state import RunState, runtime_path, write_text
+from run_state import RunState, read_json, runtime_path, write_json, write_text
 
 FIX_REQUEST: str = "fix-request.md"
+FAILURES: str = "failures.json"
 
 
 @dataclass(frozen=True)
@@ -49,6 +53,15 @@ def editable_paths(state: RunState, sender: str) -> list[str]:
     return paths
 
 
+def outputs_by_command(failures: list[Failure]) -> dict[str, list[str]]:
+    """Each command's non-empty outputs; reviewer gates share one command, each naming itself."""
+    outputs: dict[str, list[str]] = {}
+    for failure in failures:
+        if failure.output.strip():
+            outputs.setdefault(failure.command, []).append(failure.output.rstrip())
+    return outputs
+
+
 def render(state: RunState, sender: str, failures: list[Failure], task: str | None = None) -> str:
     """The request; `task` is the audit's, whose commands all pass (§FS-local-branch-review.2)."""
     lines: list[str] = [f"# Fix: {state.coordinate}", f"Return: {RETURN_CODES[sender]}", "",
@@ -61,11 +74,7 @@ def render(state: RunState, sender: str, failures: list[Failure], task: str | No
         lines += [f"- {command}" for command in blocked]
     lines += ["", "## Task", "", task] if task is not None else []
     # The output is the facts, never a hint of what to do (§AR-forge-workflow-prompts.5).
-    outputs: dict[str, list[str]] = {}
-    for failure in failures:
-        if failure.output.strip():
-            # Reviewer gates share one command, each naming itself on its own line.
-            outputs.setdefault(failure.command, []).append(failure.output.rstrip())
+    outputs: dict[str, list[str]] = outputs_by_command(failures)
     lines += ["", "## Output"] if outputs else []
     for command, texts in outputs.items():
         lines += ["", f"### {command}", "", "```text", *texts, "```"]
@@ -84,7 +93,30 @@ def write_fix_request(workspace: str, state: RunState, sender: str, failures: li
         # §AR-forge-workflow-pipeline.6
         text += f"\n## The previous fix reported\n\n{summary}\n" if summary else ""
     write_text(runtime_path(workspace, FIX_REQUEST), text)
+    # The audit's commands pass, so they are no failure to quote (§FS-local-branch-review.2).
+    record_failures(workspace, sender, failures if task is None else [])
     state.pending_request = sender
+
+
+def record_failures(workspace: str, sender: str, failures: list[Failure]) -> None:
+    """Keep the sender and its failures as data for the close-out (§AR-forge-workflow-pipeline.1)."""
+    write_json(runtime_path(workspace, FAILURES), {"sender": sender, "failures": [asdict(f) for f in failures]})
+
+
+def recorded_failures(workspace: str) -> tuple[str, list[Failure]] | None:
+    """The sender and failures last recorded, or `None` before any was."""
+    path: str = runtime_path(workspace, FAILURES)
+    if not os.path.isfile(path):
+        return None
+    recorded: dict[str, Any] = read_json(path)
+    return recorded["sender"], [Failure(item["command"], item["output"], tuple(item["blocked"]))
+                                for item in recorded["failures"]]
+
+
+def still_failing(workspace: str, sender: str, failures: list[Failure]) -> int:
+    """Record the failures that stop the run, then exit `12` (§AR-forge-workflow-pipeline.6)."""
+    record_failures(workspace, sender, failures)
+    return STILL_FAILING
 
 
 def write_placeholder(workspace: str, sender: str) -> None:

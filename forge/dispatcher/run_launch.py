@@ -175,7 +175,7 @@ def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: st
     return workspace
 
 
-def record_outcome(workspace: str) -> dict[str, str]:
+def record_outcome(workspace: str) -> dict[str, Any]:
     """The run's terminal outcome, recording an infrastructure failure when it never reached one.
 
     A halted run is finished: Rhei never re-runs a state whose attempts are spent
@@ -191,19 +191,39 @@ def record_outcome(workspace: str) -> dict[str, str]:
         return json.load(handle)
 
 
-def finish_run(repo: str, workspace: str) -> dict[str, str]:
+def finish_run(repo: str, workspace: str) -> dict[str, Any]:
     """Record the outcome of a run `rhei run` returned from, then give up its worktree.
 
     A finished attempt keeps only its workspace and branch as the record; one whose
     launcher died never gets here, so it is resumed in its worktree
     (§AR-forge-workflow-pipeline.1).
     """
-    outcome: dict[str, str] = record_outcome(workspace)
+    outcome: dict[str, Any] = record_outcome(workspace)
     release_worktree(repo, workspace, keep_branch=True)
     return outcome
 
 
-def close_out(claimed: Claim, outcome: dict[str, str]) -> None:
+def intervention_comment(outcome: dict[str, Any]) -> str:
+    """The comment a maintainer continues from: the reason and what the run recorded.
+
+    That is the state that stopped, its failing commands with their output excerpts,
+    and the last fix report (§FS-human-intervention-policy).
+    """
+    lines: list[str] = ["Human intervention needed", "",
+                        f"Forge could not finish this issue: {outcome.get('reason', '')}."]
+    if outcome.get("sender"):
+        lines += ["", f"Stopped in `{outcome['sender']}`."]
+    for failure in outcome.get("failures", []):
+        lines += ["", f"Failing command: `{failure['command']}`"]
+        lines += ["", "```text", failure["output"], "```"] if failure["output"] else []
+    if outcome.get("fix_summary"):
+        result: str = f" `{outcome['fix_result']}`" if outcome.get("fix_result") else ""
+        lines += ["", f"The last fix reported{result}:", "",
+                  *(f"> {line}" for line in outcome["fix_summary"].splitlines())]
+    return "\n".join(lines) + "\n"
+
+
+def close_out(claimed: Claim, outcome: dict[str, Any]) -> None:
     """Apply the bookkeeping the final state implies (§AR-forge-workflow-pipeline.1)."""
     number: int = claimed.issue["number"]
     kind: str = outcome.get("outcome", "failed")
@@ -214,6 +234,6 @@ def close_out(claimed: Claim, outcome: dict[str, str]) -> None:
     needs_human: bool = kind in ("human-intervention", "nothing-to-publish") or outcome.get("kind") == "bad-input"
     if needs_human:
         add_issue_label(number, LABEL_HUMAN_INTERVENTION)
-        post_issue_comment(number, f"Forge could not finish this issue: {reason}.")
+        post_issue_comment(number, intervention_comment(outcome))
     revert_issue_claim(claimed.item_id, number, reason or kind)
     print(f"Issue #{number}: {kind} ({reason}); claim released.", file=sys.stderr)

@@ -17,10 +17,12 @@ from __future__ import annotations
 
 import os
 import unittest
+from typing import Any
 
 from support import COORDINATE
 from test_audit import FinalizedRun
 
+import forge_run  # noqa: E402
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     OK,
@@ -31,7 +33,7 @@ from exit_codes import (  # noqa: E402
     RETURN_NATIVE_REPAIR,
     STILL_FAILING,
 )
-from run_state import runtime_path, write_json  # noqa: E402
+from run_state import read_json, runtime_path, write_json  # noqa: E402
 
 METADATA_STEPS: list[str] = ["splitTestOnlyMetadata", "routeForeignMetadata", "checkMetadataFiles"]
 
@@ -49,6 +51,9 @@ class CheckStateTest(FinalizedRun):
         write_json(runtime_path(self.fake.workspace, "reports", f"fix-{visit}.json"),
                    {"result": "fixed", "changed": [], "summary": "played"})
         return self.step("fix-route")
+
+    def recorded_outcome(self) -> dict[str, Any]:
+        return read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
 
     def failing_commands(self) -> list[str]:
         request: str = self.read("fix-request.md")
@@ -91,6 +96,9 @@ class CheckStateTest(FinalizedRun):
         self.assertEqual(RETURN_NATIVE_REPAIR, self.fixed(1))
         self.assertEqual(STILL_FAILING, self.step("native-repair"))
         self.assertEqual("human-intervention", self.outcome())
+        self.assertEqual(("native-repair", [f"./gradlew test -Pcoordinates={COORDINATE}"]),
+                         (self.recorded_outcome()["sender"],
+                          [failure["command"] for failure in self.recorded_outcome()["failures"]]))
 
     def test_native_regenerates_and_tests_without_the_metadata_check(self) -> None:
         self.repaired()
@@ -151,6 +159,12 @@ class CheckStateTest(FinalizedRun):
         self.assertEqual(STILL_FAILING, self.step("finalize"))
         self.assertEqual("human-intervention", self.outcome())
         self.assertEqual(5, self.state.finalize_requests)
+        # What stopped the run is recorded for the close-out (§AR-forge-workflow-pipeline.1).
+        outcome: dict[str, Any] = self.recorded_outcome()
+        self.assertEqual("finalize", outcome["sender"])
+        self.assertEqual([{"command": f"./gradlew checkstyle -Pcoordinates={COORDINATE}",
+                           "output": "[ERROR] Test.java:1: bad style"}], outcome["failures"])
+        self.assertEqual(("fixed", "played"), (outcome["fix_result"], outcome["fix_summary"]))
 
     def test_an_audit_edit_reruns_test_and_the_lane_without_regenerating(self) -> None:
         self.repaired()

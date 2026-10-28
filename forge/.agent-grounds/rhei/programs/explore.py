@@ -27,7 +27,7 @@ import cover_prompts
 import handoff
 from build_tools import TaskResult, checkpoint, coordinate_task, head, reset_to, run_gradle
 from cover_prompts import MODE_BASIC, MODE_BULK, MODE_CLASS
-from exit_codes import AGENT_WORK, INFRASTRUCTURE, JVM_TESTS_FAIL, NOTHING_TO_DO, OK, STILL_FAILING
+from exit_codes import AGENT_WORK, INFRASTRUCTURE, JVM_TESTS_FAIL, NOTHING_TO_DO, OK
 from run_state import ROUTE_NEW, ROUTE_REPAIR, Budgets, Chunk, Explore, RunState, load, runtime_path, save
 
 SENDER: str = "measure"
@@ -293,7 +293,7 @@ def measure(workspace: str) -> int:
             print("[measure] the cover pass broke the JVM tests; a fix request follows")
             return JVM_TESTS_FAIL
         if not explore.checkpoint:
-            return STILL_FAILING
+            return handoff.still_failing(workspace, SENDER, [handoff.Failure(tested.command, tested.tail)])
         # The loop guard's one exception: an unfixable pass costs that pass, not the run.
         state.pending_request = None
         report, pass_gained = before, False
