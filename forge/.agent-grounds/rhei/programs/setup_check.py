@@ -22,6 +22,7 @@ from typing import Any
 
 from utility_scripts.metadata_index import find_index_entry_for_version
 from utility_scripts.source_context import PreparedSourceContext, prepare_source_contexts
+from utility_scripts.user_code_filter import user_code_filter_path
 
 import skip_record
 from build_tools import TaskResult, changed_paths, checkpoint, coordinate_task, restore_paths, run_gradle
@@ -30,7 +31,8 @@ from run_state import ROUTE_NEW, ROUTE_REPAIR, RunState, load, runtime_path, sav
 
 URL_FIELDS: tuple[str, ...] = ("source-code-url", "test-code-url", "documentation-url", "repository-url")
 DECLARATION_FILES: tuple[str, ...] = ("build.gradle", "required-docker-images.txt")
-FILTER: str = "user-code-filter.json"
+# Resolves only the library JAR; no test compiles or runs (§AR-forge-workflow-pipeline.4.1).
+FILTER_TASK: str = "generateUserCodeFilter"
 UNRESOLVED: re.Pattern[str] = re.compile(r"Could not resolve|Could not find [\w.-]+:[\w.-]+")
 # A source download the network denies is retried after a pause (§AR-forge-workflow-pipeline.4.1).
 SOURCE_ATTEMPTS: int = 3
@@ -126,11 +128,11 @@ def apply_setup(workspace: str, state: RunState) -> int:
         print(f"ERROR: {state.coordinate} has no {', '.join(missing)} in {state.index_path}.", file=sys.stderr)
         return BAD_INPUT
     download_sources(state)
-    if not os.path.isfile(state.path(os.path.join(state.test_dir, FILTER))):
+    if not os.path.isfile(user_code_filter_path(state.path(state.test_dir))):
         generated: TaskResult = run_gradle(
             state.worktree,
-            coordinate_task("generateMetadata", state.coordinate, "--agentAllowedPackages=fromJar"),
-            runtime_path(workspace, "logs", "setup-generateMetadata.log"),
+            coordinate_task(FILTER_TASK, state.coordinate),
+            runtime_path(workspace, "logs", f"setup-{FILTER_TASK}.log"),
         )
         if not generated.ok:
             unresolved: bool = UNRESOLVED.search(generated.output) is not None

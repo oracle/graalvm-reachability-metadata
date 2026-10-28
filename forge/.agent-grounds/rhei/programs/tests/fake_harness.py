@@ -14,7 +14,8 @@ from __future__ import annotations
 # Control keys: classes (class -> total dynamic-access calls; a test file whose
 # name starts with the class's simple name covers one call), javaFails,
 # extensionFails (only the code-coverage-improvement suite's `codeCoverageTest` fails),
-# generateFails (only `generateMetadata` fails), nativeFails (until the shipped
+# generateFails (only `generateMetadata` fails), filterFails (what a failing
+# `generateUserCodeFilter` prints), nativeFails (until the shipped
 # metadata names `Fixed`), checkFails,
 # styleFails (the failing style task), listFails, listsNoCalls (the listing
 # succeeds without output, as for a library without calls; an empty stored
@@ -52,9 +53,12 @@ if task == "scaffold":
     entries.append({"metadata-version": version, "tested-versions": [version], "latest": True,
                     "allowed-packages": [group]})
     json.dump(entries, open(index, "w"), indent=2)
+elif task == "generateUserCodeFilter":
+    if control.get("filterFails"):
+        print(control["filterFails"])
+        sys.exit(1)
+    open(os.path.join(project, "user-code-filter.json"), "w").write('{"rules": []}\n')
 elif task == "generateMetadata":
-    if "--agentAllowedPackages=fromJar" in args:
-        open(os.path.join(project, "user-code-filter.json"), "w").write('{"rules": []}\n')
     if control.get("javaFails") or control.get("generateFails"):
         print("There were failing tests")
         sys.exit(1)

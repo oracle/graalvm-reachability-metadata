@@ -16,6 +16,8 @@ import json
 import os
 import re
 
+from utility_scripts.user_code_filter import user_code_filter_path
+
 
 def default_condition_packages(reachability_repo_path: str, coordinate: str) -> list[str]:
     """Return native-trace condition packages for ``coordinate``.
@@ -36,20 +38,12 @@ def _condition_packages_from_user_code_filter(
         reachability_repo_path: str,
         coordinate: str,
 ) -> list[str]:
-    """Read trace condition packages from the coordinate's user-code filter."""
+    """Read trace condition packages from the user-code filter the coordinate's agent reads."""
     try:
         group, artifact, version = coordinate.split(":", 2)
     except ValueError:
         return []
-    filter_path = os.path.join(
-        reachability_repo_path,
-        "tests",
-        "src",
-        group,
-        artifact,
-        version,
-        "user-code-filter.json",
-    )
+    filter_path = user_code_filter_path(os.path.join(reachability_repo_path, "tests", "src", group, artifact, version))
     try:
         with open(filter_path, "r", encoding="utf-8") as handle:
             payload = json.load(handle)

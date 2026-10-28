@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 import tempfile
 import unittest
@@ -51,6 +52,22 @@ class ConditionPackageDerivationTests(unittest.TestCase):
         self.assertEqual(
             conditions._condition_packages_from_user_code_filter(self.repo, "org.example:demo:1.0"),
             ["org.example.demo", "org.example.spi", "org.example"],
+        )
+
+    def test_reads_the_filter_the_agent_block_names(self) -> None:
+        project = Path(self.repo, "tests", "src", "org.hibernate.orm", "hibernate-core", "8.0.0")
+        project.mkdir(parents=True)
+        (project / "build.gradle").write_text(
+            'graalvmNative { agent { modes { conditional {\n'
+            '    userCodeFilterPath = "metadata-conditions-filter.json"\n} } } }\n',
+            encoding="utf-8",
+        )
+        (project / "metadata-conditions-filter.json").write_text(json.dumps({"rules": [
+            {"excludeClasses": "**"}, {"includeClasses": "org.hibernate.**"}]}), encoding="utf-8")
+
+        self.assertEqual(
+            conditions.default_condition_packages(self.repo, "org.hibernate.orm:hibernate-core:8.0.0"),
+            ["org.hibernate"],
         )
 
     def test_excludes_generated_test_packages_from_condition_packages(self) -> None:
