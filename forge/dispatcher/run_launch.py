@@ -22,6 +22,7 @@ import tempfile
 from dataclasses import dataclass
 from typing import Any, Iterator
 
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import extract_coordinate_parts
 
 from dispatcher.claim_preflight import refresh_issue_payload_for_claim
@@ -144,6 +145,20 @@ def release_worktree(repo: str, workspace: str, keep_branch: bool = False) -> No
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
+def agent_environment(repo: str, workspace: str, issue: dict[str, Any]) -> dict[str, str] | None:
+    """The `rhei run` environment, so agents build in the run worktree's Gradle home.
+
+    Agents inherit `rhei run`'s environment, so their own `./gradlew` gets the
+    home the programs use (§FS-forge-run-requirements.4). `prepare` names the
+    worktree after the title's coordinate under the template's `../worktrees`.
+    """
+    parts: tuple[str, str, str] | None = extract_coordinate_parts(str(issue.get("title", "")))
+    if parts is None:
+        return None
+    worktree: str = os.path.realpath(os.path.join(workspace, "..", "worktrees", "forge-" + "-".join(parts)))
+    return gradle_command_environment(repo, worktree_root=worktree)
+
+
 def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: str,
               rhei_args: list[str]) -> str | None:
     """Instantiate and run the issue's attempt; its workspace, or `None` when it could not be created."""
@@ -155,7 +170,8 @@ def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: st
         created = subprocess.run(instantiate_command(number, setup_agent, worker_agent, workspace), cwd=forge_dir)
         if created.returncode != 0:
             return None
-    subprocess.run(["rhei", "run", workspace, "--dashboard", *rhei_args], cwd=forge_dir)
+    subprocess.run(["rhei", "run", workspace, "--dashboard", *rhei_args], cwd=forge_dir,
+                   env=agent_environment(os.path.dirname(forge_dir), workspace, claimed.issue))
     return workspace
 
 
