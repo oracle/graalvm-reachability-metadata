@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.OptBoolean;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,9 @@ public class Jackson_annotationsTest {
                 "yyyy-MM-dd",
                 JsonFormat.Shape.STRING,
                 "fr",
-                "UTC"
+                "UTC",
+                JsonFormat.Features.empty(),
+                null
         );
 
         assertThat(explicitValue.getPattern()).isEqualTo("yyyy-MM-dd");
@@ -54,7 +57,9 @@ public class Jackson_annotationsTest {
                 "pattern",
                 JsonFormat.Shape.OBJECT,
                 JsonFormat.DEFAULT_LOCALE,
-                JsonFormat.DEFAULT_TIMEZONE
+                JsonFormat.DEFAULT_TIMEZONE,
+                JsonFormat.Features.empty(),
+                null
         );
 
         assertThat(defaultMarkerValue.getLocale()).isNull();
@@ -64,7 +69,9 @@ public class Jackson_annotationsTest {
                 "pattern",
                 JsonFormat.Shape.ARRAY,
                 "",
-                ""
+                "",
+                JsonFormat.Features.empty(),
+                null
         );
 
         assertThat(emptyMarkerValue.getLocale()).isNull();
@@ -212,6 +219,7 @@ public class Jackson_annotationsTest {
                 JsonInclude.Include.NON_ABSENT,
                 JsonInclude.Include.NON_EMPTY,
                 JsonInclude.Include.NON_DEFAULT,
+                JsonInclude.Include.CUSTOM,
                 JsonInclude.Include.USE_DEFAULTS
         );
         assertThat(JsonInclude.Include.valueOf("NON_EMPTY")).isEqualTo(JsonInclude.Include.NON_EMPTY);
@@ -392,6 +400,11 @@ public class Jackson_annotationsTest {
             @Override
             public String timezone() {
                 return timezone;
+            }
+
+            @Override
+            public OptBoolean lenient() {
+                return OptBoolean.DEFAULT;
             }
 
             @Override
