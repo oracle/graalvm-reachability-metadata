@@ -43,8 +43,7 @@ import org.eclipse.jetty.io.Connection;
 import org.eclipse.jetty.io.EndPoint;
 import org.eclipse.jetty.io.EofException;
 import org.eclipse.jetty.io.IdleTimeout;
-import org.eclipse.jetty.io.LeakTrackingByteBufferPool;
-import org.eclipse.jetty.io.MappedByteBufferPool;
+import org.eclipse.jetty.io.RetainableByteBuffer;
 import org.eclipse.jetty.io.RuntimeIOException;
 import org.eclipse.jetty.io.SocketChannelEndPoint;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -61,81 +60,88 @@ public class Jetty_ioTest {
     void arrayByteBufferPoolReusesHeapAndDirectBuffers() {
         ArrayByteBufferPool pool = new ArrayByteBufferPool(0, 16, 64, 4);
 
-        ByteBuffer heap = pool.acquire(13, false);
+        RetainableByteBuffer heap = pool.acquire(13, false);
         assertFalse(heap.isDirect());
         assertTrue(heap.capacity() >= 13);
-        BufferUtil.clearToFill(heap);
-        heap.put("abc".getBytes(StandardCharsets.UTF_8));
-        pool.release(heap);
+        BufferUtil.clearToFill(heap.getByteBuffer());
+        heap.getByteBuffer().put("abc".getBytes(StandardCharsets.UTF_8));
+        assertTrue(heap.release());
 
-        ByteBuffer reusedHeap = pool.acquire(8, false);
+        RetainableByteBuffer reusedHeap = pool.acquire(8, false);
+        assertSame(heap, reusedHeap);
         assertFalse(reusedHeap.isDirect());
-        assertEquals(0, reusedHeap.position());
-        assertEquals(0, reusedHeap.limit());
+        assertEquals(0, reusedHeap.getByteBuffer().position());
+        assertEquals(0, reusedHeap.getByteBuffer().limit());
         assertTrue(reusedHeap.capacity() >= 8);
-        pool.release(reusedHeap);
+        assertTrue(reusedHeap.release());
 
-        ByteBuffer direct = pool.acquire(18, true);
+        RetainableByteBuffer direct = pool.acquire(18, true);
         assertTrue(direct.isDirect());
         assertTrue(direct.capacity() >= 18);
-        pool.release(direct);
+        assertTrue(direct.release());
 
         pool.clear();
-        ByteBuffer fresh = pool.acquire(4, false);
+        RetainableByteBuffer fresh = pool.acquire(4, false);
         assertFalse(fresh.isDirect());
-        pool.release(fresh);
+        assertTrue(fresh.release());
     }
 
     @Test
-    void mappedPoolAndLeakTrackingPoolExposeExpectedBufferLifecycle() {
-        MappedByteBufferPool mappedPool = new MappedByteBufferPool(16, 4);
-        ByteBuffer heap = mappedPool.acquire(17, false);
-        ByteBuffer direct = mappedPool.acquire(17, true);
+    void arrayPoolTracksAvailableBuffersAcrossRetainAndRelease() {
+        ArrayByteBufferPool pool = new ArrayByteBufferPool(0, 16, 64, 4);
+        RetainableByteBuffer heap = pool.acquire(17, false);
+        RetainableByteBuffer direct = pool.acquire(17, true);
 
         assertFalse(heap.isDirect());
         assertTrue(heap.capacity() >= 17);
         assertTrue(direct.isDirect());
         assertTrue(direct.capacity() >= 17);
+        assertEquals(0, pool.getAvailableHeapByteBufferCount());
+        assertEquals(0, pool.getAvailableDirectByteBufferCount());
 
-        mappedPool.release(heap);
-        mappedPool.release(direct);
-        mappedPool.clear();
+        heap.retain();
+        assertTrue(heap.isRetained());
+        assertFalse(heap.release());
+        assertEquals(0, pool.getAvailableHeapByteBufferCount());
+        assertTrue(heap.release());
+        assertTrue(direct.release());
+        assertEquals(1, pool.getAvailableHeapByteBufferCount());
+        assertEquals(1, pool.getAvailableDirectByteBufferCount());
 
-        LeakTrackingByteBufferPool trackingPool = new LeakTrackingByteBufferPool(new ArrayByteBufferPool());
-        ByteBuffer tracked = trackingPool.acquire(32, false);
-        assertNotNull(tracked);
-        trackingPool.release(tracked);
-        trackingPool.clearTracking();
-
-        assertEquals(0, trackingPool.getLeakedAcquires());
-        assertEquals(0, trackingPool.getLeakedReleases());
-        assertEquals(0, trackingPool.getLeakedResources());
+        pool.clear();
+        assertEquals(0, pool.getHeapByteBufferCount());
+        assertEquals(0, pool.getDirectByteBufferCount());
+        assertEquals(0, pool.getHeapMemory());
+        assertEquals(0, pool.getDirectMemory());
     }
 
     @Test
-    void byteBufferPoolLeaseAggregatesAndRecyclesBuffers() {
+    void byteBufferPoolAccumulatorAggregatesAndReleasesBuffers() {
         ArrayByteBufferPool pool = new ArrayByteBufferPool(0, 16, 64, 4);
-        ByteBufferPool.Lease lease = new ByteBufferPool.Lease(pool);
+        ByteBufferPool.Accumulator accumulator = new ByteBufferPool.Accumulator();
 
-        ByteBuffer first = lease.acquire(16, false);
-        first.put("world".getBytes(StandardCharsets.UTF_8));
-        first.flip();
-        lease.append(first, true);
+        RetainableByteBuffer first = pool.acquire(16, false);
+        BufferUtil.clearToFill(first.getByteBuffer());
+        first.getByteBuffer().put("world".getBytes(StandardCharsets.UTF_8));
+        first.getByteBuffer().flip();
+        accumulator.append(first);
 
-        ByteBuffer second = lease.acquire(16, false);
-        second.put("hello ".getBytes(StandardCharsets.UTF_8));
-        second.flip();
-        lease.insert(0, second, true);
+        RetainableByteBuffer second = pool.acquire(16, false);
+        BufferUtil.clearToFill(second.getByteBuffer());
+        second.getByteBuffer().put("hello ".getBytes(StandardCharsets.UTF_8));
+        second.getByteBuffer().flip();
+        accumulator.insert(0, second);
 
-        List<ByteBuffer> buffers = lease.getByteBuffers();
-        assertEquals(2, lease.getSize());
-        assertEquals(11, lease.getTotalLength());
+        List<ByteBuffer> buffers = accumulator.getByteBuffers();
+        assertEquals(2, accumulator.getSize());
+        assertEquals(11, accumulator.getTotalLength());
         assertEquals("hello ", BufferUtil.toString(buffers.get(0), StandardCharsets.UTF_8));
         assertEquals("world", BufferUtil.toString(buffers.get(1), StandardCharsets.UTF_8));
 
-        lease.recycle();
-        assertEquals(0, lease.getSize());
-        assertEquals(0, lease.getTotalLength());
+        accumulator.release();
+        assertEquals(0, accumulator.getSize());
+        assertEquals(0, accumulator.getTotalLength());
+        assertEquals(2, pool.getAvailableHeapByteBufferCount());
     }
 
     @Test
@@ -338,14 +344,14 @@ public class Jetty_ioTest {
         assertTrue(sslConnection.removeHandshakeListener(listener));
         assertFalse(sslConnection.removeHandshakeListener(listener));
         assertSame(engine, sslConnection.getSSLEngine());
-        assertSame(sslConnection, sslConnection.getDecryptedEndPoint().getSslConnection());
+        assertSame(sslConnection, sslConnection.getSslEndPoint().getSslConnection());
 
         sslConnection.setRenegotiationAllowed(false);
         assertFalse(sslConnection.isRenegotiationAllowed());
         sslConnection.setRenegotiationAllowed(true);
         assertTrue(sslConnection.isRenegotiationAllowed());
 
-        sslConnection.getDecryptedEndPoint().setConnection(new TestConnection(0, 0, 0, 0));
+        sslConnection.getSslEndPoint().setConnection(new TestConnection(0, 0, 0, 0));
         assertDoesNotThrow(sslConnection::close);
     }
 
@@ -496,7 +502,7 @@ public class Jetty_ioTest {
         }
 
         @Override
-        public boolean onIdleExpired() {
+        public boolean onIdleExpired(TimeoutException timeoutException) {
             return true;
         }
 
