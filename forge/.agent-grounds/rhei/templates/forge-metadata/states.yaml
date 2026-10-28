@@ -251,6 +251,12 @@ states:
       - When the Native Image test reports a missing registration, add exactly the entry
         it names to the shipped metadata file, never under
         `src/test/resources` (§root/FS-test-contract.2.7).
+      - When the failing stack passes through `java.io.ObjectInputStream` or
+        `ObjectOutputStream`, the error names a JDK superclass constructor or a
+        class lookup instead of the entry: register the class the stream reads
+        or writes at that point, from the error or the failing test's object,
+        as `{"type": "<class>", "serializable": true}`; one class per failure,
+        never its package or hierarchy (§root/FS-test-contract.2.7).
       - Every entry has a `typeReached` condition naming a type in the allowed
         packages that is reached before the access, and no entry names a
         test-only type (§root/FS-metadata.2). Take that type from the error's

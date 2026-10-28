@@ -63,6 +63,11 @@ BRIEFS: tuple[Brief, ...] = (
           re.compile(r"Missing\w*RegistrationError|MissingReflectionRegistration|MissingResourceRegistration"),
           "Add the entry the error names to the shipped metadata, with a `typeReached` condition in the "
           "allowed packages.", ("test",)),
+    # The error names a JDK superclass or lookup, not the entry (§root/FS-test-contract.2.7).
+    Brief("serialization failure",
+          re.compile(r"java\.io\.Object(Input|Output)Stream"),
+          "Register the class the stream reads or writes there as `serializable`, one class per "
+          "failure, with a `typeReached` condition in the allowed packages.", ("test",)),
     Brief("runtime class definition or bytecode generation",
           re.compile(r"cannot be defined at run ?time|Defining (hidden )?classes at runtime|"
                      r"No classes have been predefined|bytecode generation|ByteBuddy|Byte Buddy", re.IGNORECASE),
