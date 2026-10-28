@@ -19,6 +19,7 @@ import unittest
 from support import FakeRepository, working_directory
 from test_prepare import prepare_arguments
 
+import explore  # noqa: E402
 import forge_run  # noqa: E402
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
@@ -214,6 +215,35 @@ class WorkflowTest(unittest.TestCase):
             stdout=subprocess.PIPE, text=True).stdout)
         self.assertEqual(AGENT_WORK, self.step("native"))
         self.assertIn("Return: 32", self.read("fix-request.md"))
+
+    def test_a_new_library_without_calls_takes_one_measured_basic_pass(self) -> None:
+        self.fake.issue("library-new-request")
+        self.fake.control({"listsNoCalls": True})
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
+
+        self.assertEqual(AGENT_WORK, self.step("analyze"))
+        self.assertEqual(("basic", True), (self.state.explore.mode, self.state.explore.listed))
+        self.assertIn("No dynamic-access call site is left", self.read("cover-prompt.md"))
+
+        self.cover("ApiTest")
+        self.assertEqual(OK, self.step("measure"))
+        with open(self.state.path("gradle-calls.log"), encoding="utf-8") as handle:
+            self.assertIn("generateDynamicAccessCoverageReport", handle.read().splitlines()[-1])
+
+    def test_an_update_without_calls_skips_exploration(self) -> None:
+        self.fake.supported_library()
+        self.fake.issue("library-update-request")
+        # The empty listing, not `classes`, decides what the coverage report counts.
+        self.fake.control({"classes": {"org.example.lib.Codec": 6}, "listsNoCalls": True})
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.assertEqual(OK, self.step("setup-check"))
+        self.assertEqual(OK, self.step("repair"))
+        self.assertEqual(NOTHING_TO_DO, self.step("analyze"))
+        self.assertEqual((explore.MODE_SKIP, True, 0), (self.state.explore.mode, self.state.explore.listed,
+                                                         self.state.explore.total_calls))
 
     def test_a_failed_metadata_generation_names_the_checks_it_kept_from_running(self) -> None:
         self.fake.issue("library-new-request")

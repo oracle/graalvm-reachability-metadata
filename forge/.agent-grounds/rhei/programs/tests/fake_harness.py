@@ -14,7 +14,9 @@ from __future__ import annotations
 # Control keys: classes (class -> total dynamic-access calls; a test file whose
 # name starts with the class's simple name covers one call), javaFails,
 # nativeFails (until the shipped metadata names `Fixed`), checkFails,
-# styleFails (the failing style task), listFails, coverageFails, indexFails, and
+# styleFails (the failing style task), listFails, listsNoCalls (the listing
+# succeeds without output, as for a library without calls; an empty stored
+# listing then reports no calls), coverageFails, indexFails, and
 # stats (the dynamicAccess generateLibraryStats writes; else the coverage report's),
 # and matrixFails (the native-image mode whose `test` fails, as a missing registration).
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
@@ -73,6 +75,9 @@ elif task == "test" and mode is None:
 elif task == "generateDynamicAccessReport":
     if control.get("listFails"):
         sys.exit(1)
+    if control.get("listsNoCalls"):
+        print("No dynamic access JSON files were generated because the output directory is missing")
+        sys.exit(0)
     out = os.path.join(project, "build", "native", "nativeTestCompile", "dynamic-access")
     os.makedirs(out, exist_ok=True)
     open(os.path.join(out, "lib.json"), "w").write("[]")
@@ -83,7 +88,7 @@ elif task == "generateDynamicAccessCoverageReport":
         sys.exit(1)
     names = tests()
     classes = []
-    for name, total in control.get("classes", {}).items():
+    for name, total in (control.get("classes", {}) if os.listdir(stored) else {}).items():
         simple = name.rsplit(".", 1)[-1]
         covered = min(total, sum(1 for test in names if test.startswith(simple)))
         sites = [{"metadataType": "reflection", "trackedApi": "java.lang.Class#forName(java.lang.String)",
