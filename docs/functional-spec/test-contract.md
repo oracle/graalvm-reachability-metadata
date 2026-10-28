@@ -247,6 +247,16 @@ the error names, nothing broader; it has a `typeReached` condition naming a
 type inside the artifact's `allowed-packages` that is reached before the
 access occurs; and it names no test-only type (§FS-metadata.2).
 
+**Serialization failures.** Java serialization fails in a native image
+without naming the entry that repairs it: the error names a JDK superclass
+constructor such as `java.util.AbstractMap()`, or is a `ClassNotFoundException`
+thrown while `java.io.ObjectInputStream` resolves a class. When the failing
+stack passes through `ObjectInputStream` or `ObjectOutputStream`, the exact
+entry is the class the stream reads or writes at that point, taken from the
+error or from the failing test's object, registered as
+`{"type": "<class>", "serializable": true}`. It is one class per failure,
+never its package or hierarchy, under the same condition rule.
+
 **Reporter-requested needs generation missed.** A need inferred from a
 reported issue is mandatory (§FS-test-contract.1.5), so when a test drives the
 requested access through a public API path and `generateMetadata` still does
