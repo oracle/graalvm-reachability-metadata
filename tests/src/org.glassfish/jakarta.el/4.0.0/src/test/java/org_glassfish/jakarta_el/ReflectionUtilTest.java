@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import org.junit.jupiter.api.Test;
 
 import com.sun.el.ExpressionFactoryImpl;
+import com.sun.el.util.ReflectionUtil;
 
 import jakarta.el.ELProcessor;
 import jakarta.el.ExpressionFactory;
@@ -103,6 +104,19 @@ public class ReflectionUtilTest {
 
         assertThat(expression.invoke(context, new Object[] {new String[] {"red", "blue"}}))
                 .isEqualTo("red/blue");
+    }
+
+    @Test
+    void invokesMethodUsingConfiguredArrayParameterType() throws ClassNotFoundException {
+        StandardELContext context = contextFor(new MessageService());
+        Class<?> returnType = ReflectionUtil.forName("java.lang.String");
+        Class<?>[] parameterTypes = ReflectionUtil.toTypeArray(new String[] {"java.lang.String[]"});
+        MethodExpression expression = factory.createMethodExpression(
+                context, "#{service.join}", returnType, parameterTypes);
+
+        assertThat(expression.getMethodInfo(context).getParamTypes()).containsExactly(String[].class);
+        assertThat(expression.invoke(context, new Object[] {new String[] {"configured", "signature"}}))
+                .isEqualTo("configured/signature");
     }
 
     @Test
