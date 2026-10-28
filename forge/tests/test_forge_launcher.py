@@ -259,6 +259,30 @@ class ReleaseTest(unittest.TestCase):
                          [(name, args) for name, args, _ in steps.mock_calls])
 
 
+class AgentEnvironmentTest(unittest.TestCase):
+    """Agents build in the Gradle home the run's programs use.
+
+    §FS-forge-run-requirements.4
+    """
+
+    def test_rhei_run_gets_the_run_worktree_gradle_home_before_the_worktree_exists(self) -> None:
+        root: str = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, root, True)
+        repo: str = os.path.join(root, "repo")
+        workspace: str = os.path.join(root, "forge", "runs", "forge-7-1")
+        worktree: str = os.path.join(root, "forge", "runs", "worktrees", "forge-org.example-lib7-1.0.0")
+        _init_git_repo_with_worktree(repo, os.path.join(root, "other"))
+        with patch.dict(os.environ, {FORGE_GRADLE_USER_HOME_ENV: os.path.join(root, "gradle-home")}):
+            agents: dict[str, str] | None = run_launch.agent_environment(repo, workspace, issue(7))
+            subprocess.run(["git", "worktree", "add", "--quiet", worktree], cwd=repo, check=True)
+            programs: dict[str, str] = gradle_command_environment(worktree)
+        self.assertIsNotNone(agents)
+        self.assertEqual(programs["GRADLE_USER_HOME"], agents["GRADLE_USER_HOME"])
+
+    def test_a_title_without_a_coordinate_keeps_the_launcher_environment(self) -> None:
+        self.assertIsNone(run_launch.agent_environment("/repo", "/runs/forge-7-1", {"title": "no coordinate"}))
+
+
 class ReviewEntryTest(unittest.TestCase):
 
     def test_agent_command_follows_the_claude_code_target(self) -> None:

@@ -64,8 +64,15 @@ def is_linked_worktree(repo_path: str) -> bool:
     return _resolve_linked_worktree_root(repo_path) is not None
 
 
-def gradle_command_environment(repo_path: str, base_env: dict[str, str] | None = None) -> dict[str, str]:
+def gradle_command_environment(
+        repo_path: str,
+        base_env: dict[str, str] | None = None,
+        worktree_root: str | None = None,
+) -> dict[str, str]:
     """Return an environment that keeps Gradle daemons scoped to one worktree.
+
+    `worktree_root` names a linked worktree of `repo_path`'s checkout that may
+    not exist yet; without it, the worktree containing `repo_path` is used.
 
     Dependencies stay shared: a worktree reads the checkout home's published
     dependency cache through `GRADLE_RO_DEP_CACHE` and downloads only what that
@@ -79,7 +86,7 @@ def gradle_command_environment(repo_path: str, base_env: dict[str, str] | None =
     if not user_home_override:
         _share_gradle_wrapper_distributions(checkout_home, env.get(FORGE_GRADLE_DISTRIBUTIONS_HOME_ENV))
         _share_host_gradle_properties(checkout_home, env)
-    worktree_root = _resolve_linked_worktree_root(repo_path)
+    worktree_root = worktree_root or _resolve_linked_worktree_root(repo_path)
     if worktree_root is None:
         env["GRADLE_USER_HOME"] = checkout_home
         return env
