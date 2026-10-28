@@ -37,6 +37,8 @@ public class ByteBuddyAgentTest {
 
     private static String originalAllowSelfAttach;
 
+    private Instrumentation installedInstrumentation;
+
     @BeforeAll
     static void requireExternalSelfAttachment() {
         originalAllowSelfAttach = System.getProperty(ALLOW_SELF_ATTACH);
@@ -49,24 +51,23 @@ public class ByteBuddyAgentTest {
     }
 
     @BeforeEach
-    void resetInstaller() {
-        Installer.premain(null, null);
+    void initializeInstaller() {
+        installedInstrumentation = ByteBuddyAgentInnerAgentProviderInnerForByteBuddyAgentTest.installAgent();
     }
 
     @Test
-    void getInstrumentationLooksUpInstallerViaSystemClassLoader() {
-        assertThatThrownBy(ByteBuddyAgent::getInstrumentation)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("not initialized");
+    void getInstrumentationRetainsFirstInstallation() {
+        Installer.premain(null, new RecordingInstrumentation());
+        Installer.premain(null, null);
+
+        assertThat(ByteBuddyAgent.getInstrumentation()).isSameAs(installedInstrumentation);
     }
 
     @Test
     void getInstrumentationInvokesInstallerMethodSuccessfully() {
-        Instrumentation instrumentation = new RecordingInstrumentation();
+        Installer.premain(null, installedInstrumentation);
 
-        Installer.premain(null, instrumentation);
-
-        assertThat(ByteBuddyAgent.getInstrumentation()).isSameAs(instrumentation);
+        assertThat(ByteBuddyAgent.getInstrumentation()).isSameAs(installedInstrumentation);
     }
 
     @Test

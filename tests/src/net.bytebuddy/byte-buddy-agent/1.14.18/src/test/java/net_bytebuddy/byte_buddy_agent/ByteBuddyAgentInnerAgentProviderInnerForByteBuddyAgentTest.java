@@ -8,8 +8,6 @@ package net_bytebuddy.byte_buddy_agent;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.Installer;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -24,34 +22,38 @@ import java.util.Set;
 import java.util.jar.JarFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ByteBuddyAgentInnerAgentProviderInnerForByteBuddyAgentTest {
     private static final String PROCESS_ID = "4711";
 
-    private String originalLatentResolve;
+    private static Instrumentation installedInstrumentation;
 
-    @BeforeEach
-    void resetState() {
-        originalLatentResolve = System.getProperty(ByteBuddyAgent.LATENT_RESOLVE);
-        System.setProperty(ByteBuddyAgent.LATENT_RESOLVE, Boolean.TRUE.toString());
-        Installer.premain(null, null);
-        RecordingVirtualMachine.reset();
-    }
-
-    @AfterEach
-    void restoreState() {
-        Installer.premain(null, null);
-        RecordingVirtualMachine.reset();
-        if (originalLatentResolve == null) {
-            System.clearProperty(ByteBuddyAgent.LATENT_RESOLVE);
-        } else {
-            System.setProperty(ByteBuddyAgent.LATENT_RESOLVE, originalLatentResolve);
+    /// Installer retains the first non-null instance for the lifetime of the process.
+    static synchronized Instrumentation installAgent() {
+        if (installedInstrumentation == null) {
+            assertThatThrownBy(ByteBuddyAgent::getInstrumentation)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("not initialized");
+            String originalLatentResolve = System.getProperty(ByteBuddyAgent.LATENT_RESOLVE);
+            System.setProperty(ByteBuddyAgent.LATENT_RESOLVE, Boolean.TRUE.toString());
+            RecordingVirtualMachine.reset();
+            try {
+                installedInstrumentation = ByteBuddyAgent.install(new RecordingAttachmentProvider(), () -> PROCESS_ID);
+            } finally {
+                if (originalLatentResolve == null) {
+                    System.clearProperty(ByteBuddyAgent.LATENT_RESOLVE);
+                } else {
+                    System.setProperty(ByteBuddyAgent.LATENT_RESOLVE, originalLatentResolve);
+                }
+            }
         }
+        return installedInstrumentation;
     }
 
     @Test
     void installCreatesTemporaryAgentJarFromInstallerClassResource() throws Exception {
-        Instrumentation instrumentation = ByteBuddyAgent.install(new RecordingAttachmentProvider(), () -> PROCESS_ID);
+        Instrumentation instrumentation = installAgent();
 
         assertThat(instrumentation).isSameAs(RecordingVirtualMachine.instrumentation);
         assertThat(RecordingVirtualMachine.attachedProcessId).isEqualTo(PROCESS_ID);

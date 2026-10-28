@@ -28,17 +28,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InstallerTest {
     private SecurityManager originalSecurityManager;
     private boolean securityManagerInstalled;
+    private Instrumentation installedInstrumentation;
 
     @BeforeEach
-    void resetInstaller() {
+    void initializeInstaller() {
+        installedInstrumentation = ByteBuddyAgentInnerAgentProviderInnerForByteBuddyAgentTest.installAgent();
         originalSecurityManager = System.getSecurityManager();
         securityManagerInstalled = false;
-        Installer.premain(null, null);
     }
 
     @AfterEach
     void restoreInstaller() {
-        Installer.premain(null, null);
         if (securityManagerInstalled && System.getSecurityManager() != originalSecurityManager) {
             System.setSecurityManager(originalSecurityManager);
         }
@@ -52,7 +52,7 @@ public class InstallerTest {
         Installer.premain(null, instrumentation);
         securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
 
-        assertThat(Installer.getInstrumentation()).isSameAs(instrumentation);
+        assertThat(Installer.getInstrumentation()).isSameAs(installedInstrumentation);
         if (securityManagerInstalled) {
             assertThat(securityManager.checkedPermissions)
                     .extracting(Permission::getName)
