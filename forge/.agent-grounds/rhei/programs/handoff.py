@@ -104,7 +104,7 @@ def test_packages(state: RunState) -> set[str]:
 
 
 def metadata_check_briefs(output: str, packages: set[str]) -> list[str]:
-    """The `checkMetadataFiles` briefs: a test-only type, or a condition outside the allowed packages.
+    """The `checkMetadataFiles` briefs: a test-only type, or a condition outside allowed packages.
 
     `finalize` split and routed just before the check, so what is left needs a real fix
     (§AR-forge-workflow-pipeline.5).
