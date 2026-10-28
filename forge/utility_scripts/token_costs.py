@@ -44,9 +44,14 @@ def calc_output_cost(output_tokens: int, rate_per_1m: float = DEFAULT_OUTPUT_RAT
     return calc_token_cost(output_tokens, rate_per_1m)
 
 
+def priced_model_name(model_name: str) -> str:
+    """The rate-table key of a model: its name without a `provider/` prefix."""
+    return model_name.rsplit("/", 1)[-1]
+
+
 def _get_model_rate(model_name: str | None, rates_by_model: dict[str, float], default_rate: float | None) -> float | None:
-    if model_name and model_name in rates_by_model:
-        return rates_by_model[model_name]
+    if model_name:
+        return rates_by_model.get(priced_model_name(model_name), default_rate)
     return default_rate
 
 
@@ -60,8 +65,9 @@ def calc_model_session_cost(
 
     `input_tokens` counts full-rate input; `cached_input_tokens` counts cache
     reads billed at the cached rate. The two counters do not overlap, so their
-    costs simply add up. Unknown models fall back to the default rates. Token
-    counts are normalized per million by `calc_token_cost`.
+    costs simply add up. The model is looked up by `priced_model_name`, and
+    unknown models fall back to the default rates. Token counts are normalized
+    per million by `calc_token_cost`.
     """
     cached_input_tokens = cached_input_tokens or 0
     input_rate = _get_model_rate(model_name, INPUT_TOKEN_RATE_PER_1M_BY_MODEL, DEFAULT_INPUT_RATE_PER_1M)

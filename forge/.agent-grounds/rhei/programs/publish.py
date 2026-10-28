@@ -48,7 +48,6 @@ from utility_scripts.local_ci_verification import CommandRecord, FixupRecord, Lo
 from utility_scripts.metrics_writer import append_execution_metrics
 from utility_scripts.run_metrics_payloads import build_run_metrics_dict
 from utility_scripts.source_context import resolve_test_source_layout
-from utility_scripts.token_costs import calc_model_session_cost
 
 import explore
 import issue
@@ -160,7 +159,7 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
         input_tokens_used=usage.input,
         output_tokens_used=usage.output,
         cached_input_tokens_used=usage.cached,
-        cost_usd=calc_model_session_cost(model.rsplit("/", 1)[-1], usage.input, usage.cached, usage.output),
+        cost_usd=run_tokens.cost_usd(workspace),
         lines_covered=lines_covered,
         coverage_percent=coverage_percent,
         generated_loc=count_generated_loc(resolve_test_source_layout(

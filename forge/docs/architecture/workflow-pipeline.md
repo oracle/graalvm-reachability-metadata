@@ -149,7 +149,7 @@ template's `transition_limit`.
 | `finalize` | `spotlessApply`, then `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the coordinate's three native lanes (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request |
 | `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns the native check and `finalize` once over a changed one (§AR-forge-workflow-pipeline.4.3) |
 | `fix-route` | Reads the request's return code and the fix report: `cannot-fix` exits `40`, anything else the return code |
-| `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), and pushes the publication branch `finalize` rebased; a deferred exploration opens its follow-up issue first |
+| `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics), which price each agent invocation at the rates of the model that ran it and count its cache writes as input, and the descriptor (§AR-publication-descriptor), and pushes the publication branch `finalize` rebased; a deferred exploration opens its follow-up issue first |
 
 ### 4.1 The setup tail
 
