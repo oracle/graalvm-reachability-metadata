@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for the fix request, which carries facts and never a hint (§AR-forge-workflow-prompts.5)."""
+"""Tests for the fix request: facts, never a hint (§AR-forge-workflow-prompts.5)."""
 from __future__ import annotations
 
 import os

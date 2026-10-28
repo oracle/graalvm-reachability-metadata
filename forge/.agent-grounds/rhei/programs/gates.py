@@ -173,7 +173,7 @@ def gate_command(workspace: str) -> str:
 
 
 def failures(workspace: str, state: RunState) -> list[handoff.Failure]:
-    """One failure per breached gate, its output `<gate>: <breach>` (§AR-forge-workflow-prompts.5)."""
+    """One failure per breached gate, output `<gate>: <breach>` (§AR-forge-workflow-prompts.5)."""
     command: str = gate_command(workspace)
     found: list[handoff.Failure] = []
     for check, gate in ((scope_breach, SCOPE_GATE), (requested_breach, REQUESTED_GATE),
