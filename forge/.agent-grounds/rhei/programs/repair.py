@@ -39,7 +39,8 @@ def repair(workspace: str) -> int:
         if UNRESOLVED.search(tested.output):
             print(f"ERROR: a declared dependency does not resolve:\n{tested.tail}", file=sys.stderr)
             return BAD_INPUT
-        failures.append(handoff.Failure(tested.command, tested.tail))
+        # The skipped native check gets no request of its own (§AR-forge-workflow-pipeline.5).
+        failures.append(handoff.Failure(tested.command, tested.tail, blocked=native_check.blocked_commands(state)))
     else:
         failures = native_check.run_native_check(workspace, state, SENDER)
     if not failures:

@@ -19,19 +19,24 @@ from exit_codes import AGENT_WORK, OK, STILL_FAILING
 from run_state import RunState, load, runtime_path, save
 
 SENDER: str = "native"
+GENERATE: str = "generateMetadata"
 CHECKS: tuple[str, ...] = ("checkMetadataFiles", "test")
+
+
+def blocked_commands(state: RunState, tasks: tuple[str, ...] = (GENERATE, *CHECKS)) -> tuple[str, ...]:
+    """The native-check commands a failure kept from running, which `fix` must pass too."""
+    return tuple(gradle_display(coordinate_task(task, state.coordinate)) for task in tasks)
 
 
 def run_native_check(workspace: str, state: RunState, prefix: str) -> list[handoff.Failure]:
     """Run the three native-check commands and return the failing ones."""
     generated: TaskResult = run_gradle(
-        state.worktree, coordinate_task("generateMetadata", state.coordinate),
-        runtime_path(workspace, "logs", f"{prefix}-generateMetadata.log"),
+        state.worktree, coordinate_task(GENERATE, state.coordinate),
+        runtime_path(workspace, "logs", f"{prefix}-{GENERATE}.log"),
     )
     if not generated.ok:
         # The JVM tests failed under the agent; the checks would only judge stale metadata.
-        blocked: tuple[str, ...] = tuple(gradle_display(coordinate_task(task, state.coordinate)) for task in CHECKS)
-        return [handoff.Failure(generated.command, generated.tail, blocked=blocked)]
+        return [handoff.Failure(generated.command, generated.tail, blocked=blocked_commands(state, CHECKS))]
     failures: list[handoff.Failure] = []
     for task in CHECKS:
         result: TaskResult = run_gradle(

@@ -225,10 +225,10 @@ listed native flag is a legal repair (§root/FS-test-contract.2.7). A failed
 `generateMetadata` stops the check, because the checks after it would judge
 stale metadata; the request then names those checks as ones `fix` must also
 pass, since the guard (§AR-forge-workflow-pipeline.6) gives no second request
-for a failure no agent was shown. `repair`
-runs the same check after `javaTest`; `native` runs it after exploration, and
-it is the first native build that must pass when `analyze` could not list the
-call sites.
+for a failure no agent was shown. `repair` runs the same check after
+`javaTest`, and the request for a failed `javaTest` names the check's three
+commands the same way; `native` runs it after exploration, and it is the first
+native build that must pass when `analyze` could not list the call sites.
 
 ## 6. The loop guard
 

@@ -16,7 +16,7 @@ import os
 import subprocess
 import unittest
 
-from support import FakeRepository, working_directory
+from support import COORDINATE, FakeRepository, working_directory
 from test_prepare import prepare_arguments
 
 import explore  # noqa: E402
@@ -159,6 +159,11 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(AGENT_WORK, self.step("repair"))
         self.assertIn("Return: 30", self.read("fix-request.md"))
         self.assertIn("JVM test failure", self.read("fix-request.md"))
+        # The skipped native check is in the one request the guard allows.
+        then_run: str = self.read("fix-request.md").split("## Then run", 1)[1].split("## Briefs", 1)[0]
+        self.assertEqual([f"- ./gradlew {task} -Pcoordinates={COORDINATE}"
+                          for task in ("generateMetadata", "checkMetadataFiles", "test")],
+                         [line for line in then_run.splitlines() if line.startswith("- ")])
         self.fix("fixed", 1)
         self.assertEqual(RETURN_REPAIR, self.step("fix-route"))
         self.assertEqual(STILL_FAILING, self.step("repair"))
