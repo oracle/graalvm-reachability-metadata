@@ -472,6 +472,22 @@ class LibraryUpdateTargetSplitTests(unittest.TestCase):
             added = {**older, "metadata-version": "1.1.0", "tested-versions": ["1.1.0"]}
             self.assertEqual(_jackson([latest, added, older]), _read_index(repo))
 
+    def test_older_version_beside_a_newer_baseline_moves_none_of_its_tested_versions(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            latest = {
+                "latest": True,
+                "metadata-version": "1.2.3",
+                "tested-versions": ["1.2.3", "1.2.4"],
+                "allowed-packages": ["org.example"],
+            }
+            _write_file(os.path.join(repo, "metadata", "org.example", "demo", "index.json"), _jackson([latest]))
+            _write_supported_version(repo, "1.2.3")
+
+            prepare_library_update_target(repo, "org.example", "demo", "1.2.0")
+
+            added = {"metadata-version": "1.2.0", "tested-versions": ["1.2.0"], "allowed-packages": ["org.example"]}
+            self.assertEqual(_jackson([latest, added]), _read_index(repo))
+
     def test_scaffold_failure_reports_target_coordinate(self) -> None:
         with tempfile.TemporaryDirectory() as repo:
             _write_index(repo, [])

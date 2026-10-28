@@ -113,3 +113,15 @@ coordinate, and the native test verification gate
 (§FS-native-test-verification-gate) may rewrite the suite as its last resort,
 which would invalidate every version already swept. The follow-up issue the
 split opens brings that version its own improvement run, where the gate belongs.
+
+## 3. Adding a version
+
+A requested version that does not own an index entry — a new version, or one
+that shares another version's entry — is given its own entry, with a copy of
+the support of the entry it starts from. When the requested version is newer
+than that entry's `metadata-version`, every tested version at or after it moves
+to the new entry, so the new support takes over the later range. When it is
+older, nothing else moves: the new entry lists only the requested version, and
+the baseline keeps every other tested version, because its metadata already
+covers its own range and an entry left without tested versions would support
+nothing.
