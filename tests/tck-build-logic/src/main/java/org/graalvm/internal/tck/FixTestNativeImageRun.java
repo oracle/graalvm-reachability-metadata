@@ -107,8 +107,9 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
         verifyGeneratedMetadata(metadataDirectory);
         MetadataIndexUpdateUtils.addVersionToIndexJsonUpdatingLatestWhenNewer(getLayout(), newCoords, baseCoords.version());
 
-        // At the end, attempt to run tests with the new library version.
-        // If the build fails, it can be due agent's non-deterministic nature.
+        // Run the tests on the new library version. A failure gets one more agent run and test: a
+        // retry for nondeterministic tests that reach different code on each run. No GraalVM
+        // defect is known to cause such failures.
         GeneralUtils.printInfo("Running the test with updated metadata");
         var execOutput = new ByteArrayOutputStream();
         var testResult = runTestWithVersion(gradlewPath, newCoordsString, newLibraryVersion, execOutput);
