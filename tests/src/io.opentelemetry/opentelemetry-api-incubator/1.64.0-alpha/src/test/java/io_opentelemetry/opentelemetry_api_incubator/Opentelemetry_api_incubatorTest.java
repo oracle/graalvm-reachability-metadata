@@ -463,8 +463,12 @@ public class Opentelemetry_api_incubatorTest {
                         "general", general,
                         "java", java));
 
-        assertThat(InstrumentationConfigUtil.peerServiceMapping(provider))
-                        .containsExactly(Map.entry("db.example", "database"), Map.entry("queue.example", "queue"));
+        List<DeclarativeConfigProperties> serviceMappings = InstrumentationConfigUtil.getOrNull(provider,
+                        properties -> properties.getStructuredList("service_mapping"), "general", "peer");
+        assertThat(serviceMappings).extracting(properties -> properties.getString("peer"))
+                        .containsExactly("db.example", "cache.example", "queue.example");
+        assertThat(serviceMappings).extracting(properties -> properties.getString("service"))
+                        .containsExactly("database", null, "queue");
         assertThat(InstrumentationConfigUtil.httpClientRequestCapturedHeaders(provider))
                         .containsExactly("x-client-request");
         assertThat(InstrumentationConfigUtil.httpClientResponseCapturedHeaders(provider))
@@ -478,7 +482,9 @@ public class Opentelemetry_api_incubatorTest {
         String missingSetting = InstrumentationConfigUtil.getOrNull(provider,
                         properties -> properties.getString("missing"), "general", "peer");
         assertThat(missingSetting).isNull();
-        assertThat(InstrumentationConfigUtil.peerServiceMapping(ConfigProvider.noop())).isNull();
+        List<DeclarativeConfigProperties> missingMappings = InstrumentationConfigUtil.getOrNull(ConfigProvider.noop(),
+                        properties -> properties.getStructuredList("service_mapping"), "general", "peer");
+        assertThat(missingMappings).isNull();
     }
 
     @Test
