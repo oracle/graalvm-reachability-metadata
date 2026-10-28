@@ -6,12 +6,10 @@
  */
 package org_mybatis.mybatis;
 
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 interface UserMapper {
-    @Insert("INSERT INTO users (id, name) VALUES (#{id}, #{name})")
     void insertUser(@Param("id") int id, @Param("name") String name);
 
     @Select("SELECT name FROM users WHERE id = #{id}")
