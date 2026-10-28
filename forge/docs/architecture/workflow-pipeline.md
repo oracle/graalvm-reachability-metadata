@@ -166,7 +166,7 @@ every other sender, each cover pass, and the audit one, so a run takes
 | `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
 | `native` | The native check over the tests exploration added: `generateMetadata`, then `test` |
 | `finalize` | `splitTestOnlyMetadata`, `routeForeignMetadata`, and `checkMetadataFiles` (§AR-forge-workflow-pipeline.5), then `spotlessApply`, `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the coordinate's three native lanes (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request, at most `finalize_fixes` times (§AR-forge-workflow-pipeline.6) |
-| `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns the native check and `finalize` once over a changed one (§AR-forge-workflow-pipeline.4.3) |
+| `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns `test` and `finalize`'s lane once over a changed one, never `generateMetadata` (§AR-forge-workflow-pipeline.4.3) |
 | `fix-route` | Reads the request's return code and the fix report: `cannot-fix` exits `40`, anything else the return code |
 | `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), and pushes the publication branch `finalize` rebased; the metrics price each agent invocation at the rates of the model that ran it, count its cache writes as input, and count the worker's rounds, its cover passes plus its fix requests, as iterations; a deferred exploration opens its follow-up issue first |
 
@@ -204,15 +204,16 @@ only JaCoCo (§root/AR-test-harness.8).
 
 `audit` reuses `fix` unchanged: its first visit commits the tree as the audit
 checkpoint, records it in the run state, and writes an ordinary fix request
-whose commands are the native check and the finalization lane, whose editable
-files are the test project and the shipped metadata, and whose task is the
-audit of §FS-local-branch-review.2; its return code is `34`. `fix` edits, reruns
-the commands, and reports, and `fix-route` returns to `audit` or stops on
+whose one command is `test`, whose editable files are the test project and the
+shipped metadata, and whose task is the audit of §FS-local-branch-review.2; its
+return code is `34`. `fix` edits, reruns
+`test`, and reports, and `fix-route` returns to `audit` or stops on
 `cannot-fix` as for any sender. The return visit compares the coordinate's paths
-with the checkpoint: unchanged exits `0`; changed reruns the native check and
+with the checkpoint: unchanged exits `0`; changed runs `test` and then
 `finalize`'s steps and gates from the program, and exits `0` on a pass or `12`
-on a failure. The run state, not a Rhei visit count, records the audit, so it
-happens once.
+on a failure. Neither visit runs `generateMetadata`, whose merge would bring
+back the agent's entries the audit corrected (§FS-local-branch-review.2). The
+run state, not a Rhei visit count, records the audit, so it happens once.
 
 ### 4.4 The native lanes
 
