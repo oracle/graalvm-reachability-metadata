@@ -47,6 +47,7 @@ import org.graalvm.internal.tck.harness.tasks.DiscoverArtifactMetadata
 import org.graalvm.internal.tck.harness.tasks.PopulateArtifactURLs
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.BaseLayerUtils
+import org.graalvm.internal.tck.utils.SharedLayerBuildUtils
 import org.graalvm.internal.tck.utils.MetadataIndexUpdateUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CodeCoverageTestInvocationTask
@@ -230,76 +231,16 @@ tasks.register("buildBaseLayer") { task ->
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
     task.doLast {
         File baseLayerFile = BaseLayerUtils.resolveBaseLayerFile(project)
-        if (!baseLayerFile.name.endsWith(".nil")) {
-            throw new GradleException("Native Image base-layer file must end with .nil: ${baseLayerFile.absolutePath}")
-        }
-        File baseLayerDir = baseLayerFile.parentFile
-        File manifestFile = new File(baseLayerDir, "manifest.json")
         def ci = loadCi()
-        String selectedNativeImageMode = NativeImageConfigUtils.resolveSelectedMode(
+        String mode = NativeImageConfigUtils.resolveSelectedMode(
                 System.getenv("GVM_TCK_NATIVE_IMAGE_MODE"),
-                project.findProperty("tck.nativeImageMode")?.toString()
-        )
+                project.findProperty("tck.nativeImageMode")?.toString())
         List<String> nativeImageArgs = NativeImageConfigUtils.resolvedBuildArgs(
-                ci as Map<String, Object>,
-                selectedNativeImageMode,
-                [
-                        "{{library.version}}"    : "",
-                        "{{library.coordinates}}": ""
-                ]
-        )
-        Map<String, Object> expectedManifest = BaseLayerUtils.expectedManifest(
-                baseLayerFile,
-                providers.exec {
-                    commandLine(nativeImageTool("native-image"), "--version")
-                }.standardOutput.asText.get().trim(),
-                NativeImageConfigUtils.resolveSelectedMode(
-                        System.getenv("GVM_TCK_NATIVE_IMAGE_MODE"),
-                        project.findProperty("tck.nativeImageMode")?.toString()
-                ),
-                nativeImageArgs
-        )
-        if (baseLayerFile.isFile() && manifestFile.isFile()) {
-            def currentManifest = new JsonSlurper().parse(manifestFile)
-            if (currentManifest == expectedManifest) {
-                logger.lifecycle("Reusing Native Image base layer at ${baseLayerFile.absolutePath}")
-                return
-            }
-            logger.lifecycle("Native Image base layer manifest changed; rebuilding ${baseLayerFile.absolutePath}")
-        }
-
-        delete(baseLayerDir)
-        if (!baseLayerDir.mkdirs()) {
-            throw new GradleException("Failed to create base-layer directory: ${baseLayerDir.absolutePath}")
-        }
-        List<String> commandLineArgs = [nativeImageTool("native-image")]
-        commandLineArgs.addAll(nativeImageArgs)
-        File nativeImageTmpDir = new File(baseLayerDir.parentFile, "${baseLayerDir.name}.tmp")
-        delete(nativeImageTmpDir)
-        if (!nativeImageTmpDir.mkdirs()) {
-            throw new GradleException("Failed to create base-layer temporary directory: ${nativeImageTmpDir.absolutePath}")
-        }
-        String outputStem = baseLayerFile.name.substring(0, baseLayerFile.name.length() - ".nil".length())
-        File outputFile = new File(baseLayerDir, "lib${outputStem}")
-        commandLineArgs.add("-J-Djava.io.tmpdir=${nativeImageTmpDir.absolutePath}")
-        commandLineArgs.add("-o")
-        commandLineArgs.add(outputFile.absolutePath)
-        commandLineArgs.add("-H:+UnlockExperimentalVMOptions")
-        commandLineArgs.add(expectedManifest["layerCreateArg"] as String)
-        commandLineArgs.add("-H:-UnlockExperimentalVMOptions")
-        ExecOperations execOps = project.services.get(ExecOperations)
-        try {
-            execOps.exec {
-                workingDir = baseLayerDir
-                commandLine commandLineArgs
-            }
-        } finally {
-            delete(nativeImageTmpDir)
-        }
-        if (!baseLayerFile.isFile()) {
-            throw new GradleException("Native Image base-layer build did not create ${baseLayerFile.absolutePath}")
-        }
-        manifestFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(expectedManifest)) + System.lineSeparator()
+                ci as Map<String, Object>, mode,
+                ["{{library.version}}": "", "{{library.coordinates}}": ""])
+        // The same builder writes manifests for cached and coordinate-local bases. §FS-tests.3.3
+        SharedLayerBuildUtils.build(project, project.services.get(ExecOperations), baseLayerFile,
+                nativeImageTool("native-image"), mode, nativeImageArgs, true)
     }
 }
 
