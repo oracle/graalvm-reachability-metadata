@@ -12,6 +12,7 @@ from typing import Sequence
 
 from ai_workflows.agents.agent_runtime import default_agent_for_backend
 from utility_scripts.host_probes import (
+    agent_provider_host,
     check_pi_authentication,
     first_output_line,
     parse_gradle_version,
@@ -228,6 +229,9 @@ class ToolchainChecks:
                 ready,
                 f"backend={backend}; model={model}; {detail}",
                 f"Authenticate `{executable}` for model `{model}` before starting Forge.",
+                # A login that cannot refresh while its provider is down is the outage's failure.
+                # §FS-forge-host-requirements.1
+                transient=not ready and self._endpoint_down(agent_provider_host(backend, model, provider)),
             )
 
     def _selected_agent_authentication(

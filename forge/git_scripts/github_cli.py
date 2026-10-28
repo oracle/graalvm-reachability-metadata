@@ -75,13 +75,16 @@ def is_github_rate_limit_text(text: str) -> bool:
 
 
 def is_github_rate_limit_errors(errors: object) -> bool:
-    """Return True when a GraphQL errors payload reports an exhausted API rate limit."""
+    """Return True when a GraphQL errors payload reports an exhausted API rate limit.
+
+    GitHub types a limit `RATE_LIMITED`, or `RATE_LIMIT` with code `graphql_rate_limit`.
+    """
     if not isinstance(errors, list):
         return False
     for error in errors:
         if not isinstance(error, dict):
             continue
-        if error.get("type") == "RATE_LIMITED":
+        if error.get("type") in ("RATE_LIMITED", "RATE_LIMIT") or error.get("code") == "graphql_rate_limit":
             return True
         message = error.get("message")
         if isinstance(message, str) and is_github_rate_limit_text(message):

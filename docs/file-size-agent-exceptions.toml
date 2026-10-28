@@ -83,3 +83,23 @@ until = "the test-only batched preflight path is removed from forge/dispatcher"
 reason = """
 About 300 of the file's lines are the batched preflight (resolve_next_issue_claim_candidate_batch and the GraphQL preflight, skip and cache-skip helpers it calls), which only tests reach since the launcher fetches with gh issue list; only refresh_issue_payload_for_claim and get_open_blocking_issue_numbers are live. Moving that path to a sibling module would split dead code at the line count; removing it is the design fix and a change of its own.
 """
+[[exceptions]]
+path = "forge/utility_scripts/host_requirements.py"
+match = "exact"
+rules = ["source"]
+kind = "deferred"
+max_accepted = { value = 600, unit = "lines" }
+until = "queue-requirement resolution moves to its own module"
+reason = """
+Resolving which queues a run serves from the FORGE_*_LIMIT variables is a responsibility apart from the host gate and belongs in a sibling module. An open branch rewrites the imports beside that block and the gate entry points that call it, so the move waits for that branch to land rather than conflicting with it.
+"""
+[[exceptions]]
+path = "forge/utility_scripts/host_graalvm_checks.py"
+match = "exact"
+rules = ["source"]
+kind = "deferred"
+max_accepted = { value = 600, unit = "lines" }
+until = "the shared GraalVM installation helpers move to their own module"
+reason = """
+The GraalVM installation helpers the dispatcher and the local CI verification share with the gate, finding a lane's home and proving its installation and agent, are a responsibility apart from the gate's version checks and belong in a sibling module. An open branch adds to those helpers now, so the move waits for it to land rather than conflicting with it.
+"""

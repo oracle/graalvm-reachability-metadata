@@ -27,8 +27,9 @@ version_at_least() {
 # agent (§FS-forge-agent-runtime-selection).
 # The forge workflow works issues and reviews pull requests, so its gate runs in the issue-work
 # mode with PR review; every other workflow runs it in coverage mode (§FS-forge-host-requirements).
-# Exits the caller when gh, python3, or rhei is missing, gh is too old to read
-# --json projectItems, or the host gate fails.
+# Exits the caller when gh, python3, or rhei is missing, or gh is too old to read
+# --json projectItems; returns the host gate's status, 75 when every failure is transient
+# (§FS-forge-host-requirements.1), so a caller under `set -e` exits on any failure.
 require_rhei_launcher_host() {
     local workflow="$1"
     local forge_dir="$2"
