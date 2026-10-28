@@ -223,7 +223,10 @@ invocation, not only from the worker loop, and because the worker re-execs
 itself between cycles, every new worker process revalidates the host before
 doing more work. A standalone work-starting entry point must invoke the same
 gate before its first queue query; the code-coverage launcher does so in its
-coverage mode before selecting an issue or creating a Rhei workspace. Any
+coverage mode before selecting an issue or creating a Rhei workspace. The Forge
+launcher does so before every claim in the issue-work mode with PR review
+enabled, for its worker, setup, and review agents, because each of its cycles
+may work an issue or review published pull requests. Any
 failed required check stops the run with a non-zero exit before the first work
 cycle. Capabilities the mode does not need are reported as not required, a
 relaxed version mismatch does not fail startup, and commands that start no work
