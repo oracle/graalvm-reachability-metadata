@@ -17,6 +17,64 @@ from handoff import Failure  # noqa: E402
 from run_state import ROUTE_REPAIR, runtime_path  # noqa: E402
 
 PACKAGES: set[str] = {"org_example"}
+RULE: str = "-" * 120
+BANNER_START: str = f"""{"=" * 120}
+GraalVM Native Image: Generating 'caffeine_tests-tests' (executable)...
+{"=" * 120}
+[1/8] Initializing...                                                                                   (9.0s @ 0.29GiB)
+"""
+# The tail of the `test` failure of #10906, trimmed: it starts inside the build banner.
+BANNER_TAIL: str = f"""[8/8] Creating image...       [**]                                                                      (3.4s @ 1.08GiB)
+{RULE}
+Top 10 origins of code area:                                Top 10 object types in image heap:
+ 991.04KiB o.g.n.runtime/com.oracle.svm.core.code              2.71MiB byte[] for string data
+ 358.59KiB com.github.benmanes.caffeine.cache                  1.07MiB java.base/java.lang.Class
+ 221.21KiB org.assertj.core.internal.bytebuddy.jar.asm       436.05KiB byte[] for reflection metadata
+   5.01MiB for 343 more packages                               2.26MiB for 2135 more object types
+{RULE}
+Security report:
+ - Binary includes Java deserialization.
+{RULE}
+Recommendations:
+ G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.
+ FUTR: Use '--future-defaults=all' to prepare for future releases.
+ CPU:  Enable more CPU features with '-march=native' for improved performance.
+{RULE}
+Build artifacts:
+ /work/build/native/nativeTestCompile/caffeine_tests-tests (executable, 22.63MiB)
+{"=" * 120}
+Finished generating 'caffeine_tests-tests' in 1m 1s.
+"""
+CAFFEINE: str = BANNER_TAIL + """
+> Task :nativeTest
+com_github_ben_manes_caffeine.caffeine.SIMSTest > cachesSoftValuesUntilInvalidated() FAILED
+Failures (1):
+Execution failed for task ':nativeTest'.
+  JUnit Jupiter:SIMSTest:cachesSoftValuesUntilInvalidated()
+    => java.lang.IllegalStateException: SIMS
+* Try:
+       com.github.benmanes.caffeine.cache.LocalCacheFactory.newFactory(LocalCacheFactory.java:122)
+> Run with --stacktrace option to get the stack trace.
+       [...]
+     Caused by: java.lang.ClassNotFoundException: com.github.benmanes.caffeine.cache.SIMS
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:243)
+       java.base@25.0.4.1.1/java.lang.Class.forName0(DynamicHub.java:2057)
+       java.base@25.0.4.1.1/java.lang.Class.forName(DynamicHub.java:547)
+       java.base@25.0.4.1.1/java.lang.invoke.MethodHandles$Lookup.findClass(MethodHandles.java:2708)
+       com.github.benmanes.caffeine.cache.LocalCacheFactory.newFactory(LocalCacheFactory.java:112)
+       [...]
+[        24 tests found           ]
+[         2 tests failed          ]
+
+> Task :nativeTest FAILED
+> Task :tckTest FAILED
+"""
+
+
+def row(error: str) -> str:
+    """The brief the table gives for one error."""
+    brief: handoff.Brief = next(brief for brief in handoff.BRIEFS if brief.error == error)
+    return f"{brief.error}: {brief.text}"
 
 
 class BriefTest(unittest.TestCase):
@@ -94,6 +152,46 @@ class BriefTest(unittest.TestCase):
         self.assertEqual([handoff.DEFAULT_BRIEF], self.briefs("./gradlew finalizeThing", "boom"))
 
 
+class BannerTest(unittest.TestCase):
+    """The Native Image build banner names no error (§AR-forge-workflow-prompts.5)."""
+
+    def briefs(self, output: str) -> list[str]:
+        return handoff.briefs_for(Failure("./gradlew test -Pcoordinates=x", output), PACKAGES)
+
+    def test_banner_names_no_flag_and_no_bytecode_generation(self) -> None:
+        self.assertEqual([handoff.DEFAULT_BRIEF], self.briefs(BANNER_START + BANNER_TAIL))
+        self.assertEqual([handoff.DEFAULT_BRIEF], self.briefs(BANNER_TAIL))
+
+    def test_class_lookup_failing_in_native_frames_is_a_missing_registration(self) -> None:
+        self.assertEqual([row("missing registration")], self.briefs(CAFFEINE))
+
+    def test_jvm_class_lookup_failure_is_not_a_missing_registration(self) -> None:
+        output = ("java.lang.ClassNotFoundException: org.example.Codec\n"
+                  "    at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)\n"
+                  "    at java.base/java.lang.Class.forName0(Native Method)\n")
+        self.assertEqual([handoff.DEFAULT_BRIEF], self.briefs(output))
+
+    def test_flag_error_after_the_banner_names_the_flag(self) -> None:
+        output = (BANNER_START + "[2/8] Performing analysis...\n" + "=" * 120 + "\n"
+                  "Failed generating 'caffeine_tests-tests' after 20.1s.\n"
+                  "Error: An object of type 'org.example.Codec' was found in the image heap.\n"
+                  "1) If it is intended that objects of type 'org.example.Codec' are persisted in the image heap, add\n"
+                  "    '--initialize-at-build-time=org.example.Codec'\n")
+        self.assertEqual([row("the native build or run names a flag")], self.briefs(output))
+
+    def test_hidden_class_definition_after_the_banner_reshapes_the_test(self) -> None:
+        output = (BANNER_START + BANNER_TAIL + "\n> Task :nativeTest\n"
+                  "    => com.oracle.svm.core.jdk.UnsupportedFeatureError: Defining hidden classes at runtime is "
+                  "not supported.\n")
+        self.assertEqual([row("runtime class definition or bytecode generation")], self.briefs(output))
+
+    def test_only_a_closed_native_banner_is_dropped(self) -> None:
+        output = BANNER_START + "Error: use --initialize-at-run-time=org.example.Codec\n"
+        self.assertEqual([row("the native build or run names a flag")], self.briefs(output))
+        output = "Error: use --initialize-at-run-time=org.example.Codec\nFinished generating test XML results\n"
+        self.assertEqual([row("the native build or run names a flag")], self.briefs(output))
+
+
 class RequestTest(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -114,6 +212,16 @@ class RequestTest(unittest.TestCase):
         self.assertIn("MissingReflectionRegistrationError", text)
         self.assertIn(os.path.join(self.worktree, "metadata", "org.example", "lib") + "/**", text)
         self.assertEqual("native", state.pending_request)
+
+    def test_request_output_keeps_the_banner_its_briefs_ignore(self) -> None:
+        state = run_state(ROUTE_REPAIR, self.worktree)
+        handoff.write_fix_request(self.workspace, state, "native",
+                                  [Failure("./gradlew test -Pcoordinates=" + COORDINATE, CAFFEINE)])
+        with open(runtime_path(self.workspace, handoff.FIX_REQUEST), encoding="utf-8") as handle:
+            text: str = handle.read()
+        briefs, output = text.split("## Briefs", 1)[1].split("## Output", 1)
+        self.assertEqual(f"\n- test: {row('missing registration')}\n\n", briefs)
+        self.assertIn(CAFFEINE.rstrip(), output)
 
     def test_request_names_the_commands_a_failure_kept_from_running(self) -> None:
         state = run_state(ROUTE_REPAIR, self.worktree)
