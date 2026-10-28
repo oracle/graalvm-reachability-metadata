@@ -24,7 +24,7 @@ import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 import org.graalvm.internal.tck.utils.SharedLayerBuildUtils
 
 /// Owns layer selection, construction and policy validation. §FS-tests.3.2, §FS-tests.3.3
-/// Construction is described by §AR-native-test-layers.
+/// Module selection follows §FS-tests.3.4; construction is described by §AR-native-test-layers.
 class NativeImageLayers {
     final Project project
     final String libraryGAV
@@ -113,7 +113,7 @@ class NativeImageLayers {
             base.classpath.from(project.providers.provider { artifacts.resolveDedicatedLayerClasspath() })
             base.buildArgs.addAll(nativeImageArgs)
             base.createLayer { CreateLayerOptions layer ->
-                layer.modules.set(BaseLayerUtils.layerModules())
+                layer.modules.set(project.providers.provider { resolveDedicatedLayerModules() })
                 layer.jars.from(project.providers.provider { artifacts.resolveDedicatedLayerJars() })
             }
             nativeExtension.binaries.getByName("test").useLayer("libDedicated")
@@ -198,6 +198,25 @@ class NativeImageLayers {
         return []
     }
 
+    List<String> resolveDedicatedLayerModules() {
+        NativeImageOptions baseOptions = nativeExtension.binaries.getByName("libDedicated")
+        BuildNativeImageTask baseTask = project.tasks.named("nativeLibDedicatedCompile", BuildNativeImageTask).get()
+        Provider<String> environmentHome = project.providers.environmentVariable("GRAALVM_HOME")
+                .orElse(project.providers.environmentVariable("JAVA_HOME"))
+        // Match Native Build Tools' environment-vs-launcher selection. §FS-tests.3.4
+        File javaHome = (baseTask.disableToolchainDetection.get() || !baseOptions.javaLauncher.isPresent()) &&
+                environmentHome.isPresent() ? project.file(environmentHome.get()) :
+                baseOptions.javaLauncher.get().metadata.installationPath.asFile
+        List<String> modules = BaseLayerUtils.dedicatedLayerModules(
+                baseOptions.classpath.files.findAll { File entry -> entry.name.endsWith(".jar") }
+                        .collect { File entry -> entry.toPath() }, javaHome.toPath())
+        List<String> omitted = BaseLayerUtils.layerModules() - modules
+        if (!omitted.isEmpty()) {
+            project.logger.lifecycle("Omitting dedicated-layer JDK module selectors for {} due to dependency class overlaps: {}",
+                    libraryGAV, omitted.join(", "))
+        }
+        return modules
+    }
     Void validateBaseLayer() {
         if (!layeredNativeImage) {
             return
