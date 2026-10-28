@@ -1,0 +1,49 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    id "scala"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+String scala3Version = tck.scala3Version.get()
+
+dependencies {
+    testImplementation "com.softwaremill.sttp.tapir:tapir-json-circe_3:$libraryVersion"
+    testImplementation "io.circe:circe-core_3:0.14.12"
+    testImplementation "io.circe:circe-parser_3:0.14.12"
+    testImplementation "io.circe:circe-generic_3:0.14.12"
+    testImplementation "com.softwaremill.sttp.tapir:tapir-http4s-server_3:1.11.25"
+    testImplementation "org.http4s:http4s-ember-server_3:0.23.30"
+    testImplementation "com.softwaremill.sttp.tapir:tapir-sttp-client_3:1.11.25"
+    testImplementation "com.softwaremill.sttp.client3:core_3:3.11.0"
+    testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
+    testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(testJvmVersion)
+    }
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("--enable-url-protocols=http")
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

@@ -55,7 +55,7 @@ import static org.assertj.core.api.Assertions.entry;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MarketTickerPushConsumerTest {
 
-    private static final String NATS_IMAGE = "nats:2.15.0";
+    private static final String NATS_IMAGE = "nats:2.15.1";
 
     private static final String STREAM = "TICKS";
 

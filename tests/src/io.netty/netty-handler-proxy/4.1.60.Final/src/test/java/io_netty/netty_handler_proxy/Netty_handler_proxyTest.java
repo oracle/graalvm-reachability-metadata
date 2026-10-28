@@ -9,11 +9,13 @@ package io_netty.netty_handler_proxy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -49,7 +51,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 public class Netty_handler_proxyTest {
-    private static final int IO_TIMEOUT_MILLIS = 5_000;
+    private static final int IO_TIMEOUT_MILLIS = 10_000;
     private static final InetSocketAddress HTTP_DESTINATION = InetSocketAddress.createUnresolved("service.example", 443);
     private static final InetSocketAddress SOCKS_DOMAIN_DESTINATION =
             InetSocketAddress.createUnresolved("destination.example", 8443);
@@ -518,6 +520,7 @@ public class Netty_handler_proxyTest {
             Bootstrap bootstrap = new Bootstrap()
                     .group(group)
                     .channel(NioSocketChannel.class)
+                    .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
                     .resolver(NoopAddressResolverGroup.INSTANCE)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override

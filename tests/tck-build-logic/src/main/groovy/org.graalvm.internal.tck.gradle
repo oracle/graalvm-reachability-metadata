@@ -456,12 +456,13 @@ Closure<List<Map<String, String>>> resolveTestedLibraryDependencyArtifacts = {
 }
 
 Closure<List<File>> resolveTestedLibraryMainJars = {
+    String requestedVersion = libraryGAV.split(":")[2]
     List<ResolvedArtifact> mainArtifacts = resolveTestedLibraryArtifacts().findAll { ResolvedArtifact artifact ->
-        JarUtils.isUnclassifiedMainJar(artifact.extension, artifact.classifier)
+        JarUtils.isMainJar(artifact.extension, artifact.classifier, requestedVersion, artifact.moduleVersion.id.version)
     }
     if (mainArtifacts.isEmpty()) {
         throw new GradleException(
-                "No unclassified main JAR found on the classpath for ${libraryGAV}.\n" +
+                "No main JAR found on the classpath for ${libraryGAV}.\n" +
                         "Please verify that the coordinate publishes a main JAR."
         )
     }
@@ -956,8 +957,6 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
 // §AR-test-harness.3.1: run the forked JVM test workers on a JDK that need not be able to host
 // Gradle. Selects an interpreter only — JVM arguments are left exactly as they would be otherwise.
 String testJavaHome = System.getenv("GVM_TCK_TEST_JAVA_HOME")
-// §AR-test-harness.3.1: opt-in escape hatch for a JDK that rejects Gradle's default `-ea`.
-boolean disableTestAssertions = Boolean.parseBoolean(System.getenv("GVM_TCK_TEST_DISABLE_ASSERTIONS"))
 
 tasks.register("nativeTestPGOSampling") { task ->
     task.inputs.property("pgoSamplingPeriodMicros", pgoSamplingPeriodMicros)
@@ -1005,9 +1004,6 @@ tasks.withType(Test).configureEach { Test testTask ->
         // a configured javaLauncher and an executable, and the Kotlin/Scala coordinates pin one.
         testTask.javaLauncher.unset()
         testTask.executable = new File(new File(testJavaHome, "bin"), "java").absolutePath
-    }
-    if (disableTestAssertions) {
-        testTask.enableAssertions = false
     }
     systemProperty "junit.jupiter.execution.timeout.default", "${maxJUnitTestTimeoutSeconds} s"
     systemProperty "junit.jupiter.execution.timeout.mode", "enabled"

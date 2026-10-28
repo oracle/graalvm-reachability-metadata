@@ -1,0 +1,105 @@
+{
+  "add_new_library_support:2026-10-19": {
+    "timestamp": "2026-10-19T21:29:25.695456Z",
+    "library": "org.apache.cxf:cxf-rt-frontend-simple:2.6.1",
+    "starting_commit": "682749f39a7695a6b1c0c24eb07a8f3294c8277b",
+    "ending_commit": "ca7ac96e6b10693f17541eb81f5c92e990840722",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.6.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 112,
+          "missed": 4440,
+          "ratio": 0.024605,
+          "total": 4552
+        },
+        "line": {
+          "covered": 36,
+          "missed": 994,
+          "ratio": 0.034951,
+          "total": 1030
+        },
+        "method": {
+          "covered": 19,
+          "missed": 168,
+          "ratio": 0.101604,
+          "total": 187
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10993,
+      "issue_label": "library-new-request",
+      "library": "org.apache.cxf:cxf-rt-frontend-simple:2.6.1",
+      "summary": "cxf-rt-frontend-simple 2.6.1 marks its only in-JVM transport, cxf-rt-transports-local, as optional, so the generated test project will not get it. Without a transport, ServerFactoryBean.create() and ClientProxyFactoryBean.create() fail with 'No DestinationFactory/ConduitInitiator for transport'. That blocks every server and client round-trip, which is the library's main use. Adding the matching local transport makes those round-trips work in-process, with no Docker and no network.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.cxf:cxf-rt-transports-local:2.6.1",
+          "scope": "testImplementation",
+          "reason": "The library's POM declares this as <optional>true</optional>, so it is not pulled in transitively. It provides the 'local://' transport. Without it (or an HTTP transport), the simple frontend cannot publish an endpoint or create a client proxy, and coverage stops at the factory-bean setters. Its ver\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Publish services with ServerFactoryBean and call them with ClientProxyFactoryBean on 'local://<unique-name>' addresses. Use a unique name per test so endpoints don't clash, and call server.destroy() and bus.shutdown(true) in teardown. Don't use http:// addresses: no HTTP transport or Jetty is on the classpath, and none is needed. The default databinding is JAXB, through the transitive cxf-rt-databinding-jaxb and jaxb-impl 2.2.x. Give the service interface and implementation simple JavaBean or primitive parameter types, and put them in test packages. Don't add ASM or cglib to enable generated wrapper or proxy classes: Native Image cannot define classes at runtime, and CXF falls back to reflection without them. Paths that also exercise the library's own code include: setting serviceClass, address, bus and properties on the factory beans; adding logging interceptors with LoggingInInterceptor/LoggingOutInterceptor on the server and client; retrieving the WSDL through the local transport; and ClientFactoryBean/Client.invoke for dynamic invocation without a typed proxy. No Spring or Blueprint is needed: create the bus directly with BusFactory.newInstance().createBus().",
+      "risks": [
+        "jaxb-impl 2.2.x (transitive through cxf-rt-core) is old on JDK 25. Its class injector, which reflects on ClassLoader.defineClass, fails and falls back to reflection-based accessors. This is expected and usually harmless, but it may log warnings or need extra reflection metadata for JAXB internals in Native Image.",
+        "CXF 2.6 loads many extensions through META-INF/cxf/bus-extensions.txt and Class.forName. Native runs will need resource and reflection metadata for the bus extensions, the SOAP binding factory and the local transport factory. The agent should expect a substantial generated reachability-metadata.json.",
+        "Without ASM on the classpath, CXF skips generating wrapper classes for wrapped-style operations. If JAXB wrapped-style generation fails on the JVM, set the factory's ServiceFactory wrapped=false (or use simple parameter types) rather than adding ASM.",
+        "woodstox-core-asl reaches the test only as a runtime-scoped dependency of cxf-api. If the StAX implementation resolves differently, the JDK's built-in StAX will be used, which CXF 2.6 generally tolerates."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.cxf:cxf-rt-transports-local:2.6.1",
+          "result": "applied",
+          "target": "tests/src/org.apache.cxf/cxf-rt-frontend-simple/2.6.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10993 Support for org.apache.cxf:cxf-rt-frontend-simple:2.6.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "opus",
+      "input_tokens_used": 8,
+      "output_tokens_used": 3676
+    },
+    "metrics": {
+      "input_tokens_used": 154550,
+      "cached_input_tokens_used": 2265344,
+      "output_tokens_used": 14774,
+      "iterations": 6,
+      "cost_usd": 2.3486,
+      "generated_loc": 29,
+      "tested_library_loc": 36,
+      "metadata_entries": 2,
+      "code_coverage_percent": 3.5
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.cxf/cxf-rt-frontend-simple/2.6.1/reachability-metadata.json"
+    }
+  }
+}

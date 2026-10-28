@@ -1,0 +1,31 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.kafka:kafka-streams:$libraryVersion"
+    testImplementation "org.apache.kafka:kafka-clients:3.6.0"
+    testImplementation "org.apache.kafka:kafka-streams-test-utils:3.6.0"
+    testImplementation "org.rocksdb:rocksdbjni:7.9.2"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.13.5"
+    testImplementation "ch.qos.logback:logback-classic:1.4.5"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

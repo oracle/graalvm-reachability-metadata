@@ -1,0 +1,135 @@
+{
+  "base_commit": "3de88b2c22a9c87680a2dbe458b7b52a6cce50ec",
+  "branch": "ai/kimeta/add-lib-support-org.apache.pulsar-pulsar-client-all-4.2.5-chunked-forge-10642-20261026111742390738-94bf073158f7",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "3de88b2c22a9c87680a2dbe458b7b52a6cce50ec",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10642,
+  "library": {
+    "artifact": "pulsar-client-all",
+    "coordinates": "org.apache.pulsar:pulsar-client-all:4.2.5",
+    "group": "org.apache.pulsar",
+    "version": "4.2.5"
+  },
+  "local_ci_verification": {
+    "base_commit": "3de88b2c22a9c87680a2dbe458b7b52a6cce50ec",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "2ba8f43f72d837d486528665db63161b53b37c21",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "claude-opus-5-5",
+    "review_comment": "Reviewed the single-coordinate diff against the library-new-request review signals. The tests live in the separate org_apache_pulsar.pulsar_client_all package and drive the shaded library API; there is no scaffold, native skip, error-swallowing catch, version-pinned assertion, build or run flag, or legacy metadata file, and build.gradle, settings.gradle and user-code-filter.json are unchanged. Every test class and method from the previous chunk is preserved and the shipped metadata only gains entries. Generated scenarios whose dynamic access the tracing agent does not record were left out: a Docker broker round trip, an --add-opens field probe, Avro custom-encoding construction, Gson unsafe allocation, and serialization of dynamic proxy instances. Agent-emitted lambda typeReached conditions were normalized to their declaring classes. Covered dynamic-access calls are non-zero (598 of 989), which is the gate for a chunked publication, and all three Forge native lanes, metadata and style checks, and statistics validation pass.",
+    "session_id": "5b1ad010fb2240dd"
+  },
+  "metrics": {
+    "agent": "claude-code",
+    "model": "claude-opus-5-5",
+    "path": "stats/org.apache.pulsar/pulsar-client-all/4.2.5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 31436015,
+      "code_coverage_percent": 8.99,
+      "cost_usd": 96.1777,
+      "generated_loc": 6985,
+      "input_tokens_used": 320088,
+      "iterations": 2,
+      "metadata_entries": 1360,
+      "output_tokens_used": 75781,
+      "test_only_metadata_entries": 651,
+      "tested_library_loc": 40336
+    },
+    "timestamp": "2026-10-26T11:17:42.390738Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10642-20261026111742390738-94bf073158f7",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.apache.pulsar.shade.io.netty.util.internal.PlatformDependent0.alignSlice(PlatformDependent0.java:700) (line 700)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.apache.pulsar.shade.io.netty.util.internal.PlatformDependent0.getIsVirtualThreadMethod(PlatformDependent0.java:553) (line 553)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.apache.pulsar.shade.javax.xml.bind.ContextFinder.newInstance(ContextFinder.java:168) (line 168)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.apache.pulsar.shade.javax.xml.bind.ContextFinder.newInstance(ContextFinder.java:179) (line 179)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.apache.pulsar.shade.javax.xml.bind.ContextFinder.newInstance(ContextFinder.java:249) (line 249)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.apache.pulsar.shade.javax.xml.bind.ContextFinder.newInstance(ContextFinder.java:171) (line 171)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.apache.pulsar.shade.javax.xml.bind.ContextFinder.newInstance(ContextFinder.java:182) (line 182)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.apache.pulsar.shade.javax.xml.bind.ContextFinder.newInstance(ContextFinder.java:251) (line 251)",
+        "... and 590 more"
+      ],
+      "metadata_rules": [
+        "when `org.apache.pulsar.common.util.SecurityUtility` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `org.apache.pulsar.shade.io.netty.handler.ssl.JdkSslContext$Defaults` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `org.apache.pulsar.common.util.SecurityUtility` is reached, make `com.sun.crypto.provider.ARCFOURCipher.<init>()` available for reflection",
+        "when `org.apache.pulsar.shade.io.netty.handler.ssl.JdkSslContext$Defaults` is reached, make `com.sun.crypto.provider.ARCFOURCipher.<init>()` available for reflection",
+        "when `org.apache.pulsar.common.util.SecurityUtility` is reached, make `com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305.<init>()` available for reflection",
+        "when `org.apache.pulsar.shade.io.netty.handler.ssl.JdkSslContext$Defaults` is reached, make `com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305.<init>()` available for reflection",
+        "when `org.apache.pulsar.common.util.SecurityUtility` is reached, make `com.sun.crypto.provider.DESCipher.<init>()` available for reflection",
+        "when `org.apache.pulsar.shade.io.netty.handler.ssl.JdkSslContext$Defaults` is reached, make `com.sun.crypto.provider.DESCipher.<init>()` available for reflection",
+        "... and 682 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.61879,
+            "coveredCalls": 573,
+            "totalCalls": 926
+          },
+          "resources": {
+            "coverageRatio": 0.396825,
+            "coveredCalls": 25,
+            "totalCalls": 63
+          }
+        },
+        "coverageRatio": 0.604651,
+        "coveredCalls": 598,
+        "totalCalls": 989
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 177637,
+          "missed": 2050852,
+          "ratio": 0.079712,
+          "total": 2228489
+        },
+        "line": {
+          "covered": 40336,
+          "missed": 408143,
+          "ratio": 0.08994,
+          "total": 448479
+        },
+        "method": {
+          "covered": 10412,
+          "missed": 97033,
+          "ratio": 0.096905,
+          "total": 107445
+        }
+      },
+      "version": "4.2.5"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_claude-code_opus",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-26T11:17:42.390738Z"
+}

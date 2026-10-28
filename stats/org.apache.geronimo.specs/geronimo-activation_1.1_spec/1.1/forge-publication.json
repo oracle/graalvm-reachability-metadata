@@ -1,0 +1,147 @@
+{
+  "base_commit": "87041810685cf46e5ff85531adc7f072d7f5c2ed",
+  "branch": "ai/kimeta/add-lib-support-org.apache.geronimo.specs-geronimo-activation_1.1_spec-1.1-forge-10970-20261021050500578337-d002c27c054c",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "87041810685cf46e5ff85531adc7f072d7f5c2ed",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10970,
+  "library": {
+    "artifact": "geronimo-activation_1.1_spec",
+    "coordinates": "org.apache.geronimo.specs:geronimo-activation_1.1_spec:1.1",
+    "group": "org.apache.geronimo.specs",
+    "version": "1.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "87041810685cf46e5ff85531adc7f072d7f5c2ed",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmps1kxgqc4"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10970-6bbc038c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.geronimo.specs:geronimo-activation_1.1_spec"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.geronimo.specs/geronimo-activation_1.1_spec/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10970-6bbc038c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "08fd6d71e0a486cf6c9fc5468ba0fad8f3508a3f",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the single-coordinate closed file set, non-scaffold public-API tests, package separation, version-agnostic assertions, Native Image execution behavior, metadata file presence and format, and index integrity. Reported dynamic-access coverage is 5/5 (100%), above the new-library gate, and 5 covered calls do not trigger the mismatch guardrail against 8 reported metadata entries. The Forge finalizer completed all three test lanes, metadata and style checks, test-only metadata splitting, and regenerated statistics without changing the publishable tree.",
+    "session_id": "24c287e2078343c5"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.geronimo.specs/geronimo-activation_1.1_spec/1.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 711040,
+      "code_coverage_percent": 20.0,
+      "cost_usd": 1.2438,
+      "generated_loc": 105,
+      "input_tokens_used": 129469,
+      "iterations": 3,
+      "metadata_entries": 4,
+      "output_tokens_used": 8033,
+      "test_only_metadata_entries": 4,
+      "tested_library_loc": 179
+    },
+    "timestamp": "2026-10-21T05:05:00.578337Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10970-20261021050500578337-d002c27c054c",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#newInstance() <- javax.activation.MailcapCommandMap.createDataContentHandler(MailcapCommandMap.java:472) (line 472)",
+        "[resources] java.lang.ClassLoader#getResources(java.lang.String) <- javax.activation.MailcapCommandMap.<init>(MailcapCommandMap.java:73) (line 73)",
+        "[resources] java.lang.ClassLoader#getResources(java.lang.String) <- javax.activation.MimetypesFileTypeMap.<init>(MimetypesFileTypeMap.java:62) (line 62)",
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- org.apache.geronimo.osgi.locator.ProviderLocator.loadClass(ProviderLocator.java:195) (line 195)",
+        "[reflection] java.lang.ClassLoader#loadClass(java.lang.String) <- org.apache.geronimo.osgi.locator.ProviderLocator.loadClass(ProviderLocator.java:187) (line 187)"
+      ],
+      "metadata_rules": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 700,
+          "missed": 2823,
+          "ratio": 0.198694,
+          "total": 3523
+        },
+        "line": {
+          "covered": 179,
+          "missed": 716,
+          "ratio": 0.2,
+          "total": 895
+        },
+        "method": {
+          "covered": 27,
+          "missed": 152,
+          "ratio": 0.150838,
+          "total": 179
+        }
+      },
+      "version": "1.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-21T05:05:00.578337Z"
+}

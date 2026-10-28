@@ -1,0 +1,66 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    alias(libs.plugins.kotlin.jvm)
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+
+dependencies {
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-jsr223:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-common:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-jvm:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-jvm-host:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$libraryVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2"
+    testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2"
+}
+
+kotlin {
+    jvmToolchain(testJvmVersion)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
+}
+
+String findRuntimeClasspathJar(String prefix) {
+    File match = sourceSets.test.runtimeClasspath.files.find { File candidate ->
+        candidate.name.startsWith(prefix) && candidate.name.endsWith(".jar")
+    }
+    return match?.absolutePath ?: ""
+}
+
+graalvmNative {
+    binaries {
+        test {
+            // The shaded compiler retains JLine properties but omits the files they reference.
+            buildArgs.addAll("--exclude-config", "kotlin-compiler-embeddable-.*\\.jar",
+                    "META-INF/native-image/org\\.jline/.*\\.properties")
+            // The engine compiles scripts against these JARs, which a native image has no path to.
+            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
+            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+            runtimeArgs("-Dkotlin.java.stdlib.jar=${findRuntimeClasspathJar('kotlin-stdlib-')}")
+        }
+    }
+    // The harness supplies task arguments, so binary runtime defaults are not inherited.
+    tasks.named("nativeTest") {
+        runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+        runtimeArgs.add("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

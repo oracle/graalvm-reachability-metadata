@@ -147,15 +147,6 @@ case. Because the selected JDK is used unmodified, a failure under it is a
 property of that JDK and not of the harness, which is what makes the resulting
 run usable as a bug report.
 
-`GVM_TCK_TEST_DISABLE_ASSERTIONS=true` is the one exception, and it is opt-in and
-off by default. Gradle enables assertions on every test worker, so a JDK that
-rejects `-ea` outright fails all workers at VM startup and the run yields a
-single finding repeated once per coordinate instead of a survey. Setting this
-clears Gradle's `enableAssertions` so the sweep can reach the failures behind
-that one. It changes what the tests check: assertions no longer fire, so a test
-that verifies via `assert` passes vacuously. A run with this set is a
-bug-discovery run, never evidence that a library is supported.
-
 ## 4. Native-image metadata tracing
 
 Helpers for collecting metadata with the native-image tracing agent (see also
@@ -213,7 +204,7 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | `generateDynamicAccessCoverageReport`, `analyzeExternalLibraryDynamicAccess` | Dynamic-access coverage reporting (§FS-repository-functional-spec.4.5). |
 | `nativeTestPGOSampling` | Build coordinate native tests with instrumented and sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/AR-code-coverage-deep-navigation.1). |
 | `runNativeTestPGO` | Run the profiled image and write its `.iprof` — sampled stacks plus instrumented counters — to the required absolute `pgoProfilePath`. |
-| `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§AR-publish-scheduled-coverage). Library coverage analyzes only the coordinate's unclassified main JAR and includes both the regular and tracked extension suites. |
+| `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§AR-publish-scheduled-coverage). Library coverage analyzes only the coordinate's main JAR and includes both the regular and tracked extension suites. |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
 
 `generateDynamicAccessCoverageReport` derives its call sites from the native
@@ -253,9 +244,13 @@ This keeps broad coverage tests separate from metadata-generation tests while
 reusing the coordinate's dependencies and build configuration
 (§forge/AR-code-coverage-improvement.4.1).
 
-JaCoCo coverage reports analyze only the coordinate's unclassified main JAR;
-classified artifacts such as upstream test JARs stay on the execution classpath
-but never contribute classes to the coverage denominator. `generateLibraryStats`
+JaCoCo coverage reports analyze only the coordinate's main JAR: the
+unclassified one, or, when the coordinate's version names a published variant
+by suffix, the JAR classified as that suffix. `org.ehcache:ehcache:3.10.8-jakarta`
+resolves module version `3.10.8` through its Jakarta capability, and its only
+JAR is `ehcache-3.10.8-jakarta.jar`. Other classified artifacts, such as
+upstream test JARs, stay on the execution classpath but never contribute
+classes to the coverage denominator. `generateLibraryStats`
 uses the combined `jacocoCodeCoverageReport`, so newly added regular tests and
 tracked code-coverage extension tests are reflected in the committed
 `libraryCoverage` line, instruction, and method statistics.
