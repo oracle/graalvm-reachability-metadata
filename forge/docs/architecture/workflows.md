@@ -11,7 +11,7 @@ linking are still live.
 
 ## AR-java-fail-fix-workflow: Java fix workflows (retired)
 
-Retired: `repair` and one fix request replace it (§AR-forge-workflow-pipeline.4) (§FS-forge-issue-resolution-goal).
+Retired: `jvm` and `native-repair`, with one fix request each, replace it (§AR-forge-workflow-pipeline.4) (§FS-forge-issue-resolution-goal).
 
 ## AR-dynamic-access-workflow: Dynamic-access exploration (retired)
 
@@ -27,7 +27,7 @@ Retired: bulk mode of §AR-forge-workflow-pipeline.7 replaces it (§FS-forge-iss
 
 ## AR-dynamic-access-composite: Composite fix-then-explore (retired)
 
-Retired: `repair` followed by exploration replaces it (§AR-forge-workflow-pipeline.3) (§FS-forge-issue-resolution-goal).
+Retired: `jvm` and `native-repair` followed by exploration replace it (§AR-forge-workflow-pipeline.3) (§FS-forge-issue-resolution-goal).
 
 ## AR-dynamic-access-fallback-and-failure: Fallback and failure (retired)
 

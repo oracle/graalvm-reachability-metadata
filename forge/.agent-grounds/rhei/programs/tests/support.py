@@ -36,7 +36,8 @@ from run_state import ROUTE_NEW, Budgets, RunState  # noqa: E402
 
 COORDINATE: str = "org.example:lib:2.0.0"
 PREVIOUS: str = "org.example:lib:1.5.0"
-BUDGETS: Budgets = Budgets(bulk_min_classes=5, bulk_passes=3, class_attempts=3, defer_classes=15, explore_passes=20)
+BUDGETS: Budgets = Budgets(bulk_min_classes=5, bulk_passes=3, class_attempts=3, defer_classes=15, explore_passes=20,
+                           finalize_fixes=5)
 
 
 def run_state(route: str = ROUTE_NEW, worktree: str = "/tmp/worktree", **changes: Any) -> RunState:

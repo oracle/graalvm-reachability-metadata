@@ -30,7 +30,8 @@ def prepare_arguments(setup_agent: str = SETUP_AGENT, worker_agent: str = WORKER
                       passes: str = "20") -> list[str]:
     return ["prepare", "--issue-number", "7", "--setup-agent", setup_agent, "--worker-agent", worker_agent,
             "--bulk-min-classes", "5", "--bulk-passes", "3", "--class-attempts", "3", "--defer-classes", "15",
-            "--explore-passes", passes, "--repo-checkout", "../../repo", "--worktree-root", "../worktrees"]
+            "--explore-passes", passes, "--finalize-fixes", "5", "--repo-checkout", "../../repo",
+            "--worktree-root", "../worktrees"]
 
 
 def jackson(entries: list[dict[str, Any]]) -> str:
@@ -224,8 +225,11 @@ class PrepareTest(unittest.TestCase):
 
     def test_validate_inputs_rejects_non_positive_budgets(self) -> None:
         namespace = argparse.Namespace(bulk_min_classes=0, bulk_passes=3, class_attempts=3, defer_classes=15,
-                                       explore_passes=20, setup_agent=SETUP_AGENT, worker_agent=WORKER_AGENT)
+                                       explore_passes=20, finalize_fixes=5, setup_agent=SETUP_AGENT,
+                                       worker_agent=WORKER_AGENT)
         self.assertEqual("bulk_min_classes must be positive", prepare.validate_inputs(namespace))
+        namespace.bulk_min_classes, namespace.finalize_fixes = 5, 0
+        self.assertEqual("finalize_fixes must be positive", prepare.validate_inputs(namespace))
 
 
 if __name__ == "__main__":

@@ -29,13 +29,15 @@ ROUTE_REPAIR: str = "repair"
 
 @dataclass
 class Budgets:
-    """The template's explore inputs (§AR-forge-workflow-pipeline.7)."""
+    """The template's explore inputs (§AR-forge-workflow-pipeline.7) and `finalize`'s fix budget."""
 
     bulk_min_classes: int
     bulk_passes: int
     class_attempts: int
     defer_classes: int
     explore_passes: int
+    # The fix requests `finalize` may send (§AR-forge-workflow-pipeline.6).
+    finalize_fixes: int
 
 
 @dataclass
@@ -110,6 +112,8 @@ class RunState:
     skip_recorded: bool = False
     # The sender of the open fix request, for the loop guard (§AR-forge-workflow-pipeline.6).
     pending_request: str | None = None
+    # The fix requests `finalize` has sent, which `budgets.finalize_fixes` bounds.
+    finalize_requests: int = 0
     # The audit's checkpoint once sent, and whether it passed (§FS-local-branch-review.4).
     audit_checkpoint: str = ""
     audit_passed: bool = False

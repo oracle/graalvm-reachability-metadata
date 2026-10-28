@@ -19,12 +19,11 @@ import finalize
 import gates
 import handoff
 import native_check
-from build_tools import changed_paths, checkpoint, coordinate_task
+from build_tools import changed_paths, checkpoint
 from exit_codes import AGENT_WORK, OK, STILL_FAILING
 from run_state import RunState, load, save
 
 SENDER: str = "audit"
-NATIVE_TASKS: tuple[str, ...] = ("generateMetadata", "checkMetadataFiles", "test")
 
 
 PATTERNS: str = """
@@ -66,8 +65,12 @@ def brief(state: RunState) -> str:
 
 
 def commands(workspace: str, state: RunState) -> list[handoff.Failure]:
-    """The native check and the `finalize` lane, every one passing, as the request's commands."""
-    native: list[str] = [" ".join(["./gradlew", *coordinate_task(task, state.coordinate)]) for task in NATIVE_TASKS]
+    """The native check and the `finalize` lane, every one passing, as the request's commands.
+
+    The lane opens with the harness split and routing, so they follow the regeneration
+    (§AR-forge-workflow-pipeline.5).
+    """
+    native: list[str] = list(native_check.commands(state))
     return [handoff.Failure(command, "") for command in native + finalize.lane_commands(workspace, state)]
 
 

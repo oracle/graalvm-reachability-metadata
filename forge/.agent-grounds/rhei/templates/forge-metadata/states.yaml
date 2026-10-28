@@ -1,15 +1,15 @@
 # State machine of the forge-metadata workflow (§AR-forge-workflow-pipeline.3).
 #
 #   prepare -- 0 --> setup --> setup-check
-#   setup-check -- 0 --> repair; 20 (new library) --> analyze; 21 (skip recorded) --> publish
-#   repair -- 0 --> analyze; 10 --> fix
+#   setup-check -- 0 --> jvm; 20 (new library) --> analyze; 21 (skip recorded) --> publish
+#   jvm -- 0 --> native-repair -- 0 --> analyze; each 10 --> fix
 #   analyze -- 10 --> cover --> measure; 20 (nothing to explore, deferred) --> native
 #   measure -- 10 --> cover; 11 (JVM tests fail) --> fix; 0 (goal), 20 (budget) --> native
 #   native -- 0 --> finalize; 10 --> fix
-#   finalize -- 0 --> audit; 10 --> fix
+#   finalize -- 0 --> audit; 10 (at most finalize_fixes times) --> fix
 #   audit -- 10 (first visit) --> fix; 0 --> publish
-#   fix --> fix-route -- 30-34 --> repair/measure/native/finalize/audit; 40 --> human-intervention
-#   repair, measure, native, finalize, audit -- 12 (failing after its fix) --> human-intervention
+#   fix --> fix-route -- 30-35 --> back to the sender; 40 --> human-intervention
+#   every sender -- 12 (failing after its last fix) --> human-intervention
 #   publish -- 0 --> completed; 20 (nothing changed) --> nothing-to-publish
 #   every program -- 2 (bad input), 3 (infrastructure), or a crash --> failed
 #
@@ -36,6 +36,7 @@ states:
       --class-attempts {{class_attempts}}
       --defer-classes {{defer_classes}}
       --explore-passes {{explore_passes}}
+      --finalize-fixes {{finalize_fixes}}
       --repo-checkout "{{repo_checkout}}"
       --worktree-root "{{worktree_root}}"
     program_timeout: 60m
@@ -88,15 +89,25 @@ states:
     program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" setup-check
     program_timeout: 60m
 
-  repair:
-    description: Make a version that already has tests work - javaTest and the native check.
-    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" repair
+  jvm:
+    description: Make a version that already has tests work on the JVM - javaTest, then generateMetadata.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" jvm
     program_timeout: 180m
     outputs:
       - name: fix-request
         kind: handoff
         path: runtime/forge/fix-request.md
-        description: The failing commands the fix agent receives.
+        description: The failing command the fix agent receives.
+
+  native-repair:
+    description: Right after jvm, run the coordinate's test task over the generated metadata, without regenerating it.
+    program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" native-repair
+    program_timeout: 180m
+    outputs:
+      - name: fix-request
+        kind: handoff
+        path: runtime/forge/fix-request.md
+        description: The failing test task the fix agent receives.
 
   analyze:
     description: List the dynamic-access call sites once, correlate JaCoCo, pick the explore mode, write the first cover prompt.
@@ -164,19 +175,19 @@ states:
         description: The mode and targets of the next cover pass.
 
   native:
-    description: The native check - generateMetadata, then checkMetadataFiles and the coordinate's test task.
+    description: The native check - generateMetadata, then the coordinate's test task.
     program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" native
     program_timeout: 180m
     outputs:
       - name: fix-request
         kind: handoff
         path: runtime/forge/fix-request.md
-        description: Every failing native-check output the fix agent receives.
+        description: The failing native-check command the fix agent receives.
 
   finalize:
-    description: spotlessApply, then spotlessCheck, checkstyle, generateLibraryStats, the reviewer gates, and the pre-publication gate with the coordinate's three native lanes, each once.
+    description: splitTestOnlyMetadata, routeForeignMetadata, checkMetadataFiles, spotlessApply, spotlessCheck, checkstyle, generateLibraryStats, the reviewer gates, and the pre-publication gate with the coordinate's three native lanes, each once.
     program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" finalize
-    # The gates plus three native lanes; a lane is at most 7 five-minute Gradle calls when it fails.
+    # The metadata steps, the gates, and three native lanes; a lane is at most 7 five-minute Gradle calls when it fails.
     program_timeout: 180m
     outputs:
       - name: fix-request
@@ -251,8 +262,10 @@ states:
         under the same unsatisfied condition.
       - Never duplicate an entry: when the type is already registered, add only
         the missing method, field, or flag to it.
-      - Fix what `checkMetadataFiles` reports with the harness tasks first:
-        `splitTestOnlyMetadata` and `routeForeignMetadata` (§root/FS-metadata.2).
+      - Before `checkMetadataFiles`, run `splitTestOnlyMetadata` and then
+        `routeForeignMetadata`, as finalization does; what the check reports
+        after them needs a change to the tests or the metadata, not another run
+        (§root/FS-metadata.2).
       - Metadata lives only in `reachability-metadata.json`; never write a legacy
         `*-config.json` file, test-only included (§root/FS-contribution-contract.2).
 
@@ -340,7 +353,7 @@ transitions:
     description: Setup's turn ended; setup-check keeps only what setup may change.
 
   - from: setup-check
-    to: repair
+    to: jvm
     exit_code: 0
     description: The setup is done and the version has tests to repair.
 
@@ -359,25 +372,45 @@ transitions:
     exit_code: nonzero
     description: A missing URL, an unresolvable declaration, or the infrastructure.
 
-  - from: repair
-    to: analyze
+  - from: jvm
+    to: native-repair
     exit_code: 0
-    description: The version works.
+    description: javaTest and generateMetadata pass.
 
-  - from: repair
+  - from: jvm
     to: fix
     exit_code: 10
-    description: The version fails; one fix request follows.
+    description: javaTest or generateMetadata fails; one fix request for that command follows.
 
-  - from: repair
+  - from: jvm
     to: human-intervention
     exit_code: 12
-    description: The version still fails after its fix.
+    description: The version still fails on the JVM after its fix.
 
-  - from: repair
+  - from: jvm
     to: failed
     exit_code: nonzero
     description: An unresolvable declaration, a missing index entry, or the infrastructure.
+
+  - from: native-repair
+    to: analyze
+    exit_code: 0
+    description: The version works on Native Image.
+
+  - from: native-repair
+    to: fix
+    exit_code: 10
+    description: The test task fails; one fix request follows.
+
+  - from: native-repair
+    to: human-intervention
+    exit_code: 12
+    description: The test task still fails after its fix.
+
+  - from: native-repair
+    to: failed
+    exit_code: nonzero
+    description: The test task could not run.
 
   - from: analyze
     to: cover
@@ -431,7 +464,7 @@ transitions:
   - from: native
     to: fix
     exit_code: 10
-    description: The native check fails; one fix request with every failing output follows.
+    description: The native check fails; one fix request follows.
 
   - from: native
     to: human-intervention
@@ -451,12 +484,12 @@ transitions:
   - from: finalize
     to: fix
     exit_code: 10
-    description: A check fails; one fix request follows.
+    description: A check fails and the finalize budget is not spent; one fix request follows.
 
   - from: finalize
     to: human-intervention
     exit_code: 12
-    description: The check still fails after its fix.
+    description: A check still fails after the last fix the budget allows.
 
   - from: finalize
     to: failed
@@ -488,9 +521,9 @@ transitions:
     description: The fix's turn ended; fix-route returns to the sender.
 
   - from: fix-route
-    to: repair
+    to: jvm
     exit_code: 30
-    description: Back to repair, which reruns its check.
+    description: Back to jvm, which reruns javaTest and generateMetadata.
 
   - from: fix-route
     to: measure
@@ -511,6 +544,11 @@ transitions:
     to: audit
     exit_code: 34
     description: Back to audit, which compares the tree with its checkpoint.
+
+  - from: fix-route
+    to: native-repair
+    exit_code: 35
+    description: Back to native-repair, which reruns the test task.
 
   - from: fix-route
     to: human-intervention

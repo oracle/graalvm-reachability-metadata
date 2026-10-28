@@ -14,15 +14,23 @@ from support import run_state, working_directory
 
 import fix_route  # noqa: E402
 import forge_run  # noqa: E402
-from exit_codes import CANNOT_FIX, INFRASTRUCTURE, RETURN_FINALIZE, RETURN_MEASURE, RETURN_NATIVE, RETURN_REPAIR  # noqa: E402
+from exit_codes import (  # noqa: E402
+    CANNOT_FIX,
+    INFRASTRUCTURE,
+    RETURN_FINALIZE,
+    RETURN_JVM,
+    RETURN_MEASURE,
+    RETURN_NATIVE,
+    RETURN_NATIVE_REPAIR,
+)
 from run_state import ROUTE_REPAIR, read_json, runtime_path, save, write_json  # noqa: E402
 
 
 class RouteTest(unittest.TestCase):
 
     def test_fixed_returns_to_the_sender(self) -> None:
-        for sender, code in (("repair", RETURN_REPAIR), ("measure", RETURN_MEASURE), ("native", RETURN_NATIVE),
-                             ("finalize", RETURN_FINALIZE)):
+        for sender, code in (("jvm", RETURN_JVM), ("native-repair", RETURN_NATIVE_REPAIR),
+                             ("measure", RETURN_MEASURE), ("native", RETURN_NATIVE), ("finalize", RETURN_FINALIZE)):
             state = run_state(ROUTE_REPAIR, pending_request=sender)
             self.assertEqual(code, fix_route.route(state, {"result": "fixed"}))
 

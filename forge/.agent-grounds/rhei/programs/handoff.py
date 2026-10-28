@@ -52,6 +52,7 @@ class Brief:
 
 TYPE_REACHED: re.Pattern[str] = re.compile(r"^TypeReached: (\S+)", re.MULTILINE)
 OUTSIDE_ALLOWED: re.Pattern[str] = re.compile(r"doesn't belong to any of the specified packages")
+RECONDITION: str = "Condition the entry on a type in the allowed packages that is reached before the access"
 
 BRIEFS: tuple[Brief, ...] = (
     Brief("test compilation error",
@@ -71,6 +72,11 @@ BRIEFS: tuple[Brief, ...] = (
                      r"--initialize-at-(run|build)-time|AddAllCharsets|IncludeLocales|IncludeResourceBundles|"
                      r"AdditionalSecurityProviders|--add-opens|--add-exports|SharedArenaSupport|--future-defaults"),
           "Add it if it is on the allowed list, in its narrowest form.", ("nativeTestCompile", "test")),
+    Brief("foreign condition with no supported owner",
+          re.compile(r"Cannot relocate metadata entry|resolves to the source artifact|owner-(library|version)-"
+                     r"unsupported|does not allow condition type"),
+          f"{RECONDITION}; add the library's own package to `allowed-packages` when the error names it.",
+          ("routeForeignMetadata",)),
     Brief("style violation",
           re.compile(r"."),
           "Run `spotlessApply`, then fix what `checkstyle` reports.", ("spotlessCheck", "checkstyle"), True),
@@ -92,14 +98,17 @@ def test_packages(state: RunState) -> set[str]:
 
 
 def metadata_check_briefs(output: str, packages: set[str]) -> list[str]:
-    """The `checkMetadataFiles` briefs: a test-only type, or a condition outside the allowed packages."""
+    """The `checkMetadataFiles` briefs: a test-only type, or a condition outside the allowed packages.
+
+    `finalize` split and routed just before the check, so what is left needs a real fix
+    (§AR-forge-workflow-pipeline.5).
+    """
     if not OUTSIDE_ALLOWED.search(output):
         return []
     reached: list[str] = TYPE_REACHED.findall(output)
     if any(name.startswith(package + ".") for name in reached for package in packages):
-        return ["test-only type: Run `splitTestOnlyMetadata`."]
-    return ["condition outside the allowed packages: Regenerate through the harness tasks; "
-            "if another artifact owns the type, route it to that owner."]
+        return [f"test-only type: {RECONDITION}; `splitTestOnlyMetadata` already ran and kept it."]
+    return [f"condition outside the allowed packages: {RECONDITION}; `routeForeignMetadata` already ran."]
 
 
 def briefs_for(failure: Failure, packages: set[str]) -> list[str]:

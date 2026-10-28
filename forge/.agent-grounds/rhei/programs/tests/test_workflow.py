@@ -28,9 +28,9 @@ from exit_codes import (  # noqa: E402
     NOTHING_TO_DO,
     OK,
     RETURN_AUDIT,
+    RETURN_JVM,
     RETURN_MEASURE,
     RETURN_NATIVE,
-    RETURN_REPAIR,
     STILL_FAILING,
 )
 from run_state import RunState, load, read_json, runtime_path, write_json  # noqa: E402
@@ -158,17 +158,17 @@ class WorkflowTest(unittest.TestCase):
         self.setup_agent()
 
         self.assertEqual(OK, self.step("setup-check"))
-        self.assertEqual(AGENT_WORK, self.step("repair"))
-        self.assertIn("Return: 30", self.read("fix-request.md"))
-        self.assertIn("JVM test failure", self.read("fix-request.md"))
-        # The skipped native check is in the one request the guard allows.
-        then_run: str = self.read("fix-request.md").split("## Then run", 1)[1].split("## Briefs", 1)[0]
-        self.assertEqual([f"- ./gradlew {task} -Pcoordinates={COORDINATE}"
-                          for task in ("generateMetadata", "checkMetadataFiles", "test")],
-                         [line for line in then_run.splitlines() if line.startswith("- ")])
+        self.assertEqual(AGENT_WORK, self.step("jvm"))
+        request: str = self.read("fix-request.md")
+        self.assertIn("Return: 30", request)
+        self.assertIn("JVM test failure", request)
+        # `native-repair` sends its own request, so this one names only `javaTest`.
+        self.assertEqual([f"- ./gradlew javaTest -Pcoordinates={COORDINATE}"],
+                         [line for line in request.split("## Briefs")[0].splitlines() if line.startswith("- ")])
+        self.assertNotIn("## Then run", request)
         self.fix("fixed", 1)
-        self.assertEqual(RETURN_REPAIR, self.step("fix-route"))
-        self.assertEqual(STILL_FAILING, self.step("repair"))
+        self.assertEqual(RETURN_JVM, self.step("fix-route"))
+        self.assertEqual(STILL_FAILING, self.step("jvm"))
         self.assertEqual("human-intervention", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["outcome"])
 
     def test_a_cover_pass_that_breaks_the_tests_costs_only_that_pass(self) -> None:
@@ -178,7 +178,8 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.setup_agent()
         self.assertEqual(OK, self.step("setup-check"))
-        self.assertEqual(OK, self.step("repair"))
+        self.assertEqual(OK, self.step("jvm"))
+        self.assertEqual(OK, self.step("native-repair"))
         self.assertEqual(AGENT_WORK, self.step("analyze"))
 
         self.cover("CodecTestBroken")
@@ -199,7 +200,8 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.setup_agent()
         self.assertEqual(OK, self.step("setup-check"))
-        self.assertEqual(OK, self.step("repair"))
+        self.assertEqual(OK, self.step("jvm"))
+        self.assertEqual(OK, self.step("native-repair"))
         # With the copied CodecTest, two tests cover the previous version's two calls.
         self.cover("CodecSecondTest")
         self.assertEqual(NOTHING_TO_DO, self.step("analyze"))
@@ -247,7 +249,8 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.setup_agent()
         self.assertEqual(OK, self.step("setup-check"))
-        self.assertEqual(OK, self.step("repair"))
+        self.assertEqual(OK, self.step("jvm"))
+        self.assertEqual(OK, self.step("native-repair"))
         self.assertEqual(NOTHING_TO_DO, self.step("analyze"))
         self.assertEqual((explore.MODE_SKIP, True, 0), (self.state.explore.mode, self.state.explore.listed,
                                                          self.state.explore.total_calls))
@@ -266,8 +269,9 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(AGENT_WORK, self.step("native"))
         request: str = self.read("fix-request.md")
         self.assertIn("- ./gradlew generateMetadata -Pcoordinates=", request.split("## Then run")[0])
-        for task in ("checkMetadataFiles", "test"):
-            self.assertIn(f"- ./gradlew {task} -Pcoordinates={self.state.coordinate}", request.split("## Then run")[1])
+        then_run: str = request.split("## Then run", 1)[1].split("## Briefs", 1)[0]
+        self.assertEqual([f"- ./gradlew test -Pcoordinates={self.state.coordinate}"],
+                         [line for line in then_run.splitlines() if line.startswith("- ")])
 
     def test_a_basic_pass_that_breaks_the_tests_asks_for_a_fix(self) -> None:
         self.fake.issue("library-new-request")

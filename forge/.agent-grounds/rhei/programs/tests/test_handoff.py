@@ -56,16 +56,27 @@ class BriefTest(unittest.TestCase):
         briefs = self.briefs("./gradlew test -Pcoordinates=x", "Classes cannot be defined at runtime")
         self.assertTrue(any(brief.startswith("runtime class definition") for brief in briefs))
 
-    def test_condition_outside_allowed_packages_regenerates(self) -> None:
+    def test_condition_outside_allowed_packages_needs_a_condition_after_routing(self) -> None:
         output = "TypeReached: org.other.Type\ndoesn't belong to any of the specified packages: [org.example]"
         briefs = self.briefs("./gradlew checkMetadataFiles -Pcoordinates=x", output)
-        self.assertEqual(1, len(briefs))
-        self.assertTrue(briefs[0].startswith("condition outside the allowed packages:"))
+        self.assertEqual([f"condition outside the allowed packages: {handoff.RECONDITION}; "
+                          "`routeForeignMetadata` already ran."], briefs)
 
-    def test_test_only_type_splits_the_metadata(self) -> None:
+    def test_test_only_type_kept_by_the_split_needs_a_library_condition(self) -> None:
         output = "TypeReached: org_example.CodecTest\ndoesn't belong to any of the specified packages: [org.example]"
         briefs = self.briefs("./gradlew checkMetadataFiles -Pcoordinates=x", output)
-        self.assertEqual(["test-only type: Run `splitTestOnlyMetadata`."], briefs)
+        self.assertEqual([f"test-only type: {handoff.RECONDITION}; `splitTestOnlyMetadata` already ran and kept it."],
+                         briefs)
+        self.assertNotIn("Run `splitTestOnlyMetadata`", briefs[0])
+
+    def test_an_unroutable_foreign_condition_is_reconditioned(self) -> None:
+        output = ("routeForeignMetadata failed for org.example:lib:2.0.0: Cannot relocate metadata entry "
+                  "org.other.Type: no resolved runtime dependency JAR contains org.other.Owner")
+        briefs = self.briefs("./gradlew routeForeignMetadata -Pcoordinates=x", output)
+        self.assertEqual(1, len(briefs))
+        self.assertTrue(briefs[0].startswith(f"foreign condition with no supported owner: {handoff.RECONDITION};"))
+        self.assertEqual([handoff.DEFAULT_BRIEF], self.briefs("./gradlew routeForeignMetadata -Pcoordinates=x",
+                                                              "Cannot resolve runtime dependencies"))
 
     def test_style_check_is_the_only_brief(self) -> None:
         briefs = self.briefs("./gradlew checkstyle -Pcoordinates=x", "[ERROR] Test.java:1: FAILED something")

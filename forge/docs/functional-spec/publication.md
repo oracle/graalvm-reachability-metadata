@@ -129,11 +129,14 @@ native lanes instead (§FS-local-ci-equivalent-verification.2.1).
 If the gate fails, Forge must run one bounded agent repair before the run is
 handed off, on the same terms as every other agent repair in the pipeline: the
 agent is reached only after a check has failed, is given that check's records as
-its evidence, gets one attempt, and the gate then re-runs. The repair may touch
-generated library-scoped files, or shared repository files when the failure is
-caused by the repository itself. The outcome is decided by the deterministic
-re-run and never by the agent's account of what it repaired
-(§root/PRCPL-verify-inputs); a re-run that still fails is a handoff under
+its evidence, gets one attempt, and the gate then re-runs. In a `forge-metadata`
+run the repair is one of finalization's fix requests, so a gate that fails
+again gets another while their shared budget lasts
+(§AR-forge-workflow-pipeline.6). The repair may touch generated library-scoped
+files, or shared repository files when the failure is caused by the repository
+itself. The outcome is decided by the deterministic re-run and never by the
+agent's account of what it repaired (§root/PRCPL-verify-inputs); a re-run that
+still fails with no attempt left is a handoff under
 §FS-human-intervention-policy. A finding from the pre-push review is not a
 failed check and does not reach this repair; §FS-local-branch-review states what
 answers it, and re-runs this gate when it has. After the gate passes, Forge must
