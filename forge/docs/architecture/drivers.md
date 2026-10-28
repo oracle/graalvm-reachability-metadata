@@ -24,7 +24,7 @@ Retired: `prepare` keeps the reporter's issue body, and the first cover prompt l
 
 ### 3. Java failures
 
-Retired: `repair` runs the version, and `publish` opens the follow-up of a deferred exploration (§AR-forge-workflow-pipeline.7).
+Retired: `jvm` and `native-repair` run the version, and `publish` opens the follow-up of a deferred exploration (§AR-forge-workflow-pipeline.7).
 
 ### 4. Native-image failures
 

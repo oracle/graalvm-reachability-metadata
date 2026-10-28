@@ -64,11 +64,11 @@ claimed, reviews the open Forge pull requests with the `review_agent`
 | `0` | proceed |
 | `10` | work for an agent: a cover prompt or a fix request is written |
 | `11` | `measure` only: the JVM tests fail and a fix request is written |
-| `12` | the check still fails right after its own fix, or after the audit's edit |
+| `12` | the check still fails right after its own fix, after `finalize`'s last fix, or after the audit's edit |
 | `20` | nothing to do: a new library has no version to repair, no target, exploration deferred, explore budget spent, or nothing to publish |
 | `21` | `setup-check` only: the setup verdict is recorded as a skip; go straight to `publish` |
 | `2` / `3` | bad input / infrastructure or crash |
-| `30`–`34` | `fix-route` only: return to `repair`, `measure`, `native`, `finalize`, `audit` |
+| `30`–`35` | `fix-route` only: return to `jvm`, `measure`, `native`, `finalize`, `audit`, `native-repair` |
 | `40` | `fix-route` only: the fix reported that it could not help |
 
 Every program also routes any other non-zero exit to `failed`, and every exit
@@ -77,7 +77,7 @@ a `SystemExit` from a shared helper included, is an infrastructure exit.
 
 ## 3. State machine
 
-Ten programs, three agent states, four final states:
+Eleven programs, three agent states, four final states:
 
 ```mermaid
 stateDiagram-v2
@@ -85,6 +85,7 @@ stateDiagram-v2
     state "cover (A)" as cover
     state "fix (A)" as fix
     state "fix-route" as route
+    state "native-repair" as nrepair
     state "nothing-to-publish" as nothing
     state "human-intervention" as human
 
@@ -93,12 +94,14 @@ stateDiagram-v2
     prepare --> failed: 2 or 3
     state "setup-check" as check
     setup --> check
-    check --> repair: 0
+    check --> jvm: 0
     check --> analyze: 20 new library
     check --> publish: 21 skip recorded
     check --> failed: 2 or 3
-    repair --> analyze: 0
-    repair --> fix: 10
+    jvm --> nrepair: 0
+    jvm --> fix: 10
+    nrepair --> analyze: 0
+    nrepair --> fix: 10
     analyze --> cover: 10
     analyze --> native: 20
     cover --> measure
@@ -112,13 +115,15 @@ stateDiagram-v2
     audit --> fix: 10 first visit
     audit --> publish: 0
     fix --> route
-    route --> repair: 30
+    route --> jvm: 30
     route --> measure: 31
     route --> native: 32
     route --> finalize: 33
     route --> audit: 34
+    route --> nrepair: 35
     route --> human: 40
-    repair --> human: 12
+    jvm --> human: 12
+    nrepair --> human: 12
     measure --> human: 12
     native --> human: 12
     finalize --> human: 12
@@ -131,22 +136,24 @@ stateDiagram-v2
     failed --> [*]
 ```
 
-A cover pass costs two transitions and a fix three. In the worst case every
-sender, each cover pass, and the audit send one fix, so a run takes
-`20 + 5 × explore_passes` transitions: 120 at the default 20 passes, inside the
-template's `transition_limit`.
+A cover pass costs two transitions and a fix three. In the worst case
+`finalize` sends `finalize_fixes` fixes and every other sender, each cover
+pass, and the audit one, so a run takes
+`21 + 3 × finalize_fixes + 5 × explore_passes` transitions: 136 at the default
+5 and 20, inside the template's `transition_limit`.
 
 ## 4. Programs
 
 | State | Does |
 | --- | --- |
 | `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<group>-<artifact>-<version>`, reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate and stopping the Gradle daemons that served it, whose in-memory build state outlives the removed files, and attaches it to the task; scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split), placing and formatting its index entry as the TCK index tasks do, the latest-only fields moving with `latest` (§root/FS-metadata.1), and records the version match and the coordinate's baseline snapshot for the pull request (§AR-pr-body); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
-| `setup-check` | Once, right after `setup`: the setup tail (§AR-forge-workflow-pipeline.4.1); a recorded skip exits `21`, a new library, which has no version to repair, exits `20` to `analyze`, and every other route exits `0` to `repair` |
-| `repair` | Only for a version that already has tests: runs the version check, `javaTest`, and the native check (§AR-forge-workflow-pipeline.5); a failure is one "make this version work" fix request |
+| `setup-check` | Once, right after `setup`: the setup tail (§AR-forge-workflow-pipeline.4.1); a recorded skip exits `21`, a new library, which has no version to repair, exits `20` to `analyze`, and every other route exits `0` to `jvm` |
+| `jvm` | Only for a version that already has tests: runs the version check, then `javaTest` and `generateMetadata` (§AR-forge-workflow-pipeline.5); the first failure is one fix request for that command alone |
+| `native-repair` | Right after `jvm`: runs only `test` (§AR-forge-workflow-pipeline.5); a failure is one fix request |
 | `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt; a listing that cannot be produced takes the basic mode instead |
 | `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
-| `native` | The native check over the tests exploration added |
-| `finalize` | `spotlessApply`, then `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the coordinate's three native lanes (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request |
+| `native` | The native check over the tests exploration added: `generateMetadata`, then `test` |
+| `finalize` | `splitTestOnlyMetadata`, `routeForeignMetadata`, and `checkMetadataFiles` (§AR-forge-workflow-pipeline.5), then `spotlessApply`, `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the coordinate's three native lanes (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request, at most `finalize_fixes` times (§AR-forge-workflow-pipeline.6) |
 | `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns the native check and `finalize` once over a changed one (§AR-forge-workflow-pipeline.4.3) |
 | `fix-route` | Reads the request's return code and the fix report: `cannot-fix` exits `40`, anything else the return code |
 | `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), and pushes the publication branch `finalize` rebased; the metrics price each agent invocation at the rates of the model that ran it, count its cache writes as input, and count the worker's rounds, its cover passes plus its fix requests, as iterations; a deferred exploration opens its follow-up issue first |
@@ -162,7 +169,7 @@ few minutes, three attempts in all — writes the user-code filter and
 `allowed-packages` from the library JAR when the project has no filter yet, and
 checkpoints. A missing URL, or a declaration that does not resolve, is a bad
 input. A new library then exits `20` to `analyze`, since it has no version to
-repair; every other route exits `0` to `repair`.
+repair; every other route exits `0` to `jvm`.
 
 On the three `fails-*` labels `setup` may also add `skipped-versions` entries,
 its unsupportable-version verdict (§FS-unsupportable-version-diagnosis.2); on
@@ -216,19 +223,28 @@ timeouts allow for.
 ## 5. The native check
 
 `generateMetadata` runs the JVM tests under the native-image agent and merges
-what the filter allows into the shipped metadata; `checkMetadataFiles` and
-`test` then run once each — the harness has no root `nativeTest`, and `test`
-runs the coordinate's JVM and Native Image tests as CI does. The program judges only pass or fail and never
-merges, filters, or edits metadata itself. Whatever still fails goes to `fix` as
-one request with every failing output, where an exact missing registration or a
-listed native flag is a legal repair (§root/FS-test-contract.2.7). A failed
-`generateMetadata` stops the check, because the checks after it would judge
-stale metadata; the request then names those checks as ones `fix` must also
-pass, since the guard (§AR-forge-workflow-pipeline.6) gives no second request
-for a failure no agent was shown. `repair` runs the same check after
-`javaTest`, and the request for a failed `javaTest` names the check's three
-commands the same way; `native` runs it after exploration, and it is the first
-native build that must pass when `analyze` could not list the call sites.
+what the filter allows into the shipped metadata; `test` runs the coordinate's
+JVM and Native Image tests as CI does — the harness has no root `nativeTest`
+and no per-coordinate native-only task. The programs judge only pass or fail
+and never merge, filter, or edit metadata themselves. A failure goes to `fix`
+as one request, where an exact missing registration or a listed native flag is
+a legal repair (§root/FS-test-contract.2.7).
+
+A version that already has tests is checked in two states with a request each,
+naming only what failed: `jvm` runs `javaTest`, then `generateMetadata`,
+stopping at the first failure, and `native-repair` runs only `test`, so a fix's
+metadata is tested as the fix left it. `native` runs `generateMetadata`, then
+`test`, after exploration; it is the first native build that must pass when
+`analyze` could not list the call sites. Its failed `generateMetadata` names
+`test` as a command `fix` must also pass, because `test` would judge stale
+metadata and the guard (§AR-forge-workflow-pipeline.6) gives no second request
+for a failure no agent was shown.
+
+No check runs `checkMetadataFiles`: after the last regeneration, `finalize`
+opens with the harness steps that follow generation, `splitTestOnlyMetadata`
+and then `routeForeignMetadata`, a no-op when no condition is foreign, and the
+check judges what they leave (§FS-local-ci-equivalent-verification.1). A check
+that regenerated first would undo a fix's split and routing and fail again.
 
 ## 6. The loop guard
 
@@ -236,9 +252,12 @@ A sender records in the run state that it sent a request. When its check fails
 again on its very next run, it exits `12` instead of asking again; a later,
 unrelated failure is a new request. `measure` has one exception: it resets to
 the last passing explore checkpoint and continues, so a cover pass that cannot
-be fixed costs that pass, not the run. `audit` sends its request once and
-never asks again: a failure after its edit exits `12`. Nothing else bounds `fix`: one turn is
-bounded by its agent timeout and the run by Rhei's transition limit.
+be fixed costs that pass, not the run. `finalize` has another: its lane stops
+at the first failing step, so fixing one step can expose the next, and each
+failure is a new request until `finalize_fixes` (default 5) are spent; a
+failure after the last exits `12`. `audit` sends its request once and never
+asks again: a failure after its edit exits `12`. Nothing else bounds `fix`: one
+turn is bounded by its agent timeout and the run by Rhei's transition limit.
 
 ## 7. The explore decision
 

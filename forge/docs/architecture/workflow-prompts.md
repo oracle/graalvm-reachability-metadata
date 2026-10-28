@@ -77,8 +77,9 @@ unmatched failure gets the default brief:
 | --- | --- |
 | test compilation error | move the tests to the API this version has, keeping what each asserts |
 | JVM test failure | adapt the test to this version's behavior; drop a test only for removed API |
-| `checkMetadataFiles`: condition outside the allowed packages | regenerate through the harness tasks; route a type another artifact owns to that owner |
-| `checkMetadataFiles`: test-only type | run `splitTestOnlyMetadata` |
+| `checkMetadataFiles`: condition outside the allowed packages | the harness already routed: condition the entry on a type in the allowed packages that is reached before the access |
+| `checkMetadataFiles`: test-only type | the harness split already kept it: condition the entry on the library type reached before the access |
+| `routeForeignMetadata`: a foreign condition with no supported owner | condition the entry on a type in the allowed packages that is reached before the access; add the library's own package to `allowed-packages` when the error names it |
 | Native Image test (`test`): missing registration | add the entry the error names to the shipped metadata, with a `typeReached` condition in the allowed packages |
 | Native Image test (`test`): runtime class definition or bytecode generation | reshape the test to avoid it, or delete that test |
 | a native build or run names a flag, such as a URL protocol | add it if it is on the allowed list, in its narrowest form |

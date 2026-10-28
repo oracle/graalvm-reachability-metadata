@@ -346,7 +346,8 @@ malformed issue is rejected without a network round trip.
 
 A `library-update-request` has one route, so this gate decides nothing about
 how it runs: `prepare` adds the version beside its nearest supported one, and
-`repair` finds out whether it already passes (§AR-forge-workflow-pipeline.3).
+`jvm` and `native-repair` find out whether it already passes
+(§AR-forge-workflow-pipeline.3).
 
 **Coordinates resolve when the artifact is fetchable.** A title that parses as
 `group:artifact:version` has satisfied a regular expression, not the
@@ -738,8 +739,9 @@ pinned base — the version `prepare` added, its tests, metadata, and stats are
 dropped, as §root/FS-contribution-contract.5.4 requires of a skip record — the
 entries are written onto the base index, `validateIndexFiles` and the
 pre-publication gate (§FS-local-ci-equivalent-verification.2) accept it, and
-the commit is checkpointed. `repair` then exits `21` and the run goes straight
-to `publish`: no repair, exploration, native check, or finalization runs.
+the commit is checkpointed. `setup-check` then exits `21` and the run goes
+straight to `publish`: no repair, exploration, native check, or finalization
+runs.
 
 `publish` pushes the index-only tree with its descriptor and writes no
 execution metrics for the skipped version, because the stats gate checks
@@ -756,9 +758,9 @@ so a redundant or malformed verdict costs nothing beyond the setup turn.
 The class boundary keeps each chunk a reviewable pull request
 (§FS-forge-issue-resolution-goal). It is the run input `defer_classes`, default
 `15` (§AR-forge-workflow-pipeline.7). `analyze` measures the dynamic-access report
-once, after `repair` has made the version work, counts the classes with
-uncovered calls less those an earlier chunk processed, and makes the whole
-decision from that count:
+once, after `jvm` and `native-repair` have made the version work, counts the
+classes with uncovered calls less those an earlier chunk processed, and makes
+the whole decision from that count:
 
 - A `fails-*` issue above the boundary does not explore. Before the verified
   push, `publish` creates or reuses a `library-update-request` for the fixed
