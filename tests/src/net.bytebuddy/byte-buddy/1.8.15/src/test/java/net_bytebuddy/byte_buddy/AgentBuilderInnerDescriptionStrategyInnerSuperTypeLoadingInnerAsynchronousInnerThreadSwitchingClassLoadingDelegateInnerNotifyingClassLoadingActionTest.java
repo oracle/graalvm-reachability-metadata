@@ -24,8 +24,8 @@ public class AgentBuilderInnerDescriptionStrategyInnerSuperTypeLoadingInnerAsync
         ClassLoader loader = getClass().getClassLoader();
         try (ExecutorService executor = Executors.newSingleThreadExecutor()) {
             TypeDescription type = AgentBuilder.DescriptionStrategy.Default.POOL_ONLY.withSuperTypeLoading(executor)
-                    .apply(JavaModule.class.getName(), null, TestFixtures.libraryPool(), AgentBuilder.CircularityLock.Inactive.INSTANCE,
-                            loader, JavaModule.ofType(JavaModule.class));
+                    .apply(getClass().getName(), null, TestFixtures.superTypePool(getClass().getName()),
+                            AgentBuilder.CircularityLock.Inactive.INSTANCE, loader, JavaModule.ofType(getClass()));
             synchronized (loader) {
                 assertTrue(type.getSuperClass().asErasure().represents(Object.class));
             }

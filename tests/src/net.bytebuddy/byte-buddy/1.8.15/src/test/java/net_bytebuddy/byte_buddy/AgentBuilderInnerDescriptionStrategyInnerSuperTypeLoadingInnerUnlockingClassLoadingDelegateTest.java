@@ -21,8 +21,8 @@ public class AgentBuilderInnerDescriptionStrategyInnerSuperTypeLoadingInnerUnloc
         assertTrue(lock.acquire());
         try {
             TypeDescription type = AgentBuilder.DescriptionStrategy.Default.POOL_ONLY.withSuperTypeLoading()
-                    .apply(JavaModule.class.getName(), null, TestFixtures.libraryPool(), lock,
-                            getClass().getClassLoader(), JavaModule.ofType(JavaModule.class));
+                    .apply(getClass().getName(), null, TestFixtures.superTypePool(getClass().getName()), lock,
+                            getClass().getClassLoader(), JavaModule.ofType(getClass()));
             assertTrue(type.getSuperClass().asErasure().represents(Object.class));
             assertFalse(lock.acquire());
         } finally {

@@ -13,7 +13,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Map;
 
 import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.description.method.MethodDescription;
@@ -126,6 +128,11 @@ public final class TestFixtures {
     @SuppressWarnings("annotationAccess")
     public static AnnotationDescription options() {
         return TypeDescription.ForLoadedType.of(Annotated.class).getDeclaredAnnotations().ofType(Options.class);
+    }
+
+    public static TypePool superTypePool(String name) {
+        TypeDescription type = new TypeDescription.Latent(name, Modifier.PUBLIC, TypeDescription.Generic.OBJECT);
+        return new TypePool.Explicit(Map.of(name, type));
     }
 
     public static TypePool libraryPool() {
