@@ -79,6 +79,22 @@ native-build-tools loads no metadata for such a coordinate.
   `validateIndexFiles` and `checkMetadataFiles` (§AR-test-harness.2) and the
   matching CI workflows (§AR-repository-ci).
 
+**Known problem: resource bundles lose their condition.** In conditional mode,
+which `generateMetadata` uses, the Native Image agent writes a `bundle` entry
+without the `typeReached` condition it inferred, while the `glob` entries from
+the same `ResourceBundle.getBundle` call keep theirs: the agent files the bundle
+under the inferred condition but prints the condition of its original,
+unconditional bundle record. It shows as a `bundle` with no `condition` beside
+conditional `.properties` globs of the same base name, such as
+`{"bundle": "javadoc-report"}` beside a `javadoc-report.properties` glob reached
+on `JavadocReport`. Generated bundles may therefore be unconditional, against
+the first invariant, and many shipped ones are; `checkMetadataFiles` does not
+reject them. A condition added by hand is undone by the next `generateMetadata`:
+its merge is a union, so the agent's unconditional entry returns beside the
+corrected one. Tracked in
+[#11294](https://github.com/oracle/graalvm-reachability-metadata/issues/11294)
+and [#11287](https://github.com/oracle/graalvm-reachability-metadata/issues/11287).
+
 ### Test-only metadata is kept out of the shipped metadata
 
 Tests routinely need reachability metadata for their *own* helper types — the
