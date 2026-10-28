@@ -11,8 +11,8 @@ import com.google.common.truth.Truth;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.util.FieldMaskUtil;
 import org.junit.Test;
-import protobuf_unittest.UnittestProto.NestedTestAllTypes;
-import protobuf_unittest.UnittestProto.TestAllTypes;
+import com_google_protobuf.protobuf_java_util.UnittestProto.NestedTestAllTypes;
+import com_google_protobuf.protobuf_java_util.UnittestProto.TestAllTypes;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;

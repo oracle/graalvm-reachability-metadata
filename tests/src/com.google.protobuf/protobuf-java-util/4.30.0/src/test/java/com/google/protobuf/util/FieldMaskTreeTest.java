@@ -10,11 +10,11 @@ import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.Message;
 import com.google.protobuf.UninitializedMessageException;
 import org.junit.Test;
-import protobuf_unittest.UnittestProto.NestedTestAllTypes;
-import protobuf_unittest.UnittestProto.TestAllTypes;
-import protobuf_unittest.UnittestProto.TestAllTypes.NestedMessage;
-import protobuf_unittest.UnittestProto.TestRequired;
-import protobuf_unittest.UnittestProto.TestRequiredMessage;
+import com_google_protobuf.protobuf_java_util.UnittestProto.NestedTestAllTypes;
+import com_google_protobuf.protobuf_java_util.UnittestProto.TestAllTypes;
+import com_google_protobuf.protobuf_java_util.UnittestProto.TestAllTypes.NestedMessage;
+import com_google_protobuf.protobuf_java_util.UnittestProto.TestRequired;
+import com_google_protobuf.protobuf_java_util.UnittestProto.TestRequiredMessage;
 
 import static com.google.common.truth.Truth.assertThat;
 
