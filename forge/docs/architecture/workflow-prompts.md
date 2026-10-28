@@ -80,7 +80,7 @@ unmatched failure gets the default brief:
 | `checkMetadataFiles`: condition outside the allowed packages | the harness already routed: condition the entry on a type in the allowed packages that is reached before the access |
 | `checkMetadataFiles`: test-only type | the harness split already kept it: condition the entry on the library type reached before the access |
 | `routeForeignMetadata`: a foreign condition with no supported owner | condition the entry on a type in the allowed packages that is reached before the access; add the library's own package to `allowed-packages` when the error names it |
-| Native Image test (`test`): missing registration | add the entry the error names to the shipped metadata, with a `typeReached` condition in the allowed packages |
+| Native Image test (`test`): missing registration, including a `ClassNotFoundException`, `NoSuchMethodException`, or `NoSuchFieldException` thrown from Native Image's own frames | add the entry the error names to the shipped metadata, with a `typeReached` condition in the allowed packages |
 | Native Image test (`test`): runtime class definition or bytecode generation | reshape the test to avoid it, or delete that test |
 | a native build or run names a flag, such as a URL protocol | add it if it is on the allowed list, in its narrowest form |
 | `spotlessCheck` or `checkstyle` | run `spotlessApply`, then fix what `checkstyle` reports |
