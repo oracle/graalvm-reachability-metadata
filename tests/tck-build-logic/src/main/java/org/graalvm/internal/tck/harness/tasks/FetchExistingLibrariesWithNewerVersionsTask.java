@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
@@ -56,6 +57,9 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
     private static final Duration MAX_RETRY_DELAY = Duration.ofSeconds(30);
     private static final int CONNECTION_TIMEOUT_MILLIS = (int) Duration.ofSeconds(30).toMillis();
     private static final String USER_AGENT = "graalvm-reachability-metadata-new-library-version-checker";
+    /// The one order that picks the highest tested version and decides which upstream versions are
+    /// newer. Gradle's patch scheme reads a fourth number, so `1.9.21.2` is above `1.9.21`.
+    static final Comparator<String> VERSION_ORDER = Comparator.comparing(VersionNumber.withPatchNumber()::parse);
     private static Instant nextRemoteRequest = Instant.EPOCH;
 
     @TaskAction
@@ -315,8 +319,12 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             return new ArrayList<>();
         }
 
-        allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
-        return new ArrayList<>(allVersions.subList(1, allVersions.size()));
+        // Central lists versions in publication order, so one listed later can still be older
+        // (`1.9.21` after `1.9.21.2`); only a version above the start is newer
+        // (§FS-library-version-update-automation.1).
+        return allVersions.subList(indexOfStartingVersion + 1, allVersions.size()).stream()
+                .filter(version -> VERSION_ORDER.compare(version, startingVersion) > 0)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     static List<String> filterPreReleases(List<String> versions) {
@@ -350,7 +358,7 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             if (testedVersions.isEmpty()) {
                 throw new IllegalStateException("Cannot find any tested version for: " + libraryModule);
             }
-            testedVersions.sort(Comparator.comparing(VersionNumber::parse));
+            testedVersions.sort(VERSION_ORDER);
             return testedVersions.get(testedVersions.size() - 1);
         } catch (RuntimeException e) {
             throw e;

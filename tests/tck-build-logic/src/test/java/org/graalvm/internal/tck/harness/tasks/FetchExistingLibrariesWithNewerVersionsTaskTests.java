@@ -109,6 +109,63 @@ class FetchExistingLibrariesWithNewerVersionsTaskTests {
         assertThat(newerVersions).containsExactly("1.1.0", "1.2.0");
     }
 
+    /// Maven Central's `org.aspectj:aspectjweaver` listing puts `1.9.21` after `1.9.21.2`; testing
+    /// it against the `1.9.21.2` suite filed failure issues for a version older than `latest`.
+    @Test
+    void getNewerVersionsFromLibraryIndexDropsOlderVersionsListedAfterStartingVersion() {
+        String metadata = """
+                <metadata>
+                  <versioning>
+                    <versions>
+                      <version>1.9.21.1</version>
+                      <version>1.9.21.2</version>
+                      <version>1.9.21.M1</version>
+                      <version>1.9.21</version>
+                      <version>1.9.22.1</version>
+                      <version>1.9.22</version>
+                    </versions>
+                  </versioning>
+                </metadata>
+                """;
+
+        List<String> newerVersions = FetchExistingLibrariesWithNewerVersionsTask.getNewerVersionsFromLibraryIndex(
+                metadata, "1.9.21.2", "org.aspectj:aspectjweaver");
+
+        assertThat(newerVersions).containsExactly("1.9.22.1", "1.9.22");
+    }
+
+    /// `com.graphql-java:java-dataloader` publishes date-stamped builds out of order.
+    @Test
+    void getNewerVersionsFromLibraryIndexOrdersDateStampedVersions() {
+        String metadata = """
+                <metadata>
+                  <versioning>
+                    <versions>
+                      <version>6.0.0</version>
+                      <version>2021-10-29T01-57-17-4253050</version>
+                      <version>2021-03-30T02-06-56-9a47743</version>
+                      <version>2021-08-19T04-04-25-efb3c9d</version>
+                      <version>2022-02-15T03-28-59-388c4fd</version>
+                    </versions>
+                  </versioning>
+                </metadata>
+                """;
+
+        List<String> newerVersions = FetchExistingLibrariesWithNewerVersionsTask.getNewerVersionsFromLibraryIndex(
+                metadata, "2021-10-29T01-57-17-4253050", "com.graphql-java:java-dataloader");
+
+        assertThat(newerVersions).containsExactly("2022-02-15T03-28-59-388c4fd");
+    }
+
+    @Test
+    void versionOrderReadsAFourthNumberAsNewer() {
+        List<String> versions = new ArrayList<>(List.of("1.9.21.2", "1.9.22", "1.9.21", "1.9.20.1", "1.9.21.1"));
+
+        versions.sort(FetchExistingLibrariesWithNewerVersionsTask.VERSION_ORDER);
+
+        assertThat(versions).containsExactly("1.9.20.1", "1.9.21", "1.9.21.1", "1.9.21.2", "1.9.22");
+    }
+
     @Test
     void autoUpdateRequiresTheMarkerOnTheLatestEntry() throws IOException {
         Path disabledIndex = tempDir.resolve("disabled-index.json");
