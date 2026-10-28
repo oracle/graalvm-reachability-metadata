@@ -321,8 +321,7 @@ public final class MetadataGenerationUtils {
                 "Cannot generate metadata", testsDirectory
         );
 
-        GeneralUtils.printInfo("Performing metadata copy");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", resolvedMetadataDirectory.toString()), "Cannot perform metadata copy", testsDirectory);
+        copyAgentMetadata(execOps, gradlew, resolvedMetadataDirectory, null, testsDirectory);
     }
 
     /**
@@ -358,8 +357,32 @@ public final class MetadataGenerationUtils {
         GeneralUtils.printInfo("Generating metadata");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), env, "Cannot generate metadata", testsDirectory);
 
+        copyAgentMetadata(execOps, gradlew, resolvedMetadataDirectory, env, testsDirectory);
+    }
+
+    /// Copies the agent output into `metadataDirectory`, the one step every generation flow shares,
+    /// and moves hidden-lambda conditions to their host class there (§FS-metadata.2).
+    private static void copyAgentMetadata(
+            ExecOperations execOps,
+            Path gradlew,
+            Path metadataDirectory,
+            Map<String, String> env,
+            Path testsDirectory
+    ) {
         GeneralUtils.printInfo("Performing metadata copy");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", resolvedMetadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+        GeneralUtils.invokeCommand(
+                execOps, gradlew.toString(),
+                List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()),
+                env, "Cannot perform metadata copy", testsDirectory
+        );
+        Path metadataFile = metadataDirectory.resolve("reachability-metadata.json");
+        try {
+            if (HiddenLambdaConditions.rewriteFile(metadataFile)) {
+                GeneralUtils.printInfo("Rewrote hidden lambda conditions to their host class in " + metadataFile);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot rewrite hidden lambda conditions in " + metadataFile, e);
+        }
     }
 
     private static Path resolveMetadataDirectory(ProjectLayout layout, Path metadataDirectory) {

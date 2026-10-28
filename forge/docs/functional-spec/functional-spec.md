@@ -122,8 +122,10 @@ The host must provide:
 
 - **Executables on `PATH`**: the selected Python interpreter, `git`, the GitHub
   CLI, the agent backends the enabled roles select, the Docker CLI, the pinned
-  `grype` release, and the selected
-  repository's Gradle wrapper.
+  `grype` release, the pinned `rhei` release, and the selected
+  repository's Gradle wrapper. Every mode requires `rhei`, because each
+  launcher runs its work as a Rhei workflow, and the shipped templates are
+  written in the plan language of exactly that release.
 - **A usable GitHub account**: the CLI authenticated, `Contents`, `Issues`, and
   `Pull requests` write on the repository, and `Projects` write on the tracked
   project board — read access alone is not enough, because Forge assigns and

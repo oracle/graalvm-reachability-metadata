@@ -6,8 +6,9 @@
 """The `fix-route` program: return to the sender, or stop when the fix could not help.
 
 `fix` has one outgoing edge, so this program routes on the open request's
-sender and the fix report: `cannot-fix` exits `40`, anything else the sender's
-return code, whose own check then decides (§AR-forge-workflow-pipeline.2,
+sender and the fix report: `cannot-fix` exits `40`, except for `native`, whose
+budget it spends; anything else the sender's return code, whose own check then
+decides (§AR-forge-workflow-pipeline.2,
 §AR-forge-workflow-pipeline.6). A report is evidence, never a verdict.
 """
 from __future__ import annotations
@@ -23,6 +24,8 @@ from exit_codes import CANNOT_FIX, INFRASTRUCTURE, RETURN_CODES
 from run_state import RUNTIME_DIR, RunState, load, runtime_path, write_json
 
 CANNOT_FIX_RESULT: str = "cannot-fix"
+# Its `cannot-fix` spends the next request of its budget (§AR-forge-workflow-pipeline.6).
+BUDGETED_SENDER: str = "native"
 REPORT_VISIT: re.Pattern[str] = re.compile(r"fix-(\d+)\.json$")
 
 
@@ -58,7 +61,7 @@ def route(state: RunState, report: dict[str, Any]) -> int:
     if state.pending_request not in RETURN_CODES:
         print(f"ERROR: no open fix request to return to (sender {state.pending_request!r}).", file=sys.stderr)
         return INFRASTRUCTURE
-    if report.get("result") == CANNOT_FIX_RESULT:
+    if report.get("result") == CANNOT_FIX_RESULT and state.pending_request != BUDGETED_SENDER:
         return CANNOT_FIX
     return RETURN_CODES[state.pending_request]
 
@@ -67,9 +70,10 @@ def fix_route(workspace: str) -> int:
     state: RunState = load(workspace)
     report: dict[str, Any] = latest_report(workspace)
     code: int = route(state, report)
-    if code == CANNOT_FIX:
+    if report.get("result") == CANNOT_FIX_RESULT:
+        # Kept as evidence whether or not the sender asks again.
         write_json(runtime_path(workspace, "cannot-fix.json"), report)
         print(f"[fix-route] the fix could not help: {report.get('summary', '')}")
-    else:
+    if code != CANNOT_FIX:
         print(f"[fix-route] back to {state.pending_request} ({report.get('result', 'no report')})")
     return code

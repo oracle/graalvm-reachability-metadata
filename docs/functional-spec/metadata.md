@@ -61,6 +61,11 @@ native-build-tools loads no metadata for such a coordinate.
   type (§FS-repository-functional-spec.5.1). No build-time-initialization
   directives, library patches, or `Feature` classes ship here
   (§FS-repository-functional-spec.3).
+- **A condition names its host class, never a hidden lambda class.** The agent can
+  record a JVM hidden lambda class (`Host$$Lambda/0x…`) as the reached type. A
+  hidden class cannot be named, so Native Image never matches it; metadata
+  generation rewrites such a condition to its host class and drops entries that
+  the rewrite makes identical.
 - **Schema semver tracks the native-build-tools contract.** The
   `reachability-metadata` and `metadata-library-index` schemas follow semver
   against that contract: **minor and patch bumps stay backward-compatible** with

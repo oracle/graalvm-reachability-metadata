@@ -1,5 +1,4 @@
 # Rhei: Forge issue #{{issue_number}}
-**States:** forge-metadata
 
 ## Rules
 

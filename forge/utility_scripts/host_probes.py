@@ -82,6 +82,12 @@ def parse_grype_version(output: str) -> str | None:
     return match.group(1) if match else None
 
 
+def parse_rhei_version(output: str) -> str | None:
+    """Extract the release from `rhei --version`, keeping a `-dev` suffix so a source build never matches a pin."""
+    match = re.search(r"^rhei\s+v?(\S+)", output, flags=re.MULTILINE)
+    return match.group(1) if match else None
+
+
 def parse_gradle_version(output: str) -> str | None:
     """Extract the release from Gradle wrapper version output."""
     match = re.search(r"^Gradle\s+(\S+)", output, flags=re.MULTILINE)
@@ -177,22 +183,32 @@ def resolve_https_proxy(environment: Mapping[str, str], host: str) -> tuple[str,
     return parsed.hostname, parsed.port or 80
 
 
+TCP_PROBE_ATTEMPTS: int = 2
+
+
 def probe_tcp_host(
         host: str,
         port: int,
         timeout: float = 5.0,
         environment: Mapping[str, str] | None = None,
 ) -> tuple[bool, str]:
-    """Test outbound access the way Forge's tools use it: directly, or through the configured proxy."""
+    """Test outbound access the way Forge's tools use it: directly, or through the configured proxy.
+
+    A failed direct connect is tried once more, since one lost connect does not
+    make a host unreachable.
+    """
     values = os.environ if environment is None else environment
     proxy = resolve_https_proxy(values, host)
-    if proxy is None:
+    if proxy is not None:
+        return probe_proxied_host(host, port, proxy, timeout)
+    error: OSError | None = None
+    for _ in range(TCP_PROBE_ATTEMPTS):
         try:
             with socket.create_connection((host, port), timeout=timeout):
                 return True, f"tcp://{host}:{port} reachable"
         except OSError as exc:
-            return False, f"tcp://{host}:{port} unreachable: {exc}"
-    return probe_proxied_host(host, port, proxy, timeout)
+            error = exc
+    return False, f"tcp://{host}:{port} unreachable: {error}"
 
 
 def probe_proxied_host(

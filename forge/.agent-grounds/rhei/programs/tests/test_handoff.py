@@ -42,6 +42,14 @@ class BriefTest(unittest.TestCase):
         self.assertIn("typeReached", briefs[0])
         self.assertTrue(briefs[0].startswith("missing registration:"))
 
+    def test_serialization_failure_registers_the_streamed_class(self) -> None:
+        briefs = self.briefs("./gradlew test -Pcoordinates=x",
+                             "java.lang.ClassNotFoundException: org.example.Codec\n"
+                             "  java.base/java.io.ObjectInputStream.resolveClass(ObjectInputStream.java:812)")
+        self.assertEqual(1, len(briefs))
+        self.assertTrue(briefs[0].startswith("serialization failure:"))
+        self.assertIn("`serializable`", briefs[0])
+
     def test_missing_registration_outside_native_test_is_not_matched(self) -> None:
         briefs = self.briefs("./gradlew javaTest -Pcoordinates=x", "MissingReflectionRegistrationError")
         self.assertEqual([handoff.DEFAULT_BRIEF], briefs)
