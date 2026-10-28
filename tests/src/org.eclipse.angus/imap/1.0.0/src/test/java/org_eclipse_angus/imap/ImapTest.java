@@ -6,11 +6,25 @@
  */
 package org_eclipse_angus.imap;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.sun.mail.imap.protocol.FLAGS;
+import com.sun.mail.imap.protocol.FetchResponse;
+import com.sun.mail.imap.protocol.IMAPResponse;
+import jakarta.mail.Flags;
 import org.junit.jupiter.api.Test;
 
-class ImapTest {
+public class ImapTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    public void parsesMessageFlagsFromFetchResponse() throws Exception {
+        FetchResponse response = new FetchResponse(new IMAPResponse("* 7 FETCH (FLAGS (\\Seen \\Answered project))"));
+
+        assertThat(response.getNumber()).isEqualTo(7);
+        assertThat(response.getItemCount()).isEqualTo(1);
+        FLAGS flags = response.getItem(FLAGS.class);
+        assertThat(flags).isNotNull();
+        assertThat(flags.msgno).isEqualTo(7);
+        assertThat(flags.getSystemFlags()).containsExactlyInAnyOrder(Flags.Flag.SEEN, Flags.Flag.ANSWERED);
+        assertThat(flags.getUserFlags()).containsExactly("project");
     }
 }
