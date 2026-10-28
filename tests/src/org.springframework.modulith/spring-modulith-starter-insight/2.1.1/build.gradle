@@ -1,0 +1,31 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.springframework.modulith:spring-modulith-starter-insight:$libraryVersion"
+    testImplementation "org.springframework.modulith:spring-modulith-actuator:$libraryVersion"
+    testImplementation "org.springframework.modulith:spring-modulith-observability-core:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.springframework.data:spring-data-rest-webmvc:5.1.1'
+    testImplementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
