@@ -272,10 +272,10 @@ class Review:
         head: str = pull["headRefOid"]
         group, artifact, _ = str(pull["coordinate"]).split(":")
         approval: str = (
-            f"Every check on the head passed. If the local review in the body is clean — the audit, the gates, and "
-            f"the native lanes — approve the pull request with `gh pr review {number} --repo {REPO} --approve` and "
-            f"arm auto-merge with `gh pr merge {number} --repo {REPO} --auto --squash --match-head-commit {head}` "
-            f"(§FS-published-pr-review.4.1). If it is not clean, fix what it reports as in case 5."
+            f"Every check on the head passed, and the run already passed the audit, the gates, and every native "
+            f"lane before it published: approve the pull request with `gh pr review {number} --repo {REPO} --approve` "
+            f"and arm auto-merge with `gh pr merge {number} --repo {REPO} --auto --squash --match-head-commit {head}` "
+            f"(§FS-published-pr-review.4.1)."
             if green else "A check failed on this head, so this case does not apply: do not approve.")
         with open(TEMPLATE, encoding="utf-8") as handle:
             return handle.read().format(
