@@ -27,8 +27,8 @@ GitHub.
 §AR-forge-workflow-pipeline.1 §FS-published-pr-review
 
 ```console
-./run-forge.sh [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET] [--label LABEL]...
-    [-- RHEI_RUN_OPTIONS...]
+./run-forge.sh [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET]
+    [--label LABEL[:COUNT]]... [--take-blocked-issues] [-- RHEI_RUN_OPTIONS...]
 ```
 
 The agent targets are the only run-time choice
@@ -39,6 +39,16 @@ needs web search; `--worker-agent` defaults to
 `--review-agent` defaults to `claude-code[high]:opus` and must be a Claude Code
 target, because the review needs the web and the GraalVM history. Codex and
 OpenCode are not supported.
+
+Without `--label`, every cycle fetches every queue. Each `--label LABEL[:COUNT]`
+gives its queue COUNT runs in a row, one by default, and the queues take turns
+in the order given; one with nothing to claim passes its turn to the next
+(§AR-forge-workflow-pipeline.1). This serves two new-library requests, one
+update request, and one `fails-java-run` issue, then starts over:
+
+```console
+./run-forge.sh --label library-new-request:2 --label library-update-request --label fails-java-run
+```
 
 To see what one cycle would claim without claiming anything:
 

@@ -18,8 +18,8 @@ readonly DEFAULT_REVIEW_AGENT="claude-code[high]:opus"
 
 usage() {
     cat <<USAGE
-Usage: $0 [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET] [--label LABEL]...
-          [--take-blocked-issues] [-- RHEI_RUN_OPTIONS...]
+Usage: $0 [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET]
+          [--label LABEL[:COUNT]]... [--take-blocked-issues] [-- RHEI_RUN_OPTIONS...]
 
 Purpose:
   Check the host, then until stopped: claim the most urgent eligible Forge
@@ -42,8 +42,12 @@ Options:
       Target of the pull-request review; it needs the web and the GraalVM
       history, so a claude-code target.
       Default: $DEFAULT_REVIEW_AGENT
-  --label LABEL
-      Fetch only this queue; repeat for several. Default: every queue.
+  --label LABEL[:COUNT]
+      Give this queue COUNT runs in a row, default 1; repeat for several. The
+      queues take turns in the order given, and one with nothing to claim
+      passes its turn on. Default: every queue in every run.
+      Example: --label library-new-request:2 --label fails-java-run serves the
+      new-library queue twice, then fails-java-run once, then starts over.
   --take-blocked-issues
       Claim issues with open blockers too; every other claim condition still
       holds. Default: off.
@@ -56,6 +60,27 @@ setup_agent="$DEFAULT_SETUP_AGENT"
 worker_agent="$DEFAULT_WORKER_AGENT"
 review_agent="$DEFAULT_REVIEW_AGENT"
 claim_arguments=()
+# The --label rotation: each queue label and its turns in a row (§AR-forge-workflow-pipeline.1).
+labels=()
+counts=()
+add_label() {
+    local label="${1%%:*}"
+    local count=1
+    local known
+    [[ "$1" != *:* ]] || count="${1#*:}"
+    if [[ ! "$count" =~ ^[1-9][0-9]*$ ]]; then
+        printf 'ERROR: --label %s: COUNT must be a positive integer.\n' "$1" >&2
+        exit 2
+    fi
+    for known in "${labels[@]}"; do
+        if [[ "$known" == "$label" ]]; then
+            printf 'ERROR: --label %s: the label is given twice.\n' "$label" >&2
+            exit 2
+        fi
+    done
+    labels+=("$label")
+    counts+=("$count")
+}
 while (( $# > 0 )); do
     case "$1" in
         -h|--help)
@@ -75,7 +100,7 @@ while (( $# > 0 )); do
                 --setup-agent) setup_agent="$2" ;;
                 --worker-agent) worker_agent="$2" ;;
                 --review-agent) review_agent="$2" ;;
-                --label) claim_arguments+=(--label "$2") ;;
+                --label) add_label "$2" ;;
             esac
             shift 2
             ;;
@@ -90,6 +115,7 @@ while (( $# > 0 )); do
             ;;
     esac
 done
+rhei_arguments=("$@")
 
 # <agent>[<mode>]:[<provider>/]<model>; Rhei splits the provider off at the last slash.
 readonly TARGET_PATTERN='^(pi|claude-code)(\[[A-Za-z0-9_-]+\])?:((.*)/)?([^/]+)$'
@@ -133,6 +159,35 @@ review() {
         || printf 'WARNING: The review failed; the next review reads the queue again.\n' >&2
 }
 
+# The rotation's current label and the turns it has had in a row.
+turn=0
+taken=0
+# Run one cycle on the queue whose turn it is; a queue with nothing to claim passes the turn, and
+# the rest of its turns, to the next. Returns 1 only when no queue claimed anything, leaving the
+# rotation where it stood (§AR-forge-workflow-pipeline.1).
+claim_next() {
+    local attempt index status
+    if (( ${#labels[@]} == 0 )); then
+        forge_metadata "${claim_arguments[@]}" -- "${rhei_arguments[@]}"
+        return
+    fi
+    for (( attempt = 0; attempt < ${#labels[@]}; attempt++ )); do
+        index=$(( (turn + attempt) % ${#labels[@]} ))
+        status=0
+        forge_metadata --label "${labels[index]}" "${claim_arguments[@]}" \
+            -- "${rhei_arguments[@]}" || status=$?
+        (( status != 1 )) || continue
+        (( attempt == 0 )) || { turn=$index; taken=0; }
+        taken=$((taken + 1))
+        if (( taken == counts[index] )); then
+            turn=$(( (index + 1) % ${#labels[@]} ))
+            taken=0
+        fi
+        return "$status"
+    done
+    return 1
+}
+
 # §FS-published-pr-review.1: review every third run and whenever nothing can be claimed.
 readonly IDLE_SECONDS=600
 readonly REVIEW_EVERY=3
@@ -145,7 +200,7 @@ while true; do
         "$worker_family" "$worker_executable" "$worker_model" "$worker_provider" \
         claude-code claude "$setup_model" "$review_model"
     status=0
-    forge_metadata "${claim_arguments[@]}" -- "$@" || status=$?
+    claim_next || status=$?
     if (( status == 1 )); then
         review
         printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
