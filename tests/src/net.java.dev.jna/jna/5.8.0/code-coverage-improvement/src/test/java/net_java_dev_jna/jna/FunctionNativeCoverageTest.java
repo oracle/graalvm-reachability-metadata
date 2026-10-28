@@ -164,8 +164,8 @@ class FunctionNativeCoverageTest {
                 .invoke(int.class, new Object[]{"find me"})).isEqualTo(7);
         assertThat(Function.getFunction("c", "atoi")
                 .invoke(Integer.class, new Object[]{"57"})).isEqualTo(57);
-        // Pointer-returning native interface calls are exercised by the JVM lane.
-        // The corresponding native-image bridge is not stable on this JNA release.
+        // Run as part of the full suite in a native image, these pointer-returning calls crash;
+        // the same calls made standalone do not. The JVM lane covers them.
         if (System.getProperty("org.graalvm.nativeimage.imagecode") == null) {
             assertThat(POSIX.strchr("find me", 'd')).isNotNull();
             Function strerror = Function.getFunction("c", "strerror");
@@ -190,15 +190,13 @@ class FunctionNativeCoverageTest {
         assertThat(Function.getFunction("c", "getpid").invokeInt(new Object[0])).isPositive();
         Function puts = Function.getFunction("c", "puts");
         assertThat(puts.invokeInt(new Object[]{"JNA coverage"})).isGreaterThan(0);
-        // The void-returning raw JNI bridge is unstable in the native-image
-        // lane for this JNA release; retain these convenience paths in JVM
-        // JaCoCo coverage without making the native sampling run crash.
+        // Likewise for the void-returning raw calls: the full suite crashes on them in a native
+        // image, and standalone calls do not.
         if (System.getProperty("org.graalvm.nativeimage.imagecode") == null) {
             puts.invoke(new Object[]{"JNA void coverage"});
             puts.invokeVoid(new Object[]{"JNA invokeVoid coverage"});
         }
-        // The same native-image limitation affects the non-integer raw JNI
-        // convenience bridges; keep their asserted JVM coverage intact.
+        // Likewise for the non-integer raw convenience calls.
         if (System.getProperty("org.graalvm.nativeimage.imagecode") == null) {
             assertThat(Function.getFunction("c", "labs").invokeLong(new Object[]{-42L})).isEqualTo(42L);
             assertThat(Function.getFunction("c", "atof").invokeDouble(new Object[]{"3.5"})).isEqualTo(3.5d);
