@@ -48,6 +48,12 @@ class ReportTest(unittest.TestCase):
         write_json(runtime_path(self.workspace, "reports", "fix-10.json"), {"result": "cannot-fix"})
         self.assertEqual("cannot-fix", fix_route.latest_report(self.workspace)["result"])
 
+    def test_every_fix_visit_counts_as_one_request(self) -> None:
+        for name in ("fix-1.json", "fix-2.json", "cover-1.json"):
+            write_json(runtime_path(self.workspace, "reports", name), {"result": "fixed"})
+        self.assertEqual(2, fix_route.fix_requests(self.workspace))
+        self.assertEqual(0, fix_route.fix_requests(tempfile.mkdtemp()))
+
     def test_unreadable_report_is_empty(self) -> None:
         path = runtime_path(self.workspace, "reports", "fix-1.json")
         with open(path, "w", encoding="utf-8") as handle:

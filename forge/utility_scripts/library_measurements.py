@@ -77,6 +77,18 @@ def load_library_stats_snapshot(repo_path: str, package: str, artifact: str, lib
     return _sanitize_stats_snapshot(load_library_stats_entry(repo_path, package, artifact, library_version))
 
 
+def load_library_baseline(repo_path: str, package: str, artifact: str, library_version: str) -> dict:
+    """A version's stats entry and metadata-entry counts, keyed as a pull request's before side.
+
+    §AR-pr-body
+    """
+    return {
+        "baseline_stats": load_library_stats_entry(repo_path, package, artifact, library_version),
+        "baseline_metadata_entries": count_metadata_entries(repo_path, package, artifact, library_version),
+        "baseline_test_only_entries": count_test_only_metadata_entries(repo_path, package, artifact, library_version),
+    }
+
+
 def _load_raw_library_stats_version_entry(repo_path: str, package: str, artifact: str, library_version: str) -> dict | None:
     """Load the raw matching version entry from exploded stats files if available."""
     return load_library_stats_entry(repo_path, package, artifact, library_version)

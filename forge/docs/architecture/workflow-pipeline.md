@@ -140,7 +140,7 @@ template's `transition_limit`.
 
 | State | Does |
 | --- | --- |
-| `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<group>-<artifact>-<version>`, reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate and stopping the Gradle daemons that served it, whose in-memory build state outlives the removed files, and attaches it to the task; scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split), placing and formatting its index entry as the TCK index tasks do, the latest-only fields moving with `latest` (§root/FS-metadata.1); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
+| `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<group>-<artifact>-<version>`, reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate and stopping the Gradle daemons that served it, whose in-memory build state outlives the removed files, and attaches it to the task; scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split), placing and formatting its index entry as the TCK index tasks do, the latest-only fields moving with `latest` (§root/FS-metadata.1), and records the version match and the coordinate's baseline snapshot for the pull request (§AR-pr-body); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
 | `setup-check` | Once, right after `setup`: the setup tail (§AR-forge-workflow-pipeline.4.1); a recorded skip exits `21`, a new library, which has no version to repair, exits `20` to `analyze`, and every other route exits `0` to `repair` |
 | `repair` | Only for a version that already has tests: runs the version check, `javaTest`, and the native check (§AR-forge-workflow-pipeline.5); a failure is one "make this version work" fix request |
 | `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt; a listing that cannot be produced takes the basic mode instead |
@@ -149,7 +149,7 @@ template's `transition_limit`.
 | `finalize` | `spotlessApply`, then `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the coordinate's three native lanes (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request |
 | `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns the native check and `finalize` once over a changed one (§AR-forge-workflow-pipeline.4.3) |
 | `fix-route` | Reads the request's return code and the fix report: `cannot-fix` exits `40`, anything else the return code |
-| `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics), which price each agent invocation at the rates of the model that ran it and count its cache writes as input, and the descriptor (§AR-publication-descriptor), and pushes the publication branch `finalize` rebased; a deferred exploration opens its follow-up issue first |
+| `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), and pushes the publication branch `finalize` rebased; the metrics price each agent invocation at the rates of the model that ran it, count its cache writes as input, and count the worker's rounds, its cover passes plus its fix requests, as iterations; a deferred exploration opens its follow-up issue first |
 
 ### 4.1 The setup tail
 
@@ -261,11 +261,12 @@ and repeats while it gains, up to `bulk_passes`; then class mode takes one class
 at a time until it is covered or has spent `class_attempts` passes, when it is
 exhausted. Exploration ends when the goal is met — no actionable class left for
 a new library, the previous version's coverage ratio for every other label — or
-when `explore_passes` passes are spent. The previous version is the one the
-index owned before this run's: the baseline the version was added beside, or,
-for a version the index already lists, that entry's metadata version or the
-nearest earlier supported version. A pass that gained nothing is reset, and
-the next prompt for that class names the tests that were reset.
+when `explore_passes` passes are spent. The previous version is the metadata
+version of the index entry the run is measured against: the entry the version
+was added beside, or, for a version owning its entry, that of the nearest
+earlier supported version; never a tested version, which has no directories of
+its own. A pass that gained nothing is reset, and the next prompt for that class
+names the tests that were reset.
 
 ## 8. Agent states
 

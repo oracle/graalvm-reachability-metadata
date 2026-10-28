@@ -294,6 +294,22 @@ def clone_library_update_support(
     write_index_entries(repo_path, group, artifact, updated_entries)
 
 
+def library_update_target_summary(target: LibraryUpdateTarget) -> dict[str, Any]:
+    """How the index matched a requested version, as the update pull request lists it.
+
+    §FS-library-update-tested-version-split §AR-pr-body
+    """
+    entry: dict[str, Any] | None = target.matched_entry
+    return {
+        "requested_coordinate": target.requested_coordinate,
+        "match_type": target.match_type,
+        "matched_metadata_version": None if entry is None else entry.get("metadata-version"),
+        "matched_test_version": None if entry is None else entry.get("test-version") or entry.get("metadata-version"),
+        "resolved_metadata_version": target.resolved_metadata_version,
+        "resolved_test_version": target.resolved_test_version,
+    }
+
+
 def prepare_library_update_target(
         repo_path: str,
         group: str,
