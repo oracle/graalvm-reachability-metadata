@@ -152,10 +152,10 @@ The host must provide:
   the agent's trace output with it, so a distribution without it cannot produce
   metadata. The operator updates the pinned value deliberately;
   GA and EA freshness are resolved from their authoritative release metadata on
-  every run. An Oracle EA release label can advance without the GraalVM runtime
-  revision its binaries report changing, so the gate accepts a published
-  label-to-runtime revision exception while still requiring the matching Graal
-  and JDK version tuple. `GRAALVM_HOME` and `JAVA_HOME` are aligned to one
+  every run. An Oracle EA release label can advance without the runtime or
+  JVMCI revision its binaries report changing, so the gate identifies the EA
+  build by its JDK version, its Graal major.minor, and the `oracle/graal`
+  commit its release notes name, which the installed `release` file records. `GRAALVM_HOME` and `JAVA_HOME` are aligned to one
   distribution, and `GRADLE_JAVA_HOME` and Gradle's `org.gradle.java.home`
   system property are pinned to that same distribution, so inherited host
   `GRADLE_OPTS` cannot silently hand Gradle test workers an agent-less JVM. A
