@@ -6,7 +6,7 @@
 """The reviewer gates `finalize` runs after the stats: coverage, requested metadata, diff scope.
 
 Each gate is a program over the reported evidence, never a judgment, and a
-breach becomes a fix request whose brief names the gate
+breach becomes a fix request whose output names the gate
 (§FS-local-ci-equivalent-verification.1.1). Run as a script with the workspace
 path, it reruns every gate, which is the command a fix request names.
 """
@@ -33,12 +33,9 @@ TYPE_SECTIONS: tuple[str, ...] = ("reflection", "jni", "serialization")
 FENCED: re.Pattern[str] = re.compile(r"```[A-Za-z]*\n(.*?)```", re.DOTALL)
 OVERALL: str = "overall"
 
-COVERAGE_BRIEF: str = ("dynamic-access coverage gate: Cover more call sites through the public API until the "
-                       "gate passes; rerun `generateLibraryStats` before the gate.")
-REQUESTED_BRIEF: str = ("reporter-requested metadata gate: Add the requested entries to the shipped metadata, "
-                        "each with a test that reaches it through the library's public API.")
-SCOPE_BRIEF: str = ("diff-scope gate: Revert the paths outside the contribution's file set, and move legacy "
-                    "`*-config.json` content into `reachability-metadata.json`.")
+COVERAGE_GATE: str = "dynamic-access coverage gate"
+REQUESTED_GATE: str = "reporter-requested metadata gate"
+SCOPE_GATE: str = "diff-scope gate"
 
 
 @dataclass(frozen=True)
@@ -176,14 +173,14 @@ def gate_command(workspace: str) -> str:
 
 
 def failures(workspace: str, state: RunState) -> list[handoff.Failure]:
-    """One failure per breached gate, each naming its own brief."""
+    """One failure per breached gate, output `<gate>: <breach>` (§AR-forge-workflow-prompts.5)."""
     command: str = gate_command(workspace)
     found: list[handoff.Failure] = []
-    for check, brief in ((scope_breach, SCOPE_BRIEF), (requested_breach, REQUESTED_BRIEF),
-                         (coverage_breach, COVERAGE_BRIEF)):
+    for check, gate in ((scope_breach, SCOPE_GATE), (requested_breach, REQUESTED_GATE),
+                        (coverage_breach, COVERAGE_GATE)):
         breach: str | None = check(state)
         if breach is not None:
-            found.append(handoff.Failure(command, breach, brief))
+            found.append(handoff.Failure(command, f"{gate}: {breach}"))
     return found
 
 
@@ -192,7 +189,7 @@ def main(argv: list[str]) -> int:
     workspace: str = argv[0]
     breached: list[handoff.Failure] = failures(workspace, load(workspace))
     for failure in breached:
-        print(f"FAILED {failure.brief.split(':')[0] if failure.brief else 'gate'}: {failure.output}")
+        print(f"FAILED {failure.output}")
     if not breached:
         print("every reviewer gate passes")
     return 1 if breached else 0

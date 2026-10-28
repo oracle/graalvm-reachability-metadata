@@ -45,8 +45,8 @@ Fix each violation, then rerun the commands; change nothing that follows the rul
 """.strip()
 
 
-def brief(state: RunState) -> str:
-    """The audit's one brief (§FS-local-branch-review.2).
+def task(state: RunState) -> str:
+    """The audit's task, the `## Task` of its request (§FS-local-branch-review.2).
 
     The rules themselves are the `fix` instruction's.
     """
@@ -87,7 +87,7 @@ def audit(workspace: str) -> int:
         return OK
     if not state.audit_checkpoint:
         state.audit_checkpoint = checkpoint(state.worktree, state.contribution_paths(), f"Audit {state.coordinate}")
-        handoff.write_fix_request(workspace, state, SENDER, commands(workspace, state), [brief(state)])
+        handoff.write_fix_request(workspace, state, SENDER, commands(workspace, state), task(state))
         save(workspace, state)
         print(f"[audit] the audit request follows, from {state.audit_checkpoint}")
         return AGENT_WORK

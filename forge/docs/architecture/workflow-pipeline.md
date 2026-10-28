@@ -205,7 +205,7 @@ only JaCoCo (§root/AR-test-harness.8).
 `audit` reuses `fix` unchanged: its first visit commits the tree as the audit
 checkpoint, records it in the run state, and writes an ordinary fix request
 whose commands are the native check and the finalization lane, whose editable
-files are the test project and the shipped metadata, and whose one brief is the
+files are the test project and the shipped metadata, and whose task is the
 audit of §FS-local-branch-review.2; its return code is `34`. `fix` edits, reruns
 the commands, and reports, and `fix-route` returns to `audit` or stops on
 `cannot-fix` as for any sender. The return visit compares the coordinate's paths

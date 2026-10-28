@@ -57,8 +57,7 @@ class PublicationScopeTest(FinalizedRun):
         self.write("forge/notes.md", "stray\n")
         self.assertEqual(AGENT_WORK, self.step("finalize"))
         request: str = self.read("fix-request.md")
-        self.assertIn("- diff-scope gate:", request)
-        self.assertIn("forge/notes.md", request)
+        self.assertIn("```text\ndiff-scope gate: outside the closed file set: forge/notes.md\n```", request)
 
     def test_a_repair_is_published_against_the_metadata_version_with_its_rounds(self) -> None:
         # The baseline 1.6.0 is a tested version: only its entry 1.5.0 has metadata, stats, and tests.

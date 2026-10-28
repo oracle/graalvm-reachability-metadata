@@ -7,7 +7,7 @@
 
 The audit is one ordinary fix request: the tree it leaves decides whether the
 run publishes, reruns the checks once, or stops in `human-intervention`; each
-reviewer gate fails `finalize` with a brief that names it.
+reviewer gate fails `finalize` with output that names it.
 """
 from __future__ import annotations
 
@@ -128,12 +128,14 @@ class AuditTest(FinalizedRun):
         for command in ("./gradlew test -Pcoordinates=org.example:lib:2.0.0", "./gradlew spotlessCheck",
                         "./gradlew generateLibraryStats -Pcoordinates=org.example:lib:2.0.0", "gates.py"):
             self.assertIn(command, request)
+        self.assertIn("## Task\n\nCheck every test and metadata change since `", request)
         self.assertIn("cheating patterns", request)
         self.assertNotIn("## Output", request)
+        self.assertNotIn("## Briefs", request)
         self.assertNotIn("stats/org.example", request.split("## You may edit")[1])
         self.assertEqual("audit", self.state.pending_request)
 
-    def test_the_audit_brief_sets_the_scaffold_and_zero_call_bars(self) -> None:
+    def test_the_audit_task_sets_the_scaffold_and_zero_call_bars(self) -> None:
         self.repaired()
         self.assertEqual(OK, self.step("finalize"))
         self.assertEqual(AGENT_WORK, self.step("audit"))
@@ -146,7 +148,7 @@ class AuditTest(FinalizedRun):
         self.repaired()
         state: RunState = self.state
         state.previous_coordinate = "org.example:lib:1.0.0"
-        text: str = audit.brief(state)
+        text: str = audit.task(state)
         self.assertIn("tests/src/org.example/lib/1.0.0/", text)
         self.assertNotIn("since `", text)
 
@@ -193,32 +195,31 @@ class AuditTest(FinalizedRun):
         self.assertEqual(CANNOT_FIX, self.audited("cannot-fix"))
         self.assertEqual("human-intervention", self.outcome())
 
-    def test_a_coverage_drop_fails_finalize_with_the_coverage_brief(self) -> None:
+    def test_a_coverage_drop_fails_finalize_naming_the_coverage_gate(self) -> None:
         self.repaired("library-update-request")
         self.fake.control({"stats": {"coveredCalls": 1, "totalCalls": 6, "coverageRatio": 0.17, "breakdown": {}}})
         self.assertEqual(AGENT_WORK, self.step("finalize"))
         request: str = self.read("fix-request.md")
         self.assertIn("Return: 33", request)
-        self.assertIn("- dynamic-access coverage gate:", request)
-        self.assertIn("dropped below 1.5.0's 2/6", request)
+        self.assertIn("```text\ndynamic-access coverage gate: coverage 1/6 dropped below 1.5.0's 2/6\n", request)
 
-    def test_missing_requested_metadata_fails_finalize_with_its_brief(self) -> None:
+    def test_missing_requested_metadata_fails_finalize_naming_its_gate(self) -> None:
         self.repaired(body=REQUEST)
         self.assertEqual({"types": ["org.example.lib.Codec"], "globs": []}, self.state.requested_metadata)
         self.assertEqual(AGENT_WORK, self.step("finalize"))
         request: str = self.read("fix-request.md")
-        self.assertIn("- reporter-requested metadata gate:", request)
-        self.assertIn("lacks type org.example.lib.Codec", request)
+        self.assertIn("```text\nreporter-requested metadata gate: the shipped metadata lacks type "
+                      "org.example.lib.Codec\n", request)
         self.write(os.path.join(self.state.metadata_dir, "reachability-metadata.json"),
                    json.dumps({"reflection": [{"type": "org.example.lib.Codec"}]}))
         self.assertEqual(OK, self.step("finalize"))
 
-    def test_a_path_outside_the_closed_file_set_fails_finalize_with_the_scope_brief(self) -> None:
+    def test_a_path_outside_the_closed_file_set_fails_finalize_naming_the_scope_gate(self) -> None:
         self.repaired("library-update-request")
         self.write("metadata/org.example/lib/1.5.0/reachability-metadata.json", '{"reflection": []}\n')
         self.assertEqual(AGENT_WORK, self.step("finalize"))
         request: str = self.read("fix-request.md")
-        self.assertIn("- diff-scope gate:", request)
+        self.assertIn("```text\ndiff-scope gate: outside the closed file set: ", request)
         self.assertIn("metadata/org.example/lib/1.5.0/reachability-metadata.json", request)
 
     def test_the_skip_record_bypasses_the_audit(self) -> None:

@@ -73,7 +73,8 @@ class CheckStateTest(FinalizedRun):
         self.assertEqual(AGENT_WORK, self.step("native-repair"))
         request: str = self.read("fix-request.md")
         self.assertIn("Return: 35", request)
-        self.assertIn("- test: missing registration:", request)
+        self.assertIn("```text\norg.graalvm.nativeimage.MissingReflectionRegistrationError: "
+                      "org.example.lib.Codec\n```", request)
         self.assertEqual(RETURN_NATIVE_REPAIR, self.fixed(1))
         self.write(os.path.join(self.state.metadata_dir, "reachability-metadata.json"),
                    '{"reflection": [{"type": "Fixed"}]}\n')

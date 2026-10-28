@@ -52,7 +52,8 @@ class MatrixTest(FinalizedRun):
                         f"GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew clean test -Pcoordinates={COORDINATE}")
         request: str = self.read("fix-request.md")
         self.assertIn(f"- {command}\n", request)
-        self.assertIn("- test: missing registration:", request)
+        self.assertIn("MissingReflectionRegistrationError: org.example.lib.Codec\n",
+                      request.split("## Output", 1)[1])
         rerun = subprocess.run(command, shell=True, cwd=self.state.worktree, stdout=subprocess.PIPE, text=True)
         self.assertEqual(1, rerun.returncode)
         self.assertEqual(f"2.0.0 future-defaults-all {ea}", self.lanes()[-1])
