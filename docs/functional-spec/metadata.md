@@ -91,7 +91,8 @@ on `JavadocReport`. Generated bundles may therefore be unconditional, against
 the first invariant, and many shipped ones are; `checkMetadataFiles` does not
 reject them. A condition added by hand is undone by the next `generateMetadata`:
 its merge is a union, so the agent's unconditional entry returns beside the
-corrected one. Tracked in
+corrected one. The agent defect is §graal/GR-80923; its effect on this
+repository is tracked in
 [#11294](https://github.com/oracle/graalvm-reachability-metadata/issues/11294)
 and [#11287](https://github.com/oracle/graalvm-reachability-metadata/issues/11287).
 
