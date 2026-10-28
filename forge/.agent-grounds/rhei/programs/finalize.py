@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The `finalize` program: the metadata check, style, stats, and the reviewer and pre-publication gates.
+"""The `finalize` program: the metadata check, style, stats, the reviewer and pre-publication gates.
 
 Each runs once. `splitTestOnlyMetadata` and `routeForeignMetadata` run first,
 after the last regeneration, then `checkMetadataFiles` judges what they leave

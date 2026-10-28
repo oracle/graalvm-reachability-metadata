@@ -3,7 +3,9 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The check states and `finalize`'s fix budget (§AR-forge-workflow-pipeline.5, §AR-forge-workflow-pipeline.6).
+"""The check states and the fix budgets.
+
+§AR-forge-workflow-pipeline.5, §AR-forge-workflow-pipeline.6
 
 `jvm` and `native-repair` each send one request that names only what failed,
 `native` regenerates and tests without `checkMetadataFiles`, and `finalize`

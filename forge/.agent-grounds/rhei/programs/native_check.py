@@ -75,7 +75,10 @@ def conclude(workspace: str, state: RunState, sender: str, failures: list[handof
 
 
 def native_repair(workspace: str) -> int:
-    """Right after `jvm`: only `test`, over the metadata `jvm` generated (§AR-forge-workflow-pipeline.4)."""
+    """Right after `jvm`: only `test`, over the metadata `jvm` generated.
+
+    §AR-forge-workflow-pipeline.4
+    """
     state: RunState = load(workspace)
     handoff.write_placeholder(workspace, REPAIR_SENDER)
     failures: list[handoff.Failure] = failures_of(run_task(workspace, state, REPAIR_SENDER, TEST))
