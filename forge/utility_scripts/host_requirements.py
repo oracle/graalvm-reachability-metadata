@@ -201,7 +201,7 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
             else requirements
         )
         self.graalvm_version_check = resolve_graalvm_version_check(graalvm_version_check, self.environment)
-        self.graalvm_versions = GraalVMVersions(None, None, None)
+        self.graalvm_versions = GraalVMVersions(None, None, None, None)
         self.results: list[CheckResult] = []
 
     @property

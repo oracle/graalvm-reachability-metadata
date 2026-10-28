@@ -15,15 +15,31 @@ from unittest.mock import Mock, patch
 
 from utility_scripts.host_graalvm_checks import (
     GRAALVM_SCHEMA_PATH,
+    GraalVMVersions,
     check_graalvm_installation,
     graalvm_ea_version_matches,
     java_version_major,
+    parse_ea_release_commit,
     parse_ea_release_version,
     parse_graalvm_runtime_version,
     parse_native_image_version,
+    read_graalvm_source_commit,
     resolve_graalvm_version_check,
 )
 from utility_scripts.host_requirements import COVERAGE_REQUIREMENTS, HostRequirements
+
+# The published `25i6-25.0.4.1.1-ea.01` build: its JVMCI version (25.5) and dev revision (`+1.1`)
+# follow from neither the label's Graal version nor its `ea.01` counter.
+EA_RELEASE = "25i6-25.0.4.1.1-ea.01"
+EA_COMMIT = "317db77f31dfd4c25246da2a5181fc32475f6a1d"
+EA_GRAALVM_VERSION = "25.6.0-dev+1.1"
+EA_JAVA_RUNTIME = "25.0.4.1.1+1-LTS-jvmci-25.5-b24"
+EA_RELEASE_FILE = (
+    'JAVA_VERSION="25.0.4.1.1"\n'
+    'SOURCE=".:git:fdf5391d450a compiler:317db77f31dfd4c25246da2a5181fc32475f6a1d '
+    'graal-enterprise:6174039838ad74c1f571a45ffd1f36e32dd98d85 sdk:317db77f31dfd4c25246da2a5181fc32475f6a1d"\n'
+    'GRAALVM_VERSION="25.6.0-dev"\n'
+)
 
 
 @contextmanager
@@ -58,25 +74,88 @@ class HostGraalVMChecksTests(unittest.TestCase):
 
         self.assertEqual("25.0.4", parse_native_image_version(native_output))
         self.assertEqual("25.2.4+7.1", parse_graalvm_runtime_version(native_output))
+        self.assertEqual(("25.3", "25.0.4.1"), parse_ea_release_version("25i3-25.0.4.1-ea.02"))
+        self.assertEqual(("25.6", "25.0.4.1.1"), parse_ea_release_version(EA_RELEASE))
+        self.assertIsNone(parse_ea_release_version("25e1-25.0.3-ea.32"))
         self.assertEqual(
-            ("25.3", "25.0.4.1", 2),
-            parse_ea_release_version("25i3-25.0.4.1-ea.02"),
+            EA_COMMIT,
+            parse_ea_release_commit(f"Maven bundles...\n\nBased on GraalVM commit: oracle/graal@{EA_COMMIT}\n"),
         )
+        self.assertIsNone(parse_ea_release_commit("Based on GraalVM commit: oracle/graal@317db77"))
+
+    def test_ea_build_is_matched_by_jdk_graal_version_and_commit(self) -> None:
         self.assertTrue(graalvm_ea_version_matches(
-            "25i3-25.0.4.1-ea.02",
-            "25.3.4.1-dev+0.1",
-            "25.0.4.1+0-LTS-jvmci-25.3-b21",
+            EA_RELEASE, EA_COMMIT, EA_GRAALVM_VERSION, EA_JAVA_RUNTIME, EA_COMMIT,
         ))
+        # The revision and JVMCI version are not compared: an `ea.03` build may report `+0.1`.
+        self.assertTrue(graalvm_ea_version_matches(
+            "25i3-25.0.4.1-ea.03", EA_COMMIT, "25.3.4.1-dev+0.1", "25.0.4.1+0-LTS-jvmci-25.3-b21", EA_COMMIT,
+        ))
+        mismatches = {
+            "older build of the same label series": (EA_GRAALVM_VERSION, EA_JAVA_RUNTIME, "1f84566e" * 5),
+            "other JDK version": (EA_GRAALVM_VERSION, "25.0.4.1+1-LTS-jvmci-25.5-b24", EA_COMMIT),
+            "JDK version sharing a prefix": (EA_GRAALVM_VERSION, "25.0.4.1.10+1-LTS-jvmci-25.5-b24", EA_COMMIT),
+            "other Graal minor": ("25.5.0-dev+1.1", EA_JAVA_RUNTIME, EA_COMMIT),
+            "Graal minor sharing a prefix": ("25.60.0-dev+1.1", EA_JAVA_RUNTIME, EA_COMMIT),
+            "unreadable release file": (EA_GRAALVM_VERSION, EA_JAVA_RUNTIME, None),
+        }
+        for case, (graalvm_version, java_runtime, installed_commit) in mismatches.items():
+            with self.subTest(case):
+                self.assertFalse(graalvm_ea_version_matches(
+                    EA_RELEASE, EA_COMMIT, graalvm_version, java_runtime, installed_commit,
+                ))
         self.assertFalse(graalvm_ea_version_matches(
-            "25i3-25.0.4.1-ea.02",
-            "25.3.4.1-dev+0.0",
-            "25.0.4.1+0-LTS-jvmci-25.3-b20",
+            EA_RELEASE, None, EA_GRAALVM_VERSION, EA_JAVA_RUNTIME, None,
         ))
-        self.assertTrue(graalvm_ea_version_matches(
-            "25i3-25.0.4.1-ea.03",
-            "25.3.4.1-dev+0.1",
-            "25.0.4.1+0-LTS-jvmci-25.3-b21",
-        ))
+
+    def test_installed_graal_commit_is_read_from_the_sdk_suite_source(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            self.assertIsNone(read_graalvm_source_commit(graalvm_home))
+            (Path(graalvm_home) / "release").write_text(EA_RELEASE_FILE, encoding="utf-8")
+
+            self.assertEqual(EA_COMMIT, read_graalvm_source_commit(graalvm_home))
+
+    def test_latest_ea_release_resolves_its_label_and_graal_commit(self) -> None:
+        host_requirements = HostRequirements("/repo/forge", "python3", {})
+        with patch("utility_scripts.host_graalvm_checks.run_command") as command:
+            command.side_effect = [
+                subprocess.CompletedProcess(["gh"], 0, json.dumps({"version": EA_RELEASE}), ""),
+                subprocess.CompletedProcess(
+                    ["gh"], 0, json.dumps({"body": f"Based on GraalVM commit: oracle/graal@{EA_COMMIT}"}), "",
+                ),
+            ]
+
+            self.assertEqual((EA_RELEASE, EA_COMMIT), host_requirements._read_latest_graalvm_ea_release())
+
+        self.assertIn(f"releases/tags/jdk-{EA_RELEASE}", command.call_args.args[0][2])
+        self.assertEqual("PASS", host_requirements.results[-1].status)
+
+    @patch("utility_scripts.host_graalvm_checks.run_command")
+    def test_latest_ea_lane_accepts_the_published_build(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["native-image", "--version"],
+            0,
+            "native-image 25.0.4.1.1 2026-08-18\n"
+            f"GraalVM Runtime Environment Oracle GraalVM {EA_GRAALVM_VERSION} (build {EA_JAVA_RUNTIME})\n"
+            f"    java.runtime.version = {EA_JAVA_RUNTIME}\n",
+            "",
+        )
+        with _graalvm_home() as graalvm_home:
+            (Path(graalvm_home) / "release").write_text(EA_RELEASE_FILE, encoding="utf-8")
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME_LATEST_EA": graalvm_home},
+                graalvm_version_check="strict",
+            )
+            host_requirements.graalvm_versions = GraalVMVersions(None, None, EA_RELEASE, EA_COMMIT)
+
+            host_requirements._check_graalvm_home("GRAALVM_HOME_LATEST_EA", True, EA_RELEASE, early_access=True)
+
+        installation, version = host_requirements.results
+        self.assertEqual("PASS", installation.status)
+        self.assertEqual("PASS", version.status, version.detail)
+        self.assertIn(f"oracle/graal@{EA_COMMIT}", version.detail)
 
     def test_pinned_graalvm_25_version_is_recorded_in_repository(self) -> None:
         forge_dir = Path(__file__).resolve().parents[1]

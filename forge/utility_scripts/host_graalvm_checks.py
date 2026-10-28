@@ -23,6 +23,7 @@ GRAALVM_GA_RELEASE_ENDPOINT = "repos/graalvm/graalvm-ce-builds/releases/latest"
 GRAALVM_EA_RELEASE_ENDPOINT = (
     "repos/graalvm/oracle-graalvm-ea-builds/contents/versions/latest-ea.json"
 )
+GRAALVM_EA_RELEASE_TAG_ENDPOINT = "repos/graalvm/oracle-graalvm-ea-builds/releases/tags/jdk-{version}"
 GRAALVM_SCHEMA_PATH = "lib/svm/schemas/reachability-metadata-schema.json"
 # Merges the native-image agent's trace output into metadata (§FS-forge-host-requirements).
 METADATA_MERGE_TOOL = "native-image-utils"
@@ -30,11 +31,6 @@ ISSUE_GRAALVM_ENV_VARS = ("GRAALVM_HOME", "GRAALVM_HOME_25_0", "GRAALVM_HOME_LAT
 GRAALVM_VERSION_CHECK_MODES = ("strict", "warn", "off")
 DEFAULT_GRAALVM_VERSION_CHECK = "strict"
 GRAALVM_VERSION_CHECK_ENV_VAR = "FORGE_GRAALVM_VERSION_CHECK"
-# Published EA labels can be reissued from the same reported runtime revision.
-# §FS-forge-host-requirements
-GRAALVM_EA_RUNTIME_REVISIONS = {
-    "25i3-25.0.4.1-ea.03": 1,
-}
 
 
 @dataclass(frozen=True)
@@ -44,6 +40,8 @@ class GraalVMVersions:
     latest_ga: str | None
     pinned_25: str | None
     latest_ea: str | None
+    # The `oracle/graal` commit the latest EA release notes name: what identifies that build.
+    latest_ea_commit: str | None
 
 
 def check_graalvm_installation(
@@ -200,38 +198,58 @@ def parse_java_runtime_version(output: str) -> str | None:
     return match.group(1) if match else None
 
 
-def parse_ea_release_version(release_version: str) -> tuple[str, str, int] | None:
-    """Return the Graal, JDK, and build versions from an Oracle EA release ID."""
+def parse_ea_release_version(release_version: str) -> tuple[str, str] | None:
+    """Return the Graal major.minor and the JDK version an Oracle EA release ID names."""
     match = re.fullmatch(
-        r"(\d+)i(\d+)-(\d+(?:\.\d+)+)-ea\.(\d+)",
+        r"(\d+)i(\d+)-(\d+(?:\.\d+)+)-ea\.\d+",
         release_version,
     )
     if match is None:
         return None
-    graal_version = f"{match.group(1)}.{match.group(2)}"
-    return graal_version, match.group(3), int(match.group(4))
+    return f"{match.group(1)}.{match.group(2)}", match.group(3)
+
+
+def parse_ea_release_commit(release_notes: str) -> str | None:
+    """Extract the `oracle/graal` commit an Oracle EA release's notes say it was built from."""
+    match = re.search(r"\boracle/graal@([0-9a-f]{40})\b", release_notes)
+    return match.group(1) if match else None
+
+
+def read_graalvm_source_commit(graalvm_home: str) -> str | None:
+    """Return the `oracle/graal` commit a GraalVM `release` file records for its `sdk` suite."""
+    try:
+        with open(os.path.join(graalvm_home, "release"), encoding="utf-8") as release_file:
+            release = release_file.read()
+    except OSError:
+        return None
+    match = re.search(r'^SOURCE="(?:[^"]*\s)?sdk:([0-9a-f]{40})\b', release, flags=re.MULTILINE)
+    return match.group(1) if match else None
 
 
 def graalvm_ea_version_matches(
         expected_release: str,
+        expected_commit: str | None,
         graalvm_version: str | None,
         java_runtime_version: str | None,
+        installed_commit: str | None,
 ) -> bool:
-    """Return whether local GraalVM and JDK versions match an Oracle EA release."""
+    """Return whether a local GraalVM is the build an Oracle EA release publishes.
+
+    The build is identified by what it reports, not by revisions guessed from the
+    label: the label's exact JDK version and Graal major.minor, and the `oracle/graal`
+    commit its release notes name, which also tells apart builds of one label series.
+    The JVMCI version and the dev revision do not follow from the label, so neither
+    is compared (§FS-forge-host-requirements).
+    """
     expected = parse_ea_release_version(expected_release)
-    if expected is None or graalvm_version is None or java_runtime_version is None:
+    if expected is None or expected_commit is None or graalvm_version is None or java_runtime_version is None:
         return False
-    graal_version, jdk_version, build = expected
-    ea_revision = GRAALVM_EA_RUNTIME_REVISIONS.get(expected_release, build - 1)
-    graal_matches = re.match(
-        rf"^{re.escape(graal_version)}\..*-dev\+\d+\.0*{ea_revision}(?:\D|$)",
-        graalvm_version,
-    ) is not None
-    runtime_matches = (
-        java_runtime_version.startswith(f"{jdk_version}+")
-        and f"-jvmci-{graal_version}-" in java_runtime_version
+    graal_version, jdk_version = expected
+    return (
+        graalvm_version.startswith(f"{graal_version}.")
+        and java_runtime_version.startswith(f"{jdk_version}+")
+        and installed_commit == expected_commit
     )
-    return graal_matches and runtime_matches
 
 
 class GraalVMEnvironmentChecks:
@@ -375,8 +393,8 @@ class GraalVMEnvironmentChecks:
     def _resolve_graalvm_versions(self) -> GraalVMVersions:
         pinned_25 = self._read_pinned_graalvm_25_version()
         latest_ga = self._read_latest_graalvm_ga_version()
-        latest_ea = self._read_latest_graalvm_ea_version()
-        return GraalVMVersions(latest_ga, pinned_25, latest_ea)
+        latest_ea, latest_ea_commit = self._read_latest_graalvm_ea_release()
+        return GraalVMVersions(latest_ga, pinned_25, latest_ea, latest_ea_commit)
 
     def _read_pinned_graalvm_25_version(self) -> str | None:
         config_path = os.path.join(self.forge_dir, GRAALVM_VERSION_CONFIG)
@@ -418,7 +436,8 @@ class GraalVMEnvironmentChecks:
         )
         return version if passed else None
 
-    def _read_latest_graalvm_ea_version(self) -> str | None:
+    def _read_latest_graalvm_ea_release(self) -> tuple[str | None, str | None]:
+        """Resolve the latest Oracle EA label and the `oracle/graal` commit its release notes name."""
         result = run_command(
             [
                 "gh", "api", GRAALVM_EA_RELEASE_ENDPOINT,
@@ -430,21 +449,35 @@ class GraalVMEnvironmentChecks:
             version = json.loads(result.stdout)["version"]
         except (json.JSONDecodeError, KeyError, TypeError):
             version = None
-        valid = isinstance(version, str) and parse_ea_release_version(version) is not None
-        passed = result.returncode == 0 and valid
+        valid = result.returncode == 0 and isinstance(version, str) and parse_ea_release_version(version) is not None
+        commit: str | None = None
+        if valid:
+            release = run_command(
+                ["gh", "api", GRAALVM_EA_RELEASE_TAG_ENDPOINT.format(version=version)],
+                self.environment,
+            )
+            try:
+                commit = parse_ea_release_commit(str(json.loads(release.stdout)["body"]))
+            except (json.JSONDecodeError, KeyError, TypeError):
+                commit = None
         self._add(
             "version",
             "latest Oracle GraalVM EA",
             True,
-            passed,
+            commit is not None,
             (
-                f"required={version or '<unresolved>'}; "
-                "source=graalvm/oracle-graalvm-ea-builds latest-ea.json"
+                f"required={version or '<unresolved>'} (oracle/graal@{commit or '<unresolved>'}); "
+                "source=graalvm/oracle-graalvm-ea-builds latest-ea.json and its release notes"
             ),
-            "Allow the latest-ea.json `gh api` query and retry.",
+            (
+                f"Allow the `gh api` query for the {version} release; if its notes no longer name "
+                "an `oracle/graal@<commit>`, rerun with `--graalvm-version-check warn`."
+                if valid
+                else "Allow the latest-ea.json `gh api` query and retry."
+            ),
             advisory=self.version_check_advisory,
         )
-        return version if passed else None
+        return (version, commit) if commit is not None else (None, None)
 
     def _check_graalvm_home(
             self,
@@ -513,6 +546,7 @@ class GraalVMEnvironmentChecks:
         )
         native_version_output = f"{native_version_result.stdout}\n{native_version_result.stderr}"
         installed_graalvm_version = parse_graalvm_runtime_version(native_version_output)
+        required_display = expected_version or "<unresolved>"
         if variable == "GRAALVM_HOME_25_0":
             installed_display = parse_native_image_version(native_version_output) or "<unresolved>"
             version_matches = expected_version is not None and installed_display == expected_version
@@ -522,15 +556,21 @@ class GraalVMEnvironmentChecks:
                 self.environment,
             )
             java_runtime = parse_java_runtime_version(f"{java_result.stdout}\n{java_result.stderr}")
+            installed_commit = read_graalvm_source_commit(value)
+            expected_commit = self.graalvm_versions.latest_ea_commit
             version_matches = expected_version is not None and graalvm_ea_version_matches(
                 expected_version,
+                expected_commit,
                 installed_graalvm_version,
                 java_runtime,
+                installed_commit,
             )
             installed_display = (
                 f"graalvm={installed_graalvm_version or '<unresolved>'}, "
-                f"java.runtime.version={java_runtime or '<unresolved>'}"
+                f"java.runtime.version={java_runtime or '<unresolved>'}, "
+                f"oracle/graal@{installed_commit or '<unresolved>'}"
             )
+            required_display += f" (oracle/graal@{expected_commit or '<unresolved>'})"
         else:
             version_matches = graalvm_ga_version_matches(expected_version, installed_graalvm_version)
             installed_display = installed_graalvm_version or "<unresolved>"
@@ -539,7 +579,7 @@ class GraalVMEnvironmentChecks:
             f"{variable} version",
             True,
             native_version_result.returncode == 0 and version_matches,
-            f"path={value}; installed={installed_display}; required={expected_version or '<unresolved>'}",
+            f"path={value}; installed={installed_display}; required={required_display}",
             self._version_remediation(variable),
             advisory=self.version_check_advisory,
         )
