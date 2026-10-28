@@ -186,7 +186,7 @@ class WorkspaceTest(unittest.TestCase):
 
 
 class ReleaseTest(unittest.TestCase):
-    """A finished attempt gives up its worktree with its Gradle home (§AR-forge-workflow-pipeline.1).
+    """A finished attempt gives up its worktree and Gradle home (§AR-forge-workflow-pipeline.1).
 
     §FS-forge-run-requirements.4
     """
