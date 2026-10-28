@@ -52,7 +52,9 @@ public class SdkTracerProviderUtilTest {
 
     @Test
     public void setTracerConfiguratorOnProviderUpdatesExistingTracer() {
-        try (SdkTracerProvider tracerProvider = SdkTracerProvider.builder().build()) {
+        try (SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
+            .addSpanProcessor(new CapturingSpanProcessor())
+            .build()) {
             Tracer tracer = tracerProvider.get("mutable-scope");
             Assertions.assertTrue(isRecording(tracer));
 
@@ -96,7 +98,8 @@ public class SdkTracerProviderUtilTest {
     private static SdkTracerProvider createProviderWithBuilderConfigurator(
         String disabledScopeName
     ) {
-        SdkTracerProviderBuilder tracerProviderBuilder = SdkTracerProvider.builder();
+        SdkTracerProviderBuilder tracerProviderBuilder = SdkTracerProvider.builder()
+            .addSpanProcessor(new CapturingSpanProcessor());
         SdkTracerProviderUtil.setTracerConfigurator(
             tracerProviderBuilder,
             scopeInfo -> scopeInfo.getName().equals(disabledScopeName)
@@ -106,7 +109,8 @@ public class SdkTracerProviderUtilTest {
     }
 
     private static SdkTracerProvider createProviderWithConditionalConfigurator() {
-        SdkTracerProviderBuilder tracerProviderBuilder = SdkTracerProvider.builder();
+        SdkTracerProviderBuilder tracerProviderBuilder = SdkTracerProvider.builder()
+            .addSpanProcessor(new CapturingSpanProcessor());
         SdkTracerProviderUtil.addTracerConfiguratorCondition(
             tracerProviderBuilder,
             scopeInfo -> scopeInfo.getName().equals("conditional-disabled"),
