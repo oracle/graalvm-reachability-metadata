@@ -177,22 +177,40 @@ def resolve_https_proxy(environment: Mapping[str, str], host: str) -> tuple[str,
     return parsed.hostname, parsed.port or 80
 
 
+TCP_PROBE_ATTEMPTS: int = 3
+
+
 def probe_tcp_host(
         host: str,
         port: int,
         timeout: float = 5.0,
         environment: Mapping[str, str] | None = None,
 ) -> tuple[bool, str]:
-    """Test outbound access the way Forge's tools use it: directly, or through the configured proxy."""
+    """Test outbound access the way Forge's tools use it: directly, or through the configured proxy.
+
+    A direct connect is tried up to `TCP_PROBE_ATTEMPTS` times, since one lost
+    SYN does not make a host unreachable, and a failure names every address's error.
+    """
     values = os.environ if environment is None else environment
     proxy = resolve_https_proxy(values, host)
-    if proxy is None:
-        try:
-            with socket.create_connection((host, port), timeout=timeout):
-                return True, f"tcp://{host}:{port} reachable"
-        except OSError as exc:
-            return False, f"tcp://{host}:{port} unreachable: {exc}"
-    return probe_proxied_host(host, port, proxy, timeout)
+    if proxy is not None:
+        return probe_proxied_host(host, port, proxy, timeout)
+    try:
+        addresses = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
+    except OSError as exc:
+        return False, f"tcp://{host}:{port} unreachable: {exc}"
+    errors: list[str] = []
+    for _ in range(TCP_PROBE_ATTEMPTS):
+        errors = []
+        for family, kind, protocol, _, address in addresses:
+            try:
+                with socket.socket(family, kind, protocol) as connection:
+                    connection.settimeout(timeout)
+                    connection.connect(address)
+                    return True, f"tcp://{host}:{port} reachable"
+            except OSError as exc:
+                errors.append(f"{address[0]}: {exc}")
+    return False, f"tcp://{host}:{port} unreachable after {TCP_PROBE_ATTEMPTS} attempts: {'; '.join(errors)}"
 
 
 def probe_proxied_host(

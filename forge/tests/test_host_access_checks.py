@@ -5,15 +5,17 @@
 
 import json
 import os
+import socket
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from utility_scripts.host_probes import (
     probe_http_200,
     probe_proxied_host,
+    probe_tcp_host,
     resolve_https_proxy,
     run_command,
 )
@@ -326,6 +328,31 @@ class HostAccessChecksTests(unittest.TestCase):
 
         self.assertFalse(passed)
         self.assertIn("403 Forbidden", detail)
+
+
+    def test_direct_probe_retries_a_lost_connect_and_names_each_address(self) -> None:
+        addresses = [
+            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("160.79.104.10", 443)),
+            (socket.AF_INET6, socket.SOCK_STREAM, 6, "", ("2607:6bc0::10", 443, 0, 0)),
+        ]
+        connection = MagicMock()
+        connection.__enter__.return_value = connection
+        connection.connect.side_effect = [TimeoutError("timed out"), OSError(101, "Network is unreachable"), None]
+
+        with patch("utility_scripts.host_probes.socket.getaddrinfo", return_value=addresses), \
+                patch("utility_scripts.host_probes.socket.socket", return_value=connection):
+            passed, detail = probe_tcp_host("api.anthropic.com", 443)
+
+        self.assertTrue(passed, detail)
+        self.assertEqual(3, connection.connect.call_count)
+
+        connection.connect.side_effect = [TimeoutError("timed out"), OSError(101, "Network is unreachable")] * 3
+        with patch("utility_scripts.host_probes.socket.getaddrinfo", return_value=addresses), \
+                patch("utility_scripts.host_probes.socket.socket", return_value=connection):
+            passed, detail = probe_tcp_host("api.anthropic.com", 443)
+
+        self.assertFalse(passed)
+        self.assertIn("160.79.104.10: timed out; 2607:6bc0::10: [Errno 101] Network is unreachable", detail)
 
 
 if __name__ == "__main__":
