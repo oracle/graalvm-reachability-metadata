@@ -126,8 +126,8 @@ printf '%s\n' "$@" >> "$FAKE_RHEI_INVOCATION"
             str(FORGE_ROOT / "utility_scripts" / "host_requirements.py"),
             host_arguments[0],
         )
-        self.assertIn("--mode", host_arguments)
-        self.assertIn("coverage", host_arguments)
+        self.assertEqual("coverage", host_arguments[host_arguments.index("--mode") + 1])
+        self.assertNotIn("--review-model", host_arguments)
         self.assertIn("gpt-5.6-luna", host_arguments)
 
         gh_arguments = gh_path.read_text(encoding="utf-8").splitlines()

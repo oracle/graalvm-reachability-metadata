@@ -109,10 +109,11 @@ if [[ ! "$setup_agent" =~ $TARGET_PATTERN || "${BASH_REMATCH[1]}" != "claude-cod
 fi
 setup_model="${BASH_REMATCH[5]}"
 # §FS-forge-agent-runtime-selection: the review needs the web and the GraalVM history.
-if [[ ! "$review_agent" =~ ^claude-code(\[[A-Za-z0-9_-]+\])?:[^/]+$ ]]; then
+if [[ ! "$review_agent" =~ ^claude-code(\[[A-Za-z0-9_-]+\])?:([^/]+)$ ]]; then
     printf 'ERROR: --review-agent %s: the review must be a claude-code target.\n' "$review_agent" >&2
     exit 2
 fi
+review_model="${BASH_REMATCH[2]}"
 
 # Gradle and the native-image agent run on JAVA_HOME, so both name the checked GraalVM.
 export GRAALVM_HOME="${GRAALVM_HOME:-${JAVA_HOME:-}}"
@@ -138,10 +139,11 @@ readonly REVIEW_EVERY=3
 cd "$SCRIPT_DIR"
 runs=0
 while true; do
-    # A failed host check exits here, before the claim (§FS-forge-host-requirements).
+    # Issue work and PR review, with all three agents, are checked before the claim; a failed
+    # check exits here (§FS-forge-host-requirements).
     require_rhei_launcher_host forge "$SCRIPT_DIR" "$REPO_ROOT" \
         "$worker_family" "$worker_executable" "$worker_model" "$worker_provider" \
-        claude-code claude "$setup_model"
+        claude-code claude "$setup_model" "$review_model"
     status=0
     forge_metadata "${claim_arguments[@]}" -- "$@" || status=$?
     if (( status == 1 )); then
