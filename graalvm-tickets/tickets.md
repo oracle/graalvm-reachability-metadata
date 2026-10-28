@@ -5,3 +5,10 @@ Image defects cite (§root/PRCPL-graalvm-workaround-tickets), under their Jira
 IDs. Each entry below is a snapshot of the ticket's public fields, written by
 `grund fetch graal/GR-<number>` from the repository root; refresh one by
 fetching it again rather than editing it by hand.
+
+## GR-80923: \[Native Image\] Agent in conditional mode writes resource `bundle` entries without their inferred `typeReached` condition
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14799
