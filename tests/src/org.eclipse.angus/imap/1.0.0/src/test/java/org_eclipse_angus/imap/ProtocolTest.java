@@ -69,6 +69,52 @@ public class ProtocolTest {
         }
     }
 
+    @Test
+    @Timeout(60)
+    public void tlsChannelIsRecoveredFromNamedSocketField() throws Exception {
+        assertTlsChannelIsRecovered(true);
+    }
+
+    @Test
+    @Timeout(60)
+    public void tlsChannelIsRecoveredFromAssignableSocketField() throws Exception {
+        assertTlsChannelIsRecovered(false);
+    }
+
+    private static void assertTlsChannelIsRecovered(boolean namedField) throws Exception {
+        SSLContext context = tlsContext();
+        TlsChannelSocketFactory factory = new TlsChannelSocketFactory(context.getSocketFactory(), namedField);
+        Properties properties = new Properties();
+        properties.put("mail.imap.ssl.socketFactory", factory);
+        properties.setProperty("mail.imap.usesocketchannels", "true");
+        properties.setProperty("mail.imap.ssl.checkserveridentity", "true");
+        properties.setProperty("mail.imap.connectiontimeout", Integer.toString(TIMEOUT_MILLIS));
+        properties.setProperty("mail.imap.timeout", Integer.toString(TIMEOUT_MILLIS));
+        MailLogger logger = new MailLogger(ProtocolTest.class, "IMAP", false, System.out);
+
+        try (ExecutorService executor = Executors.newSingleThreadExecutor();
+                SSLServerSocket server = (SSLServerSocket) context.getServerSocketFactory()
+                        .createServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
+            server.setSoTimeout(TIMEOUT_MILLIS);
+            Future<List<String>> conversation = executor.submit(() -> serveTls(server));
+            IMAPProtocol protocol = new IMAPProtocol("imap", "localhost", server.getLocalPort(),
+                    properties, true, logger);
+            try {
+                assertThat(protocol.isSSL()).isTrue();
+                assertThat(factory.channel()).isNotNull();
+                assertThat(protocol.getChannel()).isSameAs(factory.channel());
+                assertThat(protocol.getChannel().isConnected()).isTrue();
+                assertThat(protocol.hasCapability("IMAP4rev1")).isTrue();
+                protocol.noop();
+                protocol.logout();
+            } finally {
+                protocol.disconnect();
+            }
+            assertThat(factory.channel().isOpen()).isFalse();
+            assertThat(conversation.get(30, TimeUnit.SECONDS)).containsExactly("NOOP", "LOGOUT");
+        }
+    }
+
     private static SSLContext tlsContext() throws Exception {
         char[] password = "changeit".toCharArray();
         KeyStore keys = KeyStore.getInstance("PKCS12");
