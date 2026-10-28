@@ -247,12 +247,18 @@ token counts; iteration count; library-coverage and generated lines-of-code
 metrics; metadata-entry counts; and dynamic-access coverage with its supporting
 evidence.
 
-They differ only in the stats view: new-library support reports the generated
+They differ in what they compare: new-library support reports the generated
 library stats plus an explanation when covered-call and metadata-entry counts
-diverge, while coverage improvement reports a before/after stats diff computed
-from the run's baseline snapshot. New-library PRs link with `Fixes:` for a
-single-PR run and `Refs:` for non-final chunked dynamic-access chunks
-(§AR-chunked-linking).
+diverge, while coverage improvement reports the version match of its library
+update target (§FS-library-update-tested-version-split) and a before/after diff
+of the coordinate's metadata-entry counts and stats. The before side is the
+run's baseline snapshot, the coordinate as `prepare` leaves it: a version that
+already owns its metadata keeps its state on the pinned base, and any other
+version starts as a copy of the entry it was added beside. The previous version
+remains the explore goal and the coverage gate's baseline
+(§AR-forge-workflow-pipeline.7).
+New-library PRs link with `Fixes:` for a single-PR run and `Refs:` for non-final
+chunked dynamic-access chunks (§AR-chunked-linking).
 
 ### Java fail-fix (javac and java-run)
 
