@@ -5,7 +5,7 @@
 #   jvm -- 0 --> native-repair -- 0 --> analyze; each 10 --> fix
 #   analyze -- 10 --> cover --> measure; 20 (nothing to explore, deferred) --> native
 #   measure -- 10 --> cover; 11 (JVM tests fail) --> fix; 0 (goal), 20 (budget) --> native
-#   native -- 0 --> finalize; 10 --> fix
+#   native -- 0 --> finalize; 10 (at most native_fixes times) --> fix
 #   finalize -- 0 --> audit; 10 (at most finalize_fixes times) --> fix
 #   audit -- 10 (first visit) --> fix; 0 --> publish
 #   fix --> fix-route -- 30-35 --> back to the sender; 40 --> human-intervention
@@ -37,6 +37,7 @@ states:
       --defer-classes {{defer_classes}}
       --explore-passes {{explore_passes}}
       --finalize-fixes {{finalize_fixes}}
+      --native-fixes {{native_fixes}}
       --repo-checkout "{{repo_checkout}}"
       --worktree-root "{{worktree_root}}"
     program_timeout: 60m

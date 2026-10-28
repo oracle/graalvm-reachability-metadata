@@ -19,6 +19,7 @@ import re
 from dataclasses import dataclass
 
 from exit_codes import RETURN_CODES
+from fix_route import latest_report
 from run_state import RunState, runtime_path, write_text
 
 FIX_REQUEST: str = "fix-request.md"
@@ -188,7 +189,12 @@ def render(state: RunState, sender: str, failures: list[Failure], briefs: list[s
 def write_fix_request(workspace: str, state: RunState, sender: str, failures: list[Failure],
                       briefs: list[str] | None = None) -> None:
     """Write the request for `fix` and arm the sender's loop guard; the caller saves the state."""
-    write_text(runtime_path(workspace, FIX_REQUEST), render(state, sender, failures, briefs))
+    text: str = render(state, sender, failures, briefs)
+    if state.pending_request == sender:
+        summary: str = str(latest_report(workspace).get("summary", "")).strip()
+        # A budgeted sender's next request starts from what the last fix did and why it stopped.
+        text += f"\n## The previous fix reported\n\n{summary}\n" if summary else ""
+    write_text(runtime_path(workspace, FIX_REQUEST), text)
     state.pending_request = sender
 
 
