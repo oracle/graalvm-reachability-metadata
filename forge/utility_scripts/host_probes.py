@@ -177,7 +177,7 @@ def resolve_https_proxy(environment: Mapping[str, str], host: str) -> tuple[str,
     return parsed.hostname, parsed.port or 80
 
 
-TCP_PROBE_ATTEMPTS: int = 3
+TCP_PROBE_ATTEMPTS: int = 2
 
 
 def probe_tcp_host(
@@ -188,29 +188,21 @@ def probe_tcp_host(
 ) -> tuple[bool, str]:
     """Test outbound access the way Forge's tools use it: directly, or through the configured proxy.
 
-    A direct connect is tried up to `TCP_PROBE_ATTEMPTS` times, since one lost
-    SYN does not make a host unreachable, and a failure names every address's error.
+    A failed direct connect is tried once more, since one lost connect does not
+    make a host unreachable.
     """
     values = os.environ if environment is None else environment
     proxy = resolve_https_proxy(values, host)
     if proxy is not None:
         return probe_proxied_host(host, port, proxy, timeout)
-    try:
-        addresses = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
-    except OSError as exc:
-        return False, f"tcp://{host}:{port} unreachable: {exc}"
-    errors: list[str] = []
+    error: OSError | None = None
     for _ in range(TCP_PROBE_ATTEMPTS):
-        errors = []
-        for family, kind, protocol, _, address in addresses:
-            try:
-                with socket.socket(family, kind, protocol) as connection:
-                    connection.settimeout(timeout)
-                    connection.connect(address)
-                    return True, f"tcp://{host}:{port} reachable"
-            except OSError as exc:
-                errors.append(f"{address[0]}: {exc}")
-    return False, f"tcp://{host}:{port} unreachable after {TCP_PROBE_ATTEMPTS} attempts: {'; '.join(errors)}"
+        try:
+            with socket.create_connection((host, port), timeout=timeout):
+                return True, f"tcp://{host}:{port} reachable"
+        except OSError as exc:
+            error = exc
+    return False, f"tcp://{host}:{port} unreachable: {error}"
 
 
 def probe_proxied_host(
