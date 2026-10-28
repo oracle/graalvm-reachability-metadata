@@ -6,6 +6,9 @@
  */
 package org_springframework_boot.spring_boot_autoconfigure;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -13,8 +16,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.flywaydb.core.Flyway;
 import org.h2.Driver;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -24,13 +29,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Timeout(120)
 public class FlywayMigrationInitializerTest {
 
+    @TempDir
+    Path migrations;
+
+    @BeforeEach
+    void writeMigration() throws IOException {
+        Files.writeString(migrations.resolve("V1__create_items.sql"), """
+                CREATE TABLE migration_items (id INTEGER PRIMARY KEY, name VARCHAR(80));
+                INSERT INTO migration_items VALUES (1, 'migrated orchard');
+                """);
+    }
+
     @Test
     void initializationMigratesSchemaAndDoesNotRepeatAppliedMigration() throws Exception {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource(new Driver(),
-                "jdbc:h2:mem:initializer_default;DB_CLOSE_DELAY=0", "sa", "");
+                "jdbc:h2:mem:initializer_default;DB_CLOSE_DELAY=0;OLD_INFORMATION_SCHEMA=TRUE;NON_KEYWORDS=VALUE",
+                "sa", "");
         try (Connection connection = dataSource.getConnection()) {
             Flyway flyway = Flyway.configure().dataSource(dataSource)
-                    .locations("classpath:db/initializer-migration").load();
+                    .locations("filesystem:" + migrations.toAbsolutePath()).load();
             FlywayMigrationInitializer initializer = new FlywayMigrationInitializer(flyway);
             initializer.setOrder(15);
             assertThat(initializer.getOrder()).isEqualTo(15);
@@ -52,10 +69,11 @@ public class FlywayMigrationInitializerTest {
     @Test
     void customStrategyReceivesAndMigratesConfiguredFlyway() throws Exception {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource(new Driver(),
-                "jdbc:h2:mem:initializer_strategy;DB_CLOSE_DELAY=0", "sa", "");
+                "jdbc:h2:mem:initializer_strategy;DB_CLOSE_DELAY=0;OLD_INFORMATION_SCHEMA=TRUE;NON_KEYWORDS=VALUE",
+                "sa", "");
         try (Connection connection = dataSource.getConnection()) {
             Flyway flyway = Flyway.configure().dataSource(dataSource)
-                    .locations("classpath:db/initializer-migration").load();
+                    .locations("filesystem:" + migrations.toAbsolutePath()).load();
             AtomicBoolean invoked = new AtomicBoolean();
             FlywayMigrationInitializer initializer = new FlywayMigrationInitializer(flyway, configured -> {
                 assertThat(configured).isSameAs(flyway);

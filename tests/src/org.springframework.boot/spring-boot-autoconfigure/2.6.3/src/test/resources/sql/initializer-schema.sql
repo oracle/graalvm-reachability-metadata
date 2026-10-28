@@ -1,1 +1,0 @@
-CREATE TABLE script_items (id INTEGER PRIMARY KEY, label VARCHAR(80))@@
