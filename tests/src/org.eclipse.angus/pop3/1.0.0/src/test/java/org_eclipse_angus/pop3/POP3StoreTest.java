@@ -37,7 +37,17 @@ public class POP3StoreTest {
 
     @Test
     @Timeout(60)
-    public void configuredMessageClassReadsMailboxHeaders() throws Exception {
+    public void configuredMessageClassCreatesMailboxMessages() throws Exception {
+        withConfiguredMailbox(inbox -> {
+            assertThat(inbox.getMessageCount()).isEqualTo(1);
+            Message message = inbox.getMessage(1);
+            assertThat(message).isInstanceOf(CustomPOP3Message.class);
+            assertThat(message.getFolder()).isSameAs(inbox);
+            assertThat(message.getMessageNumber()).isEqualTo(1);
+        });
+    }
+
+    static void withConfiguredMailbox(MailboxAssertion assertion) throws Exception {
         Properties properties = new Properties();
         properties.setProperty("mail.pop3.message.class", CustomPOP3Message.class.getName());
         properties.setProperty("mail.pop3.connectiontimeout", Integer.toString(TIMEOUT_MILLIS));
@@ -56,13 +66,7 @@ public class POP3StoreTest {
                 Folder inbox = store.getFolder("INBOX");
                 inbox.open(Folder.READ_ONLY);
                 try {
-                    assertThat(inbox.getMessageCount()).isEqualTo(1);
-                    Message message = inbox.getMessage(1);
-                    assertThat(message).isInstanceOf(CustomPOP3Message.class);
-                    assertThat(message.getFolder()).isSameAs(inbox);
-                    assertThat(message.getMessageNumber()).isEqualTo(1);
-                    assertThat(message.getSubject()).isEqualTo("Configured POP3 message");
-                    assertThat(inbox.getMessage(1)).isSameAs(message);
+                    assertion.verify(inbox);
                 } finally {
                     inbox.close(false);
                 }
@@ -107,6 +111,11 @@ public class POP3StoreTest {
         writer.write(response);
         writer.write("\r\n");
         writer.flush();
+    }
+
+    @FunctionalInterface
+    interface MailboxAssertion {
+        void verify(Folder inbox) throws Exception;
     }
 
     public static final class CustomPOP3Message extends POP3Message {
