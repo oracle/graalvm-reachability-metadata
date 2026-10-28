@@ -56,3 +56,20 @@ until = "AR-pr-body's per-workflow pull request bodies and AR-actions-publicatio
 reason = """
 AR-forge-publication holds the local publication pipeline, the trusted Actions publisher and AR-pr-body's per-workflow pull request bodies. At 380 non-blank lines, moving the bodies (112) alone still leaves 268, over the 250 soft limit; moving the Actions publisher (79) too leaves about 189. Each is a subject of its own, and moving them is its own change, not part of an edit that only brings the not-for-native-image route's own declaration up to date.
 """
+[[exceptions]]
+path = "forge/docs/functional-spec/publication.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+shadows = "hard"
+max_accepted = { value = 500, unit = "lines" }
+[[exceptions]]
+path = "docs/functional-spec/functional-spec.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 400, unit = "lines" }
+until = "FS-library-version-update-automation and section 8 (how the repository is used) each move to their own declaration in the functional-spec folder home, leaving about 230 lines"
+reason = """
+The file measures about 390 lines. The version update automation (about 100 lines) can move out whole, since IDs are stable across files in the folder home, but that alone leaves about 290; the usage walkthroughs of section 8 (about 60 more) need new IDs and their citers migrated. Both moves are changes of their own rather than side effects of adding one label row.
+"""

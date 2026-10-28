@@ -320,6 +320,18 @@ retry: Forge posts a comment naming the reason and labels the issue
 `human-intervention`, which takes it out of the queue until a maintainer
 resolves it.
 
+#### 2.1 An issue blocked on GraalVM is not claimed
+
+An issue labeled `graalvm-bug` waits on a GraalVM defect
+(§root/FS-graalvm-blocked-work.2) that no run can fix, so every attempt
+would spend a claim and an agent budget on the same failure. The label is
+excluded twice: from the queue fetch, so the issue costs nothing while it
+waits, and from the live claim-time re-read, so a label added after the fetch
+still holds. Neither `resumable` nor the blocked-issue override lifts it:
+`resumable` lifts no hold, and the override concerns open GitHub blockers,
+while this label marks a defect outside the repository that only a
+maintainer's release clears (§root/FS-graalvm-blocked-work.3).
+
 ### 3. Issue form
 
 The queue label decides the route, so the issue must be unambiguous before a

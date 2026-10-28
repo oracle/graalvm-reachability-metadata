@@ -18,6 +18,7 @@ it, neither of which is about how the build produces either.
 | [§FS-test-contract](test-contract.md#fs-test-contract-the-test-contract) | The test contract |
 | [§FS-repository-status-report](repository-status.md#fs-repository-status-report-repository-issue-progress-and-state) | Repository issue progress and state |
 | [§FS-maintainer-agent-queues](maintainer-agent-queues.md#fs-maintainer-agent-queues-maintainer-agent-queues) | Maintainer agent queues |
+| [§FS-graalvm-blocked-work](graalvm-blocked-work.md#fs-graalvm-blocked-work-work-blocked-on-a-graalvm-defect) | Work blocked on a GraalVM defect |
 | [§FS-metadata](metadata.md#fs-metadata-the-metadata-suite) | The `metadata/` suite |
 | [§FS-tests](tests.md#fs-tests-the-tests-suite) | The `tests/` suite |
 
@@ -36,6 +37,8 @@ Files:
   and state are reported.
 - [maintainer-agent-queues.md](maintainer-agent-queues.md) — the agent queues a
   maintainer can adopt through ephor, and what the repository ships for them.
+- [graalvm-blocked-work.md](graalvm-blocked-work.md) — how work a GraalVM
+  defect blocks is declared, held out of automation, and released.
 - [metadata.md](metadata.md) — the `metadata/` suite: its layout, its additive
   invariants, and where each entry comes from.
 - [tests.md](tests.md) — the `tests/` suite: the per-coordinate test projects
