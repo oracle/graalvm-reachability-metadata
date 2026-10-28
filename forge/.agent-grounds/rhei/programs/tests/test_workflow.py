@@ -161,10 +161,12 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(AGENT_WORK, self.step("jvm"))
         request: str = self.read("fix-request.md")
         self.assertIn("Return: 30", request)
-        self.assertIn("JVM test failure", request)
+        self.assertIn("```text\n2 tests completed, 1 failed\n", request)
+        self.assertNotIn("## Briefs", request)
         # `native-repair` sends its own request, so this one names only `javaTest`.
+        failing: str = request.split("## Failing commands", 1)[1].split("\n## ", 1)[0]
         self.assertEqual([f"- ./gradlew javaTest -Pcoordinates={COORDINATE}"],
-                         [line for line in request.split("## Briefs")[0].splitlines() if line.startswith("- ")])
+                         [line for line in failing.splitlines() if line.startswith("- ")])
         self.assertNotIn("## Then run", request)
         self.fix("fixed", 1)
         self.assertEqual(RETURN_JVM, self.step("fix-route"))
@@ -269,7 +271,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(AGENT_WORK, self.step("native"))
         request: str = self.read("fix-request.md")
         self.assertIn("- ./gradlew generateMetadata -Pcoordinates=", request.split("## Then run")[0])
-        then_run: str = request.split("## Then run", 1)[1].split("## Briefs", 1)[0]
+        then_run: str = request.split("## Then run", 1)[1].split("\n## ", 1)[0]
         self.assertEqual([f"- ./gradlew test -Pcoordinates={self.state.coordinate}"],
                          [line for line in then_run.splitlines() if line.startswith("- ")])
 
