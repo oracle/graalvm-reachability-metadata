@@ -6,10 +6,10 @@
 """Review the open real-use pull requests, oldest first, up to three of them.
 
 §FS-real-use-test-generation.4: the queue is read from GitHub, an approved pull
-request or one another review holds with a fresh `in-review` label is skipped,
-and every other one gets a single agent invocation in a throwaway checkout of
-its head (§AR-real-use-test-launcher). The outcome is the agent's; this program
-does not check it.
+request, one labeled `graalvm-bug`, or one another review holds with a fresh
+`in-review` label is skipped, and every other one gets a single agent invocation
+in a throwaway checkout of its head (§AR-real-use-test-launcher). The outcome is
+the agent's; this program does not check it.
 """
 from __future__ import annotations
 
@@ -27,6 +27,8 @@ import issue
 
 TARGET: re.Pattern[str] = re.compile(r"^(pi|claude-code)(?:\[([A-Za-z0-9_-]+)\])?:(?:(.*)/)?([^/]+)$")
 IN_REVIEW: str = "in-review"
+# Waits on a GraalVM defect until a maintainer releases it. §root/FS-graalvm-blocked-work.2
+GRAALVM_BUG: str = "graalvm-bug"
 STALE_AFTER: timedelta = timedelta(hours=3)
 REVIEW_LIMIT: int = 3
 
@@ -109,7 +111,10 @@ def skip_reason(pull: dict[str, Any], now: datetime) -> str | None:
         return pull["state"].lower()
     if pull.get("reviewDecision") == "APPROVED":
         return "approved"
-    if IN_REVIEW in {label["name"] for label in pull["labels"]}:
+    labels: set[str] = {label["name"] for label in pull["labels"]}
+    if GRAALVM_BUG in labels:
+        return f"labeled {GRAALVM_BUG}, blocked on a GraalVM defect"
+    if IN_REVIEW in labels:
         added: datetime = label_added_at(pull["number"])
         if now - added <= STALE_AFTER:
             return f"held by another review since {added.isoformat()}"

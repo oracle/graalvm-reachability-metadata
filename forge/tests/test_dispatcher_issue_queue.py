@@ -57,7 +57,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             ],
         )
 
-    def test_tier_search_query_keeps_the_not_for_native_image_exclusion(self) -> None:
+    def test_tier_search_query_keeps_the_always_excluded_labels(self) -> None:
         with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
                 patch.object(issue_queue, "gh_json", return_value={"items": []}) as gh_json:
             issue_queue.search_issues_with_label(
@@ -72,6 +72,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 f"q=repo:{config.REPO} is:issue is:open "
                 f'label:"{dispatcher_config.LABEL_LIBRARY_NEW}" '
                 f'-label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}" '
+                f'-label:"{config.LABEL_GRAALVM_BUG}" '
                 f'-label:"{config.LABEL_HIGH_PRIORITY}"'
             ),
         )
@@ -96,7 +97,8 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "api", "--method", "GET", "/search/issues",
             "-f", (
                 f"q=repo:{config.REPO} is:issue is:open "
-                f'label:"{dispatcher_config.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}"'
+                f'label:"{dispatcher_config.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}" '
+                f'-label:"{config.LABEL_GRAALVM_BUG}"'
             ),
             "-f", "sort=created",
             "-f", "order=desc",
@@ -126,7 +128,8 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "api", "--method", "GET", "/search/issues",
             "-f", (
                 f"q=repo:{config.REPO} is:issue is:open "
-                f'label:"{dispatcher_config.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}"'
+                f'label:"{dispatcher_config.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}" '
+                f'-label:"{config.LABEL_GRAALVM_BUG}"'
             ),
             "-f", "sort=created",
             "-f", "order=desc",
@@ -234,3 +237,18 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
         self.assertEqual([issue["number"] for issue in issues], [1])
+
+    def test_fixture_issue_queue_keeps_the_always_excluded_labels(self) -> None:
+        # Fixture state stands in for GitHub search, so it leaves out what the query does.
+        claimable: FixtureIssue = _fixture_form_issue(number=1)
+        held: FixtureIssue = _fixture_form_issue(
+            number=2, label_names=[dispatcher_config.LABEL_LIBRARY_NEW, config.LABEL_GRAALVM_BUG])
+        state: FixtureGitHubState = FixtureGitHubState([claimable, held])
+
+        with patch.object(issue_queue, "is_fixture_testing_enabled", return_value=True), \
+                patch.object(issue_queue, "require_fixture_github_state", return_value=state):
+            issues: list[dict] = issue_queue.get_issues_with_label(dispatcher_config.LABEL_LIBRARY_NEW, 10)
+            count: int = issue_queue.count_issues_with_label(dispatcher_config.LABEL_LIBRARY_NEW)
+
+        self.assertEqual([issue["number"] for issue in issues], [1])
+        self.assertEqual(count, 1)

@@ -73,11 +73,22 @@ opt-in: drop them and the recipes stay available by hand through
             "autorun": true, "dispatch": "2h"
           },
           {
+            "id": "implement-graalvm-workaround", "icon": "🔧",
+            "description": "work around the GraalVM defect the issue waits on",
+            "state": "fix", "needs_checkout": true,
+            "branch": "<your-prefix>/auto-issue-{number}",
+            "brief_file": "{root}/.ephor/implement.md",
+            "brief": "The issue: {title} ({url}), number {number}, on branch {branch}.",
+            "when": { "kinds": ["issue"], "assignees": ["<your-login>"], "labels": ["graalvm-bug"] },
+            "autorun": true, "dispatch": "2h"
+          },
+          {
             "id": "drain-human-intervention", "icon": "🧹",
             "description": "drain the human-intervention label",
             "state": "hi-collect", "needs_checkout": true,
             "brief": "Drain the human-intervention label from {title} ({url}).",
-            "when": { "kinds": ["pr"], "labels": ["human-intervention", "!human-intervention-fixed"] },
+            "when": { "kinds": ["pr"],
+                      "labels": ["human-intervention", "!human-intervention-fixed", "!graalvm-bug"] },
             "autorun": true, "dispatch": "2h"
           },
           {
@@ -99,9 +110,12 @@ opt-in: drop them and the recipes stay available by hand through
 }
 ```
 
-The last two entries replace ephor's shipped `review` and `rebase` recipes for
-this project only. Without them, a sweep offers a labelled pull request to one
-of those first and never reaches the drain queue.
+The second entry is the implement queue too: Forge holds an issue labeled
+`graalvm-bug`, so the queue takes it once it is assigned to you, whatever Forge
+label it carries (§FS-maintainer-agent-queues.2). The last two entries replace
+ephor's shipped `review` and `rebase` recipes for this project only. Without
+them, a sweep offers a labelled pull request to one of those first and never
+reaches the drain queue.
 
 ## Running it unattended
 

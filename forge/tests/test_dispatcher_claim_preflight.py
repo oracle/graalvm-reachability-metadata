@@ -338,6 +338,29 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         get_issue_claim_preflights.assert_called_once_with([4, 3])
 
+    def test_graalvm_bug_holds_an_issue_whatever_else_it_carries(self) -> None:
+        issue: dict = {
+            "number": 1412,
+            "labels": [{"name": config.LABEL_GRAALVM_BUG}, {"name": config.LABEL_RESUMABLE}],
+            "assignees": [],
+        }
+        self.assertFalse(claim_preflight.issue_needs_claim_preflight(issue, "automation-user"))
+        observation = claim_preflight.get_issue_claim_cache_observation_from_payload(issue, "automation-user")
+        self.assertEqual(observation.reason, config.ISSUE_CLAIM_CACHE_REASON_GRAALVM_BUG)
+
+        cached_skip: records.CachedIssueClaimSkip = records.CachedIssueClaimSkip(
+            issue_number=1412,
+            reason=config.ISSUE_CLAIM_CACHE_REASON_GRAALVM_BUG,
+            observed_at_epoch=100.0,
+        )
+        self.assertTrue(
+            issue_queue.cached_skip_blocks_authenticated_user(cached_skip, "automation-user", take_blocked_issues=True)
+        )
+        self.assertEqual(
+            claim_preflight.format_cached_issue_claim_skip(cached_skip),
+            f"recently cached with label '{config.LABEL_GRAALVM_BUG}', blocked on a GraalVM defect",
+        )
+
     def test_payload_assignees_do_not_skip_without_fresh_claim_state(self) -> None:
         issue = {
             "number": 1412,

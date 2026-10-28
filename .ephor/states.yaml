@@ -134,7 +134,7 @@ states:
 
       Stop at once, writing only a short report, if the PR is closed or
       merged, is not labelled `GenAI`, no longer carries `human-intervention`,
-      or already carries `human-intervention-fixed`.
+      already carries `human-intervention-fixed`, or carries `graalvm-bug`.
 
       **The rules are the repository's.** Read in this checkout with
       `grund <ID> --full` before changing anything: `FS-contribution-contract.5`
@@ -247,7 +247,7 @@ transitions:
   - from: hi-collect
     to: done
     exit_code: 4
-    description: Closed, merged, not GenAI, or already resolved; nothing to drain.
+    description: Closed, merged, not GenAI, already resolved, or blocked on GraalVM; nothing to drain.
   - from: hi-collect
     to: hi-fix
     exit_code: 0

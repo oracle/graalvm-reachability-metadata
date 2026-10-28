@@ -161,6 +161,15 @@ class ReviewTest(unittest.TestCase):
         self.assertIn(("timeline", 2), github.log)
         self.assertFalse([entry for entry in github.log if entry[0] in ("--add-label", "--remove-label")])
 
+    def test_a_pull_request_blocked_on_graalvm_is_skipped_without_an_agent(self) -> None:
+        pull: dict[str, Any] = _pr(6, 9)
+        pull["labels"].append({"name": "graalvm-bug"})
+        github: FakeGitHub = FakeGitHub([pull])
+
+        self.assertEqual(0, github.run())
+        self.assertEqual([], github.agents())
+        self.assertFalse([entry for entry in github.log if entry[0] in ("--add-label", "--remove-label")])
+
     def test_a_label_older_than_three_hours_is_taken_over(self) -> None:
         github: FakeGitHub = FakeGitHub([_pr(4, 9, labeled_hours_ago=3.5)])
 

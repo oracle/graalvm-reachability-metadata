@@ -41,8 +41,8 @@ class FetchTest(unittest.TestCase):
             "gh", "issue", "list", "--repo", "oracle/graalvm-reachability-metadata", "--state", "open",
             "--label", "library-new-request", "--label", "priority",
             "--search",
-            "no:assignee -label:not-for-native-image -label:human-intervention -is:blocked -label:high-priority "
-            "sort:created-asc",
+            "no:assignee -label:not-for-native-image -label:graalvm-bug -label:human-intervention -is:blocked "
+            "-label:high-priority sort:created-asc",
             "--json", "number,title,labels,assignees", "--limit", "20",
         ], command)
 
@@ -83,6 +83,15 @@ class FetchTest(unittest.TestCase):
         candidates = issue_fetch.fetch_candidates(("library-new-request", "library-update-request"), handle.name)
         self.assertEqual([("library-new-request", 9), ("library-update-request", 8)],
                          [(label, payload["number"]) for label, payload in candidates])
+
+    def test_fixture_never_yields_what_the_queries_exclude(self) -> None:
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as handle:
+            json.dump([issue(8, "library-new-request", "graalvm-bug"),
+                       issue(9, "library-new-request", "not-for-native-image"),
+                       issue(10, "library-new-request")], handle)
+        self.addCleanup(os.remove, handle.name)
+        candidates = issue_fetch.fetch_candidates(("library-new-request",), handle.name)
+        self.assertEqual([10], [payload["number"] for _, payload in candidates])
 
 
 class TargetTest(unittest.TestCase):
@@ -188,6 +197,22 @@ class CloseOutTest(unittest.TestCase):
         body: str = comments[0].args[1]
         self.assertIn("Failing command: `./gradlew checkstyle`\n\n```text\n[ERROR] A.java:1: bad style\n```", body)
         self.assertIn("Failing command: `pre-publication gate review`\n\nThe last fix reported `fixed`:", body)
+
+    def test_the_fix_summary_is_quoted_bounded_and_cites_or_mentions_nobody(self) -> None:
+        summary: str = "Blocked on GR-80923, see \u00a7FS-graalvm-blocked-work.1; @kimeta knows.\n" + "x" * 2000
+        _, comments, _ = self.close_out({
+            "outcome": "human-intervention", "reason": "the fix reported that nothing within the rules helps",
+            "fix_result": "cannot-fix", "fix_summary": summary})
+        quote: list[str] = comments[0].args[1].split("`cannot-fix`:\n\n", 1)[1].splitlines()
+        self.assertEqual("> Blocked on GR-80923, see <\u00a7>FS-graalvm-blocked-work.1; @\u200bkimeta knows.", quote[0])
+        self.assertTrue(quote[1].endswith(" \u2026"))
+        self.assertLess(len(comments[0].args[1]), run_launch.QUOTE_LIMIT + 200)
+
+    def test_an_output_with_a_fence_cannot_close_its_own(self) -> None:
+        _, comments, _ = self.close_out({
+            "outcome": "human-intervention", "reason": "finalize still fails after its fix",
+            "failures": [{"command": "./gradlew test", "output": "```\n@Test fails"}]})
+        self.assertIn("````text\n```\n@Test fails\n````", comments[0].args[1])
 
     def test_bad_input_needs_a_maintainer(self) -> None:
         labels, _, reverts = self.close_out({"outcome": "failed", "kind": "bad-input", "reason": "no URL"})

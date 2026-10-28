@@ -28,7 +28,12 @@ from typing import Any, Iterator
 import yaml
 
 from dispatcher import pr_review_state as state
-from dispatcher.config import LABEL_HUMAN_INTERVENTION, LABEL_HUMAN_INTERVENTION_FIXED, REPO
+from dispatcher.config import (
+    LABEL_GRAALVM_BUG,
+    LABEL_HUMAN_INTERVENTION,
+    LABEL_HUMAN_INTERVENTION_FIXED,
+    REPO,
+)
 from dispatcher.github_api import gh, gh_json
 from dispatcher.issue_admin import (
     add_pull_request_label,
@@ -127,6 +132,9 @@ def ended(pull: dict[str, Any]) -> str | None:
         return "approved"
     if LABEL_HUMAN_INTERVENTION in names:
         return f"labeled {LABEL_HUMAN_INTERVENTION}"
+    # `human-intervention-fixed` does not lift it. §FS-published-pr-review.2
+    if LABEL_GRAALVM_BUG in names:
+        return f"labeled {LABEL_GRAALVM_BUG}, blocked on a GraalVM defect"
     if state.REVIEWED in names and LABEL_HUMAN_INTERVENTION_FIXED not in names:
         return f"labeled {state.REVIEWED}"
     return None

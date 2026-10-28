@@ -36,6 +36,12 @@ TEMPLATE: str = "forge-metadata"
 OUTCOME: str = os.path.join("runtime", "forge", "outcome.json")
 # <agent>[<mode>]:<model> with agent pi or claude-code (§FS-forge-agent-runtime-selection).
 TARGET: re.Pattern[str] = re.compile(r"^(pi|claude-code)(\[[A-Za-z0-9_-]+\])?:.+$")
+# Agent text the comment quotes is bounded, and neither cites nor mentions anyone
+# (§FS-human-intervention-policy).
+QUOTE_LIMIT: int = 1500
+UNESCAPED_MARKER: re.Pattern[str] = re.compile(r"(?<!<)§(?!>)")
+MENTION: re.Pattern[str] = re.compile(r"@(?=[A-Za-z0-9])")
+BACKTICKS: re.Pattern[str] = re.compile(r"`+")
 
 
 @dataclass(frozen=True)
@@ -203,6 +209,19 @@ def finish_run(repo: str, workspace: str) -> dict[str, Any]:
     return outcome
 
 
+def quoted(text: str) -> list[str]:
+    """Agent-written `text` as quote lines, trimmed, `§` escaped as grund does, and `@` kept from mentioning."""
+    bounded: str = text if len(text) <= QUOTE_LIMIT else text[:QUOTE_LIMIT].rstrip() + " …"
+    safe: str = MENTION.sub("@\u200b", UNESCAPED_MARKER.sub("<§>", bounded))
+    return [f"> {line}" for line in safe.splitlines()]
+
+
+def fenced(text: str) -> list[str]:
+    """`text` in a code fence that no backtick run inside it can close."""
+    fence: str = "`" * max([3, *(len(run) + 1 for run in BACKTICKS.findall(text))])
+    return [fence + "text", text, fence]
+
+
 def intervention_comment(outcome: dict[str, Any]) -> str:
     """The comment a maintainer continues from: the reason and what the run recorded.
 
@@ -215,11 +234,10 @@ def intervention_comment(outcome: dict[str, Any]) -> str:
         lines += ["", f"Stopped in `{outcome['sender']}`."]
     for failure in outcome.get("failures", []):
         lines += ["", f"Failing command: `{failure['command']}`"]
-        lines += ["", "```text", failure["output"], "```"] if failure["output"] else []
+        lines += ["", *fenced(failure["output"])] if failure["output"] else []
     if outcome.get("fix_summary"):
         result: str = f" `{outcome['fix_result']}`" if outcome.get("fix_result") else ""
-        lines += ["", f"The last fix reported{result}:", "",
-                  *(f"> {line}" for line in outcome["fix_summary"].splitlines())]
+        lines += ["", f"The last fix reported{result}:", "", *quoted(outcome["fix_summary"])]
     return "\n".join(lines) + "\n"
 
 

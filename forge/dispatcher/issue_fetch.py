@@ -7,9 +7,10 @@
 
 One query per label and priority tier, `high-priority` first, then `priority`,
 then the rest, oldest first, unassigned, and never `not-for-native-image`,
-`human-intervention`, or, unless blocked issues are taken, blocked
-(§AR-forge-workflow-pipeline.1, §FS-forge-scope). A fixture file of issue
-payloads can stand in for GitHub.
+`graalvm-bug`, `human-intervention`, or, unless blocked issues are taken,
+blocked (§AR-forge-workflow-pipeline.1, §FS-forge-scope,
+§FS-forge-run-requirements.2.1). A fixture file of issue payloads can stand in
+for GitHub.
 """
 from __future__ import annotations
 
@@ -18,6 +19,7 @@ import subprocess
 from typing import Any
 
 from dispatcher.config import (
+    ALWAYS_EXCLUDED_ISSUE_LABELS,
     LABEL_HIGH_PRIORITY,
     LABEL_HUMAN_INTERVENTION,
     LABEL_JAVA_RUN_FAIL,
@@ -25,7 +27,6 @@ from dispatcher.config import (
     LABEL_LIBRARY_NEW,
     LABEL_LIBRARY_UPDATE,
     LABEL_NI_RUN_FAIL,
-    LABEL_NOT_FOR_NATIVE_IMAGE,
     LABEL_PRIORITY,
     REPO,
 )
@@ -55,7 +56,8 @@ def fetch_command(
 ) -> list[str]:
     """The one `gh issue list` of a label and tier."""
     # A held or blocked issue takes a place the claim cannot use (§AR-forge-workflow-pipeline.1).
-    search: list[str] = ["no:assignee", f"-label:{LABEL_NOT_FOR_NATIVE_IMAGE}", f"-label:{LABEL_HUMAN_INTERVENTION}"]
+    search: list[str] = ["no:assignee"]
+    search += [f"-label:{name}" for name in (*ALWAYS_EXCLUDED_ISSUE_LABELS, LABEL_HUMAN_INTERVENTION)]
     if not take_blocked:
         search.append("-is:blocked")
     search += [f"-label:{name}" for name in excluded]
@@ -90,8 +92,10 @@ def fetch_candidates(
     if fixture is not None:
         with open(fixture, encoding="utf-8") as handle:
             issues: list[dict[str, Any]] = json.load(handle)
-        return [(label, issue) for label in labels for issue in issues
-                if label in {entry.get("name") for entry in issue.get("labels", [])}]
+        names: list[set[str]] = [{entry.get("name") for entry in issue.get("labels", [])} for issue in issues]
+        # The fixture stands in for the queries, so it never yields what they exclude.
+        return [(label, issue) for label in labels for issue, carried in zip(issues, names)
+                if label in carried and carried.isdisjoint(ALWAYS_EXCLUDED_ISSUE_LABELS)]
     seen: set[int] = set()
     candidates: list[tuple[str, dict[str, Any]]] = []
     for label, command in fetch_commands(labels, take_blocked):

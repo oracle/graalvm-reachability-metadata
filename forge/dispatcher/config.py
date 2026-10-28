@@ -79,6 +79,10 @@ LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_FORGE_MERGE_FOLLOW_UP = "forge-merge-follow-up"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
+# Waits on a GraalVM defect and holds an item out of automation. §root/FS-graalvm-blocked-work.2
+LABEL_GRAALVM_BUG = "graalvm-bug"
+# Never fetched, whatever the queue or tier. §FS-forge-scope, §FS-forge-run-requirements.2.1
+ALWAYS_EXCLUDED_ISSUE_LABELS: tuple[str, ...] = (LABEL_NOT_FOR_NATIVE_IMAGE, LABEL_GRAALVM_BUG)
 LABEL_LIBRARY_UNSUPPORTED_VERSION = "library-unsupported-version"
 LABEL_CHUNKED_DYNAMIC_ACCESS = "chunked-dynamic-access"
 LABEL_RESUMABLE = "resumable"
@@ -103,6 +107,7 @@ ISSUE_CLAIM_LOCK_DIRNAME = "metadata-forge-issue-claim-locks"
 ISSUE_CLAIM_CACHE_REASON_ASSIGNED = "assigned"
 ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION = "human_intervention"
 ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE = "not_for_native_image"
+ISSUE_CLAIM_CACHE_REASON_GRAALVM_BUG = "graalvm_bug"
 ISSUE_CLAIM_CACHE_REASON_BLOCKED = "blocked"
 ISSUE_CLAIM_CACHE_REASON_CLOSED = "closed"
 ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM = "missing_project_item"
@@ -112,6 +117,7 @@ ISSUE_CLAIM_CACHE_REASONS = {
     ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
     ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
     ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
+    ISSUE_CLAIM_CACHE_REASON_GRAALVM_BUG,
     ISSUE_CLAIM_CACHE_REASON_BLOCKED,
     ISSUE_CLAIM_CACHE_REASON_CLOSED,
     ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,

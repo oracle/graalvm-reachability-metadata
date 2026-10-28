@@ -23,11 +23,13 @@ from dispatcher.config import (
     ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
     ISSUE_CLAIM_CACHE_REASON_BLOCKED,
     ISSUE_CLAIM_CACHE_REASON_CLOSED,
+    ISSUE_CLAIM_CACHE_REASON_GRAALVM_BUG,
     ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
     ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
     ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
     ISSUE_CLAIM_CACHE_REASON_NON_TODO,
     ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
+    LABEL_GRAALVM_BUG,
     LABEL_HUMAN_INTERVENTION,
     LABEL_NOT_FOR_NATIVE_IMAGE,
     PROJECT_NUMBER,
@@ -240,6 +242,12 @@ def get_issue_claim_cache_observation_from_payload(
             issue_number=issue_number,
             reason=ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
         )
+    # Not lifted by `resumable` or the blocked-issue override. §FS-forge-run-requirements.2.1
+    if issue_has_label(issue, LABEL_GRAALVM_BUG):
+        return IssueClaimCacheObservation(
+            issue_number=issue_number,
+            reason=ISSUE_CLAIM_CACHE_REASON_GRAALVM_BUG,
+        )
     payload_assignees = get_issue_payload_assignees(issue)
     if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
         return IssueClaimCacheObservation(
@@ -339,6 +347,8 @@ def format_cached_issue_claim_skip(cached_skip: CachedIssueClaimSkip) -> str:
         return f"recently cached with label '{LABEL_HUMAN_INTERVENTION}'"
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE:
         return f"recently cached with label '{LABEL_NOT_FOR_NATIVE_IMAGE}'"
+    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_GRAALVM_BUG:
+        return f"recently cached with label '{LABEL_GRAALVM_BUG}', blocked on a GraalVM defect"
     if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_BLOCKED:
         blockers_text = ", ".join(f"#{blocker}" for blocker in cached_skip.open_blockers)
         return f"recently cached as blocked by open issue(s) {blockers_text}"
@@ -430,6 +440,8 @@ def issue_needs_claim_preflight(issue: dict, authenticated_user: str | None = No
     if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
         return False
     if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
+        return False
+    if issue_has_label(issue, LABEL_GRAALVM_BUG):  # §FS-forge-run-requirements.2.1
         return False
     payload_assignees = get_issue_payload_assignees(issue)
     if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):

@@ -45,8 +45,8 @@ pull requests labeled `real-use-test` with `gh pr list` and walks their
 numbers by creation time, oldest first. Each one is read again with
 `gh pr view` just before it is judged, so a label, approval, merge, or push
 that landed while an earlier agent ran is seen. It skips one that is no
-longer open, one whose review decision is `APPROVED`, and one that carries
-the `in-review` label unless the latest
+longer open, one whose review decision is `APPROVED`, one that carries
+`graalvm-bug`, and one that carries the `in-review` label unless the latest
 `labeled` event for that label in the issue timeline is more than three hours
 old. For any other pull request it adds `in-review`, adds a detached worktree
 of the head commit, and runs the worker agent once in it, non-interactively:
