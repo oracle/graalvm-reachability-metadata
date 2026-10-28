@@ -221,6 +221,15 @@ for example `§real-use-tests/FS-real-use-tests`.
   not the prefix, tells you which component it belongs to. Find a declaration
   with `grund list` or the folder's `README.md` index, not by its prefix.
 
+## Work blocked on GraalVM
+
+An issue or pull request stuck on a GraalVM or Native Image defect carries
+`graalvm-bug` and links the `oracle/graal` issue and the `GR-<n>` ticket; an
+agent that cannot file the ticket labels the item `human-intervention` and
+quotes the evidence (§FS-graalvm-blocked-work.1). A workaround cites the
+ticket, so it can be removed once the fix reaches CI's GraalVM
+(§FS-graalvm-blocked-work.3).
+
 <!-- BEGIN FISSILE MANAGED BLOCK -->
 ## Keeping Files Small With fissile (v3)
 

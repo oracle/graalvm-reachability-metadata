@@ -204,10 +204,15 @@ states:
          scanning — or you cannot tell whether a must is violated. For
          infrastructure: find or open one issue per defect, then comment on
          the PR naming it. Otherwise comment the rule at issue, what you tried
-         and what you could not decide. Start every escalation comment with
-         an @-mention of the GitHub account running this queue
-         (`gh api user --jq .login`) so that maintainer is notified, and end
-         it with the line
+         and what you could not decide. When the evidence is a GraalVM
+         defect — a builder-internal `VMError`, `HostedError` or
+         `shouldNotReachHere`, or forbidden metadata the agent emits on every
+         generation (`FS-graalvm-blocked-work.1`) — say so with the evidence
+         quoted, so a maintainer files the GraalVM ticket and adds
+         `graalvm-bug`. Start every
+         escalation comment with an @-mention of the GitHub account running
+         this queue (`gh api user --jq .login`) so that maintainer is
+         notified, and end it with the line
          `<!-- ephor-hi-drain:escalated:<head SHA> -->` using the PR's current
          head commit, so later rounds leave this head alone. Leave the label
          on. No commit.
