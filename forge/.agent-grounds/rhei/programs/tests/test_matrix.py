@@ -11,29 +11,16 @@ the script itself prints, with the lane's JDK in front.
 """
 from __future__ import annotations
 
-import importlib.util
 import os
 import subprocess
-import sys
 import unittest
-from typing import Any
 
-from support import REPOSITORY
 from test_audit import FinalizedRun
 
-from exit_codes import AGENT_WORK, OK, RETURN_AUDIT  # noqa: E402
-from run_state import RunState, read_json  # noqa: E402
+from exit_codes import AGENT_WORK, INFRASTRUCTURE, OK, RETURN_AUDIT  # noqa: E402
+from run_state import RunState  # noqa: E402
 
 COORDINATE: str = "org.example:lib:2.0.0"
-
-
-def load_publisher() -> Any:
-    path: str = os.path.join(REPOSITORY, ".github", "scripts", "forge_pr_publisher", "publisher.py")
-    spec = importlib.util.spec_from_file_location("forge_pr_publisher_matrix", path)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 class MatrixTest(FinalizedRun):
@@ -45,17 +32,13 @@ class MatrixTest(FinalizedRun):
         self.assertEqual({f"clean test -Pcoordinates={COORDINATE}"}, {run.split(" [", 1)[0] for run in runs})
         return [run.split(" [", 1)[1] for run in runs]
 
-    def statuses(self, state: RunState) -> list[tuple[str, str, str]]:
-        return [(entry["java"], entry["nativeImageMode"], entry["status"]) for entry in state.local_ci["test_matrix"]]
-
     def test_finalize_runs_the_three_lanes_of_the_coordinate_only(self) -> None:
         self.repaired("library-update-request")
         self.assertEqual(OK, self.step("finalize"))
         ea: str = os.environ["GRAALVM_HOME_LATEST_EA"]
         self.assertEqual([f"2.0.0 current-defaults {os.environ['GRAALVM_HOME_25_0']}",
                           f"2.0.0 current-defaults {ea}", f"2.0.0 future-defaults-all {ea}"], self.lanes())
-        self.assertEqual([("25", "current-defaults", "passed"), ("latest-ea", "current-defaults", "passed"),
-                          ("latest-ea", "future-defaults-all", "passed")], self.statuses(self.state))
+        self.assertNotIn("test_matrix", self.state.local_ci)
         # Neither the changed-metadata matrix nor Spring AOT runs.
         for task in ("generateChangedMetadataTestMatrix", "generateAffectedSpringTestMatrix"):
             self.assertEqual(0, self.gradle_calls(task))
@@ -79,24 +62,11 @@ class MatrixTest(FinalizedRun):
         self.assertEqual(OK, self.step("finalize"))
         self.assertEqual(3, len(self.lanes()) - before)
 
-    def test_a_missing_latest_ea_skips_its_entries_with_a_record(self) -> None:
+    def test_a_missing_latest_ea_is_an_infrastructure_failure_not_a_skip(self) -> None:
         del os.environ["GRAALVM_HOME_LATEST_EA"]
         self.repaired()
-        self.assertEqual(OK, self.step("finalize"))
+        self.assertEqual(INFRASTRUCTURE, self.step("finalize"))
         self.assertEqual([f"2.0.0 current-defaults {os.environ['GRAALVM_HOME_25_0']}"], self.lanes())
-        state: RunState = self.state
-        self.assertEqual([("25", "current-defaults", "passed"), ("latest-ea", "current-defaults", "skipped"),
-                          ("latest-ea", "future-defaults-all", "skipped")], self.statuses(state))
-        self.assertEqual("GRAALVM_HOME_LATEST_EA is not set", state.local_ci["test_matrix"][1]["reason"])
-        self.assertEqual(AGENT_WORK, self.step("audit"))
-        self.assertEqual(RETURN_AUDIT, self.routed())
-        self.assertEqual(OK, self.step("audit"))
-        self.assertEqual(OK, self.step("publish"))
-        descriptor: dict[str, Any] = read_json(self.state.path("stats/org.example/lib/2.0.0/forge-publication.json"))
-        body: str = load_publisher()._format_local_ci_verification_section(descriptor["local_ci_verification"])
-        self.assertIn("- Native test matrix run locally:", body)
-        self.assertIn("Java `latest-ea`, `future-defaults-all`: `org.example:lib:2.0.0` `2.0.0` — skipped "
-                      "(GRAALVM_HOME_LATEST_EA is not set)", body)
 
     def test_the_audit_rerun_includes_the_lanes(self) -> None:
         self.repaired()

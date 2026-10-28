@@ -42,8 +42,6 @@ STEPS: tuple[list[str], ...] = (
 )
 # The CI matrix whose pairings of mode and Java version the native lanes take.
 MATRIX_SECTION: str = "generateChangedMetadataTestMatrix"
-# The lane runs only when its GraalVM is installed (§FS-local-ci-equivalent-verification.2.1).
-OPTIONAL_JAVA: str = "latest-ea"
 
 
 def step_arguments(step: list[str], state: RunState) -> list[str]:
@@ -61,7 +59,7 @@ def native_lanes(state: RunState) -> list[dict[str, Any]]:
     modes: list[str] = ci[MATRIX_SECTION].get("native-image-modes", list(ci["nativeImageModes"]))
     allowed: dict[str, list[str]] = ci.get("nativeImageModeJavaVersions", {})
     return [{"coordinates": state.coordinate, "versions": [state.version], "version": java,
-             "nativeImageMode": mode, "optional": java == OPTIONAL_JAVA}
+             "nativeImageMode": mode}
             for java in javas for mode in modes if java in allowed.get(mode, javas)]
 
 

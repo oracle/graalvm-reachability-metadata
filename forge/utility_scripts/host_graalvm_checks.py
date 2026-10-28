@@ -85,21 +85,6 @@ def graalvm_home_variable(java_version: str) -> str:
     return "GRAALVM_HOME_" + re.sub(r"[^A-Za-z0-9]", "_", java_version).upper()
 
 
-def missing_graalvm(java_version: str, environment: Mapping[str, str] | None = None) -> str | None:
-    """Why the GraalVM of one CI matrix Java version cannot run, or `None` when it is installed.
-
-    The reason names no host path: it reaches the pull request description
-    (§FS-local-ci-equivalent-verification.2.1).
-    """
-    values = os.environ if environment is None else environment
-    variable = graalvm_home_variable(java_version)
-    home = values.get(variable)
-    if not home:
-        return f"{variable} is not set"
-    problems = check_graalvm_installation(home, values)
-    return f"{variable} is not a usable GraalVM: {'; '.join(problems)}" if problems else None
-
-
 def probe_native_image_agent(
         graalvm_home: str,
         environment: Mapping[str, str] | None = None,

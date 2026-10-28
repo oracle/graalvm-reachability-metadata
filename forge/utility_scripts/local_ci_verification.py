@@ -29,7 +29,7 @@ from pathlib import Path
 from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from git_scripts.common_git import run_git_transport
 from utility_scripts.gradle_environment import gradle_command_environment
-from utility_scripts.host_graalvm_checks import graalvm_home_variable, missing_graalvm
+from utility_scripts.host_graalvm_checks import graalvm_home_variable
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics, write_pending_metrics
 from utility_scripts.stage_logger import log_stage
@@ -111,9 +111,6 @@ class LocalCIVerificationResult:
     human_intervention_required: bool = False
     failure_gate: str | None = None
     failure_command: list[str] | None = None
-    # Every matrix entry the gate ran and its outcome: passed, failed, or skipped
-    # when an optional entry's GraalVM is not installed.
-    test_matrix: list[dict] = field(default_factory=list)
 
     def to_metrics(self) -> dict:
         """Return a JSON-serializable metrics block."""
@@ -790,7 +787,6 @@ def _run_test_matrix_entries(
         entries: list[dict],
         result: LocalCIVerificationResult,
 ) -> CommandRecord | None:
-    result.test_matrix = []
     if not entries:
         _log_local_ci("Full metadata test matrix is empty", indent_level=1)
         return None
@@ -829,19 +825,7 @@ def _run_test_matrix_entries(
         if not coordinates or not isinstance(versions, list):
             continue
         version_text = ", ".join(str(version) for version in versions)
-        java_version = str(entry.get("version") or "").strip()
-        outcome = {
-            "coordinates": coordinates,
-            "versions": [str(version) for version in versions],
-            "java": java_version,
-            "nativeImageMode": str(entry.get("nativeImageMode") or "").strip(),
-        }
-        # `optional` entries need an installed GraalVM (§FS-local-ci-equivalent-verification.2.1).
-        missing = missing_graalvm(java_version) if entry.get("optional") else None
-        if missing is not None:
-            _log_local_ci(f"Skipping the Java {java_version} matrix entry for {coordinates}: {missing}", indent_level=1)
-            result.test_matrix.append({**outcome, "status": "skipped", "reason": missing})
-            continue
+        # Every entry runs; its JDK is a host requirement (§FS-local-ci-equivalent-verification.2.1).
         _log_local_ci(f"Running full metadata test matrix entry for {coordinates}: {version_text}", indent_level=1)
         env = _matrix_env(entry)
         failed = _run_recorded_command(
@@ -865,7 +849,6 @@ def _run_test_matrix_entries(
                 env=env,
                 failure_output_pattern=r"^FAILED",
             )
-        result.test_matrix.append({**outcome, "status": "passed" if failed is None else "failed"})
         if failed is not None:
             return failed
     return None
