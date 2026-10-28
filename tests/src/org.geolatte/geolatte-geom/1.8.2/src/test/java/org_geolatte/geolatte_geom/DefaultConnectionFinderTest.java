@@ -12,8 +12,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import oracle.jdbc.OracleConnection;
-import oracle.jdbc.OracleConnectionWrapper;
 import oracle.jdbc.driver.T2CConnection;
+import org.apache.commons.dbcp2.DelegatingConnection;
 import org.geolatte.geom.codec.db.oracle.DefaultConnectionFinder;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +21,8 @@ public class DefaultConnectionFinderTest {
     @Test
     void retrievesPhysicalConnectionFromNestedJdbcWrappers() throws SQLException {
         try (UnconnectedOracleConnection physical = new UnconnectedOracleConnection()) {
-            OracleConnectionWrapper inner = new OracleConnectionWrapper(physical);
-            OracleConnectionWrapper outer = new OracleConnectionWrapper(inner);
+            DelegatingConnection<Connection> inner = new DelegatingConnection<>(physical);
+            DelegatingConnection<Connection> outer = new DelegatingConnection<>(inner);
             DefaultConnectionFinder finder = new DefaultConnectionFinder();
 
             Connection found = finder.find(outer);
