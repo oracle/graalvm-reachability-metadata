@@ -4,18 +4,19 @@ Forge treats an agent as a replaceable editing backend behind a small Python
 interface, preserving the boundary in §AR-forge-strategy-agent-boundary.
 §FS-forge-agent-runtime-selection requires every adapter to expose the same
 editing boundary.
-Workflow engines decide what work to do next; agents only send prompts,
-maintain or clear conversation context, report token usage, and run
-agent-visible test commands, with bundles wiring the chosen backend into a
-strategy (§FS-forge-predefined-strategy-contract).
+The `forge-metadata` run does not use these adapters: Rhei runs its agent
+states (§AR-forge-workflow-pipeline.8). They serve the steps outside it that
+still hand a prompt to an agent — the code coverage workflow's native trace gate
+and local CI fixups (§AR-code-coverage-improvement). Callers decide what work to
+do next; agents only send prompts, maintain or clear conversation context,
+report token usage, and run agent-visible test commands.
 
 ## 1. Agent API
 
 [`ai_workflows/agents/agent.py`](../../ai_workflows/agents/agent.py) defines the
 `Agent` base class and registry. Concrete backends register with
-`@Agent.register("<name>")`, and strategy loading resolves the configured
-backend by the strategy's `agent` field (see
-§FS-forge-predefined-strategy-contract).
+`@Agent.register("<name>")`, and `agent_runtime` resolves the configured
+backend by name (§FS-forge-agent-runtime-selection).
 
 The interface is deliberately narrow:
 
@@ -31,18 +32,15 @@ The interface is deliberately narrow:
 
 This API keeps workflow behavior out of backend adapters. A new backend should
 implement the registry key, the prompt/session methods, token counters, and
-test-command bridge, then
-be selected through strategy data (§AR-forge-workflow-strategy-config) instead
-of changing workflow drivers or workflow engines.
+test-command bridge, then be selected through the role variables of section 3
+instead of changing a caller.
 
 ## 2. Backend implementations
 
-The registry exposes `claude-code`, `pi`, `codex`, and `opencode`. Each adapter
-starts its CLI unattended, with the tools that backend provides, so a repair
-step can reproduce the failure it was given rather than editing blind.
-
-`source_context_discovery.url_fetch_agent_command` builds the command string for URL-field
-discovery, which Gradle invokes directly instead of through an adapter.
+The registry exposes `claude-code` and `pi`; Codex and OpenCode are not
+supported (§FS-forge-agent-runtime-selection). Each adapter starts its CLI
+unattended, with the tools that backend provides, so a repair step can reproduce
+the failure it was given rather than editing blind.
 
 [`PiAgent`](../../ai_workflows/agents/pi_agent.py) registers the `pi` backend and
 drives Pi through [`PiRpcClient`](../../ai_workflows/agents/pi_rpc_client.py), a
@@ -62,7 +60,7 @@ Each successful Pi turn returns a `PromptResult` with:
 `PiAgent.send_prompt` continues the current session when one exists, updates the
 session file after every turn, computes per-turn input, output, and cache-read
 token deltas, writes a coordinate-scoped session log, and returns only the text
-response to the workflow engine. Durable prompt, response, session, and failure
+response to the caller. Durable prompt, response, session, and failure
 logs are part of the Forge diagnostic contract defined in
 §FS-durable-generation-logs.
 
@@ -76,71 +74,46 @@ session.
 `PiAgent.run_test_command` delegates Gradle execution to the
 [shared test runner](../../utility_scripts/gradle_test_runner.py) instead of
 asking Pi to choose shell behavior. That preserves the architecture: the
-workflow engine chooses the gate (§AR-forge-workflow-engine), deterministic
-utilities run it, and the agent receives diagnostics for the next edit cycle,
-keeping the strategy/agent boundary intact (§AR-forge-strategy-agent-boundary).
+caller chooses the gate, deterministic utilities run it, and the agent receives
+diagnostics for the next edit cycle (§AR-forge-strategy-agent-boundary).
 
 ## 3. Runtime roles and defaults
 
-The three roles are configured from different places. `FORGE_ANALYSIS_AGENT` /
+Two roles are configured, each from its own variables. `FORGE_ANALYSIS_AGENT` /
 `FORGE_ANALYSIS_FAMILY` / `FORGE_ANALYSIS_MODEL` / `FORGE_ANALYSIS_PROVIDER`
-select recovery, style, native-test, post-generation, and review work; the
-defaults are Codex with `gpt-5.6-luna` and high reasoning, and Claude Code
-answers to its `sonnet` model alias.
-`FORGE_SETUP_*` selects artifact-URL discovery and the library-preparation
-preflight. The roles do not read each other: what a role leaves unset comes from
-the shared defaults, so retuning one never moves the other. The do-work loop exports
-these values unchanged across its self-update boundary (§AR-do-work-loop).
+select recovery, style, and native-test work; `FORGE_SETUP_*` selects setup
+work. The defaults are Pi with `gpt-5.6-luna` through the `openai-codex`
+provider, and Claude Code answers to its `sonnet` model alias. The roles do not
+read each other: what a role leaves unset comes from the shared defaults, so
+retuning one never moves the other.
 
-Every backend takes a reasoning effort, in its own spelling: Codex
-`-c reasoning.effort`, Claude Code `--effort`, Pi `--thinking`, and OpenCode a
-`reasoningEffort` model option rather than a flag. A role's resolved
-`thinking_level` reaches all four, through the adapter and through the URL
-discovery command string alike.
+Each backend takes a reasoning effort in its own spelling: Claude Code
+`--effort` and Pi `--thinking`. A role's resolved `thinking_level` reaches both
+through the adapter.
 
 `get_analysis_agent()` and `get_setup_agent()` resolve a role to an
-`AgentSelection` without running anything. A step that hands its prompt to an
-adapter calls `analysis_agent_run(...)` or `setup_agent_run(...)` instead; the
-getters exist for the two Gradle tasks, which own their own process and take
-the role as a command string built by `source_context_discovery.url_fetch_agent_command`.
+`AgentSelection` without running anything; the host gate uses them to probe the
+agent the run will use. A step that hands its prompt to an adapter calls
+`analysis_agent_run(working_dir, context, ...)` or `setup_agent_run(...)`: the
+caller assembles the context, because only the caller knows what failed, and
+role resolution and agent construction happen inside. No call site selects a
+backend, model, provider, or thinking level for itself.
 
-The test role has no runtime selection. A predefined strategy names the
-`agent`, `model`, and `provider` it was written and measured against. The
-strategy loader may replace only its machine-local `agent-command` through
-`FORGE_TEST_AGENT_ALIAS`, so a strategy name still denotes the agent behind the
-numbers recorded under it.
-
-Every step that invokes the analysis role, including published pull-request
-review, calls one function,
-`agent_runtime.analysis_agent_run(working_dir, context, ...)`: the caller assembles the
-context, because only the caller knows what failed, and role resolution and
-agent construction happen inside. No call site selects a backend, model,
-provider, or thinking level for itself. Published pull-request review adds only
-the trusted GitHub-access capability required by §FS-automated-pr-review; it
-does not create a separate review role or alter the analysis selection.
-The test role never passes through `agent_runtime`: a driver's `init_agent` resolves
-the bundle's backend through `Agent.get_class` and hands the instance to the
-workflow engine, which owns it for the conversation.
-
-Pi and OpenCode reach a model through a named **provider**: the analysis role
-takes it from `--analysis-provider` or `FORGE_ANALYSIS_PROVIDER` and defaults to
-`openai-codex`. The test role takes the bundle's own `provider` when it names
-one, and the strategy loader fills in the same default when it does not, so the
-value lives in one place rather than in every Pi entry. Codex and Claude Code authenticate their provider inside the CLI
-itself, so a configured value is dropped rather than passed to a flag they do
-not have. The same resolved provider reaches the adapter and the deterministic
-authentication probe, so the host gate checks the provider the run will use.
+Pi reaches a model through a named **provider**, taken from
+`FORGE_<ROLE>_PROVIDER` and defaulting to `openai-codex`. Claude Code
+authenticates its provider inside the CLI itself, so a configured value is
+dropped rather than passed to a flag it does not have. The same resolved
+provider reaches the adapter and the deterministic authentication probe, so the
+host gate checks the provider the run will use.
 
 Each role carries an adapter family and an executable name. The family selects
-the registered adapter and its protocol; the executable name is passed to
-that adapter, so machine-local aliases such as `cdx` are valid — the analysis
-role through `FORGE_ANALYSIS_AGENT`, the test role through
-`--test-agent-alias` or `FORGE_TEST_AGENT_ALIAS`. `FORGE_AGENT_FAMILY` is
-retained as an analysis fallback for older workers.
+the registered adapter and its protocol; the executable name is passed to that
+adapter, so machine-local aliases are valid through `FORGE_<ROLE>_AGENT`.
+`FORGE_AGENT_FAMILY` is retained as a fallback for older workers.
 
 ## 4. Why Pi Is The Default Lightweight Backend
 
-Forge prefers Pi for strategy profiles where it is sufficient because the
+Forge prefers Pi where it is sufficient because the
 project goal is not maximum model strength on every turn; it is fast, reliable,
 coverage-positive automation that uses the least tokens needed for the task.
 The Forge direction (§GOAL-forge-direction) explicitly calls for runs to be as
@@ -150,7 +123,7 @@ not consume tokens.
 
 Pi's RPC mode fits that goal operationally:
 
-- strategy data can select Pi without changing workflow code;
+- configuration can select Pi without changing workflow code;
 - per-turn session stats feed the same token and cost metrics written by the
   [metrics utilities](../../utility_scripts/metrics_writer.py);
 - `clear_context` makes cheap independent runs explicit;
@@ -159,7 +132,7 @@ replaying a large conversation;
 - provider and model flags keep the backend swappable while the Forge workflow
   contract stays stable.
 
-Codex and other heavier agents remain useful for recovery paths or tasks that
-need stronger autonomous repair, but Pi is the economical default when the
-workflow can stay inside the narrow agent API and deterministic Gradle feedback
-loop, matching §GOAL-forge-direction.
+Claude Code remains the choice where a step needs web search, such as setup,
+but Pi is the economical default when the workflow can stay inside the narrow
+agent API and deterministic Gradle feedback loop, matching
+§GOAL-forge-direction.

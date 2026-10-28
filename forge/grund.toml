@@ -62,7 +62,7 @@ title = "Worked examples of a workflow run"
 kind = "ai-workflows"
 folder = "ai_workflows"
 citable = false
-title = "Workflow drivers, engines, and agent adapters"
+title = "Agent adapters the code coverage workflow runs"
 
 [[kinds]]
 kind = "git-scripts"
@@ -80,7 +80,7 @@ title = "Shared support code used across workflows and pipelines"
 kind = "benchmarks"
 folder = "benchmarks"
 citable = false
-title = "Benchmark campaign configuration and runner"
+title = "The code coverage benchmark"
 
 [[kinds]]
 kind = "tests"
@@ -88,20 +88,19 @@ folder = "tests"
 citable = false
 title = "Unit and integration tests for the Python modules"
 
+[[kinds]]
+kind = "rhei"
+folder = ".agent-grounds/rhei"
+citable = false
+title = "The Rhei templates and the programs their states run"
+
 # Places that are listed, not walked: data that ships verbatim.
 [[kinds]]
 kind = "schema"
 folder = "schemas"
 citable = false
 scan = false
-title = "JSON Schemas for strategies, metrics, and continuation markers"
-
-[[kinds]]
-kind = "strategy"
-folder = "strategies"
-citable = false
-scan = false
-title = "Predefined strategy configurations"
+title = "JSON Schemas for metrics and persisted outputs"
 
 # The homeless kind: every citation site outside every home above.
 [[kinds]]
@@ -110,9 +109,9 @@ citable = false
 title = "Loose scripts and plugins outside a kind home"
 
 [scan]
-include = ["AGENTS.md", "README.md", "DEVELOPING.md", "docs", "scripts", "pylint_plugins", "forge_metadata.py", "dispatcher"]
+include = ["AGENTS.md", "README.md", "DEVELOPING.md", "docs", "scripts", "pylint_plugins", "forge_metadata.py", "run-forge.sh", "dispatcher", ".agent-grounds/rhei/README.md", ".agent-grounds/rhei/programs", ".agent-grounds/rhei/templates/forge-metadata"]
 exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "**/__pycache__", "local_repositories", "logs", "roadmap-planning", "skills"]
-extensions = ["md", "html", "py"]
+extensions = ["md", "html", "py", "yaml", "sh"]
 comment_prefixes = ["//", "#", "/*", "*", "<!--"]
 docstring_python = true
 respect_gitignore = true
@@ -161,6 +160,9 @@ should = ["FS|AR"]
 
 [citations.tests]
 should = ["FS|AR"]
+
+[citations.rhei]
+must = ["FS|AR"]
 
 [citations.code]
 must = ["FS"]

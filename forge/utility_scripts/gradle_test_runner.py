@@ -138,7 +138,7 @@ Gradle log: {gradle_log}
 Thread dump log: {thread_dump_log}
 
 The command was stopped as a suspected test deadlock or leaked-thread hang. Fix the generated tests so every test
-method completes in under 60 seconds. Prefer bounded waits, closing clients/servers/executors, and avoiding
+method completes in under 3 minutes. Prefer bounded waits, closing clients/servers/executors, and avoiding
 background work that can keep the JVM alive. Do not skip, disable, or trivialize the test.
 
 Thread dump captured before terminating the Gradle process tree:

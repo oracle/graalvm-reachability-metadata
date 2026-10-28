@@ -29,6 +29,7 @@ from pathlib import Path
 from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from git_scripts.common_git import run_git_transport
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.host_graalvm_checks import graalvm_home_variable
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics, write_pending_metrics
 from utility_scripts.stage_logger import log_stage
@@ -49,6 +50,10 @@ UNEXPECTED_DOCKER_IMAGE_FAILURE_MESSAGE = (
     "ERROR: Local CI verification detected Docker images created during the no-network-equivalent test gate."
 )
 DOCKER_IMAGE_LIST_COMMAND = ["docker", "image", "ls", "--format", "{{.Repository}}:{{.Tag}} {{.ID}}"]
+CONSECUTIVE_TESTS_GATE = "run-consecutive-tests"
+# `run-consecutive-tests.sh` prints `FAILED[<stage>][<version>][<command>]` for the stage that failed.
+FAILED_STAGE = re.compile(r"^FAILED\[[^\]]*\]\[[^\]]*\]\[(?P<command>.*)\]\s*$", re.MULTILINE)
+JDK_VARIABLES = ("GRAALVM_HOME", "JAVA_HOME")
 
 
 @dataclass
@@ -149,19 +154,23 @@ def run_local_ci_verification(
         metrics_repo_path: str | None = None,
         max_fixup_attempts: int = MAX_FIXUP_ATTEMPTS,
         reproduce_full_ci: bool = False,
+        test_lanes: list[dict] | None = None,
 ) -> LocalCIVerificationResult:
     """Run local verification, fixing and retrying when possible.
 
     When `reproduce_full_ci` is set, the pre-publication gate additionally
     reproduces the per-PR CI surface locally — the whole changed-metadata native
     test matrix and the Spring AOT smoke tests — instead of leaving those to
-    repository CI (§FS-local-ci-equivalent-verification.2).
+    repository CI (§FS-local-ci-equivalent-verification.2). `test_lanes` are a
+    caller's own matrix entries, run after the cross-cutting checks
+    (§FS-local-ci-equivalent-verification.2.1).
     """
     result = LocalCIVerificationResult(status="running", base_commit=base_commit)
     _log_local_ci(f"Starting local CI verification for {coordinates}")
     for attempt in range(max_fixup_attempts + 1):
         _log_local_ci(f"Verification attempt {attempt + 1}/{max_fixup_attempts + 1}", indent_level=1)
-        failed_command = _run_verification_once(repo_path, base_commit, result, reproduce_full_ci=reproduce_full_ci)
+        failed_command = _run_verification_once(repo_path, base_commit, result, reproduce_full_ci=reproduce_full_ci,
+                                                test_lanes=test_lanes)
         if failed_command is None:
             result.status = "success"
             result.final_commit = _git_stdout(repo_path, ["rev-parse", "HEAD"])
@@ -285,6 +294,7 @@ def _run_verification_once(
         base_commit: str,
         result: LocalCIVerificationResult,
         reproduce_full_ci: bool = False,
+        test_lanes: list[dict] | None = None,
 ) -> CommandRecord | None:
     # Pre-publication gate (§FS-local-ci-equivalent-verification.2): run only the
     # cross-cutting checks a single-library generation cannot settle on its own —
@@ -318,6 +328,8 @@ def _run_verification_once(
         if failed is not None:
             return failed
 
+    if test_lanes:
+        return _run_test_matrix_entries(repo_path, test_lanes, result)
     return None
 
 
@@ -813,6 +825,8 @@ def _run_test_matrix_entries(
         if not coordinates or not isinstance(versions, list):
             continue
         version_text = ", ".join(str(version) for version in versions)
+        # Every entry runs; its JDK is a host requirement
+        # (§FS-local-ci-equivalent-verification.2.1).
         _log_local_ci(f"Running full metadata test matrix entry for {coordinates}: {version_text}", indent_level=1)
         env = _matrix_env(entry)
         failed = _run_recorded_command(
@@ -822,24 +836,39 @@ def _run_test_matrix_entries(
             result,
             env=env,
         )
-        if failed is not None:
-            return failed
-        failed = _run_recorded_command_without_new_docker_images(
-            repo_path,
-            "run-consecutive-tests",
-            [
-                "bash",
-                "./.github/workflows/scripts/run-consecutive-tests.sh",
-                coordinates,
-                json.dumps([str(version) for version in versions]),
-            ],
-            result,
-            env=env,
-            failure_output_pattern=r"^FAILED",
-        )
+        if failed is None:
+            failed = _run_recorded_command_without_new_docker_images(
+                repo_path,
+                CONSECUTIVE_TESTS_GATE,
+                [
+                    "bash",
+                    "./.github/workflows/scripts/run-consecutive-tests.sh",
+                    coordinates,
+                    json.dumps([str(version) for version in versions]),
+                ],
+                result,
+                env=env,
+                failure_output_pattern=r"^FAILED",
+            )
         if failed is not None:
             return failed
     return None
+
+
+def reproduction_command(record: CommandRecord) -> str:
+    """The shell command that reruns exactly what `record` ran, with its environment.
+
+    A failed `run-consecutive-tests.sh` entry reruns only its failing stage, at
+    the version and native-image mode the script printed, under the entry's
+    JDK (§FS-local-ci-equivalent-verification.2.1).
+    """
+    stages = FAILED_STAGE.findall(record.output_excerpt) if record.gate == CONSECUTIVE_TESTS_GATE else []
+    if stages:
+        words = shlex.split(stages[-1])
+        jdk = [f"{name}={record.env[name]}" for name in JDK_VARIABLES if record.env.get(name)]
+        return shlex.join(["env", *jdk, *(words[1:] if words[0] == "env" else words)])
+    prefix = ["env", *(f"{name}={value}" for name, value in record.env.items())] if record.env else []
+    return shlex.join([*prefix, *record.command])
 
 
 def _run_spring_aot_matrix_entries(
@@ -1007,12 +1036,8 @@ def _spring_aot_env(entry: dict) -> dict[str, str]:
 def _graalvm_home_for_java_version(java_version: str) -> str | None:
     if not java_version:
         return None
-    if java_version == "25":
-        return _required_env("GRAALVM_HOME_25_0")
-    if java_version == "latest-ea":
-        return _required_env("GRAALVM_HOME_LATEST_EA")
-    env_name = "GRAALVM_HOME_" + re.sub(r"[^A-Za-z0-9]", "_", java_version).upper()
-    return _required_env(env_name)
+    return _required_env(graalvm_home_variable(java_version))
+
 
 
 def _required_env(name: str) -> str:

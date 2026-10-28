@@ -8,12 +8,11 @@
 import os
 import signal
 
-from ai_workflows.core.workflow_strategy import (
-    RUN_STATUS_CHUNK_READY,
-    RUN_STATUS_SUCCESS,
-    SUCCESS_WITH_INTERVENTION_STATUS,
-)
 from utility_scripts.host_graalvm_checks import ISSUE_GRAALVM_ENV_VARS
+
+RUN_STATUS_SUCCESS = "success"
+RUN_STATUS_CHUNK_READY = "chunk_ready"
+SUCCESS_WITH_INTERVENTION_STATUS = "success_with_intervention"
 
 
 DEFAULT_MAX_ISSUES = 5  # Default maximum number of issues to process per run

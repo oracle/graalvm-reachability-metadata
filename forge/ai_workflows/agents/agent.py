@@ -43,7 +43,7 @@ class AgentTimeoutError(AgentFailureError):
 class Agent(ABC):
     """Base class for AI agents used by workflow strategies.
 
-    Subclasses represent different AI coding agent backends (e.g. Codex, Claude)
+    Subclasses represent different AI coding agent backends (e.g. Pi, Claude Code)
     and must implement the abstract methods that handle prompt exchange, context
     management, and test execution.
 

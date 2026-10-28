@@ -56,8 +56,8 @@ class AgentConfiguration:
 
         Rhei hands everything after the first colon to the agent CLI's model
         flag, so only a provider-aware backend may carry a `<provider>/`
-        prefix. Claude Code and Codex reach their provider through their own
-        login and reject a prefixed model outright.
+        prefix. Claude Code reaches its provider through its own
+        login and rejects a prefixed model outright.
         """
         model: str = (
             f"{self.provider}/{self.target_model}"

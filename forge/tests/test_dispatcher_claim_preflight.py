@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+from git_scripts.github_cli import GitHubRateLimitExceeded
 from dispatcher_test_support import *  # noqa: F401,F403 - shared dispatcher test fixtures
 
 
@@ -14,9 +15,9 @@ class IssueClaimPreflightTests(unittest.TestCase):
         with patch.object(
                 claim_preflight,
                 "get_issue_claim_preflights",
-                side_effect=forge_metadata.GitHubRateLimitExceeded("GitHub API rate limit exceeded"),
+                side_effect=GitHubRateLimitExceeded("GitHub API rate limit exceeded"),
         ):
-            with self.assertRaises(forge_metadata.GitHubRateLimitExceeded):
+            with self.assertRaises(GitHubRateLimitExceeded):
                 claim_preflight.get_issue_claim_preflights_or_empty([issue])
 
     def test_preflight_fallback_reports_github_error_without_traceback(self) -> None:
@@ -126,7 +127,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                             "nodes": [
                                 {
                                     "id": "project-item",
-                                    "project": {"number": forge_metadata.PROJECT_NUMBER},
+                                    "project": {"number": dispatcher_config.PROJECT_NUMBER},
                                     "fieldValues": {
                                         "nodes": [
                                             {
@@ -174,9 +175,9 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertLessEqual(config.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE, 4)
 
     def test_refresh_issue_payload_for_claim_skips_closed_issue(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
+        issue = _search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW])
         fresh_issue = {
-            **_search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW]),
+            **_search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW]),
             "state": "CLOSED",
         }
 
@@ -186,7 +187,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 self.assertFalse(
                     claim_preflight.refresh_issue_payload_for_claim(
                         issue,
-                        forge_metadata.LABEL_LIBRARY_NEW,
+                        dispatcher_config.LABEL_LIBRARY_NEW,
                     )
                 )
                 cache = issue_cache.read_issue_claim_cache()
@@ -195,11 +196,11 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_CLOSED)
 
     def test_refresh_issue_payload_for_claim_skips_human_intervention_label(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
+        issue = _search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW])
         fresh_issue = {
             **_search_issue(
                 1412,
-                [forge_metadata.LABEL_LIBRARY_NEW, config.LABEL_HUMAN_INTERVENTION],
+                [dispatcher_config.LABEL_LIBRARY_NEW, config.LABEL_HUMAN_INTERVENTION],
             ),
             "state": "OPEN",
         }
@@ -210,7 +211,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 self.assertFalse(
                     claim_preflight.refresh_issue_payload_for_claim(
                         issue,
-                        forge_metadata.LABEL_LIBRARY_NEW,
+                        dispatcher_config.LABEL_LIBRARY_NEW,
                     )
                 )
                 cache = issue_cache.read_issue_claim_cache()
@@ -219,7 +220,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION)
 
     def test_refresh_issue_payload_for_claim_skips_removed_queue_label(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
+        issue = _search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW])
         fresh_issue = {
             **_search_issue(1412, []),
             "state": "OPEN",
@@ -230,16 +231,16 @@ class IssueClaimPreflightTests(unittest.TestCase):
             self.assertFalse(
                 claim_preflight.refresh_issue_payload_for_claim(
                     issue,
-                    forge_metadata.LABEL_LIBRARY_NEW,
+                    dispatcher_config.LABEL_LIBRARY_NEW,
                 )
             )
 
         self.assertIn("no longer has label", stdout.getvalue())
 
     def test_refresh_issue_payload_for_claim_skips_issue_assigned_to_other_user(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
+        issue = _search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW])
         fresh_issue = {
-            **_search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW]),
+            **_search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW]),
             "state": "OPEN",
             "assignees": [{"login": "other-user"}],
         }
@@ -250,7 +251,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 self.assertFalse(
                     claim_preflight.refresh_issue_payload_for_claim(
                         issue,
-                        forge_metadata.LABEL_LIBRARY_NEW,
+                        dispatcher_config.LABEL_LIBRARY_NEW,
                         "automation-user",
                     )
                 )
@@ -260,9 +261,9 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertEqual(cache[1412].assignees, ("other-user",))
 
     def test_refresh_issue_payload_for_claim_allows_issue_assigned_to_authenticated_user(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
+        issue = _search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW])
         fresh_issue = {
-            **_search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW]),
+            **_search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW]),
             "state": "OPEN",
             "assignees": [{"login": "automation-user"}],
         }
@@ -271,7 +272,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             self.assertTrue(
                 claim_preflight.refresh_issue_payload_for_claim(
                     issue,
-                    forge_metadata.LABEL_LIBRARY_NEW,
+                    dispatcher_config.LABEL_LIBRARY_NEW,
                     "automation-user",
                 )
             )
@@ -383,99 +384,3 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 authenticated_user="automation-user",
             )
         )
-
-    def test_process_loop_uses_cache_to_skip_unclaimable_candidates_without_preflight(self) -> None:
-        skipped_issue = {
-            "number": 1,
-            "title": "Add support for org.example:skipped:1.0.0",
-            "labels": [],
-            "assignees": [],
-        }
-        claimable_issue = {
-            "number": 2,
-            "title": "Add support for org.example:claimable:1.0.0",
-            "labels": [],
-            "assignees": [],
-        }
-
-        with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
-                issue_cache.record_issue_claim_cache_observations(
-                    [
-                        records.IssueClaimCacheObservation(
-                            issue_number=1,
-                            reason=config.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
-                            open_blockers=(99,),
-                        ),
-                    ],
-                )
-
-            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(issue_processing, "validate_issue_processing_environment"), \
-                    patch.object(
-                        issue_processing,
-                        "get_prioritized_issues_with_label",
-                        side_effect=[
-                            ([skipped_issue], _scan_state(1)),
-                            ([claimable_issue], _scan_state(2)),
-                        ],
-                    ) as get_prioritized_issues_with_label, \
-                    patch.object(
-                        claim_preflight,
-                        "get_issue_claim_preflights_or_empty",
-                    ) as get_issue_claim_preflights_or_empty, \
-                    patch.object(
-                        issue_processing,
-                        "claim_issue_for_processing",
-                        return_value=_claimed_issue(),
-                    ) as claim_issue_for_processing, \
-                    patch.object(
-                        issue_processing,
-                        "process_claimed_issue_lifecycle",
-                        return_value=True,
-                    ), \
-                    patch.object(issue_claiming, "get_open_blocking_issue_numbers") as get_open_blocking_issue_numbers, \
-                    patch.object(issue_claiming, "get_issue_assignees") as get_issue_assignees, \
-                    patch.object(issue_claiming, "get_project_item_state") as get_project_item_state:
-                processed = forge_metadata.process_issues_with_label(
-                    forge_metadata.LABEL_LIBRARY_NEW,
-                    1,
-                    0,
-                    "/tmp/reachability",
-                    "/tmp/metrics",
-                    None,
-                    False,
-                    "automation-user",
-                    1,
-                    take_blocked_issues=False,
-                )
-
-        self.assertEqual(processed, 1)
-        self.assertEqual(
-            get_prioritized_issues_with_label.call_args_list,
-            [
-                call(
-                    forge_metadata.LABEL_LIBRARY_NEW,
-                    config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
-                    issue_queue.IssueQueueScanState(),
-                    False,
-                ),
-                call(
-                    forge_metadata.LABEL_LIBRARY_NEW,
-                    config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
-                    _scan_state(1),
-                    False,
-                ),
-            ],
-        )
-        get_issue_claim_preflights_or_empty.assert_not_called()
-        claim_issue_for_processing.assert_called_once_with(
-            claimable_issue,
-            forge_metadata.LABEL_LIBRARY_NEW,
-            "/tmp/reachability",
-            "/tmp/metrics",
-            "automation-user",
-        )
-        get_open_blocking_issue_numbers.assert_not_called()
-        get_issue_assignees.assert_not_called()
-        get_project_item_state.assert_not_called()

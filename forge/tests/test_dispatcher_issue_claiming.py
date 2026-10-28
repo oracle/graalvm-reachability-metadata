@@ -56,11 +56,11 @@ class IssueClaimLockTests(unittest.TestCase):
         get_issue_assignees.assert_not_called()
 
     def test_try_claim_issue_refreshes_paused_issue_before_claim_checks(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
+        issue = _search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW])
         fresh_issue = {
             **_search_issue(
                 1412,
-                [forge_metadata.LABEL_LIBRARY_NEW, config.LABEL_HUMAN_INTERVENTION],
+                [dispatcher_config.LABEL_LIBRARY_NEW, config.LABEL_HUMAN_INTERVENTION],
             ),
             "state": "OPEN",
         }
@@ -72,7 +72,7 @@ class IssueClaimLockTests(unittest.TestCase):
                     issue_claiming.try_claim_issue(
                         issue,
                         "automation-user",
-                        forge_metadata.LABEL_LIBRARY_NEW,
+                        dispatcher_config.LABEL_LIBRARY_NEW,
                     )
                 )
                 cache = issue_cache.read_issue_claim_cache()
@@ -240,7 +240,7 @@ class ReleaseUnpublishedChunkedLabelTests(unittest.TestCase):
     def _claimed_issue(self, worktree_path: str, labels: list[str]) -> records.ClaimedIssue:
         return records.ClaimedIssue(
             issue={"number": 1412, "labels": [{"name": label} for label in labels]},
-            label=forge_metadata.LABEL_LIBRARY_NEW,
+            label=dispatcher_config.LABEL_LIBRARY_NEW,
             item_id="item-1",
             base_reachability_metadata_path=worktree_path,
             worktree_path=worktree_path,
@@ -283,6 +283,6 @@ class ReleaseUnpublishedChunkedLabelTests(unittest.TestCase):
 
     def test_revert_leaves_unchunked_issue_labels_alone(self) -> None:
         with tempfile.TemporaryDirectory() as worktree:
-            remove_issue_label = self._revert(self._claimed_issue(worktree, [forge_metadata.LABEL_LIBRARY_NEW]))
+            remove_issue_label = self._revert(self._claimed_issue(worktree, [dispatcher_config.LABEL_LIBRARY_NEW]))
 
         remove_issue_label.assert_not_called()

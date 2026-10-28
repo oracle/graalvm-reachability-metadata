@@ -9,11 +9,6 @@ import subprocess
 import tempfile
 import unittest
 
-from ai_workflows.drivers.add_new_library_support import (
-    resolve_add_new_library_support_metrics_json,
-    write_add_new_library_support_metrics,
-)
-from ai_workflows.drivers.java_fail_workflow import JAVAC_CONFIG, resolve_fix_metrics_json, write_fix_metrics
 from utility_scripts.library_stats import load_library_stats_entry, resolve_stats_file_path
 from utility_scripts.library_measurements import (
     count_metadata_entries,
@@ -21,7 +16,6 @@ from utility_scripts.library_measurements import (
     resolve_metadata_artifact_path,
 )
 from utility_scripts.metrics_writer import append_execution_metrics, execution_metrics_path
-from utility_scripts.run_metrics_payloads import create_run_metrics_output_json
 from utility_scripts.token_costs import calc_model_session_cost, collect_token_usage_metrics
 from utility_scripts.native_image_config_policy import (
     find_legacy_test_native_image_config_files_for_coordinate,
@@ -380,186 +374,6 @@ class MetricsPathTests(unittest.TestCase):
                 persisted,
                 {"improve_library_coverage:2026-04-29": _public_execution_metrics(run_metrics)},
             )
-
-    def test_create_run_metrics_includes_test_only_metadata_entries_only_when_positive(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            tests_root = os.path.join(
-                temp_dir,
-                "tests",
-                "src",
-                "org.example",
-                "demo",
-                "1.0.0",
-                "src",
-                "test",
-                "java",
-            )
-            metadata_dir = os.path.join(temp_dir, "metadata", "org.example", "demo", "1.0.0")
-            metadata_index_dir = os.path.join(temp_dir, "metadata", "org.example", "demo")
-            stats_dir = os.path.join(temp_dir, "stats", "org.example", "demo", "1.0.0")
-            test_metadata_dir = os.path.join(
-                temp_dir,
-                "tests",
-                "src",
-                "org.example",
-                "demo",
-                "1.0.0",
-                "src",
-                "test",
-                "resources",
-                "META-INF",
-                "native-image",
-            )
-            os.makedirs(tests_root)
-            os.makedirs(metadata_dir)
-            os.makedirs(stats_dir)
-            os.makedirs(test_metadata_dir)
-            with open(os.path.join(tests_root, "DemoTest.java"), "w", encoding="utf-8") as file:
-                file.write("class DemoTest {}\n")
-            with open(os.path.join(metadata_dir, "reachability-metadata.json"), "w", encoding="utf-8") as file:
-                json.dump({"reflection": [{"type": "org.example.Demo"}]}, file)
-            with open(os.path.join(metadata_index_dir, "index.json"), "w", encoding="utf-8") as file:
-                json.dump(
-                    [
-                        {
-                            "metadata-version": "1.0.0",
-                            "tested-versions": ["1.0.0"],
-                        }
-                    ],
-                    file,
-                )
-            with open(os.path.join(test_metadata_dir, "reachability-metadata.json"), "w", encoding="utf-8") as file:
-                json.dump({"reflection": [{"type": "org.example.TestFixture"}]}, file)
-            with open(os.path.join(stats_dir, "stats.json"), "w", encoding="utf-8") as file:
-                json.dump(
-                    {
-                        "versions": [
-                            {
-                                "version": "1.0.0",
-                                "libraryCoverage": {
-                                    "line": {
-                                        "covered": 1,
-                                        "missed": 0,
-                                        "total": 1,
-                                        "ratio": 1.0,
-                                    }
-                                },
-                            }
-                        ]
-                    },
-                    file,
-                )
-
-            run_metrics = create_run_metrics_output_json(
-                repo_path=temp_dir,
-                package="org.example",
-                artifact="demo",
-                library_version="1.0.0",
-                agent=DummyAgent(),
-                model_name="gpt-5.4",
-                global_iterations=1,
-                strategy_name="basic_iterative_pi_gpt-5.4",
-                status="success",
-            )
-
-            self.assertNotIn("test_file", run_metrics["artifacts"])
-            self.assertEqual(run_metrics["metrics"]["metadata_entries"], 1)
-            self.assertEqual(run_metrics["metrics"]["test_only_metadata_entries"], 1)
-
-    def test_in_repo_add_new_library_support_metrics_resolves_to_stats_path(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            reachability_repo = os.path.join(temp_dir, "graalvm-reachability-metadata")
-            forge_root = os.path.join(reachability_repo, "forge")
-            metrics_repo_dir = os.path.join(forge_root, "script_run_metrics")
-            os.makedirs(os.path.join(reachability_repo, "metadata"))
-            os.makedirs(os.path.join(reachability_repo, "stats"))
-            os.makedirs(metrics_repo_dir)
-
-            run_metrics = _with_post_generation_intervention(_minimal_run_metrics())
-            metrics_json = resolve_add_new_library_support_metrics_json(
-                run_metrics=run_metrics,
-                metrics_repo_dir=metrics_repo_dir,
-                metrics_repo_root=forge_root,
-                is_benchmark_mode=False,
-            )
-
-            self.assertEqual(
-                metrics_json,
-                os.path.join(
-                    reachability_repo,
-                    "stats",
-                    "org.example",
-                    "demo",
-                    "1.0.0",
-                    "execution-metrics.json",
-                ),
-            )
-
-            write_add_new_library_support_metrics(
-                run_metrics=run_metrics,
-                metrics_repo_dir=metrics_repo_dir,
-                is_benchmark_mode=False,
-                package="org.example",
-                artifact="demo",
-                library_version="1.0.0",
-                metrics_repo_root=forge_root,
-            )
-
-            self.assertFalse(os.path.exists(os.path.join(metrics_repo_dir, "add_new_library_support.json")))
-            with open(metrics_json, "r", encoding="utf-8") as file_handle:
-                persisted = json.load(file_handle)
-            self.assertEqual(
-                persisted,
-                {"add_new_library_support:2026-04-29": _public_execution_metrics(run_metrics)},
-            )
-            with open(os.path.join(forge_root, ".pending_metrics.json"), "r", encoding="utf-8") as file_handle:
-                pending = json.load(file_handle)
-            self.assertEqual(pending, run_metrics)
-
-    def test_in_repo_java_fail_metrics_resolves_to_stats_path(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            reachability_repo = os.path.join(temp_dir, "graalvm-reachability-metadata")
-            forge_root = os.path.join(reachability_repo, "forge")
-            metrics_repo_dir = os.path.join(forge_root, "script_run_metrics")
-            os.makedirs(os.path.join(reachability_repo, "metadata"))
-            os.makedirs(os.path.join(reachability_repo, "stats"))
-            os.makedirs(metrics_repo_dir)
-
-            run_metrics = _with_post_generation_intervention(_minimal_run_metrics())
-            metrics_json = resolve_fix_metrics_json(
-                config=JAVAC_CONFIG,
-                run_metrics=run_metrics,
-                metrics_repo_dir=metrics_repo_dir,
-                metrics_repo_root=forge_root,
-            )
-
-            self.assertEqual(
-                metrics_json,
-                os.path.join(
-                    reachability_repo,
-                    "stats",
-                    "org.example",
-                    "demo",
-                    "1.0.0",
-                    "execution-metrics.json",
-                ),
-            )
-
-            write_fix_metrics(
-                config=JAVAC_CONFIG,
-                run_metrics=run_metrics,
-                metrics_repo_dir=metrics_repo_dir,
-                metrics_repo_root=forge_root,
-            )
-
-            self.assertFalse(os.path.exists(os.path.join(metrics_repo_dir, "fix_javac_fail.json")))
-            with open(metrics_json, "r", encoding="utf-8") as file_handle:
-                persisted = json.load(file_handle)
-            self.assertEqual(persisted, {"fix_javac_fail:2026-04-29": _public_execution_metrics(run_metrics)})
-            with open(os.path.join(forge_root, ".pending_metrics.json"), "r", encoding="utf-8") as file_handle:
-                pending = json.load(file_handle)
-            self.assertEqual(pending, run_metrics)
-
 
 if __name__ == "__main__":
     unittest.main()

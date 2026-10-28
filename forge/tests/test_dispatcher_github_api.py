@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+from git_scripts.github_cli import GitHubRateLimitExceeded
 from dispatcher_test_support import *  # noqa: F401,F403 - shared dispatcher test fixtures
 
 
@@ -67,7 +68,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
         with patch.object(subprocess, "run", return_value=completed_process):
-            with self.assertRaises(forge_metadata.GitHubRateLimitExceeded):
+            with self.assertRaises(GitHubRateLimitExceeded):
                 github_api.gh("issue", "view", "2099")
 
     def test_gh_retries_direct_transient_failure(self) -> None:
@@ -133,7 +134,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
         with patch.object(github_api, "gh", return_value=completed_process):
-            with self.assertRaises(forge_metadata.GitHubRateLimitExceeded):
+            with self.assertRaises(GitHubRateLimitExceeded):
                 github_api.gh_json("api", "graphql")
 
     def test_gh_json_retries_transient_http_504(self) -> None:

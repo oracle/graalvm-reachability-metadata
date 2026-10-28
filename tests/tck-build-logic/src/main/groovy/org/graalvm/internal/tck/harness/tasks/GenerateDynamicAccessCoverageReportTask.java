@@ -57,20 +57,37 @@ import java.util.List;
 @SuppressWarnings("unused")
 public abstract class GenerateDynamicAccessCoverageReportTask extends AbstractLibraryStatsTask {
 
+    /// Gradle property naming a copy of an earlier `dynamic-access` output.
+    ///
+    /// When it is set, the native listing build is skipped and only JaCoCo is
+    /// correlated against the copy: the call sites depend only on the library JARs,
+    /// which the tracking build preserves whole (§AR-test-harness.8).
+    static final String CALL_SITES_PROPERTY = "tck.dynamicAccess.callSites";
+
     @TaskAction
     public void generate() {
         List<String> coordinates = resolveRequestedCoordinates();
+        Path storedCallSites = storedCallSites();
         for (String coordinate : coordinates) {
-            boolean dynamicAccessAvailable = generateReportsForCoordinate(coordinate);
-            requireDynamicAccessInput(coordinate, dynamicAccessAvailable);
+            Path dynamicAccessDir;
+            boolean dynamicAccessAvailable;
+            if (storedCallSites == null) {
+                dynamicAccessAvailable = generateReportsForCoordinate(coordinate);
+                dynamicAccessDir = getDynamicAccessDir(coordinate);
+            } else {
+                generateJacocoReport(coordinate);
+                dynamicAccessAvailable = true;
+                dynamicAccessDir = storedCallSites;
+            }
+            requireDynamicAccessInput(coordinate, dynamicAccessAvailable, dynamicAccessDir);
             List<Path> libraryJars = listLibraryJars(coordinate);
-            Path originsOutput = maybeCollectAgentOrigins(coordinate, libraryJars);
+            Path originsOutput = maybeCollectAgentOrigins(coordinate, libraryJars, dynamicAccessDir);
             LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
                     coordinate,
                     libraryJars,
-                    getDynamicAccessDir(coordinate),
+                    dynamicAccessDir,
                     getJacocoReport(coordinate),
-                    LibraryStatsSupport.parseAgentOrigins(originsOutput, getDynamicAccessDir(coordinate))
+                    LibraryStatsSupport.parseAgentOrigins(originsOutput, dynamicAccessDir)
             );
             Path outputFile = getDynamicAccessCoverageReport(coordinate);
             LibraryStatsSupport.writeJson(outputFile, report);
@@ -84,7 +101,10 @@ public abstract class GenerateDynamicAccessCoverageReportTask extends AbstractLi
     /// reports no dynamic access at all, and consumers read a zero-call report as a
     /// property of the library (§AR-test-harness.8).
     void requireDynamicAccessInput(String coordinate, boolean dynamicAccessAvailable) {
-        Path dynamicAccessDir = getDynamicAccessDir(coordinate);
+        requireDynamicAccessInput(coordinate, dynamicAccessAvailable, getDynamicAccessDir(coordinate));
+    }
+
+    void requireDynamicAccessInput(String coordinate, boolean dynamicAccessAvailable, Path dynamicAccessDir) {
         if (dynamicAccessAvailable && Files.isDirectory(dynamicAccessDir)) {
             return;
         }
@@ -93,5 +113,14 @@ public abstract class GenerateDynamicAccessCoverageReportTask extends AbstractLi
                 The native test build must generate it before coverage can be reported; \
                 writing an empty report here would be indistinguishable from a library \
                 that has no dynamic access.""".formatted(coordinate, dynamicAccessDir));
+    }
+
+    /// The stored call sites the caller passed, or `null` to list them with a native build.
+    Path storedCallSites() {
+        Object value = getProject().findProperty(CALL_SITES_PROPERTY);
+        if (value == null || value.toString().isBlank()) {
+            return null;
+        }
+        return Path.of(value.toString()).toAbsolutePath();
     }
 }

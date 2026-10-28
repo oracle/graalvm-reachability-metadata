@@ -20,7 +20,6 @@ import sys
 import unittest
 from typing import Any
 
-from git_scripts.local_branch_review import LocalBranchReviewOutcome, LocalReviewVerdict
 from utility_scripts.local_ci_verification import (
     CommandRecord,
     FixupRecord,
@@ -60,65 +59,7 @@ def _string_values(value: Any, path: str = "") -> list[tuple[str, str]]:
     return [(path, value)] if isinstance(value, str) else []
 
 
-def _outcome() -> LocalBranchReviewOutcome:
-    verification = LocalCIVerificationResult(
-        status="success",
-        base_commit="base",
-        final_commit="head",
-        commands=[
-            CommandRecord(
-                gate="checkstyle",
-                command=["./gradlew", "checkstyle"],
-                returncode=0,
-                output_excerpt="BUILD SUCCESSFUL",
-            ),
-        ],
-        fixups=[
-            FixupRecord(
-                gate="checkstyle",
-                command=["pi", "gpt-5.6-terra"],
-                commit="fixup",
-                changed_paths=["tests/src/org.example/demo/1.0.0/build.gradle"],
-            ),
-        ],
-    )
-    return LocalBranchReviewOutcome(
-        model="gpt-5.6-terra",
-        session_id=new_session_id(),
-        local_ci_verification=verification,
-        verdict=LocalReviewVerdict(
-            decision="approved",
-            review_comment="Checked every applicable rule.",
-            finding_title="",
-            finding_body="",
-            fix_note="",
-        ),
-        changed_paths=["metadata/org.example/demo/reflect-config.json"],
-    )
-
-
 class PublishedPathProvenanceTests(unittest.TestCase):
-    def test_rendered_pull_request_body_names_no_log_path(self) -> None:
-        outcome = _outcome()
-        body = publisher._render_local_review(
-            {"local_review": outcome.to_descriptor_payload()},
-        )
-
-        self.assertIn(f"- Review session: `{outcome.session_id}`", body)
-        self.assertNotIn("logs/", body)
-        self.assertNotIn(".log", body)
-
-    def test_descriptor_review_evidence_carries_no_filesystem_path(self) -> None:
-        outcome = _outcome()
-        evidence = {
-            "local_review": outcome.to_descriptor_payload(),
-            "local_ci_verification": outcome.local_ci_verification.to_metrics(),
-        }
-
-        for key_path, value in _string_values(evidence):
-            self.assertFalse(key_path.endswith("log_path"), key_path)
-            self.assertNotIn("logs/", value, key_path)
-
     def test_committed_execution_metrics_carry_no_absolute_path(self) -> None:
         """The 336 committed home directories of issue #9985 must not come back."""
         offenders: list[str] = []

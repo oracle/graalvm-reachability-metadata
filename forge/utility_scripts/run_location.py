@@ -20,15 +20,6 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Any, TypeVar
 
-from utility_scripts.continuation_marker import (
-    PHASE_EXPLORE,
-    PHASE_FINALIZATION,
-    PHASE_FIX,
-    PHASE_PUBLICATION,
-    PHASE_SETUP,
-    ContinuationMarker,
-    save_phase_update,
-)
 from utility_scripts.stage_logger import (
     log_debug,
     log_phase_banner,
@@ -37,11 +28,15 @@ from utility_scripts.stage_logger import (
 )
 from utility_scripts.task_logs import display_log_path
 
-# The dispatcher-side segment that runs before a run — and therefore before any
-# continuation state — exists. §FS-forge-run-location-reporting.1
+# The launcher-side segment that runs before a Rhei run exists, and the phases the
+# shared verification steps still name. §FS-forge-run-location-reporting.1
 PHASE_CLAIM = "claim"
+PHASE_SETUP = "setup"
+PHASE_FIX = "fix"
+PHASE_EXPLORE = "explore"
+PHASE_FINALIZATION = "finalization"
+PHASE_PUBLICATION = "publication"
 
-# The durable phases are imported, never redeclared. §FS-forge-run-continuation.1
 ORDERED_RUN_PHASES: tuple[str, ...] = (
     PHASE_CLAIM,
     PHASE_SETUP,
@@ -159,7 +154,6 @@ class _RunLocationState(threading.local):
     def __init__(self) -> None:
         self.stack: list[RunLocation] = []
         self.failure: RunLocation | None = None
-        self.marker_path: str | None = None
         self.phase: str | None = None
         self.context: str | None = None
         self.reported: bool = False
@@ -194,11 +188,6 @@ def failed_run_location() -> RunLocation | None:
     return _STATE.failure
 
 
-def bind_continuation_marker(marker_path: str | None) -> None:
-    """Point recorded failures at the run's continuation marker."""
-    _STATE.marker_path = marker_path
-
-
 def bind_run_context(context: str | None) -> None:
     """Name the run whose phases this thread announces.
 
@@ -212,7 +201,6 @@ def reset_run_location() -> None:
     """Clear all run-location state; called at the start of each issue run."""
     _STATE.stack = []
     _STATE.failure = None
-    _STATE.marker_path = None
     _STATE.phase = None
     _STATE.context = None
     _STATE.reported = False
@@ -341,7 +329,6 @@ def record_step_failure(
         resolved = RunLocation(phase=resolved.phase, step=resolved.step, operand=operand)
     if _STATE.failure is None:
         _STATE.failure = resolved
-        _record_failure_in_marker(resolved)
     return _STATE.failure
 
 
@@ -349,11 +336,10 @@ def clear_recorded_failure() -> None:
     """Clear a status-code failure after the workflow has recovered from it.
 
     Only terminal failures reach the lifecycle boundary, so a best-effort step
-    that deliberately continues must clear both run-local and durable state.
+    that deliberately continues must clear the recorded one.
     §FS-forge-run-location-reporting.3
     """
     _STATE.failure = None
-    save_phase_update(_STATE.marker_path, lambda marker: marker.clear_failure())
 
 
 def resolve_failure_location(exc: BaseException | None = None) -> RunLocation:
@@ -366,18 +352,6 @@ def resolve_failure_location(exc: BaseException | None = None) -> RunLocation:
     if located is not None:
         return located
     return RunLocation(phase=_STATE.phase or PHASE_CLAIM, step=UNLOCATED_STEP)
-
-
-def marker_failure_location(marker: ContinuationMarker | None) -> RunLocation | None:
-    """Return the failure location a continuation marker carries."""
-    if marker is None or not isinstance(marker.failure, dict):
-        return None
-    phase = marker.failure.get("phase")
-    step = marker.failure.get("step")
-    if not isinstance(phase, str) or not isinstance(step, str) or not phase or not step:
-        return None
-    operand = marker.failure.get("operand")
-    return RunLocation(phase=phase, step=step, operand=operand if isinstance(operand, str) else None)
 
 
 def format_run_failure_line(location: RunLocation) -> str:
@@ -435,10 +409,3 @@ def _normalize_failure_detail(detail: str) -> str:
     if normalized.startswith("ERROR: "):
         return normalized[len("ERROR: "):]
     return normalized
-
-
-def _record_failure_in_marker(location: RunLocation) -> None:
-    save_phase_update(
-        _STATE.marker_path,
-        lambda marker: marker.record_failure(location.phase, location.step, location.operand),
-    )

@@ -129,10 +129,7 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
     }
 
     protected boolean generateReportsForCoordinate(String coordinates) {
-        CommandResult jacoco = runGradle(List.of("jacocoCodeCoverageReport", "-Pcoordinates=" + coordinates), true);
-        if (jacoco.exitCode() != 0) {
-            throw new GradleException("JaCoCo report generation failed for " + coordinates + ":\n" + jacoco.stderr());
-        }
+        generateJacocoReport(coordinates);
 
         CommandResult dynamicAccess = runGradle(List.of("generateDynamicAccessReport", "-Pcoordinates=" + coordinates), true);
         if (dynamicAccess.exitCode() != 0) {
@@ -144,6 +141,14 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
             return false;
         }
         return true;
+    }
+
+    /// Runs the JVM tests under JaCoCo and writes the combined coverage report for one coordinate.
+    protected void generateJacocoReport(String coordinates) {
+        CommandResult jacoco = runGradle(List.of("jacocoCodeCoverageReport", "-Pcoordinates=" + coordinates), true);
+        if (jacoco.exitCode() != 0) {
+            throw new GradleException("JaCoCo report generation failed for " + coordinates + ":\n" + jacoco.stderr());
+        }
     }
 
     @Internal
@@ -247,7 +252,12 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
     /// configuration-origin directory. `javaTest` avoids re-running and clobbering the native
     /// dynamic-access reports. Failed or missing origins degrade gracefully to today's behaviour.
     protected Path maybeCollectAgentOrigins(String coordinates, List<Path> libraryJars) {
-        if (!LibraryStatsSupport.lineMatchingImpossible(getDynamicAccessDir(coordinates), libraryJars)) {
+        return maybeCollectAgentOrigins(coordinates, libraryJars, getDynamicAccessDir(coordinates));
+    }
+
+    /// The agent-origin fallback for call sites read from `dynamicAccessDir`.
+    protected Path maybeCollectAgentOrigins(String coordinates, List<Path> libraryJars, Path dynamicAccessDir) {
+        if (!LibraryStatsSupport.lineMatchingImpossible(dynamicAccessDir, libraryJars)) {
             return null;
         }
         Path originsOutput = tckExtension.getTestDir(coordinates)

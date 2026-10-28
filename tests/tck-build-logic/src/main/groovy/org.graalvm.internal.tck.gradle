@@ -148,7 +148,8 @@ tasks.withType(Checkstyle).configureEach {
     }
 }
 
-int maxJUnitTestTimeoutSeconds = 60
+// §FS-test-contract.1.6
+int maxJUnitTestTimeoutSeconds = 180
 List<String> junitTimeoutRuntimeArgs = [
         "-Djunit.jupiter.execution.timeout.default=${maxJUnitTestTimeoutSeconds} s",
         "-Djunit.jupiter.execution.timeout.mode=enabled",
@@ -173,7 +174,7 @@ def timeoutAnnotationWithinLimit = { String annotationBody ->
         case "SECONDS":
             return value <= maxJUnitTestTimeoutSeconds
         case "MINUTES":
-            return value <= 1L
+            return value * 60L <= maxJUnitTestTimeoutSeconds
         default:
             return false
     }

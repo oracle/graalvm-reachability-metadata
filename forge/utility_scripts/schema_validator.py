@@ -4,7 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """
-Helper module for validating Forge metric output, strategy and benchmark configuration files.
+Helper module for validating Forge metric output and benchmark configuration files.
 Validates a file against the JSON Schema at `schemas/`.
 """
 
@@ -18,15 +18,11 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 SCHEMA_NAME_MAP = {
     "run_metrics_output": "run-metrics-output-schema-v1.0.1.json",
-    "benchmark_run_metrics": "benchmark_run_metrics_schema.json",
-    "benchmark_suite": "benchmark_suite_schema.json",
-    "continuation_marker": "continuation_marker_schema.json",
     "code_coverage_final_metrics": "code_coverage_final_metrics_schema.json",
     # Compact per-coordinate benchmark contracts. §FS-code-coverage-benchmarking.4
     "code_coverage_benchmark_result": "code_coverage_benchmark_result_schema.json",
     "code_coverage_benchmark_suite": "code_coverage_benchmark_suite_schema.json",
     "code_coverage_target_state": "code_coverage_target_state_schema.json",
-    "strategy": "strategy_schema.json",
 }
 
 
@@ -70,16 +66,6 @@ def validate_run_metrics(file_path: str):
     validate_json_file(file_path, "run_metrics_output")
 
 
-def validate_benchmark_run_metrics(file_path: str):
-    """Validate against `schemas/benchmark_run_metrics_schema.json`."""
-    validate_json_file(file_path, "benchmark_run_metrics")
-
-
-def validate_benchmark_suite(file_path: str):
-    """Validate against `schemas/benchmark_suite_schema.json`."""
-    validate_json_file(file_path, "benchmark_suite")
-
-
 def validate_code_coverage_benchmark_result(file_path: str):
     """Validate a coordinate result list for code coverage benchmarking."""
     validate_json_file(file_path, "code_coverage_benchmark_result")
@@ -98,11 +84,6 @@ def validate_code_coverage_final_metrics(file_path: str):
 def validate_code_coverage_target_state(file_path: str):
     """Validate against `schemas/code_coverage_target_state_schema.json`."""
     validate_json_file(file_path, "code_coverage_target_state")
-
-
-def validate_strategy(file_path: str):
-    """Validate against `schemas/strategy_schema.json`."""
-    validate_json_file(file_path, "strategy")
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -8,8 +8,6 @@ along the issue-to-run path (§FS-forge-issue-resolution-goal)."""
 
 from dataclasses import dataclass
 
-from utility_scripts.continuation_marker import ContinuationMarker
-
 from dispatcher.config import DEFAULT_WORKTREE_BASE_REF
 
 
@@ -26,7 +24,6 @@ class ClaimedIssue:
     current_coordinates: str | None = None
     new_version: str | None = None
     preflight_info_path: str | None = None
-    continuation_marker: ContinuationMarker | None = None
 
 @dataclass(frozen=True)
 class WorkQueueConfig:

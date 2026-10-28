@@ -43,10 +43,6 @@ from utility_scripts.host_graalvm_checks import (  # noqa: E402
     resolve_graalvm_version_check,
 )
 from utility_scripts.host_toolchain_checks import ToolchainChecks  # noqa: E402
-from utility_scripts.strategy_loader import (  # noqa: E402
-    apply_test_agent_alias,
-    load_predefined_strategies,
-)
 
 
 ISSUE_LIMIT_ENV_VARS = (
@@ -158,8 +154,6 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
             setup_family: str | None = None,
             setup_model: str | None = None,
             setup_provider: str | None = None,
-            test_strategy_name: str | None = None,
-            test_strategy_names: Sequence[str] | None = None,
     ) -> None:
         self.forge_dir = os.path.abspath(forge_dir)
         self.forge_repo_dir = os.path.dirname(self.forge_dir)
@@ -194,18 +188,9 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
         self.setup_agent = setup_selection.agent
         self.setup_model = setup_selection.model
         self.setup_provider = setup_selection.provider
-        requested_strategy_names = list(test_strategy_names or [])
-        if test_strategy_name and test_strategy_name not in requested_strategy_names:
-            requested_strategy_names.append(test_strategy_name)
-        if not requested_strategy_names and self.environment.get("FORGE_STRATEGY_NAME"):
-            requested_strategy_names.append(str(self.environment["FORGE_STRATEGY_NAME"]))
-        configured_test_strategies = [
-            (strategy_name, self._load_test_strategy(strategy_name))
-            for strategy_name in requested_strategy_names
-        ] or [(None, {})]
-        self.test_requirements = self._resolve_test_requirements(
-            configured_test_strategies,
-        )
+        # Strategies are fixed per label, so the test role is the default worker backend.
+        # §FS-forge-agent-runtime-selection
+        self.test_requirements = self._resolve_test_requirements([(None, {})])
         primary_test_requirement = self.test_requirements[0]
         self.test_family = primary_test_requirement.family
         self.test_agent = primary_test_requirement.agent
@@ -218,15 +203,6 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
         self.graalvm_version_check = resolve_graalvm_version_check(graalvm_version_check, self.environment)
         self.graalvm_versions = GraalVMVersions(None, None, None)
         self.results: list[CheckResult] = []
-
-    def _load_test_strategy(self, strategy_name: str | None) -> dict:
-        """Load the selected strategy, which owns the test role it declares."""
-        if not strategy_name:
-            return {}
-        for strategy in load_predefined_strategies():
-            if strategy.get("name") == strategy_name:
-                return apply_test_agent_alias(strategy, self.environment)
-        raise ValueError(f"Unknown Forge test strategy '{strategy_name}'")
 
     def _resolve_test_requirements(
             self,
@@ -413,8 +389,6 @@ def verify_host_requirements(
         graalvm_version_check: str | None = None,
         environment: Mapping[str, str] | None = None,
         repo_dir: str | None = None,
-        test_strategy_name: str | None = None,
-        test_strategy_names: Sequence[str] | None = None,
         verbose: bool = False,
 ) -> bool:
     """Run every host requirement selected by this run and report whether work may start.
@@ -429,8 +403,6 @@ def verify_host_requirements(
         requirements,
         graalvm_version_check,
         repo_dir,
-        test_strategy_name=test_strategy_name,
-        test_strategy_names=test_strategy_names,
     )
     return host_requirements.run(verbose=verbose)
 
@@ -442,8 +414,6 @@ def ensure_host_requirements(
         graalvm_version_check: str | None = None,
         environment: Mapping[str, str] | None = None,
         repo_dir: str | None = None,
-        test_strategy_name: str | None = None,
-        test_strategy_names: Sequence[str] | None = None,
         verbose: bool = False,
 ) -> None:
     """Stop the process with a non-zero exit when a required host capability is missing.
@@ -457,8 +427,6 @@ def ensure_host_requirements(
         graalvm_version_check,
         environment,
         repo_dir,
-        test_strategy_name,
-        test_strategy_names,
         verbose,
     )
     if not passed:
@@ -525,7 +493,6 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--setup-family", choices=SUPPORTED_AGENT_BACKENDS, default=None)
     parser.add_argument("--setup-model", default=None)
     parser.add_argument("--setup-provider", default=None)
-    parser.add_argument("--test-strategy", action="append", default=None)
     parser.add_argument("-v", "--verbose", action="store_true", help="Print the complete host report.")
     parser.add_argument(
         "--graalvm-version-check",
@@ -559,7 +526,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             setup_family=args.setup_family,
             setup_model=args.setup_model,
             setup_provider=args.setup_provider,
-            test_strategy_names=args.test_strategy,
         )
     except ValueError as exc:
         print(f"ERROR: Forge host requirement configuration is invalid: {exc}", file=sys.stderr)

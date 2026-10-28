@@ -17,46 +17,25 @@ import unittest
 from collections.abc import Callable
 from unittest.mock import call, patch
 
-import forge_metadata
+from dispatcher import config as dispatcher_config
 from dispatcher import (
     env_config,
     issue_admin,
 )
 from utility_scripts.native_image_artifact import ARTIFACT_REPOSITORY_URLS
-from utility_scripts.continuation_marker import ContinuationMarker
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
-from utility_scripts.source_context_discovery import GradleBootstrapFailure
-from ai_workflows.drivers.library_update_router import LibraryUpdateRoute
-from ai_workflows.drivers.library_update_router import ROUTE_FIX_JAVAC
-from ai_workflows.drivers.library_update_router import ROUTE_IMPROVE_COVERAGE
-from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE
-from utility_scripts.continuation_marker import continuation_marker_path
 from utility_scripts.dynamic_access_exhaust_report import dynamic_access_exhaust_report_path
 from utility_scripts.run_location import format_run_failure_line
-from utility_scripts.continuation_marker import load_continuation_marker
 import random
 import time
 from dispatcher import (
-    claim_setup,
     config,
-    driver_invocation,
-    dynamic_access,
-    failure_preservation,
     interrupts,
     issue_form,
-    issue_processing,
-    lifecycle,
-    pipeline_execution,
-    publication,
-    queue_config,
     records,
 )
 from dispatcher import (
-    ci_repair,
     claim_preflight,
-    continuation,
-    failure_follow_up,
-    human_intervention,
     fixture_support,
     github_api,
     issue_cache,
@@ -66,19 +45,12 @@ from dispatcher import (
     pr_publication,
     pr_state,
     project_board,
-    review_loop,
     worktrees,
 )
+from utility_scripts.run_location import PHASE_EXPLORE, PHASE_FINALIZATION, PHASE_PUBLICATION, PHASE_SETUP
 from types import SimpleNamespace
-from ai_workflows.agents.agent_runtime import AgentRunResult, AgentSelection
 from git_scripts import common_git, github_cli
 from utility_scripts import host_graalvm_checks, host_requirements, run_location
-from utility_scripts.continuation_marker import (
-    PHASE_EXPLORE,
-    PHASE_FINALIZATION,
-    PHASE_PUBLICATION,
-    PHASE_SETUP,
-)
 from utility_scripts.fixture_github import FixtureComment, FixtureGitHubState, FixtureIssue
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
@@ -98,7 +70,7 @@ def _project_item_status_response(status: str) -> dict:
                             },
                             {
                                 "id": "project-item",
-                                "project": {"number": forge_metadata.PROJECT_NUMBER},
+                                "project": {"number": dispatcher_config.PROJECT_NUMBER},
                                 "fieldValues": {
                                     "nodes": [
                                         {
@@ -249,7 +221,7 @@ def _preflight(
     )
 
 
-def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
+def _claimed_issue(label: str = dispatcher_config.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
     return records.ClaimedIssue(
         issue={
             "number": 1412,
@@ -264,7 +236,7 @@ def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> records.Cla
     )
 
 
-def _claimed_issue_in(base_path: str, label: str = forge_metadata.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
+def _claimed_issue_in(base_path: str, label: str = dispatcher_config.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
     """Build a claimed issue whose base checkout path exists on disk."""
     return dataclasses.replace(_claimed_issue(label), base_reachability_metadata_path=base_path)
 
@@ -304,7 +276,7 @@ def _form_issue(
         "url": f"https://github.com/example/repo/issues/{number}",
         "labels": [
             {"name": name}
-            for name in (label_names if label_names is not None else [forge_metadata.LABEL_LIBRARY_NEW])
+            for name in (label_names if label_names is not None else [dispatcher_config.LABEL_LIBRARY_NEW])
         ],
         "assignees": [{"login": login} for login in (assignees or [])],
     }
@@ -331,9 +303,9 @@ def _fixture_form_issue(
         author="external-user",
         body="",
         state="OPEN",
-        labels=list(label_names if label_names is not None else [forge_metadata.LABEL_LIBRARY_NEW]),
+        labels=list(label_names if label_names is not None else [dispatcher_config.LABEL_LIBRARY_NEW]),
         assignees=list(assignees or []),
-        project_number=forge_metadata.PROJECT_NUMBER,
+        project_number=dispatcher_config.PROJECT_NUMBER,
         project_item_id=f"item-{number}",
         project_status=project_status,
         blockers=[],
@@ -360,41 +332,20 @@ __all__ = [
     "Callable",
     "call",
     "patch",
-    "forge_metadata",
+    "dispatcher_config",
     "env_config",
     "issue_admin",
     "ARTIFACT_REPOSITORY_URLS",
-    "ContinuationMarker",
     "DynamicAccessExhaustReport",
-    "GradleBootstrapFailure",
-    "LibraryUpdateRoute",
-    "ROUTE_FIX_JAVAC",
-    "ROUTE_IMPROVE_COVERAGE",
-    "RUN_STATUS_FAILURE",
-    "continuation_marker_path",
     "dynamic_access_exhaust_report_path",
     "format_run_failure_line",
-    "load_continuation_marker",
     "random",
     "time",
-    "claim_setup",
     "config",
-    "driver_invocation",
-    "dynamic_access",
-    "failure_preservation",
     "interrupts",
     "issue_form",
-    "issue_processing",
-    "lifecycle",
-    "pipeline_execution",
-    "publication",
-    "queue_config",
     "records",
-    "ci_repair",
     "claim_preflight",
-    "continuation",
-    "failure_follow_up",
-    "human_intervention",
     "fixture_support",
     "github_api",
     "issue_cache",
@@ -404,11 +355,8 @@ __all__ = [
     "pr_publication",
     "pr_state",
     "project_board",
-    "review_loop",
     "worktrees",
     "SimpleNamespace",
-    "AgentRunResult",
-    "AgentSelection",
     "common_git",
     "github_cli",
     "host_graalvm_checks",

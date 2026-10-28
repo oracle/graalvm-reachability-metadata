@@ -6,8 +6,8 @@ grounded here: the verification it must pass (§FS-local-ci-equivalent-verificat
 the tested-version split its result must record
 (§FS-library-update-tested-version-split), the review it receives before the
 push (§FS-local-branch-review), when the result needs maintainer judgment rather
-than another automated attempt (§FS-human-intervention-policy), and the
-automated review the published PR receives (§FS-automated-pr-review).
+than another automated attempt (§FS-human-intervention-policy), and what Forge
+does with the published PR (§FS-published-pr-review).
 
 Publication readiness is consumed once per publication branch. After the
 trusted publisher opens the matching Forge pull request, identified by the
@@ -68,6 +68,35 @@ verdict: Forge stops the daemons of the worktree's Gradle user home
 rerun's outcome reach metadata repair or human intervention
 (§FS-human-intervention-policy).
 
+#### 1.1 Reviewer gates
+
+Finalization also enforces, as programs, the contribution-contract gates a
+reviewer would otherwise apply by hand (§root/PRCPL-prefer-algorithmic). Each
+runs after the stats are regenerated, and a failure is a fix request whose
+brief names the gate, so the outcome is decided by the gate's next run and
+never by the repair's account. A gate another task already enforces, such as
+`checkMetadataFiles`' conditions and test-only types, is not repeated.
+
+1. **Dynamic-access coverage.** The regenerated stats meet the label's gate of
+   §root/FS-contribution-contract.3, compared with the previous version's
+   stats: above 20% for a new library with calls to cover; no drop in the
+   coverage ratio for a library update; the ordered repair comparison over the
+   overall report and every breakdown for the `fixes-*` labels, with `N/A` as
+   `0/0`; and only a nonzero covered-call count for a chunk
+   (§FS-forge-chunked-dynamic-access). A breach the repair cannot close ends
+   in `human-intervention`, where a maintainer weighs the explanation the
+   contract allows.
+2. **Reporter-requested metadata.** Every entry the reporter's issue body
+   states as explicit metadata JSON — a type or a resource glob — is in the
+   shipped metadata (§root/FS-test-contract.1.5). A request made only in prose
+   or a stack trace cannot be checked mechanically and stays with the cover
+   prompt and the audit (§FS-local-branch-review).
+3. **Diff scope.** The paths publication commits stay inside the closed file
+   set of §root/FS-contribution-contract.2: the coordinate's test project, its
+   version's `reachability-metadata.json`, its `index.json`, and the stats,
+   execution-metrics, and descriptor files of its version's stats directory.
+   A legacy split-config file fails the gate wherever it appears.
+
 ### 2. Pre-publication gate
 
 Before a task may produce a PR-eligible result, Forge must also pass a
@@ -93,7 +122,9 @@ programmatic callers that need to reproduce the expensive per-PR CI surface
 locally: when enabled, the gate additionally expands the changed-metadata native
 test matrix, pre-pulls Docker images for coordinates that declare them, runs the
 generated tests under the CI native-image mode matrix, and runs Spring AOT smoke
-verification when metadata changes affect Spring AOT projects.
+verification when metadata changes affect Spring AOT projects. A
+`forge-metadata` run does not enable it; its gate runs the coordinate's own
+native lanes instead (§FS-local-ci-equivalent-verification.2.1).
 
 If the gate fails, Forge must run one bounded agent repair before the run is
 handed off, on the same terms as every other agent repair in the pipeline: the
@@ -114,6 +145,29 @@ evidence. Publication may add `human-intervention` only when the resulting
 review decision is `rejected` with action `human-intervention`, following
 §FS-human-intervention-policy.
 
+#### 2.1 The coordinate's native lanes in a `forge-metadata` run
+
+A `forge-metadata` run's finalization runs the gate with the coordinate's own
+native lanes: the run's coordinate, at its own version only, in each pairing of
+native-image mode and Java version that `ci.json` defines for the
+changed-metadata matrix — `nativeImageModes`, restricted by
+`nativeImageModeJavaVersions`. Today these are three lanes: `25` with
+`current-defaults`, `latest-ea` with `current-defaults`, and `latest-ea` with
+`future-defaults-all`. Other tested versions that share the metadata and the
+Spring AOT smoke tests stay with repository CI. The cost is one native build per
+lane.
+
+Every lane always runs. Each lane's GraalVM is a host requirement
+(§FS-forge-host-requirements), so no lane is ever skipped, and a host without
+one stops the run as an infrastructure failure. Because every lane runs,
+neither the verification record nor the pull request description lists them.
+
+The first failing lane is an ordinary fix request whose command reproduces
+exactly that lane: the coordinate, the version, the mode, and the JDK.
+Rerunning that lane is enough for the repair; the next finalization runs every
+lane again, and so does the rerun after an audit edit
+(§FS-local-branch-review.3).
+
 ## FS-native-test-verification-gate: Native test verification gate
 
 Metadata production for a coordinate begins with an *approximation*. The JVM
@@ -129,8 +183,8 @@ The gate closes those gaps with **runtime truth** rather than more inference. It
 runs a real native image with metadata tracing enabled, records what the
 execution actually touches, and re-supplies it until the binary stops missing
 metadata. It is what proves a coordinate's test binary passes on Native Image,
-and every workflow ends on it (§AR-forge-workflow-engine.2,
-§AR-native-test-verification-callers). Native Image must always work, so `FAILED`
+and the code coverage workflow ends on it (§AR-code-coverage-improvement); a
+`forge-metadata` run uses its own native check (§AR-forge-workflow-pipeline.5). Native Image must always work, so `FAILED`
 is a hard error: the caller returns a failure status and resets its branch to its
 checkpoint.
 
@@ -148,12 +202,10 @@ next build makes the next cycle aware of the previously missed access. Iterating
 walks the metadata from the agent's approximation to the exact set the image
 requires; exit `0` means nothing missed.
 
-Recovery is therefore ordered: **JVM agent, then native tracing, then Codex.**
+Recovery is therefore ordered: **JVM agent, then native tracing, then the analysis agent.**
 Tracing must not run before the agent step. Only when the loop still cannot make
-the binary pass does the residual failure go to Codex, because at that point it
-is evidence of a code or test defect rather than a metadata gap. Pi is never
-invoked — its role elsewhere is to remove failing tests, exactly the wrong move
-when the failure is a real defect that must surface.
+the binary pass does the residual failure go to the analysis agent, because at
+that point it is evidence of a code or test defect rather than a metadata gap.
 
 ### 2. Inputs and budget
 
@@ -176,9 +228,7 @@ frequently not Java package roots — an `org.apache.tomcat.embed` artifact exec
 tracing needs a condition class that is actually on the access stack before the
 access occurs.
 
-The outer budget is the strategy parameter
-`max-native-test-verification-iterations`, default 40
-(§FS-predefined-strategy-parameter-families). Convergence is expected within a
+The outer budget is the caller's cycle limit, default 40. Convergence is expected within a
 handful of cycles; the default is a soft cap, not a target, and each cycle
 rebuilds the image, so wall-clock cost is dominated by build time. A per-cycle
 timeout, default 30 minutes, caps the preflight test invocation and each trace
@@ -192,12 +242,12 @@ invocation, so no stale entry leaks across runs.
 The agent step runs first, always. If it fails, tracing starts with no accepted
 trace directories. If it succeeds, the coordinate is tested against the staged
 agent metadata; a failure *before* the native tests is a code or test problem and
-goes straight to Codex, and a native-test failure enters the trace loop.
+goes straight to the analysis agent, and a native-test failure enters the trace loop.
 
 **A pass must survive finalization.** When the coordinate passes against staged
 metadata, the gate merges it into durable repository metadata and re-runs the
 tests *without* staged directories. Only that durable re-run returns `PASSED`;
-otherwise the finalized metadata goes to Codex. This catches merge-time condition
+otherwise the finalized metadata goes to the analysis agent. This catches merge-time condition
 invalidation, where raw staged metadata passes but the merged result leaves an
 access behind an unsatisfied condition. A trace-backed pass takes the same route:
 merge accepted trace directories, merge into durable metadata, re-run.
@@ -209,17 +259,17 @@ flowchart TD
     Test -- pass --> FinalA[Merge into durable metadata]
     FinalA --> DurA[Re-run without staged dirs]
     DurA -- pass --> PassA([PASSED])
-    DurA -- fail --> Codex
-    Test -- fails before native tests --> Codex
+    DurA -- fail --> Fixer
+    Test -- fails before native tests --> Fixer
     Test -- native tests fail --> Outer{budget left?}
-    Outer -- no --> Codex
+    Outer -- no --> Fixer
     Outer -- yes --> Run[One trace cycle]
     Run --> Route{exit code}
     Route -- 0 --> MergeT[Merge accepted trace dirs] --> FinalA
     Route -- "172, new entries" --> Accept[Accept dir] --> Outer
-    Route -- "172, none" --> Codex
-    Route -- other --> Codex
-    Codex[Codex] --> Ok{converged?}
+    Route -- "172, none" --> Fixer
+    Route -- other --> Fixer
+    Fixer[analysis agent] --> Ok{converged?}
     Ok -- yes --> PassI([PASSED_WITH_INTERVENTION])
     Ok -- no --> Fail([FAILED])
 ```
@@ -231,8 +281,8 @@ directory so far, and routes on the binary's exit code:
 | --- | --- | --- |
 | `0` | accumulated metadata and the code under test are sufficient | merge, finalize, return `PASSED` |
 | `172`, new entries | the cycle captured a missing access | accept the directory, continue |
-| `172`, no new entries | tracing stalled: the run reported a miss it did not record | open a Native Image tracing ticket, route to Codex |
-| other non-zero | the code is broken in a way more metadata cannot fix | route to Codex |
+| `172`, no new entries | tracing stalled: the run reported a miss it did not record | open a Native Image tracing ticket, route to the analysis agent |
+| other non-zero | the code is broken in a way more metadata cannot fix | route to the analysis agent |
 
 A `172` with no new entries is a Native Image tracing defect, not a library
 metadata gap — the run already proved the access happens and named it. The gate
@@ -253,28 +303,28 @@ log path with the binary's parsed exit code — the log path is **required** whe
 the status is `FAILED`, and callers surface it in run metrics and the PR body
 (§FS-forge-run-metrics).
 
-### 4. Codex, and the one carve-out
+### 4. The analysis agent, and the one carve-out
 
-Codex is terminal when invoked. It has full repository write access through the
+The analysis agent is terminal when invoked. It has full repository write access through the
 `fix-missing-reachability-metadata` skill, validates its own work, and the gate
 does not re-verify or re-run a trace cycle afterwards — that would produce a
-Codex/verify ping-pong on a real code defect. Its exit decides between
+agent/verify ping-pong on a real code defect. Its exit decides between
 `PASSED_WITH_INTERVENTION` and `FAILED`.
 
-Everything reaching Codex — exhausted budget (reason `metadata-gap-exhausted`),
+Everything reaching the analysis agent — exhausted budget (reason `metadata-gap-exhausted`),
 stalled progress, trace timeouts, non-172 failures — arrives with a reproduction
-command including the accepted trace directories. The Codex process and its
+command including the accepted trace directories. The agent process and its
 instructions must pin the GraalVM and Java homes and the full native-image version
 to the exact distribution the failed command used, and must fail rather than
 reproduce or verify against a different installation. Accumulated directories are
-not discarded before Codex runs; its fixes are additive.
+not discarded before the analysis agent runs; its fixes are additive.
 
 **Final merge failures are the only carve-out.** If the trace-output merge or the
 final durable merge fails, the gate returns `FAILED` directly without invoking
-Codex. These are infrastructure problems downstream of a successful validation
-path — a merge task, a filesystem write, malformed metadata input — and Codex
+the analysis agent. These are infrastructure problems downstream of a successful validation
+path — a merge task, a filesystem write, malformed metadata input — and the analysis agent
 cannot repair the metadata pipeline itself. Every other failure mode routes
-through Codex first.
+through the analysis agent first.
 
 ### 5. Gradle task contract
 
@@ -307,121 +357,60 @@ The gate is composed from these tasks and owns no domain logic of its own. It
 must not depend on any workflow implementation or on the post-generation
 intervention lane, so that every caller gets identical behavior.
 
-## FS-local-branch-review: Local pre-push branch review
+## FS-local-branch-review: Local pre-push audit
 
-Every generated branch except a `code-coverage-improvement`,
-`code-coverage-benchmark-result`, or `real-use-tests` branch must receive its
-authoritative semantic review before it is pushed (§FS-automated-pr-review). The verified working tree,
-local gate records, and resolved render statistics are still available at this
-point, so a contribution-local finding can be corrected before publication.
-The shared publication pipeline implements this phase before it writes the
-descriptor. Coverage publication remains a deterministic descriptor route, and
-benchmark publication a deterministic diff-validated route
-(§FS-code-coverage-benchmarking.3), and real-use publication a diff-validated
-route whose workflow ran every scenario natively before it publishes
-(§AR-real-use-tests-publication), rather than semantic code-review subjects.
+Before a `forge-metadata` run pushes, a local audit checks every test and
+metadata change the run made against the rules a reviewer may block on
+(§root/FS-contribution-contract.1), and repairs each violation it finds. A
+generated contribution has no author to answer a review, so a violation the
+run can still repair is repaired before the push rather than reported after it
+(§root/FS-contribution-contract.5.1, §FS-forge-issue-resolution-goal).
 
-**Placement.** The review runs inside publication, after the pre-publication
-gate of §FS-local-ci-equivalent-verification.2 has passed and the descriptor
-input has resolved, and before the descriptor is written. It judges
-`base_ref..HEAD`, the eventual pull-request diff minus the descriptor commit,
-with the local evidence that repository CI does not provide.
+### 1. Placement
 
-**Isolation and authority.** The review runs cold in a worktree detached at the
-verified commit and in a session carrying no generation transcript. Forge invokes
-the worker-configured analysis role (§FS-forge-agent-runtime-selection), requests
-`high` reasoning, supplies the prompt and evidence, and owns execution and
-logging. The reviewer applies the task's label-specific rules and the first
-matching disposition in §root/FS-contribution-contract.5. Its prompt supplies one
-Forge-owned command that executes the complete mutation-producing finalization
-path with nested agents disabled, including foreign-metadata routing and
-deterministic allowed-package updates. When the reviewer changes the
-contribution, it runs this command after its last edit, repairs any failure, and
-repeats it until it passes without changing the publishable tree. The command writes a receipt
-bound to that exact tree; Forge does not accept reviewer edits without a matching
-receipt. An unchanged review reuses the already-finalized tree. Only then may the
-reviewer write the verdict. This is the ordinary generated branch's one semantic
-review; finalization is not run again after that verdict, and neither local
-verification nor the published-PR process launches another general repair or
-review agent.
+The audit runs once, after finalization and its gates have passed
+(§FS-local-ci-equivalent-verification.1) and before publication. A skip record
+(§FS-unsupportable-version-diagnosis.3) ships no test or metadata and bypasses
+it.
 
-**Outcomes.** The review has exactly two decisions:
+### 2. The audit is an ordinary fix request
 
-- `approved`, with no `action`;
-- `rejected`, with exactly one `action`: `human-intervention` or `close`.
+The audit adds no agent and no instruction: it sends the run's one repair agent
+an ordinary fix request. The commands are the native check and the
+finalization lane, the editable files are the coordinate's test project and
+shipped metadata, and the one brief is to check every change against the test
+contract (§root/FS-test-contract.1, §root/FS-test-contract.2,
+§root/FS-test-contract.3, §root/FS-test-contract.4), the bounds on hand-written
+metadata and native flags (§root/FS-test-contract.2.7), and each cheating
+pattern at the bar §root/FS-contribution-contract.4 sets for it, and fix each
+violation. The brief names the patterns concretely, and three of its bars keep
+the audit from rewriting tests that are fine:
 
-Publication proceeds for either decision. Even a close disposition first creates
-the pull request that records the outcome. A reviewer that cannot be reached
-because of authentication, non-zero exit, timeout, or an unreadable verdict
-becomes the fixed `rejected` plus `human-intervention` outage outcome; it is
-not a third status or a failed publication.
+1. **Only what the run changed.** Tests that an update or `fixes-*` run carried
+   over unchanged from the previous version are not audited; only changed and
+   added tests are (§root/FS-contribution-contract.4).
+2. **The exact scaffold bar.** A test is scaffold only while its body is the
+   unmodified TCK placeholder; a test is never rewritten for looking thin
+   (§root/FS-contribution-contract.4).
+3. **No depth bar without calls.** When the version reports no dynamic-access
+   calls, test depth is not a violation: the audit adds or deepens no test for
+   it.
 
-**The disposition ladder is mandatory.** A contribution-local violation is
-repaired in the detached worktree and approved only when the resulting tree
-satisfies the review rules. A shared infrastructure defect is not repaired on
-the contribution: the reviewer returns structured evidence, Forge opens or
-reuses one issue for that defect, and the descriptor records `rejected` plus
-`human-intervention`. Unsupported library behavior meeting
-§root/FS-contribution-contract.5.4 records `rejected` plus `close` only where
-that rule finds no index entry to record the skip in. Where the artifact has
-one, the reviewer repairs the contribution into the skip record that rule
-prescribes and the descriptor carries the ordinary `approved` decision.
+### 3. No verdict
 
-**A skip record is rendered from the tree.** Descriptor facts state what the
-agent generated, and this repair deletes exactly the generated files, so a body
-rendered from the descriptor would report metadata entries, coverage percentages
-and stats diffs for files that no longer exist. Publication therefore detects the
-repair from the published tree — the artifact's `index.json` gained
-`skipped-versions` entries and the contribution ships no `metadata/<version>/` —
-and replaces the template body with the recorded versions and their reasons, read
-from those same entries. The title is left as the contribution's own template
-rendered it: it carries the run and model provenance, and publication identity is
-the branch and publication ID rather than the title.
-Every other unresolved or uncertain finding records `rejected` plus
-`human-intervention`.
+The audit records no verdict and no finding: the agent's report is evidence,
+never a decision (§root/PRCPL-prefer-algorithmic). The tree decides. When the
+audit left the coordinate's paths unchanged, the run publishes. When it changed
+them, the native check and finalization with its gates run again, once: a pass
+publishes, and a failure ends the run in `human-intervention`. A `cannot-fix`
+report ends the run in `human-intervention` as any other fix does
+(§FS-human-intervention-policy).
 
-**Findings record.** Every finding is appended to tracked
-`forge/FINDINGS.md`, including one the reviewer fixed and one left open. Forge
-renders each entry from the returned title and body, so its shape cannot drift;
-an unavailable reviewer receives a fixed outage title and body.
-`forge/FINDINGS.md` is expected publication output and must not itself trigger
-repository-level-change classification.
+### 4. One pass
 
-**Verdict data.** The reviewer writes one structured verdict to the path Forge
-supplies. It carries `decision`, conditional `action`, a review comment,
-finding title and body, and a fix note when a repair was made. An infrastructure
-disposition also carries the structured defect evidence needed to find or create
-its issue. The descriptor retains those words, model and session provenance, and
-changed-path evidence. Repair is work completed before the decision, not a
-descriptor state; `changes_requested`, `repaired`, `repair_reverted`, and
-`published_tree` are not control-flow outcomes.
-
-**Forge verifies edits.** Forge derives the changed paths, validates the stable
-finalization receipt, and owns staging and commits. A changed tree reruns only
-the pre-publication gate (§FS-local-ci-equivalent-verification.2), with fixups
-disabled; an unchanged tree does not. Finalization (§FS-local-ci-equivalent-verification.1) has already
-reached a stable tree inside the review and is not replayed. The gate is
-verification, not another mutation phase: the head and the publishable tree must
-be byte-for-byte identical before and after it runs. The comparison is over the
-publishable tree alone — the same content the finalization receipt hashes — so
-local scratch files that the branch would never publish are not evidence of a
-mutation, and only a difference the gate itself introduced counts. If the gate
-fails or changes that tree, Forge restores the last verified tree, records the
-failed attempt in the finding together with the paths that actually differed,
-and publishes that exact tree as `rejected` with the action selected by the
-disposition ladder. No edit made after the verdict may enter the published head,
-and an approval of a discarded tree must never describe it.
-
-**Durability and rendering.** The review prompt, response, and repair pass are
-durable task logs (§FS-durable-generation-logs). Its in-flight verdict is staged
-with pending publication metrics so continuation reuses it. The final verdict
-is a first-class descriptor field rendered in the pull-request body's Local
-Agent Review section. It is never folded into another modifier, and publication
-may derive a review label only from its exact decision/action pair.
-
-The descriptor is validated by the publisher against the schema on the default
-branch (§AR-actions-publication), which admits no unknown fields, so the schema,
-renderer, and executor must land before a run emits the new contract.
+There is no second audit. The run state records that the audit was sent, so a
+resumed run does not audit twice, and an audit edit that breaks a gate is not
+repaired again.
 
 ## FS-human-intervention-policy: Human intervention policy
 
@@ -430,14 +419,13 @@ failure label. Forge must apply it only when the available evidence shows that
 the work cannot be safely completed or trusted without human judgment about the
 generated code, repository automation, metadata, or library behavior.
 
-For a published generated pull request every case found before publication
-must be represented by `local_review.decision: rejected` and
-`local_review.action: human-intervention`; no other descriptor flag or inferred
-condition may add the label. The descriptor records the pre-push review's
-verdict on the tree it describes, so an escalation found after publication — a
-merge conflict git cannot resolve, or a failed CI that cannot be repaired inside
-the contribution (§FS-automated-pr-review) — adds the label directly and leaves
-the descriptor and the head untouched. Valid cases include:
+A run that cannot finish — a check still failing after its fix, or a fix that
+reports nothing within the rules can help — publishes nothing and labels the
+issue with the reason (§AR-forge-workflow-pipeline.1). On a published pull
+request the label comes from the review of §FS-published-pr-review, or from a
+descriptor that still carries an older pre-push verdict of `rejected` with
+action `human-intervention`; no other descriptor flag or inferred condition may
+add it. Valid cases include:
 
 - Generated tests, metadata, or workflow edits fail local verification in a way
   that points to the generated artifact or repository automation rather than a
@@ -454,19 +442,15 @@ the descriptor and the head untouched. Valid cases include:
   shared file and does not raise this case.
 - Publication detects a severe metadata, test, or coverage anomaly that makes
   the PR unsafe to auto-review as a normal generated result.
-- The pre-push review found something it could not correct, or its repair did
-  not survive finalization and the gate, so the branch publishes with the
-  finding still open (§FS-local-branch-review).
-- A CI-repair review reached the escalation of the disposition ladder: a rule
-  violation it could not repair inside the contribution's file set, or a defect
-  in shared repository infrastructure that the contribution must not carry and
-  that now has its own issue (§root/FS-contribution-contract.5) — or returned no
-  valid diagnosis at all.
+- The review of a published pull request could not fix it: the cause lies in
+  a dependent library or in Native Image, a bound on reruns or fix pushes is
+  spent, or the review's outcome could not be confirmed. The pull request links
+  the issue that carries the diagnosis (§FS-published-pr-review.5).
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
 origin, not by log keywords: a workflow failure is **logical** — and gets the
-label — when it comes from the driver script, the core workflow, or the local
+label — when it comes from a run's programs or agent states, or the local
 CI-equivalent verification (compile, test, native-test, and finalization gates),
 which includes the rare case of an agent timeout. A workflow failure is
 **external** — and must not get the label — only when it surfaces as a typed
@@ -492,156 +476,8 @@ maintainer to continue. On a pull request, it means Forge produced a reviewable
 artifact, but some part of the result needs explicit maintainer judgment before
 normal review automation may treat it as safe. The companion
 `human-intervention-fixed` PR label means a maintainer has addressed the manual
-follow-up and review automation may resume after normal merge gates pass. The
+follow-up and the review of §FS-published-pr-review may resume, even on a pull
+request it already labeled `reviewed`. The
 resulting labeled backlog is drained by automated resolution, not per-item
-manual triage. The preserved work branch
-additionally carries a continuation marker, so a later run can resume the issue
-from the phase that failed instead of regenerating from scratch
-(§FS-forge-run-continuation).
-
-
-## FS-automated-pr-review: Automated pull request review
-
-Forge's published-PR process is the deterministic executor of the authoritative
-pre-push decision in §FS-local-branch-review. It never launches a second general
-semantic reviewer. Before any approval, rejection action, repair, or merge, it
-must load the publication descriptor from the pull request's exact current head
-and apply the same schema and publication trust checks as the trusted publisher.
-Missing, malformed, stale, wrong-repository, wrong-branch, or unsupported
-descriptor state makes the pull request ineligible for automation. A
-benchmark-result head carries no descriptor; its eligibility check is the
-trusted publisher's diff validation (§FS-code-coverage-benchmarking.3).
-
-Eligibility is structural, not presentational. The head repository must be
-`oracle/graalvm-reachability-metadata`, the head branch must be upstream
-`ai/**`, the pull request must resolve to the trusted Forge publication identity,
-and the validated descriptor must name a supported generated task — or the
-head must pass benchmark-result diff validation. A title marker, branch name,
-or label alone is insufficient.
-
-**Approved heads are approved deterministically.** For a normal generated task,
-`local_review.decision` must be `approved`; a diff-validated benchmark-result
-head is approved by definition because it records measurements rather
-than a mergeable generated contribution.
-
-**Forge is the merge gate, so it approves and arms only what it has seen pass.**
-Forge may approve a head and enable auto-merge only after reading that exact
-head's entire check rollup as successful. It may not delegate that judgment to
-GitHub's required-status-check set: that set is a repository setting covering
-some of the gates, so a head whose required checks are green while another gate
-is red would merge the moment auto-merge is armed. A pending rollup is left
-untouched and reconsidered on a later pass — unapproved, unarmed, and without
-spending a merge-candidate validation on a head whose verdict is not in yet. A
-failed rollup enters diagnosis and gives up any auto-merge request surviving
-from an earlier pass. Requiring every gate on the default branch is a
-second, independent enforcement of the same rule
-(§root/AR-required-status-checks) and never a substitute for this one.
-
-Once the rollup is green, an index-changing head has its current-base merge
-candidate validated before approval, because arming auto-merge on an
-already-green head may merge it immediately. Forge then submits the GitHub
-approval with an explicit commit ID equal to the validated head and enables
-auto-merge for the pull request with the same expected head. Forge never
-directly merges an approved pull request: GitHub queues or merges only once
-every repository merge gate is also non-blocking. A later push must earn a new
-exact-head approval rather than carrying the old approval forward.
-
-**Rejected heads are acted on immediately.** A rejected descriptor never
-receives an approval or auto-merge request and does not wait for CI. Before
-executing the rejection, Forge disables any auto-merge request left from an
-older approved head and dismisses only its own approval. Action
-`human-intervention` ensures the label is present and leaves the pull request
-open. Action `close` posts one idempotent explanation using the recorded
-reviewer reason, closes the pull request, labels the linked issue
-`library-unsupported-version`, and closes that issue. The trusted publisher
-performs this immediately after PR creation; the PR-review process may reconcile
-the same end state idempotently.
-
-**Failed CI enters diagnosis immediately.** Forge does not rerun a failed
-GitHub Actions workflow before diagnosis. It invokes the worker-configured
-analysis role as a CI-repair reviewer in an isolated worktree on the approved
-current head. The turn receives the failed-check and workflow-run evidence plus
-the exact-head descriptor, diagnoses whether the failure is transient or caused
-by the contribution, and applies §root/FS-contribution-contract.5: repair only
-contribution-local defects, return structured evidence for shared infrastructure
-defects, close only for the supported unfixable-library case, and escalate
-everything else.
-
-A transient verdict changes neither the contribution nor its descriptor. It
-names only failed workflow runs from the current head; trusted Forge code
-validates those IDs and requests reruns of their failed jobs, then stops until a
-later pass. The analysis agent decides whether a rerun is justified, while Forge
-owns and scopes the GitHub mutation. An approved repair must change the
-contribution and re-review the resulting tree. A no-change approval is invalid,
-not a transient verdict.
-
-A contribution-local repair performs the same local-review responsibilities on
-the resulting tree, appends every new finding to `forge/FINDINGS.md`, updates
-the descriptor so its decision describes that exact tree, and pushes to the
-existing head branch. Before that push, Forge disables auto-merge and dismisses
-its approval for the old head. A push restarts CI, and every later action begins
-again from the new exact-head descriptor.
-
-**A CI failure Forge cannot repair changes nothing in the pull request.** Every
-rejected outcome — an escalation, structured infrastructure evidence, an edit
-outside the contribution, an unfixable library, or a turn that returned no valid
-diagnosis — leaves the contribution as it was, so the descriptor's decision
-still describes the head and must not be rewritten. Forge discards the agent's
-edits and pushes nothing. Structured infrastructure evidence first makes trusted
-Forge code open or reuse one infrastructure issue. Forge then explains the
-failure once on the pull request and executes the outcome's action as it would
-for a rejected head: `human-intervention` withdraws Forge approval and adds the
-label, and `close` closes the pull request and its unsupported-version issue.
-The label alone holds the pull request: once a maintainer removes it or adds
-`human-intervention-fixed`, a later pass diagnoses the same head again.
-
-Transient CI noise, GitHub status/API failures, Maven download failures, and
-other external infrastructure errors are retried or waited out and are not
-converted into `human-intervention` (§FS-human-intervention-policy).
-
-A PR labeled `human-intervention-fixed` is the explicit maintainer signal that
-manual follow-up has been completed. Forge may dismiss stale requested-changes
-reviews left by the previous process and resume deterministic approval and merge
-handling after the normal gates pass, without reviving the general review agent.
-
-**A conflict that needs no judgment is resolved, not escalated.** A pull request
-whose only merge conflict is the shared findings ledger must not be left for a
-maintainer. Because every branch records its finding at the same offset in the
-append-only `forge/FINDINGS.md` (§FS-local-branch-review), any two open pull
-requests conflict there, and each merge re-conflicts the rest; keeping both
-entries is the only correct resolution, so the repository configures git to
-take it without asking. The per-coordinate benchmark results file
-(§FS-code-coverage-benchmarking.3) is the same situation one level up: its
-entries are keyed by run ID and the only legal edit is adding one, so two open
-publications always conflict there while never actually disagreeing. Git's
-textual merge cannot see that, so Forge resolves it itself: the base branch's
-entries plus the entries the head added, sorted by timestamp and run ID. The
-resolution may never modify or drop an existing entry, and a run ID appearing
-on both sides with different content is a real disagreement that escalates
-like any other conflict. Conflict refresh is deterministic queue maintenance,
-not review: before CI state can make a pull request eligible for an agent,
-Forge merges the base branch into a conflicting same-repository head and pushes
-the result when that merge left no conflict behind. It approves and arms
-nothing on the way, because the push restarts the checks and the refreshed head
-must earn its own exact-head approval. A merge that still conflicts — in the
-ledger or in any other file — is a real disagreement over content and takes the
-human-intervention path instead, as does a head Forge cannot push to. Before
-applying that label, Forge disables auto-merge and dismisses its approval so no
-human-intervention pull request remains approved. Before pushing a resolved
-merge, Forge likewise withdraws the old head's approval and auto-merge request.
-The push restarts the pull request's checks, so evaluation belongs to a later pass:
-Forge must re-read the descriptor decision and checks after pushing rather than
-carrying pre-push state forward, and a new exact head must be approved again.
-GitHub computes mergeability lazily: a state read taken after any base-branch
-push answers `UNKNOWN` until a background recomputation settles it, and the
-read itself is what triggers that recomputation. An `UNKNOWN` answer is an
-unanswered question, never evidence of a clean head: Forge re-polls with
-bounded backoff before classifying the head as conflicting or not. An answer
-still unsettled when that backoff runs out leaves the pull request waiting for
-a later pass, approved and armed by nothing, because a head GitHub has not
-called clean has not earned the merge gate.
-
-Because GitHub may complete an armed merge between worker passes, Forge also
-reconciles the existing chunk and follow-up issue transitions from the merged
-pull request. That reconciliation must be idempotent and must not release the
-same issue again after a later Forge run has claimed it.
+manual triage. The run's worktree and branch stay on the host, so a maintainer
+can continue from the last checkpoint.

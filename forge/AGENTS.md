@@ -26,28 +26,28 @@ Agents MUST read and strictly adhere to the following before making any changes:
 ## Don't
 - Don't reformat unrelated files or introduce sweeping refactors.
 - Don't add new logic to an entry-point script just because that is where you found the flow. Put reusable behavior in the module that owns that concern.
-- Don't duplicate helpers for path resolution, strategy loading, metrics writing, source-context preparation, style checks, or GitHub/Git utilities without first checking the existing shared modules.
+- Don't duplicate helpers for path resolution, metrics writing, source-context preparation, style checks, or GitHub/Git utilities without first checking the existing shared modules.
 - Don't use `try/catch` if `catch` block is going to be empty. Use it only when you need to handle errors with custom messages or fallback logic.
 
 ## Before Coding
 - Search for existing implementations before creating new functions, classes, scripts, or prompt-building logic.
 - If the change is reusable across workflows, agents, or pipelines, move it to a shared module instead of copying it into a workflow script.
-- If the change only alters wording or agent instructions, prefer `prompt_templates/` or `strategies/predefined_strategies.json` over Python logic.
+- If the change only alters wording or agent instructions, prefer `prompt_templates/` or the template's `states.yaml` over Python logic.
 
 ### Module Map
-- `forge_metadata.py`: control-plane dispatcher that claims GitHub issues, dispatches the matching workflow driver, and updates project status. Do not pile shared workflow logic here. §AR-forge-control-plane
-- `ai_workflows/drivers/`: workflow drivers for major automation flows such as new-library support, javac fixes, and native-image-run fixes. Put deterministic setup, working-directory preparation, branch/context setup, and metrics finalization here; do not make Codex decide this plumbing during generated runs. §AR-forge-drivers
-- `ai_workflows/core/`: reusable workflow engine implementations. Put iteration logic, workflow decision-making, and prompt sequencing here. §AR-forge-workflow-engine
-- `ai_workflows/agents/`: agent integrations and transport adapters. Put agent specific session, prompt, fork, and logging behavior here, not in workflow scripts. §AR-forge-strategy-agent-boundary
-- `git_scripts/`: Git and GitHub automation for commits, branches, PR creation, and stats formatting. Shared GitHub or git helpers belong in `git_scripts/common_git.py`. §AR-forge-publication
-- `utility_scripts/`: shared support code used across workflows and pipelines. Check here first before adding helper logic anywhere else. §AR-forge-drivers
-- `benchmarks/`: benchmark campaign configuration and runner for comparing generation strategies across several new-library support targets. §FS-forge-generation-benchmarking
-- `prompt_templates/`: prompt text only. Put instruction wording here when behavior does not require Python changes. §AR-forge-workflow-strategy-config
-- `strategies/predefined_strategies.json`: declarative workflow configuration such as strategy names, prompt files, parameters, model, and agent selection. §FS-workflow-strategy-registry
+- `forge_metadata.py` and `run-forge.sh`: the launcher. It fetches, claims, checks the issue form, and starts one Rhei run; it holds no workflow logic. §AR-forge-control-plane
+- `.agent-grounds/rhei/templates/forge-metadata/`: the issue workflow. States, routes, and agent instructions live in `states.yaml`. §AR-forge-workflow-pipeline.3
+- `.agent-grounds/rhei/programs/`: the programs the template's states run. Put deterministic setup, build runs, routing decisions, and publication here, never in an agent prompt. §AR-forge-workflow-pipeline.4
+- `dispatcher/`: the claim, the issue-form gate, the project board, and the launcher's review of published pull requests. §FS-published-pr-review
+- `ai_workflows/agents/`: the Pi and Claude Code adapters the code coverage workflow still drives. §AR-forge-strategy-agent-boundary
+- `git_scripts/`: Git and GitHub automation for branches, descriptors, and stats formatting. Shared GitHub or git helpers belong in `git_scripts/common_git.py`. §AR-forge-publication
+- `utility_scripts/`: shared support code the programs and launchers import. Check here first before adding helper logic anywhere else. §AR-forge-workflow-boundary
+- `benchmarks/`: the code coverage benchmark. §FS-code-coverage-benchmarking
+- `prompt_templates/`: prompt text only. Put instruction wording here when behavior does not require Python changes. §AR-forge-workflow-prompts
 - `schemas/`: JSON schemas for persisted outputs and configuration files. Update these when changing output contracts.
   §FS-durable-generation-logs
 - `docs/`: project documentation, specifications, and testing specifications.
-  §AR-forge-workflow-system
+  §AR-forge-architecture
 
 ## Style
 - In Markdown files always use backticks to format code and commands.
@@ -85,13 +85,13 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [ROADMAP](docs/roadmap.md): Forge implementation roadmap
 - [prompt_templates/](prompt_templates): Agent prompt templates the workflows render
 - [examples/](examples): Worked examples of a workflow run
-- [ai_workflows/](ai_workflows): Workflow drivers, engines, and agent adapters
+- [ai_workflows/](ai_workflows): Agent adapters the code coverage workflow runs
 - [git_scripts/](git_scripts): Git and GitHub automation: commits, branches, PRs, stats
 - [utility_scripts/](utility_scripts): Shared support code used across workflows and pipelines
-- [benchmarks/](benchmarks): Benchmark campaign configuration and runner
+- [benchmarks/](benchmarks): The code coverage benchmark
 - [tests/](tests): Unit and integration tests for the Python modules
-- [schemas/](schemas): JSON Schemas for strategies, metrics, and continuation markers
-- [strategies/](strategies): Predefined strategy configurations
+- [.agent-grounds/rhei/](.agent-grounds/rhei): The Rhei templates and the programs their states run
+- [schemas/](schemas): JSON Schemas for metrics and persisted outputs
 
 ### Project namespaces
 
@@ -134,6 +134,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **utility_scripts/** should cite FS or AR.
 - **benchmarks/** should cite FS or AR.
 - **tests/** should cite FS or AR.
+- **.agent-grounds/rhei/** must cite FS or AR.
 - **code** (Loose scripts and plugins outside a kind home) must cite FS; should cite AR.
 Unlisted kinds and pairs are fine.
 

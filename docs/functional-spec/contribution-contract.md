@@ -1,8 +1,8 @@
 # FS-contribution-contract: Test and metadata contribution contract
 
 A contribution is one test project plus the metadata it justifies, delivered as
-a single pull request. This contract defines what a reviewer — human or
-automated (§forge/FS-automated-pr-review) — may block on. It binds every
+a single pull request. This contract defines what a reviewer — a maintainer,
+or Forge's audit before the push (§forge/FS-local-branch-review) — may block on. It binds every
 contribution equally, whether a human wrote it or Forge generated it, so that
 each shipped metadata entry stays justified by a test that would fail without
 it (§GOAL-tested-metadata) and coverage grows without weakening what already
@@ -15,8 +15,8 @@ content is normative in §FS-repository-functional-spec.5.1. This contract does
 not restate those rules. It adds only what review needs on top of them: the
 strength of each rule, the contribution-shape limits that can be checked
 algorithmically, the coverage gates, the enumerated ways a contribution can
-cheat, and what a reviewer must do about each of them. Review skills and review
-automation implement this contract and must not contradict it.
+cheat, and what a reviewer must do about each of them. Review automation
+implements this contract and must not contradict it.
 
 ## 1. Rule strength
 
@@ -222,7 +222,7 @@ A review is not finished when it has a verdict. Every review ends in exactly
 one disposition, chosen by the first case below that applies. The ladder exists
 because a generated contribution has no author waiting to answer a review: the
 automation that opened the pull request has moved on, so a finding left on it
-stalls the queue instead of resolving it (§forge/FS-automated-pr-review).
+stalls the queue instead of resolving it (§forge/FS-published-pr-review).
 Whoever reviews is the party that acts.
 
 The dispositions are approve, repair, close, and escalate. Approval means every

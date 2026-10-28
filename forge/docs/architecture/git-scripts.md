@@ -17,7 +17,7 @@ the local Forge process receives the publisher App credentials.
 Chunked dynamic-access runs identify each part before the push
 (§AR-chunked-linking). Local finalization runs after workflow generation and
 the verification required by §FS-local-ci-equivalent-verification, never during
-the strategy loop.
+exploration.
 
 ## AR-pr-eligibility: PR eligibility boundary
 
@@ -63,6 +63,15 @@ descriptor. Shared repository edits are allowed only when local verification
 (§FS-local-ci-equivalent-verification) proved them necessary, and those paths
 must be listed in descriptor verification evidence for maintainer review.
 
+A `forge-metadata` run and the review of its published pull request decide the
+file set with one resolver: it admits exactly what
+§root/FS-contribution-contract.2 admits for the coordinate — the version's own
+files, an allowed-Docker-image file whose image the test lists, routed owner
+metadata in the contract's added-only shape, and the new directories that move a
+version off a shared suite. The scope gate, every checkpoint, publication, and
+the check of a review fix all ask it, so an edit outside the set fails the scope
+gate as a fix request and is never reverted silently.
+
 ## AR-publication-descriptor: Durable publication descriptor
 
 Local finalization writes schema version `1` to
@@ -92,9 +101,10 @@ The descriptor contains data, never GitHub instructions:
   reference and publication metrics, local verification evidence, optional
   post-generation intervention, and Forge revision evidence;
 - typed flags for chunking, final-chunk state, and human-intervention evidence;
-- the authoritative pre-push review verdict as its own object
-  (§FS-local-branch-review). It carries `approved`, or `rejected` with the
-  required `human-intervention` or `close` action, plus the review comment,
+- optionally, a pre-push review verdict as its own object, which a
+  `forge-metadata` run never writes because its review is the local audit
+  before the push (§FS-local-branch-review). It carries `approved`, or `rejected` with
+  the required `human-intervention` or `close` action, plus the review comment,
   finding, fix note, model and session provenance, and changed-path evidence;
 - typed follow-up facts for deferred dynamic-access coverage or a tested-version
   split, each carrying the number of the issue Forge already opened locally, so
@@ -125,8 +135,8 @@ body it publishes come from the shared non-mutating renderer
 (§AR-pr-preview-builders), never from a second rendering path.
 
 Strict validation exposes no synthetic review check. The descriptor itself is
-the exact-head decision record consumed later by the authenticated Forge
-PR-review process (§FS-automated-pr-review).
+the exact-head record of what the run verified before the push
+(§FS-local-ci-equivalent-verification).
 
 Its push trigger is scoped to the descriptor path, which excludes ordinary
 repair pushes. A force-pushed rebase can still match that path when GitHub's
@@ -283,7 +293,7 @@ workflow is metadata-first and does not produce agent token metrics, so its body
 omits them. It reports the previous and new library-coverage percentages, a
 stats diff between the previous and new coordinate, a severe-metadata-drop note
 when the new version's metadata shrank suspiciously, and the local
-CI-equivalent verification section (§AR-forge-driver-queues.4).
+CI-equivalent verification section (§AR-forge-workflow-pipeline.5).
 
 ### Not-for-native-image
 
@@ -383,9 +393,11 @@ readable during migration.
 
 ## AR-not-for-native-image-publication: Not-for-native-image publication
 
-The `not-for-native-image` route handles artifacts that the
-`library-new-request` driver judged not to be GraalVM Native Image targets
-(§AR-forge-drivers). Local finalization stages the marker
+The `not-for-native-image` route handles artifacts judged not to be GraalVM
+Native Image targets. A `forge-metadata` run no longer makes that judgment: the
+library preparation preflight that made it was retired
+(§AR-forge-workflow-pipeline.9), so only an existing descriptor that names the
+route still reaches this publisher path. Local finalization stages the marker
 `metadata/<group>/<artifact>/index.json`, its publication stats path, and the
 descriptor, then runs the same verification and push boundary as other routes.
 

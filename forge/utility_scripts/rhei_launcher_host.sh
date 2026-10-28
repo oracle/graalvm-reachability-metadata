@@ -21,7 +21,10 @@ version_at_least() {
 }
 
 # Usage: require_rhei_launcher_host WORKFLOW FORGE_DIR REPO_ROOT FAMILY EXECUTABLE MODEL [PROVIDER]
-# FAMILY is a Forge agent backend (pi, claude-code, ...); PROVIDER only applies to pi and opencode.
+#        [SETUP_FAMILY SETUP_EXECUTABLE SETUP_MODEL]
+# FAMILY is a Forge agent backend (pi, claude-code); PROVIDER only applies to pi. The optional
+# setup triple checks a second agent, the forge-metadata setup agent
+# (§FS-forge-agent-runtime-selection).
 # Exits the caller when gh, python3, or rhei is missing, gh is too old to read
 # --json projectItems, or the coverage-mode host gate fails.
 require_rhei_launcher_host() {
@@ -32,7 +35,11 @@ require_rhei_launcher_host() {
     local executable="$5"
     local model="$6"
     local provider="${7:-}"
+    local setup_family="${8:-}"
+    local setup_executable="${9:-}"
+    local setup_model="${10:-}"
     local provider_arguments=()
+    local setup_arguments=()
     local min_gh_version="2.39.0"
     local gh_version_output gh_version
 
@@ -64,6 +71,8 @@ require_rhei_launcher_host() {
     fi
 
     [[ -z "$provider" ]] || provider_arguments=(--analysis-provider "$provider")
+    [[ -z "$setup_family" ]] || setup_arguments=(--setup-agent "$setup_executable"
+        --setup-family "$setup_family" --setup-model "$setup_model")
     printf 'Validating %s host requirements.\n' "$workflow"
     python3 "$forge_dir/utility_scripts/host_requirements.py" \
         --forge-dir "$forge_dir" \
@@ -72,5 +81,6 @@ require_rhei_launcher_host() {
         --analysis-agent "$executable" \
         --analysis-family "$family" \
         --analysis-model "$model" \
-        "${provider_arguments[@]}"
+        "${provider_arguments[@]}" \
+        "${setup_arguments[@]}"
 }

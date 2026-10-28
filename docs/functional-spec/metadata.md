@@ -121,7 +121,12 @@ gate rerun after a successful relocation.
 ## 3. Provenance
 
 No file here is hand-trusted: each metadata entry is justified by a test in the
-`tests/` suite (§FS-tests, §GOAL-tested-metadata) and is added or updated only
+`tests/` suite (§FS-tests, §GOAL-tested-metadata) and is added or updated
 through the harness authoring tasks (§AR-test-harness.5) by a human contributor
-or by Forge (§forge/FS-forge-functional-spec). Coverage grows without weakening
-what already ships (§GOAL-protect-shipped-metadata).
+or by Forge (§forge/FS-forge-functional-spec). The one exception is an entry the
+test contract lets a run add by hand: the exact registration `nativeTest` still
+reports missing after `generateMetadata` has run, or a reporter-requested need
+generation missed, each with a `typeReached` condition inside the
+`allowed-packages` and justified by the test that fails without it
+(§FS-test-contract.2.7). Coverage grows without weakening what already ships
+(§GOAL-protect-shipped-metadata).
