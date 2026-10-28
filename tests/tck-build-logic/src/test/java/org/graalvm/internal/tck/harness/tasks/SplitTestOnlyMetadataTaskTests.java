@@ -30,6 +30,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SplitTestOnlyMetadataTaskTests {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final String LAMBDA_SHIPPED_METADATA = "metadata/com.example/lib/1.0.0/reachability-metadata.json";
+    private static final String LAMBDA_TEST_METADATA =
+            "tests/src/com.example/lib/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json";
 
     @TempDir
     Path tempDir;
@@ -128,6 +131,33 @@ class SplitTestOnlyMetadataTaskTests {
         assertThat(testOnlyMetadata.get("reflection"))
                 .extracting(entry -> entry.get("type").asText())
                 .containsExactly("io_grpc.grpc_auth.GrpcAuthTest$Fixture");
+    }
+
+    @Test
+    void movesLambdaDeclaredInTestClass() throws IOException {
+        JsonNode lambdaEntry = splitLambdaMetadata("com_example.lib.LibTest", List.of("com.example.Loader"));
+
+        assertThat(readJson(LAMBDA_SHIPPED_METADATA).has("reflection")).isFalse();
+        assertThat(readJson(LAMBDA_TEST_METADATA).get("reflection")).containsExactly(lambdaEntry);
+    }
+
+    @Test
+    void keepsLibraryLambdaWithLibraryInterfaces() throws IOException {
+        JsonNode lambdaEntry = splitLambdaMetadata("com.example.Library", List.of("com.example.Loader"));
+
+        assertThat(readJson(LAMBDA_SHIPPED_METADATA).get("reflection")).containsExactly(lambdaEntry);
+        assertThat(tempDir.resolve(LAMBDA_TEST_METADATA)).doesNotExist();
+    }
+
+    @Test
+    void movesLambdaImplementingTestInterface() throws IOException {
+        JsonNode lambdaEntry = splitLambdaMetadata(
+                "com.example.Library",
+                List.of("com.example.Loader", "com_example.lib.LibTest$Callback")
+        );
+
+        assertThat(readJson(LAMBDA_SHIPPED_METADATA).has("reflection")).isFalse();
+        assertThat(readJson(LAMBDA_TEST_METADATA).get("reflection")).containsExactly(lambdaEntry);
     }
 
     @Test
@@ -308,6 +338,53 @@ class SplitTestOnlyMetadataTaskTests {
                 .get();
         task.setCoordinatesOverride(List.of(coordinate));
         task.run();
+    }
+
+    /// Writes a `com.example:lib:1.0.0` project whose only metadata entry is a lambda gated on a
+    /// library type, splits it, and returns that entry.
+    private JsonNode splitLambdaMetadata(String declaringClass, List<String> interfaces) throws IOException {
+        writeSource(
+                "tests/src/com.example/lib/1.0.0/src/test/java/com_example/lib/LibTest.java",
+                """
+                package com_example.lib;
+
+                import org.junit.jupiter.api.Test;
+
+                public class LibTest {
+                    @Test
+                    void exercisesLibrary() {
+                    }
+
+                    interface Callback {
+                    }
+                }
+                """
+        );
+        writeIndex("com.example", "lib", "1.0.0", List.of("1.0.0"), List.of("com.example"));
+        String lambdaEntry = """
+                {
+                  "condition": {
+                    "typeReached": "com.example.Library"
+                  },
+                  "type": {
+                    "lambda": {
+                      "declaringClass": "%s",
+                      "interfaces": %s
+                    }
+                  }
+                }
+                """.formatted(declaringClass, toJson(interfaces));
+        writeJson(
+                LAMBDA_SHIPPED_METADATA,
+                """
+                {
+                  "reflection": [%s]
+                }
+                """.formatted(lambdaEntry)
+        );
+
+        runSplitTask("com.example:lib:1.0.0");
+        return OBJECT_MAPPER.readTree(lambdaEntry);
     }
 
     private RecordingRouteForeignMetadataTask runRouteTask(String coordinate, String ownerCoordinate) throws IOException {

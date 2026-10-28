@@ -231,6 +231,10 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
             return referencesAnyTestPackage(typeNode.asText(), testPackages);
         }
         if (typeNode.isObject()) {
+            JsonNode lambdaNode = typeNode.get("lambda");
+            if (lambdaNode != null) {
+                return lambdaReferencesTestPackage(lambdaNode, testPackages);
+            }
             JsonNode proxyNode = typeNode.get("proxy");
             if (!(proxyNode instanceof ArrayNode proxyArray) || proxyArray.isEmpty()) {
                 return false;
@@ -245,6 +249,25 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
                 }
             }
             return any;
+        }
+        return false;
+    }
+
+    /// A lambda is test-only when it is declared in a test class or implements a test-package
+    /// interface (§FS-metadata.2).
+    private boolean lambdaReferencesTestPackage(JsonNode lambdaNode, Set<String> testPackages) {
+        JsonNode declaringClass = lambdaNode.get("declaringClass");
+        if (declaringClass == null || !declaringClass.isTextual()
+                || !(lambdaNode.get("interfaces") instanceof ArrayNode interfaces)) {
+            throw new IllegalArgumentException("Lambda type needs a declaringClass and interfaces: " + lambdaNode);
+        }
+        if (referencesAnyTestPackage(declaringClass.asText(), testPackages)) {
+            return true;
+        }
+        for (JsonNode lambdaInterface : interfaces) {
+            if (referencesAnyTestPackage(lambdaInterface.asText(), testPackages)) {
+                return true;
+            }
         }
         return false;
     }
