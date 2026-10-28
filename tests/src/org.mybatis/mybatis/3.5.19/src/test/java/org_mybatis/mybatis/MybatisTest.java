@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MybatisTest {
+public class MybatisTest {
     @Test
     void retrievesDataFromH2() throws Exception {
         UnpooledDataSource dataSource = new UnpooledDataSource(

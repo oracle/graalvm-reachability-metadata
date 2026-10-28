@@ -1,0 +1,30 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_mybatis.mybatis;
+
+import java.io.DataInputStream;
+import java.io.InputStream;
+
+import org.apache.ibatis.javassist.LoaderClassPath;
+import org.apache.ibatis.javassist.bytecode.ClassFile;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class LoaderClassPathTest {
+    @Test
+    void locatesAndReadsClassBytecodeFromExistingLoader() throws Exception {
+        LoaderClassPath path = new LoaderClassPath(getClass().getClassLoader());
+        String name = "org.apache.ibatis.mapping.Environment";
+        assertNotNull(path.find(name));
+        try (InputStream stream = path.openClassfile(name);
+                DataInputStream input = new DataInputStream(stream)) {
+            assertEquals(name, new ClassFile(input).getName());
+        }
+    }
+}
