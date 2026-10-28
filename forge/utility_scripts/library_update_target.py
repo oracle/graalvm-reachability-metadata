@@ -25,6 +25,7 @@ from utility_scripts.logged_command import run_logged_command
 from utility_scripts.metadata_index import (
     MATCH_NEW_VERSION,
     LibraryUpdateTarget,
+    is_newer_parseable_metadata_version,
     is_newer_than_latest_metadata_version,
     load_index_entries,
     resolve_library_update_target,
@@ -168,7 +169,12 @@ def _tested_versions_for_split_entry(
         baseline_entry: dict[str, Any],
         requested_version: str,
 ) -> list[str]:
-    """Return tested versions that should move to the newly split metadata entry."""
+    """Return tested versions that should move to the newly split metadata entry.
+
+    Only the requested version leaves a newer baseline. §FS-library-update-tested-version-split.3
+    """
+    if is_newer_parseable_metadata_version(str(baseline_entry["metadata-version"]), requested_version):
+        return [requested_version]
     tested_versions = baseline_entry.get("tested-versions")
     moved_versions: list[str] = []
     if isinstance(tested_versions, list):
@@ -279,7 +285,7 @@ def clone_library_update_support(
             if isinstance(tested_versions, list):
                 entry_copy["tested-versions"] = [
                     version for version in tested_versions
-                    if not _version_is_at_or_after(str(version), requested_version)
+                    if str(version) not in moved_tested_versions
                 ]
         updated_entries.append(entry_copy)
     new_entry = _new_index_entry_from_baseline(
