@@ -54,6 +54,9 @@ class Brief:
 TYPE_REACHED: re.Pattern[str] = re.compile(r"^TypeReached: (\S+)", re.MULTILINE)
 OUTSIDE_ALLOWED: re.Pattern[str] = re.compile(r"doesn't belong to any of the specified packages")
 RECONDITION: str = "Condition the entry on a type in the allowed packages that is reached before the access"
+# Each Native Image build prints a banner of progress, statistics, recommendations, and artifacts.
+BANNER_START: re.Pattern[str] = re.compile(r"^GraalVM Native Image: Generating '")
+BANNER_END: re.Pattern[str] = re.compile(r"^(Finished generating '.+' in|Failed generating '.+' after) ")
 
 BRIEFS: tuple[Brief, ...] = (
     Brief("test compilation error",
@@ -61,7 +64,10 @@ BRIEFS: tuple[Brief, ...] = (
                      r"Compilation failed|^e: ", re.MULTILINE),
           "Move the tests to the API this version has, keeping what each asserts.", (), True),
     Brief("missing registration",
-          re.compile(r"Missing\w*RegistrationError|MissingReflectionRegistration|MissingResourceRegistration"),
+          # A lookup that fails in Native Image's own frames is a missing registration too.
+          re.compile(r"Missing\w*RegistrationError|MissingReflectionRegistration|MissingResourceRegistration|"
+                     r"java\.lang\.(ClassNotFound|NoSuchMethod|NoSuchField)Exception\b.*\n(.*\n){0,2}"
+                     r".*(com\.oracle\.svm\.|\(DynamicHub\.java)"),
           "Add the entry the error names to the shipped metadata, with a `typeReached` condition in the "
           "allowed packages.", ("test",)),
     # The error names a JDK superclass or lookup, not the entry (§root/FS-test-contract.2.7).
@@ -117,16 +123,38 @@ def metadata_check_briefs(output: str, packages: set[str]) -> list[str]:
     return [f"condition outside the allowed packages: {RECONDITION}; `routeForeignMetadata` already ran."]
 
 
+def outside_banner(output: str) -> str:
+    """The output without its Native Image build banners, which report no error.
+
+    A tail may start inside a banner, so the lines before a first end with no start are banner.
+    A banner that never closes is kept: the build stopped there and may hold its error.
+    """
+    lines: list[str] = output.splitlines()
+    kept: list[str] = []
+    opened: int | None = 0
+    for index, line in enumerate(lines):
+        if BANNER_START.match(line):
+            kept += lines[opened:index] if opened is not None else []
+            opened = index
+        elif BANNER_END.match(line) and opened is not None:
+            opened = None
+        elif opened is None:
+            kept.append(line)
+    return "\n".join(kept + (lines[opened:] if opened is not None else []))
+
+
 def briefs_for(failure: Failure, packages: set[str]) -> list[str]:
     """One brief per recognized error in a command's output, or the default."""
     if failure.brief is not None:
         return [failure.brief]
     task: str = task_name(failure.command)
-    found: list[str] = metadata_check_briefs(failure.output, packages) if task == "checkMetadataFiles" else []
+    # A brief names an error in the output; the build banner is none. §AR-forge-workflow-prompts.5
+    output: str = outside_banner(failure.output)
+    found: list[str] = metadata_check_briefs(output, packages) if task == "checkMetadataFiles" else []
     for brief in BRIEFS:
         if brief.commands and task not in brief.commands:
             continue
-        if not brief.pattern.search(failure.output):
+        if not brief.pattern.search(output):
             continue
         if brief.exclusive:
             return [f"{brief.error}: {brief.text}"]
