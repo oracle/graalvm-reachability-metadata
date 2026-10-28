@@ -11,6 +11,7 @@ import json
 import os
 import subprocess
 import unittest
+from typing import Any
 
 from support import COORDINATE, PREVIOUS, FakeRepository, working_directory
 
@@ -28,6 +29,11 @@ def prepare_arguments(setup_agent: str = SETUP_AGENT, worker_agent: str = WORKER
     return ["prepare", "--issue-number", "7", "--setup-agent", setup_agent, "--worker-agent", worker_agent,
             "--bulk-min-classes", "5", "--bulk-passes", "3", "--class-attempts", "3", "--defer-classes", "15",
             "--explore-passes", passes, "--repo-checkout", "../../repo", "--worktree-root", "../worktrees"]
+
+
+def jackson(entries: list[dict[str, Any]]) -> str:
+    """An index as the repository's Jackson pretty-printer writes it, `"key" : value`."""
+    return json.dumps(entries, indent=2, separators=(",", " : ")) + "\n"
 
 
 class PrepareTest(unittest.TestCase):
@@ -73,7 +79,23 @@ class PrepareTest(unittest.TestCase):
                                                                "CodecTest.java"))))
         with open(state.path(state.index_path), encoding="utf-8") as handle:
             versions = [entry["metadata-version"] for entry in json.load(handle)]
-        self.assertEqual(["1.5.0", "2.0.0"], versions)
+        self.assertEqual(["2.0.0", "1.5.0"], versions)
+
+    def test_a_newer_version_takes_latest_and_the_latest_only_fields_first(self) -> None:
+        self.fake.supported_library()
+        base: dict[str, Any] = {"latest": True, "auto-update": True, "high-priority": True,
+                                **FakeRepository.index_entry("1.5.0", ("1.5.0",))}
+        self.fake.write("metadata/org.example/lib/index.json", jackson([base]))
+        self.fake.commit("opt lib into the compatibility automation")
+        self.fake.issue("fails-java-run")
+        self.assertEqual(OK, self.prepare())
+        state = load(self.fake.workspace)
+        added: dict[str, Any] = {**base, "metadata-version": "2.0.0", "tested-versions": ["2.0.0"]}
+        kept: dict[str, Any] = {key: value for key, value in base.items()
+                                if key not in ("latest", "auto-update", "high-priority")}
+        with open(state.path(state.index_path), encoding="utf-8") as handle:
+            # As `addLibraryAsLatestMetadataIndexJson` writes it, so `validateIndexFiles` passes.
+            self.assertEqual(jackson([added, kept]), handle.read())
 
     def test_a_tested_version_is_measured_against_its_metadata_version(self) -> None:
         self.fake.supported_library(tested_versions=("1.5.0", "1.5.1"))

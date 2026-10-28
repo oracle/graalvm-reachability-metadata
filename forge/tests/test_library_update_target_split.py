@@ -39,6 +39,27 @@ def _write_file(path: str, content: str = "") -> None:
         file.write(content)
 
 
+def _jackson(entries: list[dict]) -> str:
+    """An index as the repository's Jackson pretty-printer writes it, `"key" : value`."""
+    return json.dumps(entries, indent=2, separators=(",", " : ")) + "\n"
+
+
+def _write_supported_version(repo_path: str, version: str) -> None:
+    _write_file(
+        os.path.join(repo_path, "metadata", "org.example", "demo", version, "reachability-metadata.json"),
+        '{"reflection":[{"type":"org.example.Demo"}]}\n',
+    )
+    _write_file(
+        os.path.join(repo_path, "tests", "src", "org.example", "demo", version, "build.gradle"),
+        f"implementation 'org.example:demo:{version}'\n",
+    )
+
+
+def _read_index(repo_path: str) -> str:
+    with open(os.path.join(repo_path, "metadata", "org.example", "demo", "index.json"), encoding="utf-8") as file:
+        return file.read()
+
+
 class LibraryUpdateTargetSplitTests(unittest.TestCase):
     def test_new_version_clones_closest_same_major_minor_support(self) -> None:
         with tempfile.TemporaryDirectory() as repo:
@@ -407,6 +428,49 @@ class LibraryUpdateTargetSplitTests(unittest.TestCase):
             new_entry = [entry for entry in entries if entry.get("metadata-version") == "12.5.0"][0]
             self.assertEqual(baseline_entry["tested-versions"], ["12.3.0", "12.4.0"])
             self.assertEqual(new_entry["tested-versions"], ["12.5.0", "12.6.0", "12.6.1"])
+
+    def test_newer_version_is_written_first_with_the_latest_only_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            latest = {
+                "latest": True,
+                "auto-update": True,
+                "high-priority": True,
+                "metadata-version": "1.0.0",
+                "source-code-url": "https://example.test/demo-$version$-sources.jar",
+                "tested-versions": ["1.0.0", "1.1.0"],
+                "allowed-packages": ["org.example"],
+            }
+            older = {"metadata-version": "0.9.0", "tested-versions": ["0.9.0"], "allowed-packages": ["org.example"]}
+            _write_file(os.path.join(repo, "metadata", "org.example", "demo", "index.json"), _jackson([latest, older]))
+            _write_supported_version(repo, "1.0.0")
+
+            prepare_library_update_target(repo, "org.example", "demo", "2.0.0")
+
+            # What `addLibraryAsLatestMetadataIndexJson` writes: the new entry first, carrying
+            # `latest` and its latest-only fields, and every other entry in its own formatting.
+            added = {**latest, "metadata-version": "2.0.0", "tested-versions": ["2.0.0"]}
+            demoted = {key: value for key, value in latest.items()
+                       if key not in ("latest", "auto-update", "high-priority")}
+            self.assertEqual(_jackson([added, demoted, older]), _read_index(repo))
+
+    def test_older_version_lands_after_latest_without_the_latest_only_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            latest = {
+                "latest": True,
+                "auto-update": True,
+                "metadata-version": "2.0.0",
+                "tested-versions": ["2.0.0"],
+                "allowed-packages": ["org.example"],
+            }
+            older = {"metadata-version": "1.0.0", "tested-versions": ["1.0.0"], "allowed-packages": ["org.example"]}
+            _write_file(os.path.join(repo, "metadata", "org.example", "demo", "index.json"), _jackson([latest, older]))
+            _write_supported_version(repo, "1.0.0")
+
+            prepare_library_update_target(repo, "org.example", "demo", "1.1.0")
+
+            # What `addLibraryMetadataIndexJson` writes: right after the untouched latest entry.
+            added = {**older, "metadata-version": "1.1.0", "tested-versions": ["1.1.0"]}
+            self.assertEqual(_jackson([latest, added, older]), _read_index(repo))
 
     def test_scaffold_failure_reports_target_coordinate(self) -> None:
         with tempfile.TemporaryDirectory() as repo:
