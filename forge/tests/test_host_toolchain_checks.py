@@ -13,8 +13,10 @@ from unittest.mock import Mock, patch
 from utility_scripts.host_probes import (
     parse_gradle_version,
     parse_grype_version,
+    parse_rhei_version,
 )
 from utility_scripts.host_requirements import COVERAGE_REQUIREMENTS, HostRequirements, QueueRequirements
+from utility_scripts.host_toolchain_checks import REQUIRED_RHEI_VERSION
 
 ISSUE_AND_REVIEW = QueueRequirements(issue_work=True, review_work=True)
 
@@ -42,6 +44,9 @@ class HostToolchainChecksTests(unittest.TestCase):
     def test_grype_version_parsing(self) -> None:
         self.assertEqual("0.104.0", parse_grype_version("Application: grype\nVersion: 0.104.0\n"))
         self.assertEqual("0.104.0", parse_grype_version("Version: v0.104.0\n"))
+        self.assertEqual("0.6.1", parse_rhei_version("rhei 0.6.1\n"))
+        self.assertEqual("0.6.2-dev", parse_rhei_version("rhei 0.6.2-dev\n"))
+        self.assertIsNone(parse_rhei_version("command not found\n"))
         self.assertEqual("9.1.0", parse_gradle_version("\nWelcome to Gradle 9.1.0!\n\nGradle 9.1.0\n"))
 
     def test_only_selected_agent_executables_are_required(self) -> None:
@@ -55,6 +60,7 @@ class HostToolchainChecksTests(unittest.TestCase):
         )
         with patch.object(host_requirements, "_check_tool") as check_tool, \
                 patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_rhei"), \
                 patch.object(host_requirements, "_check_gradle_wrapper"):
             host_requirements._check_tools()
 
@@ -71,6 +77,7 @@ class HostToolchainChecksTests(unittest.TestCase):
         with patch.object(host_requirements, "_selected_agent_authentication", return_value=(True, "ok")) as login, \
                 patch.object(host_requirements, "_check_tool") as check_tool, \
                 patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_rhei"), \
                 patch.object(host_requirements, "_check_gradle_wrapper"):
             host_requirements._check_selected_agents()
             host_requirements._check_tools()
@@ -105,6 +112,30 @@ class HostToolchainChecksTests(unittest.TestCase):
             {"analysis role authentication": "PASS", "setup role": "SKIP", "review role": "SKIP"},
             {result.name: result.status for result in host_requirements.results},
         )
+
+    @patch("utility_scripts.host_toolchain_checks.resolve_executable", return_value="/usr/bin/rhei")
+    @patch("utility_scripts.host_toolchain_checks.run_command")
+    def test_rhei_must_be_the_pinned_release_in_every_mode(self, command: Mock, _resolve: Mock) -> None:
+        for requirements in (ISSUE_AND_REVIEW, COVERAGE_REQUIREMENTS):
+            for output, passed in ((f"rhei {REQUIRED_RHEI_VERSION}\n", True), ("rhei 0.6.2-dev\n", False)):
+                command.return_value = subprocess.CompletedProcess(["rhei", "--version"], 0, output, "")
+                host_requirements = forge_launcher_host(requirements)
+
+                host_requirements._check_rhei()
+
+                result = host_requirements.results[-1]
+                self.assertEqual(("rhei", True, passed), (result.name, result.required, result.passed))
+                self.assertIn(f"required={REQUIRED_RHEI_VERSION}", result.detail)
+
+    @patch("utility_scripts.host_toolchain_checks.resolve_executable", return_value=None)
+    def test_missing_rhei_names_the_pinned_release(self, _resolve: Mock) -> None:
+        host_requirements = forge_launcher_host(COVERAGE_REQUIREMENTS)
+
+        host_requirements._check_rhei()
+
+        result = host_requirements.results[-1]
+        self.assertFalse(result.passed)
+        self.assertIn(f"rhei {REQUIRED_RHEI_VERSION}", result.remediation)
 
     @patch("utility_scripts.host_toolchain_checks.resolve_executable", return_value="/usr/bin/docker")
     @patch("utility_scripts.host_toolchain_checks.run_command")

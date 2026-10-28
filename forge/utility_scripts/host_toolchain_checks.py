@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Installed-tooling checks: required executables, grype, the Gradle wrapper, selected agent backends, and Docker."""
+"""Installed-tooling checks: required executables, grype, rhei, the Gradle wrapper, selected agent backends, and Docker."""
 
 from __future__ import annotations
 
@@ -16,12 +16,15 @@ from utility_scripts.host_probes import (
     first_output_line,
     parse_gradle_version,
     parse_grype_version,
+    parse_rhei_version,
     resolve_executable,
     resolve_gradle_state_root,
     run_command,
 )
 
 REQUIRED_GRYPE_VERSION = "0.104.0"
+# The release whose plan language the Rhei templates use (§FS-forge-host-requirements).
+REQUIRED_RHEI_VERSION = "0.6.1"
 
 
 class ToolchainChecks:
@@ -60,6 +63,7 @@ class ToolchainChecks:
             self._check_tool(name, command, required, version_args)
 
         self._check_grype()
+        self._check_rhei()
         self._check_gradle_wrapper(any_work)
 
     def _check_grype(self) -> None:
@@ -87,6 +91,27 @@ class ToolchainChecks:
             result.returncode == 0 and installed == REQUIRED_GRYPE_VERSION,
             f"path={resolved}; current={installed or '<unresolved>'}; required={REQUIRED_GRYPE_VERSION}",
             "Install grype 0.104.0 and ensure that version is first on PATH.",
+        )
+
+    def _check_rhei(self) -> None:
+        resolved = resolve_executable("rhei")
+        install_hint = (
+            f"Install rhei {REQUIRED_RHEI_VERSION} from "
+            f"https://github.com/agent-grounds/rhei/releases/tag/v{REQUIRED_RHEI_VERSION} "
+            "and ensure that version is first on PATH."
+        )
+        if resolved is None:
+            self._add("tool", "rhei", True, False, f"current=missing; required={REQUIRED_RHEI_VERSION}", install_hint)
+            return
+        result = run_command([resolved, "--version"], self.environment)
+        installed = parse_rhei_version(f"{result.stdout}\n{result.stderr}")
+        self._add(
+            "tool",
+            "rhei",
+            True,
+            result.returncode == 0 and installed == REQUIRED_RHEI_VERSION,
+            f"path={resolved}; current={installed or '<unresolved>'}; required={REQUIRED_RHEI_VERSION}",
+            install_hint,
         )
 
     def _check_gradle_wrapper(self, required: bool) -> None:
