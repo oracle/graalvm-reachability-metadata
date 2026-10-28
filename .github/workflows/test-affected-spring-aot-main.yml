@@ -129,5 +129,5 @@ jobs:
         run: exit 0
 
       - name: "Some tests failed"
-        if: needs.test-affected-spring-aot.result == 'failure'
+        if: needs.test-affected-spring-aot.result != 'success' && needs.discover-impacted-tests.outputs.relevant-files-changed != 'false' && needs.discover-impacted-tests.outputs.none-found != 'true'
         run: exit 1
