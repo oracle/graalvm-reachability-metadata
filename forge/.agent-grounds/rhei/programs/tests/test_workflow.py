@@ -145,6 +145,7 @@ class WorkflowTest(unittest.TestCase):
         descriptor = read_json(self.state.path(os.path.join("stats", "org.example", "lib", "2.0.0",
                                                             "forge-publication.json")))
         self.assertEqual(("library-new-request", "pi"), (descriptor["task_type"], descriptor["metrics"]["agent"]))
+        self.assertGreater(descriptor["metrics"]["summary"]["generated_loc"], 0)
 
     def test_fails_label_repairs_then_skips_a_met_goal(self) -> None:
         self.fake.supported_library()

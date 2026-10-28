@@ -37,6 +37,7 @@ from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustRe
 from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_measurements import (
     collect_version_coverage_metrics,
+    count_generated_loc,
     count_metadata_entries,
     count_test_only_metadata_entries,
     load_library_stats_snapshot,
@@ -46,6 +47,7 @@ from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.local_ci_verification import CommandRecord, FixupRecord, LocalCIVerificationResult
 from utility_scripts.metrics_writer import append_execution_metrics
 from utility_scripts.run_metrics_payloads import build_run_metrics_dict
+from utility_scripts.source_context import resolve_test_source_layout
 from utility_scripts.token_costs import calc_model_session_cost
 
 import explore
@@ -161,6 +163,8 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
         cost_usd=calc_model_session_cost(model.rsplit("/", 1)[-1], usage.input, usage.cached, usage.output),
         lines_covered=lines_covered,
         coverage_percent=coverage_percent,
+        generated_loc=count_generated_loc(resolve_test_source_layout(
+            state.worktree, state.coordinate, state.path(state.test_dir)).source_root) if measured else 0,
         total_entries=count_metadata_entries(state.worktree, state.group, state.artifact, state.version) if measured else 0,
         test_only_metadata_entries=count_test_only_metadata_entries(
             state.worktree, state.group, state.artifact, state.version) if measured else 0,
