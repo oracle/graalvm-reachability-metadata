@@ -11,7 +11,20 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
     testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+    testImplementation 'org.springframework:spring-webmvc'
+    testImplementation 'org.springframework.hateoas:spring-hateoas'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'com.google.code.gson:gson'
+    testImplementation 'jakarta.servlet:jakarta.servlet-api'
+    // Exercise the initializer's supported compatibility path for Flyway before 7.
+    testImplementation('org.flywaydb:flyway-core') {
+        version { strictly '6.5.7' }
+    }
+    testImplementation('com.h2database:h2') {
+        version { strictly '1.4.200' }
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation "org.springframework.boot:spring-boot:$libraryVersion"
     testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
