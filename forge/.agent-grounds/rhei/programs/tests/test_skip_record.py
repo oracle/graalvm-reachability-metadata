@@ -64,7 +64,7 @@ class SkipRecordTest(unittest.TestCase):
         entries: list[dict[str, Any]] = self.index()
         for entry in entries:
             entry.update(URLS)
-        entries[-1]["skipped-versions"] = [{"version": "2.0.0", "reason": REASON}]
+        entries[0]["skipped-versions"] = [{"version": "2.0.0", "reason": REASON}]
         with open(state.path(state.index_path), "w", encoding="utf-8") as handle:
             json.dump(entries, handle, indent=2)
 
@@ -113,7 +113,7 @@ class SkipRecordTest(unittest.TestCase):
         self.setup_verdict()
 
         self.repaired()
-        entry: dict[str, Any] = self.index()[-1]
+        entry: dict[str, Any] = self.index()[0]
         self.assertNotIn("skipped-versions", entry)
         self.assertEqual(URLS["source-code-url"], entry["source-code-url"])
         self.assertFalse(self.state.skip_recorded)
@@ -128,7 +128,7 @@ class SkipRecordTest(unittest.TestCase):
         state: RunState = self.state
         self.assertFalse(state.skip_recorded)
         self.assertTrue(os.path.isdir(state.path(state.test_dir)))
-        entry: dict[str, Any] = self.index()[-1]
+        entry: dict[str, Any] = self.index()[0]
         self.assertNotIn("skipped-versions", entry)
         self.assertIn("2.0.0", entry["tested-versions"])
         self.assertEqual(URLS["source-code-url"], entry["source-code-url"])

@@ -13,7 +13,6 @@ baseline is scaffolded instead.
 """
 
 import copy
-import json
 import os
 import re
 import shutil
@@ -21,6 +20,7 @@ from typing import Any
 
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.library_update_alias_split import LATEST_ONLY_FIELDS, write_index_entries
 from utility_scripts.logged_command import run_logged_command
 from utility_scripts.metadata_index import (
     MATCH_NEW_VERSION,
@@ -143,8 +143,9 @@ def _new_index_entry_from_baseline(
         baseline_entry: dict[str, Any],
         requested_version: str,
         tested_versions: list[str] | None = None,
-        mark_latest: bool = True,
+        latest_fields: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """The requested version's entry, led by `latest_fields` when it becomes the latest entry."""
     old_versions = {
         str(value)
         for value in [
@@ -156,16 +157,11 @@ def _new_index_entry_from_baseline(
     }
     new_entry = copy.deepcopy(baseline_entry)
     new_entry = _replace_version_in_value(new_entry, old_versions, requested_version)
-    if mark_latest:
-        new_entry["latest"] = True
-    else:
-        new_entry.pop("latest", None)
+    for field in ("latest", *LATEST_ONLY_FIELDS, "test-version", "default-for", "skipped-versions"):
+        new_entry.pop(field, None)
     new_entry["metadata-version"] = requested_version
-    new_entry.pop("test-version", None)
-    new_entry.pop("default-for", None)
-    new_entry.pop("skipped-versions", None)
     new_entry["tested-versions"] = tested_versions or [requested_version]
-    return new_entry
+    return {**(latest_fields or {}), **new_entry}
 
 
 def _tested_versions_for_split_entry(
@@ -187,12 +183,14 @@ def _tested_versions_for_split_entry(
     ]
 
 
-def _write_index_entries(repo_path: str, group: str, artifact: str, entries: list[dict[str, Any]]) -> None:
-    index_path = os.path.join(repo_path, "metadata", group, artifact, "index.json")
-    os.makedirs(os.path.dirname(index_path), exist_ok=True)
-    with open(index_path, "w", encoding="utf-8") as index_file:
-        json.dump(entries, index_file, indent=2)
-        index_file.write("\n")
+def _new_entry_position(entries: list[dict[str, Any]], latest: bool) -> int:
+    """Where the TCK index tasks insert a new entry: first as `latest`, else right after `latest`."""
+    if latest:
+        return 0
+    for position, entry in enumerate(entries):
+        if entry.get("latest") is True:
+            return position + 1
+    return 0
 
 
 def _run_scaffold(repo_path: str, coordinate: str) -> None:
@@ -261,22 +259,21 @@ def clone_library_update_support(
         baseline_metadata_version == requested_version
         and baseline_entry.get("latest") is True
     ) or is_newer_than_latest_metadata_version(repo_path, group, artifact, requested_version)
+    # The entry is placed and written as the TCK index tasks write it, and the
+    # latest-only fields move with `latest` (§AR-forge-workflow-pipeline.4, §root/FS-metadata.1).
+    latest_fields: dict[str, Any] = {"latest": True} if mark_new_entry_latest else {}
+    position: int | None = None
     updated_entries: list[dict[str, Any]] = []
-    new_entry = _new_index_entry_from_baseline(
-        baseline_entry,
-        requested_version,
-        new_entry_tested_versions,
-        mark_latest=mark_new_entry_latest,
-    )
     for entry in entries:
         if not isinstance(entry, dict):
             continue
         entry_copy = copy.deepcopy(entry)
         if mark_new_entry_latest and entry_copy.get("latest") is True:
-            entry_copy.pop("latest", None)
+            entry_copy.pop("latest")
+            latest_fields.update({field: entry_copy.pop(field) for field in LATEST_ONLY_FIELDS if field in entry_copy})
         if entry_copy.get("metadata-version") == baseline_metadata_version:
             if baseline_metadata_version == requested_version:
-                updated_entries.append(new_entry)
+                position = len(updated_entries)
                 continue
             tested_versions = entry_copy.get("tested-versions")
             if isinstance(tested_versions, list):
@@ -285,9 +282,16 @@ def clone_library_update_support(
                     if not _version_is_at_or_after(str(version), requested_version)
                 ]
         updated_entries.append(entry_copy)
-    if baseline_metadata_version != requested_version:
-        updated_entries.append(new_entry)
-    _write_index_entries(repo_path, group, artifact, updated_entries)
+    new_entry = _new_index_entry_from_baseline(
+        baseline_entry,
+        requested_version,
+        new_entry_tested_versions,
+        latest_fields,
+    )
+    if position is None:
+        position = _new_entry_position(updated_entries, mark_new_entry_latest)
+    updated_entries.insert(position, new_entry)
+    write_index_entries(repo_path, group, artifact, updated_entries)
 
 
 def prepare_library_update_target(
