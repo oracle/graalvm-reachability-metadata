@@ -12,8 +12,10 @@ from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
 
+from utility_scripts.host_graalvm_checks import ISSUE_GRAALVM_ENV_VARS
 from utility_scripts.host_requirements import (
     COVERAGE_REQUIREMENTS,
+    AgentRequirement,
     HostRequirements,
     QueueRequirements,
     main,
@@ -78,6 +80,39 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertTrue(COVERAGE_REQUIREMENTS.any_work)
         self.assertFalse(COVERAGE_REQUIREMENTS.issue_work)
         self.assertTrue(COVERAGE_REQUIREMENTS.github_work)
+
+    def test_queues_mode_selects_issue_work_review_and_the_review_agent(self) -> None:
+        with patch.dict(os.environ, {}, clear=True), \
+                patch.object(HostRequirements, "run", autospec=True, return_value=True) as run:
+            result = main([
+                "--forge-dir", "/repo/forge", "--mode", "queues",
+                "--review-agent", "claude", "--review-model", "opus",
+            ])
+
+        self.assertEqual(0, result)
+        host_requirements = run.call_args.args[0]
+        self.assertTrue(host_requirements.requirements.issue_work)
+        self.assertTrue(host_requirements.requirements.review_work)
+        self.assertEqual(AgentRequirement("claude-code", "claude", "opus"), host_requirements.review_role)
+
+    def test_issue_work_report_names_every_java_lane_and_the_review_agent(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=QueueRequirements(issue_work=True, review_work=True),
+            review_model="opus",
+        )
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            host_requirements._print_manifest()
+
+        output = stdout.getvalue()
+        self.assertIn("Modes: issue work=enabled, coverage work=disabled, PR review=enabled", output)
+        for variable in ISSUE_GRAALVM_ENV_VARS:
+            self.assertIn(f"  - {variable}=", output)
+        self.assertIn("  - Review agent: claude model=opus", output)
+        self.assertNotIn("Test agent", output)
 
     def test_successful_host_report_is_quiet_unless_verbose(self) -> None:
         def run_host(verbose: bool) -> str:

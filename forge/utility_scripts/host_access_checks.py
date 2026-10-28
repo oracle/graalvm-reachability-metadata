@@ -69,10 +69,10 @@ class AccessChecks:
             selected_state_roots[self.setup_family] = resolve_agent_state_root(
                 self.setup_family, self.environment
             )
-            for requirement in self.test_requirements:
-                selected_state_roots[requirement.family] = resolve_agent_state_root(
-                    requirement.family, self.environment
-                )
+        if self.review_role is not None:
+            selected_state_roots[self.review_role.family] = resolve_agent_state_root(
+                self.review_role.family, self.environment
+            )
         paths.extend(
             (f"{backend} state", path, any_work, "")
             for backend, path in selected_state_roots.items()
@@ -111,14 +111,8 @@ class AccessChecks:
                 self.setup_model,
                 self.setup_provider,
             ), True))
-            hosts.extend(
-                (agent_provider_host(
-                    requirement.family,
-                    requirement.model,
-                    requirement.provider,
-                ), True)
-                for requirement in self.test_requirements
-            )
+        if self.review_role is not None:
+            hosts.append((agent_provider_host(self.review_role.family, self.review_role.model), True))
         required_by_host: dict[str, bool] = {}
         for host, required in hosts:
             required_by_host[host] = required_by_host.get(host, False) or required

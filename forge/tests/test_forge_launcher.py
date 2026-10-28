@@ -235,6 +235,35 @@ class ShellLauncherTest(unittest.TestCase):
         )
         self.assertEqual(2, completed.returncode)
 
+    def test_host_check_selects_issue_work_and_every_agent_the_launcher_runs(self) -> None:
+        with tempfile.TemporaryDirectory() as bin_dir:
+            recorded: str = os.path.join(bin_dir, "host-arguments.txt")
+            fakes: dict[str, str] = {
+                "gh": "#!/usr/bin/env bash\nprintf 'gh version 2.39.0 (fake)\\n'\n",
+                "python3": f"#!/usr/bin/env bash\nprintf '%s\\n' \"$@\" > {recorded}\nexit 1\n",
+                "rhei": "#!/usr/bin/env bash\nexit 0\n",
+            }
+            for name, source in fakes.items():
+                with open(os.path.join(bin_dir, name), "w", encoding="utf-8") as handle:
+                    handle.write(source)
+                os.chmod(os.path.join(bin_dir, name), 0o755)
+            completed = subprocess.run(
+                [os.path.join(FORGE_DIR, "run-forge.sh"), "--worker-agent", "pi[high]:openai-codex/gpt-6.1-sol"],
+                env={**os.environ, "PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}"},
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            )
+            with open(recorded, encoding="utf-8") as handle:
+                arguments: list[str] = handle.read().splitlines()
+        self.assertEqual(1, completed.returncode, completed.stderr)
+        self.assertEqual(os.path.join(FORGE_DIR, "utility_scripts", "host_requirements.py"), arguments[0])
+        self.assertEqual("queues", arguments[arguments.index("--mode") + 1])
+        self.assertEqual([
+            "--analysis-agent", "pi", "--analysis-family", "pi", "--analysis-model", "gpt-6.1-sol",
+            "--analysis-provider", "openai-codex",
+            "--setup-agent", "claude", "--setup-family", "claude-code", "--setup-model", "sonnet",
+            "--review-agent", "claude", "--review-model", "opus",
+        ], arguments[arguments.index("--analysis-agent"):])
+
     def test_review_agent_must_be_claude_code(self) -> None:
         completed = subprocess.run(
             [os.path.join(FORGE_DIR, "run-forge.sh"), "--review-agent", "pi[high]:openai-codex/gpt-5.6-luna"],

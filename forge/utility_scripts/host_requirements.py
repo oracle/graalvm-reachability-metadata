@@ -21,10 +21,7 @@ from ai_workflows.agents.agent_runtime import (  # noqa: E402
     SUPPORTED_AGENT_BACKENDS,
     get_analysis_agent,
     get_setup_agent,
-    resolve_provider,
     default_agent_for_backend,
-    default_model_for_backend,
-    normalize_backend_name,
 )
 from utility_scripts.host_access_checks import (  # noqa: E402
     AccessChecks,
@@ -128,8 +125,6 @@ class AgentRequirement:
     family: str
     agent: str
     model: str
-    strategy_name: str | None = None
-    provider: str | None = None
 
 
 class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
@@ -154,6 +149,8 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
             setup_family: str | None = None,
             setup_model: str | None = None,
             setup_provider: str | None = None,
+            review_agent: str | None = None,
+            review_model: str | None = None,
     ) -> None:
         self.forge_dir = os.path.abspath(forge_dir)
         self.forge_repo_dir = os.path.dirname(self.forge_dir)
@@ -188,13 +185,16 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
         self.setup_agent = setup_selection.agent
         self.setup_model = setup_selection.model
         self.setup_provider = setup_selection.provider
-        # Strategies are fixed per label, so the test role is the default worker backend.
+        # A run has no test role: the worker, checked as analysis, writes the tests. The review
+        # is always a Claude Code target and exists only where a launcher names its model.
         # §FS-forge-agent-runtime-selection
-        self.test_requirements = self._resolve_test_requirements([(None, {})])
-        primary_test_requirement = self.test_requirements[0]
-        self.test_family = primary_test_requirement.family
-        self.test_agent = primary_test_requirement.agent
-        self.test_model = primary_test_requirement.model
+        self.review_requirement: AgentRequirement | None = (
+            AgentRequirement(
+                "claude-code", review_agent or default_agent_for_backend("claude-code"), review_model
+            )
+            if review_model
+            else None
+        )
         self.requirements = (
             resolve_queue_requirements(self.environment)
             if requirements is None
@@ -204,36 +204,10 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
         self.graalvm_versions = GraalVMVersions(None, None, None)
         self.results: list[CheckResult] = []
 
-    def _resolve_test_requirements(
-            self,
-            configured_strategies: Sequence[tuple[str | None, dict]],
-    ) -> list[AgentRequirement]:
-        """Resolve and deduplicate the test roles the enabled strategies declare.
-
-        The bundle is the only source: nothing outside it retargets the test role
-        (§FS-forge-agent-runtime-selection), so the probe checks the backend that
-        the named strategy will actually run.
-        """
-        requirements: list[AgentRequirement] = []
-        seen: set[tuple[str, str, str, str | None]] = set()
-        for strategy_name, strategy in configured_strategies:
-            family = normalize_backend_name(
-                strategy.get("agent-family") or strategy.get("agent") or "pi"
-            )
-            agent = strategy.get("agent-command") or default_agent_for_backend(family)
-            model = strategy.get("model") or default_model_for_backend(family)
-            provider = resolve_provider(family, strategy.get("provider"))
-            key = (family, str(agent), str(model), provider)
-            if key in seen:
-                continue
-            seen.add(key)
-            requirements.append(
-                AgentRequirement(
-                    family, str(agent), str(model),
-                    strategy_name=strategy_name, provider=provider,
-                )
-            )
-        return requirements
+    @property
+    def review_role(self) -> AgentRequirement | None:
+        """Return the review agent when this run reviews pull requests, else None."""
+        return self.review_requirement if self.requirements.review_work else None
 
     @property
     def version_check_advisory(self) -> bool:
@@ -308,17 +282,11 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
                 f"  - Setup agent: {self.setup_agent} model={self.setup_model}, "
                 "network access for URL discovery"
             )
-        if self.requirements.issue_work:
-            for test_requirement in self.test_requirements:
-                strategy_suffix = (
-                    f" strategy={test_requirement.strategy_name}"
-                    if test_requirement.strategy_name
-                    else ""
-                )
-                print(
-                    f"  - Test agent: {test_requirement.agent} "
-                    f"model={test_requirement.model}{strategy_suffix}, offline repository tools"
-                )
+        if self.review_role is not None:
+            print(
+                f"  - Review agent: {self.review_role.agent} model={self.review_role.model}, "
+                "network access for the GraalVM history"
+            )
         if self.requirements.build_work:
             print("  - Docker: access to the Docker daemon and configured image registries")
         print("[forge-host] Required environment:")
@@ -493,6 +461,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--setup-family", choices=SUPPORTED_AGENT_BACKENDS, default=None)
     parser.add_argument("--setup-model", default=None)
     parser.add_argument("--setup-provider", default=None)
+    parser.add_argument("--review-agent", default=None, help="Claude Code executable of the PR review.")
+    parser.add_argument("--review-model", default=None, help="Model of the PR review; selects the role.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Print the complete host report.")
     parser.add_argument(
         "--graalvm-version-check",
@@ -526,6 +496,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             setup_family=args.setup_family,
             setup_model=args.setup_model,
             setup_provider=args.setup_provider,
+            review_agent=args.review_agent,
+            review_model=args.review_model,
         )
     except ValueError as exc:
         print(f"ERROR: Forge host requirement configuration is invalid: {exc}", file=sys.stderr)

@@ -14,7 +14,28 @@ from utility_scripts.host_probes import (
     parse_gradle_version,
     parse_grype_version,
 )
-from utility_scripts.host_requirements import HostRequirements, QueueRequirements
+from utility_scripts.host_requirements import COVERAGE_REQUIREMENTS, HostRequirements, QueueRequirements
+
+ISSUE_AND_REVIEW = QueueRequirements(issue_work=True, review_work=True)
+
+
+def forge_launcher_host(requirements: QueueRequirements) -> HostRequirements:
+    """Select the worker, setup, and review agents the way `run-forge.sh` passes them."""
+    return HostRequirements(
+        "/repo/forge",
+        "python3",
+        {},
+        requirements=requirements,
+        analysis_agent="pi",
+        analysis_family="pi",
+        analysis_model="gpt-6.1-sol",
+        analysis_provider="openai-codex",
+        setup_agent="claude",
+        setup_family="claude-code",
+        setup_model="sonnet",
+        review_agent="claude",
+        review_model="opus",
+    )
 
 
 class HostToolchainChecksTests(unittest.TestCase):
@@ -43,6 +64,47 @@ class HostToolchainChecksTests(unittest.TestCase):
             if call_args.args[0].startswith("Agent backend") and call_args.args[2]
         ]
         self.assertEqual(required_agent_checks, ["claude"])
+
+    @patch("utility_scripts.host_toolchain_checks.resolve_executable", return_value="/usr/bin/agent")
+    def test_issue_work_checks_the_worker_setup_and_review_agents_only(self, _resolve: Mock) -> None:
+        host_requirements = forge_launcher_host(ISSUE_AND_REVIEW)
+        with patch.object(host_requirements, "_selected_agent_authentication", return_value=(True, "ok")) as login, \
+                patch.object(host_requirements, "_check_tool") as check_tool, \
+                patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_gradle_wrapper"):
+            host_requirements._check_selected_agents()
+            host_requirements._check_tools()
+
+        self.assertEqual(
+            ["analysis role authentication", "setup role authentication", "review role authentication"],
+            [result.name for result in host_requirements.results],
+        )
+        self.assertTrue(all(result.status == "PASS" for result in host_requirements.results))
+        self.assertEqual(
+            [
+                ("pi", "pi", "gpt-6.1-sol", "openai-codex"),
+                ("claude-code", "claude", "sonnet", None),
+                ("claude-code", "claude", "opus", None),
+            ],
+            [call_args.args for call_args in login.call_args_list],
+        )
+        required_agent_checks = [
+            call_args.args[1]
+            for call_args in check_tool.call_args_list
+            if call_args.args[0].startswith("Agent backend") and call_args.args[2]
+        ]
+        self.assertEqual(["pi", "claude"], required_agent_checks)
+
+    @patch("utility_scripts.host_toolchain_checks.resolve_executable", return_value="/usr/bin/agent")
+    def test_coverage_work_skips_the_setup_and_review_agents(self, _resolve: Mock) -> None:
+        host_requirements = forge_launcher_host(COVERAGE_REQUIREMENTS)
+        with patch.object(host_requirements, "_selected_agent_authentication", return_value=(True, "ok")):
+            host_requirements._check_selected_agents()
+
+        self.assertEqual(
+            {"analysis role authentication": "PASS", "setup role": "SKIP", "review role": "SKIP"},
+            {result.name: result.status for result in host_requirements.results},
+        )
 
     @patch("utility_scripts.host_toolchain_checks.resolve_executable", return_value="/usr/bin/docker")
     @patch("utility_scripts.host_toolchain_checks.run_command")

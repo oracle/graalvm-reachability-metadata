@@ -38,11 +38,9 @@ class ToolchainChecks:
             setup_command = (self.setup_family, self.setup_agent)
             if setup_command not in selected_agent_commands:
                 selected_agent_commands.append(setup_command)
-        if self.requirements.issue_work:
-            for requirement in self.test_requirements:
-                test_command = (requirement.family, requirement.agent)
-                if test_command not in selected_agent_commands:
-                    selected_agent_commands.append(test_command)
+        review = self.review_role
+        if review is not None and (review.family, review.agent) not in selected_agent_commands:
+            selected_agent_commands.append((review.family, review.agent))
         tool_specs: tuple[tuple[str, str, bool, tuple[str, ...]], ...] = (
             ("Python", self.python_bin, True, ("--version",)),
             ("git", "git", True, ("--version",)),
@@ -177,21 +175,11 @@ class ToolchainChecks:
                 self.setup_provider,
             ),
         ]
-        roles.extend(
-            (
-                (
-                    f"test ({requirement.strategy_name})"
-                    if requirement.strategy_name
-                    else "test"
-                ),
-                requirement.family,
-                requirement.agent,
-                requirement.model,
-                self.requirements.issue_work,
-                requirement.provider,
+        review = self.review_requirement
+        if review is not None:
+            roles.append(
+                ("review", review.family, review.agent, review.model, self.requirements.review_work, None)
             )
-            for requirement in self.test_requirements
-        )
         for role, backend, agent, model, required, provider in roles:
             if not required:
                 self._add("agent", f"{role} role", False, None, "not required by this run")
