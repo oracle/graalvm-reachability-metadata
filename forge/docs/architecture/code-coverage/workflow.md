@@ -138,7 +138,7 @@ contributes to the same two as every other test: entries a consumer needs go
 to `metadata/<group>/<artifact>/<version>/reachability-metadata.json`, and
 entries that exist only for the tests go to the test project's
 `src/test/resources/META-INF/native-image/reachability-metadata.json`
-(§root/FS-metadata.2, §root/FS-repository-functional-spec.5.1). The single-file
+(§root/FS-metadata.2.1, §root/FS-repository-functional-spec.5.1). The single-file
 `reachability-metadata.json` format is the only one `native-image` loads here;
 the legacy split-config files — `reflect-config.json`, `jni-config.json`,
 `resource-config.json`, `serialization-config.json`, `proxy-config.json` — are
@@ -691,7 +691,7 @@ The Rhei template should decompose the workflow into these phases:
    for the same reason: metadata the
    extension suite needed only for its own helper types must not reach a
    consumer, and deciding that by hand is exactly what the task automates
-   (§root/FS-metadata.2, §root/AR-test-harness.5). The step also fails the
+   (§root/FS-metadata.2.1, §root/AR-test-harness.5). The step also fails the
    run when a legacy split-config file survives anywhere under the coordinate's
    test tree, which is how a tracing-agent artifact left behind by metadata
    preparation is caught before publication rather than in review (§AR-code-coverage-improvement.2).

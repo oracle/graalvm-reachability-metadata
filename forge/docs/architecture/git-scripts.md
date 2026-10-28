@@ -238,7 +238,7 @@ not a commit-range addition of the new directory. When the new suite exists but
 the previous suite does not, the body says that no baseline suite is available;
 reviewers use the PR's **Files changed** tab for the complete diff.
 
-### New library support and coverage improvement
+### 1. New library support and coverage improvement
 
 Trusted templates `library-new-request` and `library-update-request` both report
 the agent
@@ -260,7 +260,7 @@ remains the explore goal and the coverage gate's baseline
 New-library PRs link with `Fixes:` for a single-PR run and `Refs:` for non-final
 chunked dynamic-access chunks (§AR-chunked-linking).
 
-### Java fail-fix (javac and java-run)
+### 2. Java fail-fix (javac and java-run)
 
 Trusted templates `fixes-javac-fail` and `fixes-java-run-fail` share one body
 shape:
@@ -292,7 +292,7 @@ Neither template blocks on a dynamic-access category regression between the
 previous and repaired version; coverage trade-offs are settled in review
 (§AR-java-fail-fix-workflow).
 
-### Native-image run-fix
+### 3. Native-image run-fix
 
 The trusted `fixes-native-image-run-fail` template represents a workflow that
 workflow is metadata-first and does not produce agent token metrics, so its body
@@ -301,7 +301,7 @@ stats diff between the previous and new coordinate, a severe-metadata-drop note
 when the new version's metadata shrank suspiciously, and the local
 CI-equivalent verification section (§AR-forge-workflow-pipeline.5).
 
-### Not-for-native-image
+### 4. Not-for-native-image
 
 The trusted `not-for-native-image` template follows
 §AR-not-for-native-image-publication.
@@ -309,7 +309,7 @@ No generation happened, so the body has no generation metrics. It states why the
 artifact is not a Native Image target, includes any replacement guidance, the
 `Fixes:` issue reference, and the local CI-equivalent verification section.
 
-### Code coverage improvement
+### 5. Code coverage improvement
 
 The trusted `code-coverage-improvement` template represents the JaCoCo workflow
 in §AR-code-coverage-improvement, which measures method coverage rather than
@@ -330,7 +330,7 @@ that block names nothing that produced the run. The publication ID trailer and
 the model in the head branch identify it instead. The descriptor still records
 the Forge revision, so the evidence survives even though the body drops it.
 
-### Real-use tests
+### 6. Real-use tests
 
 The trusted `real-use-tests` template follows §AR-real-use-tests-publication
 and reads only the run's stats record. Its title names the coordinate. Its body

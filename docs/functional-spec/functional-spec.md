@@ -105,7 +105,7 @@ The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic G
 
 Each Forge run records per-library metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json` and, when invoked through a publication script or the benchmark result publisher, pushes a verified branch that trusted GitHub Actions turn into a PR ready for review. See [forge/README.md](../../forge/README.md) and [forge/docs/functional-spec/functional-spec.md](../../forge/docs/functional-spec/functional-spec.md).
 
-#### GitHub label contract
+#### 4.6.1 GitHub label contract
 
 GitHub labels are part of the public triage surface for issues and PRs. Pipeline labels are exact and case-sensitive.
 
@@ -161,7 +161,7 @@ sequenceDiagram
     NI-->>App: native image with reflection / JNI /<br/>resources / serialization / proxies registered
 ```
 
-#### Interface contract
+#### 4.7.1 Interface contract
 
 native-build-tools consumes this repository through exactly four observable elements. Changes to any of them are breaking changes for plugin users.
 
@@ -397,7 +397,7 @@ maintainer. This section is the behavioral contract for
 that workflow; the run-size limits are stated in §FS-repository-functional-spec.5.3
 and the recording precondition in §FS-repository-functional-spec.5.2, and every
 label it applies is defined in the GitHub label contract
-(§FS-repository-functional-spec.4.6).
+(§FS-repository-functional-spec.4.6.1).
 
 #### 1. Discovery of newer versions
 
@@ -483,7 +483,7 @@ a full release of a base version is now handled, older pre-release issues
 (`alpha`, `beta`, `rc`, milestone, etc.) for the same library are closed as
 `not planned`, so the queue reflects only versions that still need attention.
 
-## References
+## 10. References
 
 - [README.md](../../README.md) — quick lookup, contributing entry points.
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — how to add or update metadata.

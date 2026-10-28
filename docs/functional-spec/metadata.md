@@ -39,7 +39,7 @@ would otherwise miss, and must never change how a consumer's code runs
   `library-and-framework-list`) used for offline validation; also packaged into
   the release.
 
-### `not-for-native-image` index entries
+### 1.1 `not-for-native-image` index entries
 
 An `index.json` may instead be a single-element array whose one entry sets
 `not-for-native-image: true`, with a required `reason` and an optional
@@ -95,7 +95,7 @@ corrected one. Tracked in
 [#11294](https://github.com/oracle/graalvm-reachability-metadata/issues/11294)
 and [#11287](https://github.com/oracle/graalvm-reachability-metadata/issues/11287).
 
-### Test-only metadata is kept out of the shipped metadata
+### 2.1 Test-only metadata is kept out of the shipped metadata
 
 Tests routinely need reachability metadata for their *own* helper types — the
 test classes, fixtures, and resources that exercise the library — but those
@@ -109,7 +109,7 @@ test project's
 The shipped metadata therefore stays free of test-only types, while the test
 native image still loads everything it needs from its own resources.
 
-### Foreign conditions are routed to supported owners
+### 2.2 Foreign conditions are routed to supported owners
 
 Native tracing can observe an entry whose `condition.typeReached` belongs to a
 different artifact than the coordinate under test. After `checkMetadataFiles`
