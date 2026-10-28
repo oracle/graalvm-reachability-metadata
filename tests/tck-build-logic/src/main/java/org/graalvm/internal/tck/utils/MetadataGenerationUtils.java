@@ -113,6 +113,13 @@ public final class MetadataGenerationUtils {
         return roots;
     }
 
+    /// The `fromJar` package list: the coordinate entry's `allowed-packages` followed by the
+    /// package roots of the resolved library JAR (§AR-test-harness.5).
+    public static List<String> allowedPackagesFromJar(Project project, ProjectLayout layout, Coordinates coordinates) throws IOException {
+        return MetadataIndexUpdateUtils.mergeWithAllowedPackagesInIndexJson(
+                layout, coordinates, derivePackageRootsFromJar(project, coordinates));
+    }
+
     /**
      * Returns true if the tests build.gradle already contains a native-image agent block.
      */
@@ -123,6 +130,14 @@ public final class MetadataGenerationUtils {
         }
         String buildGradle = Files.readString(buildFilePath, StandardCharsets.UTF_8);
         return Pattern.compile("(?s)\\bagent\\s*\\{").matcher(buildGradle).find();
+    }
+
+    /// Writes `user-code-filter.json` for `packages` and appends the agent block that reads it
+    /// when `build.gradle` has none: the filter step `generateMetadata` and `generateUserCodeFilter`
+    /// share (§AR-test-harness.5).
+    public static void writeUserCodeFilter(Path testsDirectory, List<String> packages) throws IOException {
+        addUserCodeFilterFile(testsDirectory, packages);
+        addAgentConfigBlock(testsDirectory);
     }
 
     /**

@@ -168,6 +168,7 @@ Tasks that create or update metadata, tests, and index entries.
 | `scaffold` | Create the test project and metadata skeleton for a new coordinate from the scaffold templates (§AR-build-infrastructure). |
 | `contribute` | Guided contribution flow for a new coordinate. |
 | `generateMetadata` | Generate metadata for a coordinate (optionally deriving `user-code-filter.json` from the resolved JAR). |
+| `generateUserCodeFilter` | Write what `generateMetadata --agentAllowedPackages=fromJar` writes besides metadata, without compiling or running the tests: `user-code-filter.json` from the entry's existing `allowed-packages`, the resolved JAR's package roots, and the test-source packages; the agent block appended to `build.gradle` when it has none; and the JAR's roots added to the entry's `allowed-packages` (§forge/AR-forge-workflow-pipeline.4.1). |
 | `splitTestOnlyMetadata` | Move test-only metadata into test resources (§FS-repository-functional-spec.5.1, §FS-metadata). |
 | `routeForeignMetadata` | After metadata validation fails, relocate uniquely owned foreign-condition entries to supported artifact/version buckets, validate the affected owners, and regenerate their statistics (§FS-metadata). |
 | `fixTestNativeImageRun` | Regenerate metadata for a new version failing a native-image run. |

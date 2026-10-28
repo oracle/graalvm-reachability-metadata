@@ -19,6 +19,7 @@ import org.graalvm.internal.tck.ScaffoldTask
 import org.graalvm.internal.tck.FixTestNativeImageRun
 import org.graalvm.internal.tck.GrypeTask
 import org.graalvm.internal.tck.GenerateMetadataTask
+import org.graalvm.internal.tck.GenerateUserCodeFilterTask
 import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
@@ -981,6 +982,12 @@ tasks.register("contribute", ContributionTask.class) { task ->
 // gradle generateMetadata -Pcoordinates=<maven-coordinates> [or --coordinates=<maven-coordinates>] --agentAllowedPackages=<comma-separated list of packages|fromJar|->
 tasks.register("generateMetadata", GenerateMetadataTask.class) { task ->
     task.setDescription("Generates metadata based on provided tests.")
+    task.setGroup(METADATA_GROUP)
+}
+
+// gradle generateUserCodeFilter -Pcoordinates=<maven-coordinates>  §AR-test-harness.5
+tasks.register("generateUserCodeFilter", GenerateUserCodeFilterTask.class) { task ->
+    task.setDescription("Writes user-code-filter.json and allowed-packages from the library JAR, without running tests.")
     task.setGroup(METADATA_GROUP)
 }
 
