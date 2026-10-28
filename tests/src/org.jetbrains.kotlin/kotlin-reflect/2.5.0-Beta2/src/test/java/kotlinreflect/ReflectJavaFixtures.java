@@ -13,6 +13,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.annotation.Nonnull;
+import javax.annotation.meta.When;
+
 public final class ReflectJavaFixtures {
     private ReflectJavaFixtures() {
     }
@@ -72,6 +75,28 @@ public final class ReflectJavaFixtures {
     }
 
     public record JavaRecord(@RecordDetail("name-component") String name, int count) {
+    }
+
+    public static final class QualifiedStrings {
+        @Nonnull(when = When.ALWAYS)
+        public String required(@Nonnull(when = When.ALWAYS) String value) {
+            return "required:" + value;
+        }
+
+        @Nonnull(when = When.MAYBE)
+        public String optional(@Nonnull(when = When.MAYBE) String value) {
+            return value;
+        }
+
+        @Nonnull(when = When.NEVER)
+        public String absent() {
+            return null;
+        }
+
+        @Nonnull(when = When.UNKNOWN)
+        public String platform() {
+            return "platform";
+        }
     }
 
     @Inherited
