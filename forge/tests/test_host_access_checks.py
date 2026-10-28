@@ -9,11 +9,12 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from utility_scripts.host_probes import (
     probe_http_200,
     probe_proxied_host,
+    probe_tcp_host,
     resolve_https_proxy,
     run_command,
 )
@@ -327,6 +328,22 @@ class HostAccessChecksTests(unittest.TestCase):
         self.assertFalse(passed)
         self.assertIn("403 Forbidden", detail)
 
+
+    def test_direct_probe_tries_a_failed_connect_once_more(self) -> None:
+        connection = MagicMock()
+        with patch("utility_scripts.host_probes.socket.create_connection",
+                   side_effect=[TimeoutError("timed out"), connection]) as connect:
+            passed, _ = probe_tcp_host("api.anthropic.com", 443)
+
+        self.assertTrue(passed)
+        self.assertEqual(2, connect.call_count)
+
+        with patch("utility_scripts.host_probes.socket.create_connection",
+                   side_effect=[TimeoutError("timed out"), TimeoutError("timed out")]):
+            passed, detail = probe_tcp_host("api.anthropic.com", 443)
+
+        self.assertFalse(passed)
+        self.assertEqual("tcp://api.anthropic.com:443 unreachable: timed out", detail)
 
 if __name__ == "__main__":
     unittest.main()

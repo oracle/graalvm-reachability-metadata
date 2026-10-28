@@ -177,22 +177,32 @@ def resolve_https_proxy(environment: Mapping[str, str], host: str) -> tuple[str,
     return parsed.hostname, parsed.port or 80
 
 
+TCP_PROBE_ATTEMPTS: int = 2
+
+
 def probe_tcp_host(
         host: str,
         port: int,
         timeout: float = 5.0,
         environment: Mapping[str, str] | None = None,
 ) -> tuple[bool, str]:
-    """Test outbound access the way Forge's tools use it: directly, or through the configured proxy."""
+    """Test outbound access the way Forge's tools use it: directly, or through the configured proxy.
+
+    A failed direct connect is tried once more, since one lost connect does not
+    make a host unreachable.
+    """
     values = os.environ if environment is None else environment
     proxy = resolve_https_proxy(values, host)
-    if proxy is None:
+    if proxy is not None:
+        return probe_proxied_host(host, port, proxy, timeout)
+    error: OSError | None = None
+    for _ in range(TCP_PROBE_ATTEMPTS):
         try:
             with socket.create_connection((host, port), timeout=timeout):
                 return True, f"tcp://{host}:{port} reachable"
         except OSError as exc:
-            return False, f"tcp://{host}:{port} unreachable: {exc}"
-    return probe_proxied_host(host, port, proxy, timeout)
+            error = exc
+    return False, f"tcp://{host}:{port} unreachable: {error}"
 
 
 def probe_proxied_host(
