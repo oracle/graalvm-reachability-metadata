@@ -125,9 +125,8 @@ class AuditTest(FinalizedRun):
         self.assertEqual(AGENT_WORK, self.step("audit"))
         request: str = self.read("fix-request.md")
         self.assertIn("Return: 34", request)
-        for command in ("./gradlew test -Pcoordinates=org.example:lib:2.0.0", "./gradlew spotlessCheck",
-                        "./gradlew generateLibraryStats -Pcoordinates=org.example:lib:2.0.0", "gates.py"):
-            self.assertIn(command, request)
+        # Only `test`: finalize's lane is the return visit's (§FS-local-branch-review.2).
+        self.assertIn("## Commands\n- ./gradlew test -Pcoordinates=org.example:lib:2.0.0\n\n", request)
         self.assertIn("## Task\n\nCheck every test and metadata change since `", request)
         self.assertIn("cheating patterns", request)
         self.assertNotIn("## Output", request)
@@ -167,8 +166,11 @@ class AuditTest(FinalizedRun):
         state: RunState = self.state
         self.write(os.path.join(state.test_dir, "src", "test", "java", "org_example", "CodecTest.java"),
                    "package org_example;\npublic class CodecTest {}\n")
+        generated: int = self.gradle_calls("generateMetadata")
         self.assertEqual(OK, self.step("audit"))
-        self.assertEqual((2, 1), (self.gradle_calls("generateLibraryStats"), self.gradle_calls("test")))
+        # `test` and the lane rerun, and nothing regenerates (§FS-local-branch-review.3).
+        self.assertEqual((2, 1, generated), (self.gradle_calls("generateLibraryStats"), self.gradle_calls("test"),
+                                             self.gradle_calls("generateMetadata")))
         self.assertIn("CodecTest.java", self.head_files())
         # A resumed run never audits twice.
         self.assertEqual(OK, self.step("audit"))

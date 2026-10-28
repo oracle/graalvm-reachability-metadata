@@ -379,10 +379,14 @@ it.
 ### 2. The audit is an ordinary fix request
 
 The audit adds no agent and no instruction: it sends the run's one repair agent
-an ordinary fix request. The commands are the native check and the
-finalization lane, the editable files are the coordinate's test project and
-shipped metadata, and the one brief is to check every change against the test
-contract (§root/FS-test-contract.1, §root/FS-test-contract.2,
+an ordinary fix request. Its one command is the coordinate's `test`, never
+`generateMetadata`: regeneration merges fresh agent output into the shipped
+metadata and would undo the audit's metadata edits, such as a `typeReached`
+condition it added to an entry the agent records unconditionally.
+Finalization's checks are not in the request; the return visit runs them
+(§FS-local-branch-review.3). The editable files are the coordinate's test
+project and shipped metadata, and the one brief is to check every change
+against the test contract (§root/FS-test-contract.1, §root/FS-test-contract.2,
 §root/FS-test-contract.3, §root/FS-test-contract.4), the bounds on hand-written
 metadata and native flags (§root/FS-test-contract.2.7), and each cheating
 pattern at the bar §root/FS-contribution-contract.4 sets for it, and fix each
@@ -404,8 +408,9 @@ the audit from rewriting tests that are fine:
 The audit records no verdict and no finding: the agent's report is evidence,
 never a decision (§root/PRCPL-prefer-algorithmic). The tree decides. When the
 audit left the coordinate's paths unchanged, the run publishes. When it changed
-them, the native check and finalization with its gates run again, once: a pass
-publishes, and a failure ends the run in `human-intervention`. A `cannot-fix`
+them, `test` and then finalization with its gates run again, once, with no
+regeneration (§FS-local-branch-review.2): a pass publishes, and a failure ends
+the run in `human-intervention`. A `cannot-fix`
 report ends the run in `human-intervention` as any other fix does
 (§FS-human-intervention-policy).
 
