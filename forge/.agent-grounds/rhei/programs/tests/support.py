@@ -20,6 +20,7 @@ import subprocess
 import sys
 import tempfile
 from typing import Any, Iterator
+from unittest import mock
 
 TESTS: str = os.path.dirname(os.path.abspath(__file__))
 PROGRAMS: str = os.path.dirname(TESTS)
@@ -29,6 +30,7 @@ for path in (TESTS, PROGRAMS, FORGE):
     if path not in sys.path:
         sys.path.insert(0, path)
 
+import prepare  # noqa: E402
 from fake_harness import FAKE_GH, FAKE_GRADLEW  # noqa: E402
 from run_state import ROUTE_NEW, Budgets, RunState  # noqa: E402
 
@@ -100,6 +102,9 @@ class FakeRepository:
         os.makedirs(os.path.dirname(os.path.join(self.repo, script)))
         shutil.copyfile(os.path.join(REPOSITORY, script), os.path.join(self.repo, script))
         shutil.copyfile(os.path.join(REPOSITORY, "ci.json"), os.path.join(self.repo, "ci.json"))
+        # The fake harness has no root build to warm; `prepare` asks for the shared cache all the same.
+        self.shared_cache_patch: Any = mock.patch.object(prepare, "ensure_shared_dependency_cache")
+        self.shared_cache: mock.MagicMock = self.shared_cache_patch.start()
         self.saved_environment: dict[str, str] = dict(os.environ)
         os.environ["PATH"] = bin_dir + os.pathsep + os.environ["PATH"]
         os.environ["FAKE_FORGE_CONTROL"] = self.control_path
@@ -131,6 +136,7 @@ class FakeRepository:
         return home
 
     def close(self) -> None:
+        self.shared_cache_patch.stop()
         os.environ.clear()
         os.environ.update(self.saved_environment)
         shutil.rmtree(self.tmp, ignore_errors=True)

@@ -7,6 +7,8 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import io
 import json
 import os
 import subprocess
@@ -67,6 +69,23 @@ class PrepareTest(unittest.TestCase):
         # An idle daemon of an earlier run would carry its build state into the scaffold.
         self.assertEqual("--stop", calls[0])
         self.assertTrue(calls[1].startswith("scaffold"))
+
+    def test_the_new_worktree_readies_the_shared_dependency_cache(self) -> None:
+        worktrees: list[bool] = []
+        self.fake.shared_cache.side_effect = lambda _repo, worktree: worktrees.append(os.path.isdir(worktree))
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        state = load(self.fake.workspace)
+        # The checkout home is warmed from the new worktree (§FS-forge-run-requirements.4).
+        self.fake.shared_cache.assert_called_once_with(os.path.realpath(self.fake.repo), state.worktree)
+        self.assertEqual([True], worktrees)
+
+    def test_a_shared_cache_failure_is_reported_and_the_run_goes_on(self) -> None:
+        self.fake.shared_cache.side_effect = OSError("No space left on device")
+        self.fake.issue("library-new-request")
+        with contextlib.redirect_stderr(io.StringIO()) as errors:
+            self.assertEqual(OK, self.prepare())
+        self.assertIn("shared Gradle dependency cache was not prepared: No space left on device", errors.getvalue())
 
     def test_update_adds_the_version_beside_the_supported_one(self) -> None:
         self.fake.supported_library()
@@ -186,6 +205,7 @@ class PrepareTest(unittest.TestCase):
         first = load(self.fake.workspace)
         self.assertEqual(OK, self.prepare())
         self.assertEqual(first.checkpoint, load(self.fake.workspace).checkpoint)
+        self.fake.shared_cache.assert_called_once()
 
     def test_a_leftover_run_branch_restarts_from_the_pinned_base(self) -> None:
         self.fake.issue("library-new-request")
