@@ -99,7 +99,7 @@ def write_fix_request(workspace: str, state: RunState, sender: str, failures: li
 
 
 def record_failures(workspace: str, sender: str, failures: list[Failure]) -> None:
-    """Keep the sender and its failures as data for the close-out (§AR-forge-workflow-pipeline.1)."""
+    """Keep the sender and its failures for the close-out (§AR-forge-workflow-pipeline.1)."""
     write_json(runtime_path(workspace, FAILURES), {"sender": sender, "failures": [asdict(f) for f in failures]})
 
 
