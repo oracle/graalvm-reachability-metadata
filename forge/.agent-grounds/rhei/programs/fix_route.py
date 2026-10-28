@@ -26,12 +26,23 @@ CANNOT_FIX_RESULT: str = "cannot-fix"
 REPORT_VISIT: re.Pattern[str] = re.compile(r"fix-(\d+)\.json$")
 
 
+def reports(workspace: str) -> list[tuple[int, str]]:
+    """Every fix report with its visit number: `fix` writes one per request it handles."""
+    paths: list[str] = glob.glob(os.path.join(workspace, RUNTIME_DIR, "reports", "fix-*.json"))
+    return [(int(match.group(1)), path) for path in paths if (match := REPORT_VISIT.search(path)) is not None]
+
+
+def fix_requests(workspace: str) -> int:
+    """The fix requests the worker handled, counted with the cover passes as iterations.
+
+    §AR-forge-workflow-pipeline.4
+    """
+    return len(reports(workspace))
+
+
 def latest_report(workspace: str) -> dict[str, Any]:
     """The report of the most recent `fix` visit, or `{}` when it is missing or unreadable."""
-    reports: list[str] = glob.glob(os.path.join(workspace, RUNTIME_DIR, "reports", "fix-*.json"))
-    numbered: list[tuple[int, str]] = [
-        (int(match.group(1)), path) for path in reports if (match := REPORT_VISIT.search(path)) is not None
-    ]
+    numbered: list[tuple[int, str]] = reports(workspace)
     if not numbered:
         return {}
     try:

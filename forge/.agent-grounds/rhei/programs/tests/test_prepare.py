@@ -97,6 +97,15 @@ class PrepareTest(unittest.TestCase):
             # As `addLibraryAsLatestMetadataIndexJson` writes it, so `validateIndexFiles` passes.
             self.assertEqual(jackson([added, kept]), handle.read())
 
+    def test_an_update_beside_a_tested_version_is_measured_against_its_metadata_version(self) -> None:
+        # The baseline 1.6.0 has no metadata, stats, or tests of its own; its entry 1.5.0 has.
+        self.fake.supported_library(tested_versions=("1.5.0", "1.6.0"))
+        self.fake.issue("fails-java-run")
+        self.assertEqual(OK, self.prepare())
+        state = load(self.fake.workspace)
+        self.assertEqual((ROUTE_REPAIR, PREVIOUS, 2, 6),
+                         (state.route, state.previous_coordinate, state.goal_covered_calls, state.goal_total_calls))
+
     def test_a_tested_version_is_measured_against_its_metadata_version(self) -> None:
         self.fake.supported_library(tested_versions=("1.5.0", "1.5.1"))
         self.fake.issue("fails-javac-compile", title="Fails org.example:lib:1.5.1")
@@ -105,8 +114,9 @@ class PrepareTest(unittest.TestCase):
         self.assertEqual((ROUTE_REPAIR, PREVIOUS, 2, 6),
                          (state.route, state.previous_coordinate, state.goal_covered_calls, state.goal_total_calls))
 
-    def test_a_version_owning_its_metadata_is_measured_against_the_one_before(self) -> None:
-        self.fake.supported_library()
+    def test_a_version_owning_its_metadata_is_measured_against_the_entry_before(self) -> None:
+        # The nearest earlier supported version is 1.6.0, a tested version of the 1.5.0 entry.
+        self.fake.supported_library(tested_versions=("1.5.0", "1.6.0"))
         self.fake.supported_version("2.0.0", covered=5, total=5)
         self.fake.issue("fails-native-image-run")
         self.assertEqual(OK, self.prepare())

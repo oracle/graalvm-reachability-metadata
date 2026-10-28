@@ -312,7 +312,7 @@ def nearest_prior_supported_version(
 ) -> str | None:
     """Return the newest supported version before `version` with usable tests and metadata.
 
-    This is the version a run of an already-listed version is measured against
+    Its entry is the one a run of a version owning its entry is measured against
     (§AR-forge-workflow-pipeline.7); `None` when the index lists nothing earlier.
     """
     prior = [

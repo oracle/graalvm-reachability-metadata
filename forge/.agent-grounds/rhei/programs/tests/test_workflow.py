@@ -147,6 +147,8 @@ class WorkflowTest(unittest.TestCase):
                                                             "forge-publication.json")))
         self.assertEqual(("library-new-request", "pi"), (descriptor["task_type"], descriptor["metrics"]["agent"]))
         self.assertGreater(descriptor["metrics"]["summary"]["generated_loc"], 0)
+        # Three cover passes and two fix requests (§AR-forge-workflow-pipeline.4).
+        self.assertEqual(5, descriptor["metrics"]["summary"]["iterations"])
 
     def test_fails_label_repairs_then_skips_a_met_goal(self) -> None:
         self.fake.supported_library()

@@ -17,6 +17,7 @@ import subprocess
 import unittest
 from typing import Any
 
+from support import PREVIOUS
 from test_audit import FinalizedRun
 
 from exit_codes import AGENT_WORK, OK, RETURN_AUDIT  # noqa: E402
@@ -58,6 +59,21 @@ class PublicationScopeTest(FinalizedRun):
         request: str = self.read("fix-request.md")
         self.assertIn("- diff-scope gate:", request)
         self.assertIn("forge/notes.md", request)
+
+    def test_a_repair_is_published_against_the_metadata_version_with_its_rounds(self) -> None:
+        # The baseline 1.6.0 is a tested version: only its entry 1.5.0 has metadata, stats, and tests.
+        self.repaired("fails-java-run", tested_versions=("1.5.0", "1.6.0"))
+        descriptor: dict[str, Any] = self.published()
+        summary: dict[str, Any] = descriptor["metrics"]["summary"]
+        self.assertEqual(PREVIOUS, descriptor["previous_library"]["coordinates"])
+        self.assertEqual("1.5.0", descriptor["render"]["baseline_stats"]["version"])
+        # The audit's fix request is the only round (§AR-forge-workflow-pipeline.4).
+        self.assertEqual(1, summary["iterations"])
+        self.assertEqual(0, summary["previous_library_metadata_entries"])
+        self.assertIn("previous_library_coverage_percent", summary)
+        metrics: dict[str, dict[str, Any]] = read_json(self.state.path(os.path.join(
+            "stats", "org.example", "lib", "2.0.0", "execution-metrics.json")))
+        self.assertEqual([PREVIOUS], [entry["previous_library"] for entry in metrics.values()])
 
     def test_routed_owner_metadata_is_published(self) -> None:
         self.fake.write(OWNER_INDEX, json.dumps([{"metadata-version": "3.0.0",

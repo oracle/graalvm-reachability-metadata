@@ -69,10 +69,11 @@ class FinalizedRun(unittest.TestCase):
         with open(path, "w", encoding="utf-8") as handle:
             handle.write(text)
 
-    def repaired(self, label: str = "library-new-request", body: str = "") -> None:
+    def repaired(self, label: str = "library-new-request", body: str = "",
+                 tested_versions: tuple[str, ...] = ("1.5.0",)) -> None:
         """Prepare and set up the issue, and let `repair` pass: the run is ready for `finalize`."""
         if label != "library-new-request":
-            self.fake.supported_library()
+            self.fake.supported_library(tested_versions)
         self.fake.issue(label, body=body)
         self.assertEqual(OK, self.step(*prepare_arguments()))
         state: RunState = self.state

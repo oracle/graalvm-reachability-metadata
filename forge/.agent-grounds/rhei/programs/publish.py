@@ -50,6 +50,7 @@ from utility_scripts.run_metrics_payloads import build_run_metrics_dict
 from utility_scripts.source_context import resolve_test_source_layout
 
 import explore
+import fix_route
 import issue
 import run_tokens
 from build_tools import changed_paths, checkpoint, git, head, upstream_remote
@@ -142,8 +143,30 @@ def follow_ups(state: RunState) -> list[dict[str, Any]]:
     }]
 
 
+def previous_metrics(state: RunState) -> dict[str, Any]:
+    """The previous version's entries, coverage, and stats, which the fix bodies compare with.
+
+    §AR-pr-body
+    """
+    if state.skip_recorded or state.previous_coordinate is None:
+        return {}
+    group, artifact, version = state.previous_coordinate.split(":")
+    coverage_percent, _ = collect_version_coverage_metrics(state.worktree, group, artifact, version)
+    return {
+        "previous_library_metadata_entries": count_metadata_entries(state.worktree, group, artifact, version),
+        "previous_library_test_only_metadata_entries": count_test_only_metadata_entries(
+            state.worktree, group, artifact, version),
+        "previous_library_coverage_percent": coverage_percent,
+        "previous_library_stats": load_library_stats_snapshot(state.worktree, group, artifact, version),
+    }
+
+
 def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
-    """The schema-validated per-run record (§FS-forge-run-metrics)."""
+    """The schema-validated per-run record (§FS-forge-run-metrics).
+
+    Its iterations are the worker's rounds, cover passes plus fix requests
+    (§AR-forge-workflow-pipeline.4).
+    """
     usage: run_tokens.Usage = run_tokens.total_usage(workspace)
     agent, model = worker_model(state)
     measured: bool = not state.skip_recorded
@@ -155,7 +178,7 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
         library_version=state.version,
         strategy_name=f"forge-metadata:{state.label}",
         status=status,
-        global_iterations=state.explore.passes,
+        global_iterations=state.explore.passes + fix_route.fix_requests(workspace),
         input_tokens_used=usage.input,
         output_tokens_used=usage.output,
         cached_input_tokens_used=usage.cached,
@@ -175,6 +198,7 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
         agent_name=agent,
         model_name=model,
         stats=load_library_stats_snapshot(state.worktree, state.group, state.artifact, state.version) if measured else None,
+        **previous_metrics(state),
     )
     metrics["timestamp"] = state.started_at
     return metrics
