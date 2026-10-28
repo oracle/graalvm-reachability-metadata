@@ -177,9 +177,9 @@ entries and the tail goes on as above (§FS-unsupportable-version-diagnosis.3).
 
 The dynamic-access call sites depend only on the library JARs, which the
 tracking build preserves whole, so `analyze` lists them once and keeps a copy
-in the workspace; every later correlation passes that copy to
-`generateDynamicAccessCoverageReport` and runs only JaCoCo
-(§root/AR-test-harness.8).
+in the workspace, an empty one when the listing wrote none; every later
+correlation passes that copy to `generateDynamicAccessCoverageReport` and runs
+only JaCoCo (§root/AR-test-harness.8).
 
 ### 4.3 The audit
 
@@ -248,7 +248,7 @@ processed.
 
 | Condition | Mode | Exit |
 | --- | --- | --- |
-| the call sites cannot be listed, because the native test image does not build yet | basic, measured by `javaTest` alone; the cause is printed as an unavailable listing, never as a library without dynamic access | `10` |
+| the listing fails, because the native test image does not build yet | basic, measured by `javaTest` alone; the cause is printed as an unavailable listing, never as a library without dynamic access, whose listing succeeds and writes no call sites | `10` |
 | no dynamic-access calls, new library | basic: tests of the main public API | `10` |
 | no dynamic-access calls, or `uncovered` is 0, or the previous version's coverage is already met | skip, unless the reporter requested metadata, which gets one basic pass | `20` |
 | `fails-*` label and `uncovered` above `defer_classes` | defer: `publish` opens the follow-up library-update issue | `20` |

@@ -180,18 +180,26 @@ def accepted_report(workspace: str) -> DynamicAccessCoverageReport:
 
 
 def list_call_sites(workspace: str, state: RunState) -> bool:
-    """Build the native test image once and keep a copy of its dynamic-access output."""
+    """Build the native test image once and keep a copy of its dynamic-access output.
+
+    Only a failed build is an unavailable listing (§AR-forge-workflow-pipeline.7); one
+    that writes no output lists no calls, kept as an empty copy (§AR-forge-workflow-pipeline.4.2).
+    """
     listed: TaskResult = run_gradle(
         state.worktree, coordinate_task("generateDynamicAccessReport", state.coordinate),
         runtime_path(workspace, "logs", "analyze-generateDynamicAccessReport.log"),
     )
-    output: str = state.path(os.path.join(state.test_dir, "build", "native", "nativeTestCompile", "dynamic-access"))
-    if not listed.ok or not os.path.isdir(output):
+    if not listed.ok:
         print(f"[analyze] the dynamic-access call sites could not be listed:\n{listed.tail}")
         return False
+    output: str = state.path(os.path.join(state.test_dir, "build", "native", "nativeTestCompile", "dynamic-access"))
     copy: str = call_sites_dir(workspace)
     shutil.rmtree(copy, ignore_errors=True)
-    shutil.copytree(output, copy)
+    if os.path.isdir(output):
+        shutil.copytree(output, copy)
+    else:
+        print("[analyze] the listing wrote no call sites: the library has no dynamic-access calls")
+        os.makedirs(copy)
     return True
 
 
