@@ -98,6 +98,11 @@ class RunState:
     # of every non-new route.
     goal_covered_calls: int | None = None
     goal_total_calls: int | None = None
+    # How `prepare` matched the version in the index (§FS-library-update-tested-version-split).
+    update_target: dict[str, Any] | None = None
+    # The coordinate's stats and entry counts as `prepare` left them: the before side of an
+    # update's pull request (§AR-pr-body).
+    before: dict[str, Any] | None = None
     has_reporter_request: bool = False
     # The explicit metadata the reporter asked for (§FS-local-ci-equivalent-verification.1.1).
     requested_metadata: dict[str, list[str]] = field(default_factory=dict)

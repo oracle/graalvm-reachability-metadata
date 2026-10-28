@@ -40,6 +40,7 @@ from utility_scripts.library_measurements import (
     count_generated_loc,
     count_metadata_entries,
     count_test_only_metadata_entries,
+    load_library_baseline,
     load_library_stats_snapshot,
     resolve_metadata_artifact_path,
 )
@@ -55,7 +56,7 @@ import issue
 import run_tokens
 from build_tools import changed_paths, checkpoint, git, head, upstream_remote
 from exit_codes import INFRASTRUCTURE, NOTHING_TO_DO, OK
-from run_state import ROUTE_NEW, RunState, load, runtime_path, save, write_text
+from run_state import ROUTE_NEW, ROUTE_UPDATE, RunState, load, runtime_path, save, write_text
 
 STATUS_SUCCESS: str = "success"
 STATUS_CHUNK_READY: str = "chunk_ready"
@@ -204,11 +205,25 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
     return metrics
 
 
+def baseline(state: RunState) -> dict[str, Any]:
+    """The before side of the body (§AR-pr-body).
+
+    An update compares the version with itself as `prepare` left it; the other
+    routes compare it with the previous version.
+    """
+    if state.route == ROUTE_UPDATE and state.before is not None:
+        return state.before
+    if state.previous_coordinate is None:
+        return {}
+    group, artifact, version = state.previous_coordinate.split(":")
+    return load_library_baseline(state.worktree, group, artifact, version)
+
+
 def render(workspace: str, state: RunState, chunk_summary: dict[str, Any] | None) -> dict[str, Any]:
     """What the trusted publisher renders into the pull request (§AR-pr-body)."""
     measured: bool = not state.skip_recorded
     evidence = load_dynamic_access_metadata_evidence(state.worktree, state.coordinate) if measured else None
-    values: dict[str, Any] = {
+    return {
         "library_stats": load_library_stats_entry(
             state.worktree, state.group, state.artifact, state.version) if measured else None,
         "current_metadata_entries": count_metadata_entries(
@@ -225,13 +240,9 @@ def render(workspace: str, state: RunState, chunk_summary: dict[str, Any] | None
             for state_name, usage in run_tokens.usage_by_state(workspace).items()
         ][:32],
         "worker_model": worker_model(state)[1],
+        "library_update_target": state.update_target,
+        **baseline(state),
     }
-    if state.previous_coordinate is not None:
-        group, artifact, version = state.previous_coordinate.split(":")
-        values["baseline_stats"] = load_library_stats_entry(state.worktree, group, artifact, version)
-        values["baseline_metadata_entries"] = count_metadata_entries(state.worktree, group, artifact, version)
-        values["baseline_test_only_entries"] = count_test_only_metadata_entries(state.worktree, group, artifact, version)
-    return values
 
 
 def verification(state: RunState) -> LocalCIVerificationResult:

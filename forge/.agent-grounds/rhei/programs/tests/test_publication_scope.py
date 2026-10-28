@@ -75,6 +75,17 @@ class PublicationScopeTest(FinalizedRun):
             "stats", "org.example", "lib", "2.0.0", "execution-metrics.json")))
         self.assertEqual([PREVIOUS], [entry["previous_library"] for entry in metrics.values()])
 
+    def test_an_update_of_an_owned_version_is_compared_with_its_pinned_base_state(self) -> None:
+        self.repaired("library-update-request", owns_version=True)
+        descriptor: dict[str, Any] = self.published()
+        render: dict[str, Any] = descriptor["render"]
+        self.assertEqual(PREVIOUS, descriptor["previous_library"]["coordinates"])
+        # The before side is 2.0.0 on the pinned base, not the previous version (§AR-pr-body).
+        self.assertEqual(("2.0.0", 5), (render["baseline_stats"]["version"],
+                                        render["baseline_stats"]["dynamicAccess"]["coveredCalls"]))
+        self.assertEqual(("tested-version", "2.0.0"), (render["library_update_target"]["match_type"],
+                                                       render["library_update_target"]["matched_metadata_version"]))
+
     def test_routed_owner_metadata_is_published(self) -> None:
         self.fake.write(OWNER_INDEX, json.dumps([{"metadata-version": "3.0.0",
                                                   "allowed-packages": ["org.example.owner"]}]))

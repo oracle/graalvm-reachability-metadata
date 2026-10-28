@@ -27,9 +27,11 @@ from utility_scripts.dynamic_access_exhaust_report import (
     find_dynamic_access_exhaust_report_path,
 )
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
+from utility_scripts.library_measurements import load_library_baseline
 from utility_scripts.library_stats import load_library_stats_entry
-from utility_scripts.library_update_target import prepare_library_update_target
+from utility_scripts.library_update_target import library_update_target_summary, prepare_library_update_target
 from utility_scripts.metadata_index import (
+    LibraryUpdateTarget,
     VersionBackfillBaseline,
     is_not_for_native_image,
     nearest_prior_supported_version,
@@ -142,10 +144,15 @@ def add_version(state: RunState, workspace: str) -> int:
         goal: tuple[int, int] | None = previous_coverage(state.worktree, state.previous_coordinate)
         if goal is not None:
             state.goal_covered_calls, state.goal_total_calls = goal
-    prepare_library_update_target(state.worktree, state.group, state.artifact, state.version)
+    target: LibraryUpdateTarget = prepare_library_update_target(state.worktree, state.group, state.artifact,
+                                                                 state.version)
     if not os.path.isdir(state.path(state.test_dir)):
         print(f"ERROR: no test project for {state.coordinate} after adding the version", file=sys.stderr)
         return INFRASTRUCTURE
+    # Before any agent edits (§AR-pr-body): an owned version's pinned-base state, or else
+    # the copy of the entry it was added beside.
+    state.update_target = library_update_target_summary(target)
+    state.before = load_library_baseline(state.worktree, state.group, state.artifact, state.version)
     return OK
 
 

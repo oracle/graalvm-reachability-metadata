@@ -19,7 +19,7 @@ from typing import Any
 
 import yaml
 
-from support import FakeRepository, working_directory
+from support import COORDINATE, FakeRepository, working_directory
 from test_prepare import prepare_arguments
 from test_workflow import URLS
 
@@ -70,10 +70,15 @@ class FinalizedRun(unittest.TestCase):
             handle.write(text)
 
     def repaired(self, label: str = "library-new-request", body: str = "",
-                 tested_versions: tuple[str, ...] = ("1.5.0",)) -> None:
-        """Prepare and set up the issue, and let `repair` pass: the run is ready for `finalize`."""
+                 tested_versions: tuple[str, ...] = ("1.5.0",), owns_version: bool = False) -> None:
+        """Prepare and set up the issue, and let `repair` pass: the run is ready for `finalize`.
+
+        `owns_version` gives the run's version its own index entry, with 5 of 6 calls covered.
+        """
         if label != "library-new-request":
             self.fake.supported_library(tested_versions)
+        if owns_version:
+            self.fake.supported_version(COORDINATE.split(":")[2], covered=5, total=6)
         self.fake.issue(label, body=body)
         self.assertEqual(OK, self.step(*prepare_arguments()))
         state: RunState = self.state
