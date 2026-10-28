@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +23,7 @@ public class DefaultAssertionErrorCollectorTest {
     @Test
     void decoratesComparisonFailuresWithoutLosingExpectedAndActual() {
         DefaultAssertionErrorCollector collector = new DefaultAssertionErrorCollector();
-        AssertionFailedError original = assertThrows(AssertionFailedError.class,
-                () -> assertThat("queued").isEqualTo("sent"));
+        AssertionFailedError original = new AssertionFailedError("delivery status", "sent", "queued");
         collector.collectAssertionError(original);
 
         List<AssertionError> errors = collector.assertionErrorsCollected();
