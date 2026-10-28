@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -50,6 +51,39 @@ public class CursorableLinkedListTest {
 
         assertSame(destination, result);
         assertArrayEquals(new String[]{"queued", "ready", null, "untouched"}, result);
+    }
+
+    @Test
+    void serializationRestoresMutableEntriesAndSharedReferences() throws IOException, ClassNotFoundException {
+        Date firstDeadline = new Date(10000L);
+        Date secondDeadline = new Date(20000L);
+        CursorableLinkedList original = new CursorableLinkedList();
+        original.add(firstDeadline);
+        original.add(secondDeadline);
+        original.add(firstDeadline);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeObject(original);
+        }
+
+        CursorableLinkedList restored;
+        try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            restored = (CursorableLinkedList) input.readObject();
+        }
+
+        assertEquals(Arrays.asList(firstDeadline, secondDeadline, firstDeadline), restored);
+        Date restoredDeadline = (Date) restored.getFirst();
+        assertNotSame(firstDeadline, restoredDeadline);
+        assertNotSame(secondDeadline, restored.get(1));
+        assertSame(restoredDeadline, restored.getLast());
+
+        restoredDeadline.setTime(30000L);
+        assertEquals(new Date(30000L), restored.getFirst());
+        assertEquals(new Date(30000L), restored.getLast());
+        assertEquals(new Date(20000L), restored.get(1));
+        assertEquals(10000L, firstDeadline.getTime());
+        assertSame(firstDeadline, original.getFirst());
+        assertSame(firstDeadline, original.getLast());
     }
 
     @Test
