@@ -29,3 +29,40 @@ until = "indefinite"
 reason = """
 Rhei instantiates one task-plan file per template; the guided and naive task chains must live in this single file for the template to render either arm.
 """
+[[exceptions]]
+path = "forge/docs/architecture/code-coverage/workflow.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+shadows = "hard"
+max_accepted = { value = 1000, unit = "lines" }
+[[exceptions]]
+path = "docs/functional-spec/functional-spec.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 400, unit = "lines" }
+until = "FS-library-version-update-automation and the native-build-tools interface contract (section 4.7) move to documents of their own"
+reason = """
+Section 9 carries a declaration of its own (FS-library-version-update-automation) and section 4.7 the native-build-tools interface contract; each is a separate subject. Moving the declaration to a document of its own changes no ID: only the four `FS-repository-functional-spec.9` citations grund checks are re-pointed. Moving section 4.7 re-points every `FS-repository-functional-spec.4.7` citation. Each move is its own change rather than part of a grund upgrade that only rewrites citations and numbers headings here.
+"""
+[[exceptions]]
+path = "forge/docs/architecture/code-coverage/deep-navigation.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 400, unit = "lines" }
+until = "miss classification (section 3) moves to a document of its own"
+reason = """
+Miss classification (section 3) is the largest section and a subject of its own beside route evidence and ranking; moving it re-points the citations that reach it by section number, so it is not done in a grund upgrade that only writes local section citations in full.
+"""
+[[exceptions]]
+path = "forge/utility_scripts/code_coverage_api_rank.py"
+match = "exact"
+rules = ["source"]
+kind = "deferred"
+max_accepted = { value = 600, unit = "lines" }
+until = "the call-graph algorithms move to a module of their own"
+reason = """
+The generic call-graph algorithms (graph loading, strongly connected components, reachable sets) share the module with the ranking and prompt rendering they serve; extracting them is a refactor with its own tests, not part of a grund upgrade that only writes two docstring citations in full.
+"""

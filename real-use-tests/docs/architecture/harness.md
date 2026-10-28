@@ -68,7 +68,7 @@ The `tests/` resolver is rooted at `tests/src/` and the real-use resolver at
 `real-use-tests/src/`, so each suite's test tasks run only its own projects:
 `test`, `javaTest`, and `nativeTest` never run a real-use test, and the
 `realUse*` tasks never run a `tests/` test. CI keeps the same split: the
-`tests/` test jobs never run a real-use test, and the real-use job of §4 never
+`tests/` test jobs never run a real-use test, and the real-use job of §AR-real-use-test-harness.4 never
 runs a `tests/` test (§FS-real-use-tests.3). The style checks run no tests and
 cover both suites, so `checkstyle`, `testAllInfra`, and the checkstyle CI
 matrix also check changed real-use projects. Stats, coverage, and
