@@ -9,14 +9,20 @@ package org.graalvm.internal.tck.utils;
 import org.gradle.api.Project;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Resolves and identifies Native Image base layers. §AR-test-harness.3
@@ -104,6 +110,34 @@ public final class BaseLayerUtils {
 
     public static List<String> layerModules() {
         return BASE_LAYER_MODULES;
+    }
+
+    /// Retains mandatory and nonoverlapping modules without changing dependency JARs.
+    /// Inspect the native builder's JDK rather than the Gradle JVM. §FS-tests.3.4
+    public static List<String> dedicatedLayerModules(List<Path> classpathJars, Path javaHome) throws IOException {
+        Set<String> classNames = JarUtils.loadClassNames(classpathJars);
+        if (classNames.isEmpty()) {
+            return BASE_LAYER_MODULES;
+        }
+        List<String> modules = new ArrayList<>();
+        for (String module : BASE_LAYER_MODULES) {
+            if (module.equals("java.base")) {
+                modules.add(module);
+                continue;
+            }
+            Path archive = javaHome.resolve("jmods").resolve(module + ".jmod");
+            try (ZipFile jmod = new ZipFile(archive.toFile())) {
+                boolean overlaps = jmod.stream().map(ZipEntry::getName)
+                        .filter(name -> name.startsWith("classes/") && name.endsWith(".class"))
+                        .map(name -> name.substring("classes/".length(), name.length() - ".class".length())
+                                .replace('/', '.'))
+                        .anyMatch(classNames::contains);
+                if (!overlaps) {
+                    modules.add(module);
+                }
+            }
+        }
+        return List.copyOf(modules);
     }
 
     public static boolean isJUnitRuntimeArtifact(String group, String artifact) {
