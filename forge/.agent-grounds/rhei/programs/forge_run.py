@@ -9,15 +9,17 @@ Each subcommand is one program state of §AR-forge-workflow-pipeline.4; its exit
 code is the transition Rhei takes (§AR-forge-workflow-pipeline.2). The working
 directory is the Rhei workspace root. Every exit writes Rhei's result file,
 which an edge into a final state requires, and a terminal outcome is recorded
-for the launcher's close-out (§AR-forge-workflow-pipeline.1).
+for the launcher's close-out, a `human-intervention` one with the run's
+diagnostics (§AR-forge-workflow-pipeline.1).
 """
 from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 import traceback
-from typing import Callable
+from typing import Any, Callable
 
 # The programs reuse Forge's utility and git modules from the source checkout.
 FORGE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
@@ -28,6 +30,7 @@ import audit  # noqa: E402
 import explore  # noqa: E402
 import finalize  # noqa: E402
 import fix_route  # noqa: E402
+import handoff  # noqa: E402
 import jvm  # noqa: E402
 import native_check  # noqa: E402
 import prepare  # noqa: E402
@@ -64,6 +67,11 @@ OUTCOME: str = "outcome.json"
 KNOWN_ROUTES: frozenset[int] = frozenset(
     {OK, AGENT_WORK, JVM_TESTS_FAIL, STILL_FAILING, NOTHING_TO_DO, SKIP_RECORDED, CANNOT_FIX,
      *RETURN_CODES.values()})
+# What the close-out quotes of one command's output (§AR-forge-workflow-pipeline.1).
+EXCERPT_LINES: int = 30
+EXCERPT_WIDTH: int = 300
+# A line that reports a failure: an error, an exception, or a failed task or test.
+ERROR_LINE: re.Pattern[str] = re.compile(r"(?i)(errors?|exception)\b|\bfail(ed|ure|s)?\b")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -97,9 +105,38 @@ def outcome(step: str, code: int) -> dict[str, str] | None:
     return None
 
 
+def excerpt(output: str) -> str:
+    """A short output whole; of a longer one, its error lines, or its tail when it marks none."""
+    lines: list[str] = [line[:EXCERPT_WIDTH] for line in output.strip().splitlines()]
+    if len(lines) <= EXCERPT_LINES:
+        return "\n".join(lines)
+    marked: list[str] = list(dict.fromkeys(line for line in lines if ERROR_LINE.search(line)))
+    return "\n".join(marked[:EXCERPT_LINES] or lines[-EXCERPT_LINES:])
+
+
+def diagnostics(workspace: str, step: str) -> dict[str, Any]:
+    """The state that stopped, its failing commands with an excerpt each, and the last fix report.
+
+    §FS-human-intervention-policy
+    """
+    recorded: tuple[str, list[handoff.Failure]] | None = handoff.recorded_failures(workspace)
+    sender, failures = recorded if recorded is not None else (step, [])
+    outputs: dict[str, list[str]] = handoff.outputs_by_command(failures)
+    report: dict[str, Any] = fix_route.latest_report(workspace)
+    return {
+        "sender": sender,
+        "failures": [{"command": command, "output": excerpt("\n".join(outputs.get(command, [])))}
+                     for command in dict.fromkeys(failure.command for failure in failures)],
+        "fix_result": str(report.get("result", "")),
+        "fix_summary": str(report.get("summary", "")).strip(),
+    }
+
+
 def _write_result(workspace: str, step: str, code: int) -> None:
-    result: dict[str, str] | None = outcome(step, code)
+    result: dict[str, Any] | None = outcome(step, code)
     if result is not None:
+        if result["outcome"] == "human-intervention":
+            result = {**result, **diagnostics(workspace, step)}
         write_json(runtime_path(workspace, OUTCOME), {"step": step, "exit": str(code), **result})
     result_path: str | None = os.environ.get("RHEI_RESULT_PATH")
     if result_path:

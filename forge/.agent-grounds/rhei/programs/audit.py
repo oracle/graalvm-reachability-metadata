@@ -21,7 +21,7 @@ import gates
 import handoff
 import native_check
 from build_tools import TaskResult, changed_paths, checkpoint
-from exit_codes import AGENT_WORK, OK, STILL_FAILING
+from exit_codes import AGENT_WORK, OK
 from run_state import RunState, load, save
 
 SENDER: str = "audit"
@@ -101,7 +101,7 @@ def audit(workspace: str) -> int:
         if failures:
             save(workspace, state)
             print(f"[audit] `{failures[0].command}` fails over the audit's edit")
-            return STILL_FAILING
+            return handoff.still_failing(workspace, SENDER, failures)
     state.audit_passed = True
     save(workspace, state)
     print(f"[audit] passes at {state.checkpoint}")

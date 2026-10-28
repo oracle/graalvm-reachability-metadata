@@ -50,7 +50,10 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    `completed` leaves it `In Progress` for the pull request to close;
    `human-intervention` and a bad input label it `human-intervention` with the
    reason and return it to `Todo` (§FS-human-intervention-policy); an
-   infrastructure failure only returns it to `Todo`.
+   infrastructure failure only returns it to `Todo`. A `human-intervention`
+   comment also quotes what the run recorded in its outcome: the state that
+   stopped, its failing commands with a bounded excerpt of their output, and
+   the last fix report.
 
 `run-forge.sh` loops cycles until stopped, checks the host before each claim
 (§FS-forge-host-requirements), and every third run, and whenever nothing can be

@@ -5,7 +5,8 @@
 
 """Tests for the launcher: fetch, targets, close-out, and the review's entry.
 
-§AR-forge-workflow-pipeline.1 fixes the fetch and the close-out, and
+§AR-forge-workflow-pipeline.1 fixes the fetch and the close-out, whose comment
+carries the diagnostics of §FS-human-intervention-policy, and
 §FS-published-pr-review the review and its agent target.
 """
 from __future__ import annotations
@@ -137,12 +138,40 @@ class CloseOutTest(unittest.TestCase):
         self.assertIn("native still fails", comments[0].args[1])
         self.assertEqual(1, len(reverts))
 
+    def test_a_cannot_fix_comment_quotes_the_sender_command_output_and_report(self) -> None:
+        command: str = "env JAVA_HOME=/jdk ./gradlew clean nativeTestCompile -Pcoordinates=org.example:lib7:1.0.0"
+        error: str = "Error: Type not found during analysis: AnalysisType<X509CertInfo>\nBUILD FAILED in 1m"
+        _, comments, _ = self.close_out({
+            "outcome": "human-intervention", "step": "fix-route", "exit": "40",
+            "reason": "the fix reported that nothing within the rules helps", "sender": "finalize",
+            "failures": [{"command": command, "output": error}],
+            "fix_result": "cannot-fix", "fix_summary": "a toolchain failure, not a missing registration"})
+        self.assertEqual(
+            "Human intervention needed\n\n"
+            "Forge could not finish this issue: the fix reported that nothing within the rules helps.\n\n"
+            "Stopped in `finalize`.\n\n"
+            f"Failing command: `{command}`\n\n```text\n{error}\n```\n\n"
+            "The last fix reported `cannot-fix`:\n\n> a toolchain failure, not a missing registration\n",
+            comments[0].args[1])
+
+    def test_a_still_failing_comment_quotes_each_failing_command(self) -> None:
+        _, comments, _ = self.close_out({
+            "outcome": "human-intervention", "step": "finalize", "exit": "12",
+            "reason": "finalize still fails after its fix", "sender": "finalize",
+            "failures": [{"command": "./gradlew checkstyle", "output": "[ERROR] A.java:1: bad style"},
+                         {"command": "pre-publication gate review", "output": ""}],
+            "fix_result": "fixed", "fix_summary": "wrapped the long line"})
+        body: str = comments[0].args[1]
+        self.assertIn("Failing command: `./gradlew checkstyle`\n\n```text\n[ERROR] A.java:1: bad style\n```", body)
+        self.assertIn("Failing command: `pre-publication gate review`\n\nThe last fix reported `fixed`:", body)
+
     def test_bad_input_needs_a_maintainer(self) -> None:
         labels, _, reverts = self.close_out({"outcome": "failed", "kind": "bad-input", "reason": "no URL"})
         self.assertEqual(1, len(labels))
         self.assertEqual(1, len(reverts))
 
     def test_infrastructure_failure_only_releases_the_claim(self) -> None:
+        # External and transient failures take no issue action (§FS-human-intervention-policy).
         labels, comments, reverts = self.close_out({"outcome": "failed", "kind": "infrastructure", "reason": "x"})
         self.assertEqual(([], []), (labels, comments))
         self.assertEqual(1, len(reverts))

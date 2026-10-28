@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import handoff
 from build_tools import TaskResult, checkpoint, coordinate_task, gradle_display, run_gradle
-from exit_codes import AGENT_WORK, OK, STILL_FAILING
+from exit_codes import AGENT_WORK, OK
 from run_state import RunState, load, runtime_path, save
 
 SENDER: str = "native"
@@ -67,7 +67,7 @@ def conclude(workspace: str, state: RunState, sender: str, failures: list[handof
         return OK
     if handoff.guard_tripped(state, sender):
         print(f"[{sender}] `{failures[0].command}` still fails after its fix")
-        return STILL_FAILING
+        return handoff.still_failing(workspace, sender, failures)
     handoff.write_fix_request(workspace, state, sender, failures)
     save(workspace, state)
     print(f"[{sender}] `{failures[0].command}` fails; a fix request follows")
@@ -99,7 +99,7 @@ def native(workspace: str) -> int:
                         f"Collect metadata for {state.coordinate}")
     if state.native_requests >= state.budgets.native_fixes:
         print(f"[native] `{failures[0].command}` still fails after the last of {state.budgets.native_fixes} fixes")
-        return STILL_FAILING
+        return handoff.still_failing(workspace, SENDER, failures)
     handoff.write_fix_request(workspace, state, SENDER, failures)
     state.native_requests += 1
     save(workspace, state)

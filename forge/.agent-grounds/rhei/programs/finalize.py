@@ -33,7 +33,7 @@ from utility_scripts.local_ci_verification import (
 import gates
 import handoff
 from build_tools import TaskResult, checkpoint, coordinate_task, head, rebase_onto_upstream, run_gradle
-from exit_codes import AGENT_WORK, OK, STILL_FAILING
+from exit_codes import AGENT_WORK, OK
 from run_state import RunState, load, runtime_path, save
 
 SENDER: str = "finalize"
@@ -113,7 +113,7 @@ def finalize(workspace: str) -> int:
     if state.finalize_requests >= state.budgets.finalize_fixes:
         save(workspace, state)
         print(f"[finalize] `{commands}` still fails after the last of {state.budgets.finalize_fixes} fixes")
-        return STILL_FAILING
+        return handoff.still_failing(workspace, SENDER, failures)
     handoff.write_fix_request(workspace, state, SENDER, failures)
     state.finalize_requests += 1
     save(workspace, state)
