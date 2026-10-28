@@ -116,8 +116,9 @@ schema. Validates and sorts the master supported-library list against its schema
 ### AR-grund-check: Validate grund citations
 
 Triggers on PRs touching any project's scanned roots — `docs/`, `skills/`,
-the workflows and composite actions, the top-level Markdown, a member's docs
-and agent instructions, or a `grund.toml`. Installs a pinned `grund` release
+`.ephor/`, the harness build logic, the workflows and composite actions, the
+top-level Markdown, a member's docs, agent instructions and scanned code, or a
+`grund.toml`. Installs a pinned `grund` release
 and runs `grund check` once from the repository root, which is the only scope
 where the workspace alias table resolves `§forge/<ID>` and
 `§real-use-tests/<ID>`, so the run covers every namespace. It fails on a
