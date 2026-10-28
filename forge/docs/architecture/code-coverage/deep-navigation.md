@@ -82,7 +82,7 @@ successor no test can reach.
 
 A prompted route crosses exactly one JaCoCo-uncovered method, its target, and
 the method that calls the target on the route is one JaCoCo reports covered —
-not merely one a sampler saw. Miss classification judges that call site (§3);
+not merely one a sampler saw. Miss classification judges that call site (§AR-code-coverage-deep-navigation.3);
 a caller that never ran leaves it judging code that never executed, with no
 fork or dispatch to name. Route search therefore never continues out of an
 uncovered method, and only a covered method may make the last call.
@@ -183,7 +183,7 @@ prompt.
 
 A virtual call site with a receiver histogram ran in the instrumented image. An
 edge from that site to an implementation no observed receiver resolves to
-(§3.1) is an **unobserved dispatch step**: the static graph allows it, the run
+(§AR-code-coverage-deep-navigation.3.1) is an **unobserved dispatch step**: the static graph allows it, the run
 shows it never happened there. Route search prefers, among equally short routes,
 the one with fewer unobserved steps. A route that still needs one keeps it — the
 agent may yet make the site dispatch there — but the prompt names the step, so
@@ -198,7 +198,7 @@ call, so distance counts no obstacles; it measures how far the shown evidence
 starts from the caller, and at distance 1 the caller is itself the sampled
 frame or public entry. Equal-distance ties break, in order, on
 fewer unobserved dispatch steps, a sampled join before a public-entry join, the
-higher reach count of the target's diagnosis (§3), the higher sample count, and
+higher reach count of the target's diagnosis (§AR-code-coverage-deep-navigation.3), the higher sample count, and
 the canonical id. The reach count is how often the fork ran, or how often the
 dispatch site ran: how much existing test traffic arrives where the target
 diverges. It measures how easy the divergence point is to get to, not how hard
@@ -210,10 +210,10 @@ Every prompted target carries a deterministic miss classification derived from
 JaCoCo source-line instruction and branch counters, the fan-out of the route's
 call into the target, and — when present — the control-flow table and the
 counters. Classification judges the one call the route makes into the target,
-whose caller §2 guarantees is covered; when the route reaches a constructor
+whose caller §AR-code-coverage-deep-navigation.2 guarantees is covered; when the route reaches a constructor
 through a factory stub, that is the route's call into the stub. No other call
 site of the target is consulted, so the prompt's route and its diagnosis always
-describe the same call. A caller judged on borrowed lines (§2) is read in line
+describe the same call. A caller judged on borrowed lines (§AR-code-coverage-deep-navigation.2) is read in line
 order, since the invoke's bytecode index is its own, not the lending method's.
 The Markdown prompt and the full JSON report carry the same classification.
 

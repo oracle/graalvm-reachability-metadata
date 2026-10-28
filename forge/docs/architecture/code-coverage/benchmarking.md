@@ -81,7 +81,7 @@ matrix. The settings a cell carries:
   target's mode bracket and mapped to the agent CLI's thinking flag by the
   bundled agent profile, never in the model string.
 - **Strategy arm** — guided (§AR-code-coverage-improvement.5.2) or naive
-  baseline (§3): which template mode the
+  baseline (§AR-code-coverage-benchmarking.3): which template mode the
   cell instantiates. The arm changes treatment only; every other setting keeps
   its meaning across arms.
 

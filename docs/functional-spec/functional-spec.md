@@ -3,7 +3,7 @@
 This document describes what the **GraalVM Reachability Metadata Repository** does for its users, who those users are, and the requirements that the repository, its build infrastructure, and its automation (Forge) must meet. For the structural and implementation overview that organizes these behaviors into components, see §AR-repository-architecture.
 §GOAL-tested-metadata §GOAL-broad-version-coverage §GOAL-fresh-metadata §GOAL-protect-shipped-metadata
 
-It is intended for agents, contributors, and downstream tooling owners who need a single, behavior-focused description of the system. The repository's moving parts are documented as modules that this spec cites at the point each behavior is stated: the test harness (§AR-test-harness), the CI workflows (§AR-repository-ci), and the metadata and tests suites (§FS-metadata, §FS-tests). Forge automation has its own functional spec in its namespace (§forge/FS-forge-functional-spec) and owns the derived metrics under `stats/` (§forge/FS-forge-run-metrics). For the task-oriented "what do I run, and when" view rather than the requirements, see [§8 How this repository is used](#8-how-this-repository-is-used).
+It is intended for agents, contributors, and downstream tooling owners who need a single, behavior-focused description of the system. The repository's moving parts are documented as modules that this spec cites at the point each behavior is stated: the test harness (§AR-test-harness), the CI workflows (§AR-repository-ci), and the metadata and tests suites (§FS-metadata, §FS-tests). Forge automation has its own functional spec in its namespace (§forge/FS-forge-functional-spec) and owns the derived metrics under `stats/` (§forge/FS-forge-run-metrics). For the task-oriented "what do I run, and when" view rather than the requirements, see [§FS-repository-functional-spec.8 How this repository is used](#8-how-this-repository-is-used).
 
 ---
 
@@ -33,7 +33,7 @@ Two properties make this achievable: the reachability-metadata schema is itself 
 - **No build-time-initialization tweaks.** Metadata bundles must not ship `native-image.properties` or any other directive that moves class `<clinit>` execution into the image builder. Build-time initialization captures state from a non-user environment into the image and breaks additivity. Every library is runtime-initialized by default.
 - **No library patching.** No substitutions, bytecode rewrites, or shaded forks of upstream libraries. Patching ships a different version than the one the user resolved through Maven Central, is invisible at the dependency-resolution layer, and is unstable across upstream releases.
 - **No `Feature` classes.** Metadata bundles must not ship `org.graalvm.nativeimage.hosted.Feature` implementations or any other artifact that runs arbitrary Java inside the image builder. `Feature`s are a security concern (full filesystem / network / reflective access at build time) and break additivity because their effect is whatever code the author wrote.
-- **No untested metadata.** Metadata that has not passed the test gates defined in [§5.2 Tests](#52-tests) and [§5.3 CI gates](#53-ci-gates) is not published from this repository, regardless of provenance (human or Forge).
+- **No untested metadata.** Metadata that has not passed the test gates defined in [§FS-repository-functional-spec.5.2 Tests](#52-tests) and [§FS-repository-functional-spec.5.3 CI gates](#53-ci-gates) is not published from this repository, regardless of provenance (human or Forge).
 
 These constraints apply uniformly to human-authored PRs and to Forge output, and are enforced by `checkMetadataFiles` plus the reviewer skills.
 
@@ -46,7 +46,7 @@ These constraints apply uniformly to human-authored PRs and to Forge output, and
 - A repository-level `metadata/library-and-framework-list.json` enumerating every supported library, with `test_level` ∈ `{untested, community-tested, fully-tested}`.
 - A `stats/<groupId>/<artifactId>/<metadata-version>/` mirror of per-version metrics — `stats.json` (dynamic-access call sites, coverage, lines of code, dependency information) produced by the harness, alongside the schema-validated `execution-metrics.json` each Forge run records.
 
-The metadata directory and its index/list/schema contracts are specified in §FS-metadata. The derived `stats/` metrics are not consumed by native-build-tools; what each entry holds and how a run produces it are specified in the Forge spec (§forge/FS-forge-run-metrics), and the dashboard built from them is §4.5.
+The metadata directory and its index/list/schema contracts are specified in §FS-metadata. The derived `stats/` metrics are not consumed by native-build-tools; what each entry holds and how a run produces it are specified in the Forge spec (§forge/FS-forge-run-metrics), and the dashboard built from them is §FS-repository-functional-spec.4.5.
 
 ### 4.2 Test harness
 §AR-test-harness
@@ -72,7 +72,7 @@ CI must pass before any merge, and is the authoritative gate — local runs are 
 
 ### 4.4 Releases
 
-Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed (§AR-create-scheduled-release). The release is deliberately not gated on the periodic `test-all-metadata` sweep: merged metadata is already gated per-PR (§5.3), and the sweep exercises bleeding-edge JDK and native-image configurations whose failures must not stall the release cadence. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `SNAPSHOT` cannot affect the permanent release cadence.
+Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed (§AR-create-scheduled-release). The release is deliberately not gated on the periodic `test-all-metadata` sweep: merged metadata is already gated per-PR (§FS-repository-functional-spec.5.3), and the sweep exercises bleeding-edge JDK and native-image configurations whose failures must not stall the release cadence. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `SNAPSHOT` cannot affect the permanent release cadence.
 
 The `create-snapshot-release` workflow refreshes a floating `SNAPSHOT` GitHub Release on the `SNAPSHOT` tag after `master` pushes when metadata changed since the previous `SNAPSHOT` tag, or since the latest numbered release when bootstrapping (§AR-create-snapshot-release). It packages the repository with version `SNAPSHOT`, replaces the previous snapshot release/tag, and provides a continuously updated snapshot-style metadata bundle between numbered releases without taking GitHub's Latest marker from the newest numbered release. The packaged artifacts are what the GraalVM Gradle/Maven plugins consume.
 
@@ -217,7 +217,7 @@ flowchart TD
 
 Auxiliary contracts: `requires` triggers the plugin to also load metadata for the listed `group:artifact` pair; `override: true` instructs the plugin to suppress any built-in metadata that ships inside `native-image` itself for the matched versions.
 
-All four elements are versioned through the schema `$id` URLs and the GitHub Release tag. Newer plugins keep reading older repository releases, and older plugins keep reading newer **minor and patch** schema versions, which only add optional fields or non-plugin formats. A **major** schema bump (e.g. `reachability-metadata` 1.2.0 → 2.0.0, or `metadata-library-index` 2.x → 3.0.0) represents a change native-build-tools must adopt and is released together with a coordinated plugin update — it is not something older plugins absorb. Schema fidelity (§6), the weekly numbered release cadence, and the floating `SNAPSHOT` release (§4.4) keep this contract live.
+All four elements are versioned through the schema `$id` URLs and the GitHub Release tag. Newer plugins keep reading older repository releases, and older plugins keep reading newer **minor and patch** schema versions, which only add optional fields or non-plugin formats. A **major** schema bump (e.g. `reachability-metadata` 1.2.0 → 2.0.0, or `metadata-library-index` 2.x → 3.0.0) represents a change native-build-tools must adopt and is released together with a coordinated plugin update — it is not something older plugins absorb. Schema fidelity (§FS-repository-functional-spec.6), the weekly numbered release cadence, and the floating `SNAPSHOT` release (§FS-repository-functional-spec.4.4) keep this contract live.
 
 ## 5. Repository Requirements
 
@@ -252,7 +252,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
 - **Compatibility budget.** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **Docker tag sync.** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
-- **Full sweep.** `test-all-metadata` runs only on a weekly Sunday schedule or manual dispatch in the main repository, uses 85 batches, isolates failed batches down to concrete library versions, publishes result and failure-log artifacts, and fails affected matrix batches. It surfaces sweep regressions but does not gate the scheduled release (§4.4).
+- **Full sweep.** `test-all-metadata` runs only on a weekly Sunday schedule or manual dispatch in the main repository, uses 85 batches, isolates failed batches down to concrete library versions, publishes result and failure-log artifacts, and fails affected matrix batches. It surfaces sweep regressions but does not gate the scheduled release (§FS-repository-functional-spec.4.4).
 
 ### 5.4 Native-image modes
 
@@ -317,17 +317,17 @@ is new behavior.
 
 You almost never touch this repository directly. The `org.graalvm.buildtools`
 Gradle plugin or its Maven counterpart resolves the packaged metadata bundle for
-every dependency in your build and passes it to `native-image` (§4.7). Concretely:
+every dependency in your build and passes it to `native-image` (§FS-repository-functional-spec.4.7). Concretely:
 
 - **Build a native image.** Run your normal `nativeCompile` / `native:compile`.
-  native-build-tools downloads the latest released bundle (§4.4) and selects a
-  metadata version per dependency using the version-selection algorithm (§4.7).
-  Adding this repository to your build never changes how your code runs (§3).
+  native-build-tools downloads the latest released bundle (§FS-repository-functional-spec.4.4) and selects a
+  metadata version per dependency using the version-selection algorithm (§FS-repository-functional-spec.4.7).
+  Adding this repository to your build never changes how your code runs (§FS-repository-functional-spec.3).
 - **Check whether a library is supported.**
   `curl -sSL …/check-library-support.sh | bash -s "<group>:<artifact>:<version>"`,
   or browse the [libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/),
   which is derived from `metadata/library-and-framework-list.json` (§FS-metadata).
-  The script checks the published `index.json` contract (§4.7): it reports exact
+  The script checks the published `index.json` contract (§FS-repository-functional-spec.4.7): it reports exact
   tested-version support when present, and it also reports when the artifact is
   already recorded as `not-for-native-image`.
 - **Request a missing library.** File a
@@ -339,7 +339,7 @@ every dependency in your build and passes it to `native-image` (§4.7). Concrete
 ### 8.2 Contributor — add or update metadata
 
 Work begins from an issue and normally stays inside the Forge-controlled
-automation path, not a hand-edited metadata file (§3, §5.2,
+automation path, not a hand-edited metadata file (§FS-repository-functional-spec.3, §FS-repository-functional-spec.5.2,
 §forge/GOAL-improve-automation-first). Contributors guide the process by filing
 or refining the issue, supplying reproduction details or custom instructions,
 running Forge workflows, and reviewing the generated PR evidence. When Forge
@@ -350,14 +350,14 @@ coordinate that exposed the gap (§forge/GOAL-improve-automation-first).
 
 Direct human edits to metadata or tests are reserved for high-priority work that
 the automation cannot safely resolve yet. Those edits are still bound by the
-same additivity constraints (§3), test requirements (§5.2), metadata rules
-(§5.1), and CI gates (§4.3, §AR-repository-ci) as Forge output. The usual local
+same additivity constraints (§FS-repository-functional-spec.3), test requirements (§FS-repository-functional-spec.5.2), metadata rules
+(§FS-repository-functional-spec.5.1), and CI gates (§FS-repository-functional-spec.4.3, §AR-repository-ci) as Forge output. The usual local
 verification is coordinate-scoped:
 `./gradlew pullAllowedDockerImages checkMetadataFiles test -Pcoordinates=<group:artifact:version>`.
 
 See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full walkthrough,
 [DEVELOPING.md](../DEVELOPING.md) for the complete task reference, and the Forge
-entry points in §8.4.
+entry points in §FS-repository-functional-spec.8.4.
 
 ### 8.3 Reviewer / maintainer — sign off
 
@@ -372,11 +372,11 @@ judgment layer on top of automated checks, not a substitute for them.
 ### 8.4 Repository automation (Forge) — generate and repair
 
 Forge claims labeled issues from the queues that compatibility automation files
-(§9) and produces review-ready PRs by running the same harness tasks a human
-would (§4.6). Its own entry points, strategies, and contracts are documented in
+(§FS-repository-functional-spec.9) and produces review-ready PRs by running the same harness tasks a human
+would (§FS-repository-functional-spec.4.6). Its own entry points, strategies, and contracts are documented in
 its namespace (§forge/FS-forge-functional-spec); from this repository's side,
-Forge is just another contributor bound by every constraint in §3 and every gate
-in §5.3.
+Forge is just another contributor bound by every constraint in §FS-repository-functional-spec.3 and every gate
+in §FS-repository-functional-spec.5.3.
 
 ## 9. Library Version Compatibility Automation
 
@@ -397,8 +397,8 @@ entry point of the Forge repair queue (§forge/FS-forge-functional-spec,
 maintainer. This section is the behavioral contract for
 that workflow; the run-size limits are stated in §FS-repository-functional-spec.5.3
 and the recording precondition in §FS-repository-functional-spec.5.2, and every
-label it applies is defined in the
-§4.6 GitHub label contract.
+label it applies is defined in the GitHub label contract
+(§FS-repository-functional-spec.4.6).
 
 #### 1. Discovery of newer versions
 

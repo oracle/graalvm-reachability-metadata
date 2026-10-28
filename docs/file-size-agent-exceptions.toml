@@ -69,9 +69,9 @@ match = "exact"
 rules = ["markdown-docs"]
 kind = "deferred"
 max_accepted = { value = 400, unit = "lines" }
-until = "FS-library-version-update-automation and section 8 (how the repository is used) each move to their own declaration in the functional-spec folder home, leaving about 230 lines"
+until = "FS-library-version-update-automation (section 9) moves to a document of its own in the functional-spec folder home, together with either section 8 (how the repository is used) or the native-build-tools interface contract (section 4.7), leaving about 240 lines"
 reason = """
-The file measures about 390 lines. The version update automation (about 100 lines) can move out whole, since IDs are stable across files in the folder home, but that alone leaves about 290; the usage walkthroughs of section 8 (about 60 more) need new IDs and their citers migrated. Both moves are changes of their own rather than side effects of adding one label row.
+The file measures about 390 lines. The version update automation (section 9, about 90 lines) is a declaration of its own and can move out whole, since IDs are stable across files in the folder home: only the four `FS-repository-functional-spec.9` citations grund checks are re-pointed. That alone leaves about 300, so a second subject has to go with it: the usage walkthroughs of section 8 (about 60 lines), which need new IDs and their citers migrated, or the native-build-tools interface contract of section 4.7 (about 60), whose move re-points every `FS-repository-functional-spec.4.7` citation. Each move is a change of its own rather than a side effect of adding one label row or of a grund upgrade that only rewrites citations and numbers headings here.
 """
 [[exceptions]]
 path = "forge/dispatcher/claim_preflight.py"
@@ -102,4 +102,31 @@ max_accepted = { value = 600, unit = "lines" }
 until = "the shared GraalVM installation helpers move to their own module"
 reason = """
 The GraalVM installation helpers the dispatcher and the local CI verification share with the gate, finding a lane's home and proving its installation and agent, are a responsibility apart from the gate's version checks and belong in a sibling module. An open branch adds to those helpers now, so the move waits for it to land rather than conflicting with it.
+"""
+[[exceptions]]
+path = "forge/docs/architecture/code-coverage/workflow.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+shadows = "hard"
+max_accepted = { value = 1000, unit = "lines" }
+[[exceptions]]
+path = "forge/docs/architecture/code-coverage/deep-navigation.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 400, unit = "lines" }
+until = "miss classification (section 3) moves to a document of its own"
+reason = """
+Miss classification (section 3) is the largest section and a subject of its own beside route evidence and ranking; moving it re-points the citations that reach it by section number, so it is not done in a grund upgrade that only writes local section citations in full.
+"""
+[[exceptions]]
+path = "forge/utility_scripts/code_coverage_api_rank.py"
+match = "exact"
+rules = ["source"]
+kind = "deferred"
+max_accepted = { value = 600, unit = "lines" }
+until = "the call-graph algorithms move to a module of their own"
+reason = """
+The generic call-graph algorithms (graph loading, strongly connected components, reachable sets) share the module with the ranking and prompt rendering they serve; extracting them is a refactor with its own tests, not part of a grund upgrade that only writes two docstring citations in full.
 """
