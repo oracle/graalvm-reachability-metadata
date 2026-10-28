@@ -91,16 +91,19 @@ class DedicatedLayerBuildOptionsTests {
         Map<String, List<String>> arguments = argumentsFor("""
                 test {
                     buildArgs.addAll('--module-path', '/test/fixture.jar')
+                    buildArgs.add('--class-path=/test/classes')
                     buildArgs.addAll('--add-modules', 'java.xml,com.example.fixture')
+                    buildArgs.add('--add-modules=java.management')
                     buildArgs.add('-H:+AllowJRTFileSystem')
                 }
                 """);
 
         assertThat(arguments.get("test")).contains("--module-path", "/test/fixture.jar",
-                "java.xml,com.example.fixture");
+                "java.xml,com.example.fixture", "--class-path=/test/classes");
         assertThat(arguments.get("base")).doesNotContain("--module-path", "/test/fixture.jar",
-                "java.xml,com.example.fixture");
-        assertThat(arguments.get("base")).contains("--add-modules", "java.xml", "-H:+AllowJRTFileSystem");
+                "java.xml,com.example.fixture", "--class-path=/test/classes");
+        assertThat(arguments.get("base")).contains("--add-modules", "java.xml",
+                "--add-modules=java.management", "-H:+AllowJRTFileSystem");
     }
 
     @SuppressWarnings("unchecked")
