@@ -64,7 +64,9 @@ pip install -e .
 Required local tools depend on the work queue being processed:
 
 - `gh` for issue, PR, and review automation.
-- `rhei` for the `forge-metadata` and code-coverage-improvement workflows.
+- `rhei` 0.6.1 exactly, for every workflow; the host gate refuses any other
+  release, including source builds. Install it from
+  [the v0.6.1 release](https://github.com/agent-grounds/rhei/releases/tag/v0.6.1).
 - `pi` and `claude` for the worker and setup agents.
 - `GRAALVM_HOME`, or `JAVA_HOME`, pointing at a GraalVM of JDK 25 or newer with
   Native Image, its agent, and the reachability-metadata schema.

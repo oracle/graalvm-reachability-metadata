@@ -23,7 +23,8 @@ Forge is located inside `graalvm-reachability-metadata/forge`. The parent checko
 
 - Local clone of https://github.com/oracle/graalvm-reachability-metadata
 - A GraalVM of JDK 25 or newer in `GRAALVM_HOME` or `JAVA_HOME`.
-- Python 3, `rhei`, `pi`, and `claude`.
+- Python 3, `rhei` 0.6.1 (the pinned release, `REQUIRED_RHEI_VERSION` in
+  `utility_scripts/host_toolchain_checks.py`), `pi`, and `claude`.
 - Set `PYTHONPATH` so cross-package imports work (run from the `forge/` directory):
   ```bash
   export PYTHONPATH=$PWD

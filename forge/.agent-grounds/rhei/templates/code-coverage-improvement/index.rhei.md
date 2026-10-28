@@ -1,5 +1,4 @@
 # Rhei: Code Coverage Improvement
-**States:** code-coverage-improvement
 
 ## Rules
 

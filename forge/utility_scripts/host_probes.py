@@ -82,6 +82,12 @@ def parse_grype_version(output: str) -> str | None:
     return match.group(1) if match else None
 
 
+def parse_rhei_version(output: str) -> str | None:
+    """Extract the release from `rhei --version`, keeping a `-dev` suffix so a source build never matches a pin."""
+    match = re.search(r"^rhei\s+v?(\S+)", output, flags=re.MULTILINE)
+    return match.group(1) if match else None
+
+
 def parse_gradle_version(output: str) -> str | None:
     """Extract the release from Gradle wrapper version output."""
     match = re.search(r"^Gradle\s+(\S+)", output, flags=re.MULTILINE)

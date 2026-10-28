@@ -1,5 +1,4 @@
 # Rhei: Human Intervention Scanner
-**States:** human-intervention-scanner
 
 ## Overview
 One recurring scanner task drives `{{repo}}` through
