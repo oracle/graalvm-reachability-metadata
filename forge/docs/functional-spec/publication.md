@@ -73,7 +73,7 @@ rerun's outcome reach metadata repair or human intervention
 Finalization also enforces, as programs, the contribution-contract gates a
 reviewer would otherwise apply by hand (§root/PRCPL-prefer-algorithmic). Each
 runs after the stats are regenerated, and a failure is a fix request whose
-brief names the gate, so the outcome is decided by the gate's next run and
+output names the gate, so the outcome is decided by the gate's next run and
 never by the repair's account. A gate another task already enforces, such as
 `checkMetadataFiles`' conditions and test-only types, is not repeated.
 
