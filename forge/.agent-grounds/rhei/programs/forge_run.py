@@ -43,6 +43,7 @@ from exit_codes import (  # noqa: E402
     INFRASTRUCTURE,
     JVM_TESTS_FAIL,
     NOTHING_TO_DO,
+    NOT_FOR_NATIVE_IMAGE_RECORDED,
     SKIP_RECORDED,
     OK,
     RETURN_CODES,
@@ -65,7 +66,7 @@ STEPS: dict[str, Callable[[str], int]] = {
 OUTCOME: str = "outcome.json"
 # Every other exit a program takes is a declared route to a non-final state.
 KNOWN_ROUTES: frozenset[int] = frozenset(
-    {OK, AGENT_WORK, JVM_TESTS_FAIL, STILL_FAILING, NOTHING_TO_DO, SKIP_RECORDED, CANNOT_FIX,
+    {OK, AGENT_WORK, JVM_TESTS_FAIL, STILL_FAILING, NOTHING_TO_DO, SKIP_RECORDED, NOT_FOR_NATIVE_IMAGE_RECORDED, CANNOT_FIX,
      *RETURN_CODES.values()})
 # What the close-out quotes of one command's output (§AR-forge-workflow-pipeline.1).
 EXCERPT_LINES: int = 30

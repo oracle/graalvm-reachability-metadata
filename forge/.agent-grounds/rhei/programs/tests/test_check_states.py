@@ -15,16 +15,27 @@ edit reruns `test` and the lane, never regenerating (§AR-forge-workflow-pipelin
 """
 from __future__ import annotations
 
+import contextlib
+import io
 import os
 import unittest
 from typing import Any
+from unittest.mock import patch
 
-from support import COORDINATE
-from test_audit import FinalizedRun
+import yaml
+
+from support import COORDINATE, run_state
+from test_audit import TEMPLATE, FinalizedRun
+from test_prepare import prepare_arguments
 
 import forge_run  # noqa: E402
+import index_record  # noqa: E402
+from utility_scripts.local_ci_verification import LocalCIVerificationError, LocalCIVerificationResult  # noqa: E402
+from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
+    BAD_INPUT,
+    NOT_FOR_NATIVE_IMAGE_RECORDED,
     OK,
     RETURN_AUDIT,
     RETURN_FINALIZE,
@@ -59,6 +70,41 @@ class CheckStateTest(FinalizedRun):
         request: str = self.read("fix-request.md")
         section: str = request.split("## Failing commands", 1)[1].split("##", 1)[0]
         return [line[2:] for line in section.splitlines() if line.startswith("- ")]
+
+    def test_prepare_routes_a_record_straight_to_publish(self) -> None:
+        """The record bypasses setup and audit (§FS-not-for-native-image-record.2)."""
+        with open(TEMPLATE, encoding="utf-8") as handle:
+            transitions = yaml.safe_load(handle)["transitions"]
+        edges = [edge for edge in transitions if edge["from"] == "prepare"]
+        self.assertEqual("publish", next(edge["to"] for edge in edges
+                                        if edge["exit_code"] == NOT_FOR_NATIVE_IMAGE_RECORDED))
+        self.assertLess(next(i for i, edge in enumerate(edges) if edge["exit_code"] == 22),
+                        next(i for i, edge in enumerate(edges) if edge["exit_code"] == "nonzero"))
+
+    def test_the_gate_rejecting_a_marker_is_bad_input(self) -> None:
+        """A rejected record never falls through to scaffold (§FS-not-for-native-image-record.2)."""
+        self.fake.issue("library-new-request")
+        self.fake.artifact.return_value = NativeImageEligibility(True, "Maven packaging is `aar`.")
+        rejected: LocalCIVerificationResult = LocalCIVerificationResult(
+            status="failed", base_commit="base", failure_gate="index-file-validation")
+        with patch.object(index_record, "run_local_ci_verification",
+                          side_effect=LocalCIVerificationError(rejected)) as gate:
+            with contextlib.redirect_stderr(io.StringIO()) as output:
+                self.assertEqual(BAD_INPUT, self.step(*prepare_arguments()))
+        self.assertEqual("failed", self.outcome())
+        self.assertIn("index-file-validation", output.getvalue())
+        worktree: str = gate.call_args.kwargs["repo_path"]
+        with open(os.path.join(worktree, "gradle-calls.log"), encoding="utf-8") as handle:
+            self.assertNotIn("scaffold", handle.read())
+        self.assertEqual(0, gate.call_args.kwargs["max_fixup_attempts"])
+
+    def test_a_non_new_route_without_an_index_is_never_asked(self) -> None:
+        """The route excludes the verdict before file inspection
+        (§FS-not-for-native-image-record.1)."""
+        with patch.object(index_record, "inspect_maven_artifact") as inspect:
+            self.assertIsNone(index_record.record_not_for_native_image(
+                self.fake.workspace, run_state(route="repair")))
+        inspect.assert_not_called()
 
     def test_a_failed_generation_in_jvm_asks_only_for_generate_metadata(self) -> None:
         self.assertEqual(OK, self.set_up("fails-java-run"))

@@ -229,7 +229,7 @@ class AuditTest(FinalizedRun):
             transitions: list[dict[str, Any]] = yaml.safe_load(handle)["transitions"]
         into_publish: set[tuple[str, Any]] = {(edge["from"], edge.get("exit_code")) for edge in transitions
                                               if edge["to"] == "publish"}
-        self.assertEqual({("setup-check", 21), ("audit", 0)}, into_publish)
+        self.assertEqual({("prepare", 22), ("setup-check", 21), ("audit", 0)}, into_publish)
         self.assertIn({"from": "fix-route", "to": "audit", "exit_code": RETURN_AUDIT},
                       [{key: edge.get(key) for key in ("from", "to", "exit_code")} for edge in transitions])
 

@@ -4,12 +4,14 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import io
+from http.client import IncompleteRead
 import unittest
 import urllib.error
 from unittest.mock import patch
 import zipfile
 
 from utility_scripts import native_image_artifact as nia
+from utility_scripts.native_image_artifact import NativeImageEligibility
 
 
 def _jar_with(*names: str) -> io.BytesIO:
@@ -96,6 +98,76 @@ class NativeImageArtifactTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PublishedContentTests(unittest.TestCase):
+    """Content-only evidence and conservative defaults (§FS-not-for-native-image-record.1)."""
+
+    def inspect(self, packaging: str | None = "jar", jar: bytes | Exception | None = None,
+                coordinate: str = "org.example:lib:1.0.0") -> NativeImageEligibility:
+        def fetch(url: str, timeout: int) -> io.BytesIO:
+            self.assertEqual(20, timeout)
+            if url.endswith(".pom") and packaging is not None:
+                return io.BytesIO(f"<project><packaging>{packaging}</packaging></project>".encode("utf-8"))
+            if url.endswith(".jar"):
+                if isinstance(jar, Exception):
+                    raise jar
+                if jar is not None:
+                    return io.BytesIO(jar)
+            raise urllib.error.HTTPError(url, 404, "Not Found", {}, None)
+
+        with patch.object(nia.urllib.request, "urlopen", side_effect=fetch):
+            return nia.inspect_maven_artifact(coordinate, strict=True)
+
+    def test_klib_and_aar_packaging_are_evidence(self) -> None:
+        for packaging in ("klib", "aar"):
+            with self.subTest(packaging=packaging):
+                verdict: NativeImageEligibility = self.inspect(packaging)
+                self.assertTrue(verdict.not_for_native_image)
+                self.assertIn(f"`{packaging}`", verdict.reason or "")
+
+    def test_pom_packaging_with_a_definitely_absent_jar_is_evidence(self) -> None:
+        verdict: NativeImageEligibility = self.inspect("pom", coordinate="org.example:lib-js:1.0.0")
+        self.assertTrue(verdict.not_for_native_image)
+        self.assertIn("no artifact JAR is published", verdict.reason or "")
+        self.assertEqual(nia.jvm_artifact_replacement("lib-js"), verdict.replacement)
+
+    def test_classless_jars_are_evidence(self) -> None:
+        for names in (("META-INF/MANIFEST.MF",), ("META-INF/versions/11/module-info.class",)):
+            with self.subTest(names=names):
+                self.assertTrue(self.inspect(jar=_jar_with(*names).getvalue()).not_for_native_image)
+
+    def test_a_js_name_with_a_real_jvm_jar_is_not_evidence(self) -> None:
+        verdict: NativeImageEligibility = self.inspect(
+            jar=_jar_with("org/jetbrains/kotlin/Plugin.class").getvalue(),
+            coordinate="org.jetbrains.kotlin:kotlin-scripting-js:2.3.0")
+        self.assertFalse(verdict.not_for_native_image)
+
+    def test_missing_pom_and_unreadable_jar_are_undecided(self) -> None:
+        self.assertFalse(self.inspect(None, _jar_with("README").getvalue()).not_for_native_image)
+        self.assertFalse(self.inspect(jar=b"not a jar").not_for_native_image)
+
+    def test_an_unreachable_repository_is_undecided(self) -> None:
+        for failure in (urllib.error.URLError("no route"), IncompleteRead(b"<project>"),
+                        urllib.error.HTTPError("https://example.invalid/lib.pom", 503, "Unavailable", {}, None)):
+            with self.subTest(failure=failure):
+                with patch.object(nia.urllib.request, "urlopen", side_effect=failure):
+                    self.assertFalse(nia.inspect_maven_artifact("org.example:lib:1.0.0",
+                                                               strict=True).not_for_native_image)
+
+    def test_a_failed_jar_download_does_not_prove_a_pom_only_artifact(self) -> None:
+        for failure in (urllib.error.URLError("no route"), OSError("connection reset"), IncompleteRead(b"PK"),
+                        urllib.error.HTTPError("https://example.invalid/lib.jar", 503, "Unavailable", {}, None),
+                        urllib.error.HTTPError("https://example.invalid/lib.jar", 403, "Forbidden", {}, None)):
+            with self.subTest(failure=failure):
+                self.assertFalse(self.inspect("pom", failure).not_for_native_image)
+
+    def test_legacy_fetch_callers_still_receive_none_on_errors(self) -> None:
+        for failure in (urllib.error.URLError("no route"),
+                        urllib.error.HTTPError("https://example.invalid/lib.jar", 503, "Unavailable", {}, None)):
+            with self.subTest(failure=failure):
+                with patch.object(nia.urllib.request, "urlopen", side_effect=failure):
+                    self.assertIsNone(nia.fetch_url("https://example.invalid/lib.jar"))
 
 
 class ArtifactPublicationProbeTests(unittest.TestCase):

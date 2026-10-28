@@ -112,6 +112,7 @@ class RunState:
     requested_metadata: dict[str, list[str]] = field(default_factory=dict)
     # The run is the skip record of the setup verdict (§FS-unsupportable-version-diagnosis.3).
     skip_recorded: bool = False
+    not_for_native_image: dict[str, str | None] | None = None
     # The sender of the open fix request, for the loop guard (§AR-forge-workflow-pipeline.6).
     pending_request: str | None = None
     # The fix requests `finalize` has sent, which `budgets.finalize_fixes` bounds.
@@ -124,6 +125,11 @@ class RunState:
     explore: Explore = field(default_factory=Explore)
     chunk: Chunk = field(default_factory=Chunk)
     local_ci: dict[str, Any] | None = None
+
+    @property
+    def index_only(self) -> bool:
+        """Index records have no execution metrics (§FS-not-for-native-image-record.2)."""
+        return self.skip_recorded or self.not_for_native_image is not None
 
     @property
     def group(self) -> str:

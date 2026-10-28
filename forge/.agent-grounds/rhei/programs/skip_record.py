@@ -19,11 +19,12 @@ import os
 import shutil
 from typing import Any
 
-from utility_scripts.local_ci_verification import LocalCIVerificationError, LocalCIVerificationResult, run_local_ci_verification
+from utility_scripts.local_ci_verification import LocalCIVerificationError, LocalCIVerificationResult
 
 from build_tools import (TaskResult, changed_paths, checkpoint, coordinate_task, git, head, rebase_onto_upstream,
                          reset_to, restore_paths, run_gradle)
 from exit_codes import SKIP_RECORDED
+from index_record import gate
 from run_state import RunState, runtime_path
 
 FIELD: str = "skipped-versions"
@@ -141,16 +142,6 @@ def _inside(path: str, roots: list[str]) -> bool:
     return any(path == root or path.startswith(root.rstrip("/") + "/") for root in roots)
 
 
-def _gate(state: RunState) -> LocalCIVerificationResult | None:
-    """The pre-publication gate `finalize` would run, on the index-only tree rebased onto `master`."""
-    try:
-        return run_local_ci_verification(repo_path=state.worktree, coordinates=state.coordinate,
-                                         base_commit=state.base_commit, max_fixup_attempts=0)
-    except LocalCIVerificationError as error:
-        print(f"[setup-check] the pre-publication gate rejected the skip record: {error}")
-        return None
-
-
 def apply(workspace: str, state: RunState) -> int | None:
     """Turn a verdict for the target version into the run's skip record; `None` lets the setup tail go on."""
     records: list[dict[str, str]] = added(read_index(state), read_index(state, state.checkpoint))
@@ -176,16 +167,19 @@ def apply(workspace: str, state: RunState) -> int | None:
     write_index(state, onto_base(base, [record for record in records if record["version"] not in recorded_versions(base)]))
     validated: TaskResult = run_gradle(state.worktree, coordinate_task("validateIndexFiles", state.coordinate),
                                        runtime_path(workspace, "logs", "skip-validateIndexFiles.log"))
-    gate: LocalCIVerificationResult | None = None
+    verified: LocalCIVerificationResult | None = None
     pinned: str = state.base_commit
     if validated.ok:
         checkpoint(state.worktree, state.coordinate_paths,
                    f"Record skipped versions for {state.group}:{state.artifact}")
         state.base_commit = rebase_onto_upstream(state.worktree)
         state.checkpoint = head(state.worktree)
-        gate = _gate(state)
-        if gate is not None:
-            state.local_ci = gate.to_metrics()
+        try:
+            verified = gate(state)
+        except LocalCIVerificationError as error:
+            print(f"[setup-check] the pre-publication gate rejected the skip record: {error}")
+        if verified is not None:
+            state.local_ci = verified.to_metrics()
             state.skip_recorded = True
             print(f"[setup-check] recorded {', '.join(r['version'] for r in records)} as skipped at {state.checkpoint}")
             return SKIP_RECORDED

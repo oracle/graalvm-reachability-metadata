@@ -19,8 +19,9 @@ from support import COORDINATE, PREVIOUS, FakeRepository, working_directory
 
 import forge_run  # noqa: E402
 import prepare  # noqa: E402
-from exit_codes import BAD_INPUT, OK  # noqa: E402
-from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, load, runtime_path  # noqa: E402
+from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
+from exit_codes import BAD_INPUT, NOT_FOR_NATIVE_IMAGE_RECORDED, OK  # noqa: E402
+from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, load, read_json, runtime_path  # noqa: E402
 
 SETUP_AGENT: str = "claude-code[medium]:sonnet"
 WORKER_AGENT: str = "pi[high]:openai-codex/gpt-5.6-luna"
@@ -70,6 +71,69 @@ class PrepareTest(unittest.TestCase):
         # An idle daemon of an earlier run would carry its build state into the scaffold.
         self.assertEqual("--stop", calls[0])
         self.assertTrue(calls[1].startswith("scaffold"))
+
+    def test_non_jvm_artifact_is_committed_without_a_scaffold(self) -> None:
+        """Prepare records only the marker (§FS-not-for-native-image-record.2)."""
+        self.fake.issue("library-new-request")
+        reason: str = "Maven packaging is `klib`, not a JVM JAR."
+        replacement: str = "Use `lib-jvm` if a JVM artifact is available."
+        self.fake.artifact.return_value = NativeImageEligibility(True, reason, replacement)
+
+        self.assertEqual(NOT_FOR_NATIVE_IMAGE_RECORDED, self.prepare())
+        state = load(self.fake.workspace)
+        self.fake.artifact.assert_called_once_with(COORDINATE, strict=True)
+        self.assertEqual({"reason": reason, "replacement": replacement}, state.not_for_native_image)
+        self.assertTrue(state.index_only)
+        self.assertEqual("success", state.local_ci["status"])
+        self.assertFalse(os.path.exists(state.path(state.test_dir)))
+        self.assertFalse(os.path.exists(state.path(state.metadata_dir)))
+        marker: list[dict[str, Any]] = [{"not-for-native-image": True, "reason": reason, "replacement": replacement}]
+        with open(state.path(state.index_path), encoding="utf-8") as handle:
+            self.assertEqual(json.dumps(marker, indent=2) + "\n", handle.read())
+        changed: str = subprocess.run(
+            ["git", "diff", "--name-only", state.base_commit, "HEAD"], cwd=state.worktree, check=True,
+            stdout=subprocess.PIPE, text=True).stdout.strip()
+        self.assertEqual(state.index_path, changed)
+        self.assertEqual("", subprocess.run(
+            ["git", "status", "--porcelain"], cwd=state.worktree, check=True,
+            stdout=subprocess.PIPE, text=True).stdout)
+        with open(state.path("gradle-calls.log"), encoding="utf-8") as handle:
+            calls: str = handle.read()
+        self.assertIn(f"validateIndexFiles -Pcoordinates={COORDINATE}", calls)
+        self.assertNotIn("scaffold", calls)
+        self.assertNotIn("javaTest", calls)
+        self.assertTrue(os.path.isfile(runtime_path(self.fake.workspace, "run.md")))
+        with open(os.path.join(self.fake.workspace, "runtime", "worktree-refs", "ws.forge.yaml"),
+                  encoding="utf-8") as handle:
+            self.assertEqual(f"path: {state.worktree}\n", handle.read())
+        self.assertIsNone(forge_run.outcome("prepare", NOT_FOR_NATIVE_IMAGE_RECORDED))
+        self.assertEqual(NOT_FOR_NATIVE_IMAGE_RECORDED, self.prepare())
+        self.fake.artifact.assert_called_once()
+
+    def test_a_rejected_marker_is_bad_input(self) -> None:
+        """Validation rejection reaches a maintainer (§FS-not-for-native-image-record.2)."""
+        self.fake.issue("library-new-request")
+        self.fake.artifact.return_value = NativeImageEligibility(True, "Maven packaging is `aar`.")
+        self.fake.control({"indexFails": True})
+        with contextlib.redirect_stderr(io.StringIO()) as output:
+            self.assertEqual(BAD_INPUT, self.prepare())
+        self.assertIn("validateIndexFiles rejected", output.getvalue())
+        self.assertIn("index.json does not validate", output.getvalue())
+        self.assertEqual("bad-input", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["kind"])
+
+    def test_an_existing_index_is_never_asked(self) -> None:
+        """Existing support excludes a verdict (§FS-not-for-native-image-record.1)."""
+        self.fake.supported_library()
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        self.fake.artifact.assert_not_called()
+
+    def test_a_non_new_route_is_never_asked(self) -> None:
+        """Other labels exclude a verdict (§FS-not-for-native-image-record.1)."""
+        self.fake.supported_library()
+        self.fake.issue("fails-java-run")
+        self.assertEqual(OK, self.prepare())
+        self.fake.artifact.assert_not_called()
 
     def test_the_new_worktree_readies_the_shared_dependency_cache(self) -> None:
         worktrees: list[bool] = []

@@ -1,6 +1,6 @@
 # State machine of the forge-metadata workflow (§AR-forge-workflow-pipeline.3).
 #
-#   prepare -- 0 --> setup --> setup-check
+#   prepare -- 0 --> setup --> setup-check; 22 (not-for-native-image) --> publish
 #   setup-check -- 0 --> jvm; 20 (new library) --> analyze; 21 (skip recorded) --> publish
 #   jvm -- 0 --> native-repair -- 0 --> analyze; each 10 --> fix
 #   analyze -- 10 --> cover --> measure; 20 (nothing to explore, deferred) --> native
@@ -349,6 +349,11 @@ transitions:
     to: setup
     exit_code: 0
     description: The worktree is attached and the version added.
+
+  - from: prepare
+    to: publish
+    exit_code: 22
+    description: The artifact is recorded as not-for-native-image (§FS-not-for-native-image-record.2).
 
   - from: prepare
     to: failed

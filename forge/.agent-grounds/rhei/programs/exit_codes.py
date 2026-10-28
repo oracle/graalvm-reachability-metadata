@@ -19,6 +19,8 @@ STILL_FAILING: int = 12
 NOTHING_TO_DO: int = 20
 # `setup-check` only: the setup verdict is a skip record (§FS-unsupportable-version-diagnosis.3).
 SKIP_RECORDED: int = 21
+# `prepare` only: the artifact's index is the record (§FS-not-for-native-image-record.2).
+NOT_FOR_NATIVE_IMAGE_RECORDED: int = 22
 CANNOT_FIX: int = 40
 
 # The `fix-route` exits, one per sender (§AR-forge-workflow-pipeline.2).
