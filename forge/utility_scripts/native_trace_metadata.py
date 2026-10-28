@@ -69,7 +69,10 @@ def print_metadata_progress(
         current_entry_count: int,
         reason: str,
 ) -> None:
-    """Print trace-loop progress before a no-progress failure."""
+    """Print trace-loop progress before a no-progress failure.
+
+    A stall is a tracing defect (§graal/GR-73955, §graal/GR-75812); this makes it reproducible.
+    """
     log_detail(
         GATE_STAGE,
         (

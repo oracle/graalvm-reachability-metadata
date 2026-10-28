@@ -103,9 +103,9 @@ jobs:
       # sweep makes that same burst of Maven Central requests 85 times over and draws HTTP 429.
       # Resolving it once here and restoring it per shard removes the amplification outright, which
       # is the cause; the retry in the sweep job only covers the residue.
-      #
+
       # This must precede the Crema build: that step makes `-svm` the JDK's default VM, and Gradle
-      # cannot run on Crema.
+      # cannot run on Crema (§graal/GR-80250).
       - name: "🔧 Setup the JDK that runs Gradle"
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
@@ -256,8 +256,8 @@ jobs:
 
           echo "crema-home=$CREMA_HOME" >> "$GITHUB_OUTPUT"
 
-      # Gradle itself cannot run on Crema — it fails with AbstractMethodError during launcher
-      # startup — so the daemon stays on a stock JDK and only the forked test workers use Crema.
+      # Gradle cannot run on Crema (§graal/GR-80250): it fails with AbstractMethodError at launcher
+      # startup, so the daemon stays on a stock JDK and only the forked test workers use Crema.
       - name: "🔧 Setup the JDK that runs Gradle"
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
@@ -350,7 +350,9 @@ jobs:
 
           # Per coordinate rather than per batch: one library aborting the shard would otherwise hide
           # every library behind it, and attribution is the entire point of this sweep.
-          # -PskipJacoco=true because Crema ignores -javaagent, which would publish empty coverage.
+
+          # -PskipJacoco=true because Crema ignores -javaagent (§graal/GR-77787), which would
+          # publish empty coverage.
           while IFS= read -r coordinates; do
             safe_coordinates="$(printf '%s' "$coordinates" | tr '/:' '--')"
             test_log="failure-logs/javaTest-$safe_coordinates.log"

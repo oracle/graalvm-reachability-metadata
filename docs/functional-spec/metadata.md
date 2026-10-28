@@ -65,7 +65,7 @@ native-build-tools loads no metadata for such a coordinate.
   record a JVM hidden lambda class (`Host$$Lambda/0x…`) as the reached type. A
   hidden class cannot be named, so Native Image never matches it; metadata
   generation rewrites such a condition to its host class and drops entries that
-  the rewrite makes identical.
+  the rewrite makes identical. The agent defect is §graal/GR-80926.
 - **Schema semver tracks the native-build-tools contract.** The
   `reachability-metadata` and `metadata-library-index` schemas follow semver
   against that contract: **minor and patch bumps stay backward-compatible** with

@@ -288,7 +288,8 @@ directory so far, and routes on the binary's exit code:
 | other non-zero | the code is broken in a way more metadata cannot fix | route to the analysis agent |
 
 A `172` with no new entries is a Native Image tracing defect, not a library
-metadata gap — the run already proved the access happens and named it. The gate
+metadata gap — the run already proved the access happens and named it. The
+defects tracked so far are §graal/GR-73955 and §graal/GR-75812. The gate
 prints accumulated progress and the failure-log tail so the defect is reproducible
 upstream, then falls back so the run still makes progress.
 
