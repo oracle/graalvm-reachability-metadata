@@ -55,7 +55,7 @@ detached checkout of its exact head. The review agent is the launcher's
 `review_agent` input (§FS-forge-agent-runtime-selection), always a Claude Code
 target, because the review needs the web and the GraalVM history. The agent
 receives the pull request's number, branch, head, route label, and coordinate;
-its body, which renders the local review from the descriptor; the head's check
+its body; the head's check
 results with the tail of each failed log; the bounds left
 (§FS-published-pr-review.5); and the Metadata and Native Image rules of the
 run's `fix` state, which bind its repairs exactly as they bind a run's. A pushed
@@ -71,8 +71,9 @@ the first case below that applies.
 
 ### 4.1 All green
 
-Every check passed and the local review in the body is clean: the audit, the
-reviewer gates, and the native lanes. The agent approves the pull request and
+Every check passed. Nothing local is left to read: a pull request is published
+only after the audit, the reviewer gates, and every native lane pass
+(§FS-local-branch-review.3, §FS-local-ci-equivalent-verification.2.1). The agent approves the pull request and
 arms auto-merge for exactly that head: `gh pr review <n> --approve`, then
 `gh pr merge <n> --auto --squash --match-head-commit <head>`. Approval is
 offered only when the program read every check as passed.
