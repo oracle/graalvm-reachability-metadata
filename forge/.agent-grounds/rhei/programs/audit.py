@@ -7,9 +7,10 @@
 
 The first visit checkpoints and asks `fix` to check every test and metadata
 change against the repository rules; the return visit lets the tree decide: an
-unchanged tree publishes, and a changed one reruns the native check and the
-`finalize` lane once (§FS-local-branch-review, §AR-forge-workflow-pipeline.4.3).
-There is no verdict and no second pass.
+unchanged tree publishes, and a changed one reruns `test` and the `finalize`
+lane once (§FS-local-branch-review, §AR-forge-workflow-pipeline.4.3). Neither
+visit regenerates (§FS-local-branch-review.2). There is no verdict and no
+second pass.
 """
 from __future__ import annotations
 
@@ -19,7 +20,7 @@ import finalize
 import gates
 import handoff
 import native_check
-from build_tools import changed_paths, checkpoint
+from build_tools import TaskResult, changed_paths, checkpoint
 from exit_codes import AGENT_WORK, OK, STILL_FAILING
 from run_state import RunState, load, save
 
@@ -64,14 +65,12 @@ def task(state: RunState) -> str:
     return "\n\n".join([*parts, PATTERNS])
 
 
-def commands(workspace: str, state: RunState) -> list[handoff.Failure]:
-    """The native check and the `finalize` lane, every one passing, as the request's commands.
+def commands(state: RunState) -> list[handoff.Failure]:
+    """Only `test`, passing, as the request's command; the return visit runs the `finalize` lane.
 
-    The lane opens with the harness split and routing, so they follow the regeneration
-    (§AR-forge-workflow-pipeline.5).
+    `generateMetadata` would undo the audit's metadata edits (§FS-local-branch-review.2).
     """
-    native: list[str] = list(native_check.commands(state))
-    return [handoff.Failure(command, "") for command in native + finalize.lane_commands(workspace, state)]
+    return [handoff.Failure(command, "") for command in native_check.commands(state, (native_check.TEST,))]
 
 
 def changed(state: RunState) -> list[str]:
@@ -87,7 +86,7 @@ def audit(workspace: str) -> int:
         return OK
     if not state.audit_checkpoint:
         state.audit_checkpoint = checkpoint(state.worktree, state.contribution_paths(), f"Audit {state.coordinate}")
-        handoff.write_fix_request(workspace, state, SENDER, commands(workspace, state), task(state))
+        handoff.write_fix_request(workspace, state, SENDER, commands(state), task(state))
         save(workspace, state)
         print(f"[audit] the audit request follows, from {state.audit_checkpoint}")
         return AGENT_WORK
@@ -95,7 +94,9 @@ def audit(workspace: str) -> int:
     edited: list[str] = changed(state)
     if edited:
         print(f"[audit] the audit changed {', '.join(os.path.basename(path) for path in edited)}; rerunning the checks")
-        failures: list[handoff.Failure] = (native_check.run_native_check(workspace, state, SENDER)
+        # `test`, then the lane; no regeneration (§FS-local-branch-review.3).
+        tested: TaskResult = native_check.run_task(workspace, state, SENDER, native_check.TEST)
+        failures: list[handoff.Failure] = (native_check.failures_of(tested)
                                            or finalize.run_lane(workspace, state, SENDER))
         if failures:
             save(workspace, state)

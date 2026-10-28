@@ -70,13 +70,6 @@ def native_lanes(state: RunState) -> list[dict[str, Any]]:
             for java in javas for mode in modes if java in allowed.get(mode, javas)]
 
 
-def lane_commands(workspace: str, state: RunState) -> list[str]:
-    """The lane as the commands an agent would type, for a request that asks to rerun it."""
-    commands: list[str] = [" ".join(["./gradlew", *step_arguments(step, state)]) for step in STEPS]
-    return commands + [gates.gate_command(workspace),
-                       " ".join(["./gradlew", *coordinate_task("validateIndexFiles", state.coordinate)])]
-
-
 def run_lane(workspace: str, state: RunState, prefix: str) -> list[handoff.Failure]:
     """Run each step once, stopping at the first that fails; a pass checkpoints and records the gate."""
     for step in STEPS:

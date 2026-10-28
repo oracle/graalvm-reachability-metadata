@@ -10,7 +10,8 @@
 `jvm` and `native-repair` each send one request that names only what failed,
 `native` regenerates and tests without `checkMetadataFiles`, and `finalize`
 splits and routes before its check and may ask `finalize_fixes` times; `native` may
-ask `native_fixes` times, and its `cannot-fix` spends the next request.
+ask `native_fixes` times, and its `cannot-fix` spends the next request. An audit
+edit reruns `test` and the lane, never regenerating (§AR-forge-workflow-pipeline.4.3).
 """
 from __future__ import annotations
 
@@ -23,6 +24,7 @@ from test_audit import FinalizedRun
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     OK,
+    RETURN_AUDIT,
     RETURN_FINALIZE,
     RETURN_JVM,
     RETURN_NATIVE,
@@ -150,14 +152,16 @@ class CheckStateTest(FinalizedRun):
         self.assertEqual("human-intervention", self.outcome())
         self.assertEqual(5, self.state.finalize_requests)
 
-    def test_the_audit_request_reruns_the_split_and_routing_after_regeneration(self) -> None:
+    def test_an_audit_edit_reruns_test_and_the_lane_without_regenerating(self) -> None:
         self.repaired()
-        self.assertEqual(OK, self.step("finalize"))
-        self.assertEqual(AGENT_WORK, self.step("audit"))
-        request: str = self.read("fix-request.md")
-        section: str = request.split("## Commands", 1)[1].split("##", 1)[0]
-        tasks: list[str] = [line.split()[2] for line in section.splitlines() if line.startswith("- ./gradlew")]
-        self.assertEqual(["generateMetadata", "test", *METADATA_STEPS, "spotlessApply"], tasks[:6])
+        self.assertEqual(RETURN_AUDIT, self.audited())
+        self.write(os.path.join(self.state.test_dir, "src", "test", "java", "org_example", "CodecTest.java"),
+                   "package org_example;\npublic class CodecTest {}\n")
+        before: int = len(self.tasks())
+        self.assertEqual(OK, self.step("audit"))
+        tasks: list[str] = self.tasks(before)
+        self.assertEqual(["test", *METADATA_STEPS, "spotlessApply"], tasks[:5])
+        self.assertNotIn("generateMetadata", tasks)
 
 
 if __name__ == "__main__":
