@@ -21,6 +21,7 @@ import org.graalvm.internal.tck.harness.TckExtension
 import org.graalvm.internal.tck.utils.BaseLayerUtils
 import org.graalvm.internal.tck.utils.LayeredBuildArgsUtils
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
+import org.graalvm.internal.tck.utils.SharedLayerBuildUtils
 
 /// Owns layer selection, construction and policy validation. §FS-tests.3.2, §FS-tests.3.3
 /// Construction is described by §AR-native-test-layers.
@@ -38,6 +39,8 @@ class NativeImageLayers {
     boolean layeredNativeImage
     boolean dedicatedLayer
     private File baseLayerFile
+    private File customSharedLayerFile
+    private boolean customSharedLayer
     private DedicatedLayerMetadata metadata
 
     NativeImageLayers(Project project, String libraryGAV, String libraryVersion,
@@ -89,6 +92,8 @@ class NativeImageLayers {
                 .map { String value -> value.toBoolean() }
                 .getOrElse(false)
         baseLayerFile = layeredNativeImage ? project.file(baseLayerFilePath) : null
+        customSharedLayerFile = BaseLayerUtils.resolveCustomSharedLayerFile(project, libraryGAV)
+        customSharedLayer = false
         if (dedicatedLayer && !layeredNativeImage) {
             throw new GradleException("Property 'tck.dedicatedLayer=true' requires 'tck.baseLayerFile'.")
         }
@@ -113,21 +118,57 @@ class NativeImageLayers {
             }
             nativeExtension.binaries.getByName("test").useLayer("libDedicated")
         }
+        if (layeredNativeImage && !dedicatedLayer) {
+            // This coordinate's base is a local build output, never a restored CI cache. §FS-tests.3.3
+            project.tasks.register("buildCustomSharedLayer") { task ->
+                task.description = "Builds a JDK-only shared base with this coordinate's build options"
+                task.group = LifecycleBasePlugin.BUILD_GROUP
+                task.onlyIf { customSharedLayer }
+                task.outputs.file(customSharedLayerFile)
+                task.outputs.upToDateWhen { false }
+                task.outputs.cacheIf { false }
+                task.doLast {
+                    SharedLayerBuildUtils.build(project, project.services.get(ExecOperations),
+                            customSharedLayerFile, nativeImageTool("native-image"),
+                            selectedNativeImageMode, baseLayerNativeImageArgs, false)
+                }
+            }
+        }
+
         project.tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeImageTask task ->
             if (dedicatedLayer) {
                 task.dependsOn(project.tasks.named("nativeLibDedicatedCompile"))
+            } else if (layeredNativeImage) {
+                task.dependsOn(project.tasks.named("buildCustomSharedLayer"))
+                // Rebuilt sidecar libraries invalidate consumers as well. §FS-tests.3.3
+                task.inputs.dir(project.providers.provider { baseLayerFile.parentFile })
+                        .withPropertyName("sharedLayerFiles").withPathSensitivity(PathSensitivity.RELATIVE)
             }
             task.doFirst { validateBaseLayer() }
         }
-        if (dedicatedLayer) {
-            // Reuse the configured test policy, including binaries.all, exactly once. §FS-tests.3.2
+        if (layeredNativeImage) {
+            // Reuse the configured test policy, including binaries.all, exactly once.
+            // Generated configuration paths stay lazy until the preparation tasks have run. §FS-tests.3.2
             project.afterEvaluate {
                 NativeImageOptions testOptions = nativeExtension.binaries.getByName("test")
-                NativeImageOptions baseOptions = nativeExtension.binaries.getByName("libDedicated")
-                baseOptions.buildArgs.set(project.providers.provider {
-                    LayeredBuildArgsUtils.dedicatedLayerArguments(testOptions.buildArgs.get(),
-                            testHarnessArguments.get(), metadata.resolveDedicatedLayerNativeImageArgs())
-                })
+                if (dedicatedLayer) {
+                    NativeImageOptions baseOptions = nativeExtension.binaries.getByName("libDedicated")
+                    baseOptions.buildArgs.set(project.providers.provider {
+                        LayeredBuildArgsUtils.dedicatedLayerArguments(
+                                testOptions.buildArgs.get(),
+                                testHarnessArguments.get(),
+                                metadata.resolveDedicatedLayerNativeImageArgs())
+                    })
+                } else {
+                    List<String> policy = LayeredBuildArgsUtils.libraryArguments(
+                            testOptions.buildArgs.get(), testHarnessArguments.get())
+                    if (policy != nativeImageArgs) {
+                        customSharedLayer = true
+                        baseLayerNativeImageArgs = LayeredBuildArgsUtils.sharedLayerArguments(policy)
+                        baseLayerFile = customSharedLayerFile
+                        project.logger.lifecycle("Using an uncached custom shared JDK base for {}", libraryGAV)
+                    }
+                }
             }
         }
         if (dedicatedLayer) {

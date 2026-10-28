@@ -88,6 +88,13 @@ public final class BaseLayerUtils {
         return new File(new File(root, sha256(coordinates)), "libDedicated.nil");
     }
 
+    /// Coordinate-local build output, deliberately outside the common base cache. §FS-tests.3.3
+    public static File resolveCustomSharedLayerFile(Project project, String coordinates) {
+        return project.getLayout().getBuildDirectory()
+                .file("native/customSharedLayer/" + sha256(coordinates) + "/base-layer.nil")
+                .get().getAsFile();
+    }
+
     public static String layerCreateArgument(File baseLayerFile) {
         String modules = String.join(",", BASE_LAYER_MODULES.stream()
                 .map(module -> "module=" + module)

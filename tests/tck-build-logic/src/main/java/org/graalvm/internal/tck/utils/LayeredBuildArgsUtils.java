@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 /// Shares coordinate build policy while retaining each layer's own harness arguments.
 /// Implements §FS-tests.3.2; the dedicated-layer wiring is §AR-test-harness.3.
 public final class LayeredBuildArgsUtils {
+    private static final String SECURITY_PROVIDERS = "-H:AdditionalSecurityProviders=";
     private static final String JUNIT_FEATURE = "--features=org.graalvm.junit.platform.JUnitPlatformFeature";
     // Native Build Tools adds these to test binaries; JDK-only bases have no JUnit classes.
     private static final List<String> JUNIT_EXCLUDES = List.of(
@@ -60,6 +61,24 @@ public final class LayeredBuildArgsUtils {
     public static List<String> junitBuildArguments() {
         List<String> arguments = new ArrayList<>(List.of(JUNIT_FEATURE));
         arguments.addAll(JUNIT_EXCLUDES);
+        return arguments;
+    }
+
+    /// JDK-only bases cannot resolve application security providers. §FS-tests.3.3
+    public static List<String> sharedLayerArguments(List<String> libraryArguments) {
+        List<String> arguments = new ArrayList<>();
+        for (String argument : libraryArguments) {
+            if (argument.startsWith(SECURITY_PROVIDERS)) {
+                List<String> providers = List.of(argument.substring(SECURITY_PROVIDERS.length()).split(","))
+                        .stream().filter(provider -> ClassLoader.getPlatformClassLoader()
+                                .getResource(provider.replace('.', '/') + ".class") != null).toList();
+                if (!providers.isEmpty()) {
+                    arguments.add(SECURITY_PROVIDERS + String.join(",", providers));
+                }
+            } else {
+                arguments.add(argument);
+            }
+        }
         return arguments;
     }
 
