@@ -61,7 +61,7 @@ the backstop (§PRCPL-prefer-algorithmic).
   contribution. Build logic, workflows, other coordinates beyond the routed
   owner metadata below, and generated sources outside the target test
   directory do not belong in the contribution.
-- **Routed owner metadata.** When the ownership routing of §FS-metadata.2
+- **Routed owner metadata.** When the ownership routing of §FS-metadata.2.2
   relocates an entry into a dependency the repository already hosts, the
   contribution may also carry that owner's
   `metadata/<group>/<artifact>/<version>/reachability-metadata.json`, with

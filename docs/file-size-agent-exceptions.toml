@@ -54,7 +54,7 @@ kind = "deferred"
 max_accepted = { value = 400, unit = "lines" }
 until = "AR-pr-body's per-workflow pull request bodies and AR-actions-publication's trusted Actions publisher move to documents of their own"
 reason = """
-AR-forge-publication holds the local publication pipeline, the trusted Actions publisher and AR-pr-body's per-workflow pull request bodies. At 380 non-blank lines, moving the bodies (112) alone still leaves 268, over the 250 soft limit; moving the Actions publisher (79) too leaves about 189. Each is a subject of its own, and moving them is its own change, not part of an edit that only brings the not-for-native-image route's own declaration up to date.
+AR-forge-publication holds the local publication pipeline, the trusted Actions publisher and AR-pr-body's per-workflow pull request bodies. At 380 non-blank lines, moving the bodies (112) alone still leaves 268, over the 250 soft limit; moving the Actions publisher (79) too leaves about 189. Each is a subject of its own, and moving them is its own change, not part of an edit that only brings the not-for-native-image route's own declaration up to date, nor of a grund upgrade that only numbers the six body headings it now requires.
 """
 [[exceptions]]
 path = "forge/docs/functional-spec/publication.md"
@@ -129,4 +129,24 @@ max_accepted = { value = 600, unit = "lines" }
 until = "the call-graph algorithms move to a module of their own"
 reason = """
 The generic call-graph algorithms (graph loading, strongly connected components, reachable sets) share the module with the ranking and prompt rendering they serve; extracting them is a refactor with its own tests, not part of a grund upgrade that only writes two docstring citations in full.
+"""
+[[exceptions]]
+path = "docs/architecture/ci.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 400, unit = "lines" }
+until = "the four workflow groups move to documents of their own"
+reason = """
+One file holds a declaration per workflow and composite action, in four groups (pull-request validation, scheduled, event-triggered, composite actions) that are subjects of their own; moving a group is its own change, not part of a grund upgrade that only numbers the four group headings it now requires.
+"""
+[[exceptions]]
+path = "docs/functional-spec/contribution-contract.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 400, unit = "lines" }
+until = "the review disposition (section 5) moves to a document of its own"
+reason = """
+At 353 non-blank lines, section 5, the review disposition (160), is a subject of its own; moving it leaves about 193, under the 250 soft limit. The move re-points every FS-contribution-contract.5 citation, so it is its own change, not part of a grund upgrade that only re-points one routing citation to the metadata subsection it now names.
 """

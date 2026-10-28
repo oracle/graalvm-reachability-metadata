@@ -30,7 +30,7 @@ change.
 Serves §FS-repository-functional-spec.4.3 — ci.json is that section's single source of
 truth for the OS/JDK matrix.
 
-## Pull-request validation workflows
+## 1. Pull-request validation workflows
 
 These run on `pull_request` and are the per-PR merge gates
 (§FS-repository-functional-spec.5.3). Each gates its real steps on the
@@ -173,7 +173,7 @@ on the workflow definitions themselves (for example, pinned action SHAs).
 Serves §FS-repository-functional-spec.4.3 — it gates the workflow definitions that
 section enumerates.
 
-## Scheduled workflows
+## 2. Scheduled workflows
 
 These run on `cron` (and usually `workflow_dispatch`) and keep coverage current
 and releases flowing without a human in the loop.
@@ -332,7 +332,7 @@ shape as §AR-test-all-metadata, so the existing failure tooling applies. The
 matrix comes from `generateMatrixBatchedCoordinates` (§AR-test-harness.7) via
 the `batches` input; `coordinates` narrows a run to one shard or one library.
 
-## Event-triggered automation
+## 3. Event-triggered automation
 
 ### AR-triage-new-issues: Triage new issues
 
@@ -395,7 +395,7 @@ one as the blocker instead. The script must do this itself because issues it
 opens with the workflow token raise no `issues: opened` event and never reach
 this workflow's duplicate check.
 
-## Composite actions
+## 4. Composite actions
 
 ### AR-detect-file-changes: detect-file-changes action
 
