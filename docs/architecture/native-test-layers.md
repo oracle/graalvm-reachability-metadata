@@ -27,7 +27,9 @@ Additional options select a coordinate-local JDK-only base under that test
 project's build directory. The base task runs before native compilation and
 always rebuilds; it does not use the common layer cache. Its manifest and the
 application's expected manifest use the same policy. Coordinates without extra
-options continue to consume the common cached base.
+options continue to consume the common cached base. Shared bases omit third-party
+security-provider registrations, which require the application's classpath;
+JDK provider registrations remain in the base policy (§FS-tests.3.3).
 
 ## 2. Dedicated library bases
 
