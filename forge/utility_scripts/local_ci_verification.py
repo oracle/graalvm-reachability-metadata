@@ -825,7 +825,8 @@ def _run_test_matrix_entries(
         if not coordinates or not isinstance(versions, list):
             continue
         version_text = ", ".join(str(version) for version in versions)
-        # Every entry runs; its JDK is a host requirement (§FS-local-ci-equivalent-verification.2.1).
+        # Every entry runs; its JDK is a host requirement
+        # (§FS-local-ci-equivalent-verification.2.1).
         _log_local_ci(f"Running full metadata test matrix entry for {coordinates}: {version_text}", indent_level=1)
         env = _matrix_env(entry)
         failed = _run_recorded_command(
