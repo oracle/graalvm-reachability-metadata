@@ -23,7 +23,8 @@ public class PackageDefinitionStrategyInnerManifestReadingTest {
 
         @Override
         public InputStream getResourceAsStream(String name) {
-            return super.getResourceAsStream(name.startsWith("/") ? name.substring(1) : name);
+            return super.getResourceAsStream("/META-INF/MANIFEST.MF".equals(name)
+                    ? "byte-buddy-package-manifest.mf" : name);
         }
     }
 

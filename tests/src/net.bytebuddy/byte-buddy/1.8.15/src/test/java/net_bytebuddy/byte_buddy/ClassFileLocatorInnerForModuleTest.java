@@ -16,10 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ClassFileLocatorInnerForModuleTest {
     @Test
     void locatesJdkClassInBootLayer() throws Exception {
-        try (ClassFileLocator locator = ClassFileLocator.ForModule.ofBootLayer()) {
+        try (ClassFileLocator classPath = ClassFileLocator.ForClassLoader.ofClassPath();
+             ClassFileLocator locator = ClassFileLocator.ForModule.ofBootLayer()) {
+            byte[] classPathBytes = classPath.locate(String.class.getName()).resolve();
             ClassFileLocator.Resolution resolution = locator.locate(String.class.getName());
             assertTrue(resolution.isResolved());
             byte[] bytes = resolution.resolve();
+            assertArrayEquals(classPathBytes, bytes);
             assertTrue(bytes.length > 8);
             assertArrayEquals(new byte[]{(byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe},
                     new byte[]{bytes[0], bytes[1], bytes[2], bytes[3]});

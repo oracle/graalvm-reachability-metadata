@@ -7,11 +7,13 @@
 package net_bytebuddy.byte_buddy;
 
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
+import net.bytebuddy.dynamic.ClassFileLocator;
 import net.bytebuddy.utility.JavaModule;
+import net.bytebuddy.utility.JavaType;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,9 +30,13 @@ public class JavaModuleInnerDispatcherInnerEnabledTest {
         assertEquals(getClass().getClassLoader(), application.getClassLoader());
         assertTrue(application.canRead(base));
         assertEquals(base, JavaModule.of(String.class.getModule()));
-        try (InputStream resource = application.getResourceAsStream("byte-buddy-fixture.txt")) {
-            assertNotNull(resource);
-            assertEquals("byte-buddy resource fixture", new String(resource.readAllBytes(), StandardCharsets.UTF_8).trim());
+        try (ClassFileLocator locator = ClassFileLocator.ForModule.of(application)) {
+            byte[] bytes = locator.locate(JavaType.class.getName()).resolve();
+            assertTrue(bytes.length > 8);
+            try (InputStream resource = application.getResourceAsStream("net/bytebuddy/utility/JavaType.class")) {
+                assertNotNull(resource);
+                assertArrayEquals(bytes, resource.readAllBytes());
+            }
         }
     }
 }
