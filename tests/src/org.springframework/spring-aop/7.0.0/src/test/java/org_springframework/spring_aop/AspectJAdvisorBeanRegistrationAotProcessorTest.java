@@ -52,7 +52,7 @@ public class AspectJAdvisorBeanRegistrationAotProcessorTest {
         TypeHint typeHint = runtimeHints.reflection().getTypeHint(AjcCompiledAspect.class);
 
         assertThat(typeHint).isNotNull();
-        assertThat(typeHint.getMemberCategories()).contains(MemberCategory.DECLARED_FIELDS);
+        assertThat(typeHint.getMemberCategories()).contains(MemberCategory.ACCESS_DECLARED_FIELDS);
     }
 
     @Aspect
