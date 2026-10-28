@@ -120,11 +120,16 @@ Triggers on PRs touching any project's scanned roots — `docs/`, `skills/`,
 top-level Markdown, a member's docs, agent instructions and scanned code, or a
 `grund.toml`. Installs a pinned `grund` release
 and runs `grund check` once from the repository root, which is the only scope
-where the workspace alias table resolves `§forge/<ID>` and
-`§real-use-tests/<ID>`, so the run covers every namespace. It fails on a
+where the workspace alias table resolves `§forge/<ID>`,
+`§real-use-tests/<ID>` and `<§>graal/GR-<number>`, so the run covers every
+namespace. It never fetches: a GraalVM ticket citation resolves against the
+snapshot committed in `graalvm-tickets/tickets.md`. It fails on a
 citation that no longer resolves, on an `AGENTS.md` managed block that has
 drifted from its `grund.toml`, and on a `must`-level citation direction that is
-not met (§FS-repository-functional-spec.5.6).
+not met (§FS-repository-functional-spec.5.6). A second step reads the test
+sources grund does not, `tests/src` and `real-use-tests/src`, which the trigger
+also covers, and fails a bare `GR-<number>` in a comment there that has no
+snapshot (§PRCPL-graalvm-workaround-tickets.3).
 
 The `grund` version is pinned in the workflow rather than floating: a newer
 release can render a newer managed block, which would fail every PR until

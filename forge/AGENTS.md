@@ -109,6 +109,7 @@ Do not create a namespace for a regular module or component that still belongs t
 
 Cross-project citations use §alias/<ID>, one alias segment per workspace level.
 
+- [`graal`](../graalvm-tickets/): Public snapshots of the GraalVM tickets that the repository's workarounds cite
 - [`real-use-tests`](../real-use-tests/): Realistic library scenarios run on the JVM and Native Image against the shipped metadata
 - [`root`](../): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
 

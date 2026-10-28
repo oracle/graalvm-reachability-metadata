@@ -1,0 +1,57 @@
+grund_config_version = 1
+project_name = "graal"
+project_description = "Public snapshots of the GraalVM tickets that the repository's workarounds cite"
+
+[reference]
+marker = "§"
+trigger = "$$"
+strict = true
+require_grounding = false
+inline_style = "citation-with-note" # citation-with-note | citation-only
+inline_note_suggested_lines = 1
+inline_note_max_lines = 3
+inline_note_max_columns = 100
+warn_on_suggested = false
+
+[id]
+format = "{kind}-{slug}" # placeholders: {kind} required; use {number}, {slug}, or both
+section_separator = "."
+section_heading_levels = "strict" # strict | warn | loose
+number_pattern = "\\d+"
+slug_pattern = "[a-z0-9][a-z0-9-]*"
+
+# GraalVM tickets are GraalVM's facts, not the repository's, so they keep their Jira IDs in
+# a namespace of their own; a `GR` kind beside the repository's `GRUND` would also be refused,
+# since no citable kind may prefix another. Snapshots are written by
+# `grund fetch graal/GR-<number>` through the fetch script; `must`: a GR citation without a
+# committed snapshot fails `grund check`.
+[[kinds]]
+kind = "GR"
+file = "tickets.md"
+format = "{kind}-{number}"
+resolve = "must"
+fetch = "fetch-graalvm-ticket.py"
+title = "GraalVM tickets that workarounds cite (fetched snapshots)"
+
+# `include` alone keeps the fetch script and its self-tests scanned, so their citations
+# resolve. A member whose only kind is external tickets cannot enforce citation directions,
+# so the script's FS and AR citations hold by convention, not by a `[citations]` rule.
+[scan]
+include = ["AGENTS.md", "tickets.md", "fetch-graalvm-ticket.py", "test_fetch_graalvm_ticket.py"]
+exclude = ["__pycache__"]
+extensions = ["md", "py"]
+comment_prefixes = ["#", "<!--"]
+docstring_python = false
+respect_gitignore = true
+
+[output]
+format = "text" # text | json
+color = "auto" # auto | always | never
+relative_paths = true
+
+[fmt.cross_refs]
+enabled = false
+anchor_format = "github" # github | gitlab | mkdocs | pandoc | none
+
+[citations]
+default = "may"

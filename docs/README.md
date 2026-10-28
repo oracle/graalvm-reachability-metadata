@@ -19,10 +19,14 @@ it owns its own motivation, goals, spec, and architecture under
 [../forge/docs/](../forge/docs). The real-use tests project is a second
 member, with its documentation under
 [../real-use-tests/docs/](../real-use-tests/docs/README.md): realistic library
-scenarios that run against the shipped metadata without changing it. Cite root
-facts as `§<ID>` here and as `§root/<ID>` from a member; cite member facts as
-`§forge/<ID>` and `§real-use-tests/<ID>` from here. Run `grund check` from the
-repository root to validate every namespace.
+scenarios that run against the shipped metadata without changing it. The
+`graal` member, in [../graalvm-tickets/](../graalvm-tickets/AGENTS.md), holds
+only the `GR` kind: public snapshots of the GraalVM tickets that workarounds
+cite (§PRCPL-graalvm-workaround-tickets), cited as `<§>graal/GR-<number>` and
+written by `grund fetch graal/GR-<number>`. Cite root facts as `§<ID>` here and
+as `§root/<ID>` from a member; cite member facts as `§forge/<ID>`,
+`§real-use-tests/<ID>` and `<§>graal/GR-<number>` from here. Run `grund check`
+from the repository root to validate every namespace.
 
 ## Directory structure
 
