@@ -53,7 +53,7 @@ repository is wired. The directory is the home; the file only groups.
 
 - [grund.md](grund.md) — `GRUND-repository-motivation`: why this repository exists.
 - [goals.md](goals.md) — the outcome goals: tested metadata, broad version coverage, fresh releases, and no regressions.
-- [principles.md](principles.md) — the cross-cutting principles: `PRCPL-prefer-algorithmic` (everything that can be algorithmic should be algorithmic) and `PRCPL-verify-inputs` (define inputs exactly and verify them before running).
+- [principles.md](principles.md) — the cross-cutting principles: `PRCPL-prefer-algorithmic` (everything that can be algorithmic should be algorithmic), `PRCPL-verify-inputs` (define inputs exactly and verify them before running), and `PRCPL-graalvm-workaround-tickets` (every GraalVM workaround cites its GraalVM ticket).
 - [functional-spec/functional-spec.md](functional-spec/functional-spec.md) — `FS-repository-functional-spec`: the system's behavior, requirements, the native-build-tools interface contract, library-version compatibility automation, and how each audience uses the repository.
 - [functional-spec/repository-status.md](functional-spec/repository-status.md) — `FS-repository-status-report`: issue progress measurements and their HTML/JSON representations.
 - [functional-spec/test-contract.md](functional-spec/test-contract.md) — `FS-test-contract`: the point-by-point contract for writing a test — what it must have, must not do, should do, and how it behaves under Native Image.
