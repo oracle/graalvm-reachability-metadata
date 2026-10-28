@@ -271,8 +271,12 @@ public class Neo4j_bolt_connection_pooledTest {
         await(second.close());
         assertThat(secondDelegate.closeCount()).isEqualTo(1);
 
+        BoltConnection third = await(connect(provider, AUTH_TOKEN));
+        assertThat(third.state()).isEqualTo(BoltConnectionState.OPEN);
+
         await(provider.close());
-        assertThat(delegateProvider.closeCount()).isEqualTo(1);
+        assertThat(third.state()).isEqualTo(BoltConnectionState.CLOSED);
+        assertThat(delegateProvider.closeCount()).isZero();
         assertThat(metrics.events()).contains("connectionPoolClose");
 
         assertThatThrownBy(() -> await(connect(provider, AUTH_TOKEN)))
