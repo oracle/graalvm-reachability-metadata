@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AnnotationImplTest {
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void convertsAnnotationModelToTypedAnnotation() throws Exception {
         ConstPool pool = new ConstPool("AnnotationModel");
         Annotation model = AnnotationSupport.annotation(AnnotationSupport.Label.class, pool);
