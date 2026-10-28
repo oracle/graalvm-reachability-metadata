@@ -29,7 +29,7 @@ from dispatcher.config import LABEL_HUMAN_INTERVENTION
 from dispatcher.issue_admin import add_issue_label, post_issue_comment
 from dispatcher.issue_claiming import revert_issue_claim, try_claim_issue
 from dispatcher.issue_form import check_issue_form, reject_issue_form
-from dispatcher.worktrees import fetch_issue_base_commit
+from dispatcher.worktrees import fetch_issue_base_commit, remove_worktree
 
 TEMPLATE: str = "forge-metadata"
 OUTCOME: str = os.path.join("runtime", "forge", "outcome.json")
@@ -126,20 +126,22 @@ def instantiate_command(issue_number: int, setup_agent: str, worker_agent: str, 
             f"worker_agent={worker_agent}", "--output", workspace]
 
 
-def release_worktree(repo: str, workspace: str) -> None:
-    """Drop a finished attempt's worktree and branch; its workspace stays as the record.
+def release_worktree(repo: str, workspace: str, keep_branch: bool = False) -> None:
+    """Drop a finished attempt's worktree, and its branch unless kept; the workspace stays.
 
-    A re-claimed issue starts a fresh run from a freshly pinned base rather than
-    resuming a run that reached a final state.
+    The worktree goes with its Gradle daemons and home (§FS-forge-run-requirements.4).
+    A re-claimed issue drops the branch too: it starts a fresh run from a freshly
+    pinned base rather than resuming a run that reached a final state.
     """
     state_path: str = os.path.join(workspace, "runtime", "forge", "state.json")
     if os.path.isfile(state_path):
         with open(state_path, encoding="utf-8") as handle:
             state: dict[str, Any] = json.load(handle)
         if os.path.isdir(state["worktree"]):
-            subprocess.run(["git", "worktree", "remove", "--force", state["worktree"]], cwd=repo, check=False)
-        subprocess.run(["git", "branch", "-D", state["branch"]], cwd=repo, check=False,
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            remove_worktree(repo, state["worktree"])
+        if not keep_branch:
+            subprocess.run(["git", "branch", "-D", state["branch"]], cwd=repo, check=False,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: str,
@@ -171,6 +173,18 @@ def record_outcome(workspace: str) -> dict[str, str]:
                        "reason": "the run stopped before a final state"}, handle)
     with open(path, encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def finish_run(repo: str, workspace: str) -> dict[str, str]:
+    """Record the outcome of a run `rhei run` returned from, then give up its worktree.
+
+    A finished attempt keeps only its workspace and branch as the record; one whose
+    launcher died never gets here, so it is resumed in its worktree
+    (§AR-forge-workflow-pipeline.1).
+    """
+    outcome: dict[str, str] = record_outcome(workspace)
+    release_worktree(repo, workspace, keep_branch=True)
+    return outcome
 
 
 def close_out(claimed: Claim, outcome: dict[str, str]) -> None:

@@ -17,10 +17,12 @@ import os
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import ANY, patch
+from unittest.mock import ANY, Mock, patch
 
 import forge_metadata
 from dispatcher import issue_fetch, pr_review, run_launch
+from tests.test_gradle_environment import _init_git_repo_with_worktree
+from utility_scripts.gradle_environment import FORGE_GRADLE_USER_HOME_ENV, gradle_command_environment
 
 FORGE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -181,6 +183,80 @@ class WorkspaceTest(unittest.TestCase):
         halted: str = self.attempt(1, finished=False)
         run_launch.record_outcome(halted)
         self.assertEqual(os.path.join(self.forge, "runs", "forge-7-2"), run_launch.workspace_path(self.forge, 7))
+
+
+class ReleaseTest(unittest.TestCase):
+    """A finished attempt gives up its worktree with its Gradle home (§AR-forge-workflow-pipeline.1).
+
+    §FS-forge-run-requirements.4
+    """
+
+    def setUp(self) -> None:
+        root: str = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, root, True)
+        self.repo: str = os.path.join(root, "repo")
+        self.worktree: str = os.path.join(root, "linked")
+        _init_git_repo_with_worktree(self.repo, self.worktree)
+        with open(os.path.join(self.worktree, "gradlew"), "w", encoding="utf-8") as handle:
+            handle.write("#!/bin/sh\n")
+        self.workspace: str = os.path.join(root, "runs", "forge-7-1")
+        os.makedirs(os.path.join(self.workspace, "runtime", "forge"))
+        with open(os.path.join(self.workspace, "runtime", "forge", "state.json"), "w", encoding="utf-8") as handle:
+            json.dump({"worktree": self.worktree, "branch": "linked"}, handle)
+        environment = patch.dict(os.environ, {FORGE_GRADLE_USER_HOME_ENV: os.path.join(root, "gradle-home")})
+        environment.start()
+        self.addCleanup(environment.stop)
+        self.home: str = gradle_command_environment(self.worktree)["GRADLE_USER_HOME"]
+        stop = patch("utility_scripts.gradle_dependency_cache.stop_gradle_daemons_of_home")
+        self.stop_daemons: Mock = stop.start()
+        self.addCleanup(stop.stop)
+
+    def has_branch(self) -> bool:
+        return subprocess.run(["git", "rev-parse", "--verify", "--quiet", "linked"], cwd=self.repo,
+                              stdout=subprocess.DEVNULL).returncode == 0
+
+    def test_a_returned_run_records_its_outcome_then_gives_up_its_worktree_and_home(self) -> None:
+        recorded: list[bool] = []
+        self.stop_daemons.side_effect = lambda *_: recorded.append(
+            os.path.isfile(os.path.join(self.workspace, run_launch.OUTCOME)))
+        self.assertEqual("infrastructure", run_launch.finish_run(self.repo, self.workspace)["kind"])
+        # The daemons are stopped with the worktree's own wrapper, before the worktree goes.
+        self.assertEqual([True], recorded)
+        self.assertEqual((self.home, self.worktree), self.stop_daemons.call_args.args[:2])
+        self.assertFalse(os.path.exists(self.home))
+        self.assertFalse(os.path.exists(self.worktree))
+        # The branch stays with the workspace as the record until the issue is claimed again.
+        self.assertTrue(self.has_branch())
+
+    def test_a_reclaimed_issue_also_drops_the_branch(self) -> None:
+        run_launch.release_worktree(self.repo, self.workspace)
+        self.assertFalse(os.path.exists(self.worktree))
+        self.assertFalse(os.path.exists(self.home))
+        self.assertFalse(self.has_branch())
+
+    def test_an_attempt_whose_launcher_died_is_resumed_in_its_worktree(self) -> None:
+        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        forge: str = os.path.dirname(os.path.dirname(self.workspace))
+        with patch.object(run_launch.subprocess, "run") as run:
+            self.assertEqual(self.workspace, run_launch.start_run(forge, claimed, "claude-code:sonnet", "pi:x/y", []))
+        self.assertEqual([["rhei", "run", self.workspace, "--dashboard"]], [call.args[0] for call in run.call_args_list])
+        self.assertTrue(os.path.isdir(self.worktree))
+
+    def test_the_launcher_releases_a_returned_run_before_its_close_out(self) -> None:
+        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        steps = Mock()
+        steps.finish_run.return_value = {"outcome": "completed"}
+        with patch.object(forge_metadata, "fetch_candidates", return_value=[("library-new-request", claimed.issue)]), \
+                patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
+                patch.object(forge_metadata, "claim", return_value=claimed), \
+                patch.object(forge_metadata, "start_run", return_value=self.workspace), \
+                patch.object(forge_metadata, "finish_run", steps.finish_run), \
+                patch.object(forge_metadata, "close_out", steps.close_out), \
+                contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(forge_metadata.RAN, forge_metadata.main([]))
+        self.assertEqual([("finish_run", (forge_metadata.REPO_DIR, self.workspace)),
+                          ("close_out", (claimed, {"outcome": "completed"}))],
+                         [(name, args) for name, args, _ in steps.mock_calls])
 
 
 class ReviewEntryTest(unittest.TestCase):

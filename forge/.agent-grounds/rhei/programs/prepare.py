@@ -26,6 +26,7 @@ from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
     find_dynamic_access_exhaust_report_path,
 )
+from utility_scripts.gradle_dependency_cache import ensure_shared_dependency_cache
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_measurements import load_library_baseline
 from utility_scripts.library_stats import load_library_stats_entry
@@ -79,6 +80,20 @@ def spawn_worktree(repo: str, path: str, branch: str, base: str) -> None:
     git(repo, "worktree", "add", "--quiet", "-B", branch, path, base)
     # The path's Gradle home outlives the worktree, and so do its idle daemons.
     stop_gradle_daemons(path)
+    share_dependency_cache(repo, path)
+
+
+def share_dependency_cache(repo: str, worktree: str) -> None:
+    """Prune orphaned Gradle homes, warm the checkout home from `worktree`, and publish its cache.
+
+    Best effort (§FS-forge-run-requirements.4): a failure is reported, the run
+    continues, and its worktree downloads more. The run's Gradle commands read
+    the published cache through `gradle_command_environment`.
+    """
+    try:
+        ensure_shared_dependency_cache(repo, worktree)
+    except OSError as error:
+        print(f"WARNING: the shared Gradle dependency cache was not prepared: {error}", file=sys.stderr)
 
 
 def attach_worktree(workspace: str, worktree: str) -> None:
