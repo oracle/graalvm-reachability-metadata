@@ -71,10 +71,17 @@ class FinalizedRun(unittest.TestCase):
 
     def repaired(self, label: str = "library-new-request", body: str = "",
                  tested_versions: tuple[str, ...] = ("1.5.0",), owns_version: bool = False) -> None:
-        """Prepare and set up the issue, and let `repair` pass: the run is ready for `finalize`.
+        """Prepare and set up the issue, and let `jvm` and `native-repair` pass: the run is ready for `finalize`.
 
         `owns_version` gives the run's version its own index entry, with 5 of 6 calls covered.
         """
+        if self.set_up(label, body, tested_versions, owns_version) == OK:
+            self.assertEqual(OK, self.step("jvm"))
+            self.assertEqual(OK, self.step("native-repair"))
+
+    def set_up(self, label: str = "library-new-request", body: str = "",
+               tested_versions: tuple[str, ...] = ("1.5.0",), owns_version: bool = False) -> int:
+        """Prepare the issue and run the setup tail; return its exit, `0` when `jvm` comes next."""
         if label != "library-new-request":
             self.fake.supported_library(tested_versions)
         if owns_version:
@@ -90,8 +97,7 @@ class FinalizedRun(unittest.TestCase):
             json.dump(entries, handle, indent=2)
         checked: int = self.step("setup-check")
         self.assertIn(checked, (OK, NOTHING_TO_DO))
-        if checked == OK:
-            self.assertEqual(OK, self.step("repair"))
+        return checked
 
     def audited(self, result: str = "fixed") -> int:
         """Finalize, send the audit, play `fix`, and route back."""

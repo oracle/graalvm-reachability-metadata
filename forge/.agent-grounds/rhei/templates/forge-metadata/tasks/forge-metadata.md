@@ -8,6 +8,7 @@
   passes, {{class_attempts}} attempts per class, {{explore_passes}} passes in
   all; a `fails-*` issue defers above {{defer_classes}} classes, and a chunk
   spends at most {{defer_classes}} classes.
+- Finalize budget: at most {{finalize_fixes}} fix requests.
 - Source checkout: `{{repo_checkout}}`; worktree root: `{{worktree_root}}`.
 - Purpose: resolve the issue by adding or repairing its library version in a
   dedicated worktree, covering its dynamic-access call sites with tests,

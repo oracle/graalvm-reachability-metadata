@@ -17,20 +17,22 @@ AGENT_WORK: int = 10
 JVM_TESTS_FAIL: int = 11
 STILL_FAILING: int = 12
 NOTHING_TO_DO: int = 20
-# `repair` only: the setup verdict is recorded as a skip (§FS-unsupportable-version-diagnosis.3).
+# `setup-check` only: the setup verdict is a skip record (§FS-unsupportable-version-diagnosis.3).
 SKIP_RECORDED: int = 21
 CANNOT_FIX: int = 40
 
 # The `fix-route` exits, one per sender (§AR-forge-workflow-pipeline.2).
-RETURN_REPAIR: int = 30
+RETURN_JVM: int = 30
 RETURN_MEASURE: int = 31
 RETURN_NATIVE: int = 32
 RETURN_FINALIZE: int = 33
 RETURN_AUDIT: int = 34
+RETURN_NATIVE_REPAIR: int = 35
 RETURN_CODES: dict[str, int] = {
-    "repair": RETURN_REPAIR,
+    "jvm": RETURN_JVM,
     "measure": RETURN_MEASURE,
     "native": RETURN_NATIVE,
     "finalize": RETURN_FINALIZE,
     "audit": RETURN_AUDIT,
+    "native-repair": RETURN_NATIVE_REPAIR,
 }

@@ -3,15 +3,18 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The `finalize` program: style, stats, the reviewer gates, and the pre-publication gate.
+"""The `finalize` program: the metadata check, style, stats, and the reviewer and pre-publication gates.
 
-Each runs once. `spotlessApply` runs first, then `spotlessCheck`, `checkstyle`, and
-`generateLibraryStats` over the coordinate, then the reviewer gates
-(§FS-local-ci-equivalent-verification.1.1), and then, on the run rebased onto
+Each runs once. `splitTestOnlyMetadata` and `routeForeignMetadata` run first,
+after the last regeneration, then `checkMetadataFiles` judges what they leave
+(§AR-forge-workflow-pipeline.5); then `spotlessApply`, `spotlessCheck`,
+`checkstyle`, and `generateLibraryStats` over the coordinate, the reviewer gates
+(§FS-local-ci-equivalent-verification.1.1), and, on the run rebased onto
 fresh `master`, the pre-publication gate (§FS-local-ci-equivalent-verification.2)
 with the coordinate's native lanes and no agent fixup of its own; the first
 failing step becomes the fix request, a failing lane with its exact reproduction
-command (§AR-forge-workflow-pipeline.4.4).
+command (§AR-forge-workflow-pipeline.4.4), up to `finalize_fixes` requests
+(§AR-forge-workflow-pipeline.6).
 `audit` reruns the same lane over its edit (§AR-forge-workflow-pipeline.4.3).
 """
 from __future__ import annotations
@@ -35,6 +38,10 @@ from run_state import RunState, load, runtime_path, save
 
 SENDER: str = "finalize"
 STEPS: tuple[list[str], ...] = (
+    # `routeForeignMetadata` changes nothing when no condition is foreign.
+    ["splitTestOnlyMetadata"],
+    ["routeForeignMetadata"],
+    ["checkMetadataFiles"],
     ["spotlessApply"],
     ["spotlessCheck"],
     ["checkstyle"],
@@ -110,11 +117,13 @@ def finalize(workspace: str) -> int:
         print(f"[finalize] every check passes at {state.checkpoint}")
         return OK
     commands: str = ", ".join(sorted({failure.command for failure in failures}))
-    if handoff.guard_tripped(state, SENDER):
+    if state.finalize_requests >= state.budgets.finalize_fixes:
         save(workspace, state)
-        print(f"[finalize] `{commands}` still fails after its fix")
+        print(f"[finalize] `{commands}` still fails after the last of {state.budgets.finalize_fixes} fixes")
         return STILL_FAILING
     handoff.write_fix_request(workspace, state, SENDER, failures)
+    state.finalize_requests += 1
     save(workspace, state)
-    print(f"[finalize] `{commands}` fails; a fix request follows")
+    print(f"[finalize] `{commands}` fails; fix request {state.finalize_requests} of "
+          f"{state.budgets.finalize_fixes} follows")
     return AGENT_WORK

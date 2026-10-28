@@ -10,7 +10,7 @@ skip record before anything else (§FS-unsupportable-version-diagnosis.3),
 verifies the four URLs, downloads the main sources, writes the filter from the
 library JAR, and checkpoints (§AR-forge-workflow-pipeline.4.1). A new library
 has no version to repair and goes to `analyze`; every other route goes to
-`repair`.
+`jvm`.
 """
 from __future__ import annotations
 

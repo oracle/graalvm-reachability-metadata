@@ -5,7 +5,7 @@
 
 """The setup verdict as a skip record (§FS-unsupportable-version-diagnosis.3).
 
-A recorded skip goes from `repair` straight to `publish` with an index-only
+A recorded skip goes from `setup-check` straight to `publish` with an index-only
 tree, a skip edit on any other label is reverted, and a verdict the index
 rejects falls through to the normal setup and repair.
 """
@@ -69,9 +69,10 @@ class SkipRecordTest(unittest.TestCase):
             json.dump(entries, handle, indent=2)
 
     def repaired(self) -> None:
-        """The setup tail falls through, and `repair` runs the version."""
+        """The setup tail falls through, and `jvm` and `native-repair` run the version."""
         self.assertEqual(OK, self.step("setup-check"))
-        self.assertEqual(OK, self.step("repair"))
+        self.assertEqual(OK, self.step("jvm"))
+        self.assertEqual(OK, self.step("native-repair"))
 
     def test_run_note_names_the_bar_only_on_fails_labels(self) -> None:
         self.prepare("fails-java-run")
