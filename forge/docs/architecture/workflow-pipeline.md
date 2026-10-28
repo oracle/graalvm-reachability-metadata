@@ -57,6 +57,18 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
 claimed, reviews the open Forge pull requests with the `review_agent`
 (§FS-published-pr-review, §AR-forge-dispatcher-decomposition.1).
 
+Without `--label`, every cycle fetches every queue in the claim order above.
+Each `--label LABEL[:COUNT]` instead gives its queue COUNT turns in a row, one
+by default, in a rotation that follows the order the labels are given, so a
+long queue cannot starve the others: `--label library-new-request:2 --label
+fails-java-run` serves the new-library queue twice, then `fails-java-run` once,
+and starts over. A label given twice, or a COUNT that is not a positive integer,
+is an argument error. Each run takes the next turn and fetches only that turn's
+queue. A queue with nothing to claim passes the turn, and the rest of its turns
+in this rotation, to the next queue in the same loop iteration, so nothing can
+be claimed only when no queue in the rotation can; the idle review and wait
+follow, and the rotation resumes at the turn it stood at.
+
 ## 2. Exit codes
 
 | Exit | Meaning |
