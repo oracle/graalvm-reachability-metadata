@@ -204,11 +204,10 @@ changed-metadata matrix does, and hands the gate one entry per pairing for the
 run's coordinate and version. The gate runs each entry through the matrix
 runner `reproduce_full_ci` also uses — `checkMetadataFiles`, then
 `run-consecutive-tests.sh` under that mode and the JDK its `GRAALVM_HOME_*`
-variable names — after index validation and the Docker scan. A `latest-ea`
-entry whose GraalVM is not installed is skipped and recorded, not run. Every
-entry's outcome is kept in the gate's record, which `finalize` stores in the
-run state and `publish` puts in the descriptor for the pull request body. The
-first failing entry becomes the fix request; its command is the failing stage's
+variable names — after index validation and the Docker scan. Every entry
+runs: a missing JDK is an infrastructure failure, since each lane's GraalVM is
+a host requirement (§FS-forge-host-requirements). The first failing entry
+becomes the fix request; its command is the failing stage's
 own reproduction line from `run-consecutive-tests.sh` — version and mode — with
 the entry's JDK prefixed. Each Gradle call of the script is capped at five
 minutes, so three lanes bound the cost that the `finalize` and `audit` program

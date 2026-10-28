@@ -157,13 +157,10 @@ changed-metadata matrix — `nativeImageModes`, restricted by
 Spring AOT smoke tests stay with repository CI. The cost is one native build per
 lane.
 
-The `25` lane is a host requirement (§FS-forge-host-requirements). The
-`latest-ea` lanes run only when a usable GraalVM is installed at
-`GRAALVM_HOME_LATEST_EA`; otherwise they are skipped with a log line saying so,
-and their absence never fails the run. The verification record lists every
-lane — coordinate, version, mode, Java version, and whether it passed, failed,
-or was skipped — and the pull request description states it, so a reader knows
-which lanes were verified locally.
+Every lane always runs. Each lane's GraalVM is a host requirement
+(§FS-forge-host-requirements), so no lane is ever skipped, and a host without
+one stops the run as an infrastructure failure. Because every lane runs,
+neither the verification record nor the pull request description lists them.
 
 The first failing lane is an ordinary fix request whose command reproduces
 exactly that lane: the coordinate, the version, the mode, and the JDK.
