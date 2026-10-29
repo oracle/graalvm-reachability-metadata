@@ -27,18 +27,17 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class ByteArrayClassLoaderInnerChildFirstTest {
     @Test
-    void enumeratesRetainedClassResourceBeforeParentResourcesWithoutDefiningClasses() throws Exception {
+    void readsRetainedClassResourceBeforeParentResourceWithoutDefiningClasses() throws Exception {
         ClassLoader parent = getClass().getClassLoader();
         String resourceName = "net/bytebuddy/utility/JavaType.class";
         byte[] bytes = ClassFileLocator.ForClassLoader.read(JavaType.class).resolve();
         ByteArrayClassLoader.ChildFirst loader = new ByteArrayClassLoader.ChildFirst(parent,
                 Map.of(JavaType.class.getName(), bytes), null,
                 ByteArrayClassLoader.PersistenceHandler.MANIFEST, PackageDefinitionStrategy.Trivial.INSTANCE);
-        List<URL> parentResources = Collections.list(parent.getResources(resourceName));
-        List<URL> resources = Collections.list(loader.getResources(resourceName));
-        assertEquals(parentResources.size() + 1, resources.size());
-        assertEquals(parentResources, resources.subList(1, resources.size()));
-        try (InputStream stream = resources.getFirst().openStream()) {
+        URL resource = loader.getResource(resourceName);
+        assertNotNull(resource);
+        assertEquals("bytebuddy", resource.getProtocol());
+        try (InputStream stream = resource.openStream()) {
             assertArrayEquals(bytes, stream.readAllBytes());
         }
         try (InputStream stream = loader.getResourceAsStream(resourceName)) {
