@@ -6,11 +6,29 @@
  */
 package com_alibaba_nacos.nacos_client_basic;
 
+import com.alibaba.nacos.client.auth.ram.identify.Credentials;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-class Nacos_client_basicTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Timeout(30)
+public class Nacos_client_basicTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void credentialsRequireBothAccessAndSecretKeys() {
+        Credentials credentials = new Credentials();
+        assertFalse(credentials.valid());
+
+        credentials.setAccessKey("client-access-key");
+        assertFalse(credentials.valid());
+
+        credentials.setSecretKey("client-secret-key");
+        credentials.setTenantId("client-tenant");
+        assertTrue(credentials.valid());
+        assertEquals("client-access-key", credentials.getAccessKey());
+        assertEquals("client-secret-key", credentials.getSecretKey());
+        assertEquals("client-tenant", credentials.getTenantId());
     }
 }
