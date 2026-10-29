@@ -1,0 +1,35 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "ant:ant:$libraryVersion"
+    testImplementation "ant:ant-launcher:$libraryVersion"
+    testImplementation "ant:ant-nodeps:$libraryVersion"
+    testImplementation "ant:ant-trax:$libraryVersion"
+    testImplementation "ant:ant-javamail:$libraryVersion"
+    testImplementation 'xml-resolver:xml-resolver:1.2'
+    testImplementation 'xalan:xalan:2.7.0'
+    testImplementation 'com.h2database:h2:2.3.232'
+    testImplementation 'javax.mail:mail:1.4.7'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
