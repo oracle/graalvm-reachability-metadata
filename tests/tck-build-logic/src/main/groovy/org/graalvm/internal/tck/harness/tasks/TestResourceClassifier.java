@@ -53,8 +53,8 @@ final class TestResourceClassifier {
     }
 
     /// A resource glob is a test resource when it names a file under the test project's
-    /// `src/test/resources`, a `.properties` file of a bundle that a test resource provides, or
-    /// matches only resources in a test package (§FS-repository-functional-spec.5.1).
+    /// `src/test/resources`, a `.properties` lookup of a test bundle, or matches only resources
+    /// in a test package (§FS-repository-functional-spec.5.1).
     private boolean globIsTestResource(JsonNode entry) {
         JsonNode globNode = entry.isObject() ? entry.get("glob") : null;
         if (globNode == null || !globNode.isTextual()) {
@@ -66,9 +66,9 @@ final class TestResourceClassifier {
                 || isTestPackageResourceGlob(resourcePath);
     }
 
-    /// Whether `resourcePath` is the base or a `_<locale>` `.properties` file of a bundle that the
-    /// test resources provide, as `bundleIsTestResource` decides. A `ResourceBundle` lookup records
-    /// every candidate locale file, including those the tests never wrote, such as `_en_US`.
+    /// Whether `resourcePath` is the base or a `_<locale>` `.properties` file of a test bundle, as
+    /// `isTestBundle` decides, so the lookups move with the bundle entry. A `ResourceBundle` lookup
+    /// records every candidate locale file, including those the tests never wrote, such as `_en_US`.
     private boolean isTestBundlePropertiesLookup(String resourcePath) {
         if (!resourcePath.endsWith(PROPERTIES_SUFFIX)) {
             return false;
@@ -77,36 +77,36 @@ final class TestResourceClassifier {
         int nameStart = name.lastIndexOf('/') + 1;
         for (int end = name.length(); end > nameStart; end = name.lastIndexOf('_', end - 1)) {
             String basePath = name.substring(0, end);
-            if (isBundlePropertiesFile(resourcePath, basePath) && testResourcesProvideBundle(basePath)) {
+            if (isBundlePropertiesFile(resourcePath, basePath) && isTestBundle(basePath)) {
                 return true;
             }
         }
         return false;
     }
 
-    /// A resource bundle is a test resource when the test project's `src/test/resources` provides
-    /// its base `.properties` file or a `_<locale>` variant of it, or when it names a test-package
-    /// class, a `ResourceBundle` subclass the tests define. Like a default-package type, a bundle
-    /// class in the default package never moves; only a `.properties` file can move such a bundle.
-    /// A bundle nothing provides stays shipped (§FS-repository-functional-spec.5.1).
+    /// A resource bundle entry is a test resource when it names a test bundle, as `isTestBundle`
+    /// decides.
     private boolean bundleIsTestResource(JsonNode entry) {
         JsonNode bundleNode = entry.isObject() ? entry.get("bundle") : null;
         if (bundleNode == null || !bundleNode.isTextual()) {
             return false;
         }
-        String basePath = bundleNode.asText().replace('.', '/');
+        return isTestBundle(bundleNode.asText().replace('.', '/'));
+    }
+
+    /// The bundle at `basePath` is a test bundle when the test project's `src/test/resources`
+    /// provides its base `.properties` file or a `_<locale>` variant of it, or when it names a
+    /// test-package class, a `ResourceBundle` subclass the tests define. Like a default-package
+    /// type, a bundle class in the default package never moves; only a `.properties` file can move
+    /// such a bundle. A bundle in an allowed package, or one nothing provides, stays shipped
+    /// (§FS-repository-functional-spec.5.1).
+    private boolean isTestBundle(String basePath) {
         if (isAllowedPackageBundle(basePath)) {
             return false;
         }
         // A `ResourceBundle` subclass the tests define has its class file in a test package.
-        return testResourcesProvideBundle(basePath) || isTestPackageResourceGlob(basePath + CLASS_FILE_SUFFIX);
-    }
-
-    /// Whether a test resource is the base `.properties` file or a `_<locale>` variant of the
-    /// bundle at `basePath`, outside the allowed packages.
-    private boolean testResourcesProvideBundle(String basePath) {
-        return !isAllowedPackageBundle(basePath)
-                && testResources.stream().anyMatch(resource -> isBundlePropertiesFile(resource, basePath));
+        return testResources.stream().anyMatch(resource -> isBundlePropertiesFile(resource, basePath))
+                || isTestPackageResourceGlob(basePath + CLASS_FILE_SUFFIX);
     }
 
     /// A library's own bundle stays even when a test translates it or sits in its package

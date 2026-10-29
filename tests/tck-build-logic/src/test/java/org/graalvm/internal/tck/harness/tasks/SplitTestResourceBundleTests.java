@@ -78,6 +78,15 @@ class SplitTestResourceBundleTests extends MetadataTaskTestSupport {
     }
 
     @Test
+    void movesLocaleLookupsOfTestPackageBundleClass() throws IOException {
+        assertGlobsSplit(
+                List.of(),
+                List.of("com_example/lib/LibMessages_en.properties", "com_example/lib/LibMessages_en_US.properties"),
+                List.of("com/example/LibMessages_en.properties")
+        );
+    }
+
+    @Test
     void keepsLocaleLookupsOfBundlesTestResourcesDoNotProvide() throws IOException {
         assertGlobsSplit(
                 List.of("catalog/Messages.properties", "com/example/Messages_fr.properties"),
