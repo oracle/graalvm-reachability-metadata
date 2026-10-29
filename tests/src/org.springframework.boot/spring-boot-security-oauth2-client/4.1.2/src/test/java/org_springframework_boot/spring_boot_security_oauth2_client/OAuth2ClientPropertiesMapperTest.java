@@ -36,7 +36,7 @@ public class OAuth2ClientPropertiesMapperTest {
         Map<String, ClientRegistration> clients = new OAuth2ClientPropertiesMapper(properties)
                 .asClientRegistrations();
 
-        assertThat(clients).containsOnlyKeys("github", "workspace");
+        assertThat(clients.keySet()).containsExactlyInAnyOrder("github", "workspace");
         ClientRegistration github = clients.get("github");
         assertThat(github.getRegistrationId()).isEqualTo("github");
         assertThat(github.getClientId()).isEqualTo("source-control");

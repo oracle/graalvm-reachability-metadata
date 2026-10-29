@@ -44,7 +44,7 @@ public class OAuth2ClientPropertiesTest {
                 .bind("spring.security.oauth2.client", Bindable.of(OAuth2ClientProperties.class)).get();
         properties.afterPropertiesSet();
 
-        assertThat(properties.getRegistration()).containsOnlyKeys("portal");
+        assertThat(properties.getRegistration().keySet()).containsExactly("portal");
         Registration registration = properties.getRegistration().get("portal");
         assertThat(registration.getProvider()).isEqualTo("identity");
         assertThat(registration.getClientId()).isEqualTo("portal-client");
@@ -54,7 +54,7 @@ public class OAuth2ClientPropertiesTest {
         assertThat(registration.getRedirectUri()).isEqualTo("{baseUrl}/login/oauth2/code/{registrationId}");
         assertThat(registration.getScope()).containsExactlyInAnyOrder("openid", "profile", "email");
         assertThat(registration.getClientName()).isEqualTo("Employee portal");
-        assertThat(properties.getProvider()).containsOnlyKeys("identity");
+        assertThat(properties.getProvider().keySet()).containsExactly("identity");
         Provider provider = properties.getProvider().get("identity");
         assertThat(provider.getAuthorizationUri()).isEqualTo("https://identity.example/authorize");
         assertThat(provider.getTokenUri()).isEqualTo("https://identity.example/token");
