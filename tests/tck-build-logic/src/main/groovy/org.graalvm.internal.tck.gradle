@@ -1045,8 +1045,10 @@ tasks.register("jacocoCodeCoverageReport", org.gradle.testing.jacoco.tasks.Jacoc
     sourceDirectories.setFrom(files())
 }
 
+// §FS-tests.1, §AR-test-harness.3: nativeTest's runtimeArgs default to the test binary's;
+// appendAll keeps that convention, which addAll would discard.
 tasks.named("nativeTest", NativeRunTask).configure { NativeRunTask task ->
-    task.runtimeArgs.addAll(junitTimeoutRuntimeArgs)
+    task.runtimeArgs.appendAll(junitTimeoutRuntimeArgs)
 }
 
  // Configure JaCoCo report to analyze only the effective classes of the target library (handles multi-release JARs)
