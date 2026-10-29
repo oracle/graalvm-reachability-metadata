@@ -44,7 +44,18 @@ import gates
 import issue
 import index_record
 import run_note
-from build_tools import BASE_BRANCH, checkpoint, git, head, run_gradle, stop_gradle_daemons, upstream_remote
+from build_tools import (
+    BASE_BRANCH,
+    TaskResult,
+    Unreachable,
+    checkpoint,
+    dependency_failure,
+    git,
+    head,
+    run_gradle,
+    stop_gradle_daemons,
+    upstream_remote,
+)
 from exit_codes import INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput
 from run_state import ROUTE_NEW, Budgets, Chunk, RunState, load, runtime_path, save, write_text
 
@@ -140,14 +151,24 @@ def previous_version(state: RunState, baseline: VersionBackfillBaseline | None) 
 
 
 def add_version(state: RunState, workspace: str) -> int:
-    """Scaffold a new library, or add the version beside its nearest supported one."""
+    """Scaffold a new library, or add the version beside its nearest supported one.
+
+    A coordinate the scaffold cannot resolve raises `BadInput`, judged only by the
+    lines naming it, since the scaffold resolves nothing else; any other scaffold
+    failure, an unreachable repository included, is an infrastructure failure
+    (§AR-forge-workflow-pipeline.4.1).
+    """
     if state.route == ROUTE_NEW:
         if os.path.isdir(state.path(state.test_dir)):
             return OK
-        scaffold = run_gradle(
+        scaffold: TaskResult = run_gradle(
             state.worktree, ["scaffold", f"--coordinates={state.coordinate}"],
             runtime_path(workspace, "logs", "scaffold.log"),
         )
+        failure: BadInput | Unreachable | None = dependency_failure(
+            scaffold, f"{state.coordinate} does not resolve for a JVM test project", state.coordinate)
+        if isinstance(failure, BadInput):
+            raise failure
         if not scaffold.ok or not os.path.isdir(state.path(state.test_dir)):
             print(f"ERROR: scaffolding {state.coordinate} failed:\n{scaffold.tail}", file=sys.stderr)
             return INFRASTRUCTURE

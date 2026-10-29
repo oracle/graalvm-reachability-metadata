@@ -35,6 +35,7 @@ from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
+    INFRASTRUCTURE,
     NOT_FOR_NATIVE_IMAGE_RECORDED,
     OK,
     RETURN_AUDIT,
@@ -133,6 +134,15 @@ class CheckStateTest(FinalizedRun):
                          "   > Could not find org.example:missing:1.0.\n"
                          "> Could not resolve all files for configuration ':testRuntimeClasspath'.",
                          outcome["detail"])
+
+    def test_an_unreachable_repository_in_jvm_sends_no_fix_request(self) -> None:
+        # A later cycle retries it (§AR-forge-workflow-pipeline.4.1).
+        self.assertEqual(OK, self.set_up("fails-java-run"))
+        self.fake.control({"unresolved": "unreachable"})
+        self.assertEqual(INFRASTRUCTURE, self.step("jvm"))
+        self.assertEqual("infrastructure", self.recorded_outcome()["kind"])
+        self.assertIsNone(self.state.pending_request)
+        self.assertTrue(self.read("fix-request.md").startswith("No fix request"))
 
     def test_native_repair_tests_the_fix_metadata_without_regenerating(self) -> None:
         self.assertEqual(OK, self.set_up("fails-native-image-run"))

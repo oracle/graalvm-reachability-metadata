@@ -14,10 +14,13 @@ from __future__ import annotations
 # Control keys: classes (class -> total dynamic-access calls; a test file whose
 # name starts with the class's simple name covers one call), javaFails,
 # extensionFails (only the code-coverage-improvement suite's `codeCoverageTest` fails),
-# unresolved (`javaTest` fails on a dependency that does not resolve),
-# generateFails (only `generateMetadata` fails), filterFails (a plain
-# `generateUserCodeFilter` prints this; from the JAR, "unresolved" as above,
-# else this), nativeFails (until the shipped
+# unresolved (`javaTest` fails on a dependency that does not resolve; "unreachable":
+# on Maven Central answering 502), filterFails (a plain `generateUserCodeFilter`
+# prints this; from the JAR, "unresolved" as above, else this), scaffoldFails
+# ("variant": the library has no JVM variant, "unreachable" as above, "bom": it
+# has no JAR, "elsewhere": an artifact of the harness's own build is missing,
+# else otherwise), generateFails (only `generateMetadata` fails), nativeFails
+# (until the shipped
 # metadata names `Fixed`), checkFails,
 # styleFails (the failing style task), listFails, listsNoCalls (the listing
 # succeeds without output, as for a library without calls; an empty stored
@@ -40,22 +43,57 @@ project = os.path.join(root, "tests", "src", group, artifact, version)
 metadata = os.path.join(root, "metadata", group, artifact, version, "reachability-metadata.json")
 def tests():
     return [os.path.basename(path) for path in glob.glob(os.path.join(project, "src", "test", "java", "**", "*.java"), recursive=True)]
-def fail_unresolved():
+def fail_build(cause):
     # Longer than an excerpt, with the cause among the task lines and Gradle's own failure lines.
     for number in range(30):
         print("> Task :tck-build-logic:step%d UP-TO-DATE" % number)
     print("> Task :%s FAILED\nFAILURE: Build failed with an exception.\n* What went wrong:" % task)
     print("Execution failed for task ':%s'." % task)
-    for configuration in ("testCompileClasspath", "testRuntimeClasspath"):
-        print("> Could not resolve all files for configuration ':%s'." % configuration)
-        print("   > Could not find org.example:missing:1.0.\n     Required by:\n         root project 'lib'")
+    print(cause)
     print("BUILD FAILED in 4s")
+    sys.exit(1)
+def fail_unresolved():
+    fail_build("\n".join("> Could not resolve all files for configuration ':%s'.\n"
+                         "   > Could not find org.example:missing:1.0.\n     Required by:\n         root project 'lib'"
+                         % configuration for configuration in ("testCompileClasspath", "testRuntimeClasspath")))
+def fail_resolving(configuration, cause):
+    # Gradle's wrappers around the innermost cause the coordinate does not resolve for.
+    fail_build("> Could not resolve all files for configuration ':%s'.\n"
+               "   > Could not resolve %s.\n     Required by:\n         root project 'reachability-metadata'\n%s"
+               % (configuration, coordinate, cause))
+def fail_unreachable(configuration):
+    pom = "https://repo.maven.apache.org/maven2/%s/%s/%s/%s-%s.pom" % (group.replace(".", "/"), artifact, version,
+                                                                      artifact, version)
+    fail_resolving(configuration, "      > Could not get resource '%s'.\n         > Could not GET '%s'. Received "
+                                  "status code 502 from server: Bad Gateway" % (pom, pom))
+def fail_scaffold(failure):
+    if failure == "variant":
+        fail_resolving("detachedConfiguration1",
+                       "      > No matching variant of %s was found. The consumer was configured to find attribute "
+                       "'org.gradle.jvm.environment' with value 'standard-jvm' but:\n"
+                       "          - Variant 'wasmJsApiElements' declares attribute 'org.gradle.category' with "
+                       "value 'library':\n"
+                       "              - Incompatible because this component declares attribute "
+                       "'org.gradle.jvm.environment' with value 'non-jvm'\n\n* Try:\n"
+                       "> No matching variant errors are explained in more detail at https://docs.gradle.org/"
+                       % coordinate)
+    if failure == "unreachable":
+        fail_unreachable("detachedConfiguration1")
+    if failure == "bom":
+        fail_build("> Failed to resolve JAR for %s" % coordinate)
+    if failure == "elsewhere":
+        fail_build("> Could not resolve all files for configuration ':tck-build-logic:compileClasspath'.\n"
+                   "   > Could not find org.example:harness-plugin:1.0.\n     Required by:\n"
+                   "         project ':tck-build-logic'")
+    print("Execution failed for task ':scaffold'.\n> Failed to write the index: Permission denied")
     sys.exit(1)
 mode = os.environ.get("GVM_TCK_NATIVE_IMAGE_MODE")
 lane = " [%s %s %s]" % (os.environ.get("GVM_TCK_LV"), mode, os.environ.get("JAVA_HOME")) if mode else ""
 with open(os.path.join(root, "gradle-calls.log"), "a") as log:
     log.write(" ".join(args) + lane + "\n")
 if task == "scaffold":
+    if control.get("scaffoldFails"):
+        fail_scaffold(control["scaffoldFails"])
     os.makedirs(os.path.join(project, "src", "test", "java", "org_example"), exist_ok=True)
     open(os.path.join(project, "build.gradle"), "w").write("// scaffold\n")
     open(os.path.join(project, "src", "test", "java", "org_example", "Placeholder.java"), "w").write("package org_example;\n")
@@ -83,6 +121,8 @@ elif task == "generateMetadata":
         print("There were failing tests")
         sys.exit(1)
 elif task == "javaTest":
+    if control.get("unresolved") == "unreachable":
+        fail_unreachable("testRuntimeClasspath")
     if control.get("unresolved"):
         fail_unresolved()
     if control.get("javaFails"):

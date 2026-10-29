@@ -13,14 +13,15 @@ has already run the setup tail, and a new library never comes here
 """
 from __future__ import annotations
 
+import sys
+
 from utility_scripts.metadata_index import find_index_entry_for_version
 
 import handoff
 import native_check
-from build_tools import TaskResult
-from exit_codes import BadInput
+from build_tools import TaskResult, Unreachable, dependency_failure
+from exit_codes import INFRASTRUCTURE, BadInput
 from run_state import RunState, load
-from setup_check import unresolved_dependency
 
 SENDER: str = "jvm"
 JAVA_TEST: str = "javaTest"
@@ -36,9 +37,13 @@ def jvm(workspace: str) -> int:
     if find_index_entry_for_version(state.worktree, state.group, state.artifact, state.version) is None:
         raise BadInput(f"{state.index_path} has no entry for {state.version}")
     result: TaskResult = native_check.run_task(workspace, state, SENDER, JAVA_TEST)
-    unresolved: BadInput | None = unresolved_dependency(result, "a declared dependency does not resolve")
-    if unresolved is not None:
-        raise unresolved
+    failure: BadInput | Unreachable | None = dependency_failure(result, "a declared dependency does not resolve")
+    if isinstance(failure, BadInput):
+        raise failure
+    if isinstance(failure, Unreachable):
+        # No fix request: a later cycle retries (§AR-forge-workflow-pipeline.4.1).
+        print(f"ERROR: a repository could not be reached:\n{failure.detail}", file=sys.stderr)
+        return INFRASTRUCTURE
     if result.ok:
         result = native_check.run_task(workspace, state, SENDER, native_check.GENERATE)
     return native_check.conclude(workspace, state, SENDER, native_check.failures_of(result),

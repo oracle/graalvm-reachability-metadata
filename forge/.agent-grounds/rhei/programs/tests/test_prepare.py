@@ -268,6 +268,41 @@ class PrepareTest(unittest.TestCase):
         self.assertEqual(("prepare: infrastructure failure", "infrastructure"),
                          (self.outcome()["reason"], self.outcome()["kind"]))
 
+    def test_a_library_without_a_jvm_variant_is_a_bad_input(self) -> None:
+        # Every retry would fail the same way (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "variant"})
+        self.assertEqual(BAD_INPUT, self.prepare())
+        outcome: dict[str, str] = self.outcome()
+        self.assertEqual(("bad-input", f"prepare: bad input: {COORDINATE} does not resolve for a JVM test project"),
+                         (outcome["kind"], outcome["reason"]))
+        # The lines naming the coordinate and why it does not resolve, not Gradle's hint after them.
+        self.assertEqual("> Could not resolve all files for configuration ':detachedConfiguration1'.\n"
+                         f"   > Could not resolve {COORDINATE}.\n"
+                         f"      > No matching variant of {COORDINATE} was found. The consumer was configured to "
+                         "find attribute 'org.gradle.jvm.environment' with value 'standard-jvm' but:",
+                         outcome["detail"])
+
+    def test_a_coordinate_without_a_jar_is_a_bad_input(self) -> None:
+        # A BOM fails the same way on every retry (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "bom"})
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assertEqual((f"prepare: bad input: {COORDINATE} does not resolve for a JVM test project",
+                          f"> Failed to resolve JAR for {COORDINATE}"),
+                         (self.outcome()["reason"], self.outcome()["detail"]))
+
+    def test_a_scaffold_that_fails_otherwise_is_an_infrastructure_failure(self) -> None:
+        # An unreachable repository, or an artifact other than the coordinate missing, is retried
+        # by a later cycle (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        for failure in ("unreachable", "elsewhere", "process"):
+            with self.subTest(failure=failure):
+                self.fake.control({"scaffoldFails": failure})
+                self.assertEqual(INFRASTRUCTURE, self.prepare())
+                self.assertEqual(("prepare: infrastructure failure", "infrastructure"),
+                                 (self.outcome()["reason"], self.outcome()["kind"]))
+
     def test_a_bad_input_reason_is_one_line(self) -> None:
         # Further lines follow as detail (§FS-forge-run-requirements.2).
         error: BadInput = BadInput("cannot parse the issue form.\nsecond line", "build output")
