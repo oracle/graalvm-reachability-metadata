@@ -7,10 +7,30 @@
 package org_springframework_security.spring_security_core;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 
-class Spring_security_coreTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class Spring_security_coreTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void erasesCredentialsWithoutLosingAuthenticatedIdentity() {
+        User principal = new User("alex", "secret", AuthorityUtils.createAuthorityList("ROLE_READER"));
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                principal, "session-credential", principal.getAuthorities());
+
+        authentication.eraseCredentials();
+
+        assertNull(authentication.getCredentials());
+        assertNull(principal.getPassword());
+        assertSame(principal, authentication.getPrincipal());
+        assertEquals("alex", authentication.getName());
+        assertIterableEquals(principal.getAuthorities(), authentication.getAuthorities());
+        assertTrue(authentication.isAuthenticated());
     }
 }
