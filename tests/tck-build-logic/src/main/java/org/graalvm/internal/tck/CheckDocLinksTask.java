@@ -55,19 +55,24 @@ public abstract class CheckDocLinksTask extends DefaultTask {
             "ssh://", "git://", "tel:"
     );
 
+    /// The repeated groups are possessive. A greedy group of alternatives recurses once per
+    /// character in `java.util.regex`, so a long unclosed link text, such as the one that an
+    /// escaped `\[` opens in a GraalVM ticket snapshot, overflows the stack. Neither group can
+    /// give back a character that the following `]` or `)` could match, so the links found are
+    /// the same.
     private static final Pattern INLINE_LINK = Pattern.compile(
             "!?" +                                  // optional image marker
             "\\[" +
-            "(?:\\\\.|[^\\[\\]\\\\])*" +            // link text
+            "(?:\\\\.|[^\\[\\]\\\\])*+" +           // link text
             "]\\(\\s*" +
-            "(?<target>(?:\\\\.|[^\\s)\\\\])+)" +   // link target
+            "(?<target>(?:\\\\.|[^\\s)\\\\])++)" +  // link target
             "(?:\\s+\"[^\"]*\")?" +                 // optional title
             "(?:\\s+'[^']*')?" +
             "\\s*\\)"
     );
 
     private static final Pattern REFERENCE_LINK = Pattern.compile(
-            "(?m)^\\s{0,3}\\[(?:\\\\.|[^\\[\\]\\\\])+]:\\s+(?<target>\\S+)"
+            "(?m)^\\s{0,3}\\[(?:\\\\.|[^\\[\\]\\\\])++]:\\s+(?<target>\\S+)"
     );
 
     private static final Pattern CODE_FENCE = Pattern.compile("^\\s*(```|~~~)");
