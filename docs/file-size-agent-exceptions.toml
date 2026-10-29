@@ -56,3 +56,13 @@ until = "AR-pr-body's per-workflow pull request bodies and AR-actions-publicatio
 reason = """
 AR-forge-publication holds the local publication pipeline, the trusted Actions publisher and AR-pr-body's per-workflow pull request bodies. At 380 non-blank lines, moving the bodies (112) alone still leaves 268, over the 250 soft limit; moving the Actions publisher (79) too leaves about 189. Each is a subject of its own, and moving them is its own change, not part of an edit that only brings the not-for-native-image route's own declaration up to date.
 """
+[[exceptions]]
+path = "docs/functional-spec/test-contract.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 500, unit = "lines" }
+until = "section 2.7's metadata and native-flag rules move to their own functional-spec document"
+reason = """
+The rules for hand-written metadata and native flags (section 2.7, about a quarter of the contract) are one subject with no document of their own yet; the remaining sections are cited by number across the specs, prompts and skills, so the split has to move 2.7 as a whole and re-point its citations.
+"""

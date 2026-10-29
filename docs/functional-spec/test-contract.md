@@ -610,7 +610,11 @@ self-attach, class redefinition, instrumentation, native-image substitutions,
 URL/plugin/OSGi class loader paths, custom class loaders that introduce classes
 not already in the image, or classes that exist only through a custom class
 loader. This includes Byte Buddy-backed inline mocking, static mocking,
-construction mocking, and concrete-class mocking. Prefer statically
+construction mocking, and concrete-class mocking. It also includes relinking an
+`invokedynamic` call site at run time (`MutableCallSite.setTarget`), which
+Native Image rejects with an `UnsupportedFeatureError`. Dynamic languages that
+cache dispatch this way, such as Groovy's dynamic method calls, are covered
+through their statically compiled paths instead. Prefer statically
 representable behavior (§FS-test-contract.3.2).
 
 ```java
