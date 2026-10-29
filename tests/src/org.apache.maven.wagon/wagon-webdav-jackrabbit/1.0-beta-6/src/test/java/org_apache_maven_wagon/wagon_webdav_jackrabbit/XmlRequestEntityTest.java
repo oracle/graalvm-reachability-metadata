@@ -6,7 +6,12 @@
  */
 package org_apache_maven_wagon.wagon_webdav_jackrabbit;
 
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.jackrabbit.webdav.DavConstants;
+import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 import org.apache.jackrabbit.webdav.client.methods.XmlRequestEntity;
+import org.apache.jackrabbit.webdav.property.DavPropertyName;
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XmlRequestEntityTest {
@@ -59,5 +65,27 @@ public class XmlRequestEntityTest {
         ByteArrayOutputStream second = new ByteArrayOutputStream();
         entity.writeRequest(second);
         assertArrayEquals(bytes, second.toByteArray());
+    }
+
+    /// Builds the PROPFIND request `WebDavWagon` sends. Reaching `DavMethodBase` also activates
+    /// the jackrabbit-webdav metadata conditioned on it; while that condition is unreached,
+    /// Native Image 25.0 fails with a `TypeNotFoundError` for commons-logging's `Log4JLogger`
+    /// (GR-80931, https://github.com/oracle/graal/issues/14805).
+    @Test
+    void buildsPropFindRequestLikeWebDavWagon() throws Exception {
+        DavPropertyNameSet names = new DavPropertyNameSet();
+        names.add(DavPropertyName.create(DavConstants.PROPERTY_RESOURCETYPE));
+        PropFindMethod method = new PropFindMethod("http://localhost/repository/", names, DavConstants.DEPTH_1);
+        assertEquals("PROPFIND", method.getName());
+
+        RequestEntity entity = method.getRequestEntity();
+        assertInstanceOf(XmlRequestEntity.class, entity);
+        assertEquals("text/xml; charset=UTF-8", entity.getContentType());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        entity.writeRequest(out);
+        String xml = out.toString(StandardCharsets.UTF_8);
+        assertTrue(xml.contains("propfind"));
+        assertTrue(xml.contains("resourcetype"));
+        assertEquals("1", method.getRequestHeader("Depth").getValue());
     }
 }
