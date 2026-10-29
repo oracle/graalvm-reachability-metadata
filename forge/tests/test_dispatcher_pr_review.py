@@ -25,7 +25,8 @@ from typing import Any
 from unittest.mock import patch
 
 from dispatcher import issue_admin, pr_review
-from dispatcher.config import LABEL_GRAALVM_BUG, LABEL_HUMAN_INTERVENTION, LABEL_HUMAN_INTERVENTION_FIXED, REPO
+from dispatcher.config import (LABEL_FORGE_MERGE_FOLLOW_UP, LABEL_GRAALVM_BUG, LABEL_HUMAN_INTERVENTION,
+                               LABEL_HUMAN_INTERVENTION_FIXED, REPO)
 from tests.pr_review_fakes import FAKE_AGENT, FAKE_GH
 
 LOGIN: str = "forge-bot"
@@ -34,6 +35,8 @@ BRANCH: str = "ai/forge-bot/lib-1.0.0"
 DESCRIPTOR: str = "stats/org.example/lib/1.0.0/forge-publication.json"
 TEST: str = "tests/src/org.example/lib/1.0.0/LibTest.java"
 NOW: datetime = datetime(2026, 10, 27, 12, 0, tzinfo=timezone.utc)
+# The body the trusted publisher renders for a non-final chunk (§FS-forge-chunked-dynamic-access).
+CHUNK_BODY: str = "\n## What does this PR do?\n\nRefs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n"
 
 
 def _git(*arguments: str, cwd: str) -> str:
@@ -229,6 +232,32 @@ class ReviewTest(unittest.TestCase):
         self.assertIn("approve (terminal): approved", printed)
         self.assertEqual({"GenAI", "library-new-request", "reviewed"}, self.labels())
 
+    def test_a_non_final_chunk_is_labeled_for_follow_up_before_its_agent_may_merge_it(self) -> None:
+        self.green()
+        self.update(body=CHUNK_BODY)
+        self.plan({"answer": self.answer("approve", case=1, cause="all green"),
+                   "commands": [["gh", "pr", "review", str(NUMBER), "--approve"],
+                                ["gh", "pr", "merge", str(NUMBER), "--auto", "--squash"]]})
+        self.assertIn("approve (terminal): approved", self.run_pass())
+        self.assertIn(LABEL_FORGE_MERGE_FOLLOW_UP, self.labels())
+        with open(self.state_path + ".calls", encoding="utf-8") as handle:
+            calls: list[list[str]] = [json.loads(line) for line in handle]
+        labeled: int = calls.index(next(call for call in calls
+                                        if call[-1] == f"labels[]={LABEL_FORGE_MERGE_FOLLOW_UP}"))
+        self.assertLess(labeled, calls.index(["pr", "review", str(NUMBER), "--approve"]))
+
+    def test_only_a_pull_request_whose_merge_releases_an_issue_is_labeled_for_follow_up(self) -> None:
+        cases: list[tuple[str, bool]] = [
+            ("Fixes: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n", False),
+            ("Fixes: #1412\n", False),
+            ("Fixes: #1412\n\nRefs: #1500\nForge-Unblocks-Issue: #1500\n", True),
+        ]
+        for body, labeled in cases:
+            with self.subTest(body=body):
+                self.update(**{**self.pull(), "body": body})
+                self.run_pass()
+                self.assertEqual(labeled, LABEL_FORGE_MERGE_FOLLOW_UP in self.labels())
+
     def test_an_approval_on_a_failed_head_is_escalated(self) -> None:
         self.plan({"answer": self.answer("approve", case=1)})
         self.run_pass()
@@ -371,6 +400,7 @@ class ReviewTest(unittest.TestCase):
         self.assertEqual(["#8", "#9", "#10"], [line.split()[1] for line in invoked])
 
     def test_a_dry_run_writes_nothing_and_withholds_credentials(self) -> None:
+        self.update(body=CHUNK_BODY)
         self.plan({"answer": self.answer("fix"), "files": {TEST: "class LibTest { }\n"}})
         printed: str = self.run_pass(dry_run=True)
         self.assertIn("fix: would push", printed)

@@ -114,6 +114,54 @@ class PullRequestReviewTests(unittest.TestCase):
         clear_issue_assignees.assert_called_once_with(1412)
         invalidate_cache.assert_called_once_with(1412)
 
+    def test_a_labeled_merged_chunk_releases_its_issue_for_the_next_chunk(self) -> None:
+        pull_request = {
+            "number": 3513,
+            "labels": [{"name": config.LABEL_CHUNKED_DYNAMIC_ACCESS}],
+            "body": "\n## What does this PR do?\n\nRefs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
+        }
+        with patch.object(pr_merge, "add_pull_request_label") as add_pull_request_label:
+            pr_merge.mark_pull_request_merge_follow_up_pending(pull_request)
+            pr_merge.mark_pull_request_merge_follow_up_pending(pull_request)
+        add_pull_request_label.assert_called_once_with(3513, config.LABEL_FORGE_MERGE_FOLLOW_UP)
+
+        with (
+                patch.object(
+                    pr_merge, "get_pull_requests_with_labels", return_value=[pull_request],
+                ),
+                patch.object(pr_merge, "get_project_item_id", return_value="project-item"),
+                patch.object(
+                    pr_merge,
+                    "get_issue_claim_payload",
+                    return_value={
+                        "labels": [
+                            {"name": config.LABEL_CHUNKED_DYNAMIC_ACCESS},
+                            {"name": config.LABEL_HUMAN_INTERVENTION},
+                        ],
+                    },
+                ),
+                patch.object(pr_merge, "remove_issue_label") as remove_issue_label,
+                patch.object(pr_merge, "set_item_status") as set_item_status,
+                patch.object(pr_merge, "clear_issue_assignees") as clear_issue_assignees,
+                patch.object(pr_merge, "invalidate_issue_claim_cache_entry"),
+                patch.object(pr_merge, "remove_pull_request_label") as remove_pull_request_label,
+        ):
+            pr_merge.reconcile_auto_merged_pull_request_follow_ups()
+
+        set_item_status.assert_called_once_with("project-item", config.STATUS_TODO)
+        clear_issue_assignees.assert_called_once_with(1412)
+        remove_issue_label.assert_called_once_with(1412, config.LABEL_HUMAN_INTERVENTION)
+        remove_pull_request_label.assert_called_once_with(3513, config.LABEL_FORGE_MERGE_FOLLOW_UP)
+
+    def test_a_pull_request_without_merge_follow_up_is_not_labeled(self) -> None:
+        for body in (
+                "Fixes: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
+                "Fixes: #1412\n",
+        ):
+            with self.subTest(body=body), patch.object(pr_merge, "add_pull_request_label") as add_label:
+                pr_merge.mark_pull_request_merge_follow_up_pending({"number": 3513, "body": body})
+                add_label.assert_not_called()
+
     def test_chunk_merge_follow_up_does_not_release_final_issue(self) -> None:
         pull_request = {
             "number": 3513,

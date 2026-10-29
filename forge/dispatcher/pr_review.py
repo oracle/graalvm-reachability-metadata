@@ -41,7 +41,7 @@ from dispatcher.issue_admin import (
     post_issue_comment,
     remove_pull_request_label,
 )
-from dispatcher.pr_merge import reconcile_auto_merged_pull_request_follow_ups
+from dispatcher.pr_merge import mark_pull_request_merge_follow_up_pending, reconcile_auto_merged_pull_request_follow_ups
 from utility_scripts.contribution_paths import stray_paths
 
 REVIEW_LIMIT: int = 3
@@ -242,6 +242,9 @@ class Review:
         if pull["coordinate"] is None:
             return self.escalate(pull, found, "no-descriptor", "The pull request carries no publication descriptor.")
         print(f"[review] #{number} at {head}: invoking the agent", file=sys.stderr)
+        if not self.dry_run:
+            # Labeled before the agent may arm auto-merge (§FS-published-pr-review.7).
+            mark_pull_request_merge_follow_up_pending(pull)
         self.lock(number, True)
         with checkout(self.repo, number, head) as (parent, path):
             answer: dict[str, Any] | None = self.run_agent(pull, found, green, reruns_left, pushes_left, parent, path)
