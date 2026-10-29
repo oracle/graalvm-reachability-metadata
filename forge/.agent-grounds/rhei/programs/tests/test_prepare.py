@@ -21,18 +21,22 @@ import forge_run  # noqa: E402
 import prepare  # noqa: E402
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
 from exit_codes import BAD_INPUT, NOT_FOR_NATIVE_IMAGE_RECORDED, OK  # noqa: E402
-from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, load, read_json, runtime_path  # noqa: E402
+from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, RunState, load, read_json, runtime_path, save  # noqa: E402
 
 SETUP_AGENT: str = "claude-code[medium]:sonnet"
 WORKER_AGENT: str = "pi[high]:openai-codex/gpt-5.6-luna"
 
 
 def prepare_arguments(setup_agent: str = SETUP_AGENT, worker_agent: str = WORKER_AGENT,
-                      passes: str = "20") -> list[str]:
+                      passes: str = "20", repo: str = "../../repo", worktree_root: str = "../worktrees") -> list[str]:
     return ["prepare", "--issue-number", "7", "--setup-agent", setup_agent, "--worker-agent", worker_agent,
             "--bulk-min-classes", "5", "--bulk-passes", "3", "--class-attempts", "3", "--defer-classes", "15",
-            "--explore-passes", passes, "--finalize-fixes", "5", "--native-fixes", "3", "--repo-checkout", "../../repo",
-            "--worktree-root", "../worktrees"]
+            "--explore-passes", passes, "--finalize-fixes", "5", "--native-fixes", "3", "--repo-checkout", repo,
+            "--worktree-root", worktree_root]
+
+
+def git_output(cwd: str, *args: str) -> str:
+    return subprocess.run(["git", *args], cwd=cwd, check=True, stdout=subprocess.PIPE, text=True).stdout.strip()
 
 
 def jackson(entries: list[dict[str, Any]]) -> str:
@@ -50,11 +54,25 @@ class PrepareTest(unittest.TestCase):
         with working_directory(self.fake.workspace):
             return forge_run.main(list(arguments) or prepare_arguments())
 
+    def prepare_in_another_checkout(self) -> RunState:
+        """Prepare the coordinate as a launcher in a second checkout of the repository does."""
+        checkout: str = os.path.join(self.fake.tmp, "other-checkout")
+        subprocess.run(["git", "worktree", "add", "--quiet", "--detach", checkout], cwd=self.fake.repo, check=True)
+        workspace: str = os.path.join(checkout, "forge", "runs", "ws")
+        os.makedirs(workspace)
+        with working_directory(workspace):
+            code: int = forge_run.main(prepare_arguments(repo=checkout, worktree_root="../worktrees"))
+        self.assertEqual(OK, code)
+        return load(workspace)
+
     def test_new_library_is_scaffolded_on_its_run_branch(self) -> None:
         self.fake.issue("library-new-request")
         self.assertEqual(OK, self.prepare())
         state = load(self.fake.workspace)
-        self.assertEqual((ROUTE_NEW, COORDINATE, "rhei/forge-org.example-lib-2.0.0"), (state.route, state.coordinate, state.branch))
+        self.assertEqual((ROUTE_NEW, COORDINATE), (state.route, state.coordinate))
+        # Named after the worktree's path (§AR-forge-workflow-pipeline.4.6).
+        self.assertRegex(state.branch, r"^rhei/forge-org\.example-lib-2\.0\.0-[0-9a-f]{8}$")
+        self.assertEqual(state.branch, git_output(state.worktree, "branch", "--show-current"))
         self.assertTrue(os.path.isdir(state.path(state.test_dir)))
         log: str = subprocess.run(["git", "log", "--format=%s", "-1"], cwd=state.worktree, check=True,
                                   stdout=subprocess.PIPE, text=True).stdout.strip()
@@ -269,8 +287,23 @@ class PrepareTest(unittest.TestCase):
         self.assertEqual(OK, self.prepare())
         first = load(self.fake.workspace)
         self.assertEqual(OK, self.prepare())
-        self.assertEqual(first.checkpoint, load(self.fake.workspace).checkpoint)
+        self.assertEqual((first.checkpoint, first.branch),
+                         (load(self.fake.workspace).checkpoint, load(self.fake.workspace).branch))
         self.fake.shared_cache.assert_called_once()
+
+    def test_a_resumed_prepare_keeps_a_branch_named_before_the_worktree_path(self) -> None:
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        first = load(self.fake.workspace)
+        # A run in flight across the rename keeps the branch its state records.
+        legacy: str = "rhei/forge-org.example-lib-2.0.0"
+        subprocess.run(["git", "branch", "-m", first.branch, legacy], cwd=first.worktree, check=True)
+        first.branch = legacy
+        save(self.fake.workspace, first)
+        self.assertEqual(OK, self.prepare())
+        resumed = load(self.fake.workspace)
+        self.assertEqual((first.checkpoint, legacy), (resumed.checkpoint, resumed.branch))
+        self.assertEqual(legacy, git_output(resumed.worktree, "branch", "--show-current"))
 
     def test_a_leftover_run_branch_restarts_from_the_pinned_base(self) -> None:
         self.fake.issue("library-new-request")
@@ -281,11 +314,39 @@ class PrepareTest(unittest.TestCase):
         self.fake.commit("master moved on")
         self.assertEqual(OK, self.prepare())
         second = load(self.fake.workspace)
+        self.assertEqual((first.worktree, first.branch), (second.worktree, second.branch))
         self.assertNotEqual(first.base_commit, second.base_commit)
-        self.assertEqual(second.base_commit, subprocess.run(
-            ["git", "rev-parse", "HEAD~1"], cwd=second.worktree, check=True, stdout=subprocess.PIPE, text=True).stdout.strip())
+        self.assertEqual(second.base_commit, git_output(second.worktree, "rev-parse", "HEAD~1"))
         self.assertNotEqual(0, subprocess.run(["git", "merge-base", "--is-ancestor", first.checkpoint, "HEAD"],
                                               cwd=second.worktree).returncode)
+
+    def test_a_leftover_on_a_branch_named_before_the_worktree_path_is_removed(self) -> None:
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        first = load(self.fake.workspace)
+        legacy: str = "rhei/forge-org.example-lib-2.0.0"
+        subprocess.run(["git", "branch", "-m", first.branch, legacy], cwd=first.worktree, check=True)
+        os.remove(runtime_path(self.fake.workspace, "state.json"))
+        self.assertEqual(OK, self.prepare())
+        second = load(self.fake.workspace)
+        self.assertEqual((first.worktree, first.branch), (second.worktree, second.branch))
+        self.assertEqual(first.branch, git_output(second.worktree, "branch", "--show-current"))
+
+    def test_another_checkouts_run_worktree_neither_blocks_the_run_nor_is_touched(self) -> None:
+        """Checkouts share branches, not run worktrees (§AR-forge-workflow-pipeline.4.6)."""
+        self.fake.issue("library-new-request")
+        other: RunState = self.prepare_in_another_checkout()
+        self.fake.commit("master moved on")
+        self.assertEqual(OK, self.prepare())
+        own = load(self.fake.workspace)
+        self.assertEqual(os.path.basename(other.worktree), os.path.basename(own.worktree))
+        self.assertNotEqual(other.branch, own.branch)
+        self.assertNotEqual(other.base_commit, own.base_commit)
+        # The other launcher's worktree, stale or live, is exactly as it left it.
+        self.assertEqual(other.branch, git_output(other.worktree, "branch", "--show-current"))
+        self.assertEqual(other.checkpoint, git_output(other.worktree, "rev-parse", "HEAD"))
+        self.assertEqual(other.checkpoint, git_output(self.fake.repo, "rev-parse", other.branch))
+        self.assertEqual("", git_output(other.worktree, "status", "--porcelain", "--untracked-files=no"))
 
     def test_validate_inputs_rejects_non_positive_budgets(self) -> None:
         namespace = argparse.Namespace(bulk_min_classes=0, bulk_passes=3, class_attempts=3, defer_classes=15,

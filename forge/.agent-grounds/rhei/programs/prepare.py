@@ -27,6 +27,7 @@ from utility_scripts.dynamic_access_exhaust_report import (
     find_dynamic_access_exhaust_report_path,
 )
 from utility_scripts.gradle_dependency_cache import ensure_shared_dependency_cache
+from utility_scripts.gradle_environment import worktree_id
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_measurements import load_library_baseline
 from utility_scripts.library_stats import load_library_stats_entry
@@ -66,13 +67,22 @@ def pin_base(repo: str) -> str:
     return git(repo, "rev-parse", f"{remote}/{BASE_BRANCH}").strip()
 
 
+def run_branch(worktree: str) -> str:
+    """The run branch, named after the worktree's path (§AR-forge-workflow-pipeline.4.6).
+
+    A worktree of the coordinate in another checkout of the repository, which
+    shares its branches, therefore never holds it, and is never touched.
+    """
+    return f"rhei/{worktree_id(worktree)}"
+
+
 def spawn_worktree(repo: str, path: str, branch: str, base: str) -> None:
     """Create the run worktree on its branch, reset to the pinned base.
 
-    A leftover of an earlier run of the coordinate, its worktree or its branch
-    alone, is removed first: a run never carries old commits over a new base
-    (§AR-forge-workflow-pipeline.4). A resumed run never gets here, because
-    `run` keeps a worktree its own state names.
+    A leftover of an earlier run of the coordinate at `path`, its worktree or
+    its branch alone, is removed first: a run never carries old commits over a
+    new base (§AR-forge-workflow-pipeline.4). A resumed run never gets here,
+    because `run` keeps a worktree its own state names.
     """
     git(repo, "worktree", "prune")
     if os.path.exists(path):
@@ -224,7 +234,7 @@ def run(args: argparse.Namespace) -> int:
     run_name: str = "forge-" + parsed.coordinate.replace(":", "-")
     # Resolved like git's own top-level path, which the worktree ref must name.
     worktree: str = os.path.realpath(os.path.join(_resolve(workspace, args.worktree_root), run_name))
-    branch: str = f"rhei/{run_name}"
+    branch: str = run_branch(worktree)
     base: str = pin_base(repo)
     try:
         spawn_worktree(repo, worktree, branch, base)

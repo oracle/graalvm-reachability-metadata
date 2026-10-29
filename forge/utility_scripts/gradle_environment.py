@@ -44,9 +44,19 @@ def gradle_user_home_for_repo(repo_path: str) -> str:
 
 def worktree_gradle_home(checkout_home: str, worktree_root: str) -> str:
     """Return the Gradle user home dedicated to one linked worktree."""
-    resolved_root = os.path.realpath(worktree_root)
-    digest = hashlib.sha256(resolved_root.encode("utf-8")).hexdigest()[:8]
-    return os.path.join(worktree_gradle_homes_root(checkout_home), f"{os.path.basename(resolved_root)}-{digest}")
+    return os.path.join(worktree_gradle_homes_root(checkout_home), worktree_id(worktree_root))
+
+
+def worktree_id(worktree_root: str) -> str:
+    """Return `<basename>-<digest>`, a name no worktree at another path shares.
+
+    The checkouts of one repository share its branches and its checkout Gradle
+    home, so a run branch (§AR-forge-workflow-pipeline.4.6) and a worktree home
+    are named by the worktree's path.
+    """
+    resolved_root: str = os.path.realpath(worktree_root)
+    digest: str = hashlib.sha256(resolved_root.encode("utf-8")).hexdigest()[:8]
+    return f"{os.path.basename(resolved_root)}-{digest}"
 
 
 def worktree_gradle_homes_root(checkout_home: str) -> str:
