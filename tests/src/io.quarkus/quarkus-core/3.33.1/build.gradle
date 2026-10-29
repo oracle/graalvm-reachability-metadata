@@ -16,6 +16,25 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // quarkus-core ships io.quarkus.runtime.graal substitutions that native-image
+            // applies from the class path. They assume the Quarkus build, which initializes
+            // classes at build time: setter-less @InjectAccessors on Inet and CidrAddress
+            // fields, and a build-time QuarkusDelayedHandler for InitialConfigurator.
+            // jboss-logmanager's System.LoggerFinder service installs its LogManager in the
+            // builder, so java.util.logging state reaches the image heap.
+            buildArgs.add('--initialize-at-build-time=io.smallrye.common.net.Inet')
+            buildArgs.add('--initialize-at-build-time=io.smallrye.common.net.CidrAddress')
+            buildArgs.add('--initialize-at-build-time=io.quarkus.bootstrap.logging.QuarkusDelayedHandler')
+            buildArgs.add('--initialize-at-build-time=org.jboss.logmanager.LogManager')
+            buildArgs.add('--initialize-at-build-time=org.jboss.logmanager.JBossLoggerFinder')
+            buildArgs.add('--initialize-at-build-time=org.jboss.logmanager.Level')
+            buildArgs.add('--initialize-at-build-time=org.jboss.logmanager.AtomicArray')
+            buildArgs.add('--initialize-at-build-time=org.jboss.logmanager.errormanager.OnlyOnceErrorManager')
+            buildArgs.add('--initialize-at-build-time=org.jboss.logmanager.errormanager.SimpleErrorManager')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
