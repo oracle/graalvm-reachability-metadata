@@ -78,7 +78,7 @@ opt-in: drop them and the recipes stay available by hand through
             "state": "fix", "needs_checkout": true,
             "branch": "<your-prefix>/auto-issue-{number}",
             "brief_file": "{root}/.ephor/implement.md",
-            "brief": "The issue: {title} ({url}), number {number}, on branch {branch}.",
+            "brief": "The issue: {title} ({url}), number {number}, on branch {branch}. It waits on the GraalVM defect it links: work around it, and name its GR ticket at the workaround.",
             "when": { "kinds": ["issue"], "assignees": ["<your-login>"], "labels": ["graalvm-bug"] },
             "autorun": true, "dispatch": "2h"
           },

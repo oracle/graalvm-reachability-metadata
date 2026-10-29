@@ -226,9 +226,11 @@ for example `§real-use-tests/FS-real-use-tests`.
 An issue or pull request stuck on a GraalVM or Native Image defect carries
 `graalvm-bug` and links the `oracle/graal` issue and the `GR-<n>` ticket; an
 agent that cannot file the ticket labels the item `human-intervention` and
-quotes the evidence (§FS-graalvm-blocked-work.1). A workaround cites the
-ticket, so it can be removed once the fix reaches CI's GraalVM
-(§FS-graalvm-blocked-work.3).
+quotes the evidence (§FS-graalvm-blocked-work.1). Declare it in one comment that
+opens with both, as in `This is blocked on a GraalVM defect: oracle/graal#<n>
+(GR-<n>).`, then gives the error, the GraalVM versions it fails and passes on,
+and a reproducer. A workaround cites the ticket, so it can be removed once the
+fix reaches CI's GraalVM (§FS-graalvm-blocked-work.3).
 
 <!-- BEGIN FISSILE MANAGED BLOCK -->
 ## Keeping Files Small With fissile (v3)
