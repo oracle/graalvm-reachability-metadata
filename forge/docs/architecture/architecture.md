@@ -8,7 +8,7 @@ defined by §FS-forge-functional-spec; this file records the implementation
 structure chosen to satisfy it, with the workflow catalog in
 §FS-forge-workflow-spec-catalog as the behavior surface.
 
-## Architecture Map
+## 1. Architecture Map
 
 | ID | Concern |
 | --- | --- |

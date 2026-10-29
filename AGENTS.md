@@ -109,9 +109,9 @@ and every subagent they launch.
   approval and green required checks, never with `--admin`.
 
 <!-- BEGIN GRUND MANAGED BLOCK -->
-## Grounding with grund (v7)
+## Grounding with grund (block v39)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/agent-grounds/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1`, where the ID is a shape illustration rather than a real one in this repo, which is what the `<§>` escape says. Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -122,7 +122,11 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - `grund <ID> --full` — the entire body. Escalate to this when narrower reads aren't enough.
 - `grund <ID> --brief` — heading + first paragraph only.
 - `grund refs <ID>` — every site that cites the ID; add `--summary` for one line per file. Run before renaming or moving a declaration.
+  After the rename or move, edit the declaration and affected authored citation IDs, then run `grund fmt --write` from the config/project root or workspace root. When cross-reference emission applies, it re-derives generated Markdown link destinations and anchors; the root-scoped run also updates eligible section locks. Run `grund check` and `grund fmt --check`, then commit the lock changes. Locks are keyed by ID, so a file move alone does not rename one. fmt does not replace authored IDs, repair arbitrary URLs, or silently approve a protected section move; fix citations or leave a pointer for that move first. See [Maintaining declarations](https://github.com/agent-grounds/grund/blob/main/docs/user-facing/structure.md#maintaining-declarations).
 - `grund list` / `grund list --kind FS,AR` — discover IDs if you get lost
+- `grund list --unused` — the declarations nothing cites yet, in one call
+- `grund list --size=words --top 10` — find heavy leads and move detail into citable child points before reading them in full
+- `grund list --glob '<KIND>-*' --total` — count the coordinates a pattern selects; `grund show --batch --glob '<KIND>-*' --toc --format json` then reads each one's section map in the same scan, from `.result.sections[]` (`path`, `title`, `depth`). `*` matches within one component, `**` any number of whole components, and `{a,b}` either alternative. More recipes: [Querying grund](https://github.com/agent-grounds/grund/blob/main/docs/user-facing/querying.md).
 
 ### Project map
 
@@ -151,36 +155,38 @@ Do not create a namespace for a regular module or component that still belongs t
 
 ### Workspace members
 
-Cross-project citations use §alias/<ID>.
+Cross-project citations use §alias/<ID>, one alias segment per workspace level.
 
-- [`forge`](forge/AGENTS.md): Automation subproject that turns labeled issues into reviewed metadata pull requests
-- [`real-use-tests`](real-use-tests/AGENTS.md): Realistic library scenarios run on the JVM and Native Image against the shipped metadata
-- [`root`](AGENTS.md): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
+- [`forge`](forge/): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`graal`](graalvm-tickets/): Public snapshots of the GraalVM tickets that the repository's workarounds cite
+- [`real-use-tests`](real-use-tests/): Realistic library scenarios run on the JVM and Native Image against the shipped metadata
 
 ### Declarations and citations
 
-Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc-comment (Rustdoc, Javadoc, JSDoc, Python docstring, Go `//`, …) drop the `#` — write `/// FS-user-login: …` directly. Numbered headings inside a declaration are citable sections: use depth-matching headings (`## 1. …`, `### 1.1 …`, etc.) so `§<ID>.1` / `§<ID>.1.1` resolve; mismatched heading depth is a `grund check` error. Plain headings or bold labels are fine for non-citable local structure. One doc-comment may declare multiple IDs (e.g. an `AR-` and an `FS-` on the same class) — each gets its own body. An inline source declaration is reachable from the configured kind home via a one-line stub: `# <ID>: [<path>](<path>)`.
+Declarations are heading lines `# <ID>: …` in markdown. In a code doc-comment (Rustdoc, Javadoc, JSDoc, Python docstring, Go `//`, …) drop the `#` — write `/// <ID>: …` directly. Numbered headings inside a declaration are citable sections: use depth-matching headings (`## 1. …`, `### 1.1 …`, etc.) so `§<ID>.1` / `§<ID>.1.1` resolve; mismatched heading depth is a `grund check` error. In a declaration body, Markdown or doc-comment, a heading may instead write only the component it adds and take the rest from the heading one level up: `### .1. Scope` under `## 3. Third` declares `§<ID>.3.1`, the one coordinate it is cited and reported by. After citing such a heading, run `grund fmt --write` so the section lock records it, and commit the lock. Every non-declaration heading inside a Markdown declaration body must carry a numbered or enabled named section path; file titles, headings that close the body, fenced examples, non-ATX text, and source doc-comments stay exempt, while bold labels remain the non-citable alternative. One doc-comment may declare multiple IDs (e.g. an `AR-` and an `FS-` on the same class) — each gets its own body. An inline source declaration is reachable from the configured kind home via a one-line stub: `# <ID>: [<path>](<path>)`.
 
 ### Rules
 
 - **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
 - **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
 - **Marker = live citation.** A `§`-prefixed token resolves and is checked wherever it appears — including inside Markdown backticks. To mention an ID without citing it, write `<§><ID>`, omit the marker, or use a fenced code block.
-- **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
+- **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns. A note is one comment block: a blank line splits it, an empty comment line does not. Doc-comments (`///`, `//!`, `/** */`, a docstring, a Go, Ruby, shell, SQL or Lisp comment right above a definition) are documentation, not notes: they are never measured, so cite in-sentence there.
 - **Always cite the most-specific point.**
 
 ### Citation directions
 
-- **GOAL** must cite GRUND.
-- **PRCPL** must cite GOAL.
-- **FS** should cite GOAL or FS.
-- **AR** must cite FS or GOAL.
-- **skills/** must cite FS; should cite AR.
-- **.github/workflows/** should cite FS or AR.
-- **.github/actions/** should cite FS or AR.
-- **.ephor/** must cite FS; should cite AR.
-- **code** (Build files and repository scripts outside a kind home) must cite FS; should cite AR.
-Unlisted kinds and pairs are fine.
+`must`/`never` are `grund check` errors; `should`/`avoid` are suggestions (`grund check --suggestions`).
+
+- Each **GOAL** declaration must cite GRUND.
+- Each **PRCPL** declaration must cite GOAL.
+- Each **FS** declaration should cite GOAL or FS.
+- Each **AR** declaration must cite FS or GOAL.
+- Each file in **skills/** that cites anything must cite FS; should cite AR. A file there that cites nothing is not checked; `require_grounding = true` on its `[[kinds]]` row makes it a finding.
+- Each file in **.github/workflows/** that cites anything should cite FS or AR. A file there that cites nothing is not checked; `require_grounding = true` on its `[[kinds]]` row makes it a finding.
+- Each file in **.github/actions/** that cites anything should cite FS or AR. A file there that cites nothing is not checked; `require_grounding = true` on its `[[kinds]]` row makes it a finding.
+- Each file in **.ephor/** that cites anything must cite FS; should cite AR. A file there that cites nothing is not checked; `require_grounding = true` on its `[[kinds]]` row makes it a finding.
+- Each source file outside the Project map (**code**: Build files and repository scripts outside a kind home) that cites anything must cite FS; should cite AR.
+Anything not listed above is allowed.
 
 ### Clickable citations
 
@@ -209,6 +215,21 @@ is the only place the workspace alias table is in scope.
 realistic library scenarios that run against the shipped metadata without
 changing it. Cite its facts from repository docs as `§real-use-tests/<ID>` —
 for example `§real-use-tests/FS-real-use-tests`.
+
+`graal` is a third member, in [graalvm-tickets/](graalvm-tickets/AGENTS.md),
+whose only kind is `GR`: public snapshots of the GraalVM tickets that
+workarounds cite (§PRCPL-graalvm-workaround-tickets). A ticket is GraalVM's
+fact, not this repository's, so it keeps its Jira ID in a namespace of its
+own; grund would also refuse `GR` beside `GRUND`, since no citable kind may be
+a prefix of another. Cite a ticket as `<§>graal/GR-<number>` from every
+namespace; under `tests/src` and `real-use-tests/src`, where the marker cannot
+appear, name the bare `GR-<number>`. Never write a snapshot by hand:
+`grund fetch graal/GR-<number>` from the repository root writes it through
+`graalvm-tickets/fetch-graalvm-ticket.py`, which needs Oracle's `gdev-cli` with
+access to the GraalVM Jira. CI never fetches: `grund check` fails a `GR`
+citation that has no committed snapshot, and the gate fails a bare one in a
+test-source comment likewise. Delete a snapshot in the change that removes the
+last workaround citing it.
 
 ### Additional rules
 

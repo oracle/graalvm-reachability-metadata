@@ -391,6 +391,7 @@ public final class MetadataGenerationUtils {
                 env, "Cannot perform metadata copy", testsDirectory
         );
         Path metadataFile = metadataDirectory.resolve("reachability-metadata.json");
+        // The agent names a method reference's hidden class as the condition (§graal/GR-80926).
         try {
             if (HiddenLambdaConditions.rewriteFile(metadataFile)) {
                 GeneralUtils.printInfo("Rewrote hidden lambda conditions to their host class in " + metadataFile);

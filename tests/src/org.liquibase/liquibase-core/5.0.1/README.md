@@ -11,10 +11,7 @@ Afterwards, the generated metadata has been cleaned:
 - Remove `META-INF/services` entries
 - Remove H2 references
 
-Additionally, you have to add the entries from `additional-entries.json` to `reflect-config.json`.
-No idea why the agent doesn't detect them.
-
-And
+Additionally,
 
 ```json
 {

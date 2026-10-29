@@ -28,7 +28,8 @@ graalvmNative {
     }
 }
 
-// Temporarily skip tests for org.eclipse.jgit due to an unrelated JDK 25.0.2 Native Image failure
+// GR-65388: the native test still fails on GraalVM 25.0.4+7.1 and passes on GraalVM tip, so
+// drop this skip once CI moves past 25.0.4.
 tasks.named('test') {
     onlyIf { false }
 }

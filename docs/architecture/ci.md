@@ -30,7 +30,7 @@ change.
 Serves §FS-repository-functional-spec.4.3 — ci.json is that section's single source of
 truth for the OS/JDK matrix.
 
-## Pull-request validation workflows
+## 1. Pull-request validation workflows
 
 These run on `pull_request` and are the per-PR merge gates
 (§FS-repository-functional-spec.5.3). Each gates its real steps on the
@@ -116,14 +116,20 @@ schema. Validates and sorts the master supported-library list against its schema
 ### AR-grund-check: Validate grund citations
 
 Triggers on PRs touching any project's scanned roots — `docs/`, `skills/`,
-the workflows and composite actions, the top-level Markdown, a member's docs
-and agent instructions, or a `grund.toml`. Installs a pinned `grund` release
+`.ephor/`, the harness build logic, the workflows and composite actions, the
+top-level Markdown, a member's docs, agent instructions and scanned code, or a
+`grund.toml`. Installs a pinned `grund` release
 and runs `grund check` once from the repository root, which is the only scope
-where the workspace alias table resolves `§forge/<ID>` and
-`§real-use-tests/<ID>`, so the run covers every namespace. It fails on a
+where the workspace alias table resolves `§forge/<ID>`,
+`§real-use-tests/<ID>` and `<§>graal/GR-<number>`, so the run covers every
+namespace. It never fetches: a GraalVM ticket citation resolves against the
+snapshot committed in `graalvm-tickets/tickets.md`. It fails on a
 citation that no longer resolves, on an `AGENTS.md` managed block that has
 drifted from its `grund.toml`, and on a `must`-level citation direction that is
-not met (§FS-repository-functional-spec.5.6).
+not met (§FS-repository-functional-spec.5.6). A second step reads the test
+sources grund does not, `tests/src` and `real-use-tests/src`, which the trigger
+also covers, and fails a bare `GR-<number>` in a comment there that has no
+snapshot (§PRCPL-graalvm-workaround-tickets.3).
 
 The `grund` version is pinned in the workflow rather than floating: a newer
 release can render a newer managed block, which would fail every PR until
@@ -173,7 +179,7 @@ on the workflow definitions themselves (for example, pinned action SHAs).
 Serves §FS-repository-functional-spec.4.3 — it gates the workflow definitions that
 section enumerates.
 
-## Scheduled workflows
+## 2. Scheduled workflows
 
 These run on `cron` (and usually `workflow_dispatch`) and keep coverage current
 and releases flowing without a human in the loop.
@@ -317,11 +323,12 @@ workflow's terms instead of arriving as an unexplained cancellation.
 
 Tests run through the ordinary `javaTest` lane (§AR-test-harness.3) with
 `GVM_TCK_TEST_JAVA_HOME` pointing at that JDK (§AR-test-harness.3.1), so workers
-execute on Crema while Gradle keeps running on the runner's stock JDK. No Crema-specific JVM flag is ever added: a
+execute on Crema while Gradle, which cannot run on Crema (§graal/GR-80250), keeps
+running on the runner's stock JDK. No Crema-specific JVM flag is ever added: a
 library that fails only because Crema rejects an argument the JVM lane normally
 passes is a finding, not something the workflow works around. JaCoCo is disabled
-via `-PskipJacoco=true` because Crema ignores `-javaagent`, which would otherwise
-publish empty coverage as though it were real.
+via `-PskipJacoco=true` because Crema ignores `-javaagent` (§graal/GR-77787),
+which would otherwise publish empty coverage as though it were real.
 
 The `vm` input selects the lane: `crema`, `hotspot`, or `both`. `hotspot` runs
 the identical tree on the identical JDK with the stock VM, and only
@@ -332,7 +339,7 @@ shape as §AR-test-all-metadata, so the existing failure tooling applies. The
 matrix comes from `generateMatrixBatchedCoordinates` (§AR-test-harness.7) via
 the `batches` input; `coordinates` narrows a run to one shard or one library.
 
-## Event-triggered automation
+## 3. Event-triggered automation
 
 ### AR-triage-new-issues: Triage new issues
 
@@ -395,7 +402,7 @@ one as the blocker instead. The script must do this itself because issues it
 opens with the workflow token raise no `issues: opened` event and never reach
 this workflow's duplicate check.
 
-## Composite actions
+## 4. Composite actions
 
 ### AR-detect-file-changes: detect-file-changes action
 

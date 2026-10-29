@@ -151,7 +151,7 @@ def load_type_model(graph_dir: str) -> TypeModel | None:
 
 
 def obtainable_types(model: TypeModel) -> set[str]:
-    """Least fixed point of the three obtainability rules (§3.1.2).
+    """Least fixed point of the three obtainability rules (§AR-code-coverage-improvement.4.1.2).
 
     Seeds are what a test can write from nothing: a public constructor, and the
     return type of any public static method, which needs no receiver. From
@@ -187,8 +187,9 @@ def obtainable_types(model: TypeModel) -> set[str]:
 
 
 def eligible_targets(model: TypeModel) -> dict[str, str]:
-    """Map each eligible public method id to how a test reaches it (§3.1.2).
+    """Map each eligible public method id to how a test reaches it.
 
+    Eligibility is receiver obtainability (§AR-code-coverage-improvement.4.1.2).
     Ineligible ids are simply absent. The override case is checked last and
     against the *public* signatures of obtainable supertypes only: a protected
     or package-private declaration upstream is not something a test can call.

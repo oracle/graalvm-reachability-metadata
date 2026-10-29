@@ -25,8 +25,8 @@ import java.util.regex.Pattern;
 
 /// Rewrites agent conditions that name a JVM hidden lambda class to the lambda's host class.
 ///
-/// The conditional agent can record `Host$$Lambda/0x…` as the reached type. A hidden class
-/// cannot be named, so the condition moves to `Host` (§FS-metadata.2).
+/// The conditional agent can record `Host$$Lambda/0x…` as the reached type (§graal/GR-80926).
+/// A hidden class cannot be named, so the condition moves to `Host` (§FS-metadata.2).
 public final class HiddenLambdaConditions {
 
     private static final List<String> CONDITION_KEYS = List.of("typeReached", "typeReachable");

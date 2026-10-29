@@ -39,7 +39,7 @@ would otherwise miss, and must never change how a consumer's code runs
   `library-and-framework-list`) used for offline validation; also packaged into
   the release.
 
-### `not-for-native-image` index entries
+### 1.1 `not-for-native-image` index entries
 
 An `index.json` may instead be a single-element array whose one entry sets
 `not-for-native-image: true`, with a required `reason` and an optional
@@ -65,7 +65,7 @@ native-build-tools loads no metadata for such a coordinate.
   record a JVM hidden lambda class (`Host$$Lambda/0x…`) as the reached type. A
   hidden class cannot be named, so Native Image never matches it; metadata
   generation rewrites such a condition to its host class and drops entries that
-  the rewrite makes identical.
+  the rewrite makes identical. The agent defect is §graal/GR-80926.
 - **Schema semver tracks the native-build-tools contract.** The
   `reachability-metadata` and `metadata-library-index` schemas follow semver
   against that contract: **minor and patch bumps stay backward-compatible** with
@@ -91,11 +91,12 @@ on `JavadocReport`. Generated bundles may therefore be unconditional, against
 the first invariant, and many shipped ones are; `checkMetadataFiles` does not
 reject them. A condition added by hand is undone by the next `generateMetadata`:
 its merge is a union, so the agent's unconditional entry returns beside the
-corrected one. Tracked in
+corrected one. The agent defect is §graal/GR-80923; its effect on this
+repository is tracked in
 [#11294](https://github.com/oracle/graalvm-reachability-metadata/issues/11294)
 and [#11287](https://github.com/oracle/graalvm-reachability-metadata/issues/11287).
 
-### Test-only metadata is kept out of the shipped metadata
+### 2.1 Test-only metadata is kept out of the shipped metadata
 
 Tests routinely need reachability metadata for their *own* helper types — the
 test classes, fixtures, and resources that exercise the library — but those
@@ -109,7 +110,7 @@ test project's
 The shipped metadata therefore stays free of test-only types, while the test
 native image still loads everything it needs from its own resources.
 
-### Foreign conditions are routed to supported owners
+### 2.2 Foreign conditions are routed to supported owners
 
 Native tracing can observe an entry whose `condition.typeReached` belongs to a
 different artifact than the coordinate under test. After `checkMetadataFiles`

@@ -14,8 +14,8 @@ permissions:
 env:
   # Pinned, not floating: a newer grund can render a newer managed AGENTS.md block, which would
   # fail every PR until someone re-runs `grund init`. Bump this and the checksum together.
-  GRUND_VERSION: "0.12.2"
-  GRUND_SHA256: "b61d8f828cb746a4a94a02b485fcb3e1f54843b1b47eb50063f65277f7346339"
+  GRUND_VERSION: "0.20.0"
+  GRUND_SHA256: "2188f5d8c472a5e0a8db07982d60d2d8b18c8dfdf7e71a72125b407c14909d97"
 
 jobs:
   grund-check:
@@ -30,8 +30,9 @@ jobs:
         id: filter
         uses: ./.github/actions/detect-file-changes
         with:
-          # The union of every project's `[scan] include` roots and their configs; a PR that
-          # touches none of them cannot break a citation.
+          # The union of every project's scanned roots (`[scan] include` and every scanned kind
+          # folder) and their configs, plus the test sources the bare ticket ID check reads; a PR
+          # that touches none of them cannot break a citation.
           file-patterns: |
             - 'AGENTS.md'
             - 'README.md'
@@ -42,6 +43,8 @@ jobs:
             - 'skills/**'
             - '.github/workflows/**'
             - '.github/actions/**'
+            - '.ephor/**'
+            - 'tests/tck-build-logic/**'
             - '.github/rulesets/**'
             - '.github/scripts/apply_required_checks_ruleset.py'
             - 'forge/AGENTS.md'
@@ -49,18 +52,34 @@ jobs:
             - 'forge/DEVELOPING.md'
             - 'forge/grund.toml'
             - 'forge/docs/**'
+            - 'forge/scripts/**'
+            - 'forge/pylint_plugins/**'
+            - 'forge/forge_metadata.py'
+            - 'forge/run-forge.sh'
+            - 'forge/dispatcher/**'
+            - 'forge/.agent-grounds/rhei/**'
+            - 'forge/prompt_templates/**'
+            - 'forge/examples/**'
+            - 'forge/ai_workflows/**'
+            - 'forge/git_scripts/**'
+            - 'forge/utility_scripts/**'
+            - 'forge/benchmarks/**'
+            - 'forge/tests/**'
             - 'real-use-tests/AGENTS.md'
             - 'real-use-tests/README.md'
             - 'real-use-tests/grund.toml'
             - 'real-use-tests/docs/**'
             - 'real-use-tests/.agent-grounds/rhei/**'
+            - 'graalvm-tickets/**'
+            - 'tests/src/**'
+            - 'real-use-tests/src/**'
 
       - name: "🔧 Install grund"
         if: steps.filter.outputs.changed == 'true'
         run: |
           archive="grund-${GRUND_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
           curl -sSfL -o "${RUNNER_TEMP}/${archive}" \
-            "https://github.com/vjovanov/grund/releases/download/v${GRUND_VERSION}/${archive}"
+            "https://github.com/agent-grounds/grund/releases/download/v${GRUND_VERSION}/${archive}"
           echo "${GRUND_SHA256}  ${RUNNER_TEMP}/${archive}" | sha256sum --check --strict
           tar -xzf "${RUNNER_TEMP}/${archive}" -C "${RUNNER_TEMP}"
           echo "${RUNNER_TEMP}/grund-${GRUND_VERSION}-x86_64-unknown-linux-gnu" >> "${GITHUB_PATH}"
@@ -71,6 +90,21 @@ jobs:
         # cross-namespace citations is in scope, so this one run covers Forge too.
         run: |
           grund check
+
+      - name: "🎫 Check bare GraalVM ticket IDs"
+        if: steps.filter.outputs.changed == 'true'
+        # grund does not read the ASCII-only test sources, so a bare GR-<number> in a comment there
+        # gets its snapshot check here (§PRCPL-graalvm-workaround-tickets.3).
+        run: |
+          missing=0
+          for id in $(git grep -h -E '(//|#|\*).*GR-[0-9]+' -- tests/src real-use-tests/src \
+              | grep -o -E '(^|[^[:alnum:]_-])GR-[0-9]+' | grep -o -E 'GR-[0-9]+' | sort -u); do
+            if ! grep -q -E "^#+ ${id}:" graalvm-tickets/tickets.md; then
+              echo "::error::${id} in a test comment has no snapshot; run grund fetch graal/${id}"
+              missing=1
+            fi
+          done
+          exit "${missing}"
 
       - name: "🔒 Check required status checks match gate jobs"
         if: steps.filter.outputs.changed == 'true'

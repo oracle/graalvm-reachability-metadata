@@ -138,7 +138,7 @@ contributes to the same two as every other test: entries a consumer needs go
 to `metadata/<group>/<artifact>/<version>/reachability-metadata.json`, and
 entries that exist only for the tests go to the test project's
 `src/test/resources/META-INF/native-image/reachability-metadata.json`
-(§root/FS-metadata.2, §root/FS-repository-functional-spec.5.1). The single-file
+(§root/FS-metadata.2.1, §root/FS-repository-functional-spec.5.1). The single-file
 `reachability-metadata.json` format is the only one `native-image` loads here;
 the legacy split-config files — `reflect-config.json`, `jni-config.json`,
 `resource-config.json`, `serialization-config.json`, `proxy-config.json` — are
@@ -146,7 +146,7 @@ never used in this repository (§root/FS-metadata.1), so a native-image tracing
 agent run that emits them has produced input to convert, not output to commit.
 Which of the two homes an entry belongs to is not decided by hand: finalization
 runs `splitTestOnlyMetadata` and the split is by the entry's own type
-(§4). The build maps the suite to a dedicated
+(§AR-code-coverage-improvement.5). The build maps the suite to a dedicated
 `codeCoverage` source set with its own `codeCoverageTest` JVM task and a
 combined `jacocoCodeCoverageReport`; `jacocoTestReport` stays the
 regular-suite baseline. Native lanes opt in with
@@ -303,7 +303,7 @@ concentrated in ranks 201-400. The agent must work across the
 whole supplied batch through realistic public API usage and assertions, without
 superficial coverage-only invocation. The phase runs for a fixed budget of
 `coverage_iterations` passes and stops early when no public target remains
-uncovered or when the pass yield collapses (§3.3). The budget is deliberately a
+uncovered or when the pass yield collapses (§AR-code-coverage-improvement.4.3). The budget is deliberately a
 constant rather than a function of the baseline uncovered count: scaling it made
 phase length depend on how that count is defined, so redefining the report
 summary silently halved it, and a constant cannot drift that way.
@@ -316,7 +316,7 @@ much still-uncovered code each one unlocks, and never by identifier order.
 Ranking is advisory navigation; it never changes any method's JaCoCo status.
 
 Ranking decides the **order** of the prompt, never its membership. Every
-eligible uncovered public entry (§3.1.2) remains a legitimate target, because
+eligible uncovered public entry (§AR-code-coverage-improvement.4.1.2) remains a legitimate target, because
 this phase is scored on public methods covered — an entry that reaches no
 internal code is still an uncovered public method worth a test. Selection must
 therefore fill the prompt to its cap whenever that many candidates exist.
@@ -341,7 +341,7 @@ bytecode decides which methods exist, JaCoCo decides which are covered, and any
 universe method absent from the JaCoCo report counts as uncovered.
 
 Note that this universe is deliberately **not** the same set as the deep phase's
-target universe (§3.2), which is JaCoCo-derived. The two lists serve different
+target universe (§AR-code-coverage-improvement.4.2), which is JaCoCo-derived. The two lists serve different
 jobs: this one ranks entries for selection, that one enumerates deep targets for
 measurement.
 
@@ -444,7 +444,7 @@ puts its own unit tests there — in its own packages, so no package prefix
 separates them. Taking the report at face value silently makes those tests deep
 targets and inflates the denominator the phase reports. The universe is
 therefore intersected with the method list the bytecode extractor writes for the
-API phase (§3.1.1), so both phases anchor to the same jars. Methods dropped this
+API phase (§AR-code-coverage-improvement.4.1.1), so both phases anchor to the same jars. Methods dropped this
 way are counted as `nonLibraryMethodsExcluded`; when no method list is supplied
 the report carries an explicit caveat instead of filtering silently.
 
@@ -472,7 +472,7 @@ shown fewer times and returns to the prompt once those have had their turn. Each
 still-uncovered target thus keeps getting its round, and no run leaves uncovered
 targets it never showed again. The deep phase runs for the same fixed
 `coverage_iterations` budget and stops early when no actionable target remains
-or when the pass yield collapses (§3.3), on the same rule and the same
+or when the pass yield collapses (§AR-code-coverage-improvement.4.3), on the same rule and the same
 thresholds as the API phase.
 
 Sampled observations may be emitted as LCOV guidance for standard tooling. That
@@ -516,7 +516,7 @@ is resolved through the generated class — the caller of its constructor — ra
 than by parsing the body name, which carries the enclosing name without its
 parameter types and so cannot separate overloads. When the enclosing method is a
 public API entry rather than a deep target, the note belongs to the API-cover
-prompt (§3.1.1); when it resolves to nothing, no note is emitted.
+prompt (§AR-code-coverage-improvement.4.1.1); when it resolves to nothing, no note is emitted.
 
 Route selection distinguishes two edges that the analysis dump renders alike. A
 **creation** edge runs from the method that captures a closure to that closure's
@@ -635,7 +635,7 @@ The Rhei template should decompose the workflow into these phases:
    agent cover pass. Measurement runs JVM JaCoCo
    plus exact API-inventory correlation, persists `api-cover-report-<n>` history
    and one fixed-location report, and decides the loop: the phase completes when
-   no uncovered public target remains, when the pass yield collapses (§3.3), or
+   no uncovered public target remains, when the pass yield collapses (§AR-code-coverage-improvement.4.3), or
    when the fixed budget of `coverage_iterations` (default 15) passes is spent.
    When the loop continues, measurement also derives the prompt of at most 200
    exact JaCoCo-uncovered public methods from that report. The cover agent attempts the complete supplied batch through
@@ -663,7 +663,7 @@ The Rhei template should decompose the workflow into these phases:
    every record in JSON plus sampled-guidance LCOV, persists
    `discovery-report-<n>` history and one fixed-location report, and decides
    the loop with the same fixed `coverage_iterations` budget and the same
-   marginal-yield stop (§3.3), and derives the compact
+   marginal-yield stop (§AR-code-coverage-improvement.4.3), and derives the compact
    at-most-200-method prompt when it continues. The cover agent batches related paths, reaches
    internal methods through public behavior, and always returns to measurement;
    it writes no target state — measurement tracks attempts and rotation
@@ -678,7 +678,7 @@ The Rhei template should decompose the workflow into these phases:
    report; and persist final metrics from the baseline and final JaCoCo and deep reports. After a finalization
    repair, the final reports come from one agent-free deterministic
    remeasurement, including each phase's recorded stop decision
-   (§3.3). The stats update makes the repository coverage
+   (§AR-code-coverage-improvement.4.3). The stats update makes the repository coverage
    dashboard reflect the tests this workflow adds without counting classified
    artifacts such as an upstream test JAR in the denominator
    (§root/AR-test-harness.8). It is also the one step here that builds a native
@@ -691,10 +691,10 @@ The Rhei template should decompose the workflow into these phases:
    for the same reason: metadata the
    extension suite needed only for its own helper types must not reach a
    consumer, and deciding that by hand is exactly what the task automates
-   (§root/FS-metadata.2, §root/AR-test-harness.5). The step also fails the
+   (§root/FS-metadata.2.1, §root/AR-test-harness.5). The step also fails the
    run when a legacy split-config file survives anywhere under the coordinate's
    test tree, which is how a tracing-agent artifact left behind by metadata
-   preparation is caught before publication rather than in review (§2).
+   preparation is caught before publication rather than in review (§AR-code-coverage-improvement.2).
    Gitignored files are exempt: the Gradle native plugin generates split-config
    files under `build/` as part of its own pipeline, and an ignored file can
    never be committed, so it is not a policy violation. Nothing
@@ -731,7 +731,7 @@ The Rhei template should decompose the workflow into these phases:
    reads it from the run.
 
    The trusted renderer presents the run as sequential checkpoints under the
-   coverage accounting rule below (§4.1), never as two phases on their own
+   coverage accounting rule below (§AR-code-coverage-improvement.5.1), never as two phases on their own
    scales: it divides every figure by the one frozen universe finalization
    recorded, so a phase's gain is the distance from the checkpoint the previous
    phase ended on. It computes no denominator of its own — the counting happens
@@ -877,7 +877,7 @@ sequenceDiagram
             opt no cached graph yet
                 P->>W: extract the static call graph from the library jars
             end
-            alt no uncovered target, marginal yield (§3.3), or budget spent
+            alt no uncovered target, marginal yield (§4.3), or budget spent
                 P-->>R: exit 0, phase completed
             else uncovered targets remain and budget is left
                 P->>P: rank targets by unlocked code, render the cover prompt
@@ -919,7 +919,7 @@ sequenceDiagram
             P->>W: jacocoCodeCoverageReport
             P->>W: nativeTestPGOSampling, then runNativeTestPGO on the .iprof
             P->>P: map samples and counters onto the static graph, write discovery-report-n
-            alt no actionable target, marginal yield (§3.3), or budget spent
+            alt no actionable target, marginal yield (§4.3), or budget spent
                 P-->>R: exit 0, phase completed
             else actionable targets remain
                 P-->>R: exit 10, write the group-session queue, schedule deep-dispatch
@@ -1005,7 +1005,7 @@ artifacts, not choose its own transition.
 
 **Measurement owns the loops.** Only `api-measure` and `deep-measure` move a
 loop forward: they write the numbered report history, compute the stop decision
-(§3.3), and render the next prompt, which reaches the cover agent as a handoff
+(§AR-code-coverage-improvement.4.3), and render the next prompt, which reaches the cover agent as a handoff
 (§AR-code-coverage-prompts.3). A deep pass hands it out as group sessions
 (§AR-code-coverage-deep-navigation.4) and stays one measurement. The cover agent writes tests and returns; it records no coverage
 claim and no target state. A repair pass re-enters measurement on the same
