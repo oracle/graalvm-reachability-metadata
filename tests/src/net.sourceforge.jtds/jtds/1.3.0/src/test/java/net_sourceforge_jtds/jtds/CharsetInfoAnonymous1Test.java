@@ -7,17 +7,20 @@
 package net_sourceforge_jtds.jtds;
 
 import net.sourceforge.jtds.jdbc.CharsetInfo;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// Charset mappings initialize only once, before any other driver test uses them.
+@Order(1)
 public class CharsetInfoAnonymous1Test {
     @Test
-    void resolvesCharsetsWithoutAThreadContextClassLoader() {
+    void resolvesCharsetsWhenTheContextLoaderCannotFindDriverResources() {
         Thread thread = Thread.currentThread();
         ClassLoader original = thread.getContextClassLoader();
         try {
-            thread.setContextClassLoader(null);
+            thread.setContextClassLoader(new ClassLoader(null) { });
             CharsetInfo charset = CharsetInfo.getCharset("UTF8");
             assertThat(charset).isNotNull();
             assertThat(charset.getCharset()).isEqualTo("UTF-8");
