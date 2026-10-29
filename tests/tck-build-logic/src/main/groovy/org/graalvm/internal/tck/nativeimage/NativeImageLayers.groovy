@@ -110,7 +110,9 @@ class NativeImageLayers {
         metadata = new DedicatedLayerMetadata(project, metadataDirectory, dedicatedLayer)
         if (dedicatedLayer) {
             NativeImageOptions base = nativeExtension.binaries.create("libDedicated")
-            base.classpath.from(project.providers.provider { artifacts.resolveDedicatedLayerClasspath() })
+            base.classpath.from(project.providers.provider {
+                artifacts.resolveDedicatedLayerClasspath(nativeExtension.binaries.getByName("test").classpath.files)
+            })
             base.buildArgs.addAll(nativeImageArgs)
             base.createLayer { CreateLayerOptions layer ->
                 layer.modules.set(project.providers.provider { resolveDedicatedLayerModules() })
