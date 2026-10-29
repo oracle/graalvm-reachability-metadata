@@ -323,11 +323,12 @@ workflow's terms instead of arriving as an unexplained cancellation.
 
 Tests run through the ordinary `javaTest` lane (§AR-test-harness.3) with
 `GVM_TCK_TEST_JAVA_HOME` pointing at that JDK (§AR-test-harness.3.1), so workers
-execute on Crema while Gradle keeps running on the runner's stock JDK. No Crema-specific JVM flag is ever added: a
+execute on Crema while Gradle, which cannot run on Crema (§graal/GR-80250), keeps
+running on the runner's stock JDK. No Crema-specific JVM flag is ever added: a
 library that fails only because Crema rejects an argument the JVM lane normally
 passes is a finding, not something the workflow works around. JaCoCo is disabled
-via `-PskipJacoco=true` because Crema ignores `-javaagent`, which would otherwise
-publish empty coverage as though it were real.
+via `-PskipJacoco=true` because Crema ignores `-javaagent` (§graal/GR-77787),
+which would otherwise publish empty coverage as though it were real.
 
 The `vm` input selects the lane: `crema`, `hotspot`, or `both`. `hotspot` runs
 the identical tree on the identical JDK with the stock VM, and only

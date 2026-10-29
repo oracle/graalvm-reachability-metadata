@@ -18,7 +18,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * This is needed as GraalVM doesn't support enumerating resources. It uses a hardcoded list of migrations.
+ * Names the migrations instead of letting Flyway scan for them. Native Image serves classpath
+ * resources as resource: URLs, as documented, and Flyway has no location scanner for that scheme.
  */
 class FixedResourceProvider implements ResourceProvider {
     private static final Set<String> MIGRATIONS;

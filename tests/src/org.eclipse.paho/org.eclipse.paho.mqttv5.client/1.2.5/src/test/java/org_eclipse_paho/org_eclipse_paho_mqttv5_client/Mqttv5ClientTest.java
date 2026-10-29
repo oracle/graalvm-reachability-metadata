@@ -69,8 +69,6 @@ public class Mqttv5ClientTest {
         }
     }
 
-    // not using Awaitility library because of `com.oracle.svm.core.jdk.UnsupportedFeatureError: ThreadMXBean methods` issue
-    // which happens if a condition is not fulfilled when a test is running in a native image
     private void waitUntil(Callable<Boolean> conditionEvaluator, int timeoutSeconds, int sleepTimeSeconds) {
         Exception lastException = null;
 

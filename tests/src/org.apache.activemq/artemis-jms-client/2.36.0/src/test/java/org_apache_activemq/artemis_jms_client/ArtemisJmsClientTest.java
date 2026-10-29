@@ -52,8 +52,9 @@ public class ArtemisJmsClientTest {
         config.setSecurityEnabled(false);
         config.setJMXManagementEnabled(false);
 
-        // Keep the broker off the platform MBeanServer: registering platform MXBeans fails
-        // inside a native image on GraalVM for JDK 25.0.4 (ThreadInfo open-type mapping).
+        // Keep the broker off the platform MBeanServer: getPlatformMBeanServer() fails under
+        // --exact-reachability-metadata, even with --enable-monitoring=jmxserver (GR-80927,
+        // https://github.com/oracle/graal/issues/14802).
         server = new ActiveMQServerImpl(config, MBeanServerFactory.newMBeanServer());
         server.start();
         server.waitForActivation(1, TimeUnit.MINUTES);

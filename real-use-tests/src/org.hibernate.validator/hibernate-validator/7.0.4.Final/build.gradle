@@ -22,6 +22,8 @@ dependencies {
 graalvmNative {
     binaries {
         test {
+            // GR-48702: Native Image's resource bundle lookup substitution is not correct,
+            // so turn it off.
             buildArgs.add("-H:-LocalizationSubstituteLoadLookup")
             buildArgs.add("-H:IncludeLocales=de,fr,pt-BR,es")
             buildArgs.add("--enable-url-protocols=https")
