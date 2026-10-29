@@ -19,7 +19,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -64,16 +63,10 @@ public abstract class DatabaseTestSupport {
                     "--performance-schema=ON", "--performance-schema-session-connect-attrs-size=4096",
                     "--ssl-ca=/tmp/server.pem", "--ssl-cert=/tmp/server.pem", "--ssl-key=/tmp/server-key.pem");
             created = true;
-            for (String file : List.of("server.pem", "server-key.pem")) {
-                Path destination = directory.resolve(file);
-                try (InputStream input = DatabaseTestSupport.class.getResourceAsStream("/oceanbase-tls/" + file)) {
-                    if (input == null) {
-                        throw new IOException("Missing TLS fixture: " + file);
-                    }
-                    Files.copy(input, destination);
-                }
-                command("docker", "cp", destination.toString(), name + ":/tmp/" + file);
-            }
+            copyTlsFixture("server.pem",
+                    DatabaseTestSupport.class.getResourceAsStream("/oceanbase-tls/server.pem"));
+            copyTlsFixture("server-key.pem",
+                    DatabaseTestSupport.class.getResourceAsStream("/oceanbase-tls/server-key.pem"));
             command("docker", "start", name);
             String mapping = command("docker", "port", name, "3306/tcp").lines()
                     .filter(line -> line.startsWith("127.0.0.1:")).findFirst().orElseThrow();
@@ -98,6 +91,17 @@ public abstract class DatabaseTestSupport {
                 Thread.sleep(1000);
             }
             throw new SQLException("MySQL did not become ready: " + command("docker", "logs", name), lastFailure);
+        }
+
+        private void copyTlsFixture(String file, InputStream fixture) throws Exception {
+            Path destination = directory.resolve(file);
+            try (InputStream input = fixture) {
+                if (input == null) {
+                    throw new IOException("Missing TLS fixture: " + file);
+                }
+                Files.copy(input, destination);
+            }
+            command("docker", "cp", destination.toString(), name + ":/tmp/" + file);
         }
 
         Connection connect(String mode, Properties overrides) throws SQLException {
