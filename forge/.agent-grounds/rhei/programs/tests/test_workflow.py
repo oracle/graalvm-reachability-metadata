@@ -21,11 +21,13 @@ from test_prepare import prepare_arguments
 
 import explore  # noqa: E402
 import forge_run  # noqa: E402
+from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
     JVM_TESTS_FAIL,
     NOTHING_TO_DO,
+    NOT_FOR_NATIVE_IMAGE_RECORDED,
     OK,
     RETURN_AUDIT,
     RETURN_JVM,
@@ -33,7 +35,7 @@ from exit_codes import (  # noqa: E402
     RETURN_NATIVE,
     STILL_FAILING,
 )
-from run_state import RunState, load, read_json, runtime_path, write_json  # noqa: E402
+from run_state import RunState, load, read_json, runtime_path, save, write_json  # noqa: E402
 
 URLS: dict[str, str] = {
     "source-code-url": "file:///nonexistent/sources.jar",
@@ -149,6 +151,39 @@ class WorkflowTest(unittest.TestCase):
         self.assertGreater(descriptor["metrics"]["summary"]["generated_loc"], 0)
         # Three cover passes and two fix requests (§AR-forge-workflow-pipeline.4).
         self.assertEqual(5, descriptor["metrics"]["summary"]["iterations"])
+
+    def test_non_jvm_artifact_publishes_only_its_index_and_descriptor(self) -> None:
+        """Publish carries the verdict without execution metrics
+        (§FS-not-for-native-image-record.2)."""
+        self.fake.issue("library-new-request")
+        reason: str = "Maven packaging is `klib`, not a JVM JAR."
+        replacement: str = "Use `lib-jvm` if a JVM artifact is available."
+        self.fake.artifact.return_value = NativeImageEligibility(True, reason, replacement)
+        self.assertEqual(NOT_FOR_NATIVE_IMAGE_RECORDED, self.step(*prepare_arguments()))
+        state: RunState = self.state
+        state.explore.deferred_classes = 100
+        save(self.fake.workspace, state)
+
+        self.assertEqual(OK, self.step("publish"))
+        state = self.state
+        descriptor_path: str = "stats/org.example/lib/2.0.0/forge-publication.json"
+        descriptor = read_json(state.path(descriptor_path))
+        self.assertEqual(("not-for-native-image", "not-for-native-image"),
+                         (descriptor["task_type"], descriptor["template_type"]))
+        self.assertEqual((reason, replacement),
+                         (descriptor["render"]["reason"], descriptor["render"]["replacement"]))
+        self.assertEqual([], descriptor["follow_ups"])
+        self.assertTrue(descriptor["modifiers"]["chunk_final"])
+        self.assertFalse(descriptor["modifiers"]["chunked_dynamic_access"])
+        self.assertIsNone(descriptor["render"]["library_stats"])
+        self.assertIsNone(descriptor["render"]["dynamic_access"])
+        self.assertIsNone(descriptor["render"]["dynamic_access_evidence"])
+        self.assertEqual(0, descriptor["metrics"]["summary"]["generated_loc"])
+        changed: list[str] = subprocess.run(
+            ["git", "diff", "--name-only", state.base_commit, "HEAD"], cwd=state.worktree, check=True,
+            stdout=subprocess.PIPE, text=True).stdout.splitlines()
+        self.assertEqual([state.index_path, descriptor_path], changed)
+        self.assertEqual("completed", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["outcome"])
 
     def test_fails_label_repairs_then_skips_a_met_goal(self) -> None:
         self.fake.supported_library()

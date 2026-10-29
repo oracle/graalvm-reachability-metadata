@@ -400,12 +400,12 @@ readable during migration.
 ## AR-not-for-native-image-publication: Not-for-native-image publication
 
 The `not-for-native-image` route handles artifacts judged not to be GraalVM
-Native Image targets. A `forge-metadata` run no longer makes that judgment: the
-library preparation preflight that made it was retired
-(§AR-forge-workflow-pipeline.9), so only an existing descriptor that names the
-route still reaches this publisher path. Local finalization stages the marker
+Native Image targets. A `forge-metadata` run makes that judgment in `prepare`,
+from the artifact's published files alone, and goes straight to `publish`
+(§FS-not-for-native-image-record). The run stages the marker
 `metadata/<group>/<artifact>/index.json`, its publication stats path, and the
-descriptor, then runs the same verification and push boundary as other routes.
+descriptor with task type `not-for-native-image`, then crosses the same
+verification and push boundary as other routes.
 
 The trusted publisher renders the reason and replacement guidance, links the PR
 with `Fixes: #<issue>`, and applies the fixed `GenAI`,

@@ -30,12 +30,29 @@ reason = """
 Rhei instantiates one task-plan file per template; the guided and naive task chains must live in this single file for the template to render either arm.
 """
 [[exceptions]]
+path = "forge/docs/functional-spec/functional-spec.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+shadows = "hard"
+max_accepted = { value = 800, unit = "lines" }
+[[exceptions]]
 path = "forge/docs/architecture/workflow-pipeline.md"
 match = "exact"
 rules = ["markdown-docs"]
 kind = "deferred"
 max_accepted = { value = 320, unit = "lines" }
-until = "AR-forge-workflow-pipeline is split into per-stage declarations following the dispatcher package boundaries"
+until = "the launcher loop and its exit codes move to their own architecture document"
 reason = """
-The file is one declaration, AR-forge-workflow-pipeline, whose numbered sections are cited from 58 files; moving a section into a child document gives it a new ID and renumbers those citations, which is deliberate spec work rather than a mechanical split (the same deferral a maintainer approved when the declaration lived in architecture.md).
+The launcher loop and its exit codes are a subject of their own and belong in a child architecture document the pipeline links. Moving them renumbers the later sections of the pipeline declaration, and several open Forge branches edit those sections now, so the split waits for them to land rather than turning their edits into conflicts.
+"""
+[[exceptions]]
+path = "forge/docs/architecture/git-scripts.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 400, unit = "lines" }
+until = "AR-pr-body's per-workflow pull request bodies and AR-actions-publication's trusted Actions publisher move to documents of their own"
+reason = """
+AR-forge-publication holds the local publication pipeline, the trusted Actions publisher and AR-pr-body's per-workflow pull request bodies. At 380 non-blank lines, moving the bodies (112) alone still leaves 268, over the 250 soft limit; moving the Actions publisher (79) too leaves about 189. Each is a subject of its own, and moving them is its own change, not part of an edit that only brings the not-for-native-image route's own declaration up to date.
 """

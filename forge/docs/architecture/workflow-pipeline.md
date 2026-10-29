@@ -87,6 +87,7 @@ follow, and the rotation resumes at the turn it stood at.
 | `12` | the check still fails right after its own fix, after `native`'s or `finalize`'s last fix, or after the audit's edit |
 | `20` | nothing to do: a new library has no version to repair, no target, exploration deferred, explore budget spent, or nothing to publish |
 | `21` | `setup-check` only: the setup verdict is recorded as a skip; go straight to `publish` |
+| `22` | `prepare` only: the artifact is recorded as not for Native Image; go straight to `publish` |
 | `2` / `3` | bad input / infrastructure or crash |
 | `30`–`35` | `fix-route` only: return to `jvm`, `measure`, `native`, `finalize`, `audit`, `native-repair` |
 | `40` | `fix-route` only: the fix reported that it could not help, except for `native` |
@@ -111,6 +112,7 @@ stateDiagram-v2
 
     [*] --> prepare
     prepare --> setup: 0
+    prepare --> publish: 22 not-for-native-image
     prepare --> failed: 2 or 3
     state "setup-check" as check
     setup --> check
@@ -166,7 +168,7 @@ every other sender, each cover pass, and the audit one, so a run takes
 
 | State | Does |
 | --- | --- |
-| `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<group>-<artifact>-<version>`, reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate and stopping the Gradle daemons that served it, whose in-memory build state outlives the removed files, and attaches it to the task; scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split), placing and formatting its index entry as the TCK index tasks do, the latest-only fields moving with `latest` (§root/FS-metadata.1), and records the version match and the coordinate's baseline snapshot for the pull request (§AR-pr-body); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
+| `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<group>-<artifact>-<version>`, reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate and stopping the Gradle daemons that served it, whose in-memory build state outlives the removed files, and attaches it to the task; for a new library whose published files show it is no JVM library, writes the not-for-native-image index, validates it with `validateIndexFiles` and the pre-publication gate, checkpoints, and exits `22` (§FS-not-for-native-image-record); otherwise scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split), placing and formatting its index entry as the TCK index tasks do, the latest-only fields moving with `latest` (§root/FS-metadata.1), and records the version match and the coordinate's baseline snapshot for the pull request (§AR-pr-body); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
 | `setup-check` | Once, right after `setup`: the setup tail (§AR-forge-workflow-pipeline.4.1); a recorded skip exits `21`, a new library, which has no version to repair, exits `20` to `analyze`, and every other route exits `0` to `jvm` |
 | `jvm` | Only for a version that already has tests: runs the version check, then `javaTest` and `generateMetadata` (§AR-forge-workflow-pipeline.5); the first failure is one fix request for that command alone |
 | `native-repair` | Right after `jvm`: runs only `test` (§AR-forge-workflow-pipeline.5); a failure is one fix request |
@@ -330,9 +332,10 @@ The strategy registry, per-label drivers, the library-update router, the
 continuation marker, the native trace gate and program-side metadata merging,
 per-class native runs, the pre-push review agent (its review is now the
 `audit` fix request, §FS-local-branch-review), the library preparation
-preflight with its not-for-native-image verdict (its unsupportable-version
-verdict moved into `setup`, §FS-unsupportable-version-diagnosis),
-foreign-owner follow-up issues, and every per-site repair budget are gone: strategies are fixed per label, Rhei resumes a run at its
+preflight (its unsupportable-version verdict moved into `setup`,
+§FS-unsupportable-version-diagnosis, and its not-for-native-image verdict into
+`prepare`, read from the artifact's published files alone,
+§FS-not-for-native-image-record), foreign-owner follow-up issues, and every per-site repair budget are gone: strategies are fixed per label, Rhei resumes a run at its
 state and the run branch holds the checkpoints, and each former repair site is
 one fix request. The issue-form rules, the claim, bulk-then-class exploration,
 the dynamic-access report as the only oracle, the pre-publication gate, and the

@@ -13,10 +13,11 @@ import org.graalvm.internal.tck.TestedVersionUpdaterTask;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.model.SkippedVersionEntry;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionComparator;
+import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.VersionParser;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,6 +42,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
@@ -56,6 +58,14 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
     private static final Duration MAX_RETRY_DELAY = Duration.ofSeconds(30);
     private static final int CONNECTION_TIMEOUT_MILLIS = (int) Duration.ofSeconds(30).toMillis();
     private static final String USER_AGENT = "graalvm-reachability-metadata-new-library-version-checker";
+    /// The one order that picks the highest tested version and decides which upstream versions are
+    /// newer: Gradle's dependency-resolution order. It compares every numeric part as a number
+    /// (`1.9.21.2` > `1.9.21`, `1.5.7-19` > `1.5.7-9`, `RC10` > `RC9`) without overflowing on a
+    /// build stamp such as `7.5.0.202512021534-r`, and ranks `alpha`, `M1`, `RC1` and `CR1` below
+    /// the release they precede, whether it is bare or ends in `.Final` or `.RELEASE`.
+    static final Comparator<String> VERSION_ORDER = Comparator.comparing(
+            new VersionParser()::transform,
+            new DefaultVersionComparator().asVersionComparator());
     private static Instant nextRemoteRequest = Instant.EPOCH;
 
     @TaskAction
@@ -315,8 +325,12 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             return new ArrayList<>();
         }
 
-        allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
-        return new ArrayList<>(allVersions.subList(1, allVersions.size()));
+        // Central lists versions in publication order, so one listed later can still be older
+        // (`1.9.21` after `1.9.21.2`); only a version above the start is newer
+        // (§FS-library-version-update-automation.1).
+        return allVersions.subList(indexOfStartingVersion + 1, allVersions.size()).stream()
+                .filter(version -> VERSION_ORDER.compare(version, startingVersion) > 0)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     static List<String> filterPreReleases(List<String> versions) {
@@ -350,7 +364,7 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             if (testedVersions.isEmpty()) {
                 throw new IllegalStateException("Cannot find any tested version for: " + libraryModule);
             }
-            testedVersions.sort(Comparator.comparing(VersionNumber::parse));
+            testedVersions.sort(VERSION_ORDER);
             return testedVersions.get(testedVersions.size() - 1);
         } catch (RuntimeException e) {
             throw e;

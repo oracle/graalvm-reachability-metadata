@@ -6,6 +6,9 @@
 """Conservative checks for artifacts that are not Native Image metadata targets."""
 
 from dataclasses import dataclass
+from io import BytesIO
+from http.client import HTTPException
+from urllib.error import HTTPError, URLError
 import json
 import os
 import re
@@ -49,6 +52,8 @@ class MavenPomMetadata:
 
     packaging: str | None
     dependencies: tuple[MavenDependency, ...]
+    # The POM declares `distributionManagement/relocation` (§FS-not-for-native-image-record.1).
+    relocated: bool = False
 
 
 def discovery_file_path(repo_path: str, coordinate: str) -> str:
@@ -147,12 +152,19 @@ def classify_coordinate_name(coordinate: str) -> NativeImageEligibility:
     return NativeImageEligibility(False)
 
 
-def inspect_maven_artifact(coordinate: str) -> NativeImageEligibility:
-    """Inspect Maven packaging and artifact contents when available."""
+def inspect_maven_artifact(coordinate: str, *, strict: bool = False) -> NativeImageEligibility:
+    """Inspect published contents; strict evidence follows §FS-not-for-native-image-record.1."""
     group, artifact, _version = coordinate.split(":", 2)
     base_url = artifact_base_url(MAVEN_CENTRAL, coordinate)
 
-    pom_metadata = read_maven_pom_metadata(f"{base_url}.pom")
+    try:
+        pom_metadata: MavenPomMetadata | None = read_maven_pom_metadata(f"{base_url}.pom")
+    except (OSError, URLError, HTTPException):
+        if not strict:
+            raise
+        return NativeImageEligibility(False)
+    if strict and (pom_metadata is None or pom_metadata.relocated):
+        return NativeImageEligibility(False)
     packaging = pom_metadata.packaging if pom_metadata else None
     if packaging in {"aar", "klib"}:
         return NativeImageEligibility(
@@ -161,7 +173,13 @@ def inspect_maven_artifact(coordinate: str) -> NativeImageEligibility:
             jvm_artifact_replacement(artifact),
         )
 
-    jar_bytes = fetch_url(f"{base_url}.jar")
+    try:
+        jar_bytes: BytesIO | None = (fetch_url(f"{base_url}.jar", strict=True) if strict
+                                    else fetch_url(f"{base_url}.jar"))
+    except (OSError, URLError, HTTPException):
+        if not strict:
+            raise
+        return NativeImageEligibility(False)
     if jar_bytes is None and packaging == "pom":
         return NativeImageEligibility(
             True,
@@ -169,6 +187,7 @@ def inspect_maven_artifact(coordinate: str) -> NativeImageEligibility:
                 "Maven packaging is `pom` and no artifact JAR is published, "
                 "so there are no JVM class files for native-image to analyze."
             ),
+            jvm_artifact_replacement(artifact),
         )
     if jar_bytes is None:
         return NativeImageEligibility(False)
@@ -261,7 +280,8 @@ def read_maven_pom_metadata(pom_url: str) -> MavenPomMetadata | None:
                 _find_stripped_text(dependency, namespace, "classifier"),
             )
         )
-    return MavenPomMetadata(packaging.strip() if packaging else "jar", tuple(dependencies))
+    relocated: bool = root.find(f"{namespace}distributionManagement/{namespace}relocation") is not None
+    return MavenPomMetadata(packaging.strip() if packaging else "jar", tuple(dependencies), relocated)
 
 
 def _find_stripped_text(element: ET.Element, namespace: str, child: str) -> str | None:
@@ -311,18 +331,19 @@ def artifact_exists_in_repository(pom_url: str) -> bool | None:
         return None
 
 
-def fetch_url(url: str):
-    """Fetch a URL into an in-memory binary stream, returning None for missing artifacts."""
+def fetch_url(url: str, *, strict: bool = False) -> BytesIO | None:
+    """In strict mode only 404 means absent; other failures raise
+    (§FS-not-for-native-image-record.1)."""
     try:
         with urllib.request.urlopen(url, timeout=20) as response:
-            import io
-
-            return io.BytesIO(response.read())
-    except urllib.error.HTTPError as exc:
-        if exc.code == 404:
-            return None
+            return BytesIO(response.read())
+    except HTTPError as exc:
+        if strict and exc.code != 404:
+            raise
         return None
-    except (OSError, urllib.error.URLError):
+    except (OSError, URLError):
+        if strict:
+            raise
         return None
 
 

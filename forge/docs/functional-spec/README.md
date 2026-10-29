@@ -36,6 +36,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-published-pr-review](published-pr-review.md#fs-published-pr-review-review-of-a-published-pull-request) | Review of a published pull request |
 | [§FS-forge-run-status](functional-spec.md#fs-forge-run-status-run-status-semantics) | Run status semantics |
 | [§FS-unsupportable-version-diagnosis](functional-spec.md#fs-unsupportable-version-diagnosis-unsupportable-version-verdict-in-setup) | Unsupportable-version verdict in setup |
+| [§FS-not-for-native-image-record](not-for-native-image-record.md#fs-not-for-native-image-record-not-for-native-image-record-in-prepare) | Not-for-native-image record in prepare |
 | [§FS-forge-run-output-legibility](functional-spec.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |
 | [§FS-forge-chunked-dynamic-access](functional-spec.md#fs-forge-chunked-dynamic-access-chunked-dynamic-access-semantics) | Chunked dynamic-access semantics |
 | [§FS-forge-workflow-spec-catalog](functional-spec.md#fs-forge-workflow-spec-catalog-workflow-specifications) | Workflow specifications catalog |

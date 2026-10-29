@@ -86,6 +86,8 @@ class SkipRecordTest(unittest.TestCase):
         self.assertEqual(SKIP_RECORDED, self.step("setup-check"))
         state: RunState = self.state
         self.assertTrue(state.skip_recorded)
+        self.assertTrue(state.index_only)
+        self.assertIsNone(state.not_for_native_image)
         self.assertNotIn("javaTest", self.gradle_calls())
         self.assertIn("validateIndexFiles -Pcoordinates=org.example:lib:2.0.0", self.gradle_calls())
         self.assertFalse(os.path.exists(state.path(state.test_dir)))
