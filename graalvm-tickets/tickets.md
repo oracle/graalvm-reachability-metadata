@@ -40,3 +40,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14807
+
+## GR-80935: \[Native Image\] Hello world fails to build with -H:-SimulateClassInitializer: "The origin of the constant ... should have been registered before"
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14808
