@@ -6,11 +6,11 @@
  */
 package org_apache_geronimo_specs.geronimo_osgi_locator;
 
-import org.junit.jupiter.api.Test;
+import java.util.concurrent.Callable;
 
-class Geronimo_osgi_locatorTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+public class FarewellProvider implements Callable<String> {
+    @Override
+    public String call() {
+        return "Goodbye from the farewell provider";
     }
 }
