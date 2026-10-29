@@ -6,11 +6,25 @@
  */
 package com_alibaba_nacos.nacos_client;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.PropertyKeyConst;
+import com.alibaba.nacos.api.config.ConfigService;
 import org.junit.jupiter.api.Test;
 
-class Nacos_clientTest {
+public class Nacos_clientTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void usesTheNacosFacadeToPublishTypedConfiguration() throws Exception {
+        try (ConfigRpcServer server = new ConfigRpcServer()) {
+            ConfigService service = NacosFactory.createConfigService(
+                    server.properties().getProperty(PropertyKeyConst.SERVER_ADDR));
+            try {
+                assertTrue(service.publishConfig("settings", "metadata", "enabled: true", "yaml"));
+                assertEquals("enabled: true", service.getConfig("settings", "metadata", 30000));
+            } finally {
+                service.shutDown();
+            }
+        }
     }
 }
