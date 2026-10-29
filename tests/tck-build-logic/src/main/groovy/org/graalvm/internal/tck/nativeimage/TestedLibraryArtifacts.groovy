@@ -134,14 +134,12 @@ class TestedLibraryArtifacts {
         includedJars.addAll(resolveJUnitRuntimeJars())
         return includedJars.toList().sort { File file -> file.absolutePath }
     }
-    List<File> resolveDedicatedLayerClasspath() {
-        Set<File> classpath = new LinkedHashSet<>(project.configurations.testRuntimeClasspath
+    /// Keep dependency precedence identical to the native test binary. §FS-tests.3.7
+    List<File> resolveDedicatedLayerClasspath(Collection<File> nativeTestClasspath) {
+        Set<File> dependencies = new LinkedHashSet<>(project.configurations.testRuntimeClasspath
                 .resolvedConfiguration.resolvedArtifacts.collect { artifact -> artifact.file })
-        classpath.addAll(project.configurations.nativeImageTestClasspath
+        dependencies.addAll(project.configurations.nativeImageTestClasspath
                 .resolvedConfiguration.resolvedArtifacts.collect { artifact -> artifact.file })
-        return classpath
-                .findAll { File file -> file.isFile() }
-                .toList()
-                .sort { File file -> file.absolutePath }
+        return nativeTestClasspath.findAll { File file -> dependencies.contains(file) && file.isFile() }.toList()
     }
 }
