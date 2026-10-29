@@ -7,21 +7,21 @@
 package ant.ant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.apache.tools.ant.IntrospectionHelper;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Path.PathElement;
 import org.junit.jupiter.api.Test;
 
 public class IntrospectionHelperAnonymous1Test {
     @Test
     void createsNestedElementUsingFactoryMethod() {
         Project project = new Project();
-        ConfigurationBean bean = new ConfigurationBean();
-        IntrospectionHelper helper = IntrospectionHelper.getHelper(ConfigurationBean.class);
-        ConfigurationBean.Value child = (ConfigurationBean.Value) helper.createElement(project, bean, "created");
-        IntrospectionHelper.getHelper(ConfigurationBean.Value.class).setAttribute(project, child, "label", "child");
-        assertSame(child, bean.created);
-        assertEquals("child", bean.created.label);
+        Path path = new Path(project);
+        IntrospectionHelper helper = IntrospectionHelper.getHelper(Path.class);
+        PathElement child = (PathElement) helper.createElement(project, path, "pathelement");
+        child.setLocation(project.resolveFile("input"));
+        assertEquals(project.resolveFile("input").getAbsolutePath(), path.list()[0]);
     }
 }

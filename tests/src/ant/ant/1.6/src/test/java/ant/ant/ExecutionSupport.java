@@ -24,7 +24,12 @@ public final class ExecutionSupport {
     }
 
     public static void executeJavaVersion(File directory) throws Exception {
-        File bin = new File(System.getProperty("java.home"), "bin");
+        String javaHome = System.getProperty("java.home");
+        if (javaHome == null || javaHome.isBlank()) {
+            javaHome = System.getenv("JAVA_HOME");
+        }
+        assertTrue(javaHome != null && !javaHome.isBlank(), "A JDK is required to launch Java");
+        File bin = new File(javaHome, "bin");
         File java = new File(bin, Os.isFamily("windows") ? "java.exe" : "java");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         ExecuteWatchdog watchdog = new ExecuteWatchdog(30000);

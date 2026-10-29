@@ -9,9 +9,11 @@ package ant.ant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
+import java.nio.file.Files;
 
 import org.apache.tools.ant.IntrospectionHelper;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Property;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -20,11 +22,16 @@ public class IntrospectionHelperAnonymous9Test {
     File directory;
 
     @Test
-    void resolvesFileAttributeAgainstProject() {
+    void resolvesFileAttributeAgainstProject() throws Exception {
         Project project = new Project();
         project.setBaseDir(directory);
-        ConfigurationBean bean = new ConfigurationBean();
-        IntrospectionHelper.getHelper(ConfigurationBean.class).setAttribute(project, bean, "file", "input.txt");
-        assertEquals(new File(directory, "input.txt"), bean.file);
+        File input = new File(directory, "input.properties");
+        Files.writeString(input.toPath(), "build.kind=release\n");
+        Property property = new Property();
+        property.setProject(project);
+        IntrospectionHelper.getHelper(Property.class).setAttribute(project, property, "file", "input.properties");
+        assertEquals(input, property.getFile());
+        property.execute();
+        assertEquals("release", project.getProperty("build.kind"));
     }
 }

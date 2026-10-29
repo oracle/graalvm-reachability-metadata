@@ -36,6 +36,7 @@ public class XSLTProcessTest {
         task.setIn(input);
         task.setOut(output);
         task.setStyle(stylesheet.getAbsolutePath());
+        task.createFactory().setName("org.apache.xalan.processor.TransformerFactoryImpl");
         task.setProcessor("trax");
         task.execute();
         assertEquals("Ant transformation", Files.readString(output.toPath()));

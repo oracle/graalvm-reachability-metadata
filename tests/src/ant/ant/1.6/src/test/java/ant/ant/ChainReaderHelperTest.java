@@ -32,6 +32,8 @@ public class ChainReaderHelperTest {
         filter.addParam(parameter);
         FilterChain chain = new FilterChain();
         chain.addFilterReader(filter);
+        // Ant's filter-chain API requires a Vector.
+        @SuppressWarnings("checkstyle:RegexpSinglelineJava")
         Vector<FilterChain> chains = new Vector<>();
         chains.add(chain);
         ChainReaderHelper helper = new ChainReaderHelper();
