@@ -17,8 +17,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
-    private static final String LAMBDA_SHIPPED_METADATA = "metadata/com.example/lib/1.0.0/reachability-metadata.json";
-    private static final String LAMBDA_TEST_METADATA =
+    private static final String LIB_SHIPPED_METADATA = "metadata/com.example/lib/1.0.0/reachability-metadata.json";
+    private static final String LIB_TEST_METADATA =
             "tests/src/com.example/lib/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json";
 
     @Test
@@ -121,16 +121,16 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
     void movesLambdaDeclaredInTestClass() throws IOException {
         JsonNode lambdaEntry = splitLambdaMetadata("com_example.lib.LibTest", List.of("com.example.Loader"));
 
-        assertThat(readJson(LAMBDA_SHIPPED_METADATA).has("reflection")).isFalse();
-        assertThat(readJson(LAMBDA_TEST_METADATA).get("reflection")).containsExactly(lambdaEntry);
+        assertThat(readJson(LIB_SHIPPED_METADATA).has("reflection")).isFalse();
+        assertThat(readJson(LIB_TEST_METADATA).get("reflection")).containsExactly(lambdaEntry);
     }
 
     @Test
     void keepsLibraryLambdaWithLibraryInterfaces() throws IOException {
         JsonNode lambdaEntry = splitLambdaMetadata("com.example.Library", List.of("com.example.Loader"));
 
-        assertThat(readJson(LAMBDA_SHIPPED_METADATA).get("reflection")).containsExactly(lambdaEntry);
-        assertThat(tempDir.resolve(LAMBDA_TEST_METADATA)).doesNotExist();
+        assertThat(readJson(LIB_SHIPPED_METADATA).get("reflection")).containsExactly(lambdaEntry);
+        assertThat(tempDir.resolve(LIB_TEST_METADATA)).doesNotExist();
     }
 
     @Test
@@ -140,8 +140,106 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
                 List.of("com.example.Loader", "com_example.lib.LibTest$Callback")
         );
 
-        assertThat(readJson(LAMBDA_SHIPPED_METADATA).has("reflection")).isFalse();
-        assertThat(readJson(LAMBDA_TEST_METADATA).get("reflection")).containsExactly(lambdaEntry);
+        assertThat(readJson(LIB_SHIPPED_METADATA).has("reflection")).isFalse();
+        assertThat(readJson(LIB_TEST_METADATA).get("reflection")).containsExactly(lambdaEntry);
+    }
+
+    @Test
+    void movesTestClassFileResource() throws IOException {
+        assertResourceMoves("com_example/lib/LibTest$Report.class");
+    }
+
+    @Test
+    void movesTestClassFileResourceWithLeadingSlash() throws IOException {
+        assertResourceMoves("/com_example/lib/LibTest.class");
+    }
+
+    @Test
+    void movesTestSubpackageClassFileResource() throws IOException {
+        assertResourceMoves("com_example/lib/sub/Fixture.class");
+    }
+
+    @Test
+    void movesWildcardClassFileResourceInTestPackage() throws IOException {
+        assertResourceMoves("com_example/lib/*.class");
+    }
+
+    @Test
+    void movesRecursiveWildcardClassFileResourceInTestPackage() throws IOException {
+        assertResourceMoves("com_example/lib/**/*.class");
+    }
+
+    @Test
+    void keepsLibraryClassFileResource() throws IOException {
+        assertResourceStaysShipped("com/example/Library.class");
+    }
+
+    @Test
+    void keepsClassFileResourceInPackageSharingTestPackagePrefix() throws IOException {
+        assertResourceStaysShipped("com_example/libx/Helper.class");
+    }
+
+    @Test
+    void keepsClassFileResourceNamedLikeTestPackage() throws IOException {
+        assertResourceStaysShipped("com_example/lib.class");
+    }
+
+    @Test
+    void keepsWildcardClassFileResourceAboveTestPackage() throws IOException {
+        assertResourceStaysShipped("com_example/*.class");
+    }
+
+    @Test
+    void keepsClassFileResourceOfTestPlacedInAllowedPackage() throws IOException {
+        writeSource(
+                "tests/src/com.example/lib/1.0.0/src/test/java/com/example/internal/InternalTest.java",
+                """
+                package com.example.internal;
+
+                import org.junit.jupiter.api.Test;
+
+                class InternalTest {
+                    @Test
+                    void readsInternals() {
+                    }
+                }
+                """
+        );
+
+        assertResourceStaysShipped("com/example/internal/Helper.class");
+    }
+
+    @Test
+    void keepsClassFileResourceOfDependencyStub() throws IOException {
+        writeSource(
+                "tests/src/com.example/lib/1.0.0/src/test/java/com/acme/codec/Codec.java",
+                """
+                package com.acme.codec;
+
+                public class Codec {
+                }
+                """
+        );
+
+        assertResourceStaysShipped("com/acme/codec/Codec.class");
+    }
+
+    @Test
+    void retainsExistingTestClassFileResource() throws IOException {
+        writeLibTestProject();
+        writeJson(LIB_SHIPPED_METADATA, "{}");
+        String resourceEntry = classFileResourceEntry("com_example/lib/LibTest$Report.class");
+        writeJson(LIB_TEST_METADATA, """
+                {
+                  "resources": [%s]
+                }
+                """.formatted(resourceEntry));
+
+        runSplitTask("com.example:lib:1.0.0");
+
+        assertThat(readJson(LIB_SHIPPED_METADATA).isEmpty()).isTrue();
+        assertThat(readJson(LIB_TEST_METADATA).get("resources"))
+                .containsExactly(OBJECT_MAPPER.readTree(resourceEntry));
     }
 
     @Test
@@ -177,9 +275,8 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
         task.run();
     }
 
-    /// Writes a `com.example:lib:1.0.0` project whose only metadata entry is a lambda gated on a
-    /// library type, splits it, and returns that entry.
-    private JsonNode splitLambdaMetadata(String declaringClass, List<String> interfaces) throws IOException {
+    /// Writes the `com.example:lib:1.0.0` test project, whose test package is `com_example.lib`.
+    private void writeLibTestProject() throws IOException {
         writeSource(
                 "tests/src/com.example/lib/1.0.0/src/test/java/com_example/lib/LibTest.java",
                 """
@@ -198,6 +295,12 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
                 """
         );
         writeIndex("com.example", "lib", "1.0.0", List.of("1.0.0"), List.of("com.example"));
+    }
+
+    /// Writes a `com.example:lib:1.0.0` project whose only metadata entry is a lambda gated on a
+    /// library type, splits it, and returns that entry.
+    private JsonNode splitLambdaMetadata(String declaringClass, List<String> interfaces) throws IOException {
+        writeLibTestProject();
         String lambdaEntry = """
                 {
                   "condition": {
@@ -212,7 +315,7 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
                 }
                 """.formatted(declaringClass, toJson(interfaces));
         writeJson(
-                LAMBDA_SHIPPED_METADATA,
+                LIB_SHIPPED_METADATA,
                 """
                 {
                   "reflection": [%s]
@@ -222,5 +325,49 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
 
         runSplitTask("com.example:lib:1.0.0");
         return OBJECT_MAPPER.readTree(lambdaEntry);
+    }
+
+    /// Writes a `com.example:lib:1.0.0` project whose only metadata entry is a resource `glob`
+    /// gated on a library type, splits it, and returns that entry.
+    private JsonNode splitResourceMetadata(String glob) throws IOException {
+        writeLibTestProject();
+        String resourceEntry = classFileResourceEntry(glob);
+        writeJson(
+                LIB_SHIPPED_METADATA,
+                """
+                {
+                  "resources": [%s]
+                }
+                """.formatted(resourceEntry)
+        );
+
+        runSplitTask("com.example:lib:1.0.0");
+        return OBJECT_MAPPER.readTree(resourceEntry);
+    }
+
+    private void assertResourceMoves(String glob) throws IOException {
+        JsonNode resourceEntry = splitResourceMetadata(glob);
+
+        assertThat(readJson(LIB_SHIPPED_METADATA).has("resources")).isFalse();
+        assertThat(readJson(LIB_TEST_METADATA).get("resources")).containsExactly(resourceEntry);
+    }
+
+    private void assertResourceStaysShipped(String glob) throws IOException {
+        JsonNode resourceEntry = splitResourceMetadata(glob);
+
+        assertThat(readJson(LIB_SHIPPED_METADATA).get("resources")).containsExactly(resourceEntry);
+        assertThat(tempDir.resolve(LIB_TEST_METADATA)).doesNotExist();
+    }
+
+    /// A resource entry as the agent records it when a library reads class bytes as a resource.
+    private String classFileResourceEntry(String glob) {
+        return """
+                {
+                  "condition": {
+                    "typeReached": "com.example.LineNumbers"
+                  },
+                  "glob": "%s"
+                }
+                """.formatted(glob);
     }
 }
