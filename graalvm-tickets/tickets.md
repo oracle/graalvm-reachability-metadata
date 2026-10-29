@@ -19,3 +19,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14805
+
+## GR-80932: \[Native Image\] Unlinkable ServiceLoader provider crashes the builder: "reachable during compilation, but was not seen during Bytecode parsing"
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14717
