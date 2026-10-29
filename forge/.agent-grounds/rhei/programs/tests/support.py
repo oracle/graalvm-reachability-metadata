@@ -26,6 +26,8 @@ TESTS: str = os.path.dirname(os.path.abspath(__file__))
 PROGRAMS: str = os.path.dirname(TESTS)
 FORGE: str = os.path.abspath(os.path.join(PROGRAMS, "..", "..", ".."))
 REPOSITORY: str = os.path.dirname(FORGE)
+# The forge-metadata state machine whose routes and agent instructions the tests pin.
+TEMPLATE: str = os.path.join(os.path.dirname(PROGRAMS), "templates", "forge-metadata", "states.yaml")
 for path in (TESTS, PROGRAMS, FORGE):
     if path not in sys.path:
         sys.path.insert(0, path)

@@ -15,7 +15,9 @@ import subprocess
 import unittest
 from typing import Any
 
-from support import COORDINATE, PREVIOUS, FakeRepository, working_directory
+import yaml
+
+from support import COORDINATE, PREVIOUS, TEMPLATE, FakeRepository, working_directory
 from utility_scripts.gradle_environment import (
     GRADLE_MODULES_CACHE_DIR,
     checkout_gradle_home_for_repo,
@@ -186,6 +188,21 @@ class PrepareTest(unittest.TestCase):
         self.fake.issue("library-new-request")
         self.assertEqual(OK, self.prepare())
         self.assertIn(f"- Read-only Gradle dependency cache: `{cache}`", self.search_roots())
+
+    def test_every_agent_state_walks_only_from_the_search_roots(self) -> None:
+        # Any state an agent runs in can go looking for a file, so each carries the rule
+        # (§FS-forge-agent-runtime-selection.1).
+        with open(TEMPLATE, encoding="utf-8") as handle:
+            states: dict[str, dict[str, Any]] = yaml.safe_load(handle)["states"]
+        agents: dict[str, dict[str, Any]] = {name: spec for name, spec in states.items() if "target" in spec}
+        self.assertEqual({"setup", "cover", "fix"}, set(agents))
+        for name, spec in agents.items():
+            with self.subTest(state=name):
+                self.assertIn({"name": "run", "path": "runtime/forge/run.md"}, spec["inputs"])
+                self.assertIn("Walk or search the file system only from the search roots `{input.run.path}` lists; "
+                              "outside them, open only a file whose path you were given. Never walk `/tmp`, "
+                              "`$HOME`, or `/`, even to reach one of them",
+                              " ".join(spec["instructions"].split()))
 
     def test_update_adds_the_version_beside_the_supported_one(self) -> None:
         self.fake.supported_library()
