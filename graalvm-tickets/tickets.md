@@ -47,3 +47,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14808
+
+## GR-80937: \[Native Image\] JNI DetachCurrentThread detaches a thread with Java frames on its stack; returning to Java fails with "Must either be at a safepoint or in native mode"
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14809
