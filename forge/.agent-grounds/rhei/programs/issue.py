@@ -73,7 +73,11 @@ def parse_issue(payload: dict[str, Any]) -> Issue:
 
 
 def read_issue(number: int, cwd: str) -> dict[str, Any]:
-    """The issue's number, title, state, labels, body, and author, read with `gh`."""
+    """The issue's number, title, state, labels, body, and author, read with `gh`.
+
+    The claim has just read the same issue, so a failed read is GitHub's failure, not
+    the issue's: it raises `RuntimeError`, never `ValueError` (§FS-human-intervention-policy).
+    """
     completed: subprocess.CompletedProcess[str] = subprocess.run(
         ["gh", "issue", "view", str(number), "--repo", REPOSITORY, "--json", "number,title,state,labels,body,author"],
         cwd=cwd,
@@ -82,5 +86,5 @@ def read_issue(number: int, cwd: str) -> dict[str, Any]:
         text=True,
     )
     if completed.returncode != 0:
-        raise ValueError(f"cannot read issue #{number}: {completed.stderr.strip()}")
+        raise RuntimeError(f"cannot read issue #{number}: {completed.stderr.strip()}")
     return json.loads(completed.stdout)

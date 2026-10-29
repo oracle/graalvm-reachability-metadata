@@ -220,6 +220,11 @@ def run(args: argparse.Namespace) -> int:
     repo: str = _resolve(workspace, args.repo_checkout)
     try:
         payload: dict[str, Any] = issue.read_issue(args.issue_number, repo)
+    except RuntimeError as error_value:
+        # External: no issue action, so a later cycle retries (§FS-human-intervention-policy).
+        print(f"ERROR: {error_value}", file=sys.stderr)
+        return INFRASTRUCTURE
+    try:
         parsed: issue.Issue = issue.parse_issue(payload)
     except ValueError as error_value:
         raise BadInput(str(error_value)) from error_value

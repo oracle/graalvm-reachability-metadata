@@ -20,7 +20,7 @@ from support import COORDINATE, PREVIOUS, FakeRepository, working_directory
 import forge_run  # noqa: E402
 import prepare  # noqa: E402
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
-from exit_codes import BAD_INPUT, NOT_FOR_NATIVE_IMAGE_RECORDED, OK  # noqa: E402
+from exit_codes import BAD_INPUT, INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput  # noqa: E402
 from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, load, read_json, runtime_path  # noqa: E402
 
 SETUP_AGENT: str = "claude-code[medium]:sonnet"
@@ -261,12 +261,18 @@ class PrepareTest(unittest.TestCase):
     def outcome(self) -> dict[str, str]:
         return read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
 
-    def test_an_issue_gh_cannot_read_is_named_in_one_line(self) -> None:
-        # gh's further lines follow as detail (§FS-forge-run-requirements.2).
-        self.fake.control({"issueError": "HTTP 404: Not Found (https://api.github.com/graphql)\nsecond line"})
-        self.assertEqual(BAD_INPUT, self.prepare())
-        self.assertEqual(("prepare: bad input: cannot read issue #7: HTTP 404: Not Found (https://api.github.com/graphql)",
-                          "second line"), (self.outcome()["reason"], self.outcome()["detail"]))
+    def test_an_issue_gh_cannot_read_is_an_infrastructure_failure(self) -> None:
+        # GitHub failed, not the issue: no hold (§FS-human-intervention-policy).
+        self.fake.control({"issueError": "API rate limit exceeded for user ID 1.\nsecond line"})
+        self.assertEqual(INFRASTRUCTURE, self.prepare())
+        self.assertEqual(("prepare: infrastructure failure", "infrastructure"),
+                         (self.outcome()["reason"], self.outcome()["kind"]))
+
+    def test_a_bad_input_reason_is_one_line(self) -> None:
+        # Further lines follow as detail (§FS-forge-run-requirements.2).
+        error: BadInput = BadInput("cannot parse the issue form.\nsecond line", "build output")
+        self.assertEqual(("cannot parse the issue form", "second line\nbuild output"),
+                         (error.reason, error.detail))
 
     def test_a_worktree_git_refuses_quotes_git(self) -> None:
         self.fake.issue("library-new-request")
