@@ -24,7 +24,7 @@ from unittest.mock import patch
 
 import yaml
 
-from support import COORDINATE, run_state
+from support import COORDINATE, play_fix, run_state
 from test_audit import TEMPLATE, FinalizedRun
 from test_prepare import prepare_arguments
 
@@ -44,7 +44,7 @@ from exit_codes import (  # noqa: E402
     RETURN_NATIVE_REPAIR,
     STILL_FAILING,
 )
-from run_state import read_json, runtime_path, write_json  # noqa: E402
+from run_state import read_json, runtime_path  # noqa: E402
 
 METADATA_STEPS: list[str] = ["splitTestOnlyMetadata", "routeForeignMetadata", "checkMetadataFiles"]
 
@@ -57,10 +57,9 @@ class CheckStateTest(FinalizedRun):
             calls: list[str] = [line.split()[0] for line in handle if "[" not in line and line.strip() != "--stop"]
         return calls[since:]
 
-    def fixed(self, visit: int) -> int:
+    def fixed(self) -> int:
         """Play `fix` for the open request and route back."""
-        write_json(runtime_path(self.fake.workspace, "reports", f"fix-{visit}.json"),
-                   {"result": "fixed", "changed": [], "summary": "played"})
+        play_fix(self.fake.workspace)
         return self.step("fix-route")
 
     def recorded_outcome(self) -> dict[str, Any]:
@@ -113,7 +112,7 @@ class CheckStateTest(FinalizedRun):
         self.assertEqual(["javaTest", "generateMetadata"], self.tasks()[-2:])
         self.assertEqual([f"./gradlew generateMetadata -Pcoordinates={COORDINATE}"], self.failing_commands())
         self.assertNotIn("## Then run", self.read("fix-request.md"))
-        self.assertEqual(RETURN_JVM, self.fixed(1))
+        self.assertEqual(RETURN_JVM, self.fixed())
         self.fake.control({"generateFails": False})
         self.assertEqual(OK, self.step("jvm"))
         self.assertIsNone(self.state.pending_request)
@@ -128,7 +127,7 @@ class CheckStateTest(FinalizedRun):
         self.assertIn("Return: 35", request)
         self.assertIn("```text\norg.graalvm.nativeimage.MissingReflectionRegistrationError: "
                       "org.example.lib.Codec\n```", request)
-        self.assertEqual(RETURN_NATIVE_REPAIR, self.fixed(1))
+        self.assertEqual(RETURN_NATIVE_REPAIR, self.fixed())
         self.write(os.path.join(self.state.metadata_dir, "reachability-metadata.json"),
                    '{"reflection": [{"type": "Fixed"}]}\n')
         self.assertEqual(OK, self.step("native-repair"))
@@ -139,7 +138,7 @@ class CheckStateTest(FinalizedRun):
         self.assertEqual(OK, self.step("jvm"))
         self.fake.control({"nativeFails": True})
         self.assertEqual(AGENT_WORK, self.step("native-repair"))
-        self.assertEqual(RETURN_NATIVE_REPAIR, self.fixed(1))
+        self.assertEqual(RETURN_NATIVE_REPAIR, self.fixed())
         self.assertEqual(STILL_FAILING, self.step("native-repair"))
         self.assertEqual("human-intervention", self.outcome())
         self.assertEqual(("native-repair", [f"./gradlew test -Pcoordinates={COORDINATE}"]),
@@ -158,7 +157,7 @@ class CheckStateTest(FinalizedRun):
         for visit in range(1, 4):
             self.assertEqual(AGENT_WORK, self.step("native"), visit)
             self.assertIn("Return: 32", self.read("fix-request.md"))
-            self.assertEqual(RETURN_NATIVE, self.fixed(visit))
+            self.assertEqual(RETURN_NATIVE, self.fixed())
         self.assertEqual(STILL_FAILING, self.step("native"))
         self.assertEqual("human-intervention", self.outcome())
         self.assertEqual(3, self.state.native_requests)
@@ -167,8 +166,7 @@ class CheckStateTest(FinalizedRun):
         self.repaired()
         self.fake.control({"nativeFails": True})
         self.assertEqual(AGENT_WORK, self.step("native"))
-        write_json(runtime_path(self.fake.workspace, "reports", "fix-1.json"),
-                   {"result": "cannot-fix", "changed": [], "summary": "two serialization failures remain"})
+        play_fix(self.fake.workspace, "cannot-fix", "two serialization failures remain")
         self.assertEqual(RETURN_NATIVE, self.step("fix-route"))
         self.assertEqual(AGENT_WORK, self.step("native"))
         self.assertIn("## The previous fix reported\n\ntwo serialization failures remain", self.read("fix-request.md"))
@@ -186,11 +184,11 @@ class CheckStateTest(FinalizedRun):
         self.fake.control({"checkFails": True})
         self.assertEqual(AGENT_WORK, self.step("finalize"))
         self.assertEqual([f"./gradlew checkMetadataFiles -Pcoordinates={COORDINATE}"], self.failing_commands())
-        self.assertEqual(RETURN_FINALIZE, self.fixed(1))
+        self.assertEqual(RETURN_FINALIZE, self.fixed())
         self.fake.control({"checkFails": False, "styleFails": "checkstyle"})
         self.assertEqual(AGENT_WORK, self.step("finalize"))
         self.assertEqual([f"./gradlew checkstyle -Pcoordinates={COORDINATE}"], self.failing_commands())
-        self.assertEqual(RETURN_FINALIZE, self.fixed(2))
+        self.assertEqual(RETURN_FINALIZE, self.fixed())
         self.fake.control({"styleFails": None})
         self.assertEqual(OK, self.step("finalize"))
         self.assertEqual(2, self.state.finalize_requests)
@@ -201,7 +199,7 @@ class CheckStateTest(FinalizedRun):
         for visit in range(1, 6):
             self.assertEqual(AGENT_WORK, self.step("finalize"), visit)
             self.assertIn("Return: 33", self.read("fix-request.md"))
-            self.assertEqual(RETURN_FINALIZE, self.fixed(visit))
+            self.assertEqual(RETURN_FINALIZE, self.fixed())
         self.assertEqual(STILL_FAILING, self.step("finalize"))
         self.assertEqual("human-intervention", self.outcome())
         self.assertEqual(5, self.state.finalize_requests)

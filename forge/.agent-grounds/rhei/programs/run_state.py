@@ -79,6 +79,18 @@ class Chunk:
 
 
 @dataclass
+class FixRound:
+    """One fix request: its sender and the commands it lists.
+
+    The run state numbers the requests, since Rhei counts no `fix` visit: request `n`
+    files its report as `reports/fix-<n>.json` (§FS-durable-generation-logs).
+    """
+
+    sender: str
+    commands: list[str] = field(default_factory=list)
+
+
+@dataclass
 class RunState:
     """Everything a later program needs to know about the run so far."""
 
@@ -119,6 +131,9 @@ class RunState:
     finalize_requests: int = 0
     # The fix requests `native` has sent, which `budgets.native_fixes` bounds.
     native_requests: int = 0
+    # Every fix request in order: the worker's rounds beside its cover passes
+    # (§AR-forge-workflow-pipeline.4).
+    fix_rounds: list[FixRound] = field(default_factory=list)
     # The audit's checkpoint once sent, and whether it passed (§FS-local-branch-review.4).
     audit_checkpoint: str = ""
     audit_passed: bool = False
@@ -186,6 +201,7 @@ def load(workspace: str) -> RunState:
     raw["budgets"] = Budgets(**raw["budgets"])
     raw["explore"] = Explore(**raw["explore"])
     raw["chunk"] = Chunk(**raw["chunk"])
+    raw["fix_rounds"] = [FixRound(**fix) for fix in raw.get("fix_rounds", [])]
     return RunState(**raw)
 
 

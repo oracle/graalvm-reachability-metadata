@@ -179,7 +179,7 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
         library_version=state.version,
         strategy_name=f"forge-metadata:{state.label}",
         status=status,
-        global_iterations=state.explore.passes + fix_route.fix_requests(workspace),
+        global_iterations=state.explore.passes + fix_route.fix_requests(state),
         input_tokens_used=usage.input,
         output_tokens_used=usage.output,
         cached_input_tokens_used=usage.cached,

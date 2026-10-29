@@ -309,8 +309,11 @@ states:
       Before your final message, write `{output.report.path}` as JSON:
       `{"result": "fixed" | "cannot-fix", "changed": ["<path relative to the worktree>"], "summary": "<one line>"}`.
     outputs:
+      # One path for every request, since Rhei counts no `fix` visit: the run state numbers
+      # the requests and `fix-route` files each report as `reports/fix-<n>.json`.
+      # §FS-durable-generation-logs
       - name: report
-        path: runtime/forge/reports/fix-{visit_count}.json
+        path: runtime/forge/fix-report.json
         description: Whether the fix believes it helped, what it changed, and why.
 
   fix-route:

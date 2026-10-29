@@ -19,7 +19,7 @@ from typing import Any
 
 import yaml
 
-from support import COORDINATE, FakeRepository, working_directory
+from support import COORDINATE, FakeRepository, play_fix, working_directory
 from test_prepare import prepare_arguments
 from test_workflow import URLS
 
@@ -34,7 +34,7 @@ from exit_codes import (  # noqa: E402
     RETURN_AUDIT,
     STILL_FAILING,
 )
-from run_state import RunState, load, read_json, runtime_path, write_json  # noqa: E402
+from run_state import RunState, load, read_json, runtime_path  # noqa: E402
 
 TEMPLATE: str = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
                              "templates", "forge-metadata", "states.yaml")
@@ -107,8 +107,7 @@ class FinalizedRun(unittest.TestCase):
 
     def routed(self, result: str = "fixed") -> int:
         """Play the audit's `fix` and route back."""
-        write_json(runtime_path(self.fake.workspace, "reports", "fix-1.json"),
-                   {"result": result, "changed": [], "summary": "played"})
+        play_fix(self.fake.workspace, result)
         return self.step("fix-route")
 
     def gradle_calls(self, task: str) -> int:
