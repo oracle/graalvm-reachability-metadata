@@ -40,6 +40,35 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// The low-heap tests write their input under the build directory, never /tmp: a JVM that dies of
+// OutOfMemoryError cleans nothing up, so each run first deletes what the last one left.
+def lowHeapReportDir = layout.buildDirectory.dir('tmp/lowHeapReport')
+
+// §FS-repository-functional-spec.4.2 §AR-test-harness.8: tests tagged low-heap prove that a
+// report parser streams, so they run in a JVM of their own with a heap smaller than their input.
+def lowHeapTests = tasks.register('lowHeapTest', Test) {
+    description = 'Runs the tests tagged low-heap in a 64 MiB heap.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'low-heap'
+    }
+    maxHeapSize = '64m'
+    systemProperty 'tck.lowHeapReportDir', lowHeapReportDir.get().asFile.absolutePath
+    mustRunAfter tasks.named('test')
+    doFirst {
+        delete lowHeapReportDir
+    }
+}
+
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags 'low-heap'
+    }
+}
+
+// A low-heap failure must not keep the unit tests from running, so `check` runs both.
+tasks.named('check') {
+    dependsOn lowHeapTests
 }

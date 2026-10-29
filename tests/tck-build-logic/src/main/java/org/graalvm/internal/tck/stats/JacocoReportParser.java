@@ -7,12 +7,15 @@
 package org.graalvm.internal.tck.stats;
 
 import org.gradle.api.GradleException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.XMLConstants;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -21,12 +24,32 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Parses JaCoCo XML reports into covered-line indexes and coverage metrics.
- */
+/// §AR-test-harness.8: parses the JaCoCo XML report behind the stats and coverage-report tasks
+/// into covered-line indexes and coverage metrics. It reads the report in one streaming pass and
+/// keeps only the data it returns: the report of a large library such as `it.unimi.dsi:fastutil`
+/// has a `<line>` element for every source line and does not fit a DOM in the daemon heap.
 final class JacocoReportParser {
 
-    private JacocoReportParser() {
+    /// The JDK charges every predefined entity reference in the report to these limits as if it
+    /// expanded an entity named `[xml]`: a `&lt;` in text costs one, and an attribute value such
+    /// as the `&lt;init&gt;` of each constructor costs three. Since JDK 24 both limits default to
+    /// 100,000, so on JDK 25 a report with 33,334 constructors fails with `JAXP00010003` without
+    /// declaring a single entity
+    /// ([JDK-8359432](https://bugs.openjdk.org/browse/JDK-8359432)). With DTD support off no
+    /// entity can be declared or expanded, so the limits are lifted; drop them once the JDK the
+    /// harness runs on counts only declared entities.
+    private static final String MAX_GENERAL_ENTITY_SIZE_LIMIT = "jdk.xml.maxGeneralEntitySizeLimit";
+    private static final String TOTAL_ENTITY_SIZE_LIMIT = "jdk.xml.totalEntitySizeLimit";
+    private static final String NO_LIMIT = "0";
+
+    private final XMLStreamReader reader;
+    private final Map<String, Set<Integer>> coveredLinesBySource = new HashMap<>();
+    private final Map<String, Set<String>> methodNamesByClass = new HashMap<>();
+    private final Map<String, LibraryStatsModels.CoverageMetric> rootCounters = new LinkedHashMap<>();
+    private boolean hasClassElements;
+
+    private JacocoReportParser(XMLStreamReader reader) {
+        this.reader = reader;
     }
 
     static ParsedJacocoReport parse(Path jacocoReport) {
@@ -34,140 +57,195 @@ final class JacocoReportParser {
             throw new GradleException("Missing JaCoCo report " + jacocoReport);
         }
 
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            factory.setXIncludeAware(false);
-            factory.setExpandEntityReferences(false);
-            Document document = factory.newDocumentBuilder().parse(jacocoReport.toFile());
-            Element root = document.getDocumentElement();
-
-            Map<String, Set<Integer>> coveredLinesBySource = new HashMap<>();
-            Map<String, Set<String>> methodNamesByClass = new HashMap<>();
-            NodeList packages = root.getChildNodes();
-            for (int i = 0; i < packages.getLength(); i++) {
-                Node node = packages.item(i);
-                if (!(node instanceof Element packageElement) || !"package".equals(packageElement.getTagName())) {
-                    continue;
-                }
-                String packageName = packageElement.getAttribute("name");
-                NodeList sourceFiles = packageElement.getChildNodes();
-                for (int j = 0; j < sourceFiles.getLength(); j++) {
-                    Node sourceNode = sourceFiles.item(j);
-                    if (sourceNode instanceof Element classElement && "class".equals(classElement.getTagName())) {
-                        methodNamesByClass.put(classElement.getAttribute("name").replace('/', '.'), methodNames(classElement));
-                        continue;
-                    }
-                    if (!(sourceNode instanceof Element sourceFileElement) || !"sourcefile".equals(sourceFileElement.getTagName())) {
-                        continue;
-                    }
-                    String sourceName = sourceFileElement.getAttribute("name");
-                    String sourceKey = packageName == null || packageName.isEmpty() ? sourceName : packageName + "/" + sourceName;
-                    Set<Integer> coveredLines = new LinkedHashSet<>();
-                    NodeList lineNodes = sourceFileElement.getChildNodes();
-                    for (int k = 0; k < lineNodes.getLength(); k++) {
-                        Node lineNode = lineNodes.item(k);
-                        if (!(lineNode instanceof Element lineElement) || !"line".equals(lineElement.getTagName())) {
-                            continue;
-                        }
-                        int coveredInstructions = Integer.parseInt(lineElement.getAttribute("ci"));
-                        if (coveredInstructions > 0) {
-                            coveredLines.add(Integer.parseInt(lineElement.getAttribute("nr")));
-                        }
-                    }
-                    coveredLinesBySource.put(sourceKey, coveredLines);
-                }
+        try (InputStream input = new BufferedInputStream(Files.newInputStream(jacocoReport))) {
+            XMLStreamReader reader = newInputFactory().createXMLStreamReader(input);
+            try {
+                return new JacocoReportParser(reader).readReport();
+            } finally {
+                reader.close();
             }
-
-            Map<String, LibraryStatsModels.CoverageMetric> rootCounters = parseRootCounters(root);
-            if (hasNothingToCover(root, rootCounters)) {
-                LibraryStatsModels.CoverageMetricValue fullyCoveredMetric = fullyCoveredCoverageMetricValue();
-                return new ParsedJacocoReport(
-                        coveredLinesBySource,
-                        methodNamesByClass,
-                        fullyCoveredMetric,
-                        fullyCoveredMetric,
-                        fullyCoveredMetric
-                );
-            }
-            return new ParsedJacocoReport(
-                    coveredLinesBySource,
-                    methodNamesByClass,
-                    coverageMetricOrNa(rootCounters, "LINE"),
-                    coverageMetricOrNa(rootCounters, "INSTRUCTION"),
-                    coverageMetricOrNa(rootCounters, "METHOD")
-            );
-        } catch (Exception e) {
+        } catch (IOException | XMLStreamException e) {
             throw new GradleException("Failed to parse JaCoCo report " + jacocoReport, e);
         }
     }
 
-    /// The names of the methods JaCoCo kept in `classElement`: a method whose every instruction a
-    /// filter removed, such as a synthetic one, has no `<method name=… desc=… line=…>` element.
-    private static Set<String> methodNames(Element classElement) {
-        Set<String> methodNames = new LinkedHashSet<>();
-        NodeList children = classElement.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            if (children.item(i) instanceof Element methodElement && "method".equals(methodElement.getTagName())) {
-                methodNames.add(methodElement.getAttribute("name"));
-            }
-        }
-        return methodNames;
+    /// The JDK's own StAX implementation, so the hardening below does not depend on which
+    /// implementation the classpath provides. The report's `DOCTYPE` names a `report.dtd` that is
+    /// never beside it: with DTD support off, the reader skips the DTD instead of resolving it.
+    private static XMLInputFactory newInputFactory() {
+        XMLInputFactory factory = XMLInputFactory.newDefaultFactory();
+        factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+        factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        factory.setProperty(MAX_GENERAL_ENTITY_SIZE_LIMIT, NO_LIMIT);
+        factory.setProperty(TOTAL_ENTITY_SIZE_LIMIT, NO_LIMIT);
+        return factory;
     }
 
-    private static boolean hasNothingToCover(
-            Element root,
-            Map<String, LibraryStatsModels.CoverageMetric> rootCounters
-    ) {
+    /// Reads `<package>` and `<counter>` children of the root `<report>`, `<class>` and
+    /// `<sourcefile>` children of a package, `<method>` children of a class, and `<line>` children
+    /// of a source file. Every other element, such as a class's own counters, is skipped whole.
+    private ParsedJacocoReport readReport() throws XMLStreamException {
+        if (!nextChild() || !"report".equals(reader.getLocalName())) {
+            throw new XMLStreamException("The root element is not <report>", reader.getLocation());
+        }
+        while (nextChild()) {
+            switch (reader.getLocalName()) {
+                case "package" -> readPackage();
+                case "counter" -> readRootCounter();
+                default -> skipElement();
+            }
+        }
+        // Reading on to the end rejects whatever follows the root but is not well-formed.
+        while (reader.hasNext()) {
+            reader.next();
+        }
+
+        if (hasNothingToCover()) {
+            LibraryStatsModels.CoverageMetricValue fullyCoveredMetric = fullyCoveredCoverageMetricValue();
+            return new ParsedJacocoReport(
+                    coveredLinesBySource,
+                    methodNamesByClass,
+                    fullyCoveredMetric,
+                    fullyCoveredMetric,
+                    fullyCoveredMetric
+            );
+        }
+        return new ParsedJacocoReport(
+                coveredLinesBySource,
+                methodNamesByClass,
+                coverageMetricOrNa("LINE"),
+                coverageMetricOrNa("INSTRUCTION"),
+                coverageMetricOrNa("METHOD")
+        );
+    }
+
+    private void readPackage() throws XMLStreamException {
+        String packageName = requiredAttribute("name");
+        while (nextChild()) {
+            switch (reader.getLocalName()) {
+                case "class" -> readClass();
+                case "sourcefile" -> readSourceFile(packageName);
+                default -> skipElement();
+            }
+        }
+    }
+
+    /// Records the names of the methods JaCoCo kept in the class: a method whose every instruction
+    /// a filter removed, such as a synthetic one, has no `<method name=… desc=… line=…>` element.
+    private void readClass() throws XMLStreamException {
+        hasClassElements = true;
+        Set<String> methodNames = new LinkedHashSet<>();
+        methodNamesByClass.put(requiredAttribute("name").replace('/', '.'), methodNames);
+        while (nextChild()) {
+            if ("method".equals(reader.getLocalName())) {
+                methodNames.add(requiredAttribute("name"));
+            }
+            skipElement();
+        }
+    }
+
+    private void readSourceFile(String packageName) throws XMLStreamException {
+        String sourceName = requiredAttribute("name");
+        String sourceKey = packageName.isEmpty() ? sourceName : packageName + "/" + sourceName;
+        Set<Integer> coveredLines = new LinkedHashSet<>();
+        coveredLinesBySource.put(sourceKey, coveredLines);
+        while (nextChild()) {
+            if ("line".equals(reader.getLocalName())) {
+                int lineNumber = intAttribute("nr");
+                if (intAttribute("ci") > 0) {
+                    coveredLines.add(lineNumber);
+                }
+            }
+            skipElement();
+        }
+    }
+
+    private void readRootCounter() throws XMLStreamException {
+        String type = requiredAttribute("type");
+        long missed = longAttribute("missed");
+        long covered = longAttribute("covered");
+        long total = missed + covered;
+        rootCounters.put(type, new LibraryStatsModels.CoverageMetric(
+                covered,
+                missed,
+                total,
+                LibraryStatsSupport.ratio(covered, total)
+        ));
+        skipElement();
+    }
+
+    /// Advances to the next child element of the current element and returns true, or returns
+    /// false on the current element's end tag. Text, comments, and the DTD are passed over.
+    private boolean nextChild() throws XMLStreamException {
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                return true;
+            }
+            if (event == XMLStreamConstants.END_ELEMENT) {
+                return false;
+            }
+        }
+        throw new XMLStreamException("The report ends inside an element", reader.getLocation());
+    }
+
+    /// Advances from the current start tag past its matching end tag.
+    private void skipElement() throws XMLStreamException {
+        int depth = 1;
+        while (depth > 0) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                depth++;
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                depth--;
+            }
+        }
+    }
+
+    private String requiredAttribute(String name) throws XMLStreamException {
+        String value = reader.getAttributeValue(null, name);
+        if (value == null) {
+            throw new XMLStreamException(
+                    "<" + reader.getLocalName() + "> has no " + name + " attribute",
+                    reader.getLocation()
+            );
+        }
+        return value;
+    }
+
+    private int intAttribute(String name) throws XMLStreamException {
+        String value = requiredAttribute(name);
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new XMLStreamException(nonNumericAttribute(name, value), reader.getLocation(), e);
+        }
+    }
+
+    private long longAttribute(String name) throws XMLStreamException {
+        String value = requiredAttribute(name);
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            throw new XMLStreamException(nonNumericAttribute(name, value), reader.getLocation(), e);
+        }
+    }
+
+    private String nonNumericAttribute(String name, String value) {
+        return "<" + reader.getLocalName() + "> has a non-numeric " + name + " attribute '" + value + "'";
+    }
+
+    private boolean hasNothingToCover() {
         LibraryStatsModels.CoverageMetric method = rootCounters.get("METHOD");
         if (method != null) {
             return method.total() == 0L;
         }
-        return !hasAnyClassElements(root);
+        return !hasClassElements;
     }
 
-    private static boolean hasAnyClassElements(Element root) {
-        NodeList packages = root.getChildNodes();
-        for (int i = 0; i < packages.getLength(); i++) {
-            Node packageNode = packages.item(i);
-            if (!(packageNode instanceof Element packageElement) || !"package".equals(packageElement.getTagName())) {
-                continue;
-            }
-            NodeList packageChildren = packageElement.getChildNodes();
-            for (int j = 0; j < packageChildren.getLength(); j++) {
-                Node child = packageChildren.item(j);
-                if (child instanceof Element childElement && "class".equals(childElement.getTagName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private static Map<String, LibraryStatsModels.CoverageMetric> parseRootCounters(Element root) {
-        Map<String, LibraryStatsModels.CoverageMetric> counters = new LinkedHashMap<>();
-        NodeList children = root.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node node = children.item(i);
-            if (!(node instanceof Element counterElement) || !"counter".equals(counterElement.getTagName())) {
-                continue;
-            }
-            String type = counterElement.getAttribute("type");
-            long missed = Long.parseLong(counterElement.getAttribute("missed"));
-            long covered = Long.parseLong(counterElement.getAttribute("covered"));
-            long total = missed + covered;
-            counters.put(type, new LibraryStatsModels.CoverageMetric(covered, missed, total, LibraryStatsSupport.ratio(covered, total)));
-        }
-        return counters;
-    }
-
-    private static LibraryStatsModels.CoverageMetricValue coverageMetricOrNa(
-            Map<String, LibraryStatsModels.CoverageMetric> counters,
-            String type
-    ) {
-        LibraryStatsModels.CoverageMetric coverageMetric = counters.get(type);
+    private LibraryStatsModels.CoverageMetricValue coverageMetricOrNa(String type) {
+        LibraryStatsModels.CoverageMetric coverageMetric = rootCounters.get(type);
         if (coverageMetric == null) {
             return LibraryStatsModels.CoverageMetricValue.notAvailable();
         }
