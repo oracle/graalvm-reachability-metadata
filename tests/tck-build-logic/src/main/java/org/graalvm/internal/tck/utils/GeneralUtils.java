@@ -23,6 +23,9 @@ import java.util.Map;
  */
 public final class GeneralUtils {
 
+    /// Where native-build-tools writes the agent output of the `test` task, under the build directory.
+    public static final String AGENT_OUTPUT_DIRECTORY = "native/agent-output/test";
+
     private GeneralUtils() {
     }
 

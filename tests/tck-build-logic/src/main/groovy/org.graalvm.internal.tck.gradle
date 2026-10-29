@@ -11,6 +11,7 @@ import org.graalvm.internal.tck.utils.BaseLayerUtils
 import org.graalvm.internal.tck.utils.JarUtils
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 import org.graalvm.internal.tck.utils.RealUseUtils
+import org.graalvm.internal.tck.utils.ResourceBundleConditions
 
 import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
 import org.graalvm.buildtools.gradle.tasks.NativeRunTask
@@ -985,6 +986,9 @@ tasks.register("runNativeTestPGO", Exec) { Exec task ->
         task.args = runtimeArgs
     }
 }
+
+// §FS-metadata.2.3: restore the bundle conditions the agent drops (§graal/GR-80923).
+ResourceBundleConditions.install(project, nativeImageTool("native-image-utils"))
 
 // Ensure detailed exception/stacktrace logging for all Test tasks, including nativeTest
 tasks.withType(Test).configureEach { Test testTask ->
