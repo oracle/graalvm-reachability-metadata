@@ -6,6 +6,13 @@ IDs. Each entry below is a snapshot of the ticket's public fields, written by
 `grund fetch graal/GR-<number>` from the repository root; refresh one by
 fetching it again rather than editing it by hand.
 
+## GR-38579: Implement SubstrateThreadMXBean#dumpAllThreads
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/4714
+
 ## GR-48702: Resource handling is not correct due to our substitutions
 
 - Status: In Progress
