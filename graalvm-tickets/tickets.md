@@ -61,3 +61,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14811
+
+## GR-80946: \[Native Image\] The image builder instantiates the application's System.LoggerFinder provider, which then fails the build from the image heap
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14812
