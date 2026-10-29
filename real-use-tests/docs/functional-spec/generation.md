@@ -185,8 +185,10 @@ stops. It takes them oldest first, so the longest wait is served first, and
 stops once it has reviewed three, so a review never holds the queue for long;
 a pull request it skips does not count.
 
-It skips a pull request that is already approved, and one that another review
-holds. A review holds a pull request by marking it `in-review` before its
+It skips a pull request that is already approved, one that another review
+holds, and one labeled `graalvm-bug`, which waits on a GraalVM defect no
+review can fix until a maintainer releases it (§root/FS-graalvm-blocked-work.2).
+A review holds a pull request by marking it `in-review` before its
 agent starts and clearing the mark once the agent has stopped. A mark set more
 than three hours ago belongs to a review that died, and the next review takes
 the pull request over.

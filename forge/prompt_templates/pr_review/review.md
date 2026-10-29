@@ -93,7 +93,10 @@ Image cause with `oracle/graal` commit and pull request links. For a Spring AOT
 smoke test it adds the project and branch, and asks the assignee to find whether
 the bug is on the Native Image side or the Spring side. The signature is a short stable key of the
 failure, the same for every pull request it breaks, such as
-`ni-25.0-spring-security-type-not-found`.
+`ni-25.0-spring-security-type-not-found`. When the evidence is a GraalVM defect — a builder-internal
+`VMError`, `HostedError` or `shouldNotReachHere`, or forbidden metadata the agent emits on every
+generation — say so in `cause` and quote it in the body: a maintainer files the GraalVM ticket from it
+(§root/FS-graalvm-blocked-work.1).
 
 ## Metadata rules
 

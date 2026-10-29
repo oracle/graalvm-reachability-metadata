@@ -29,7 +29,11 @@ labels Forge works from: `library-new-request`, `library-update-request`,
 `library-unsupported-version`, `fails-javac-compile`, `fails-java-run`,
 `fails-native-image-build`, `fails-native-image-run`, `chunked-dynamic-access`,
 `human-intervention`, `resumable`. Those issues are Forge's queue; a second
-automation working them races Forge and opens duplicate pull requests.
+automation working them races Forge and opens duplicate pull requests. An
+issue labeled `graalvm-bug` is the exception: Forge holds it
+(§FS-graalvm-blocked-work.2), so nothing races, and the queue takes it once a
+maintainer assigns it, whatever else it carries, because writing the
+workaround that cites its ticket is exactly this queue's work.
 
 The agent works on a branch the maintainer pull-request workflow publishes, so
 the pull request is opened by the bot account and the maintainer stays
@@ -44,9 +48,12 @@ nothing and names what the maintainer has to decide.
 ## 3. The drain queue
 
 The queue takes open `GenAI` pull requests labeled `human-intervention` and
-not yet `human-intervention-fixed`. The failing checks are read before any
-model is spent, and a pull request whose checks are green, which is closed,
-or whose current head was already escalated ends without one.
+not yet `human-intervention-fixed`. A pull request labeled `graalvm-bug` is
+never taken: it waits on a GraalVM defect that no repair of the pull request
+reaches, and only a maintainer's release returns it (§FS-graalvm-blocked-work.3).
+The failing checks are read before any model is spent, and a pull request
+whose checks are green, which is closed, or whose current head was already
+escalated ends without one.
 
 The agent takes the first disposition that applies:
 

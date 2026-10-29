@@ -42,9 +42,9 @@ match = "exact"
 rules = ["markdown-docs"]
 kind = "deferred"
 max_accepted = { value = 320, unit = "lines" }
-until = "the launcher loop and its exit codes move to their own architecture document"
+until = "the launcher loop and its exit codes, or the state machine and its programs, move to an architecture document of their own"
 reason = """
-The launcher loop and its exit codes are a subject of their own and belong in a child architecture document the pipeline links. Moving them renumbers the later sections of the pipeline declaration, and several open Forge branches edit those sections now, so the split waits for them to land rather than turning their edits into conflicts.
+The launcher loop and its exit codes (sections 1 and 2, about 75 non-blank lines) are a subject of their own and belong in a child architecture document the pipeline links; so are the state machine and its programs (sections 3 and 4, about 130), which the launcher, the programs and the template cite section by section. Either move alone brings the file under the 250 soft limit, but each renumbers the later sections of the pipeline declaration or needs a new declaration ID and its citers migrated, and several open Forge branches edit those sections now, so the split waits for them to land rather than turning their edits into conflicts.
 """
 [[exceptions]]
 path = "forge/docs/architecture/git-scripts.md"
@@ -55,4 +55,31 @@ max_accepted = { value = 400, unit = "lines" }
 until = "AR-pr-body's per-workflow pull request bodies and AR-actions-publication's trusted Actions publisher move to documents of their own"
 reason = """
 AR-forge-publication holds the local publication pipeline, the trusted Actions publisher and AR-pr-body's per-workflow pull request bodies. At 380 non-blank lines, moving the bodies (112) alone still leaves 268, over the 250 soft limit; moving the Actions publisher (79) too leaves about 189. Each is a subject of its own, and moving them is its own change, not part of an edit that only brings the not-for-native-image route's own declaration up to date.
+"""
+[[exceptions]]
+path = "forge/docs/functional-spec/publication.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+shadows = "hard"
+max_accepted = { value = 500, unit = "lines" }
+[[exceptions]]
+path = "docs/functional-spec/functional-spec.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 400, unit = "lines" }
+until = "FS-library-version-update-automation and section 8 (how the repository is used) each move to their own declaration in the functional-spec folder home, leaving about 230 lines"
+reason = """
+The file measures about 390 lines. The version update automation (about 100 lines) can move out whole, since IDs are stable across files in the folder home, but that alone leaves about 290; the usage walkthroughs of section 8 (about 60 more) need new IDs and their citers migrated. Both moves are changes of their own rather than side effects of adding one label row.
+"""
+[[exceptions]]
+path = "forge/dispatcher/claim_preflight.py"
+match = "exact"
+rules = ["source"]
+kind = "deferred"
+max_accepted = { value = 500, unit = "lines" }
+until = "the test-only batched preflight path is removed from forge/dispatcher"
+reason = """
+About 300 of the file's lines are the batched preflight (resolve_next_issue_claim_candidate_batch and the GraphQL preflight, skip and cache-skip helpers it calls), which only tests reach since the launcher fetches with gh issue list; only refresh_issue_payload_for_claim and get_open_blocking_issue_numbers are live. Moving that path to a sibling module would split dead code at the line count; removing it is the design fix and a change of its own.
 """

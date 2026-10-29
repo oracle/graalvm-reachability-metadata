@@ -133,6 +133,7 @@ GitHub labels are part of the public triage surface for issues and PRs. Pipeline
 | `chunked-dynamic-access` | Issue | Forge split dynamic-access generation for this issue into class-aligned chunks because the uncovered class count exceeded the configured threshold. Normal project status controls whether Forge may claim the next chunk. |
 | `human-intervention` | Issue / PR | Automation could not safely complete the work without manual follow-up, or Forge's review of the PR found a cause it could not fix and filed its own issue. |
 | `human-intervention-fixed` | PR | Manual follow-up has fixed a PR previously requiring intervention; Forge's review takes it up again and may approve and merge it after merge gates pass. |
+| `graalvm-bug` | Issue / PR | Blocked on a GraalVM / Native Image defect; the item links its `oracle/graal` issue and its `GR-<n>` ticket. The label alone holds the item out of automation until a maintainer releases it once the fix reaches CI's GraalVM or a workaround citing the ticket lands (§FS-graalvm-blocked-work). |
 | `in-review` | PR | A review agent holds the PR — Forge's review (§forge/FS-published-pr-review.3) or the real-use review (§real-use-tests/FS-real-use-test-generation.4); a label older than three hours is stale and may be taken over. |
 | `reviewed` | PR | Forge's review reached a terminal outcome — approved with auto-merge armed, or an issue filed with `human-intervention` — and does not review the PR again until `human-intervention-fixed` is added (§forge/FS-published-pr-review.5). |
 

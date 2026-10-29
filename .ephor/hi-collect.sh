@@ -11,8 +11,9 @@
 #
 # In:  REPO, NUMBER, REPORT from the state machine; RHEI_RESULT_PATH from rhei.
 # Exit: 0 failures are in $REPORT for hi-fix,
-#       4 nothing to drain (closed, not GenAI, label gone or fixed, gate green, or
-#         this head already escalated); the ticket ends without a model,
+#       4 nothing to drain (closed, not GenAI, label gone or fixed, blocked on a
+#         GraalVM defect, gate green, or this head already escalated); the ticket
+#         ends without a model,
 #       75 checks still running, 1 GitHub could not be read.
 set -uo pipefail
 
@@ -44,6 +45,11 @@ idle() {
 
 if [ "$state" != "OPEN" ] || ! has GenAI || ! has human-intervention || has human-intervention-fixed; then
   idle "The drain handles open GenAI pull requests still carrying \`human-intervention\`."
+fi
+
+# No repair reaches a GraalVM defect; a maintainer releases it. §FS-graalvm-blocked-work.2
+if has graalvm-bug; then
+  idle "The pull request carries \`graalvm-bug\`: it waits on a GraalVM defect until a maintainer releases it."
 fi
 
 # An escalation is per head: hi-fix marks its comment with the head SHA, so its

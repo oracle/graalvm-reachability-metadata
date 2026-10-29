@@ -7,9 +7,9 @@
 # Workspaces for the drain queue's pull requests. §FS-maintainer-agent-queues.3
 
 # Makes the branch workspace of every open GenAI pull request in the feed that
-# still carries `human-intervention`: an unattended sweep refuses a branch that
-# is not on disk. Run it before `ephor work sync`, e.g. as the sync unit's
-# ExecStartPre.
+# still carries `human-intervention` and is not held by `graalvm-bug`: an
+# unattended sweep refuses a branch that is not on disk. Run it before
+# `ephor work sync`, e.g. as the sync unit's ExecStartPre.
 #
 # Usage: hi-checkouts.sh <ephor project id>
 set -uo pipefail
@@ -19,7 +19,8 @@ ephor feed --json --project "$project" 2>/dev/null |
   jq -r '.[] | select(.kind == "pr")
            | select((.raw.labels // []) | (index("human-intervention") != null)
                                           and (index("GenAI") != null)
-                                          and (index("human-intervention-fixed") == null))
+                                          and (index("human-intervention-fixed") == null)
+                                          and (index("graalvm-bug") == null))
            | .id' |
   while IFS= read -r item; do
     [ -n "$item" ] || continue

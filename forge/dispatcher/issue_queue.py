@@ -15,13 +15,13 @@ from typing import Optional
 from utility_scripts.stage_logger import log_debug
 
 from dispatcher.config import (
+    ALWAYS_EXCLUDED_ISSUE_LABELS,
     DEFAULT_TAKE_BLOCKED_ISSUES,
     GITHUB_API_MAX_PAGE_SIZE,
     GITHUB_SEARCH_MAX_RESULTS,
     ISSUE_SEARCH_ORDER,
     ISSUE_SEARCH_SORT,
     LABEL_HIGH_PRIORITY,
-    LABEL_NOT_FOR_NATIVE_IMAGE,
     LABEL_PRIORITY,
     ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
     ISSUE_CLAIM_CACHE_REASON_BLOCKED,
@@ -104,19 +104,27 @@ def get_issue_body(issue_number: int) -> str:
     return body if isinstance(body, str) else ""
 
 
+def excluded_issue_labels(excluded_labels: list[str] | None = None) -> list[str]:
+    """`excluded_labels` on top of `ALWAYS_EXCLUDED_ISSUE_LABELS`, never instead of them.
+
+    §FS-forge-run-requirements.2.1
+    """
+    return list(dict.fromkeys([*ALWAYS_EXCLUDED_ISSUE_LABELS, *(excluded_labels or [])]))
+
+
 def build_issue_search_query(
         label: str,
         extra_labels: list[str] | None = None,
         excluded_labels: list[str] | None = None,
 ) -> str:
-    """Build a GitHub issue search query for open issues with all requested labels."""
+    """Build a GitHub issue search query for open issues with all requested labels and no excluded one."""
     label_terms = " ".join(
         f'label:"{label_name}"'
         for label_name in [label, *(extra_labels or [])]
     )
     excluded_terms = " ".join(
         f'-label:"{label_name}"'
-        for label_name in (excluded_labels or [LABEL_NOT_FOR_NATIVE_IMAGE])
+        for label_name in excluded_issue_labels(excluded_labels)
     )
     return f"repo:{REPO} is:issue is:open {label_terms} {excluded_terms}".strip()
 
@@ -153,8 +161,8 @@ def search_issues_with_label(
     """
     Fetch open issues that carry the given label using GitHub search pagination.
 
-    `excluded_labels` are excluded on top of the always-excluded
-    `not-for-native-image` label, not instead of it.
+    `excluded_labels` are excluded on top of `ALWAYS_EXCLUDED_ISSUE_LABELS`, not
+    instead of them (§FS-forge-run-requirements.2.1).
     """
     if limit <= 0:
         return []
@@ -168,7 +176,7 @@ def search_issues_with_label(
     query = build_issue_search_query(
         label,
         extra_labels,
-        [LABEL_NOT_FOR_NATIVE_IMAGE, *(excluded_labels or [])],
+        excluded_labels,
     )
     items = get_issue_search_page(query, page, per_page)
     return items[page_offset:page_offset + limit]
@@ -230,13 +238,13 @@ def count_issues_with_label(
         return require_fixture_github_state().count_open_issues_by_label(
             label,
             extra_labels,
-            excluded_labels,
+            excluded_issue_labels(excluded_labels),
             excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
         )
     query = build_issue_search_query(
         label,
         extra_labels,
-        [LABEL_NOT_FOR_NATIVE_IMAGE, *(excluded_labels or [])],
+        excluded_labels,
     )
     return get_issue_search_count(query)
 
@@ -293,7 +301,7 @@ def get_issues_with_label(
             limit,
             offset,
             extra_labels,
-            excluded_labels,
+            excluded_issue_labels(excluded_labels),
             excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
         )
     return search_issues_with_label(

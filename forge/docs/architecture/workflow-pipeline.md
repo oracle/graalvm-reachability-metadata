@@ -23,8 +23,9 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
 
 1. **Fetch.** One `gh issue list` per label and priority tier, every cycle, with
    no cache: `high-priority`, then `priority`, then the rest, oldest first,
-   unassigned, excluding `not-for-native-image` and `human-intervention` and,
-   unless the operator takes blocked issues, every issue with an open blocker
+   unassigned, excluding `not-for-native-image`, `graalvm-bug`
+   (§FS-forge-run-requirements.2.1) and `human-intervention` and, unless the
+   operator takes blocked issues, every issue with an open blocker
    (`is:blocked`). Each query returns a fixed number of issues, so an issue the
    claim refuses (§FS-forge-run-requirements.2), held or blocked, is left out of
    it: the oldest issues of a queue are the ones most often held or waiting on
@@ -58,7 +59,9 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    infrastructure failure only returns it to `Todo`. A `human-intervention`
    comment also quotes what the run recorded in its outcome: the state that
    stopped, its failing commands with a bounded excerpt of their output, and
-   the last fix report.
+   the last fix report. Each excerpt sits in a fence no backtick run inside it
+   can close, and the report's summary, agent text, is quoted trimmed to 1500
+   characters, with `§` escaped as `<§>` and every `@` kept from mentioning.
 
 `run-forge.sh` loops cycles until stopped, checks the host before each claim
 (§FS-forge-host-requirements), and every third run, and whenever nothing can be

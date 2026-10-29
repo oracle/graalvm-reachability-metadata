@@ -25,7 +25,7 @@ from typing import Any
 from unittest.mock import patch
 
 from dispatcher import issue_admin, pr_review
-from dispatcher.config import LABEL_HUMAN_INTERVENTION, LABEL_HUMAN_INTERVENTION_FIXED, REPO
+from dispatcher.config import LABEL_GRAALVM_BUG, LABEL_HUMAN_INTERVENTION, LABEL_HUMAN_INTERVENTION_FIXED, REPO
 from tests.pr_review_fakes import FAKE_AGENT, FAKE_GH
 
 LOGIN: str = "forge-bot"
@@ -165,6 +165,8 @@ class ReviewTest(unittest.TestCase):
             ({"labels": [{"name": "library-new-request"}, {"name": "reviewed"}]}, "is labeled reviewed"),
             ({"labels": [{"name": "library-new-request"}, {"name": LABEL_HUMAN_INTERVENTION}]},
              f"is labeled {LABEL_HUMAN_INTERVENTION}"),
+            ({"labels": [{"name": "library-new-request"}, {"name": LABEL_GRAALVM_BUG}]},
+             f"is labeled {LABEL_GRAALVM_BUG}, blocked on a GraalVM defect"),
             ({"labels": [{"name": "library-new-request"}, {"name": "in-review"}]}, "is held by another review"),
             ({"headRefName": "feature/x"}, "is not a Forge branch"),
             ({"headRepository": {"nameWithOwner": "fork/repo"}}, "is from another repository"),
@@ -193,6 +195,14 @@ class ReviewTest(unittest.TestCase):
                             {"name": LABEL_HUMAN_INTERVENTION_FIXED}])
         self.run_pass()
         self.assertEqual(1, len(self.invocations()))
+
+    def test_a_maintainer_fix_does_not_reopen_a_pull_request_blocked_on_graalvm(self) -> None:
+        self.green()
+        self.update(labels=[{"name": "library-new-request"}, {"name": "reviewed"},
+                            {"name": LABEL_HUMAN_INTERVENTION_FIXED}, {"name": LABEL_GRAALVM_BUG}])
+        self.run_pass()
+        self.assertIn(f"#{NUMBER} is labeled {LABEL_GRAALVM_BUG}", self.logged)
+        self.assertEqual([], self.invocations())
 
     def test_a_stale_in_review_lock_is_taken_over(self) -> None:
         state: dict[str, Any] = self.state()

@@ -429,9 +429,13 @@ generated code, repository automation, metadata, or library behavior.
 
 A run that cannot finish — a check still failing after its fix, or a fix that
 reports nothing within the rules can help — publishes nothing and labels the
-issue with the reason (§AR-forge-workflow-pipeline.1). On a published pull
-request the label comes from the review of §FS-published-pr-review, or from a
-descriptor that still carries an older pre-push verdict of `rejected` with
+issue with the reason, which includes the step's own explanation: the failing
+check's error and the fix's account of why it stopped. That explanation is
+agent or tool text, so the comment quotes it, bounded in length, where it can
+neither cite nor mention anyone (§AR-forge-workflow-pipeline.1). On a
+published pull request the label comes from the review of
+§FS-published-pr-review, or from a descriptor that still carries an older
+pre-push verdict of `rejected` with
 action `human-intervention`; no other descriptor flag or inferred condition may
 add it. Valid cases include:
 
@@ -454,6 +458,14 @@ add it. Valid cases include:
   a dependent library or in Native Image, a bound on reruns or fix pushes is
   spent, or the review's outcome could not be confirmed. The pull request links
   the issue that carries the diagnosis (§FS-published-pr-review.5).
+
+A defect in GraalVM itself is a case Forge can only hand on: its ticket is a
+maintainer's to file, so Forge labels the item `human-intervention` and its
+explanation names the GraalVM signal it saw — a builder-internal `VMError`,
+`HostedError` or `shouldNotReachHere`, or forbidden metadata the agent emits on
+every generation (§root/FS-graalvm-blocked-work.1). Once a maintainer adds
+`graalvm-bug`, that label holds the item out of claiming and review on its own
+(§FS-forge-run-requirements.2.1, §FS-published-pr-review.2).
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure

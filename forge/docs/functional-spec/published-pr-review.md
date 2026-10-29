@@ -29,7 +29,7 @@ spent, when:
 1. it is not open;
 2. it is already approved;
 3. it is labeled `reviewed` without `human-intervention-fixed`, or labeled
-   `human-intervention`;
+   `human-intervention` or `graalvm-bug`;
 4. another review holds it under a fresh `in-review` lock
    (§FS-published-pr-review.3);
 5. any check on its head is still running, or none has reported yet. Unlike the
@@ -38,7 +38,10 @@ spent, when:
 
 A maintainer who fixes a pull request swaps `human-intervention` for
 `human-intervention-fixed` (§FS-human-intervention-policy), and that reopens the
-review of a pull request already labeled `reviewed`.
+review of a pull request already labeled `reviewed`. It does not reopen one
+still labeled `graalvm-bug`: that pull request waits on a GraalVM defect no
+review can fix, and the maintainer's release removes that label in the same
+swap (§root/FS-graalvm-blocked-work.3).
 
 ## 3. The in-review lock
 
@@ -136,7 +139,11 @@ the open question of §FS-published-pr-review.4.4. Its signature is a short stab
 same for every pull request it breaks; an open issue carrying the same
 signature is reused instead of opening a second
 (§root/FS-contribution-contract.5.3). The pull request links the issue and is
-labeled `human-intervention` (§FS-human-intervention-policy).
+labeled `human-intervention` (§FS-human-intervention-policy). When the cause is
+a GraalVM defect, the issue names the signal it saw: the review cannot file the
+`oracle/graal` issue or the `GR-<n>` ticket, and the issue is what a maintainer
+files them from before declaring the pull request
+(§root/FS-graalvm-blocked-work.1).
 
 ## 5. Outcomes, labels, and bounds
 

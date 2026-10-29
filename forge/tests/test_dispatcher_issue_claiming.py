@@ -80,6 +80,35 @@ class IssueClaimLockTests(unittest.TestCase):
         get_blockers.assert_not_called()
         self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION)
 
+    def test_try_claim_issue_never_claims_an_issue_blocked_on_graalvm(self) -> None:
+        # `resumable` and the blocked-issue override do not lift it. §FS-forge-run-requirements.2.1
+        issue: dict = _search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW])
+        fresh_issue: dict = {
+            **_search_issue(
+                1412,
+                [dispatcher_config.LABEL_LIBRARY_NEW, config.LABEL_GRAALVM_BUG, config.LABEL_RESUMABLE],
+            ),
+            "state": "OPEN",
+        }
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue), \
+                    patch.object(issue_claiming, "get_open_blocking_issue_numbers") as get_blockers, \
+                    patch.object(issue_claiming, "set_issue_assignee") as set_issue_assignee:
+                self.assertIsNone(
+                    issue_claiming.try_claim_issue(
+                        issue,
+                        "automation-user",
+                        dispatcher_config.LABEL_LIBRARY_NEW,
+                        take_blocked_issues=True,
+                    )
+                )
+                cache = issue_cache.read_issue_claim_cache()
+
+        get_blockers.assert_not_called()
+        set_issue_assignee.assert_not_called()
+        self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_GRAALVM_BUG)
+
     def test_try_claim_issue_refreshes_assignees_after_local_lock(self) -> None:
         issue = {
             "number": 1412,
