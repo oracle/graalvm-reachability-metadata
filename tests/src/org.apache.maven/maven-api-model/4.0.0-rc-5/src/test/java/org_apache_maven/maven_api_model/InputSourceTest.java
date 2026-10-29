@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -40,7 +39,7 @@ public class InputSourceTest {
         InputSource parent = new InputSource("com.example:parent:1.0", "parent/pom.xml");
         InputSource child = new InputSource("com.example:child:1.0", "child/pom.xml");
         InputSource merged = InputSource.merge(InputSource.merge(parent, child), parent);
-        InputSource expected = new InputSource(Set.of(parent, child));
+        InputSource expected = new InputSource(new HashSet<>(List.of(parent, child)));
 
         assertEquals(expected, merged);
         assertEquals(expected.hashCode(), merged.hashCode());
