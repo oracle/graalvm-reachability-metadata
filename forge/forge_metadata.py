@@ -53,8 +53,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         help=f"Target of the pull-request review, a claude-code target. "
                              f"Default: {DEFAULT_REVIEW_AGENT}")
     parser.add_argument("--take-blocked-issues", action="store_true",
-                        help="Claim issues with open blockers; every other claim condition still holds "
-                             "(§FS-forge-run-requirements.2).")
+                        help="Fetch and claim issues with open blockers; every other claim condition still "
+                             "holds (§FS-forge-run-requirements.2).")
     parser.add_argument("--issues-fixture", help="JSON list of issue payloads that stands in for the fetch.")
     parser.add_argument("--dry-run", action="store_true",
                         help="Print the fetch commands and the candidates, and claim nothing; with --review, "
@@ -71,9 +71,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def run_cycle(args: argparse.Namespace) -> int:
     labels: tuple[str, ...] = tuple(args.label or QUEUE_LABELS)
     if args.dry_run:
-        for _, command in fetch_commands(labels):
+        for _, command in fetch_commands(labels, args.take_blocked_issues):
             print(shlex.join(command))
-    candidates = fetch_candidates(labels, args.issues_fixture)
+    candidates = fetch_candidates(labels, args.issues_fixture, args.take_blocked_issues)
     if args.dry_run:
         for label, issue in candidates:
             print(f"#{issue['number']} [{label}] {issue.get('title', '')}")
