@@ -28,6 +28,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.client.reactive.ClientHttpRequest;
 import org.springframework.http.client.reactive.ClientHttpResponse;
@@ -53,8 +54,8 @@ public class JettyClientHttpResponseTest {
 
             assertThat(response).isNotNull();
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-            assertThat(response.getHeaders().getFirst("Content-Type"))
-                    .isEqualTo("text/plain;charset=UTF-8");
+            assertThat(response.getHeaders().getContentType())
+                    .isEqualTo(new MediaType(MediaType.TEXT_PLAIN, StandardCharsets.UTF_8));
             ResponseCookie cookie = response.getCookies().getFirst("flavor");
             assertThat(cookie).isNotNull();
             assertThat(cookie.getValue()).isEqualTo("vanilla");
