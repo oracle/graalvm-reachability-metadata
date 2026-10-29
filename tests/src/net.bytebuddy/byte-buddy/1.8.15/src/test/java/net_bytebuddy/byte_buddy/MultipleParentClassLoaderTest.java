@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MultipleParentClassLoaderTest {
@@ -33,5 +34,6 @@ public class MultipleParentClassLoaderTest {
         List<URL> resources = Collections.list(loader.getResources("byte-buddy-fixture.txt"));
         assertTrue(resources.size() >= 2);
         assertTrue(resources.stream().allMatch(url -> url.toExternalForm().equals(resource.toExternalForm())));
+        assertNull(loader.getResource("missing-byte-buddy-fixture.txt"));
     }
 }
