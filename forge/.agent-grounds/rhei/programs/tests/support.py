@@ -30,11 +30,12 @@ for path in (TESTS, PROGRAMS, FORGE):
     if path not in sys.path:
         sys.path.insert(0, path)
 
+import fix_route  # noqa: E402
 import prepare  # noqa: E402
 import index_record  # noqa: E402
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
 from fake_harness import FAKE_GH, FAKE_GRADLEW  # noqa: E402
-from run_state import ROUTE_NEW, Budgets, RunState  # noqa: E402
+from run_state import ROUTE_NEW, Budgets, RunState, runtime_path, write_json  # noqa: E402
 
 COORDINATE: str = "org.example:lib:2.0.0"
 PREVIOUS: str = "org.example:lib:1.5.0"
@@ -54,6 +55,12 @@ def run_state(route: str = ROUTE_NEW, worktree: str = "/tmp/worktree", **changes
     for key, value in changes.items():
         setattr(state, key, value)
     return state
+
+
+def play_fix(workspace: str, result: str = "fixed", summary: str = "played", changed: tuple[str, ...] = ()) -> None:
+    """Play `fix`: write the open request's report at the one path the `fix` state declares."""
+    write_json(runtime_path(workspace, fix_route.OPEN_REPORT),
+               {"result": result, "changed": list(changed), "summary": summary})
 
 
 @contextlib.contextmanager

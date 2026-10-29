@@ -20,8 +20,8 @@ from dataclasses import asdict, dataclass
 from typing import Any
 
 from exit_codes import RETURN_CODES, STILL_FAILING
-from fix_route import latest_report
-from run_state import RunState, read_json, runtime_path, write_json, write_text
+from fix_route import discard_open_report, latest_report
+from run_state import FixRound, RunState, read_json, runtime_path, write_json, write_text
 
 FIX_REQUEST: str = "fix-request.md"
 FAILURES: str = "failures.json"
@@ -85,16 +85,20 @@ def render(state: RunState, sender: str, failures: list[Failure], task: str | No
 
 def write_fix_request(workspace: str, state: RunState, sender: str, failures: list[Failure],
                       task: str | None = None) -> None:
-    """Write the request for `fix` and arm the sender's loop guard; the caller saves the state."""
+    """Write the request for `fix`, number it, and arm the sender's loop guard; the caller saves the state."""
     text: str = render(state, sender, failures, task)
     if sender == "native" and state.pending_request == sender:
-        summary: str = str(latest_report(workspace).get("summary", "")).strip()
+        summary: str = str(latest_report(workspace, state).get("summary", "")).strip()
         # Its next request starts from what the last fix did and why it stopped.
         # §AR-forge-workflow-pipeline.6
         text += f"\n## The previous fix reported\n\n{summary}\n" if summary else ""
     write_text(runtime_path(workspace, FIX_REQUEST), text)
     # The audit's commands pass, so they are no failure to quote (§FS-local-branch-review.2).
     record_failures(workspace, sender, failures if task is None else [])
+    # Each request is a round of its own, and no report of the last one may stand for it.
+    # §AR-forge-workflow-pipeline.4
+    state.fix_rounds.append(FixRound(sender, list(dict.fromkeys(failure.command for failure in failures))))
+    discard_open_report(workspace)
     state.pending_request = sender
 
 

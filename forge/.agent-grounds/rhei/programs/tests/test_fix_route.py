@@ -5,7 +5,8 @@
 
 """Tests for `fix-route` (§AR-forge-workflow-pipeline.2, §AR-forge-workflow-pipeline.6).
 
-A run it stops records what the close-out quotes (§AR-forge-workflow-pipeline.1).
+A run it stops records what the close-out quotes (§AR-forge-workflow-pipeline.1),
+and each fix request files a report of its own (§FS-durable-generation-logs).
 """
 from __future__ import annotations
 
@@ -13,7 +14,10 @@ import os
 import tempfile
 import unittest
 
-from support import run_state, working_directory
+import yaml
+
+from support import play_fix, run_state, working_directory
+from test_audit import TEMPLATE
 
 import fix_route  # noqa: E402
 import forge_run  # noqa: E402
@@ -21,13 +25,14 @@ import handoff  # noqa: E402
 from exit_codes import (  # noqa: E402
     CANNOT_FIX,
     INFRASTRUCTURE,
+    RETURN_AUDIT,
     RETURN_FINALIZE,
     RETURN_JVM,
     RETURN_MEASURE,
     RETURN_NATIVE,
     RETURN_NATIVE_REPAIR,
 )
-from run_state import ROUTE_REPAIR, read_json, runtime_path, save, write_json  # noqa: E402
+from run_state import RUNTIME_DIR, ROUTE_REPAIR, RunState, load, read_json, runtime_path, save  # noqa: E402
 
 COMMAND: str = "env JAVA_HOME=/jdk ./gradlew clean nativeTestCompile -Pcoordinates=org.example:lib:2.0.0"
 ERROR: str = "Error: Type not found during analysis: AnalysisType<X509CertInfo>"
@@ -64,30 +69,63 @@ class ReportTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.workspace: str = tempfile.mkdtemp()
+        self.state: RunState = run_state(ROUTE_REPAIR)
 
-    def test_latest_visit_wins(self) -> None:
-        write_json(runtime_path(self.workspace, "reports", "fix-2.json"), {"result": "fixed"})
-        write_json(runtime_path(self.workspace, "reports", "fix-10.json"), {"result": "cannot-fix"})
-        self.assertEqual("cannot-fix", fix_route.latest_report(self.workspace)["result"])
+    def send(self, sender: str) -> None:
+        """Send one fix request and save the state, as every sender does before it exits to `fix`."""
+        handoff.write_fix_request(self.workspace, self.state, sender, [handoff.Failure(COMMAND, ERROR)])
+        save(self.workspace, self.state)
 
-    def test_every_fix_visit_counts_as_one_request(self) -> None:
-        for name in ("fix-1.json", "fix-2.json", "cover-1.json"):
-            write_json(runtime_path(self.workspace, "reports", name), {"result": "fixed"})
-        self.assertEqual(2, fix_route.fix_requests(self.workspace))
-        self.assertEqual(0, fix_route.fix_requests(tempfile.mkdtemp()))
+    def route(self) -> int:
+        with working_directory(self.workspace):
+            return forge_run.main(["fix-route"])
 
-    def test_unreadable_report_is_empty(self) -> None:
-        path = runtime_path(self.workspace, "reports", "fix-1.json")
-        with open(path, "w", encoding="utf-8") as handle:
+    def test_the_template_declares_the_open_report(self) -> None:
+        with open(TEMPLATE, encoding="utf-8") as handle:
+            fix: dict = yaml.safe_load(handle)["states"]["fix"]
+        self.assertEqual([os.path.join(RUNTIME_DIR, fix_route.OPEN_REPORT)], [out["path"] for out in fix["outputs"]])
+
+    def test_each_request_files_its_own_report(self) -> None:
+        for sender, code in (("native", RETURN_NATIVE), ("finalize", RETURN_FINALIZE), ("audit", RETURN_AUDIT)):
+            self.send(sender)
+            play_fix(self.workspace, summary=f"{sender} round")
+            self.assertEqual(code, self.route())
+        state: RunState = load(self.workspace)
+        self.assertEqual(["native round", "finalize round", "audit round"],
+                         [read_json(fix_route.report_path(self.workspace, n))["summary"] for n in (1, 2, 3)])
+        self.assertEqual((["native", "finalize", "audit"], [COMMAND]),
+                         ([fix.sender for fix in state.fix_rounds], state.fix_rounds[1].commands))
+        self.assertEqual(3, fix_route.fix_requests(state))
+        self.assertEqual("audit round", fix_route.latest_report(self.workspace, state)["summary"])
+
+    def test_a_visit_without_a_report_reuses_none(self) -> None:
+        self.send("native")
+        play_fix(self.workspace, "cannot-fix", "two failures remain")
+        self.assertEqual(RETURN_NATIVE, self.route())
+        self.send("finalize")
+        # The last round's `cannot-fix` would stop this one: neither Rhei nor `fix-route` may see it.
+        self.assertFalse(os.path.exists(runtime_path(self.workspace, fix_route.OPEN_REPORT)))
+        self.assertEqual(RETURN_FINALIZE, self.route())
+        self.assertEqual({}, fix_route.latest_report(self.workspace, load(self.workspace)))
+        self.assertFalse(os.path.exists(fix_route.report_path(self.workspace, 2)))
+
+    def test_unreadable_report_is_empty_but_filed(self) -> None:
+        self.send("finalize")
+        with open(runtime_path(self.workspace, fix_route.OPEN_REPORT), "w", encoding="utf-8") as handle:
             handle.write("not json")
-        self.assertEqual({}, fix_route.latest_report(self.workspace))
+        self.assertEqual(RETURN_FINALIZE, self.route())
+        self.assertEqual({}, fix_route.latest_report(self.workspace, load(self.workspace)))
+        self.assertTrue(os.path.isfile(fix_route.report_path(self.workspace, 1)))
+
+    def test_no_request_has_no_report(self) -> None:
+        self.assertEqual((0, {}), (fix_route.fix_requests(self.state),
+                                   fix_route.latest_report(self.workspace, self.state)))
 
     def test_cannot_fix_records_the_human_intervention_outcome(self) -> None:
         state = run_state(ROUTE_REPAIR)
         handoff.write_fix_request(self.workspace, state, "finalize", [handoff.Failure(COMMAND, NATIVE_OUTPUT)])
         save(self.workspace, state)
-        write_json(runtime_path(self.workspace, "reports", "fix-1.json"),
-                   {"result": "cannot-fix", "changed": [], "summary": "a shared harness defect"})
+        play_fix(self.workspace, "cannot-fix", "a shared harness defect")
         with working_directory(self.workspace):
             self.assertEqual(CANNOT_FIX, forge_run.main(["fix-route"]))
         outcome = read_json(runtime_path(self.workspace, forge_run.OUTCOME))
@@ -102,7 +140,7 @@ class ReportTest(unittest.TestCase):
         state = run_state(ROUTE_REPAIR)
         handoff.write_fix_request(self.workspace, state, "audit", [handoff.Failure(COMMAND, "")], "Check it.")
         save(self.workspace, state)
-        write_json(runtime_path(self.workspace, "reports", "fix-1.json"), {"result": "cannot-fix", "summary": "x"})
+        play_fix(self.workspace, "cannot-fix", "x")
         with working_directory(self.workspace):
             self.assertEqual(CANNOT_FIX, forge_run.main(["fix-route"]))
         outcome = read_json(runtime_path(self.workspace, forge_run.OUTCOME))

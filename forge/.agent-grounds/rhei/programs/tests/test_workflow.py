@@ -11,15 +11,19 @@ against §AR-forge-workflow-pipeline.3.
 """
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import subprocess
+import sys
 import unittest
+from typing import Any
 
-from support import COORDINATE, FakeRepository, working_directory
+from support import COORDINATE, REPOSITORY, FakeRepository, play_fix, working_directory
 from test_prepare import prepare_arguments
 
 import explore  # noqa: E402
+import fix_route  # noqa: E402
 import forge_run  # noqa: E402
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
 from exit_codes import (  # noqa: E402
@@ -31,19 +35,30 @@ from exit_codes import (  # noqa: E402
     NOT_FOR_NATIVE_IMAGE_RECORDED,
     OK,
     RETURN_AUDIT,
+    RETURN_FINALIZE,
     RETURN_JVM,
     RETURN_MEASURE,
     RETURN_NATIVE,
     STILL_FAILING,
 )
-from run_state import RunState, load, read_json, runtime_path, save, write_json  # noqa: E402
+from run_state import RunState, load, read_json, runtime_path, save  # noqa: E402
 
+PUBLISHER: str = os.path.join(REPOSITORY, ".github", "scripts", "forge_pr_publisher", "publisher.py")
 URLS: dict[str, str] = {
     "source-code-url": "file:///nonexistent/sources.jar",
     "test-code-url": "file:///nonexistent/tests.jar",
     "documentation-url": "file:///nonexistent/docs.jar",
     "repository-url": "file:///nonexistent/repo",
 }
+
+
+def rendered_body(descriptor: dict[str, Any]) -> str:
+    """The pull request body the trusted publisher renders, loaded from its file as Actions runs it."""
+    spec: Any = importlib.util.spec_from_file_location("forge_pr_publisher_workflow", PUBLISHER)
+    publisher: Any = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = publisher
+    spec.loader.exec_module(publisher)
+    return publisher.render_publication(descriptor)[1]
 
 
 class WorkflowTest(unittest.TestCase):
@@ -85,9 +100,8 @@ class WorkflowTest(unittest.TestCase):
         with open(path, "w", encoding="utf-8") as handle:
             handle.write(f"package org_example;\npublic class {test_name} {{}}\n")
 
-    def fix(self, result: str, visit: int) -> None:
-        write_json(runtime_path(self.fake.workspace, "reports", f"fix-{visit}.json"),
-                   {"result": result, "changed": [], "summary": "played"})
+    def fix(self, result: str) -> None:
+        play_fix(self.fake.workspace, result)
 
     def test_new_library_explores_class_by_class_and_publishes(self) -> None:
         self.fake.issue("library-new-request")
@@ -126,7 +140,7 @@ class WorkflowTest(unittest.TestCase):
         self.fake.control({"nativeFails": True})
         self.assertEqual(AGENT_WORK, self.step("native"))
         self.assertIn("Return: 32", self.read("fix-request.md"))
-        self.fix("fixed", 1)
+        self.fix("fixed")
         self.assertEqual(RETURN_NATIVE, self.step("fix-route"))
         metadata = self.state.path(os.path.join(self.state.metadata_dir, "reachability-metadata.json"))
         with open(metadata, "w", encoding="utf-8") as handle:
@@ -137,7 +151,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual("success", self.state.local_ci["status"])
         self.assertEqual(AGENT_WORK, self.step("audit"))
         self.assertIn("Return: 34", self.read("fix-request.md"))
-        self.fix("fixed", 2)
+        self.fix("fixed")
         self.assertEqual(RETURN_AUDIT, self.step("fix-route"))
         self.assertEqual(OK, self.step("audit"))
         self.assertEqual(OK, self.step("publish"))
@@ -152,6 +166,59 @@ class WorkflowTest(unittest.TestCase):
         self.assertGreater(descriptor["metrics"]["summary"]["generated_loc"], 0)
         # Three cover passes and two fix requests (§AR-forge-workflow-pipeline.4).
         self.assertEqual(5, descriptor["metrics"]["summary"]["iterations"])
+
+    def test_every_fix_round_files_its_report_and_counts(self) -> None:
+        """Run forge-2179-1's shape: one cover pass, then fixes for `native`, `finalize`, and the audit.
+
+        Rhei names every `fix` visit's report the same, so the run state numbers them
+        (§AR-forge-workflow-pipeline.4); `finalize`'s round is the gate's fixup
+        (§FS-local-ci-equivalent-verification.2).
+        """
+        self.fake.issue("library-new-request")
+        self.fake.control({"classes": {"org.example.lib.Codec": 1}})
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
+        self.assertEqual(AGENT_WORK, self.step("analyze"))
+        self.cover("CodecTest")
+        self.assertEqual(OK, self.step("measure"))
+
+        self.fake.control({"nativeFails": True})
+        self.assertEqual(AGENT_WORK, self.step("native"))
+        play_fix(self.fake.workspace, summary="native round")
+        self.assertEqual(RETURN_NATIVE, self.step("fix-route"))
+        metadata = self.state.path(os.path.join(self.state.metadata_dir, "reachability-metadata.json"))
+        with open(metadata, "w", encoding="utf-8") as handle:
+            handle.write('{"reflection": [{"type": "Fixed"}]}\n')
+        self.assertEqual(OK, self.step("native"))
+        self.fake.control({"styleFails": "checkstyle"})
+        self.assertEqual(AGENT_WORK, self.step("finalize"))
+        test_file: str = os.path.join(self.state.test_dir, "src", "test", "java", "org_example", "CodecTest.java")
+        play_fix(self.fake.workspace, summary="finalize round", changed=(test_file,))
+        self.assertEqual(RETURN_FINALIZE, self.step("fix-route"))
+        self.fake.control({"styleFails": None})
+        self.assertEqual(OK, self.step("finalize"))
+        self.assertEqual(AGENT_WORK, self.step("audit"))
+        play_fix(self.fake.workspace, summary="audit round")
+        self.assertEqual(RETURN_AUDIT, self.step("fix-route"))
+        self.assertEqual(OK, self.step("audit"))
+        self.assertEqual(OK, self.step("publish"))
+
+        self.assertEqual(["native round", "finalize round", "audit round"],
+                         [read_json(fix_route.report_path(self.fake.workspace, n))["summary"] for n in (1, 2, 3)])
+        stats: str = os.path.join("stats", "org.example", "lib", "2.0.0")
+        descriptor = read_json(self.state.path(os.path.join(stats, "forge-publication.json")))
+        self.assertEqual((1, 4), (self.state.explore.passes, descriptor["metrics"]["summary"]["iterations"]))
+        metrics = read_json(self.state.path(os.path.join(stats, "execution-metrics.json")))
+        self.assertEqual([4], [entry["metrics"]["iterations"] for entry in metrics.values()])
+        self.assertEqual([{"gate": "finalize", "command": [f"./gradlew checkstyle -Pcoordinates={COORDINATE}"],
+                           "commit": None, "changed_paths": [test_file]}],
+                         descriptor["local_ci_verification"]["fixups"])
+        body: str = rendered_body(descriptor)
+        self.assertIn("- Iterations: 4\n", body)
+        self.assertIn("- Fixup attempts: 1\n", body)
+        # The fix requests and reports stay in the workspace (§FS-forge-run-status).
+        self.assertNotIn("Post-Generation Intervention", body)
 
     def test_non_jvm_artifact_publishes_only_its_index_and_descriptor(self) -> None:
         """Publish carries the verdict without execution metrics
@@ -204,7 +271,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual([f"- ./gradlew javaTest -Pcoordinates={COORDINATE}"],
                          [line for line in failing.splitlines() if line.startswith("- ")])
         self.assertNotIn("## Then run", request)
-        self.fix("fixed", 1)
+        self.fix("fixed")
         self.assertEqual(RETURN_JVM, self.step("fix-route"))
         self.assertEqual(STILL_FAILING, self.step("jvm"))
         self.assertEqual("human-intervention", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["outcome"])
@@ -224,7 +291,7 @@ class WorkflowTest(unittest.TestCase):
         self.fake.control({"javaFails": True})
         self.assertEqual(JVM_TESTS_FAIL, self.step("measure"))
         self.assertIn("Return: 31", self.read("fix-request.md"))
-        self.fix("fixed", 1)
+        self.fix("fixed")
         self.assertEqual(RETURN_MEASURE, self.step("fix-route"))
         self.assertEqual(AGENT_WORK, self.step("measure"))
         self.assertIn("could not be fixed", self.state.explore.feedback)
@@ -364,7 +431,7 @@ class WorkflowTest(unittest.TestCase):
         self.cover("BrokenTest")
         self.fake.control({"listFails": True, "javaFails": True})
         self.assertEqual(JVM_TESTS_FAIL, self.step("measure"))
-        self.fix("fixed", 1)
+        self.fix("fixed")
         self.assertEqual(RETURN_MEASURE, self.step("fix-route"))
         self.assertEqual(OK, self.step("measure"))
         self.assertFalse(os.path.exists(self.state.path(os.path.join(

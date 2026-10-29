@@ -49,7 +49,7 @@ from exit_codes import (  # noqa: E402
     RETURN_CODES,
     STILL_FAILING,
 )
-from run_state import runtime_path, write_json  # noqa: E402
+from run_state import load, runtime_path, write_json  # noqa: E402
 
 STEPS: dict[str, Callable[[str], int]] = {
     "setup-check": setup_check.setup_check,
@@ -123,7 +123,7 @@ def diagnostics(workspace: str, step: str) -> dict[str, Any]:
     recorded: tuple[str, list[handoff.Failure]] | None = handoff.recorded_failures(workspace)
     sender, failures = recorded if recorded is not None else (step, [])
     outputs: dict[str, list[str]] = handoff.outputs_by_command(failures)
-    report: dict[str, Any] = fix_route.latest_report(workspace)
+    report: dict[str, Any] = fix_route.latest_report(workspace, load(workspace))
     return {
         "sender": sender,
         "failures": [{"command": command, "output": excerpt("\n".join(outputs.get(command, [])))}
