@@ -29,3 +29,13 @@ until = "indefinite"
 reason = """
 Rhei instantiates one task-plan file per template; the guided and naive task chains must live in this single file for the template to render either arm.
 """
+[[exceptions]]
+path = "forge/docs/architecture/workflow-pipeline.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 320, unit = "lines" }
+until = "AR-forge-workflow-pipeline is split into per-stage declarations following the dispatcher package boundaries"
+reason = """
+The file is one declaration, AR-forge-workflow-pipeline, whose numbered sections are cited from 58 files; moving a section into a child document gives it a new ID and renumbers those citations, which is deliberate spec work rather than a mechanical split (the same deferral a maintainer approved when the declaration lived in architecture.md).
+"""
