@@ -43,6 +43,31 @@ public class AbstractMastersListenerTest extends DatabaseTestSupport {
         }
     }
 
+    @Test
+    void appliesTransactionIsolationAfterAnIdleSessionBecomesInvalid() throws Exception {
+        try (Connection connection = database.connect("loadbalance", new Properties());
+             Connection administrator = database.connect("", new Properties());
+             Statement identity = connection.createStatement();
+             Statement control = administrator.createStatement()) {
+            long session;
+            try (ResultSet result = identity.executeQuery("SELECT CONNECTION_ID()")) {
+                assertThat(result.next()).isTrue();
+                session = result.getLong(1);
+            }
+            control.execute("KILL CONNECTION " + session);
+            assertThat(connection.isValid(10)).isFalse();
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            assertThat(connection.getTransactionIsolation()).isEqualTo(Connection.TRANSACTION_SERIALIZABLE);
+            try (Statement statement = connection.createStatement();
+                 ResultSet result = statement.executeQuery("SELECT @@tx_isolation, CONNECTION_ID()")) {
+                assertThat(result.next()).isTrue();
+                assertThat(result.getString(1)).isEqualTo("SERIALIZABLE");
+                assertThat(result.getLong(2)).isNotEqualTo(session);
+                assertThat(result.next()).isFalse();
+            }
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
     void retriesReadOnlyQueriesAfterTheServerDisconnectsAnIdleSession(boolean serverPrepared) throws Exception {

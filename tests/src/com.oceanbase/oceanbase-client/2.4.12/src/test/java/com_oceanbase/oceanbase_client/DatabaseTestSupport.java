@@ -145,7 +145,7 @@ public abstract class DatabaseTestSupport {
         @Override
         public void close() throws Exception {
             if (created) {
-                command("docker", "rm", "--force", name);
+                command("docker", "rm", "--force", "--volumes", name);
                 created = false;
             }
             if (Files.exists(directory)) {
