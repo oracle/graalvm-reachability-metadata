@@ -28,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+// Direct annotation reads exercise the interceptor annotations' runtime-visible API.
+@SuppressWarnings("checkstyle:annotationAccess")
 public class Geronimo_interceptor_1_1_specTest {
     @Test
     void preservesDeclaredInterceptorOrderOnClassesAndMethods() throws Exception {
