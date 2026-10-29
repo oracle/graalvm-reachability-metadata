@@ -54,3 +54,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14809
+
+## GR-80945: \[Native Image\] ClassLoader.registerAsParallelCapable() returns false for every class loader, even a direct ClassLoader subclass
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14811
