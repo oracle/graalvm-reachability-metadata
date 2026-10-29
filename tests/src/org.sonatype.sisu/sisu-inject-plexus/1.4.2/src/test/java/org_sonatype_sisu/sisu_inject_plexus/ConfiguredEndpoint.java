@@ -6,11 +6,14 @@
  */
 package org_sonatype_sisu.sisu_inject_plexus;
 
-import org.junit.jupiter.api.Test;
+public class ConfiguredEndpoint {
+    private String address;
 
-class Sisu_inject_plexusTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
