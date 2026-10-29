@@ -97,12 +97,10 @@ public abstract class GenerateMetadataTask extends DefaultTask {
         List<String> packageList = resolveAllowedPackages(coordinatesValue);
 
         if (!packageList.isEmpty()) {
-            MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, packageList);
-            MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
+            MetadataGenerationUtils.writeUserCodeFilter(testsDirectory, packageList);
         } else if (!MetadataGenerationUtils.hasAgentConfigBlock(testsDirectory)) {
             // Fresh scaffolds have no agent block; default to library group package so conditional metadata can be generated.
-            MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, List.of(coordinatesValue.group()));
-            MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
+            MetadataGenerationUtils.writeUserCodeFilter(testsDirectory, List.of(coordinatesValue.group()));
         }
         boolean includeCodeCoverageSuite = Boolean.parseBoolean(getIncludeCodeCoverageSuite());
         if (metadataOutputDir == null || metadataOutputDir.isBlank()) {
@@ -133,11 +131,7 @@ public abstract class GenerateMetadataTask extends DefaultTask {
 
         String normalizedValue = agentAllowedPackages.trim();
         if (normalizedValue.equals(FROM_JAR)) {
-            return MetadataIndexUpdateUtils.mergeWithAllowedPackagesInIndexJson(
-                    getLayout(),
-                    coordinatesValue,
-                    MetadataGenerationUtils.derivePackageRootsFromJar(getProject(), coordinatesValue)
-            );
+            return MetadataGenerationUtils.allowedPackagesFromJar(getProject(), getLayout(), coordinatesValue);
         }
 
         List<String> packageList = Arrays.stream(agentAllowedPackages.split(","))

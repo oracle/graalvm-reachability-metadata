@@ -201,6 +201,97 @@ class GenerateMetadataTaskTests {
         assertThat(readGradlewInvocations()).isEmpty();
     }
 
+    /// `generateUserCodeFilter` writes the `fromJar` filter, agent block, and `allowed-packages`
+    /// without invoking the test build (§forge/AR-forge-workflow-pipeline.4.1).
+    @Test
+    void generateUserCodeFilterWritesTheFromJarFilterWithoutRunningTests() throws IOException {
+        Coordinates coordinates = Coordinates.parse("ch.qos.logback:logback-classic:1.5.26");
+        Project project = prepareFromJarFixture(coordinates);
+
+        registerGenerateUserCodeFilterTask(project, coordinates).run();
+
+        assertGeneratedUserCodeFilter(
+                "tests/src/ch.qos.logback/logback-classic/1.5.26/user-code-filter.json",
+                List.of("ch.qos.logback", "ch.qos.logback.classic", "org_example")
+        );
+        assertThat(readTestBuildGradle(coordinates))
+                .contains("userCodeFilterPath = \"user-code-filter.json\"");
+        List<Map<String, Object>> entries = OBJECT_MAPPER.readValue(
+                tempDir.resolve("metadata/ch.qos.logback/logback-classic/index.json").toFile(),
+                new TypeReference<>() {}
+        );
+        assertThat(entries.get(0)).containsEntry(
+                "allowed-packages",
+                List.of("ch.qos.logback", "ch.qos.logback.classic")
+        );
+        assertThat(readGradlewInvocations()).isEmpty();
+    }
+
+    /// The filter, build file, and index `generateUserCodeFilter` writes are byte-for-byte those
+    /// `generateMetadata --agentAllowedPackages=fromJar` writes.
+    @Test
+    void generateUserCodeFilterWritesWhatGenerateMetadataFromJarWrites() throws IOException {
+        Coordinates coordinates = Coordinates.parse("ch.qos.logback:logback-classic:1.5.26");
+        Project project = prepareFromJarFixture(coordinates);
+        Path testsDirectory = tempDir.resolve("tests/src/ch.qos.logback/logback-classic/1.5.26");
+        Path index = tempDir.resolve("metadata/ch.qos.logback/logback-classic/index.json");
+        String originalBuildGradle = readTestBuildGradle(coordinates);
+        String originalIndex = Files.readString(index, StandardCharsets.UTF_8);
+
+        registerGenerateUserCodeFilterTask(project, coordinates).run();
+        List<String> written = List.of(
+                Files.readString(testsDirectory.resolve("user-code-filter.json"), StandardCharsets.UTF_8),
+                readTestBuildGradle(coordinates),
+                Files.readString(index, StandardCharsets.UTF_8)
+        );
+        Files.delete(testsDirectory.resolve("user-code-filter.json"));
+        Files.writeString(testsDirectory.resolve("build.gradle"), originalBuildGradle, StandardCharsets.UTF_8);
+        Files.writeString(index, originalIndex, StandardCharsets.UTF_8);
+        TestGenerateMetadataTask generateMetadata = registerGenerateMetadataTask(project, "generateMetadata", coordinates);
+        generateMetadata.setAgentAllowedPackages("fromJar");
+        generateMetadata.run();
+
+        assertThat(written).containsExactly(
+                Files.readString(testsDirectory.resolve("user-code-filter.json"), StandardCharsets.UTF_8),
+                readTestBuildGradle(coordinates),
+                Files.readString(index, StandardCharsets.UTF_8)
+        );
+    }
+
+    /// A library JAR, a test project with one test package, and an index entry with one package.
+    private Project prepareFromJarFixture(Coordinates coordinates) throws IOException {
+        installLibraryArtifact(coordinates, List.of("ch/qos/logback/classic/Logger.class", "module-info.class"));
+        Project project = createProject();
+        prepareTestProject(coordinates, "plugins { id 'java' }\n");
+        Path testSource = tempDir.resolve("tests/src")
+                .resolve(coordinates.group())
+                .resolve(coordinates.artifact())
+                .resolve(coordinates.version())
+                .resolve("src/test/java/org_example/LoggerTest.java");
+        Files.createDirectories(testSource.getParent());
+        Files.writeString(testSource, "package org_example;\nclass LoggerTest {}\n", StandardCharsets.UTF_8);
+        writeMetadataIndex(
+                coordinates,
+                """
+                [
+                  {
+                    "metadata-version": "1.5.26",
+                    "tested-versions": ["1.5.26"],
+                    "allowed-packages": ["ch.qos.logback"]
+                  }
+                ]
+                """
+        );
+        return project;
+    }
+
+    private GenerateUserCodeFilterTask registerGenerateUserCodeFilterTask(Project project, Coordinates coordinates) {
+        GenerateUserCodeFilterTask task = project.getTasks()
+                .register("generateUserCodeFilter", GenerateUserCodeFilterTask.class).get();
+        task.setCoordinates(coordinates.toString());
+        return task;
+    }
+
     private void prepareTestProject(Coordinates coordinates, String buildGradleContent) throws IOException {
         Path testsDirectory = tempDir.resolve("tests/src")
                 .resolve(coordinates.group())
