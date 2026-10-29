@@ -8,6 +8,7 @@ package com_alibaba_nacos.nacos_common;
 
 import com.alibaba.nacos.common.model.core.IResultCode;
 import com.alibaba.nacos.common.packagescan.DefaultPackageScan;
+import com.alibaba.nacos.common.packagescan.resource.ClassPathResource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -17,7 +18,6 @@ import java.nio.file.Path;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DefaultPackageScanTest {
     @TempDir
@@ -27,8 +27,8 @@ public class DefaultPackageScanTest {
     void findsAnAnnotatedLibraryTypeInAResourceDirectory() throws Exception {
         String packagePath = "com/alibaba/nacos/common/model/core/";
         Path classFile = directory.resolve("IResultCode.class");
-        try (InputStream stream = getClass().getClassLoader().getResourceAsStream(packagePath + "IResultCode.class")) {
-            assertNotNull(stream);
+        ClassPathResource resource = new ClassPathResource(packagePath + "IResultCode.class");
+        try (InputStream stream = resource.getInputStream()) {
             Files.copy(stream, classFile);
         }
         Thread thread = Thread.currentThread();
