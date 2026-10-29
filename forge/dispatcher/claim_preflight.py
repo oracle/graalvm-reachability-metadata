@@ -55,7 +55,6 @@ from dispatcher.issue_queue import (
     get_issue_payload_assignees,
     is_assigned_only_to_authenticated_user,
     issue_has_label,
-    issue_is_resumable,
 )
 from dispatcher.project_board import get_item_status, get_project_item_state, set_item_status
 from dispatcher.records import (
@@ -231,7 +230,7 @@ def get_issue_claim_cache_observation_from_payload(
     issue_number = issue.get("number")
     if not isinstance(issue_number, int):
         return None
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
         return IssueClaimCacheObservation(
             issue_number=issue_number,
             reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
@@ -428,7 +427,7 @@ def get_issue_claim_preflights(
 
 def issue_needs_claim_preflight(issue: dict, authenticated_user: str | None = None) -> bool:
     """Return True when an issue needs GraphQL preflight before claim attempts."""
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
         return False
     if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
         return False
@@ -477,15 +476,9 @@ def should_skip_issue_from_preflight(
         and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
         and issue_has_label(issue, LABEL_CHUNKED_DYNAMIC_ACCESS)
     )
-    cached_human_intervention_now_resumable = (
-        cached_skip is not None
-        and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION
-        and issue_is_resumable(issue)
-    )
     if (
             cached_skip is not None
             and not cached_chunked_issue_in_progress
-            and not cached_human_intervention_now_resumable
             and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user, take_blocked_issues)
     ):
         return True

@@ -40,9 +40,25 @@ class FetchTest(unittest.TestCase):
         self.assertEqual([
             "gh", "issue", "list", "--repo", "oracle/graalvm-reachability-metadata", "--state", "open",
             "--label", "library-new-request", "--label", "priority",
-            "--search", "no:assignee -label:not-for-native-image -label:high-priority sort:created-asc",
+            "--search",
+            "no:assignee -label:not-for-native-image -label:human-intervention -is:blocked -label:high-priority "
+            "sort:created-asc",
             "--json", "number,title,labels,assignees", "--limit", "20",
         ], command)
+
+    def test_blocked_issues_are_fetched_only_on_request(self) -> None:
+        # Held issues stay out either way; only the blocker exclusion follows the override.
+        for take_blocked in (False, True):
+            with patch.object(issue_fetch, "_run", return_value=[]) as run:
+                issue_fetch.fetch_candidates(issue_fetch.QUEUE_LABELS, take_blocked=take_blocked)
+            searches: list[list[str]] = [
+                call.args[0][call.args[0].index("--search") + 1].split() for call in run.call_args_list
+            ]
+            self.assertEqual(15, len(searches))
+            for search in searches:
+                self.assertIn("-label:not-for-native-image", search)
+                self.assertIn("-label:human-intervention", search)
+                self.assertEqual(not take_blocked, "-is:blocked" in search)
 
     def test_every_label_of_a_tier_is_fetched_before_the_next_tier(self) -> None:
         commands = issue_fetch.fetch_commands(issue_fetch.QUEUE_LABELS)
@@ -97,6 +113,7 @@ class TargetTest(unittest.TestCase):
         self.assertEqual(forge_metadata.RAN, code)
         claim.assert_not_called()
         self.assertIn("--label fails-javac-compile --label high-priority", output.getvalue())
+        self.assertIn("-is:blocked", output.getvalue())
         self.assertIn("#5 [fails-javac-compile]", output.getvalue())
 
 
@@ -110,6 +127,13 @@ class TargetTest(unittest.TestCase):
                     contextlib.redirect_stderr(io.StringIO()):
                 forge_metadata.main(["--issues-fixture", handle.name, *extra])
             self.assertEqual(expected, claim.call_args.args[4])
+
+    def test_the_fetch_forwards_the_blocker_override(self) -> None:
+        for extra, expected in (([], False), (["--take-blocked-issues"], True)):
+            with patch.object(forge_metadata, "fetch_candidates", return_value=[]) as fetch, \
+                    contextlib.redirect_stderr(io.StringIO()):
+                forge_metadata.main(extra)
+            self.assertEqual(expected, fetch.call_args.args[2])
 
     def test_the_claim_forwards_the_blocker_override(self) -> None:
         with patch.object(run_launch, "refresh_issue_payload_for_claim", return_value=True), \

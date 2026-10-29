@@ -6,7 +6,8 @@
 """Fetch the Forge issue queues with `gh issue list`, every cycle, with no cache.
 
 One query per label and priority tier, `high-priority` first, then `priority`,
-then the rest, oldest first, unassigned, and never `not-for-native-image`
+then the rest, oldest first, unassigned, and never `not-for-native-image`,
+`human-intervention`, or, unless blocked issues are taken, blocked
 (§AR-forge-workflow-pipeline.1, §FS-forge-scope). A fixture file of issue
 payloads can stand in for GitHub.
 """
@@ -18,6 +19,7 @@ from typing import Any
 
 from dispatcher.config import (
     LABEL_HIGH_PRIORITY,
+    LABEL_HUMAN_INTERVENTION,
     LABEL_JAVA_RUN_FAIL,
     LABEL_JAVAC_FAIL,
     LABEL_LIBRARY_NEW,
@@ -45,9 +47,17 @@ FETCH_LIMIT: int = 20
 FIELDS: str = "number,title,labels,assignees"
 
 
-def fetch_command(label: str, extra_labels: tuple[str, ...], excluded: tuple[str, ...]) -> list[str]:
+def fetch_command(
+        label: str,
+        extra_labels: tuple[str, ...],
+        excluded: tuple[str, ...],
+        take_blocked: bool = False,
+) -> list[str]:
     """The one `gh issue list` of a label and tier."""
-    search: list[str] = ["no:assignee", f"-label:{LABEL_NOT_FOR_NATIVE_IMAGE}"]
+    # A held or blocked issue takes a place the claim cannot use (§AR-forge-workflow-pipeline.1).
+    search: list[str] = ["no:assignee", f"-label:{LABEL_NOT_FOR_NATIVE_IMAGE}", f"-label:{LABEL_HUMAN_INTERVENTION}"]
+    if not take_blocked:
+        search.append("-is:blocked")
     search += [f"-label:{name}" for name in excluded]
     search.append("sort:created-asc")
     command: list[str] = ["gh", "issue", "list", "--repo", REPO, "--state", "open", "--label", label]
@@ -56,9 +66,10 @@ def fetch_command(label: str, extra_labels: tuple[str, ...], excluded: tuple[str
     return [*command, "--search", " ".join(search), "--json", FIELDS, "--limit", str(FETCH_LIMIT)]
 
 
-def fetch_commands(labels: tuple[str, ...]) -> list[tuple[str, list[str]]]:
+def fetch_commands(labels: tuple[str, ...], take_blocked: bool = False) -> list[tuple[str, list[str]]]:
     """Every query of one cycle, most urgent first, as `(label, command)`."""
-    return [(label, fetch_command(label, extra, excluded)) for extra, excluded in TIERS for label in labels]
+    return [(label, fetch_command(label, extra, excluded, take_blocked))
+            for extra, excluded in TIERS for label in labels]
 
 
 def _run(command: list[str]) -> list[dict[str, Any]]:
@@ -70,7 +81,11 @@ def _run(command: list[str]) -> list[dict[str, Any]]:
     return json.loads(completed.stdout)
 
 
-def fetch_candidates(labels: tuple[str, ...], fixture: str | None = None) -> list[tuple[str, dict[str, Any]]]:
+def fetch_candidates(
+        labels: tuple[str, ...],
+        fixture: str | None = None,
+        take_blocked: bool = False,
+) -> list[tuple[str, dict[str, Any]]]:
     """The candidate issues of one cycle in claim order, as `(queue label, payload)`, each once."""
     if fixture is not None:
         with open(fixture, encoding="utf-8") as handle:
@@ -79,7 +94,7 @@ def fetch_candidates(labels: tuple[str, ...], fixture: str | None = None) -> lis
                 if label in {entry.get("name") for entry in issue.get("labels", [])}]
     seen: set[int] = set()
     candidates: list[tuple[str, dict[str, Any]]] = []
-    for label, command in fetch_commands(labels):
+    for label, command in fetch_commands(labels, take_blocked):
         for issue in _run(command):
             if issue["number"] not in seen:
                 seen.add(issue["number"])
