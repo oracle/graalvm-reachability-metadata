@@ -103,9 +103,9 @@ jobs:
     if: always()
     steps:
       - name: "All tests passed"
-        if: needs.test-changed-infrastructure.result == 'success' || needs.get-changed-infrastructure.outputs.relevant-files-changed == 'false'
+        if: needs.test-changed-infrastructure.result == 'success' || needs.get-changed-infrastructure.outputs.relevant-files-changed == 'false' || needs.get-changed-infrastructure.outputs.none-found == 'true'
         run: exit 0
 
       - name: "Some tests failed"
-        if: needs.test-changed-infrastructure.result == 'failure'
+        if: needs.test-changed-infrastructure.result != 'success' && needs.get-changed-infrastructure.outputs.relevant-files-changed != 'false' && needs.get-changed-infrastructure.outputs.none-found != 'true'
         run: exit 1
