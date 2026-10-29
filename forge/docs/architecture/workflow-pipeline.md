@@ -194,9 +194,16 @@ reverts every other edit, verifies the four URLs, downloads the main sources
 into the run's source context — a failed download is retried after a pause of a
 few minutes, three attempts in all — writes the user-code filter and
 `allowed-packages` from the library JAR when the project has no filter yet, and
-checkpoints. A missing URL, or a declaration that does not resolve, is a bad
-input. A new library then exits `20` to `analyze`, since it has no version to
-repair; every other route exits `0` to `jvm`.
+checkpoints. The filter is written without compiling or running the tests,
+because the tests of a `fails-*` issue, a `fails-javac-compile` one above all,
+may not build. The project already has a filter when the file its `build.gradle`
+agent block names as `userCodeFilterPath`, or else `user-code-filter.json`,
+exists. A missing URL, or a library coordinate that does not resolve, is a bad
+input. The tail does not resolve the test dependencies `setup` declares: on
+every route but a new library's, `jvm` resolves them in `javaTest` and reports
+one that does not resolve as a bad input. A new library then exits `20` to
+`analyze`, since it has no version to repair; every other route exits `0` to
+`jvm`.
 
 On the three `fails-*` labels `setup` may also add `skipped-versions` entries,
 its unsupportable-version verdict (§FS-unsupportable-version-diagnosis.2); on
