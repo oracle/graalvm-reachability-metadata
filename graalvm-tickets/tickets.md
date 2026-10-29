@@ -12,3 +12,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14799
+
+## GR-80931: \[Native Image 25.0\] TypeNotFoundError in buildRuntimeMetadata for a linkage error of a class whose typeReached condition is never reached
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14805
