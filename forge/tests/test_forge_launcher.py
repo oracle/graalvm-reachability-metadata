@@ -47,9 +47,18 @@ class FetchTest(unittest.TestCase):
         ], command)
 
     def test_blocked_issues_are_fetched_only_on_request(self) -> None:
-        for take_blocked, expected in ((False, True), (True, False)):
-            commands = issue_fetch.fetch_commands(issue_fetch.QUEUE_LABELS, take_blocked)
-            self.assertTrue(all(("-is:blocked" in " ".join(command)) == expected for _, command in commands))
+        # Held issues stay out either way; only the blocker exclusion follows the override.
+        for take_blocked in (False, True):
+            with patch.object(issue_fetch, "_run", return_value=[]) as run:
+                issue_fetch.fetch_candidates(issue_fetch.QUEUE_LABELS, take_blocked=take_blocked)
+            searches: list[list[str]] = [
+                call.args[0][call.args[0].index("--search") + 1].split() for call in run.call_args_list
+            ]
+            self.assertEqual(15, len(searches))
+            for search in searches:
+                self.assertIn("-label:not-for-native-image", search)
+                self.assertIn("-label:human-intervention", search)
+                self.assertEqual(not take_blocked, "-is:blocked" in search)
 
     def test_every_label_of_a_tier_is_fetched_before_the_next_tier(self) -> None:
         commands = issue_fetch.fetch_commands(issue_fetch.QUEUE_LABELS)

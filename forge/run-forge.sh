@@ -49,8 +49,8 @@ Options:
       Example: --label library-new-request:2 --label fails-java-run serves the
       new-library queue twice, then fails-java-run once, then starts over.
   --take-blocked-issues
-      Claim issues with open blockers too; every other claim condition still
-      holds. Default: off.
+      Fetch and claim issues with open blockers too; every other claim
+      condition still holds. Default: off.
   -- RHEI_RUN_OPTIONS...
       Forward options to rhei run. The dashboard is always enabled.
 USAGE
