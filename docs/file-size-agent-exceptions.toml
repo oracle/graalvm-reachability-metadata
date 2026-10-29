@@ -73,3 +73,13 @@ until = "FS-library-version-update-automation and section 8 (how the repository 
 reason = """
 The file measures about 390 lines. The version update automation (about 100 lines) can move out whole, since IDs are stable across files in the folder home, but that alone leaves about 290; the usage walkthroughs of section 8 (about 60 more) need new IDs and their citers migrated. Both moves are changes of their own rather than side effects of adding one label row.
 """
+[[exceptions]]
+path = "forge/dispatcher/claim_preflight.py"
+match = "exact"
+rules = ["source"]
+kind = "deferred"
+max_accepted = { value = 500, unit = "lines" }
+until = "the test-only batched preflight path is removed from forge/dispatcher"
+reason = """
+About 300 of the file's lines are the batched preflight (resolve_next_issue_claim_candidate_batch and the GraphQL preflight, skip and cache-skip helpers it calls), which only tests reach since the launcher fetches with gh issue list; only refresh_issue_payload_for_claim and get_open_blocking_issue_numbers are live. Moving that path to a sibling module would split dead code at the line count; removing it is the design fix and a change of its own.
+"""
