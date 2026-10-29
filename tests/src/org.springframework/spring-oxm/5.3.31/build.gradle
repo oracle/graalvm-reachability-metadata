@@ -18,6 +18,12 @@ dependencies {
     testImplementation 'com.thoughtworks.xstream:xstream:1.4.20'
 }
 
+// XStream registers HijrahDateConverter by default, and initializing
+// HijrahChronology reads java.home, which a native image leaves unset.
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
