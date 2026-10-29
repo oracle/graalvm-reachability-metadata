@@ -26,3 +26,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14717
+
+## GR-80933: \[Native Image 25.0\] Signer certificates of a class registered for reflection are not scanned by the analysis: "Type not found during analysis: X509CertInfo"
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14806
