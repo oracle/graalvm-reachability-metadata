@@ -6,11 +6,34 @@
  */
 package com_tunnelvisionlabs.antlr4;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.tool.Grammar;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-class Antlr4Test {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@Timeout(120)
+public class Antlr4Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void tokenizesIdentifiersAndNumbersWithAnInterpretedLexer() {
+        Grammar grammar = GrammarTestSupport.process("""
+                lexer grammar Fields;
+                ID: [a-z]+;
+                INT: [0-9]+;
+                WS: [ \\t\\r\\n]+ -> skip;
+                """);
+        CommonTokenStream tokens = new CommonTokenStream(
+                grammar.createLexerInterpreter(new ANTLRInputStream("quantity 42")));
+        tokens.fill();
+
+        assertEquals(3, tokens.size());
+        assertEquals(grammar.getTokenType("ID"), tokens.get(0).getType());
+        assertEquals("quantity", tokens.get(0).getText());
+        assertEquals(grammar.getTokenType("INT"), tokens.get(1).getType());
+        assertEquals("42", tokens.get(1).getText());
+        assertEquals(Token.EOF, tokens.get(2).getType());
     }
 }
