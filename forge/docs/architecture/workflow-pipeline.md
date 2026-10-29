@@ -23,9 +23,13 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
 
 1. **Fetch.** One `gh issue list` per label and priority tier, every cycle, with
    no cache: `high-priority`, then `priority`, then the rest, oldest first,
-   unassigned, excluding `not-for-native-image`. Each tier excludes the labels
-   of the tiers above it, so an issue carrying both priority labels is served
-   once, in its highest tier, as the repository status classifies it
+   unassigned, excluding `not-for-native-image` and `human-intervention`. Each
+   query returns a fixed number of issues, so a held issue, which the claim
+   refuses (§FS-forge-run-requirements.2), is left out of it: the oldest issues
+   of a queue are the ones most often held, and they would fill every query and
+   starve the queue. Each tier excludes the labels of the tiers above it, so an
+   issue carrying both priority labels is served once, in its highest tier, as
+   the repository status classifies it
    (§root/FS-repository-status-report.1). The labels are
    `library-new-request`, `library-update-request`, `fails-javac-compile`,
    `fails-java-run`, and `fails-native-image-run` (§FS-forge-scope). A fixture
