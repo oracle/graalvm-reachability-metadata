@@ -42,9 +42,10 @@ from utility_scripts.metadata_index import (
 
 import gates
 import issue
+import index_record
 import run_note
 from build_tools import BASE_BRANCH, checkpoint, git, head, run_gradle, stop_gradle_daemons, upstream_remote
-from exit_codes import BAD_INPUT, INFRASTRUCTURE, OK
+from exit_codes import BAD_INPUT, INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK
 from run_state import ROUTE_NEW, Budgets, Chunk, RunState, load, runtime_path, save, write_text
 
 # <agent>[<mode>]:<model> with agent pi or claude-code (§FS-forge-agent-runtime-selection).
@@ -208,7 +209,7 @@ def run(args: argparse.Namespace) -> int:
         if os.path.isdir(state.worktree):
             attach_worktree(workspace, state.worktree)
             print(f"[prepare] resuming {state.coordinate} in {state.worktree}")
-            return OK
+            return NOT_FOR_NATIVE_IMAGE_RECORDED if state.not_for_native_image is not None else OK
     error: str | None = validate_inputs(args)
     if error is not None:
         print(f"ERROR: {error}.", file=sys.stderr)
@@ -249,7 +250,15 @@ def run(args: argparse.Namespace) -> int:
     if is_not_for_native_image(worktree, state.group, state.artifact):
         print(f"ERROR: {state.group}:{state.artifact} is marked not-for-native-image.", file=sys.stderr)
         return BAD_INPUT
-    code: int = add_version(state, workspace)
+    code: int | None = index_record.record_not_for_native_image(workspace, state)
+    if code is not None:
+        if code == NOT_FOR_NATIVE_IMAGE_RECORDED:
+            attach_worktree(workspace, worktree)
+            save(workspace, state)
+            run_note.write(workspace, state)
+            print(f"[prepare] recorded {state.coordinate} as not-for-native-image at {state.checkpoint}")
+        return code
+    code = add_version(state, workspace)
     if code != OK:
         return code
     try:

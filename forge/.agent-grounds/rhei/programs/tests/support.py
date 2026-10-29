@@ -31,6 +31,8 @@ for path in (TESTS, PROGRAMS, FORGE):
         sys.path.insert(0, path)
 
 import prepare  # noqa: E402
+import index_record  # noqa: E402
+from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
 from fake_harness import FAKE_GH, FAKE_GRADLEW  # noqa: E402
 from run_state import ROUTE_NEW, Budgets, RunState  # noqa: E402
 
@@ -106,6 +108,9 @@ class FakeRepository:
         # The fake harness has no root build to warm; `prepare` asks for the shared cache all the same.
         self.shared_cache_patch: Any = mock.patch.object(prepare, "ensure_shared_dependency_cache")
         self.shared_cache: mock.MagicMock = self.shared_cache_patch.start()
+        self.artifact_patch: Any = mock.patch.object(index_record, "inspect_maven_artifact",
+                                                     return_value=NativeImageEligibility(False))
+        self.artifact: mock.MagicMock = self.artifact_patch.start()
         self.saved_environment: dict[str, str] = dict(os.environ)
         os.environ["PATH"] = bin_dir + os.pathsep + os.environ["PATH"]
         os.environ["FAKE_FORGE_CONTROL"] = self.control_path
@@ -138,6 +143,7 @@ class FakeRepository:
 
     def close(self) -> None:
         self.shared_cache_patch.stop()
+        self.artifact_patch.stop()
         os.environ.clear()
         os.environ.update(self.saved_environment)
         shutil.rmtree(self.tmp, ignore_errors=True)

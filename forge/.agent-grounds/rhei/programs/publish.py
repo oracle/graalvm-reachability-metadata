@@ -13,9 +13,9 @@ metrics and the descriptor are written (§FS-forge-run-metrics, §AR-publication
 and the pushed `ai/**` branch is the whole handoff to the trusted publisher
 (§AR-forge-verification-publication-boundary). A deferred exploration opens its
 follow-up issue first, and a chunk records its identity for the next run
-(§FS-forge-chunked-dynamic-access). A skip record ships only its index and
-descriptor, with no execution metrics for the skipped version
-(§FS-unsupportable-version-diagnosis.3).
+(§FS-forge-chunked-dynamic-access). Index records ship only their index and
+descriptor, with no execution metrics (§FS-not-for-native-image-record.2,
+§FS-unsupportable-version-diagnosis.3).
 """
 from __future__ import annotations
 
@@ -149,7 +149,7 @@ def previous_metrics(state: RunState) -> dict[str, Any]:
 
     §AR-pr-body
     """
-    if state.skip_recorded or state.previous_coordinate is None:
+    if state.index_only or state.previous_coordinate is None:
         return {}
     group, artifact, version = state.previous_coordinate.split(":")
     coverage_percent, _ = collect_version_coverage_metrics(state.worktree, group, artifact, version)
@@ -170,7 +170,7 @@ def run_metrics(workspace: str, state: RunState, status: str) -> dict[str, Any]:
     """
     usage: run_tokens.Usage = run_tokens.total_usage(workspace)
     agent, model = worker_model(state)
-    measured: bool = not state.skip_recorded
+    measured: bool = not state.index_only
     coverage_percent, lines_covered = collect_version_coverage_metrics(
         state.worktree, state.group, state.artifact, state.version) if measured else (0.0, 0)
     metrics: dict[str, Any] = build_run_metrics_dict(
@@ -221,7 +221,7 @@ def baseline(state: RunState) -> dict[str, Any]:
 
 def render(workspace: str, state: RunState, chunk_summary: dict[str, Any] | None) -> dict[str, Any]:
     """What the trusted publisher renders into the pull request (§AR-pr-body)."""
-    measured: bool = not state.skip_recorded
+    measured: bool = not state.index_only
     evidence = load_dynamic_access_metadata_evidence(state.worktree, state.coordinate) if measured else None
     return {
         "library_stats": load_library_stats_entry(
@@ -242,6 +242,7 @@ def render(workspace: str, state: RunState, chunk_summary: dict[str, Any] | None
         "worker_model": worker_model(state)[1],
         "library_update_target": state.update_target,
         **baseline(state),
+        **(state.not_for_native_image or {}),
     }
 
 
@@ -271,18 +272,20 @@ def publish(workspace: str) -> int:
     if not has_changes(state):
         print(f"[publish] {state.coordinate} is unchanged; nothing to publish")
         return NOTHING_TO_DO
-    task_type: str = issue.TASK_TYPES[state.label]
-    final: bool = state.skip_recorded or chunk_is_final(workspace, state)
+    task_type: str = ("not-for-native-image" if state.not_for_native_image is not None
+                      else issue.TASK_TYPES[state.label])
+    final: bool = state.index_only or chunk_is_final(workspace, state)
     status: str = STATUS_SUCCESS if final else STATUS_CHUNK_READY
     producer: str = get_authenticated_login(cwd=state.worktree)
     publication_id: str = build_publication_id(state.issue_number, state.started_at, state.coordinate, task_type)
-    suffix: str = f"{'add-lib-support' if state.route == ROUTE_NEW else task_type}-{state.group}-{state.artifact}-{state.version}"
+    new_library: bool = state.route == ROUTE_NEW and state.not_for_native_image is None
+    suffix: str = f"{'add-lib-support' if new_library else task_type}-{state.group}-{state.artifact}-{state.version}"
     branch: str = build_publication_branch(producer, suffix, publication_id)
-    chunk_summary: dict[str, Any] | None = None if state.skip_recorded else record_chunk(
+    chunk_summary: dict[str, Any] | None = None if state.index_only else record_chunk(
         state, final, publication_id, branch)
-    descriptor_follow_ups: list[dict[str, Any]] = follow_ups(state)
+    descriptor_follow_ups: list[dict[str, Any]] = [] if state.index_only else follow_ups(state)
     metrics: dict[str, Any] = run_metrics(workspace, state, status)
-    if not state.skip_recorded:
+    if not state.index_only:
         append_execution_metrics(state.worktree, metrics, task_type)
     commit_contribution(state, f"Record the Forge run for {state.coordinate}")
     write_publication_descriptor(

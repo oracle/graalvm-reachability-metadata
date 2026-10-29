@@ -40,6 +40,9 @@ def url_discovery_command(state: RunState) -> str:
 
 
 def route_line(state: RunState) -> str:
+    """Describe the route, including an index record (§FS-not-for-native-image-record.2)."""
+    if state.not_for_native_image is not None:
+        return "Route: not-for-native-image; publish the artifact's index record."
     if state.route == ROUTE_NEW:
         return "Route: new library: scaffolded; explore until no actionable dynamic-access class remains."
     goal: str = (f"at least the previous version's dynamic-access coverage ratio, "
