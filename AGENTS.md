@@ -81,6 +81,33 @@
 - **Never cite under `tests/src`.** Checkstyle holds that suite to ASCII, so the
   `§` marker cannot appear in a test file.
 
+## Publishing changes for a maintainer
+
+Agents that work for a maintainer publish through the maintainer pull-request
+workflow (`.github/workflows/maintainer-open-pr.yml`), the way the implement
+queue does (§FS-maintainer-agent-queues.2). This covers supervising agents
+and every subagent they launch.
+
+- Push each change straight to `oracle/graalvm-reachability-metadata` on its
+  own branch: the maintainer's prefix from the `MAINTAINER_PR_BRANCHES`
+  repository variable plus a short kebab-case name without `/`. For example,
+  `vj/auto-<short-name>` for `vjovanov` and `mm/auto-<short-name>` for `kimeta`.
+  The branch must be at least one commit ahead of `master`.
+- Never run `gh pr create`. The workflow opens the pull request against
+  `master` as `graalvmbot` within a few minutes. The maintainer is then not
+  its author and stays eligible to approve it. Poll
+  `gh pr list --head <branch> --json number,url` until it appears.
+- The pull request starts with the template title `Auto PR: <short-name>` and a
+  placeholder body. Replace both with `gh pr edit <n> --title ... --body-file -`:
+  - a title that names the change;
+  - a body that states the problem first, then what changed and why, how it
+    was verified, and any `Fixes #<issue>`.
+
+  Keep the `## Commits` section and everything below it as the workflow wrote
+  them. Do not add an AI attribution footer.
+- Request a review from the maintainer you work for. Merge only after an
+  approval and green required checks, never with `--admin`.
+
 <!-- BEGIN GRUND MANAGED BLOCK -->
 ## Grounding with grund (v7)
 
