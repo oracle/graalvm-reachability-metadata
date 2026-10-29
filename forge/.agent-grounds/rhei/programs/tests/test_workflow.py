@@ -25,6 +25,7 @@ from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
+    INFRASTRUCTURE,
     JVM_TESTS_FAIL,
     NOTHING_TO_DO,
     NOT_FOR_NATIVE_IMAGE_RECORDED,
@@ -229,6 +230,49 @@ class WorkflowTest(unittest.TestCase):
         self.assertIn("could not be fixed", self.state.explore.feedback)
         self.assertFalse(os.path.exists(self.state.path(os.path.join(
             self.state.test_dir, "src", "test", "java", "org_example", "CodecTestBroken.java"))))
+
+    def test_a_broken_extension_suite_is_the_cover_pass_s_failure(self) -> None:
+        self.fake.supported_library()
+        self.fake.issue("library-update-request")
+        self.fake.control({"classes": {"org.example.lib.Codec": 6}})
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.assertEqual(OK, self.step("setup-check"))
+        self.assertEqual(OK, self.step("jvm"))
+        self.assertEqual(OK, self.step("native-repair"))
+        self.assertEqual(AGENT_WORK, self.step("analyze"))
+
+        broken = self.state.path(os.path.join(self.state.test_dir, explore.EXTENSION_SUITE, "src", "test", "java",
+                                              "org_example", "CodecCoverageTest.java"))
+        os.makedirs(os.path.dirname(broken))
+        with open(broken, "w", encoding="utf-8") as handle:
+            handle.write("package org_example;\npublic class CodecCoverageTest { int a; int a; }\n")
+        self.fake.control({"classes": {"org.example.lib.Codec": 6}, "extensionFails": True})
+        self.assertEqual(JVM_TESTS_FAIL, self.step("measure"))
+        # `javaTest` passes, so the request names only the suite that broke.
+        failing: str = self.read("fix-request.md").split("## Failing commands", 1)[1].split("\n## ", 1)[0]
+        self.assertEqual([f"- ./gradlew codeCoverageTest -Pcoordinates={COORDINATE}"],
+                         [line for line in failing.splitlines() if line.startswith("- ")])
+        self.fix("fixed", 1)
+        self.assertEqual(RETURN_MEASURE, self.step("fix-route"))
+        self.assertEqual(AGENT_WORK, self.step("measure"))
+        self.assertIn("could not be fixed", self.state.explore.feedback)
+        self.assertFalse(os.path.exists(broken))
+
+    def test_a_report_that_fails_over_passing_suites_is_infrastructure(self) -> None:
+        self.fake.supported_library()
+        self.fake.issue("library-update-request")
+        self.fake.control({"classes": {"org.example.lib.Codec": 6}})
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.assertEqual(OK, self.step("setup-check"))
+        self.assertEqual(OK, self.step("jvm"))
+        self.assertEqual(OK, self.step("native-repair"))
+        self.assertEqual(AGENT_WORK, self.step("analyze"))
+
+        self.cover("CodecTest")
+        self.fake.control({"classes": {"org.example.lib.Codec": 6}, "coverageFails": True})
+        self.assertEqual(INFRASTRUCTURE, self.step("measure"))
 
     def test_previous_coverage_already_met_skips_exploration(self) -> None:
         self.fake.supported_library()
