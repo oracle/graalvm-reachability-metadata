@@ -61,7 +61,9 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    stopped, its failing commands with a bounded excerpt of their output, and
    the last fix report. Each excerpt sits in a fence no backtick run inside it
    can close, and the report's summary, agent text, is quoted trimmed to 1500
-   characters, with `§` escaped as `<§>` and every `@` kept from mentioning.
+   characters, with `§` escaped as `<§>` and every `@` kept from mentioning. A
+   bad input's comment also names the step's reason and quotes the output it
+   was read from (§FS-forge-run-requirements.2).
 
 `run-forge.sh` loops cycles until stopped, checks the host before each claim
 (§FS-forge-host-requirements), and every third run, and whenever nothing can be
