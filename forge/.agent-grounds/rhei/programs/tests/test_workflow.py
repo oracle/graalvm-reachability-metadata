@@ -320,7 +320,7 @@ class WorkflowTest(unittest.TestCase):
         failing: str = self.read("fix-request.md").split("## Failing commands", 1)[1].split("\n## ", 1)[0]
         self.assertEqual([f"- ./gradlew codeCoverageTest -Pcoordinates={COORDINATE}"],
                          [line for line in failing.splitlines() if line.startswith("- ")])
-        self.fix("fixed", 1)
+        self.fix("fixed")
         self.assertEqual(RETURN_MEASURE, self.step("fix-route"))
         self.assertEqual(AGENT_WORK, self.step("measure"))
         self.assertIn("could not be fixed", self.state.explore.feedback)
