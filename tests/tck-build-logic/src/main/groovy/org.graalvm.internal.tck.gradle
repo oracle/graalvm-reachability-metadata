@@ -6,6 +6,7 @@
  */
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.graalvm.internal.tck.harness.tasks.ResolvedDependencyArtifact
 import org.graalvm.internal.tck.utils.DynamicAccessUtils
 import org.graalvm.internal.tck.utils.BaseLayerUtils
 import org.graalvm.internal.tck.utils.JarUtils
@@ -14,8 +15,9 @@ import org.graalvm.internal.tck.utils.RealUseUtils
 
 import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
 import org.graalvm.buildtools.gradle.tasks.NativeRunTask
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ResolvedArtifact
-import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.PathSensitivity
@@ -371,12 +373,19 @@ if (dedicatedLayer && !layeredNativeImage) {
 tck.testedLibraryVersion = libraryVersion
 // This value can be used to request specific library version to test with.
 
+// What the harness adds to the tests goes through these scopes, never straight into
+// testImplementation or testRuntimeOnly, so ownership routing leaves it out (§FS-metadata.2.2).
+configurations.dependencyScope("harnessTestImplementation")
+configurations.dependencyScope("harnessTestRuntimeOnly")
+configurations.testImplementation.extendsFrom(configurations.harnessTestImplementation)
+configurations.testRuntimeOnly.extendsFrom(configurations.harnessTestRuntimeOnly)
+
 dependencies {
-    testImplementation(platform(libs.test.junit.bom))
-    testImplementation(libs.test.junit.jupiter.core)
-    testImplementation(libs.test.junit.vintage)
-    testImplementation "org.graalvm:tck-test-support:1.0.0-SNAPSHOT"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    harnessTestImplementation(platform(libs.test.junit.bom))
+    harnessTestImplementation(libs.test.junit.jupiter.core)
+    harnessTestImplementation(libs.test.junit.vintage)
+    harnessTestImplementation "org.graalvm:tck-test-support:1.0.0-SNAPSHOT"
+    harnessTestRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
 Closure<List<ResolvedArtifact>> resolveTestedLibraryArtifacts = {
@@ -412,48 +421,6 @@ Closure<List<ResolvedArtifact>> resolveTestedLibraryArtifacts = {
 
 Closure<List<File>> resolveTestedLibraryJars = {
     return resolveTestedLibraryArtifacts().collect { ResolvedArtifact artifact -> artifact.file }
-}
-
-Closure<List<Map<String, String>>> resolveTestedLibraryDependencyArtifacts = {
-    String[] coordinates = libraryGAV.split(":")
-    if (coordinates.length < 3) {
-        throw new GradleException("Cannot resolve runtime dependencies without tested library coordinates.")
-    }
-
-    Set<ResolvedDependency> firstLevelDependencies =
-            configurations.testRuntimeClasspath.resolvedConfiguration.firstLevelModuleDependencies
-    ResolvedDependency testedLibrary = firstLevelDependencies.find { ResolvedDependency dependency ->
-        dependency.moduleGroup == coordinates[0] && dependency.moduleName == coordinates[1]
-    }
-    if (testedLibrary == null) {
-        testedLibrary = firstLevelDependencies.find { ResolvedDependency dependency ->
-            dependency.moduleName == coordinates[1] && dependency.moduleVersion == coordinates[2]
-        }
-    }
-    if (testedLibrary == null) {
-        throw new GradleException("Cannot find resolved runtime dependency root for ${libraryGAV}.")
-    }
-
-    List<ResolvedDependency> pending = [testedLibrary]
-    Set<String> visited = new LinkedHashSet<>()
-    List<Map<String, String>> artifacts = []
-    while (!pending.isEmpty()) {
-        ResolvedDependency dependency = pending.removeFirst()
-        String coordinate = "${dependency.moduleGroup}:${dependency.moduleName}:${dependency.moduleVersion}"
-        if (!visited.add(coordinate)) {
-            continue
-        }
-        dependency.moduleArtifacts
-                .findAll { ResolvedArtifact artifact -> artifact.file.isFile() && artifact.file.name.endsWith(".jar") }
-                .sort { ResolvedArtifact artifact -> artifact.file.absolutePath }
-                .each { ResolvedArtifact artifact ->
-                    artifacts.add([coordinate: coordinate, file: artifact.file.absolutePath])
-                }
-        pending.addAll(dependency.children.sort { ResolvedDependency child ->
-            "${child.moduleGroup}:${child.moduleName}:${child.moduleVersion}"
-        })
-    }
-    return artifacts
 }
 
 Closure<List<File>> resolveTestedLibraryMainJars = {
@@ -708,7 +675,7 @@ boolean realUseExactReachability = realUseProject && providers.gradleProperty("t
 if (realUseProject) {
     // §real-use-tests/AR-real-use-test-harness.1: test tooling a scenario never declares.
     dependencies {
-        testImplementation "org.assertj:assertj-core:3.22.0"
+        harnessTestImplementation "org.assertj:assertj-core:3.22.0"
     }
     // §real-use-tests/AR-real-use-test-harness.2
     tasks.register("generateRealUseFilter") { task ->
@@ -735,13 +702,23 @@ if (realUseProject) {
     }
 }
 
+// §FS-metadata.2.2: the JARs of the tested library, of what the build file declares, and of their
+// closures are candidate owners; what the harness adds itself is not a root.
 tasks.register("listRuntimeDependencyArtifacts") { task ->
-    task.setDescription("Lists resolved tested-library dependency artifacts for metadata ownership routing")
+    task.setDescription("Lists the test runtime classpath JARs for metadata ownership routing")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
     task.doLast {
-        resolveTestedLibraryDependencyArtifacts().each { Map<String, String> artifact ->
-            println "TCK_RUNTIME_DEPENDENCY=${JsonOutput.toJson(artifact)}"
-        }
+        Set<String> harnessModules = [configurations.harnessTestImplementation, configurations.harnessTestRuntimeOnly]
+                .collectMany { Configuration scope -> scope.dependencies as List<Dependency> }
+                .collect { Dependency dependency -> "${dependency.group}:${dependency.name}".toString() }
+                .toSet()
+        String testedModule = libraryGAV.split(":").take(2).join(":")
+        ResolvedDependencyArtifact.runtimeClasspathJars(
+                configurations.testRuntimeClasspath.resolvedConfiguration, testedModule, harnessModules)
+                .each { ResolvedDependencyArtifact artifact ->
+                    Map<String, String> record = [coordinate: artifact.coordinate(), file: artifact.file().toString()]
+                    println "TCK_RUNTIME_DEPENDENCY=${JsonOutput.toJson(record)}"
+                }
     }
 }
 
