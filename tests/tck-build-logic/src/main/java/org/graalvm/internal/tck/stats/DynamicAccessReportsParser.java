@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Parses dynamic-access call reports into per-type and per-class coverage.
@@ -49,26 +50,56 @@ final class DynamicAccessReportsParser {
             Path dynamicAccessDir,
             Set<String> libraryClasses,
             Map<String, Set<Integer>> coveredLinesBySource,
-            Set<LibraryStatsSupport.AgentCoveredCallSite> agentCoveredCallSites
+            Map<String, Set<String>> methodNamesByClass,
+            Set<CoverageMeasurement.AgentCoveredCallSite> agentCoveredCallSites
     ) {
         if (!Files.isDirectory(dynamicAccessDir)) {
             return emptyDynamicAccess();
         }
 
-        Map<String, ParsedDynamicAccessCallSite> callSitesByKey = new LinkedHashMap<>();
+        Map<String, ListedCallSite> listedCallSitesByKey = new LinkedHashMap<>();
 
         try {
             Files.walk(dynamicAccessDir)
                     .filter(Files::isRegularFile)
                     .filter(path -> DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString()).matches())
                     .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
-                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, coveredLinesBySource, agentCoveredCallSites, callSitesByKey));
+                    .forEach(path -> parseDynamicAccessFile(
+                            path, libraryClasses, coveredLinesBySource, methodNamesByClass, listedCallSitesByKey));
         } catch (IOException e) {
             throw new GradleException("Failed to traverse dynamic access directory " + dynamicAccessDir, e);
         }
 
-        if (callSitesByKey.isEmpty()) {
+        if (listedCallSitesByKey.isEmpty()) {
             return emptyDynamicAccess();
+        }
+
+        // §AR-test-harness.8.1: the agent key cannot tell sites of one method apart, so a key that
+        // also names a line-decided site lends no agent evidence to an undecided one.
+        Set<CoverageMeasurement.AgentCoveredCallSite> lineDecidedKeys = listedCallSitesByKey.values().stream()
+                .filter(callSite -> callSite.lineDecision() != LineDecision.UNDECIDED)
+                .map(ListedCallSite::agentKey)
+                .collect(Collectors.toSet());
+        Map<String, ParsedDynamicAccessCallSite> callSitesByKey = new LinkedHashMap<>();
+        long lineUndecidedCalls = 0L;
+        for (Map.Entry<String, ListedCallSite> entry : listedCallSitesByKey.entrySet()) {
+            ListedCallSite listed = entry.getValue();
+            boolean agentDecidable = listed.lineDecision() == LineDecision.UNDECIDED
+                    && !lineDecidedKeys.contains(listed.agentKey());
+            if (agentDecidable) {
+                lineUndecidedCalls++;
+            }
+            boolean covered = listed.lineDecision() == LineDecision.COVERED
+                    || agentDecidable && agentCoveredCallSites.contains(listed.agentKey());
+            callSitesByKey.put(entry.getKey(), new ParsedDynamicAccessCallSite(
+                    listed.metadataType(),
+                    listed.trackedApi(),
+                    listed.frame(),
+                    listed.parsedFrame().className(),
+                    listed.parsedFrame().sourceFile(),
+                    listed.parsedFrame().lineNumber(),
+                    covered
+            ));
         }
 
         Map<String, Set<String>> totalKeysByType = new TreeMap<>();
@@ -105,14 +136,16 @@ final class DynamicAccessReportsParser {
 
         return new ParsedDynamicAccess(
                 new LibraryStatsModels.DynamicAccessStats(totalCalls, coveredCalls, LibraryStatsSupport.ratio(coveredCalls, totalCalls), breakdown),
-                classCoverage
+                classCoverage,
+                lineUndecidedCalls
         );
     }
 
     private static ParsedDynamicAccess emptyDynamicAccess() {
         return new ParsedDynamicAccess(
                 LibraryStatsSupport.emptyDynamicAccessStats(),
-                List.of()
+                List.of(),
+                0L
         );
     }
 
@@ -120,8 +153,8 @@ final class DynamicAccessReportsParser {
             Path path,
             Set<String> libraryClasses,
             Map<String, Set<Integer>> coveredLinesBySource,
-            Set<LibraryStatsSupport.AgentCoveredCallSite> agentCoveredCallSites,
-            Map<String, ParsedDynamicAccessCallSite> callSitesByKey
+            Map<String, Set<String>> methodNamesByClass,
+            Map<String, ListedCallSite> listedCallSitesByKey
     ) {
         Matcher matcher = DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString());
         if (!matcher.matches()) {
@@ -140,41 +173,39 @@ final class DynamicAccessReportsParser {
                         continue;
                     }
                     String callSiteKey = reportType + '\u0000' + trackedApi + '\u0000' + rawFrame;
-                    if (callSitesByKey.containsKey(callSiteKey)) {
-                        continue;
-                    }
-                    // §AR-test-harness.8: line-based matching is primary. A line-less site falls
-                    // back to an exact tracked API plus caller class/method match from an agent
-                    // configuration-origin path.
-                    boolean covered = false;
-                    if (parsedFrame.lineNumber() != null) {
-                        String sourceKey = sourceKey(parsedFrame.className(), parsedFrame.sourceFile());
-                        Set<Integer> coveredLines = coveredLinesBySource.get(sourceKey);
-                        covered = coveredLines != null && coveredLines.contains(parsedFrame.lineNumber());
-                    } else if (!agentCoveredCallSites.isEmpty()) {
-                        covered = agentCoveredCallSites.contains(new LibraryStatsSupport.AgentCoveredCallSite(
-                                trackedApi,
-                                parsedFrame.className(),
-                                parsedFrame.methodName()
-                        ));
-                    }
-                    callSitesByKey.put(
-                            callSiteKey,
-                            new ParsedDynamicAccessCallSite(
-                                    reportType,
-                                    trackedApi,
-                                    rawFrame,
-                                    parsedFrame.className(),
-                                    parsedFrame.sourceFile(),
-                                    parsedFrame.lineNumber(),
-                                    covered
-                            )
-                    );
+                    listedCallSitesByKey.computeIfAbsent(callSiteKey, ignored -> new ListedCallSite(
+                            reportType,
+                            trackedApi,
+                            rawFrame,
+                            parsedFrame,
+                            lineDecision(parsedFrame, coveredLinesBySource, methodNamesByClass)
+                    ));
                 }
             }
         } catch (IOException e) {
             throw new GradleException("Failed to parse dynamic access report " + path, e);
         }
+    }
+
+    /// §AR-test-harness.8.1: line matching decides a frame by its line unless the frame is
+    /// line-less or sits in a method JaCoCo filtered out of an analyzed class, such as a synthetic
+    /// `class$` helper. A class JaCoCo never analyzed, as in an upstream test JAR, has no
+    /// `methodNamesByClass` entry, so its frames stay decided by line.
+    private static LineDecision lineDecision(
+            ParsedStackFrame frame,
+            Map<String, Set<Integer>> coveredLinesBySource,
+            Map<String, Set<String>> methodNamesByClass
+    ) {
+        if (frame.lineNumber() == null) {
+            return LineDecision.UNDECIDED;
+        }
+        Set<String> analyzedMethodNames = methodNamesByClass.get(frame.className());
+        if (analyzedMethodNames != null && !analyzedMethodNames.contains(frame.methodName())) {
+            return LineDecision.UNDECIDED;
+        }
+        boolean covered = coveredLinesBySource.getOrDefault(sourceKey(frame.className(), frame.sourceFile()), Set.of())
+                .contains(frame.lineNumber());
+        return covered ? LineDecision.COVERED : LineDecision.MISSED;
     }
 
     private static String normalizeDynamicAccessReportType(String rawType, Path path) {
@@ -248,10 +279,32 @@ final class DynamicAccessReportsParser {
     record ParsedStackFrame(String className, String methodName, String sourceFile, Integer lineNumber) {
     }
 
+    /// `lineUndecidedCalls` counts the call sites agent origins can still decide: line matching
+    /// cannot, and no line-decided site shares their agent key (§AR-test-harness.8.1).
     record ParsedDynamicAccess(
             LibraryStatsModels.DynamicAccessStats dynamicAccessStats,
-            List<LibraryStatsModels.DynamicAccessClassCoverage> classCoverage
+            List<LibraryStatsModels.DynamicAccessClassCoverage> classCoverage,
+            long lineUndecidedCalls
     ) {
+    }
+
+    private enum LineDecision {
+        COVERED,
+        MISSED,
+        UNDECIDED
+    }
+
+    /// A reported call site with its line decision, before agent evidence is applied.
+    private record ListedCallSite(
+            String metadataType,
+            String trackedApi,
+            String frame,
+            ParsedStackFrame parsedFrame,
+            LineDecision lineDecision
+    ) {
+        CoverageMeasurement.AgentCoveredCallSite agentKey() {
+            return new CoverageMeasurement.AgentCoveredCallSite(trackedApi, parsedFrame.className(), parsedFrame.methodName());
+        }
     }
 
     private record ParsedDynamicAccessCallSite(

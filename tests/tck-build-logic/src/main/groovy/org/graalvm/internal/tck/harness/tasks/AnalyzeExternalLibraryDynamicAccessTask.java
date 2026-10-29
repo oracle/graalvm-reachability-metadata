@@ -21,6 +21,7 @@ import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.graalvm.internal.tck.Coordinates;
+import org.graalvm.internal.tck.stats.CoverageMeasurement;
 import org.graalvm.internal.tck.stats.LibraryStatsSupport;
 import org.graalvm.internal.tck.utils.DynamicAccessUtils;
 import org.jetbrains.annotations.NotNull;
@@ -131,7 +132,7 @@ public abstract class AnalyzeExternalLibraryDynamicAccessTask extends org.gradle
                 "Failed to compute external dynamic access report for " + coordinates
         );
 
-        LibraryStatsSupport.ExternalDynamicAccessSummary summary = LibraryStatsSupport.buildExternalDynamicAccessSummary(
+        CoverageMeasurement.ExternalDynamicAccessSummary summary = CoverageMeasurement.buildExternalDynamicAccessSummary(
                 resolvedLibrary.rootJars(),
                 imageDir.resolve("dynamic-access")
         );

@@ -992,8 +992,8 @@ tasks.withType(Test).configureEach { Test testTask ->
     if (skipJacoco) {
         jacoco.enabled = false
     }
-    // §AR-test-harness.8: when a jar has no line info, collect the agent's compressed origin
-    // tree so the harness can match exact tracked APIs and reported caller methods on each path.
+    // §AR-test-harness.8.1: when line matching cannot decide a call site, collect the agent's
+    // compressed origin tree so the harness can match exact tracked APIs and caller methods.
     if (testTask.name == 'test' && providers.gradleProperty('dynamicAccessOriginsOutput').isPresent()) {
         String originsOutput = providers.gradleProperty('dynamicAccessOriginsOutput').get()
         testTask.jvmArgs "-agentlib:native-image-agent=config-output-dir=${originsOutput},experimental-configuration-with-origins"

@@ -45,6 +45,7 @@ final class JacocoReportParser {
             Element root = document.getDocumentElement();
 
             Map<String, Set<Integer>> coveredLinesBySource = new HashMap<>();
+            Map<String, Set<String>> methodNamesByClass = new HashMap<>();
             NodeList packages = root.getChildNodes();
             for (int i = 0; i < packages.getLength(); i++) {
                 Node node = packages.item(i);
@@ -55,6 +56,10 @@ final class JacocoReportParser {
                 NodeList sourceFiles = packageElement.getChildNodes();
                 for (int j = 0; j < sourceFiles.getLength(); j++) {
                     Node sourceNode = sourceFiles.item(j);
+                    if (sourceNode instanceof Element classElement && "class".equals(classElement.getTagName())) {
+                        methodNamesByClass.put(classElement.getAttribute("name").replace('/', '.'), methodNames(classElement));
+                        continue;
+                    }
                     if (!(sourceNode instanceof Element sourceFileElement) || !"sourcefile".equals(sourceFileElement.getTagName())) {
                         continue;
                     }
@@ -81,6 +86,7 @@ final class JacocoReportParser {
                 LibraryStatsModels.CoverageMetricValue fullyCoveredMetric = fullyCoveredCoverageMetricValue();
                 return new ParsedJacocoReport(
                         coveredLinesBySource,
+                        methodNamesByClass,
                         fullyCoveredMetric,
                         fullyCoveredMetric,
                         fullyCoveredMetric
@@ -88,6 +94,7 @@ final class JacocoReportParser {
             }
             return new ParsedJacocoReport(
                     coveredLinesBySource,
+                    methodNamesByClass,
                     coverageMetricOrNa(rootCounters, "LINE"),
                     coverageMetricOrNa(rootCounters, "INSTRUCTION"),
                     coverageMetricOrNa(rootCounters, "METHOD")
@@ -95,6 +102,19 @@ final class JacocoReportParser {
         } catch (Exception e) {
             throw new GradleException("Failed to parse JaCoCo report " + jacocoReport, e);
         }
+    }
+
+    /// The names of the methods JaCoCo kept in `classElement`: a method whose every instruction a
+    /// filter removed, such as a synthetic one, has no `<method name=… desc=… line=…>` element.
+    private static Set<String> methodNames(Element classElement) {
+        Set<String> methodNames = new LinkedHashSet<>();
+        NodeList children = classElement.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            if (children.item(i) instanceof Element methodElement && "method".equals(methodElement.getTagName())) {
+                methodNames.add(methodElement.getAttribute("name"));
+            }
+        }
+        return methodNames;
     }
 
     private static boolean hasNothingToCover(
@@ -163,8 +183,13 @@ final class JacocoReportParser {
         ));
     }
 
+    /// §AR-test-harness.8.1: `methodNamesByClass` maps each class JaCoCo analyzed, by binary name,
+    /// to the names of its methods. A method JaCoCo filtered out of an analyzed class, such as a
+    /// synthetic `class$` helper, is missing from its class's set even when another method's code
+    /// shares its line; a class JaCoCo never analyzed has no entry.
     record ParsedJacocoReport(
             Map<String, Set<Integer>> coveredLinesBySource,
+            Map<String, Set<String>> methodNamesByClass,
             LibraryStatsModels.CoverageMetricValue line,
             LibraryStatsModels.CoverageMetricValue instruction,
             LibraryStatsModels.CoverageMetricValue method

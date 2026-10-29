@@ -24,14 +24,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
 /**
@@ -300,155 +296,6 @@ public final class LibraryStatsSupport {
         return Coordinates.parse(coordinate).version();
     }
 
-    public static LibraryStatsModels.VersionStats buildVersionStats(
-            String coordinate,
-            List<Path> libraryJars,
-            Path dynamicAccessDir,
-            Path jacocoReport
-    ) {
-        return buildVersionStats(coordinate, libraryJars, dynamicAccessDir, jacocoReport, Set.of());
-    }
-
-    /// §AR-test-harness.8: `agentCoveredCallSites` (from `parseAgentOrigins`) enables the
-    /// agent-origin fallback for line-less call sites; pass `Set.of()` for the line-based path.
-    public static LibraryStatsModels.VersionStats buildVersionStats(
-            String coordinate,
-            List<Path> libraryJars,
-            Path dynamicAccessDir,
-            Path jacocoReport,
-            Set<AgentCoveredCallSite> agentCoveredCallSites
-    ) {
-        Set<String> libraryClasses = loadLibraryClasses(libraryJars);
-        if (libraryClasses.isEmpty()) {
-            return new LibraryStatsModels.VersionStats(
-                    versionFromCoordinate(coordinate),
-                    LibraryStatsModels.DynamicAccessStatsValue.available(emptyDynamicAccessStats()),
-                    unavailableLibraryCoverage()
-            );
-        }
-        JacocoReportParser.ParsedJacocoReport parsedJacocoReport = JacocoReportParser.parse(jacocoReport);
-        DynamicAccessReportsParser.ParsedDynamicAccess parsedDynamicAccess =
-                DynamicAccessReportsParser.parse(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource(), agentCoveredCallSites);
-        return versionStats(
-                coordinate,
-                LibraryStatsModels.DynamicAccessStatsValue.available(parsedDynamicAccess.dynamicAccessStats()),
-                parsedJacocoReport
-        );
-    }
-
-    public static LibraryStatsModels.VersionStats buildVersionStatsWithoutDynamicAccess(
-            String coordinate,
-            Path jacocoReport
-    ) {
-        JacocoReportParser.ParsedJacocoReport parsedJacocoReport = JacocoReportParser.parse(jacocoReport);
-        return versionStats(
-                coordinate,
-                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
-                parsedJacocoReport
-        );
-    }
-
-    public static ExternalDynamicAccessSummary buildExternalDynamicAccessSummary(List<Path> libraryJars, Path dynamicAccessDir) {
-        Set<String> libraryClasses = loadLibraryClasses(libraryJars);
-        if (libraryClasses.isEmpty()) {
-            return new ExternalDynamicAccessSummary(0L, Map.of());
-        }
-        DynamicAccessReportsParser.ParsedDynamicAccess parsedDynamicAccess =
-                DynamicAccessReportsParser.parse(dynamicAccessDir, libraryClasses, Map.of(), Set.of());
-        return new ExternalDynamicAccessSummary(
-                parsedDynamicAccess.dynamicAccessStats().totalCalls(),
-                parsedDynamicAccess.dynamicAccessStats().breakdown()
-        );
-    }
-
-    public static LibraryStatsModels.DynamicAccessCoverageReport buildDynamicAccessCoverageReport(
-            String coordinate,
-            List<Path> libraryJars,
-            Path dynamicAccessDir,
-            Path jacocoReport
-    ) {
-        return buildDynamicAccessCoverageReport(coordinate, libraryJars, dynamicAccessDir, jacocoReport, Set.of());
-    }
-
-    /// §AR-test-harness.8: `agentCoveredCallSites` (from `parseAgentOrigins`) enables the
-    /// agent-origin fallback for line-less call sites; pass `Set.of()` for the line-based path.
-    public static LibraryStatsModels.DynamicAccessCoverageReport buildDynamicAccessCoverageReport(
-            String coordinate,
-            List<Path> libraryJars,
-            Path dynamicAccessDir,
-            Path jacocoReport,
-            Set<AgentCoveredCallSite> agentCoveredCallSites
-    ) {
-        Set<String> libraryClasses = loadLibraryClasses(libraryJars);
-        if (libraryClasses.isEmpty()) {
-            return new LibraryStatsModels.DynamicAccessCoverageReport(
-                    coordinate,
-                    false,
-                    new LibraryStatsModels.DynamicAccessCoverageTotals(0L, 0L),
-                    List.of()
-            );
-        }
-        JacocoReportParser.ParsedJacocoReport parsedJacocoReport = JacocoReportParser.parse(jacocoReport);
-        DynamicAccessReportsParser.ParsedDynamicAccess parsedDynamicAccess =
-                DynamicAccessReportsParser.parse(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource(), agentCoveredCallSites);
-        return new LibraryStatsModels.DynamicAccessCoverageReport(
-                coordinate,
-                parsedDynamicAccess.dynamicAccessStats().totalCalls() > 0,
-                new LibraryStatsModels.DynamicAccessCoverageTotals(
-                        parsedDynamicAccess.dynamicAccessStats().totalCalls(),
-                        parsedDynamicAccess.dynamicAccessStats().coveredCalls()
-                ),
-                parsedDynamicAccess.classCoverage()
-        );
-    }
-
-    /// §AR-test-harness.8: delegates to the agent-origin matcher, which retains the statically
-    /// reported call sites whose exact tracked API and caller class/method occur, in that
-    /// order, on a configuration-carrying agent origin path.
-    public static Set<AgentCoveredCallSite> parseAgentOrigins(Path originsOutput, Path dynamicAccessDir) {
-        return AgentOriginsParser.parseAgentOrigins(originsOutput, dynamicAccessDir);
-    }
-
-    /// §AR-test-harness.8: the agent-origin fallback is the only-when-lines-are-absent gate.
-    /// Returns true iff the dynamic-access reports contain at least one library call site and
-    /// every such call site is line-less, so line-based matching can never succeed. Purely
-    /// data-driven — no jar bytecode scanning.
-    public static boolean lineMatchingImpossible(Path dynamicAccessDir, List<Path> libraryJars) {
-        Set<String> libraryClasses = loadLibraryClasses(libraryJars);
-        if (libraryClasses.isEmpty()) {
-            return false;
-        }
-        DynamicAccessReportsParser.ParsedDynamicAccess parsed =
-                DynamicAccessReportsParser.parse(dynamicAccessDir, libraryClasses, Map.of(), Set.of());
-        if (parsed.dynamicAccessStats().totalCalls() == 0L) {
-            return false;
-        }
-        for (LibraryStatsModels.DynamicAccessClassCoverage classCoverage : parsed.classCoverage()) {
-            for (LibraryStatsModels.DynamicAccessCallSiteCoverage callSite : classCoverage.callSites()) {
-                if (callSite.line() != null) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private static LibraryStatsModels.VersionStats versionStats(
-            String coordinate,
-            LibraryStatsModels.DynamicAccessStatsValue dynamicAccess,
-            JacocoReportParser.ParsedJacocoReport parsedJacocoReport
-    ) {
-        return new LibraryStatsModels.VersionStats(
-                versionFromCoordinate(coordinate),
-                dynamicAccess,
-                new LibraryStatsModels.LibraryCoverage(
-                        parsedJacocoReport.line(),
-                        parsedJacocoReport.instruction(),
-                        parsedJacocoReport.method()
-                )
-        );
-    }
-
     public static LibraryStatsModels.DynamicAccessStats emptyDynamicAccessStats() {
         return new LibraryStatsModels.DynamicAccessStats(
                 0L,
@@ -530,51 +377,6 @@ public final class LibraryStatsSupport {
         return relative.getNameCount() == 4 && "stats.json".equals(relative.getName(3).toString());
     }
 
-    /// Returns true if at least one of the given JARs contains a `.class` file
-    /// (excluding `module-info.class`).
-    public static boolean containsClassFiles(List<Path> libraryJars) {
-        for (Path jarPath : libraryJars) {
-            try (JarFile jarFile = new JarFile(jarPath.toFile())) {
-                boolean found = jarFile.stream()
-                        .map(JarEntry::getName)
-                        .filter(name -> name.endsWith(".class"))
-                        .anyMatch(name -> !name.equals("module-info.class"));
-                if (found) {
-                    return true;
-                }
-            } catch (IOException e) {
-                throw new GradleException("Failed to read library JAR " + jarPath, e);
-            }
-        }
-        return false;
-    }
-
-    private static Set<String> loadLibraryClasses(List<Path> libraryJars) {
-        Set<String> classes = new LinkedHashSet<>();
-        for (Path jarPath : libraryJars) {
-            try (JarFile jarFile = new JarFile(jarPath.toFile())) {
-                jarFile.stream()
-                        .map(JarEntry::getName)
-                        .filter(name -> name.endsWith(".class"))
-                        .filter(name -> !name.equals("module-info.class"))
-                        .map(LibraryStatsSupport::classNameFromEntry)
-                        .forEach(classes::add);
-            } catch (IOException e) {
-                throw new GradleException("Failed to read library JAR " + jarPath, e);
-            }
-        }
-        return classes;
-    }
-
-    private static String classNameFromEntry(String entryName) {
-        String normalized = entryName;
-        if (entryName.startsWith("META-INF/versions/")) {
-            String[] segments = entryName.split("/", 4);
-            normalized = segments[3];
-        }
-        return normalized.substring(0, normalized.length() - ".class".length()).replace('/', '.');
-    }
-
     static BigDecimal ratio(long covered, long total) {
         if (total == 0L) {
             return fullyCoveredRatio();
@@ -585,14 +387,5 @@ public final class LibraryStatsSupport {
 
     static BigDecimal fullyCoveredRatio() {
         return BigDecimal.ONE.setScale(1, RoundingMode.HALF_UP);
-    }
-
-    public record AgentCoveredCallSite(String trackedApi, String className, String methodName) {
-    }
-
-    public record ExternalDynamicAccessSummary(
-            long totalCalls,
-            Map<String, LibraryStatsModels.DynamicAccessBreakdown> breakdown
-    ) {
     }
 }

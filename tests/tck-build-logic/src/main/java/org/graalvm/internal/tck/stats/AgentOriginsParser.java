@@ -32,30 +32,30 @@ final class AgentOriginsParser {
     private AgentOriginsParser() {
     }
 
-    /// §AR-test-harness.8: streams the agent's compressed configuration-origin trees and
+    /// §AR-test-harness.8.1: streams the agent's compressed configuration-origin trees and
     /// retains the statically reported call sites whose exact tracked API and caller
     /// class/method occur, in that order, on a path carrying configuration. `originsOutput` may
     /// be one origins file or the agent output directory. Returns an empty set when no origins
     /// output or no reported call sites exist. Candidates are taken from the reports as-is:
     /// the reports only contain library call sites, and the coverage side only consults the
-    /// result for line-less library frames.
-    static Set<LibraryStatsSupport.AgentCoveredCallSite> parseAgentOrigins(Path originsOutput, Path dynamicAccessDir) {
+    /// result for the library frames line matching cannot decide.
+    static Set<CoverageMeasurement.AgentCoveredCallSite> parseAgentOrigins(Path originsOutput, Path dynamicAccessDir) {
         if (originsOutput == null || !Files.exists(originsOutput)) {
             return Set.of();
         }
-        Set<LibraryStatsSupport.AgentCoveredCallSite> candidates = loadAgentOriginCandidates(dynamicAccessDir);
+        Set<CoverageMeasurement.AgentCoveredCallSite> candidates = loadAgentOriginCandidates(dynamicAccessDir);
         if (candidates.isEmpty()) {
             return Set.of();
         }
 
-        Map<String, List<LibraryStatsSupport.AgentCoveredCallSite>> candidatesByTrackedApi = new HashMap<>();
-        for (LibraryStatsSupport.AgentCoveredCallSite candidate : candidates) {
+        Map<String, List<CoverageMeasurement.AgentCoveredCallSite>> candidatesByTrackedApi = new HashMap<>();
+        for (CoverageMeasurement.AgentCoveredCallSite candidate : candidates) {
             candidatesByTrackedApi
                     .computeIfAbsent(normalizeMethodSignature(candidate.trackedApi()), ignored -> new ArrayList<>())
                     .add(candidate);
         }
 
-        Set<LibraryStatsSupport.AgentCoveredCallSite> coveredCallSites = new LinkedHashSet<>();
+        Set<CoverageMeasurement.AgentCoveredCallSite> coveredCallSites = new LinkedHashSet<>();
         for (Path originsFile : listAgentOriginsFiles(originsOutput)) {
             parseAgentOriginsFile(originsFile, candidatesByTrackedApi, candidates.size(), coveredCallSites);
             if (coveredCallSites.size() == candidates.size()) {
@@ -65,11 +65,11 @@ final class AgentOriginsParser {
         return Set.copyOf(coveredCallSites);
     }
 
-    private static Set<LibraryStatsSupport.AgentCoveredCallSite> loadAgentOriginCandidates(Path dynamicAccessDir) {
+    private static Set<CoverageMeasurement.AgentCoveredCallSite> loadAgentOriginCandidates(Path dynamicAccessDir) {
         if (!Files.isDirectory(dynamicAccessDir)) {
             return Set.of();
         }
-        Set<LibraryStatsSupport.AgentCoveredCallSite> candidates = new LinkedHashSet<>();
+        Set<CoverageMeasurement.AgentCoveredCallSite> candidates = new LinkedHashSet<>();
         try (Stream<Path> files = Files.walk(dynamicAccessDir)) {
             for (Path reportFile : files
                     .filter(Files::isRegularFile)
@@ -83,7 +83,7 @@ final class AgentOriginsParser {
                         for (String rawFrame : entry.getValue()) {
                             DynamicAccessReportsParser.ParsedStackFrame frame = DynamicAccessReportsParser.parseStackFrame(rawFrame);
                             if (frame != null) {
-                                candidates.add(new LibraryStatsSupport.AgentCoveredCallSite(
+                                candidates.add(new CoverageMeasurement.AgentCoveredCallSite(
                                         entry.getKey(),
                                         frame.className(),
                                         frame.methodName()
@@ -119,9 +119,9 @@ final class AgentOriginsParser {
 
     private static void parseAgentOriginsFile(
             Path originsFile,
-            Map<String, List<LibraryStatsSupport.AgentCoveredCallSite>> candidatesByTrackedApi,
+            Map<String, List<CoverageMeasurement.AgentCoveredCallSite>> candidatesByTrackedApi,
             int candidateCount,
-            Set<LibraryStatsSupport.AgentCoveredCallSite> coveredCallSites
+            Set<CoverageMeasurement.AgentCoveredCallSite> coveredCallSites
     ) {
         List<AgentOriginMethod> currentPath = new ArrayList<>();
         try (BufferedReader reader = Files.newBufferedReader(originsFile, StandardCharsets.UTF_8)) {
@@ -179,12 +179,12 @@ final class AgentOriginsParser {
 
     private static void matchAgentOriginPath(
             List<AgentOriginMethod> originPath,
-            Map<String, List<LibraryStatsSupport.AgentCoveredCallSite>> candidatesByTrackedApi,
-            Set<LibraryStatsSupport.AgentCoveredCallSite> coveredCallSites
+            Map<String, List<CoverageMeasurement.AgentCoveredCallSite>> candidatesByTrackedApi,
+            Set<CoverageMeasurement.AgentCoveredCallSite> coveredCallSites
     ) {
         for (int apiIndex = 0; apiIndex < originPath.size(); apiIndex++) {
             AgentOriginMethod apiMethod = originPath.get(apiIndex);
-            List<LibraryStatsSupport.AgentCoveredCallSite> candidates = candidatesByTrackedApi.get(apiMethod.signature());
+            List<CoverageMeasurement.AgentCoveredCallSite> candidates = candidatesByTrackedApi.get(apiMethod.signature());
             if (candidates == null) {
                 continue;
             }
@@ -193,7 +193,7 @@ final class AgentOriginsParser {
                 if (candidatesByTrackedApi.containsKey(callerMethod.signature())) {
                     break;
                 }
-                List<LibraryStatsSupport.AgentCoveredCallSite> matches = candidates.stream()
+                List<CoverageMeasurement.AgentCoveredCallSite> matches = candidates.stream()
                         .filter(candidate -> candidate.className().equals(callerMethod.className()))
                         .filter(candidate -> candidate.methodName().equals(callerMethod.methodName()))
                         .toList();
