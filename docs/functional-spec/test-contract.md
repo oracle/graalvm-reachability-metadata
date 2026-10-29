@@ -326,6 +326,7 @@ narrowest form:
 | `--initialize-at-build-time=<class>` | the library itself forces it; one named class, never a package |
 | `-H:+AddAllCharsets`, `-H:IncludeLocales=`, `-H:IncludeResourceBundles=` | the library needs charsets, locales, or bundles that are not included by default |
 | `-H:AdditionalSecurityProviders=<provider>` | the library registers a security provider |
+| `-H:+AllowJRTFileSystem` | the library reads JDK platform classes through the `jrt:` file system, as an in-process compiler or annotation processor does |
 | `--add-opens`, `--add-exports` | the library needs that module access; name the package |
 | `-H:+SharedArenaSupport`, `--future-defaults=<feature>` | the library uses that feature; the error names it |
 | run-time `-D<property>` | a consumer must set that property for the library to work |
