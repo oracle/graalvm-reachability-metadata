@@ -60,6 +60,12 @@ Before every claim, the launcher validates the host requirements for the tools,
 environment, GitHub access, Docker, and the two agents.
 §FS-forge-host-requirements
 
+A failed check stops the launcher, with one exception: once the check has passed,
+a failure that clears on its own, such as a GitHub rate limit or an endpoint
+that cannot be reached, makes it claim nothing and check again after a backoff
+from one minute to fifteen. A failed cycle waits on the same backoff.
+§FS-forge-host-requirements.1
+
 ## Setup
 
 Run commands from this directory unless a command says otherwise.
