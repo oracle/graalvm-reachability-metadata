@@ -7,10 +7,18 @@
 package org_apache_ibatis.ibatis_sqlmap;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-class Ibatis_sqlmapTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Timeout(120)
+public class Ibatis_sqlmapTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void queriesMappedStatementsWithParameters() throws Exception {
+        try (SqlMapFixture fixture = new SqlMapFixture(false)) {
+            assertThat(fixture.client().queryForList("catalog.names", 7))
+                    .containsExactly("alpha", "beta");
+            assertThat(fixture.client().queryForList("catalog.names", 99)).isEmpty();
+        }
     }
 }
