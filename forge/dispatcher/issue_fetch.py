@@ -6,9 +6,9 @@
 """Fetch the Forge issue queues with `gh issue list`, every cycle, with no cache.
 
 One query per label and priority tier, `high-priority` first, then `priority`,
-then the rest, oldest first, unassigned, and never `not-for-native-image`
-(§AR-forge-workflow-pipeline.1, §FS-forge-scope). A fixture file of issue
-payloads can stand in for GitHub.
+then the rest, oldest first, unassigned, and never `not-for-native-image` or
+`human-intervention` (§AR-forge-workflow-pipeline.1, §FS-forge-scope). A
+fixture file of issue payloads can stand in for GitHub.
 """
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from typing import Any
 
 from dispatcher.config import (
     LABEL_HIGH_PRIORITY,
+    LABEL_HUMAN_INTERVENTION,
     LABEL_JAVA_RUN_FAIL,
     LABEL_JAVAC_FAIL,
     LABEL_LIBRARY_NEW,
@@ -47,7 +48,8 @@ FIELDS: str = "number,title,labels,assignees"
 
 def fetch_command(label: str, extra_labels: tuple[str, ...], excluded: tuple[str, ...]) -> list[str]:
     """The one `gh issue list` of a label and tier."""
-    search: list[str] = ["no:assignee", f"-label:{LABEL_NOT_FOR_NATIVE_IMAGE}"]
+    # A held issue would take a place the claim cannot use (§AR-forge-workflow-pipeline.1).
+    search: list[str] = ["no:assignee", f"-label:{LABEL_NOT_FOR_NATIVE_IMAGE}", f"-label:{LABEL_HUMAN_INTERVENTION}"]
     search += [f"-label:{name}" for name in excluded]
     search.append("sort:created-asc")
     command: list[str] = ["gh", "issue", "list", "--repo", REPO, "--state", "open", "--label", label]

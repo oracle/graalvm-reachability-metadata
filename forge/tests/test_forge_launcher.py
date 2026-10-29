@@ -40,7 +40,8 @@ class FetchTest(unittest.TestCase):
         self.assertEqual([
             "gh", "issue", "list", "--repo", "oracle/graalvm-reachability-metadata", "--state", "open",
             "--label", "library-new-request", "--label", "priority",
-            "--search", "no:assignee -label:not-for-native-image -label:high-priority sort:created-asc",
+            "--search",
+            "no:assignee -label:not-for-native-image -label:human-intervention -label:high-priority sort:created-asc",
             "--json", "number,title,labels,assignees", "--limit", "20",
         ], command)
 
