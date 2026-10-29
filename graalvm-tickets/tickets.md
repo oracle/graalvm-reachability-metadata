@@ -33,3 +33,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14806
+
+## GR-80934: \[Native Image\] JDK methods report internal `@com.oracle.svm.shared.Uninterruptible` via reflection; `Class.forName` on it fails with `class-for-name-respects-class-loader`
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14807
