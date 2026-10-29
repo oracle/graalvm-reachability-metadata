@@ -96,19 +96,16 @@ class NativeImageArtifactTests(unittest.TestCase):
         )
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 class PublishedContentTests(unittest.TestCase):
     """Content-only evidence and conservative defaults (§FS-not-for-native-image-record.1)."""
 
     def inspect(self, packaging: str | None = "jar", jar: bytes | Exception | None = None,
-                coordinate: str = "org.example:lib:1.0.0") -> NativeImageEligibility:
+                coordinate: str = "org.example:lib:1.0.0", pom_extra: str = "") -> NativeImageEligibility:
         def fetch(url: str, timeout: int) -> io.BytesIO:
             self.assertEqual(20, timeout)
             if url.endswith(".pom") and packaging is not None:
-                return io.BytesIO(f"<project><packaging>{packaging}</packaging></project>".encode("utf-8"))
+                return io.BytesIO(f"""<project xmlns="http://maven.apache.org/POM/4.0.0">
+                    <packaging>{packaging}</packaging>{pom_extra}</project>""".encode("utf-8"))
             if url.endswith(".jar"):
                 if isinstance(jar, Exception):
                     raise jar
@@ -131,6 +128,14 @@ class PublishedContentTests(unittest.TestCase):
         self.assertTrue(verdict.not_for_native_image)
         self.assertIn("no artifact JAR is published", verdict.reason or "")
         self.assertEqual(nia.jvm_artifact_replacement("lib-js"), verdict.replacement)
+
+    def test_a_relocation_pom_is_not_evidence(self) -> None:
+        """The record would hide the moved artifact's earlier versions."""
+        relocation: str = ("<distributionManagement><relocation><groupId>org.example.moved</groupId>"
+                           "</relocation></distributionManagement>")
+        for packaging in ("pom", "klib"):
+            with self.subTest(packaging=packaging):
+                self.assertFalse(self.inspect(packaging, pom_extra=relocation).not_for_native_image)
 
     def test_classless_jars_are_evidence(self) -> None:
         for names in (("META-INF/MANIFEST.MF",), ("META-INF/versions/11/module-info.class",)):
@@ -222,3 +227,7 @@ class ArtifactPublicationProbeTests(unittest.TestCase):
             self.assertIsNone(nia.artifact_exists_in_repository("https://example.invalid/a.pom"))
         with patch.object(nia.urllib.request, "urlopen", side_effect=OSError("no route")):
             self.assertIsNone(nia.artifact_exists_in_repository("https://example.invalid/a.pom"))
+
+
+if __name__ == "__main__":
+    unittest.main()

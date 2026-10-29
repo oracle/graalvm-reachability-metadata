@@ -52,6 +52,8 @@ class MavenPomMetadata:
 
     packaging: str | None
     dependencies: tuple[MavenDependency, ...]
+    # The POM declares `distributionManagement/relocation` (§FS-not-for-native-image-record.1).
+    relocated: bool = False
 
 
 def discovery_file_path(repo_path: str, coordinate: str) -> str:
@@ -161,7 +163,7 @@ def inspect_maven_artifact(coordinate: str, *, strict: bool = False) -> NativeIm
         if not strict:
             raise
         return NativeImageEligibility(False)
-    if strict and pom_metadata is None:
+    if strict and (pom_metadata is None or pom_metadata.relocated):
         return NativeImageEligibility(False)
     packaging = pom_metadata.packaging if pom_metadata else None
     if packaging in {"aar", "klib"}:
@@ -278,7 +280,8 @@ def read_maven_pom_metadata(pom_url: str) -> MavenPomMetadata | None:
                 _find_stripped_text(dependency, namespace, "classifier"),
             )
         )
-    return MavenPomMetadata(packaging.strip() if packaging else "jar", tuple(dependencies))
+    relocated: bool = root.find(f"{namespace}distributionManagement/{namespace}relocation") is not None
+    return MavenPomMetadata(packaging.strip() if packaging else "jar", tuple(dependencies), relocated)
 
 
 def _find_stripped_text(element: ET.Element, namespace: str, child: str) -> str | None:
