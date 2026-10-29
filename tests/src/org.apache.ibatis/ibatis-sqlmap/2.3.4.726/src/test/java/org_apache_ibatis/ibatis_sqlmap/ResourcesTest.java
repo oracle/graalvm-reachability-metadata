@@ -51,6 +51,39 @@ public class ResourcesTest {
         }
     }
 
+    @Test
+    void createsObjectsWithOverloadedConfigurationMethods() throws Exception {
+        MessageFormatter named = (MessageFormatter) Resources.instantiate(MessageFormatter.class.getName());
+        named.setPrefix("notice: ");
+        assertThat(named.format("ready")).isEqualTo("notice: ready");
+
+        MessageFormatter typed = (MessageFormatter) Resources.instantiate(MessageFormatter.class);
+        assertThat(typed).isNotSameAs(named);
+        assertThat(typed.format("ready")).isEqualTo("ready");
+        typed.setPrefix('>');
+        assertThat(typed.format("ready")).isEqualTo(">ready");
+        assertThat(named.format("ready")).isEqualTo("notice: ready");
+    }
+
+    public static class MessageFormatter {
+        private String prefix = "";
+
+        public MessageFormatter() {
+        }
+
+        public void setPrefix(String prefix) {
+            this.prefix = prefix;
+        }
+
+        public void setPrefix(char prefix) {
+            this.prefix = String.valueOf(prefix);
+        }
+
+        public String format(String message) {
+            return prefix + message;
+        }
+    }
+
     public static class Greeting {
         public Greeting() {
         }
