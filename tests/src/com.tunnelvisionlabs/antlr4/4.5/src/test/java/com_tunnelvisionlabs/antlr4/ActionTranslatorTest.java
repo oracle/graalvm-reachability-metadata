@@ -6,10 +6,14 @@
  */
 package com_tunnelvisionlabs.antlr4;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.antlr.v4.codegen.CodeGenerator;
 import org.antlr.v4.tool.Grammar;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,8 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Timeout(120)
 public class ActionTranslatorTest {
+    @TempDir
+    Path outputDirectory;
+
     @Test
-    void translatesAllTokenPropertiesInParserActions() {
+    void translatesAllTokenPropertiesInParserActions() throws IOException {
         String source = generate("""
                 grammar TokenActions;
                 entry: n=INT {
@@ -44,7 +51,7 @@ public class ActionTranslatorTest {
     }
 
     @Test
-    void translatesCurrentRulePropertiesInParserActions() {
+    void translatesCurrentRulePropertiesInParserActions() throws IOException {
         String source = generate("""
                 grammar CurrentRuleActions;
                 entry: INT {
@@ -66,7 +73,7 @@ public class ActionTranslatorTest {
     }
 
     @Test
-    void translatesReferencedRulePropertiesInParserActions() {
+    void translatesReferencedRulePropertiesInParserActions() throws IOException {
         String source = generate("""
                 grammar ReferencedRuleActions;
                 entry: r=number {
@@ -88,9 +95,10 @@ public class ActionTranslatorTest {
         assertFalse(source.contains("$r."));
     }
 
-    private static String generate(String grammarSource) {
+    private String generate(String grammarSource) throws IOException {
         Grammar grammar = GrammarTestSupport.process(grammarSource);
-        String source = new CodeGenerator(grammar).generateParser().render();
+        CodeGenerator generator = new CodeGenerator(grammar);
+        String source = GrammarTestSupport.render(generator, generator.generateParser(), outputDirectory);
         assertEquals(0, grammar.tool.getNumErrors(), "Action translation must succeed");
         return source;
     }
