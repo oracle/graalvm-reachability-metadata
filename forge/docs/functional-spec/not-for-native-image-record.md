@@ -22,7 +22,10 @@ Central, and requires one of:
 3. the published jar holds no JVM class file besides `module-info.class`.
 
 The coordinate's name is never evidence: a `-js` or platform suffix also names
-JVM jars, such as compiler plugins. The default is strict: an unreachable
+JVM jars, such as compiler plugins. Nor is a POM that declares a relocation,
+even with packaging `pom` and no jar: it says the coordinate moved, and the
+record, which covers every version of the artifact, would also hide earlier
+versions that may be real jars. The default is strict: an unreachable
 repository, a missing POM, or an unreadable jar means a JVM library and the run
 goes on, because a missed record costs one ordinary run while a wrong record
 hides a real library from every user.
