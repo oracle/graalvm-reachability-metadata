@@ -7,10 +7,19 @@
 package org_springframework_security.spring_security_web;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.security.web.FilterInvocation;
 
-class Spring_security_webTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class Spring_security_webTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void syntheticInvocationRetainsRequestPathAndQuery() {
+        FilterInvocation invocation = new FilterInvocation(
+                "/store", "/orders", "/42", "view=summary", "GET");
+
+        assertEquals("/orders/42?view=summary", invocation.getRequestUrl());
+        assertEquals("/store/orders/42", invocation.getHttpRequest().getRequestURI());
+        assertEquals("GET", invocation.getHttpRequest().getMethod());
+        assertEquals("filter invocation [GET /orders/42?view=summary]", invocation.toString());
     }
 }
