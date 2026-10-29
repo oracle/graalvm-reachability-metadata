@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import subprocess
 import sys
 from dataclasses import dataclass
 from typing import Mapping, Sequence
@@ -25,6 +26,7 @@ from ai_workflows.agents.agent_runtime import (  # noqa: E402
 )
 from utility_scripts.host_access_checks import (  # noqa: E402
     AccessChecks,
+    NETWORK_HOSTS_GITHUB,
     PROJECT_NUMBER,
     REPOSITORY_NAME,
     REPOSITORY_OWNER,
@@ -39,6 +41,7 @@ from utility_scripts.host_graalvm_checks import (  # noqa: E402
     ISSUE_GRAALVM_ENV_VARS,
     resolve_graalvm_version_check,
 )
+from utility_scripts.host_probes import ProbeResult, is_github_transient, probe_tcp_host  # noqa: E402
 from utility_scripts.host_toolchain_checks import ToolchainChecks  # noqa: E402
 
 
@@ -87,6 +90,9 @@ COVERAGE_REQUIREMENTS = QueueRequirements(
     github_work=True,
     coverage_work=True,
 )
+#: `EX_TEMPFAIL`: every failed check is transient, so a launcher may wait and check again
+#: (§FS-forge-host-requirements.1).
+TRANSIENT_FAILURE_EXIT_STATUS = 75
 
 
 @dataclass(frozen=True)
@@ -100,6 +106,8 @@ class CheckResult:
     detail: str
     remediation: str = ""
     advisory: bool = False
+    # A failure that clears on its own rather than a host fault (§FS-forge-host-requirements.1).
+    transient: bool = False
 
     @property
     def status(self) -> str:
@@ -110,7 +118,9 @@ class CheckResult:
             return "INFO"
         if self.passed:
             return "PASS"
-        return "WARN" if self.advisory else "FAIL"
+        if self.advisory:
+            return "WARN"
+        return "RETRY" if self.transient else "FAIL"
 
     @property
     def blocks_work(self) -> bool:
@@ -203,6 +213,8 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
         self.graalvm_version_check = resolve_graalvm_version_check(graalvm_version_check, self.environment)
         self.graalvm_versions = GraalVMVersions(None, None, None, None)
         self.results: list[CheckResult] = []
+        # One reachability probe per host and gate, shared by the checks that depend on it.
+        self.host_probes: dict[str, ProbeResult] = {}
 
     @property
     def review_role(self) -> AgentRequirement | None:
@@ -219,6 +231,30 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
         """Return whether this run operates on a checkout other than the one holding Forge."""
         return os.path.realpath(self.repo_dir) != os.path.realpath(self.forge_repo_dir)
 
+    def _probe_host(self, host: str) -> ProbeResult:
+        """Probe `host:443` once per gate over the route Forge's tools take."""
+        if host not in self.host_probes:
+            self.host_probes[host] = probe_tcp_host(host, 443, environment=self.environment)
+        return self.host_probes[host]
+
+    def _endpoint_down(self, *hosts: str) -> bool:
+        """Return whether any of these hosts cannot be reached right now.
+
+        A check that fails while the endpoint it needs is down reports the outage,
+        not the host, so its failure is transient (§FS-forge-host-requirements.1).
+        """
+        return any(self._probe_host(host).transient for host in hosts)
+
+    def _github_failure_transient(self, result: subprocess.CompletedProcess[str]) -> bool:
+        """Return whether a failed `gh` or GitHub git call is transient rather than a host fault.
+
+        A rate limit, a GitHub server or network error, or GitHub being unreachable
+        clears on its own (§FS-forge-host-requirements.1).
+        """
+        return result.returncode != 0 and (
+            is_github_transient(result) or self._endpoint_down(*NETWORK_HOSTS_GITHUB)
+        )
+
     def run(self, verbose: bool = False) -> bool:
         """Run selected checks, printing details when requested or work is blocked."""
         if self.requirements.issue_work and self.graalvm_version_check != "off":
@@ -230,13 +266,26 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
         self._check_github()
         self._check_selected_agents()
         self._check_docker()
-        passed = not any(result.blocks_work for result in self.results)
-        if verbose or not passed:
+        failures: list[CheckResult] = [result for result in self.results if result.blocks_work]
+        if verbose or any(not result.transient for result in failures):
             self._print_manifest()
             self._print_results()
+        elif failures:
+            # A launcher reruns the gate while it waits, so only the failures are printed.
+            self._print_failures(failures)
         elif any(result.status == "WARN" for result in self.results):
             self._print_warnings()
-        return passed
+        return not failures
+
+    def exit_status(self) -> int:
+        """Return 0 when work may start, 75 when every failure is transient, else 1.
+
+        §FS-forge-host-requirements.1
+        """
+        failures: list[CheckResult] = [result for result in self.results if result.blocks_work]
+        if not failures:
+            return 0
+        return TRANSIENT_FAILURE_EXIT_STATUS if all(result.transient for result in failures) else 1
 
     def _print_manifest(self) -> None:
         issue_text = "enabled" if self.requirements.issue_work else "disabled"
@@ -321,8 +370,11 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
             detail: str,
             remediation: str = "",
             advisory: bool = False,
+            transient: bool = False,
     ) -> None:
-        self.results.append(CheckResult(category, name, required, passed, detail, remediation, advisory))
+        self.results.append(
+            CheckResult(category, name, required, passed, detail, remediation, advisory, transient)
+        )
 
     def _print_results(self) -> None:
         print("[forge-host] Check results:")
@@ -333,13 +385,28 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
         failures = [result for result in self.results if result.blocks_work]
         warnings = [result for result in self.results if result.status == "WARN"]
         if failures:
-            sys.stdout.flush()
-            print(f"ERROR: {len(failures)} required check(s) failed. No work was started.")
+            self._print_failure_summary(failures)
             return
         if warnings:
             print(f"[forge-host] PASS with {len(warnings)} warning(s); work may start.")
         else:
             print("[forge-host] PASS: all required host checks succeeded; work may start.")
+
+    def _print_failures(self, failures: list[CheckResult]) -> None:
+        """Print only the failed checks and their fixes."""
+        for result in failures:
+            print(f"  [{result.status}] {result.category}: {result.name} — {result.detail}")
+            if result.remediation:
+                print(f"         Fix: {result.remediation}")
+        self._print_failure_summary(failures)
+
+    @staticmethod
+    def _print_failure_summary(failures: list[CheckResult]) -> None:
+        sys.stdout.flush()
+        if all(result.transient for result in failures):
+            print(f"RETRY: {len(failures)} required check(s) failed transiently. No work was started.")
+        else:
+            print(f"ERROR: {len(failures)} required check(s) failed. No work was started.")
 
     def _print_warnings(self) -> None:
         """Print only non-blocking warnings when the successful report is compact."""
@@ -348,57 +415,6 @@ class HostRequirements(GraalVMEnvironmentChecks, ToolchainChecks, AccessChecks):
         for result in warnings:
             print(f"  [WARN] {result.category}: {result.name} — {result.detail}")
         print(f"[forge-host] PASS with {len(warnings)} warning(s); work may start.")
-
-
-def verify_host_requirements(
-        forge_dir: str,
-        python_bin: str | None = None,
-        requirements: QueueRequirements | None = None,
-        graalvm_version_check: str | None = None,
-        environment: Mapping[str, str] | None = None,
-        repo_dir: str | None = None,
-        verbose: bool = False,
-) -> bool:
-    """Run every host requirement selected by this run and report whether work may start.
-
-    `repo_dir` is the reachability-metadata checkout the run operates on; it defaults to the
-    checkout that contains `forge_dir` (§FS-forge-host-requirements).
-    """
-    host_requirements = HostRequirements(
-        forge_dir,
-        python_bin or sys.executable,
-        environment,
-        requirements,
-        graalvm_version_check,
-        repo_dir,
-    )
-    return host_requirements.run(verbose=verbose)
-
-
-def ensure_host_requirements(
-        forge_dir: str,
-        python_bin: str | None = None,
-        requirements: QueueRequirements | None = None,
-        graalvm_version_check: str | None = None,
-        environment: Mapping[str, str] | None = None,
-        repo_dir: str | None = None,
-        verbose: bool = False,
-) -> None:
-    """Stop the process with a non-zero exit when a required host capability is missing.
-
-    §FS-forge-host-requirements
-    """
-    passed = verify_host_requirements(
-        forge_dir,
-        python_bin,
-        requirements,
-        graalvm_version_check,
-        environment,
-        repo_dir,
-        verbose,
-    )
-    if not passed:
-        sys.exit(1)
 
 
 def resolve_queue_requirements(environment: Mapping[str, str]) -> QueueRequirements:
@@ -507,7 +523,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 1
-    return 0 if host_requirements.run(verbose=args.verbose) else 1
+    host_requirements.run(verbose=args.verbose)
+    return host_requirements.exit_status()
 
 
 if __name__ == "__main__":

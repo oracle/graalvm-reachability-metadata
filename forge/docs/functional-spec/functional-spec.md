@@ -230,9 +230,57 @@ launcher does so before every claim in the issue-work mode with PR review
 enabled, for its worker, setup, and review agents, because each of its cycles
 may work an issue or review published pull requests. Any
 failed required check stops the run with a non-zero exit before the first work
-cycle. Capabilities the mode does not need are reported as not required, a
-relaxed version mismatch does not fail startup, and commands that start no work
-— stop, resume, help, cache maintenance — do not run the gate at all.
+cycle; only the Forge launcher's loop waits out a failure that is transient
+(§FS-forge-host-requirements.1). Capabilities the mode does not need are
+reported as not required, a relaxed version mismatch does not fail startup, and
+commands that start no work — stop, resume, help, cache maintenance — do not run
+the gate at all.
+
+### 1. A transient failure waits
+
+A failed check is either a host fault or a transient condition, and the two
+call for opposite responses. A host fault — a missing tool, credential,
+permission, Docker daemon, agent login, or Java lane — lasts until the operator
+fixes it, so it stops the worker loudly. A transient condition clears on its own
+and says nothing about how the host is set up, so stopping on it only loses the
+worker's throughput until a person notices and restarts it. Two conditions are
+transient:
+
+- **A GitHub rate limit**, primary or secondary. Several workers may share one
+  GitHub account, and GitHub's short-lived limits trip while the hourly budget
+  still has room, so one worker hitting a limit is not a missing permission.
+  The gate recognizes a rate limit by the same rule as Forge's other GitHub
+  calls (§FS-human-intervention-policy), and reports it as a rate limit whose
+  fix is to wait, not to check access grants that are fine.
+- **An endpoint that cannot be reached**: a required host whose name does not
+  resolve, whose connection fails, which does not answer in time, or which
+  answers with a server error or a rate-limit status. A check that depends on
+  such an endpoint — a GitHub query, a Git transport, an agent login that
+  refreshes its token — and fails while the endpoint cannot be reached reports
+  the outage, not the account, so it is transient too. An endpoint or proxy
+  that answers but refuses the request for any other reason, such as a proxy's
+  403 or 407 or a repository's 404, or that presents a certificate the host
+  does not trust, is a host fault: that policy will not change by itself.
+
+A gate whose every failed check is transient exits with a distinct status, 75
+(`EX_TEMPFAIL`), and reports only the failed checks. The Forge launcher then
+starts no work, waits, and runs the gate again, with a backoff that doubles from
+one minute to at most fifteen and one log line per wait. It waits for as long as
+the condition lasts: a worker that waits resumes on its own once the condition
+clears, and one that stops needs a person. Any host fault among the failures
+still stops the run with the full report. Every other entry point exits with the
+gate's status, so whatever started it can tell the two apart.
+
+The launcher waits only once the gate has passed in the same process; before
+that, a transient failure stops it like a host fault. A host that has never
+passed proves nothing about its setup, and a misconfiguration can fail exactly
+as an outage does — a sandbox that blocks an agent provider, or a host name that
+never resolves — so a new worker that waited would hide the fault from the
+operator who just started it. A worker that has passed has shown its setup
+works, so its later transient failures are outages and it waits them out. A
+work cycle that fails waits on the same backoff before the next gate, so a
+failure the gate did not see, such as an outage that starts mid-cycle, does not
+turn the loop into a tight retry against the same endpoints.
 
 ## FS-forge-agent-runtime-selection: Two agent inputs
 

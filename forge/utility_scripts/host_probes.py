@@ -12,15 +12,66 @@ import os
 import re
 import shutil
 import socket
+import ssl
 import subprocess
 import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Mapping, NamedTuple, Sequence
+
+from git_scripts.github_cli import (
+    is_github_rate_limit_errors,
+    is_github_rate_limit_text,
+    is_github_transient_errors,
+    is_github_transient_failure_text,
+)
 
 PI_PROVIDER = "openai-codex"
+GITHUB_RATE_LIMIT_FIX: str = (
+    "Wait for the active gh account's rate limit to reset (`gh api rate_limit` shows when); "
+    "the Forge launcher checks again on its own."
+)
+
+
+class ProbeResult(NamedTuple):
+    """A reachability probe; `transient` marks a failure that clears on its own.
+
+    No answer, a server error, or a rate-limit status is transient; an endpoint
+    that answers and denies the request is a host fault (§FS-forge-host-requirements.1).
+    """
+
+    passed: bool
+    detail: str
+    transient: bool = False
+
+
+def is_transient_http_status(status: int) -> bool:
+    """Return whether an HTTP status reports an overloaded or rate-limiting endpoint."""
+    return status == 429 or status >= 500
+
+
+def is_certificate_failure(error: object) -> bool:
+    """Return whether a TLS failure concerns a certificate the host does not trust."""
+    if isinstance(error, ssl.SSLCertVerificationError):
+        return True
+    reason: str = f"{getattr(error, 'reason', '')} {error}" if isinstance(error, ssl.SSLError) else ""
+    return "CERTIFICATE" in reason or "UNKNOWN_CA" in reason
+
+
+def is_transient_connection_error(error: OSError) -> bool:
+    """Return whether a request that got no HTTP answer failed on something that clears on its own.
+
+    A proxy that refuses the tunnel answered, so its status is judged like any answer, and an
+    untrusted certificate is the host's setup; anything else reached nothing
+    (§FS-forge-host-requirements.1).
+    """
+    reason: object = error.reason if isinstance(error, urllib.error.URLError) else error
+    if is_certificate_failure(reason):
+        return False
+    tunnel: re.Match[str] | None = re.search(r"Tunnel connection failed: (\d{3})", str(reason))
+    return is_transient_http_status(int(tunnel.group(1))) if tunnel else True
 
 
 def resolve_executable(command: str) -> str | None:
@@ -30,7 +81,7 @@ def resolve_executable(command: str) -> str | None:
     return shutil.which(command)
 
 
-def probe_http_200(url: str, timeout: float = 20.0) -> tuple[bool, str]:
+def probe_http_200(url: str, timeout: float = 20.0) -> ProbeResult:
     """Return whether an HTTP HEAD request to a base URL returns exactly 200.
 
     §FS-forge-host-requirements
@@ -41,10 +92,10 @@ def probe_http_200(url: str, timeout: float = 20.0) -> tuple[bool, str]:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             status = response.getcode()
     except urllib.error.HTTPError as exc:
-        return False, f"HEAD {probe_url} returned HTTP {exc.code}"
+        return ProbeResult(False, f"HEAD {probe_url} returned HTTP {exc.code}", is_transient_http_status(exc.code))
     except (OSError, urllib.error.URLError) as exc:
-        return False, f"HEAD {probe_url} failed: {exc}"
-    return status == 200, f"HEAD {probe_url} returned HTTP {status}"
+        return ProbeResult(False, f"HEAD {probe_url} failed: {exc}", is_transient_connection_error(exc))
+    return ProbeResult(status == 200, f"HEAD {probe_url} returned HTTP {status}")
 
 
 def run_command(
@@ -74,6 +125,54 @@ def first_output_line(result: subprocess.CompletedProcess[str]) -> str:
     """Return one safe diagnostic line from a completed command."""
     output = "\n".join(part.strip() for part in (result.stdout, result.stderr) if part.strip())
     return output.splitlines()[0] if output else ""
+
+
+def graphql_errors(output: str) -> object:
+    """Return the `errors` member of a GraphQL response, or None when there is none."""
+    try:
+        payload: object = json.loads(output)
+    except json.JSONDecodeError:
+        return None
+    return payload.get("errors") if isinstance(payload, dict) else None
+
+
+def is_github_rate_limited(result: subprocess.CompletedProcess[str]) -> bool:
+    """Return whether a failed `gh` call hit a GitHub rate limit, by the shared GitHub CLI rule."""
+    output: str = f"{result.stderr}\n{result.stdout}"
+    return result.returncode != 0 and (
+        is_github_rate_limit_text(output) or is_github_rate_limit_errors(graphql_errors(result.stdout))
+    )
+
+
+def is_command_timeout(result: subprocess.CompletedProcess[str]) -> bool:
+    """Return whether a probe command gave up waiting: `run_command`'s limit, or gh's own login timeout."""
+    output: str = f"{result.stderr}\n{result.stdout}"
+    return result.returncode != 0 and ("timed out after" in output or "Timeout trying to log in" in output)
+
+
+def is_github_transient(result: subprocess.CompletedProcess[str]) -> bool:
+    """Return whether a failed `gh` or git call met a rate limit, timeout, server or network error.
+
+    §FS-forge-host-requirements.1
+    """
+    output: str = f"{result.stderr}\n{result.stdout}"
+    return result.returncode != 0 and (
+        is_github_rate_limited(result)
+        or is_command_timeout(result)
+        or is_github_transient_failure_text(output)
+        or is_github_transient_errors(graphql_errors(result.stdout))
+    )
+
+
+def github_http_status(result: subprocess.CompletedProcess[str]) -> int | None:
+    """Return the HTTP status a `gh api --include` call was answered with, or None when none came."""
+    match: re.Match[str] | None = (
+        re.search(r"^HTTP/\S+ (\d{3})\b", result.stdout, flags=re.MULTILINE)
+        or re.search(r"\(HTTP (\d{3})\)", result.stderr)
+    )
+    if match is not None:
+        return int(match.group(1))
+    return 200 if result.returncode == 0 else None
 
 
 def parse_grype_version(output: str) -> str | None:
@@ -191,7 +290,7 @@ def probe_tcp_host(
         port: int,
         timeout: float = 5.0,
         environment: Mapping[str, str] | None = None,
-) -> tuple[bool, str]:
+) -> ProbeResult:
     """Test outbound access the way Forge's tools use it: directly, or through the configured proxy.
 
     A failed direct connect is tried once more, since one lost connect does not
@@ -205,10 +304,10 @@ def probe_tcp_host(
     for _ in range(TCP_PROBE_ATTEMPTS):
         try:
             with socket.create_connection((host, port), timeout=timeout):
-                return True, f"tcp://{host}:{port} reachable"
+                return ProbeResult(True, f"tcp://{host}:{port} reachable")
         except OSError as exc:
             error = exc
-    return False, f"tcp://{host}:{port} unreachable: {error}"
+    return ProbeResult(False, f"tcp://{host}:{port} unreachable: {error}", True)
 
 
 def probe_proxied_host(
@@ -216,7 +315,7 @@ def probe_proxied_host(
         port: int,
         proxy: tuple[str, int],
         timeout: float = 5.0,
-) -> tuple[bool, str]:
+) -> ProbeResult:
     """Ask the configured proxy to open a tunnel, proving both hops without transferring data."""
     proxy_host, proxy_port = proxy
     route = f"tcp://{host}:{port} via proxy {proxy_host}:{proxy_port}"
@@ -226,12 +325,15 @@ def probe_proxied_host(
             connection.sendall(request)
             status_line = connection.recv(512).decode("latin-1", "replace").splitlines()
     except OSError as exc:
-        return False, f"{route} unreachable: {exc}"
+        return ProbeResult(False, f"{route} unreachable: {exc}", True)
     status = status_line[0].strip() if status_line else ""
     fields = status.split()
     if len(fields) > 1 and fields[1] == "200":
-        return True, f"{route} reachable"
-    return False, f"{route} refused: {status or 'proxy closed the connection'}"
+        return ProbeResult(True, f"{route} reachable")
+    # A proxy that closes the tunnel or reports a server error could not reach the host.
+    code: int = int(fields[1]) if len(fields) > 1 and fields[1].isdigit() else 503
+    return ProbeResult(False, f"{route} refused: {status or 'proxy closed the connection'}",
+                       is_transient_http_status(code))
 
 
 def resolve_gradle_state_root(environment: Mapping[str, str]) -> str:

@@ -12,6 +12,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
 from utility_scripts.host_probes import (
+    ProbeResult,
     probe_http_200,
     probe_proxied_host,
     probe_tcp_host,
@@ -24,6 +25,8 @@ from utility_scripts.host_requirements import (
     QueueRequirements,
 )
 from utility_scripts.native_image_artifact import ARTIFACT_REPOSITORY_URLS
+
+REACHABLE: ProbeResult = ProbeResult(True, "reachable")
 
 
 class HostAccessChecksTests(unittest.TestCase):
@@ -60,6 +63,7 @@ class HostAccessChecksTests(unittest.TestCase):
         self.assertTrue(push_target.passed)
         self.assertIn("oracle/graalvm-reachability-metadata", push_target.detail)
 
+    @patch("utility_scripts.host_requirements.probe_tcp_host", return_value=REACHABLE)
     @patch("utility_scripts.host_access_checks.uuid.uuid4", return_value=Mock(hex="probe-id"))
     @patch("utility_scripts.host_access_checks.find_remote_for_github_repo", return_value="upstream")
     @patch("utility_scripts.host_access_checks.run_command")
@@ -68,6 +72,7 @@ class HostAccessChecksTests(unittest.TestCase):
             command: Mock,
             find_remote: Mock,
             _uuid: Mock,
+            _probe: Mock,
     ) -> None:
         command.side_effect = [
             subprocess.CompletedProcess(
@@ -95,6 +100,7 @@ class HostAccessChecksTests(unittest.TestCase):
         result = host_requirements.results[-1]
         self.assertTrue(result.required)
         self.assertFalse(result.passed)
+        self.assertEqual("FAIL", result.status)
         self.assertIn("remote=upstream", result.detail)
         self.assertIn("dry-run push=failed", result.detail)
         self.assertIn("gh auth setup-git --hostname github.com", result.remediation)
@@ -191,8 +197,9 @@ class HostAccessChecksTests(unittest.TestCase):
             requirements=QueueRequirements(issue_work=True, review_work=False, github_work=False),
         )
 
-        with patch("utility_scripts.host_access_checks.probe_tcp_host", return_value=(True, "reachable")), \
-                patch("utility_scripts.host_access_checks.probe_http_200", return_value=(True, "HTTP 200")), \
+        with patch("utility_scripts.host_requirements.probe_tcp_host", return_value=REACHABLE), \
+                patch("utility_scripts.host_access_checks.probe_http_200",
+                      return_value=ProbeResult(True, "HTTP 200")), \
                 patch.object(host_requirements, "_check_git_remote_access"):
             host_requirements._check_github()
             host_requirements._check_network()
@@ -212,10 +219,10 @@ class HostAccessChecksTests(unittest.TestCase):
         )
 
         with patch.object(host_requirements, "_check_git_remote_access"), \
-                patch("utility_scripts.host_access_checks.probe_tcp_host", return_value=(True, "reachable")), \
+                patch("utility_scripts.host_requirements.probe_tcp_host", return_value=REACHABLE), \
                 patch(
                     "utility_scripts.host_access_checks.probe_http_200",
-                    side_effect=[(True, "HTTP 200"), (False, "HTTP 503")],
+                    side_effect=[ProbeResult(True, "HTTP 200"), ProbeResult(False, "HTTP 404")],
                 ) as probe_repository:
             host_requirements._check_network()
 
@@ -237,10 +244,11 @@ class HostAccessChecksTests(unittest.TestCase):
         response.getcode.return_value = 204
 
         with patch("utility_scripts.host_probes.urllib.request.urlopen", return_value=response) as open_url:
-            passed, detail = probe_http_200("https://repo.example/maven")
+            probe = probe_http_200("https://repo.example/maven")
 
-        self.assertFalse(passed)
-        self.assertIn("HTTP 204", detail)
+        self.assertFalse(probe.passed)
+        self.assertFalse(probe.transient)
+        self.assertIn("HTTP 204", probe.detail)
         request = open_url.call_args.args[0]
         self.assertEqual("HEAD", request.get_method())
         self.assertEqual("https://repo.example/maven/", request.full_url)
@@ -308,10 +316,10 @@ class HostAccessChecksTests(unittest.TestCase):
         connection.recv.return_value = b"HTTP/1.1 200 Connection established\r\n\r\n"
 
         with patch("utility_scripts.host_probes.socket.create_connection", return_value=connection):
-            passed, detail = probe_proxied_host("github.com", 443, ("10.0.0.1", 80))
+            probe = probe_proxied_host("github.com", 443, ("10.0.0.1", 80))
 
-        self.assertTrue(passed)
-        self.assertIn("via proxy 10.0.0.1:80", detail)
+        self.assertTrue(probe.passed)
+        self.assertIn("via proxy 10.0.0.1:80", probe.detail)
         connection.sendall.assert_called_once_with(
             b"CONNECT github.com:443 HTTP/1.1\r\nHost: github.com:443\r\n\r\n"
         )
@@ -323,27 +331,30 @@ class HostAccessChecksTests(unittest.TestCase):
         connection.recv.return_value = b"HTTP/1.1 403 Forbidden\r\n\r\n"
 
         with patch("utility_scripts.host_probes.socket.create_connection", return_value=connection):
-            passed, detail = probe_proxied_host("registry-1.docker.io", 443, ("10.0.0.1", 80))
+            probe = probe_proxied_host("registry-1.docker.io", 443, ("10.0.0.1", 80))
 
-        self.assertFalse(passed)
-        self.assertIn("403 Forbidden", detail)
+        self.assertFalse(probe.passed)
+        self.assertIn("403 Forbidden", probe.detail)
+        # A proxy that denies the tunnel is policy, not an outage (§FS-forge-host-requirements.1).
+        self.assertFalse(probe.transient)
 
 
     def test_direct_probe_tries_a_failed_connect_once_more(self) -> None:
         connection = MagicMock()
         with patch("utility_scripts.host_probes.socket.create_connection",
                    side_effect=[TimeoutError("timed out"), connection]) as connect:
-            passed, _ = probe_tcp_host("api.anthropic.com", 443)
+            probe = probe_tcp_host("api.anthropic.com", 443, environment={})
 
-        self.assertTrue(passed)
+        self.assertTrue(probe.passed)
         self.assertEqual(2, connect.call_count)
 
         with patch("utility_scripts.host_probes.socket.create_connection",
                    side_effect=[TimeoutError("timed out"), TimeoutError("timed out")]):
-            passed, detail = probe_tcp_host("api.anthropic.com", 443)
+            probe = probe_tcp_host("api.anthropic.com", 443, environment={})
 
-        self.assertFalse(passed)
-        self.assertEqual("tcp://api.anthropic.com:443 unreachable: timed out", detail)
+        self.assertFalse(probe.passed)
+        self.assertTrue(probe.transient)
+        self.assertEqual("tcp://api.anthropic.com:443 unreachable: timed out", probe.detail)
 
 if __name__ == "__main__":
     unittest.main()

@@ -15,10 +15,13 @@ import uuid
 
 from git_scripts.common_git import find_remote_for_github_repo
 from utility_scripts.host_probes import (
+    GITHUB_RATE_LIMIT_FIX,
     agent_provider_host,
     first_output_line,
+    github_http_status,
+    is_github_rate_limited,
+    is_transient_http_status,
     probe_http_200,
-    probe_tcp_host,
     probe_write_access,
     resolve_agent_state_root,
     resolve_executable,
@@ -120,20 +123,21 @@ class AccessChecks:
             if not required:
                 self._add("network", host, False, None, "not required by this run")
                 continue
-            passed, detail = probe_tcp_host(host, 443, environment=self.environment)
+            probe = self._probe_host(host)
             proxy = resolve_https_proxy(self.environment, host)
             self._add(
                 "network",
                 host,
                 True,
-                passed,
-                detail,
+                probe.passed,
+                probe.detail,
                 (
                     f"Allow the configured proxy {proxy[0]}:{proxy[1]} to reach `{host}:443`, "
                     "or unset the proxy for it."
                     if proxy
                     else f"Allow DNS and outbound TCP 443 access to `{host}` in the host firewall or sandbox policy."
                 ),
+                transient=probe.transient,
             )
         if self.requirements.build_work:
             self._add(
@@ -155,17 +159,18 @@ class AccessChecks:
             if not self.requirements.build_work:
                 self._add("network", name, False, None, "not required by this run")
                 continue
-            passed, detail = probe_http_200(repository_url)
+            probe = probe_http_200(repository_url)
             self._add(
                 "network",
                 name,
                 True,
-                passed,
-                detail,
+                probe.passed,
+                probe.detail,
                 (
                     f"Make `HEAD {repository_url.rstrip('/')}/` return HTTP 200 from this host; "
                     "check DNS, TLS, proxy or firewall policy, and repository availability."
                 ),
+                transient=probe.transient,
             )
 
     def _check_git_remote_access(self) -> None:
@@ -266,6 +271,7 @@ class AccessChecks:
             f"remote={publication_remote}, protocol={protocol}, "
             f"dry-run push={'passed' if passed else 'failed'}",
             remediation,
+            transient=self._github_failure_transient(push_result),
         )
 
     def _check_git_remote(self, name: str, checkout: str, required: bool, skip_detail: str) -> None:
@@ -296,7 +302,27 @@ class AccessChecks:
             f"status={'reachable' if result.returncode == 0 else 'unreachable'}",
             f"Grant git transport access to `{remote_url}` from `{checkout}` and ensure branch "
             f"`{branch}` exists on origin.",
+            transient=self._github_failure_transient(result),
         )
+
+    def _gh_login_failure(self, auth: subprocess.CompletedProcess[str]) -> tuple[bool, str]:
+        """Judge a failed `gh auth status`; return whether it is transient and what GitHub said.
+
+        gh reports a rate limit or a slow answer as an invalid token, so `gh api rate_limit`,
+        which no limit counts, asks GitHub: a token it accepts, a 429 or a server error leaves
+        the login fine, and a 401 is a host fault (§FS-forge-host-requirements.1).
+        """
+        if self._github_failure_transient(auth):
+            return True, ""
+        token_check = run_command(["gh", "api", "--include", "rate_limit"], self.environment)
+        status: int | None = github_http_status(token_check)
+        if status is None:
+            no_answer: str = f"; gh api rate_limit: {first_output_line(token_check)}"
+            return self._github_failure_transient(token_check), no_answer
+        transient: bool = (
+            status == 200 or is_transient_http_status(status) or self._github_failure_transient(token_check)
+        )
+        return transient, f"; gh api rate_limit answered HTTP {status}"
 
     def _check_github(self) -> None:
         required = self.requirements.github_work
@@ -312,13 +338,18 @@ class AccessChecks:
             return
 
         auth = run_command(["gh", "auth", "status", "--active", "--hostname", "github.com"], self.environment)
+        auth_transient, token_note = self._gh_login_failure(auth) if auth.returncode != 0 else (False, "")
         self._add(
             "github",
             "gh authentication",
             True,
             auth.returncode == 0,
-            first_output_line(auth) or "gh auth status returned no output",
-            "Run `gh auth login -h github.com` with the account used by Forge.",
+            f"{first_output_line(auth) or 'gh auth status returned no output'}{token_note}",
+            GITHUB_RATE_LIMIT_FIX if is_github_rate_limited(auth)
+            else "Wait for GitHub to confirm the login; the Forge launcher checks again on its own."
+            if auth_transient
+            else "Run `gh auth login -h github.com` with the account used by Forge.",
+            transient=auth_transient,
         )
         if auth.returncode != 0:
             self._add(
@@ -328,9 +359,11 @@ class AccessChecks:
                 False,
                 "permission query skipped because gh authentication failed",
                 "Authenticate first, then grant Contents=write, Issues=write, Pull requests=write, and Projects=write.",
+                transient=auth_transient,
             )
             return
 
+        # A rate limit on this query is not a missing permission (§FS-forge-host-requirements.1).
         query = """
 query($owner: String!, $name: String!, $project: Int!) {
   viewer { login }
@@ -351,13 +384,19 @@ query($owner: String!, $name: String!, $project: Int!) {
             self.environment,
         )
         if permission_result.returncode != 0:
+            rate_limited: bool = is_github_rate_limited(permission_result)
+            detail: str = first_output_line(permission_result) or "GitHub GraphQL permission query failed"
             self._add(
                 "github",
                 "repository and project permissions",
                 True,
                 False,
-                first_output_line(permission_result) or "GitHub GraphQL permission query failed",
-                "Allow api.github.com and grant repository plus organization-project access to the active gh account.",
+                f"GitHub rate limit: {detail}" if rate_limited else detail,
+                GITHUB_RATE_LIMIT_FIX if rate_limited else (
+                    "Allow api.github.com and grant repository plus organization-project access "
+                    "to the active gh account."
+                ),
+                transient=self._github_failure_transient(permission_result),
             )
             return
         self._record_github_permissions(permission_result.stdout)

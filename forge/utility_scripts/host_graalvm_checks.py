@@ -16,7 +16,12 @@ import tempfile
 from dataclasses import dataclass
 from typing import Mapping
 
-from utility_scripts.host_probes import first_output_line, run_command
+from utility_scripts.host_probes import (
+    GITHUB_RATE_LIMIT_FIX,
+    first_output_line,
+    is_github_rate_limited,
+    run_command,
+)
 
 GRAALVM_VERSION_CONFIG = "graalvm-versions.json"
 GRAALVM_GA_RELEASE_ENDPOINT = "repos/graalvm/graalvm-ce-builds/releases/latest"
@@ -430,9 +435,12 @@ class GraalVMEnvironmentChecks:
             "latest GraalVM GA",
             True,
             passed,
-            f"required={version or '<unresolved>'}; source=graalvm/graalvm-ce-builds latest release",
-            "Allow `gh api repos/graalvm/graalvm-ce-builds/releases/latest` and retry.",
+            f"required={version or '<unresolved>'}; source=graalvm/graalvm-ce-builds latest release"
+            f"{self._rate_limit_note(result)}",
+            GITHUB_RATE_LIMIT_FIX if is_github_rate_limited(result)
+            else "Allow `gh api repos/graalvm/graalvm-ce-builds/releases/latest` and retry.",
             advisory=self.version_check_advisory,
+            transient=self._github_failure_transient(result),
         )
         return version if passed else None
 
@@ -451,11 +459,15 @@ class GraalVMEnvironmentChecks:
             version = None
         valid = result.returncode == 0 and isinstance(version, str) and parse_ea_release_version(version) is not None
         commit: str | None = None
+        # The lookup that left the release unresolved is the one judged
+        # (§FS-forge-host-requirements.1).
+        lookup: subprocess.CompletedProcess[str] = result
         if valid:
             release = run_command(
                 ["gh", "api", GRAALVM_EA_RELEASE_TAG_ENDPOINT.format(version=version)],
                 self.environment,
             )
+            lookup = release
             try:
                 commit = parse_ea_release_commit(str(json.loads(release.stdout)["body"]))
             except (json.JSONDecodeError, KeyError, TypeError):
@@ -468,14 +480,16 @@ class GraalVMEnvironmentChecks:
             (
                 f"required={version or '<unresolved>'} (oracle/graal@{commit or '<unresolved>'}); "
                 "source=graalvm/oracle-graalvm-ea-builds latest-ea.json and its release notes"
+                f"{self._rate_limit_note(lookup)}"
             ),
-            (
+            GITHUB_RATE_LIMIT_FIX if is_github_rate_limited(lookup) else (
                 f"Allow the `gh api` query for the {version} release; if its notes no longer name "
                 "an `oracle/graal@<commit>`, rerun with `--graalvm-version-check warn`."
                 if valid
                 else "Allow the latest-ea.json `gh api` query and retry."
             ),
             advisory=self.version_check_advisory,
+            transient=self._github_failure_transient(lookup),
         )
         return (version, commit) if commit is not None else (None, None)
 
@@ -582,7 +596,15 @@ class GraalVMEnvironmentChecks:
             f"path={value}; installed={installed_display}; required={required_display}",
             self._version_remediation(variable),
             advisory=self.version_check_advisory,
+            # An unresolved required version is the failed release lookup's to judge
+            # (§FS-forge-host-requirements.1).
+            transient=expected_version is None and native_version_result.returncode == 0,
         )
+
+    @staticmethod
+    def _rate_limit_note(result: subprocess.CompletedProcess[str]) -> str:
+        """Name a GitHub rate limit that left a release lookup unresolved."""
+        return f"; GitHub rate limit: {first_output_line(result)}" if is_github_rate_limited(result) else ""
 
     def _version_remediation(self, variable: str) -> str:
         """Return the one actionable instruction for a mismatched GraalVM lane."""

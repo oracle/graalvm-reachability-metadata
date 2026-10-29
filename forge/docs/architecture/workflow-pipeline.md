@@ -66,7 +66,9 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
 `run-forge.sh` loops cycles until stopped, checks the host before each claim
 (§FS-forge-host-requirements), and every third run, and whenever nothing can be
 claimed, reviews the open Forge pull requests with the `review_agent`
-(§FS-published-pr-review, §AR-forge-dispatcher-decomposition.1).
+(§FS-published-pr-review, §AR-forge-dispatcher-decomposition.1). Once the gate
+has passed, a transient gate failure or a failed cycle makes the loop back off
+and wait for the gate to pass again (§FS-forge-host-requirements.1).
 
 Without `--label`, every cycle fetches every queue in the claim order above.
 Each `--label LABEL[:COUNT]` instead gives its queue COUNT turns in a row, one

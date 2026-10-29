@@ -191,23 +191,52 @@ claim_next() {
 # §FS-published-pr-review.1: review every third run and whenever nothing can be claimed.
 readonly IDLE_SECONDS=600
 readonly REVIEW_EVERY=3
+# §FS-forge-host-requirements.1: the gate's status when every failure is transient, and the
+# backoff of the waits it and a failed cycle cause.
+readonly HOST_TRANSIENT_STATUS=75
+readonly BACKOFF_FIRST_SECONDS=60
+readonly BACKOFF_MAX_SECONDS=900
 cd "$SCRIPT_DIR"
 runs=0
+host_passed=0
+backoff=$BACKOFF_FIRST_SECONDS
+# Sleep the current backoff, then double it up to its cap.
+back_off() {
+    sleep "$backoff"
+    backoff=$(( backoff * 2 < BACKOFF_MAX_SECONDS ? backoff * 2 : BACKOFF_MAX_SECONDS ))
+}
 while true; do
-    # Issue work and PR review, with all three agents, are checked before the claim; a failed
-    # check exits here (§FS-forge-host-requirements).
+    # Issue work and PR review, with all three agents, are checked before the claim. A host fault
+    # exits here, and so does a transient failure until the gate has passed once; after that, a
+    # transient failure waits and checks again (§FS-forge-host-requirements.1).
+    status=0
     require_rhei_launcher_host forge "$SCRIPT_DIR" "$REPO_ROOT" \
         "$worker_family" "$worker_executable" "$worker_model" "$worker_provider" \
-        claude-code claude "$setup_model" "$review_model"
-    status=0
+        claude-code claude "$setup_model" "$review_model" || status=$?
+    if (( status == HOST_TRANSIENT_STATUS && host_passed )); then
+        printf 'The host check failed transiently; checking again in %s seconds.\n' "$backoff"
+        back_off
+        continue
+    fi
+    if (( status == HOST_TRANSIENT_STATUS )); then
+        printf 'ERROR: The host check failed before it ever passed; fix the host, or start Forge again once it clears.\n' >&2
+    fi
+    (( status == 0 )) || exit "$status"
+    host_passed=1
     claim_next || status=$?
     if (( status == 1 )); then
+        backoff=$BACKOFF_FIRST_SECONDS
         review
         printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
         sleep "$IDLE_SECONDS"
         continue
     fi
-    (( status == 0 )) || printf 'ERROR: The cycle failed with status %s.\n' "$status" >&2
     runs=$((runs + 1))
     (( runs % REVIEW_EVERY != 0 )) || review
+    if (( status != 0 )); then
+        printf 'ERROR: The cycle failed with status %s; checking the host again in %s seconds.\n' "$status" "$backoff" >&2
+        back_off
+        continue
+    fi
+    backoff=$BACKOFF_FIRST_SECONDS
 done
