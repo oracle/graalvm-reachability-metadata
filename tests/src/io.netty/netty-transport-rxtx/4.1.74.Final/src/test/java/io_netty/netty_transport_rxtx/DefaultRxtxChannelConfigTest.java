@@ -51,13 +51,8 @@ public class DefaultRxtxChannelConfigTest {
 
     @AfterEach
     void closeChannel() throws Exception {
-        try {
-            if (channel.isRegistered()) {
-                channel.close().get(10, TimeUnit.SECONDS);
-            }
-        } finally {
-            group.shutdownGracefully(0, 10, TimeUnit.SECONDS).get(15, TimeUnit.SECONDS);
-        }
+        group.shutdownGracefully(0, 10, TimeUnit.SECONDS).get(15, TimeUnit.SECONDS);
+        channel.closeFuture().get(10, TimeUnit.SECONDS);
     }
 
     @Test
