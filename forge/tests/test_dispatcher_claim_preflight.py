@@ -219,6 +219,24 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertTrue(issue_queue.issue_has_label(issue, config.LABEL_HUMAN_INTERVENTION))
         self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION)
 
+    def test_legacy_resumable_label_does_not_lift_a_hold(self) -> None:
+        # The fetch leaves every held issue out, so the claim must refuse them all alike.
+        held_issue = _search_issue(
+            1412,
+            [dispatcher_config.LABEL_LIBRARY_NEW, config.LABEL_HUMAN_INTERVENTION, config.LABEL_RESUMABLE],
+        )
+
+        self.assertFalse(claim_preflight.issue_needs_claim_preflight(held_issue))
+        observation = claim_preflight.get_issue_claim_cache_observation_from_payload(held_issue)
+        self.assertEqual(observation.reason, config.ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION)
+        self.assertTrue(
+            claim_preflight.should_skip_issue_from_preflight(
+                held_issue,
+                None,
+                records.CachedIssueClaimSkip(1412, config.ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION, 0.0),
+            )
+        )
+
     def test_refresh_issue_payload_for_claim_skips_removed_queue_label(self) -> None:
         issue = _search_issue(1412, [dispatcher_config.LABEL_LIBRARY_NEW])
         fresh_issue = {

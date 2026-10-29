@@ -23,7 +23,6 @@ from dispatcher.config import (
     LABEL_HIGH_PRIORITY,
     LABEL_NOT_FOR_NATIVE_IMAGE,
     LABEL_PRIORITY,
-    LABEL_RESUMABLE,
     ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
     ISSUE_CLAIM_CACHE_REASON_BLOCKED,
     NON_USER_REQUESTED_ISSUE_AUTHORS,
@@ -318,11 +317,6 @@ def get_issue_label_names(issue: dict) -> list[str]:
 def issue_has_label(issue: dict, label_name: str) -> bool:
     """Return True when the GitHub issue payload contains the given label."""
     return label_name in get_issue_label_names(issue)
-
-
-def issue_is_resumable(issue: dict) -> bool:
-    """Return True when an issue is explicitly eligible for run continuation."""
-    return issue_has_label(issue, LABEL_RESUMABLE)
 
 
 def add_issue_label_to_payload(issue: dict, label_name: str) -> None:
