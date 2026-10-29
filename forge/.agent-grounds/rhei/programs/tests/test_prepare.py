@@ -120,6 +120,10 @@ class PrepareTest(unittest.TestCase):
         self.assertIn("validateIndexFiles rejected", output.getvalue())
         self.assertIn("index.json does not validate", output.getvalue())
         self.assertEqual("bad-input", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["kind"])
+        # The close-out comment names the rejection (§FS-forge-run-requirements.2).
+        self.assertEqual("prepare: bad input: validateIndexFiles rejected the not-for-native-image record",
+                         self.outcome()["reason"])
+        self.assertIn("index.json does not validate", self.outcome()["detail"])
 
     def test_an_existing_index_is_never_asked(self) -> None:
         """Existing support excludes a verdict (§FS-not-for-native-image-record.1)."""
@@ -249,10 +253,37 @@ class PrepareTest(unittest.TestCase):
         self.fake.supported_library()
         self.fake.issue("library-update-request", extra_labels=("chunked-dynamic-access",))
         self.assertEqual(BAD_INPUT, self.prepare())
+        # The close-out comment names the reason (§FS-forge-run-requirements.2).
+        outcome: dict[str, str] = self.outcome()
+        self.assertEqual(("bad-input", f"prepare: bad input: chunked issue has no exhaust report for {COORDINATE}", ""),
+                         (outcome["kind"], outcome["reason"], outcome["detail"]))
+
+    def outcome(self) -> dict[str, str]:
+        return read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
+
+    def test_an_issue_gh_cannot_read_is_named_in_one_line(self) -> None:
+        # gh's further lines follow as detail (§FS-forge-run-requirements.2).
+        self.fake.control({"issueError": "HTTP 404: Not Found (https://api.github.com/graphql)\nsecond line"})
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assertEqual(("prepare: bad input: cannot read issue #7: HTTP 404: Not Found (https://api.github.com/graphql)",
+                          "second line"), (self.outcome()["reason"], self.outcome()["detail"]))
+
+    def test_a_worktree_git_refuses_quotes_git(self) -> None:
+        self.fake.issue("library-new-request")
+        branch: str = "rhei/forge-org.example-lib-2.0.0"
+        subprocess.run(["git", "worktree", "add", "-q", "-b", branch, os.path.join(self.fake.tmp, "elsewhere")],
+                       cwd=self.fake.repo, check=True)
+        self.assertEqual(BAD_INPUT, self.prepare())
+        reason: str = self.outcome()["reason"]
+        self.assertTrue(reason.startswith("prepare: bad input: worktree: Command"), reason)
+        self.assertFalse(reason.endswith("."), reason)
+        self.assertIn(f"fatal: '{branch}' is already", self.outcome()["detail"])
 
     def test_setup_agent_must_be_claude_code(self) -> None:
         self.fake.issue("library-new-request")
         self.assertEqual(BAD_INPUT, self.prepare(*prepare_arguments(setup_agent=WORKER_AGENT)))
+        self.assertEqual(f"prepare: bad input: setup_agent {WORKER_AGENT} must be a claude-code target, "
+                         "which has web search", self.outcome()["reason"])
 
     def test_codex_targets_are_rejected(self) -> None:
         self.fake.issue("library-new-request")

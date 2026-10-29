@@ -14,8 +14,10 @@ from __future__ import annotations
 # Control keys: classes (class -> total dynamic-access calls; a test file whose
 # name starts with the class's simple name covers one call), javaFails,
 # extensionFails (only the code-coverage-improvement suite's `codeCoverageTest` fails),
-# generateFails (only `generateMetadata` fails), filterFails (what a failing
-# `generateUserCodeFilter` prints), nativeFails (until the shipped
+# unresolved (`javaTest` fails on a dependency that does not resolve),
+# generateFails (only `generateMetadata` fails), filterFails (a plain
+# `generateUserCodeFilter` prints this; from the JAR, "unresolved" as above,
+# else this), nativeFails (until the shipped
 # metadata names `Fixed`), checkFails,
 # styleFails (the failing style task), listFails, listsNoCalls (the listing
 # succeeds without output, as for a library without calls; an empty stored
@@ -38,6 +40,17 @@ project = os.path.join(root, "tests", "src", group, artifact, version)
 metadata = os.path.join(root, "metadata", group, artifact, version, "reachability-metadata.json")
 def tests():
     return [os.path.basename(path) for path in glob.glob(os.path.join(project, "src", "test", "java", "**", "*.java"), recursive=True)]
+def fail_unresolved():
+    # Longer than an excerpt, with the cause among the task lines and Gradle's own failure lines.
+    for number in range(30):
+        print("> Task :tck-build-logic:step%d UP-TO-DATE" % number)
+    print("> Task :%s FAILED\nFAILURE: Build failed with an exception.\n* What went wrong:" % task)
+    print("Execution failed for task ':%s'." % task)
+    for configuration in ("testCompileClasspath", "testRuntimeClasspath"):
+        print("> Could not resolve all files for configuration ':%s'." % configuration)
+        print("   > Could not find org.example:missing:1.0.\n     Required by:\n         root project 'lib'")
+    print("BUILD FAILED in 4s")
+    sys.exit(1)
 mode = os.environ.get("GVM_TCK_NATIVE_IMAGE_MODE")
 lane = " [%s %s %s]" % (os.environ.get("GVM_TCK_LV"), mode, os.environ.get("JAVA_HOME")) if mode else ""
 with open(os.path.join(root, "gradle-calls.log"), "a") as log:
@@ -59,10 +72,19 @@ elif task == "generateUserCodeFilter":
         sys.exit(1)
     open(os.path.join(project, "user-code-filter.json"), "w").write('{"rules": []}\n')
 elif task == "generateMetadata":
+    if "--agentAllowedPackages=fromJar" in args:
+        if control.get("filterFails") == "unresolved":
+            fail_unresolved()
+        if control.get("filterFails"):
+            print("Execution failed for task ':generateMetadata'.\n> Process 'command java' finished with non-zero exit value 1")
+            sys.exit(1)
+        open(os.path.join(project, "user-code-filter.json"), "w").write('{"rules": []}\n')
     if control.get("javaFails") or control.get("generateFails"):
         print("There were failing tests")
         sys.exit(1)
 elif task == "javaTest":
+    if control.get("unresolved"):
+        fail_unresolved()
     if control.get("javaFails"):
         print("2 tests completed, 1 failed")
         sys.exit(1)
@@ -139,7 +161,8 @@ elif task == "generateLibraryStats":
     json.dump({"versions": [{"version": version, "dynamicAccess": dynamic}]}, open(stats, "w"))
 '''
 
-# The fake `gh`: serves the control file's `issue`, the login, and records edits.
+# The fake `gh`: serves the control file's `issue`, or fails with its `issueError`, the login,
+# and records edits.
 FAKE_GH: str = r'''#!/usr/bin/env python3
 import json, os, sys
 control = json.load(open(os.environ["FAKE_FORGE_CONTROL"]))
@@ -150,7 +173,7 @@ if sys.argv[1:3] == ["api", "user"]:
     sys.exit(0)
 if sys.argv[1:3] == ["issue", "view"]:
     if control.get("issue") is None:
-        print("issue not found", file=sys.stderr)
+        print(control.get("issueError", "issue not found"), file=sys.stderr)
         sys.exit(1)
     print(json.dumps(control["issue"]))
     sys.exit(0)

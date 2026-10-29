@@ -225,11 +225,14 @@ def fenced(text: str) -> list[str]:
 def intervention_comment(outcome: dict[str, Any]) -> str:
     """The comment a maintainer continues from: the reason and what the run recorded.
 
-    That is the state that stopped, its failing commands with their output excerpts,
-    and the last fix report (§FS-human-intervention-policy).
+    That is a bad input's detail, the state that stopped, its failing commands with
+    their output excerpts, and the last fix report (§FS-human-intervention-policy).
     """
     lines: list[str] = ["Human intervention needed", "",
                         f"Forge could not finish this issue: {outcome.get('reason', '')}."]
+    if outcome.get("detail"):
+        # The output a bad input was read from (§FS-forge-run-requirements.2).
+        lines += ["", "```text", outcome["detail"], "```"]
     if outcome.get("sender"):
         lines += ["", f"Stopped in `{outcome['sender']}`."]
     for failure in outcome.get("failures", []):

@@ -78,13 +78,17 @@ def coordinate_task(task: str, coordinate: str, *extra: str) -> list[str]:
     return [task, f"-Pcoordinates={coordinate}", *extra]
 
 
-def git(worktree: str, *args: str) -> str:
-    """Run git in the worktree and return stdout; a failure raises."""
+def git(worktree: str, *args: str, capture_stderr: bool = False) -> str:
+    """Run git in the worktree and return stdout; a failure raises.
+
+    With `capture_stderr`, git's own message rides on the `CalledProcessError`.
+    """
     return subprocess.run(
         ["git", *args],
         cwd=worktree,
         check=True,
         stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE if capture_stderr else None,
         text=True,
     ).stdout
 

@@ -13,31 +13,32 @@ has already run the setup tail, and a new library never comes here
 """
 from __future__ import annotations
 
-import sys
-
 from utility_scripts.metadata_index import find_index_entry_for_version
 
 import handoff
 import native_check
 from build_tools import TaskResult
-from exit_codes import BAD_INPUT
+from exit_codes import BadInput
 from run_state import RunState, load
-from setup_check import UNRESOLVED
+from setup_check import unresolved_dependency
 
 SENDER: str = "jvm"
 JAVA_TEST: str = "javaTest"
 
 
 def jvm(workspace: str) -> int:
+    """Run `javaTest`, then `generateMetadata`, and conclude on the first failure.
+
+    A bad input raises `BadInput` naming it (§FS-forge-run-requirements.2).
+    """
     state: RunState = load(workspace)
     handoff.write_placeholder(workspace, SENDER)
     if find_index_entry_for_version(state.worktree, state.group, state.artifact, state.version) is None:
-        print(f"ERROR: {state.index_path} has no entry for {state.version}.", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(f"{state.index_path} has no entry for {state.version}")
     result: TaskResult = native_check.run_task(workspace, state, SENDER, JAVA_TEST)
-    if not result.ok and UNRESOLVED.search(result.output):
-        print(f"ERROR: a declared dependency does not resolve:\n{result.tail}", file=sys.stderr)
-        return BAD_INPUT
+    unresolved: BadInput | None = unresolved_dependency(result, "a declared dependency does not resolve")
+    if unresolved is not None:
+        raise unresolved
     if result.ok:
         result = native_check.run_task(workspace, state, SENDER, native_check.GENERATE)
     return native_check.conclude(workspace, state, SENDER, native_check.failures_of(result),
