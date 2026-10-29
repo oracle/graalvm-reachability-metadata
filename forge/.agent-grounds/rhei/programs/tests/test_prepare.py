@@ -274,7 +274,7 @@ class PrepareTest(unittest.TestCase):
         self.fake.control({"scaffoldFails": "variant"})
         self.assertEqual(BAD_INPUT, self.prepare())
         outcome: dict[str, str] = self.outcome()
-        self.assertEqual(("bad-input", f"prepare: bad input: {COORDINATE} does not resolve for a JVM test project"),
+        self.assertEqual(("bad-input", f"prepare: bad input: {COORDINATE} has no artifact a JVM test project can use"),
                          (outcome["kind"], outcome["reason"]))
         # The lines naming the coordinate and why it does not resolve, not Gradle's hint after them.
         self.assertEqual("> Could not resolve all files for configuration ':detachedConfiguration1'.\n"
@@ -288,7 +288,7 @@ class PrepareTest(unittest.TestCase):
         self.fake.issue("library-new-request")
         self.fake.control({"scaffoldFails": "bom"})
         self.assertEqual(BAD_INPUT, self.prepare())
-        self.assertEqual((f"prepare: bad input: {COORDINATE} does not resolve for a JVM test project",
+        self.assertEqual((f"prepare: bad input: {COORDINATE} has no artifact a JVM test project can use",
                           f"> Failed to resolve JAR for {COORDINATE}"),
                          (self.outcome()["reason"], self.outcome()["detail"]))
 

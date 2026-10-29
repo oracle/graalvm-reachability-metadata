@@ -166,7 +166,7 @@ def add_version(state: RunState, workspace: str) -> int:
             runtime_path(workspace, "logs", "scaffold.log"),
         )
         failure: BadInput | Unreachable | None = dependency_failure(
-            scaffold, f"{state.coordinate} does not resolve for a JVM test project", state.coordinate)
+            scaffold, f"{state.coordinate} has no artifact a JVM test project can use", state.coordinate)
         if isinstance(failure, BadInput):
             raise failure
         if not scaffold.ok or not os.path.isdir(state.path(state.test_dir)):
