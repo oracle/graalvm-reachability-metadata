@@ -51,6 +51,7 @@ from utility_scripts.run_metrics_payloads import build_run_metrics_dict
 from utility_scripts.source_context import resolve_test_source_layout
 
 import explore
+import finalize
 import fix_route
 import issue
 import run_tokens
@@ -246,13 +247,29 @@ def render(workspace: str, state: RunState, chunk_summary: dict[str, Any] | None
     }
 
 
-def verification(state: RunState) -> LocalCIVerificationResult:
-    """The pre-publication gate's record from `finalize`."""
+def fixups(workspace: str, state: RunState) -> list[FixupRecord]:
+    """`finalize`'s fix rounds, which are the gate's repairs in this workflow.
+
+    Each names the commands its request listed and the paths its report says it
+    changed; `fix` commits nothing, so no round has a commit of its own.
+    §FS-local-ci-equivalent-verification.2
+    """
+    records: list[FixupRecord] = []
+    for number, fix in enumerate(state.fix_rounds, start=1):
+        if fix.sender == finalize.SENDER:
+            changed: Any = fix_route.read_report(fix_route.report_path(workspace, number)).get("changed")
+            paths: list[str] = [str(path) for path in changed] if isinstance(changed, list) else []
+            records.append(FixupRecord(gate=fix.sender, command=list(fix.commands), commit=None, changed_paths=paths))
+    return records
+
+
+def verification(workspace: str, state: RunState) -> LocalCIVerificationResult:
+    """The pre-publication gate's record from `finalize`, with the fix rounds that repaired it."""
     raw: dict[str, Any] = dict(state.local_ci or {})
     if not raw:
         raise ValueError("finalize recorded no pre-publication gate result")
     raw["commands"] = [CommandRecord(**command) for command in raw.get("commands", [])]
-    raw["fixups"] = [FixupRecord(**fixup) for fixup in raw.get("fixups", [])]
+    raw["fixups"] = [*(FixupRecord(**fixup) for fixup in raw.get("fixups", [])), *fixups(workspace, state)]
     return LocalCIVerificationResult(**raw)
 
 
@@ -308,7 +325,7 @@ def publish(workspace: str) -> int:
             follow_ups=descriptor_follow_ups,
             render=render(workspace, state, chunk_summary),
         ),
-        local_ci_verification=verification(state),
+        local_ci_verification=verification(workspace, state),
         local_review=None,
     )
     commit_contribution(state, "Add Forge publication descriptor")

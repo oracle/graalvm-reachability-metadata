@@ -170,7 +170,8 @@ class WorkflowTest(unittest.TestCase):
         """Run forge-2179-1's shape: one cover pass, then fixes for `native`, `finalize`, and the audit.
 
         Rhei names every `fix` visit's report the same, so the run state numbers them
-        (§AR-forge-workflow-pipeline.4).
+        (§AR-forge-workflow-pipeline.4); `finalize`'s round is the gate's fixup
+        (§FS-local-ci-equivalent-verification.2).
         """
         self.fake.issue("library-new-request")
         self.fake.control({"classes": {"org.example.lib.Codec": 1}})
@@ -209,8 +210,12 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual((1, 4), (self.state.explore.passes, descriptor["metrics"]["summary"]["iterations"]))
         metrics = read_json(self.state.path(os.path.join(stats, "execution-metrics.json")))
         self.assertEqual([4], [entry["metrics"]["iterations"] for entry in metrics.values()])
+        self.assertEqual([{"gate": "finalize", "command": [f"./gradlew checkstyle -Pcoordinates={COORDINATE}"],
+                           "commit": None, "changed_paths": [test_file]}],
+                         descriptor["local_ci_verification"]["fixups"])
         body: str = rendered_body(descriptor)
         self.assertIn("- Iterations: 4\n", body)
+        self.assertIn("- Fixup attempts: 1\n", body)
         # The fix requests and reports stay in the workspace (§FS-forge-run-status).
         self.assertNotIn("Post-Generation Intervention", body)
 
