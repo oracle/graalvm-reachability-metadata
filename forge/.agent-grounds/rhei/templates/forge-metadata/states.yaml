@@ -82,6 +82,10 @@ states:
          list, choosing only from
          `tests/tck-build-logic/src/main/resources/allowed-docker-images/`.
 
+      Walk or search the file system only from the search roots `{input.run.path}`
+      lists; outside them, open only a file whose path you were given. Never walk
+      `/tmp`, `$HOME`, or `/`, even to reach one of them (§FS-forge-agent-runtime-selection.1).
+
       Run no test task, and change nothing else: a program reverts every other
       edit. The edited files are your result; write no report.
 
@@ -153,6 +157,10 @@ states:
          `./gradlew javaTest -Pcoordinates=<coordinate>` from the worktree root,
          in the foreground, and fix the tests until it passes. Run no native task.
       4. Only after `javaTest` has passed, write the report.
+
+      Walk or search the file system only from the search roots `{input.run.path}`
+      lists; outside them, open only a file whose path you were given. Never walk
+      `/tmp`, `$HOME`, or `/`, even to reach one of them (§FS-forge-agent-runtime-selection.1).
 
       Before your final message, write `{output.report.path}` as JSON:
       `{"targets": ["<class or call site you wrote a test for>"]}`.
@@ -237,6 +245,9 @@ states:
 
       Scope
       - Edit only the files the request lists (§root/FS-contribution-contract.5.2).
+      - Walk or search the file system only from the search roots `{input.run.path}`
+        lists; outside them, open only a file whose path you were given. Never walk
+        `/tmp`, `$HOME`, or `/`, even to reach one of them (§FS-forge-agent-runtime-selection.1).
       - A defect in shared infrastructure is not yours to fix: report
         `cannot-fix` and name it (§root/FS-contribution-contract.5.3).
       - Neither is a GraalVM defect — a builder-internal `VMError`,
