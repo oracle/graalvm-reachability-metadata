@@ -36,6 +36,8 @@ MODE_DEFER: str = "defer"
 CALL_SITES: str = "call-sites"
 ACCEPTED_REPORT: str = "coverage.json"
 CALL_SITES_PROPERTY: str = "tck.dynamicAccess.callSites"
+# The extension suite the coverage report also runs (§AR-code-coverage-improvement.2).
+EXTENSION_SUITE: str = "code-coverage-improvement"
 
 
 @dataclass(frozen=True)
@@ -266,6 +268,25 @@ def measure_unlisted(workspace: str, state: RunState) -> int:
     return OK
 
 
+def failing_jvm_suites(workspace: str, state: RunState) -> list[handoff.Failure]:
+    """Rerun each JVM suite the failed coverage report ran, and return those that fail.
+
+    §AR-forge-workflow-pipeline.4.5
+    """
+    tasks: list[str] = ["javaTest"]
+    if os.path.isdir(state.path(os.path.join(state.test_dir, EXTENSION_SUITE))):
+        tasks.append("codeCoverageTest")
+    failures: list[handoff.Failure] = []
+    for task in tasks:
+        tested: TaskResult = run_gradle(
+            state.worktree, coordinate_task(task, state.coordinate),
+            runtime_path(workspace, "logs", f"measure-{state.explore.passes + 1}-{task}.log"),
+        )
+        if not tested.ok:
+            failures.append(handoff.Failure(tested.command, tested.tail))
+    return failures
+
+
 def measure(workspace: str) -> int:
     state: RunState = load(workspace)
     handoff.write_placeholder(workspace, SENDER)
@@ -280,20 +301,17 @@ def measure(workspace: str) -> int:
         report: DynamicAccessCoverageReport = load_dynamic_access_coverage_report(report_path(state))
         pass_gained: bool = gained(explore, before, report)
     else:
-        tested: TaskResult = run_gradle(
-            state.worktree, coordinate_task("javaTest", state.coordinate),
-            runtime_path(workspace, "logs", f"measure-{explore.passes + 1}-javaTest.log"),
-        )
-        if tested.ok:
+        failures: list[handoff.Failure] = failing_jvm_suites(workspace, state)
+        if not failures:
             print(f"ERROR: the coverage report failed while the JVM tests pass:\n{measured.tail}", file=sys.stderr)
             return INFRASTRUCTURE
         if not handoff.guard_tripped(state, SENDER):
-            handoff.write_fix_request(workspace, state, SENDER, [handoff.Failure(tested.command, tested.tail)])
+            handoff.write_fix_request(workspace, state, SENDER, failures)
             save(workspace, state)
             print("[measure] the cover pass broke the JVM tests; a fix request follows")
             return JVM_TESTS_FAIL
         if not explore.checkpoint:
-            return handoff.still_failing(workspace, SENDER, [handoff.Failure(tested.command, tested.tail)])
+            return handoff.still_failing(workspace, SENDER, failures)
         # The loop guard's one exception: an unfixable pass costs that pass, not the run.
         state.pending_request = None
         report, pass_gained = before, False

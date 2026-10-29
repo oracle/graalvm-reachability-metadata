@@ -176,7 +176,7 @@ every other sender, each cover pass, and the audit one, so a run takes
 | `jvm` | Only for a version that already has tests: runs the version check, then `javaTest` and `generateMetadata` (§AR-forge-workflow-pipeline.5); the first failure is one fix request for that command alone |
 | `native-repair` | Right after `jvm`: runs only `test` (§AR-forge-workflow-pipeline.5); a failure is one fix request |
 | `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt; a listing that cannot be produced takes the basic mode instead |
-| `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
+| `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; a failed report reruns each JVM suite to find the one that broke (§AR-forge-workflow-pipeline.4.5); keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
 | `native` | The native check over the tests exploration added: `generateMetadata`, then `test` |
 | `finalize` | `splitTestOnlyMetadata`, `routeForeignMetadata`, and `checkMetadataFiles` (§AR-forge-workflow-pipeline.5), then `spotlessApply`, `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the coordinate's three native lanes (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request, at most `finalize_fixes` times (§AR-forge-workflow-pipeline.6) |
 | `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns `test` and `finalize`'s lane once over a changed one, never `generateMetadata` (§AR-forge-workflow-pipeline.4.3) |
@@ -245,6 +245,16 @@ own reproduction line from `run-consecutive-tests.sh` — version and mode — w
 the entry's JDK prefixed. Each Gradle call of the script is capped at five
 minutes, so three lanes bound the cost that the `finalize` and `audit` program
 timeouts allow for.
+
+### 4.5 A failed coverage report
+
+The coverage report runs every JVM suite of the version: `javaTest`, and
+`codeCoverageTest` over its `code-coverage-improvement` extension suite when it
+has one (§AR-code-coverage-improvement.2). A cover pass that breaks either suite
+fails the report, so when the report fails `measure` reruns each suite on its
+own and blames the pass for every suite that fails: one fix request names them
+all and `measure` exits `11`. Only a report that fails while every suite passes
+is an infrastructure failure.
 
 ## 5. The native check
 

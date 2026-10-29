@@ -13,6 +13,7 @@ from __future__ import annotations
 
 # Control keys: classes (class -> total dynamic-access calls; a test file whose
 # name starts with the class's simple name covers one call), javaFails,
+# extensionFails (only the code-coverage-improvement suite's `codeCoverageTest` fails),
 # generateFails (only `generateMetadata` fails), nativeFails (until the shipped
 # metadata names `Fixed`), checkFails,
 # styleFails (the failing style task), listFails, listsNoCalls (the listing
@@ -61,6 +62,10 @@ elif task == "javaTest":
     if control.get("javaFails"):
         print("2 tests completed, 1 failed")
         sys.exit(1)
+elif task == "codeCoverageTest":
+    if control.get("extensionFails"):
+        print("error: variable result is already defined")
+        sys.exit(1)
 elif task == "checkMetadataFiles":
     if control.get("checkFails"):
         print("ERROR: In file x\nEntry: e\nTypeReached: org.other.Type\ndoesn't belong to any of the specified packages: [org.example]")
@@ -84,7 +89,8 @@ elif task == "generateDynamicAccessReport":
     open(os.path.join(out, "lib.json"), "w").write("[]")
 elif task == "generateDynamicAccessCoverageReport":
     stored = prop("tck.dynamicAccess.callSites")
-    if stored is None or not os.path.isdir(stored) or control.get("javaFails") or control.get("coverageFails"):
+    if stored is None or not os.path.isdir(stored) or any(
+            control.get(key) for key in ("javaFails", "extensionFails", "coverageFails")):
         print("the coverage report failed")
         sys.exit(1)
     names = tests()
