@@ -6,6 +6,8 @@
  */
 package org_apache_maven.maven_api_annotations;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 
 import org.apache.maven.api.annotations.Nonnull;
@@ -19,20 +21,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NullableTest {
     @Test
+    // Checkstyle: allow direct annotation access
     void discoversNullableReturnValue() throws NoSuchMethodException {
-        Method lookup = PropertyLookup.class.getMethod("find", String.class);
-        Nullable annotation = lookup.getAnnotation(Nullable.class);
+        Method lookupAnnotationAccess = PropertyLookup.class.getMethod("find", String.class);
+        Nullable annotation = annotation(lookupAnnotationAccess, Nullable.class);
 
         assertNotNull(annotation);
         assertEquals(Nullable.class, annotation.annotationType());
-        assertTrue(lookup.isAnnotationPresent(Nullable.class));
+        assertTrue(lookupAnnotationAccess.isAnnotationPresent(Nullable.class));
     }
+    // Checkstyle: disallow direct annotation access
 
     @Test
     void discoversNullableParameter() throws NoSuchMethodException {
         Method lookup = PropertyLookup.class.getMethod("find", String.class);
-        Nullable parameterAnnotation = lookup.getParameters()[0].getAnnotation(Nullable.class);
-        Nullable returnAnnotation = lookup.getAnnotation(Nullable.class);
+        Nullable parameterAnnotation = annotation(lookup.getParameters()[0], Nullable.class);
+        Nullable returnAnnotation = annotation(lookup, Nullable.class);
 
         assertNotNull(parameterAnnotation);
         assertEquals(returnAnnotation, parameterAnnotation);
@@ -43,8 +47,16 @@ public class NullableTest {
     void distinguishesNonNullableReturnValue() throws NoSuchMethodException {
         Method lookup = PropertyLookup.class.getMethod("name");
 
-        assertNull(lookup.getAnnotation(Nullable.class));
+        assertNull(annotation(lookup, Nullable.class));
     }
+
+    // Annotation lookup is the public API for this annotation-only library.
+    // Checkstyle: allow direct annotation access
+    private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
+        AnnotatedElement elementAnnotationAccess = element;
+        return elementAnnotationAccess.getAnnotation(annotationType);
+    }
+    // Checkstyle: disallow direct annotation access
 
     public interface PropertyLookup {
         @Nullable
