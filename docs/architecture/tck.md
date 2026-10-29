@@ -250,6 +250,12 @@ uses the combined `jacocoCodeCoverageReport`, so newly added regular tests and
 tracked code-coverage extension tests are reflected in the committed
 `libraryCoverage` line, instruction, and method statistics.
 
+The stats and coverage-report tasks stream the JaCoCo XML report and keep only
+what they read from it, never a DOM of the whole report: the report has a
+`<line>` element for every source line, so the report of a large library
+reaches tens of MB (58 MB for `it.unimi.dsi:fastutil:8.1.1`), and a DOM of
+about nine times that exhausted the Gradle daemon heap.
+
 `nativeTestPGOSampling` builds with `--pgo-instrument` and `--pgo-sampling`
 together, so one run yields exact branch and receiver counters beside the
 sampled stacks (§forge/AR-code-coverage-deep-navigation.1.1), plus a positive
