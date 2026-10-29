@@ -217,28 +217,14 @@ report as a property of the library (§forge/AR-dynamic-access-fallback-and-fail
 
 A caller that has already listed the call sites can skip that native build.
 With `-Ptck.dynamicAccess.callSites=<dir>` naming a copy of an earlier
-`dynamic-access` output, the task runs only `jacocoCodeCoverageReport` and
-correlates the fresh JaCoCo report against the copy. The tracking build
-preserves the library JARs whole, so the call sites depend only on the library,
-and a copy taken before more tests were written still lists every site; a copy
-that does not exist fails the task like a missing native output
+`dynamic-access` output, the task runs `jacocoCodeCoverageReport` and
+correlates the fresh JaCoCo report against the copy; the only other build it
+starts is the agent run of §AR-test-harness.8.1, when the copy lists a site that
+line matching cannot decide. The tracking build preserves the library JARs
+whole, so the call sites depend only on the library, and a copy taken before
+more tests were written still lists every site; a copy that does not exist
+fails the task like a missing native output
 (§forge/AR-forge-workflow-pipeline.4.2).
-
-Dynamic-access coverage normally marks a call site covered when its stack frame
-carries a source line and JaCoCo covered that line. Some jars are compiled
-without a `LineNumberTable`, so every dynamic-access frame is line-less
-(`Unknown Source`) and line-based matching can never succeed. In that case only
-— the report has call sites but none carries a line number — the harness
-collects `native-image-agent` configuration origins from a JVM `test` run and
-falls back to matching the complete origin path against the statically reported
-call sites. The harness streams the agent's compressed origin tree and marks a
-line-less call site covered when the same path contains both its exact tracked
-API and its caller class and method, with the caller preceding the API. It keeps
-only the current origin-tree branch and the matched call-site identities in
-memory. If multiple reported callers precede the API, the nearest one wins; a
-nested tracked API ends the caller search so delegated JDK calls do not cover a
-different API with the same method name. Line-based matching stays the primary
-path and is unchanged for jars that carry line information.
 
 The code-coverage extension suite lives at the tracked
 `code-coverage-improvement/` directory inside a coordinate's test project
@@ -283,3 +269,46 @@ reported as applied.
 task, so a profile from a failing native suite cannot be accepted. Samples and
 counters are guidance only; JaCoCo remains the coverage metric
 (§forge/AR-code-coverage-improvement.4.2).
+
+### 8.1 Dynamic-access sites line matching cannot decide
+
+Dynamic-access coverage marks a call site covered when its stack frame carries a
+source line and JaCoCo covered that line; a line JaCoCo reports as missed leaves
+the site uncovered. Line matching cannot decide two kinds of site, which stay in
+the denominator because Native Image needs metadata for them:
+
+- a frame without a line number, as in jars compiled without a
+  `LineNumberTable` (`Unknown Source`);
+- a frame in a method JaCoCo filtered out of an analyzed class: the report has a
+  `<class>` element for the frame's class, but none of its `<method>` elements
+  carries the frame's method name. JaCoCo filters synthetic methods, such as the
+  `class$` helper through which javac before Java 5 resolved a class literal
+  with `Class.forName`. The rule looks at the method, not the line, so it holds
+  even where the helper shares its line number with another method's code and
+  JaCoCo reports that line.
+
+A frame whose class has no `<class>` element comes from a class JaCoCo never
+analyzed, such as one in an upstream test JAR or another artifact kept off the
+coverage denominator (§AR-test-harness.8). It stays decided by its line.
+
+Only when the report has an undecided site does the harness collect
+`native-image-agent` configuration origins from a JVM `test` run over the
+regular and extension suites, the suites the combined JaCoCo report measures,
+and fall back, for those sites alone, to matching the complete origin path
+against the statically reported call sites. The harness streams the agent's
+compressed origin tree and marks such a site covered when the same path
+contains both its exact tracked API and its caller class and method, with the
+caller preceding the API. It keeps only the current origin-tree branch and the
+matched call-site identities in memory. If multiple reported callers precede the
+API, the nearest one wins; a nested tracked API ends the caller search so
+delegated JDK calls do not cover a different API with the same method name.
+
+That match names a tracked API, a class and a method name, not a call site, so
+it cannot tell two sites of one method, or two overloads, apart. Agent evidence
+is therefore refused for an undecided site when a line-decided site has the same
+tracked API, class and method name: the site stays uncovered and does not count
+as undecided. When an undecided site exists and the agent run fails or writes no
+origins, the stats or coverage-report task fails instead of reporting those
+sites as uncovered. Confining the fallback to filtered methods keeps undecided
+sites rare, so few libraries pay for the extra JVM run, whether in stats
+generation or in a stored-call-sites correlation.

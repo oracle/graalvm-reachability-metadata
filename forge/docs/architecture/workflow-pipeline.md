@@ -207,8 +207,10 @@ entries and the tail goes on as above (§FS-unsupportable-version-diagnosis.3).
 The dynamic-access call sites depend only on the library JARs, which the
 tracking build preserves whole, so `analyze` lists them once and keeps a copy
 in the workspace, an empty one when the listing wrote none; every later
-correlation passes that copy to `generateDynamicAccessCoverageReport` and runs
-only JaCoCo (§root/AR-test-harness.8).
+correlation passes that copy to `generateDynamicAccessCoverageReport`, which
+skips the native build and runs JaCoCo (§root/AR-test-harness.8), plus the JVM
+agent run when the copy lists a site that line matching cannot decide
+(§root/AR-test-harness.8.1).
 
 ### 4.3 The audit
 
