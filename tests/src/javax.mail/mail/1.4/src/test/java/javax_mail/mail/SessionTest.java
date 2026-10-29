@@ -7,7 +7,9 @@
 package javax_mail.mail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sun.mail.imap.IMAPStore;
 import com.sun.mail.pop3.POP3Store;
@@ -42,6 +44,25 @@ public class SessionTest {
     }
 
     @Test
+    void resolvesProviderWhenContextClassLoaderDeniesAccess() throws Exception {
+        Session session = Session.getInstance(new Properties());
+        String providerClassName = session.getProvider("imap").getClassName();
+        Thread thread = Thread.currentThread();
+        ClassLoader original = thread.getContextClassLoader();
+        DenyingProviderClassLoader restricted = new DenyingProviderClassLoader(original, providerClassName);
+        try {
+            thread.setContextClassLoader(restricted);
+            Store store = session.getStore("imap");
+            assertTrue(restricted.providerAccessDenied);
+            assertInstanceOf(IMAPStore.class, store);
+            assertEquals("imap", store.getURLName().getProtocol());
+            assertFalse(store.isConnected());
+        } finally {
+            thread.setContextClassLoader(original);
+        }
+    }
+
+    @Test
     void resolvesProviderWithoutContextClassLoader() throws Exception {
         Thread thread = Thread.currentThread();
         ClassLoader original = thread.getContextClassLoader();
@@ -54,6 +75,25 @@ public class SessionTest {
             assertEquals("imap", store.getURLName().getProtocol());
         } finally {
             thread.setContextClassLoader(original);
+        }
+    }
+
+    private static final class DenyingProviderClassLoader extends ClassLoader {
+        private final String providerClassName;
+        private boolean providerAccessDenied;
+
+        private DenyingProviderClassLoader(ClassLoader parent, String providerClassName) {
+            super(parent);
+            this.providerClassName = providerClassName;
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (providerClassName.equals(name)) {
+                providerAccessDenied = true;
+                throw new SecurityException("Context loader denies access to " + name);
+            }
+            return super.loadClass(name);
         }
     }
 }
