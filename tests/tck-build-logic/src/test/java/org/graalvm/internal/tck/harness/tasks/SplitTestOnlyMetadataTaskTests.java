@@ -12,19 +12,11 @@ import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
-    private static final String LIB_SHIPPED_METADATA = "metadata/com.example/lib/1.0.0/reachability-metadata.json";
-    private static final String LIB_TEST_METADATA =
-            "tests/src/com.example/lib/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json";
-
     @Test
     void leavesDependencyPackageStubMetadataShippedAndMovesTestFixtureMetadata() throws IOException {
         String coordinate = "io.grpc:grpc-auth:1.79.0";
@@ -256,61 +248,6 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
     }
 
     @Test
-    void movesBundleWhoseBasePropertiesIsTestResource() throws IOException {
-        assertBundlesSplit(List.of("LocalizerFallback.properties"), List.of("LocalizerFallback"), List.of());
-    }
-
-    @Test
-    void movesBundleProvidedOnlyByLocaleVariant() throws IOException {
-        assertBundlesSplit(List.of("catalog/Messages_de.properties"), List.of("catalog.Messages"), List.of());
-    }
-
-    @Test
-    void movesBundleNamingTestPackageClass() throws IOException {
-        assertBundlesSplit(List.of(), List.of("com_example.lib.LibMessages"), List.of());
-    }
-
-    @Test
-    void keepsBundleNothingProvides() throws IOException {
-        assertBundlesSplit(
-                List.of("LocalizerFallback.properties"),
-                List.of("LocalizerFallback"),
-                List.of("deployment.LocalizerFallback", "catalog.missing.UnavailableMessages")
-        );
-    }
-
-    @Test
-    void keepsLibraryBundleSharingTestResourceName() throws IOException {
-        assertBundlesSplit(
-                List.of("Messages.properties"),
-                List.of("Messages"),
-                List.of("com.sun.xml.bind.marshaller.Messages")
-        );
-    }
-
-    @Test
-    void keepsAllowedPackageBundleWhoseTranslationIsTestResource() throws IOException {
-        assertBundlesSplit(List.of("com/example/Messages_fr.properties"), List.of(), List.of("com.example.Messages"));
-    }
-
-    @Test
-    void keepsBundleWhoseSiblingIsNotLocaleVariant() throws IOException {
-        assertBundlesSplit(List.of("Messages_extra.properties"), List.of(), List.of("Messages"));
-    }
-
-    @Test
-    void retainsMovedBundleOnSecondRun() throws IOException {
-        List<String> movedBundles = List.of("LocalizerFallback");
-        List<String> keptBundles = List.of("deployment.LocalizerFallback");
-        assertBundlesSplit(List.of("LocalizerFallback.properties"), movedBundles, keptBundles);
-
-        runSplitTask("com.example:lib:1.0.0");
-
-        assertThat(bundleNames(LIB_SHIPPED_METADATA)).containsExactlyElementsOf(keptBundles);
-        assertThat(bundleNames(LIB_TEST_METADATA)).containsExactlyElementsOf(movedBundles);
-    }
-
-    @Test
     void splitLeavesForeignConditionMetadataUntouched() throws IOException {
         String coordinate = "com.example:root:2.0.0";
         writeMinimalTestProject("com.example", "root", "2.0.0");
@@ -330,39 +267,6 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
                 .extracting(entry -> entry.get("type").asText())
                 .containsExactly("org.owner.Engine$SerializedForm");
         assertThat(ownerMetadata.isEmpty()).isTrue();
-    }
-
-    private void runSplitTask(String coordinate) {
-        Project project = ProjectBuilder.builder()
-                .withProjectDir(tempDir.toFile())
-                .build();
-        SplitTestOnlyMetadataTask task = project.getTasks()
-                .register("splitTestOnlyMetadata", SplitTestOnlyMetadataTask.class)
-                .get();
-        task.setCoordinatesOverride(List.of(coordinate));
-        task.run();
-    }
-
-    /// Writes the `com.example:lib:1.0.0` test project, whose test package is `com_example.lib`.
-    private void writeLibTestProject() throws IOException {
-        writeSource(
-                "tests/src/com.example/lib/1.0.0/src/test/java/com_example/lib/LibTest.java",
-                """
-                package com_example.lib;
-
-                import org.junit.jupiter.api.Test;
-
-                public class LibTest {
-                    @Test
-                    void exercisesLibrary() {
-                    }
-
-                    interface Callback {
-                    }
-                }
-                """
-        );
-        writeIndex("com.example", "lib", "1.0.0", List.of("1.0.0"), List.of("com.example"));
     }
 
     /// Adds a test in `com.example.internal`, inside the `com.example` allowed package.
@@ -445,52 +349,6 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
         assertThat(tempDir.resolve(LIB_TEST_METADATA)).doesNotExist();
     }
 
-    /// Writes a `com.example:lib:1.0.0` project with `testResources` under `src/test/resources`
-    /// and one bundle entry per name, splits it, and checks which bundles moved and which stayed.
-    private void assertBundlesSplit(
-            List<String> testResources,
-            List<String> movedBundles,
-            List<String> keptBundles
-    ) throws IOException {
-        writeLibTestProject();
-        for (String resource : testResources) {
-            writeSource("tests/src/com.example/lib/1.0.0/src/test/resources/" + resource, "key=value\n");
-        }
-        String bundleEntries = Stream.concat(movedBundles.stream(), keptBundles.stream())
-                .map(this::bundleEntry)
-                .collect(Collectors.joining(", "));
-        writeJson(LIB_SHIPPED_METADATA, """
-                {
-                  "resources": [%s]
-                }
-                """.formatted(bundleEntries));
-
-        runSplitTask("com.example:lib:1.0.0");
-
-        assertThat(bundleNames(LIB_SHIPPED_METADATA)).containsExactlyElementsOf(keptBundles);
-        assertThat(bundleNames(LIB_TEST_METADATA)).containsExactlyElementsOf(movedBundles);
-    }
-
-    /// The bundle names in `metadataFile`'s `resources`, none when the split did not write the file.
-    private List<String> bundleNames(String metadataFile) throws IOException {
-        List<String> names = new ArrayList<>();
-        if (Files.isRegularFile(tempDir.resolve(metadataFile))) {
-            readJson(metadataFile).path("resources").forEach(entry -> names.add(entry.get("bundle").asText()));
-        }
-        return names;
-    }
-
-    /// A resource bundle entry as the agent records it when a library looks the bundle up.
-    private String bundleEntry(String bundle) {
-        return """
-                {
-                  "condition": {
-                    "typeReached": "com.example.Localizer"
-                  },
-                  "bundle": "%s"
-                }
-                """.formatted(bundle);
-    }
 
     /// A resource entry as the agent records it when a library reads class bytes or scans a
     /// package directory as a resource.

@@ -53,15 +53,35 @@ final class TestResourceClassifier {
     }
 
     /// A resource glob is a test resource when it names a file under the test project's
-    /// `src/test/resources` or matches only resources in a test package
-    /// (§FS-repository-functional-spec.5.1).
+    /// `src/test/resources`, a `.properties` file of a bundle that a test resource provides, or
+    /// matches only resources in a test package (§FS-repository-functional-spec.5.1).
     private boolean globIsTestResource(JsonNode entry) {
         JsonNode globNode = entry.isObject() ? entry.get("glob") : null;
         if (globNode == null || !globNode.isTextual()) {
             return false;
         }
         String resourcePath = normalizeResourcePath(globNode.asText());
-        return testResources.contains(resourcePath) || isTestPackageResourceGlob(resourcePath);
+        return testResources.contains(resourcePath)
+                || isTestBundlePropertiesLookup(resourcePath)
+                || isTestPackageResourceGlob(resourcePath);
+    }
+
+    /// Whether `resourcePath` is the base or a `_<locale>` `.properties` file of a bundle that the
+    /// test resources provide, as `bundleIsTestResource` decides. A `ResourceBundle` lookup records
+    /// every candidate locale file, including those the tests never wrote, such as `_en_US`.
+    private boolean isTestBundlePropertiesLookup(String resourcePath) {
+        if (!resourcePath.endsWith(PROPERTIES_SUFFIX)) {
+            return false;
+        }
+        String name = resourcePath.substring(0, resourcePath.length() - PROPERTIES_SUFFIX.length());
+        int nameStart = name.lastIndexOf('/') + 1;
+        for (int end = name.length(); end > nameStart; end = name.lastIndexOf('_', end - 1)) {
+            String basePath = name.substring(0, end);
+            if (isBundlePropertiesFile(resourcePath, basePath) && testResourcesProvideBundle(basePath)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// A resource bundle is a test resource when the test project's `src/test/resources` provides
@@ -75,15 +95,25 @@ final class TestResourceClassifier {
             return false;
         }
         String basePath = bundleNode.asText().replace('.', '/');
-        String bundlePackage = basePath.substring(0, Math.max(basePath.lastIndexOf('/'), 0)).replace('/', '.');
-        // A library's own bundle stays even when a test translates it or sits in its package
-        // (§FS-test-contract.2.2).
-        if (referencesAnyPackage(bundlePackage, allowedPackages)) {
+        if (isAllowedPackageBundle(basePath)) {
             return false;
         }
         // A `ResourceBundle` subclass the tests define has its class file in a test package.
-        return testResources.stream().anyMatch(resource -> isBundlePropertiesFile(resource, basePath))
-                || isTestPackageResourceGlob(basePath + CLASS_FILE_SUFFIX);
+        return testResourcesProvideBundle(basePath) || isTestPackageResourceGlob(basePath + CLASS_FILE_SUFFIX);
+    }
+
+    /// Whether a test resource is the base `.properties` file or a `_<locale>` variant of the
+    /// bundle at `basePath`, outside the allowed packages.
+    private boolean testResourcesProvideBundle(String basePath) {
+        return !isAllowedPackageBundle(basePath)
+                && testResources.stream().anyMatch(resource -> isBundlePropertiesFile(resource, basePath));
+    }
+
+    /// A library's own bundle stays even when a test translates it or sits in its package
+    /// (§FS-test-contract.2.2).
+    private boolean isAllowedPackageBundle(String basePath) {
+        String bundlePackage = basePath.substring(0, Math.max(basePath.lastIndexOf('/'), 0)).replace('/', '.');
+        return referencesAnyPackage(bundlePackage, allowedPackages);
     }
 
     /// Whether `resource` is `<basePath>.properties` or a `<basePath>_<locale>.properties` variant.

@@ -8,6 +8,8 @@ package org.graalvm.internal.tck.harness.tasks;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -21,6 +23,9 @@ import java.util.stream.Collectors;
 /// `routeForeignMetadata` task tests.
 abstract class MetadataTaskTestSupport {
     static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    static final String LIB_SHIPPED_METADATA = "metadata/com.example/lib/1.0.0/reachability-metadata.json";
+    static final String LIB_TEST_METADATA =
+            "tests/src/com.example/lib/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json";
 
     @TempDir
     Path tempDir;
@@ -59,6 +64,39 @@ abstract class MetadataTaskTestSupport {
                 ]
                 """.formatted(metadataVersion, toJson(testedVersions), toJson(allowedPackages))
         );
+    }
+
+    void runSplitTask(String coordinate) {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+        SplitTestOnlyMetadataTask task = project.getTasks()
+                .register("splitTestOnlyMetadata", SplitTestOnlyMetadataTask.class)
+                .get();
+        task.setCoordinatesOverride(List.of(coordinate));
+        task.run();
+    }
+
+    /// Writes the `com.example:lib:1.0.0` test project, whose test package is `com_example.lib`.
+    void writeLibTestProject() throws IOException {
+        writeSource(
+                "tests/src/com.example/lib/1.0.0/src/test/java/com_example/lib/LibTest.java",
+                """
+                package com_example.lib;
+
+                import org.junit.jupiter.api.Test;
+
+                public class LibTest {
+                    @Test
+                    void exercisesLibrary() {
+                    }
+
+                    interface Callback {
+                    }
+                }
+                """
+        );
+        writeIndex("com.example", "lib", "1.0.0", List.of("1.0.0"), List.of("com.example"));
     }
 
     String foreignSerializationMetadata() {
