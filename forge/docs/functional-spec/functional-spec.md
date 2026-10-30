@@ -403,6 +403,12 @@ retry: Forge posts a comment naming the reason and labels the issue
 `human-intervention`, which takes it out of the queue until a maintainer
 resolves it.
 
+An issue can still close between the claim and `prepare`'s own live read.
+Such an issue is not a bad input: it has left the queue, and nothing is left
+for a maintainer to do. `prepare` ends the run on it, and the launcher only
+clears the Forge assignee the claim set. It adds no label, posts no comment,
+and leaves the board item where closing the issue put it.
+
 #### 2.1 An issue blocked on GraalVM is not claimed
 
 An issue labeled `graalvm-bug` waits on a GraalVM defect
@@ -785,7 +791,7 @@ Every `forge-metadata` run ends in one final state, and the launcher acts on it
 | `completed` | Every check and the local CI-equivalent verification passed (§FS-local-ci-equivalent-verification) and the publication branch is pushed. A chunk that is not the last is published the same way, with `RUN_STATUS_CHUNK_READY` in its metrics; the issue must not be resumed until that chunk's PR has merged. A skip record is published the same way (§FS-unsupportable-version-diagnosis.3), and so is a not-for-native-image record (§FS-not-for-native-image-record.2). |
 | `nothing-to-publish` | The coordinate's paths are unchanged, counting the exhaust record a chunk writes first (§FS-forge-chunked-dynamic-access); no branch is pushed. A chunk that is not the last and completed or exhausted a class, or a last chunk that removes an earlier chunk's report, always has something to publish. |
 | `human-intervention` | A check still failed after its fix, or the fix reported that nothing within the rules helps; no branch is pushed (§FS-human-intervention-policy). |
-| `failed` | A bad input or an infrastructure failure; no branch is pushed. |
+| `failed` | A bad input, an infrastructure failure, or an issue that closed after the claim (§FS-forge-run-requirements.2); no branch is pushed. |
 
 A run whose checks pass only after a fix request is still `completed`: the fix
 request and report stay in the workspace, and the PR body carries the run's

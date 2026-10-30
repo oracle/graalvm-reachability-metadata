@@ -164,6 +164,7 @@ class CloseOutTest(unittest.TestCase):
         with patch.object(run_launch, "add_issue_label") as label, \
                 patch.object(run_launch, "post_issue_comment") as comment, \
                 patch.object(run_launch, "revert_issue_claim") as revert, \
+                patch.object(run_launch, "release_closed_issue_claim") as self.released, \
                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             run_launch.close_out(claimed, outcome)
         return label.call_args_list, comment.call_args_list, revert.call_args_list
@@ -287,6 +288,12 @@ class CloseOutTest(unittest.TestCase):
         revert.assert_called_once_with("item", 7, "native still fails")
         self.assertIn("Issue #7 intervention comment could not be posted", stderr.getvalue())
         self.assertIn("claim released.", stderr.getvalue())
+
+    def test_an_issue_closed_after_the_claim_only_loses_its_forge_assignee(self) -> None:
+        # It left the queue: no label, comment or board move (§FS-forge-run-requirements.2).
+        self.assertEqual(([], [], []), self.close_out(
+            {"outcome": "failed", "kind": "issue-closed", "reason": "the issue closed after the claim"}))
+        self.released.assert_called_once_with(7, "the issue closed after the claim")
 
     def test_a_run_without_an_outcome_is_an_infrastructure_failure(self) -> None:
         self.assertEqual("infrastructure", run_launch.record_outcome(tempfile.mkdtemp())["kind"])

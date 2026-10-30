@@ -42,6 +42,7 @@ from exit_codes import (  # noqa: E402
     BAD_INPUT,
     CANNOT_FIX,
     INFRASTRUCTURE,
+    ISSUE_CLOSED,
     JVM_TESTS_FAIL,
     NOTHING_TO_DO,
     NOT_FOR_NATIVE_IMAGE_RECORDED,
@@ -101,6 +102,8 @@ def outcome(step: str, code: int, bad_input: BadInput | None = None) -> dict[str
         return {"outcome": "completed", "reason": "the publication branch is pushed"}
     if step == "publish" and code == NOTHING_TO_DO:
         return {"outcome": "nothing-to-publish", "reason": "the coordinate's paths are unchanged"}
+    if step == "prepare" and code == ISSUE_CLOSED:
+        return {"outcome": "failed", "reason": "the issue closed after the claim", "kind": "issue-closed"}
     if code == BAD_INPUT:
         # The close-out comment names what the step rejected (§FS-forge-run-requirements.2).
         named: str = f": {bad_input.reason}" if bad_input is not None else ""

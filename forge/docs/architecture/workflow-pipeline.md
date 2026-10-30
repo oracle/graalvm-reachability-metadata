@@ -69,14 +69,15 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    `completed` leaves it `In Progress` for the pull request to close;
    `human-intervention` and a bad input label it `human-intervention` with the
    reason and return it to `Todo` (§FS-human-intervention-policy); an
-   infrastructure failure only returns it to `Todo`. A `human-intervention`
-   comment also quotes what the run recorded in its outcome: the state that
-   stopped, its failing commands with a bounded excerpt of their output, and
-   the last fix report. Each excerpt sits in a fence no backtick run inside it
-   can close, and the report's summary, agent text, is quoted trimmed to 1500
-   characters, with `§` escaped as `<§>` and every `@` kept from mentioning. A
-   bad input's comment also names the step's reason and quotes the output it
-   was read from (§FS-forge-run-requirements.2).
+   infrastructure failure only returns it to `Todo`; an issue that closed after
+   the claim only loses the Forge assignee (§FS-forge-run-requirements.2). A
+   `human-intervention` comment also quotes what the run recorded in its
+   outcome: the state that stopped, its failing commands with a bounded excerpt
+   of their output, and the last fix report. Each excerpt sits in a fence no
+   backtick run inside it can close, and the report's summary, agent text, is
+   quoted trimmed to 1500 characters, with `§` escaped as `<§>` and every `@`
+   kept from mentioning. A bad input's comment also names the step's reason and
+   quotes the output it was read from (§FS-forge-run-requirements.2).
    Bookkeeping GitHub refuses does not stop the launcher
    (§FS-forge-run-requirements). A `human-intervention` label that cannot be
    added keeps the claim, which holds the issue out of the queue as the label
@@ -114,6 +115,7 @@ follow, and the rotation resumes at the turn it stood at.
 | `20` | nothing to do: a new library has no version to repair, no target, exploration deferred, explore budget spent, or nothing to publish |
 | `21` | `setup-check` only: the setup verdict is recorded as a skip; go straight to `publish` |
 | `22` | `prepare` only: the artifact is recorded as not for Native Image; go straight to `publish` |
+| `23` | `prepare` only: the issue closed after the claim; the run ends in `failed` with no issue action (§FS-forge-run-requirements.2) |
 | `2` / `3` | bad input / infrastructure or crash |
 | `30`–`35` | `fix-route` only: return to `jvm`, `measure`, `native`, `finalize`, `audit`, `native-repair` |
 | `40` | `fix-route` only: the fix reported that it could not help, except for `native` |
@@ -139,7 +141,7 @@ stateDiagram-v2
     [*] --> prepare
     prepare --> setup: 0
     prepare --> publish: 22 not-for-native-image
-    prepare --> failed: 2 or 3
+    prepare --> failed: 2, 3 or 23 issue closed
     state "setup-check" as check
     setup --> check
     check --> jvm: 0
@@ -194,7 +196,7 @@ every other sender, each cover pass, and the audit one, so a run takes
 
 | State | Does |
 | --- | --- |
-| `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on its run branch (§AR-forge-workflow-pipeline.4.6), reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate at its path and stopping the Gradle daemons that served it, whose in-memory build state outlives the removed files, and attaches it to the task; for a new library whose published files show it is no JVM library, writes the not-for-native-image index, validates it with `validateIndexFiles` and the pre-publication gate, checkpoints, and exits `22` (§FS-not-for-native-image-record); otherwise scaffolds a new library (a coordinate the scaffold cannot resolve is a bad input, §AR-forge-workflow-pipeline.4.1), or adds the version beside its nearest supported one (§FS-library-update-tested-version-split), placing and formatting its index entry as the TCK index tasks do, the latest-only fields moving with `latest` (§root/FS-metadata.1), and records the version match and the coordinate's baseline snapshot for the pull request (§AR-pr-body); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
+| `prepare` | Reads the issue, and exits `23` when it is no longer open (§FS-forge-run-requirements.2); derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on its run branch (§AR-forge-workflow-pipeline.4.6), reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate at its path and stopping the Gradle daemons that served it, whose in-memory build state outlives the removed files, and attaches it to the task; for a new library whose published files show it is no JVM library, writes the not-for-native-image index, validates it with `validateIndexFiles` and the pre-publication gate, checkpoints, and exits `22` (§FS-not-for-native-image-record); otherwise scaffolds a new library (a coordinate the scaffold cannot resolve is a bad input, §AR-forge-workflow-pipeline.4.1), or adds the version beside its nearest supported one (§FS-library-update-tested-version-split), placing and formatting its index entry as the TCK index tasks do, the latest-only fields moving with `latest` (§root/FS-metadata.1), and records the version match and the coordinate's baseline snapshot for the pull request (§AR-pr-body); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
 | `setup-check` | Once, right after `setup`: the setup tail (§AR-forge-workflow-pipeline.4.1); a recorded skip exits `21`, a new library, which has no version to repair, exits `20` to `analyze`, and every other route exits `0` to `jvm` |
 | `jvm` | Only for a version that already has tests: runs the version check, then `javaTest` and `generateMetadata` (§AR-forge-workflow-pipeline.5); the first failure is one fix request for that command alone, except that a dependency no repository has, or a repository that failed, ends the run as in the setup tail (§AR-forge-workflow-pipeline.4.1) |
 | `native-repair` | Right after `jvm`: runs only `test` (§AR-forge-workflow-pipeline.5); a failure is one fix request |

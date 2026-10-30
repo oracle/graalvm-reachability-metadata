@@ -41,6 +41,10 @@ TASK_TYPES: dict[str, str] = {
 CHUNKED_LABEL: str = "chunked-dynamic-access"
 
 
+class IssueClosed(ValueError):
+    """The issue is no longer open: it left the queue after the claim (§FS-forge-run-requirements.2)."""
+
+
 @dataclass(frozen=True)
 class Issue:
     number: int
@@ -55,9 +59,9 @@ class Issue:
 
 
 def parse_issue(payload: dict[str, Any]) -> Issue:
-    """The open issue's one workflow label and one coordinate; `ValueError` otherwise."""
+    """The open issue's one workflow label and one coordinate; `IssueClosed` or `ValueError` otherwise."""
     if str(payload.get("state", "")).upper() != "OPEN":
-        raise ValueError(f"issue is {payload.get('state')}, not open")
+        raise IssueClosed(f"issue is {payload.get('state')}, not open")
     labels: frozenset[str] = frozenset(label.get("name", "") for label in payload.get("labels", []))
     workflow_labels: list[str] = sorted(labels & ROUTES.keys())
     if len(workflow_labels) != 1:

@@ -30,7 +30,7 @@ from dispatcher.claim_preflight import refresh_issue_payload_for_claim
 from dispatcher.config import LABEL_HUMAN_INTERVENTION
 from dispatcher.github_api import format_github_exception_details
 from dispatcher.issue_admin import add_issue_label, post_issue_comment
-from dispatcher.issue_claiming import revert_issue_claim, try_claim_issue
+from dispatcher.issue_claiming import release_closed_issue_claim, revert_issue_claim, try_claim_issue
 from dispatcher.issue_form import check_issue_form, reject_issue_form
 from dispatcher.rhei_workspace import (EVENTS, NO_ADVANCE, NO_ADVANCE_LIMIT, budget_halted, count_no_advance,
                                        current_state, file_stamp, halt_message, run_events,
@@ -389,6 +389,11 @@ def close_out(claimed: Claim, outcome: dict[str, Any]) -> None:
     reason: str = outcome.get("reason", "")
     if kind == "completed":
         print(f"Issue #{number}: published; the pull request closes it.")
+        return
+    if outcome.get("kind") == "issue-closed":
+        cleared: bool = release_closed_issue_claim(number, reason)
+        print(f"Issue #{number}: closed after the claim; dropped"
+              f"{'' if cleared else ', its Forge assignee not cleared'}.", file=sys.stderr)
         return
     needs_human: bool = kind in ("human-intervention", "nothing-to-publish") or outcome.get("kind") == "bad-input"
     if needs_human and not hand_to_maintainer(number, outcome):
