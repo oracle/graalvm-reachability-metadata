@@ -34,6 +34,7 @@ public class KafkaListenerAnnotationBeanPostProcessorTest {
     @Test
     @SuppressWarnings("unchecked")
     void registersAndInvokesListenerThroughJdkInterfaceProxy() {
+        KafkaListenerAnnotationBeanPostProcessor<String, String> processor = new KafkaListenerAnnotationBeanPostProcessor<>();
         OrderListener target = new OrderListener();
         ProxyFactory proxyFactory = new ProxyFactory();
         proxyFactory.setTarget(target);
@@ -49,7 +50,6 @@ public class KafkaListenerAnnotationBeanPostProcessorTest {
         beanFactory.registerSingleton("kafkaListenerContainerFactory", containerFactory);
         KafkaListenerEndpointRegistry registry = new KafkaListenerEndpointRegistry();
         try {
-            KafkaListenerAnnotationBeanPostProcessor<String, String> processor = new KafkaListenerAnnotationBeanPostProcessor<>();
             processor.setBeanFactory(beanFactory);
             processor.setEndpointRegistry(registry);
 
