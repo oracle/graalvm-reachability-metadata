@@ -168,6 +168,37 @@ class PrepareTest(unittest.TestCase):
         self.assertEqual(OK, self.prepare())
         self.fake.artifact.assert_not_called()
 
+    def test_a_new_library_the_pinned_base_already_lists_is_a_bad_input(self) -> None:
+        """No agent re-creates shipped support (§FS-forge-run-requirements.2.2)."""
+        for entry, commit in (("2.0.0", "support lib 2.0.0"), ("1.5.0", "support lib 1.5.0")):
+            with self.subTest(entry=entry):
+                self.setUp()
+                self.fake.supported_library(tested_versions=("1.5.0",) if entry == "2.0.0" else ("1.5.0", "2.0.0"))
+                if entry == "2.0.0":
+                    self.fake.supported_version("2.0.0", covered=5, total=6)
+                with open(os.path.join(self.fake.repo, "metadata/org.example/lib/index.json"), "a",
+                          encoding="utf-8") as handle:
+                    handle.write("\n")
+                self.fake.commit("touch the index")
+                self.fake.issue("library-new-request")
+                self.assertEqual(BAD_INPUT, self.prepare())
+                self.assertEqual(f"prepare: bad input: {COORDINATE} is already supported: "
+                                 f"metadata/org.example/lib/index.json lists 2.0.0 in its {entry} entry",
+                                 self.outcome()["reason"])
+                # The commit that added the version, not the latest one to touch the index.
+                self.assertRegex(self.outcome()["detail"], rf"^Added by [0-9a-f]{{7,}} {commit}$")
+                self.fake.artifact.assert_not_called()
+                self.assert_worktree_given_up()
+
+    def test_a_chunk_resumes_on_the_version_its_earlier_chunk_merged(self) -> None:
+        """Its exhaust report exempts it even without the label (§FS-forge-run-requirements.2.2)."""
+        self.fake.supported_library()
+        self.fake.supported_version("2.0.0", covered=5, total=6)
+        self.fake.write("tests/src/org.example/lib/2.0.0/dynamic-access-exhaust-report.json", "{}\n")
+        self.fake.commit("merge the first chunk")
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+
     def test_the_new_worktree_readies_the_shared_dependency_cache(self) -> None:
         worktrees: list[bool] = []
         self.fake.shared_cache.side_effect = lambda _repo, worktree: worktrees.append(os.path.isdir(worktree))
