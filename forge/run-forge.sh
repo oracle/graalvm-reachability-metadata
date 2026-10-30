@@ -160,12 +160,15 @@ review() {
         || printf 'WARNING: The review failed; the next review reads the queue again.\n' >&2
 }
 
+# forge_metadata.py's status when nothing could be claimed, one no crash exits with: a crash is a
+# failed cycle (§AR-forge-launcher.2).
+readonly NOTHING_CLAIMED=4
 # The rotation's current label and the turns it has had in a row.
 turn=0
 taken=0
 # Run one cycle on the queue whose turn it is; a queue with nothing to claim passes the turn, and
-# the rest of its turns, to the next. Returns 1 only when no queue claimed anything, leaving the
-# rotation where it stood (§AR-forge-launcher.1).
+# the rest of its turns, to the next. Returns NOTHING_CLAIMED only when no queue claimed anything,
+# leaving the rotation where it stood (§AR-forge-launcher.1).
 claim_next() {
     local attempt index status
     if (( ${#labels[@]} == 0 )); then
@@ -177,7 +180,7 @@ claim_next() {
         status=0
         forge_metadata --label "${labels[index]}" "${claim_arguments[@]}" \
             -- "${rhei_arguments[@]}" || status=$?
-        (( status != 1 )) || continue
+        (( status != NOTHING_CLAIMED )) || continue
         (( attempt == 0 )) || { turn=$index; taken=0; }
         taken=$((taken + 1))
         if (( taken == counts[index] )); then
@@ -186,7 +189,7 @@ claim_next() {
         fi
         return "$status"
     done
-    return 1
+    return "$NOTHING_CLAIMED"
 }
 
 # §FS-published-pr-review.1: review after every run, at start-up, and whenever nothing is claimed.
@@ -225,7 +228,7 @@ while true; do
     (( host_passed )) || review
     host_passed=1
     claim_next || status=$?
-    if (( status == 1 )); then
+    if (( status == NOTHING_CLAIMED )); then
         backoff=$BACKOFF_FIRST_SECONDS
         review
         printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
