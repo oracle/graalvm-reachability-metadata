@@ -19,6 +19,7 @@ it, neither of which is about how the build produces either.
 | [§FS-repository-status-report](repository-status.md#fs-repository-status-report-repository-issue-progress-and-state) | Repository issue progress and state |
 | [§FS-maintainer-agent-queues](maintainer-agent-queues.md#fs-maintainer-agent-queues-maintainer-agent-queues) | Maintainer agent queues |
 | [§FS-graalvm-blocked-work](graalvm-blocked-work.md#fs-graalvm-blocked-work-work-blocked-on-a-graalvm-defect) | Work blocked on a GraalVM defect |
+| [§FS-native-image-gaps](native-image-gaps.md#fs-native-image-gaps-scenarios-native-image-does-not-implement) | Scenarios Native Image does not implement |
 | [§FS-metadata](metadata.md#fs-metadata-the-metadata-suite) | The `metadata/` suite |
 | [§FS-tests](tests.md#fs-tests-the-tests-suite) | The `tests/` suite |
 
@@ -39,6 +40,8 @@ Files:
   maintainer can adopt through ephor, and what the repository ships for them.
 - [graalvm-blocked-work.md](graalvm-blocked-work.md) — how work a GraalVM
   defect blocks is declared, held out of automation, and released.
+- [native-image-gaps.md](native-image-gaps.md) — why a test drops a scenario
+  Native Image does not implement, and how it marks the gap.
 - [metadata.md](metadata.md) — the `metadata/` suite: its layout, its additive
   invariants, and where each entry comes from.
 - [tests.md](tests.md) — the `tests/` suite: the per-coordinate test projects
