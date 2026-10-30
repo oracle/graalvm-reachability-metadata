@@ -24,9 +24,10 @@ Usage: $0 [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET]
 Purpose:
   Check the host, then until stopped: claim the most urgent eligible Forge
   issue and run its forge-metadata Rhei workspace with the browser dashboard.
-  Every third run, and when no issue can be claimed, review up to three open
-  Forge pull requests, oldest first, whose checks have finished: approve and
-  arm auto-merge on a green one, or rerun, push a fix, or file an issue.
+  After every run, once the host check first passes, and when no issue can be
+  claimed, review up to three open Forge pull requests, oldest first, whose
+  checks have finished: approve and arm auto-merge on a green one, or rerun,
+  push a fix, or file an issue.
 
 Options:
   -h, --help
@@ -188,16 +189,14 @@ claim_next() {
     return 1
 }
 
-# §FS-published-pr-review.1: review every third run and whenever nothing can be claimed.
+# §FS-published-pr-review.1: review after every run, at start-up, and whenever nothing is claimed.
 readonly IDLE_SECONDS=600
-readonly REVIEW_EVERY=3
 # §FS-forge-host-requirements.1: the gate's status when every failure is transient, and the
 # backoff of the waits it and a failed cycle cause.
 readonly HOST_TRANSIENT_STATUS=75
 readonly BACKOFF_FIRST_SECONDS=60
 readonly BACKOFF_MAX_SECONDS=900
 cd "$SCRIPT_DIR"
-runs=0
 host_passed=0
 backoff=$BACKOFF_FIRST_SECONDS
 # Sleep the current backoff, then double it up to its cap.
@@ -222,6 +221,8 @@ while true; do
         printf 'ERROR: The host check failed before it ever passed; fix the host, or start Forge again once it clears.\n' >&2
     fi
     (( status == 0 )) || exit "$status"
+    # A restart must not cost the review: the first pass comes before the first claim.
+    (( host_passed )) || review
     host_passed=1
     claim_next || status=$?
     if (( status == 1 )); then
@@ -231,8 +232,7 @@ while true; do
         sleep "$IDLE_SECONDS"
         continue
     fi
-    runs=$((runs + 1))
-    (( runs % REVIEW_EVERY != 0 )) || review
+    review
     if (( status != 0 )); then
         printf 'ERROR: The cycle failed with status %s; checking the host again in %s seconds.\n' "$status" "$backoff" >&2
         back_off

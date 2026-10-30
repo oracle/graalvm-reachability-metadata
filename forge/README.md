@@ -15,11 +15,11 @@ stored under this directory.
 Use `run-forge.sh` for unattended operation (`do-work.sh` only starts it). Each
 cycle checks the host, fetches the issue queues with `gh issue list`, claims the
 most urgent eligible issue, checks its form, and runs its `forge-metadata` Rhei
-workspace under `runs/` with the browser dashboard. Every third run, and when
-nothing can be claimed, it reviews up to three open Forge pull requests whose
-checks have finished, with the `--review-agent` (default
-`claude-code[high]:opus`): a green one is approved and auto-merged, and any
-other ends in a rerun, a pushed fix, or an issue and the `human-intervention`
+workspace under `runs/` with the browser dashboard. After every run, once the
+host check first passes, and when nothing can be claimed, it reviews up to three
+open Forge pull requests whose checks have finished, with the `--review-agent`
+(default `claude-code[high]:opus`): a green one is approved and auto-merged, and
+any other ends in a rerun, a pushed fix, or an issue and the `human-intervention`
 label. A terminal outcome adds `reviewed`, so the pull request is not reviewed
 again. `python3 forge_metadata.py --review --dry-run --pr <n> [--head <sha>]`
 replays the review of one pull request, open or closed, and writes nothing on
