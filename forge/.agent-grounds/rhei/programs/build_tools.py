@@ -63,6 +63,32 @@ class Unreachable:
     detail: str
 
 
+class RepositoryUnreachable(Exception):
+    """A failed build whose output names a repository that failed, raised before any step reads the failure.
+
+    An external failure: the run ends as infrastructure and a later cycle retries
+    (§FS-human-intervention-policy, §AR-forge-workflow-pipeline.4.1).
+    """
+
+    def __init__(self, command: str, detail: str) -> None:
+        super().__init__(f"`{command}` could not reach a repository:\n{detail}")
+        self.command: str = command
+        self.detail: str = detail
+
+
+def unreachable(output: str) -> Unreachable | None:
+    """The lines of a failed build's output that name a repository that failed, or `None`."""
+    lines: list[str] = [line.rstrip() for line in output.splitlines() if UNREACHABLE.search(line)]
+    return Unreachable("\n".join(dict.fromkeys(lines))) if lines else None
+
+
+def require_reachable(command: str, output: str) -> None:
+    """Raise `RepositoryUnreachable` when the failed command's output names a repository that failed."""
+    failed: Unreachable | None = unreachable(output)
+    if failed is not None:
+        raise RepositoryUnreachable(command, failed.detail)
+
+
 def dependency_failure(result: TaskResult, reason: str, coordinate: str = "") -> BadInput | Unreachable | None:
     """What a failed build's dependency resolution says, decided as the issue-form gate decides.
 
@@ -73,13 +99,14 @@ def dependency_failure(result: TaskResult, reason: str, coordinate: str = "") ->
     cause lines decide, and with `coordinate` only those naming it. The detail is
     the cause and wrapper lines, each once and in order: an excerpt of a long
     output keeps only failure lines and would drop them (§FS-forge-run-requirements.2).
+    A `run_gradle` result is never `Unreachable`: the runner raises first.
     """
     if result.ok:
         return None
+    failed: Unreachable | None = unreachable(result.output)
+    if failed is not None:
+        return failed
     lines: list[str] = [line.rstrip() for line in result.output.splitlines()]
-    unreachable: list[str] = [line for line in lines if UNREACHABLE.search(line)]
-    if unreachable:
-        return Unreachable("\n".join(dict.fromkeys(unreachable)))
     if not any(ABSENT.search(line) and _names(line, coordinate) for line in lines):
         return None
     detail: list[str] = [line for line in lines if WRAPPER.search(line) or ABSENT.search(line)]
@@ -97,7 +124,11 @@ def gradle_display(arguments: list[str]) -> str:
 
 
 def run_gradle(worktree: str, arguments: list[str], log_path: str) -> TaskResult:
-    """Run `./gradlew <arguments>` in the worktree and keep its full output in `log_path`."""
+    """Run `./gradlew <arguments>` in the worktree and keep its full output in `log_path`.
+
+    A failure that names a repository that failed raises `RepositoryUnreachable`, so no
+    program reads an outage as its own failure (§AR-forge-workflow-pipeline.4.1).
+    """
     command: list[str] = [os.path.join(worktree, "gradlew"), *arguments, "--console=plain"]
     display: str = gradle_display(arguments)
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
@@ -112,6 +143,8 @@ def run_gradle(worktree: str, arguments: list[str], log_path: str) -> TaskResult
     )
     with open(log_path, "w", encoding="utf-8") as handle:
         handle.write(completed.stdout)
+    if completed.returncode != 0:
+        require_reachable(display, completed.stdout)
     return TaskResult(command=display, ok=completed.returncode == 0, log_path=log_path, output=completed.stdout)
 
 

@@ -14,14 +14,12 @@ has already run the setup tail, and a new library never comes here
 """
 from __future__ import annotations
 
-import sys
-
 from utility_scripts.metadata_index import find_index_entry_for_version
 
 import handoff
 import native_check
 from build_tools import JAVA_TEST, TaskResult, Unreachable, dependency_failure, jvm_suites
-from exit_codes import INFRASTRUCTURE, BadInput
+from exit_codes import BadInput
 from run_state import RunState, load
 
 SENDER: str = "jvm"
@@ -37,13 +35,10 @@ def jvm(workspace: str) -> int:
     if find_index_entry_for_version(state.worktree, state.group, state.artifact, state.version) is None:
         raise BadInput(f"{state.index_path} has no entry for {state.version}")
     result: TaskResult = native_check.run_task(workspace, state, SENDER, JAVA_TEST)
+    # A repository that failed has raised in the runner (§AR-forge-workflow-pipeline.4.1).
     failure: BadInput | Unreachable | None = dependency_failure(result, "a declared dependency does not resolve")
     if isinstance(failure, BadInput):
         raise failure
-    if isinstance(failure, Unreachable):
-        # No fix request: a later cycle retries (§AR-forge-workflow-pipeline.4.1).
-        print(f"ERROR: a repository could not be reached:\n{failure.detail}", file=sys.stderr)
-        return INFRASTRUCTURE
     # The extension suite before `generateMetadata`: `analyze`'s first report runs it
     # (§AR-forge-workflow-pipeline.4.5).
     later: list[str] = [task for task in jvm_suites(state.path(state.test_dir)) if task != JAVA_TEST]

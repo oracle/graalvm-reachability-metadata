@@ -24,9 +24,10 @@ from __future__ import annotations
 # metadata names `Fixed`), checkFails,
 # styleFails (the failing style task), listFails, listsNoCalls (the listing
 # succeeds without output, as for a library without calls; an empty stored
-# listing then reports no calls), coverageFails ("unreachable" as above), indexFails, and
+# listing then reports no calls), coverageFails, indexFails, and
 # stats (the dynamicAccess generateLibraryStats writes; else the coverage report's),
-# and matrixFails (the native-image mode whose `test` fails, as a missing registration).
+# matrixFails (the native-image mode whose `test` fails, as a missing registration),
+# and unreachableIn (the task, in any lane, that fails on Maven Central answering 502).
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
 import glob, json, os, sys
 args = sys.argv[1:]
@@ -97,6 +98,8 @@ mode = os.environ.get("GVM_TCK_NATIVE_IMAGE_MODE")
 lane = " [%s %s %s]" % (os.environ.get("GVM_TCK_LV"), mode, os.environ.get("JAVA_HOME")) if mode else ""
 with open(os.path.join(root, "gradle-calls.log"), "a") as log:
     log.write(" ".join(args) + lane + "\n")
+if control.get("unreachableIn") == task:
+    fail_unreachable("testRuntimeClasspath")
 if task == "scaffold":
     if control.get("scaffoldFails"):
         fail_scaffold(control["scaffoldFails"])
@@ -162,8 +165,6 @@ elif task == "generateDynamicAccessReport":
     os.makedirs(out, exist_ok=True)
     open(os.path.join(out, "lib.json"), "w").write("[]")
 elif task == "generateDynamicAccessCoverageReport":
-    if control.get("coverageFails") == "unreachable":
-        fail_unreachable("jacocoAgent")
     stored = prop("tck.dynamicAccess.callSites")
     if stored is None or not os.path.isdir(stored) or any(
             control.get(key) for key in ("javaFails", "extensionFails", "coverageFails")):

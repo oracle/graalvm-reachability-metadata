@@ -115,7 +115,7 @@ class FailedReportTest(FinalizedRun):
         self.updated()
         self.assertEqual(OK, self.step("jvm"))
         self.assertEqual(OK, self.step("native-repair"))
-        self.fake.control({"coverageFails": "unreachable"})
+        self.fake.control({"unreachableIn": "generateDynamicAccessCoverageReport"})
         self.assertEqual(INFRASTRUCTURE, self.step("analyze"))
         self.assertEqual("infrastructure", self.recorded_outcome()["kind"])
 

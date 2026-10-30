@@ -37,6 +37,7 @@ import native_check  # noqa: E402
 import prepare  # noqa: E402
 import publish  # noqa: E402
 import setup_check  # noqa: E402
+from build_tools import RepositoryUnreachable  # noqa: E402
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
@@ -164,6 +165,11 @@ def main(argv: list[str] | None = None) -> int:
     except BadInput as raised:
         print(f"ERROR: {raised}", file=sys.stderr)
         bad_input, code = raised, BAD_INPUT
+    except RepositoryUnreachable as outage:
+        # External: no fix request and no issue action, so a later cycle retries
+        # (§FS-human-intervention-policy).
+        print(f"ERROR: {outage}", file=sys.stderr)
+        code = INFRASTRUCTURE
     except SystemExit as early_exit:
         # Shared helpers quit with `SystemExit`; the result file is owed all the same
         # (§AR-forge-workflow-pipeline.2).
