@@ -34,8 +34,11 @@ path = "forge/docs/functional-spec/functional-spec.md"
 match = "exact"
 rules = ["markdown-docs"]
 kind = "deferred"
-shadows = "hard"
-max_accepted = { value = 800, unit = "lines" }
+max_accepted = { value = 463, unit = "lines" }
+until = "its remaining declarations move to topic files in the functional-spec folder home"
+reason = """
+The host requirements and the run outputs have moved to files of their own, which brings the file under the hard limit. The run requirements (about 180 lines) and the chunked dynamic-access semantics are the next subjects to move, but open Forge branches edit both now, so they move once those land rather than turning their edits into conflicts. Declaration IDs are stable across files in the folder home, so each move carries no citation churn.
+"""
 [[exceptions]]
 path = "forge/docs/architecture/workflow-pipeline.md"
 match = "exact"

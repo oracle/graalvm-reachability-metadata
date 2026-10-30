@@ -40,6 +40,8 @@ whether a document describes structure or behavior.
 - [grund.md](grund.md) — `GRUND-forge-motivation`: why Forge exists.
 - [goals.md](goals.md) — `GOAL-forge-direction` and the outcome goals beneath it.
 - [functional-spec/functional-spec.md](functional-spec/functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
+- [functional-spec/host-requirements.md](functional-spec/host-requirements.md) — `FS-forge-host-requirements`: what the host must provide before any work is claimed.
+- [functional-spec/run-outputs.md](functional-spec/run-outputs.md) — `FS-forge-outputs` and its neighbors: run metrics, durable logs, legible output, run location, and run status.
 - [architecture/architecture.md](architecture/architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
 - [architecture/workflow-pipeline.md](architecture/workflow-pipeline.md) — `AR-forge-workflow-pipeline`: the Rhei state machine of one issue run.
 - [architecture/workflow-prompts.md](architecture/workflow-prompts.md) — `AR-forge-workflow-prompts`: what each agent state is told.
