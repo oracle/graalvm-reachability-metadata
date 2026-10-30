@@ -17,6 +17,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            // AnnotationImpl embeds its immutable NULL_LOCATION singleton in the image heap.
+            buildArgs.add('--initialize-at-build-time=com.sun.xml.xsom.impl.AnnotationImpl$LocatorImplUnmodifiable')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
