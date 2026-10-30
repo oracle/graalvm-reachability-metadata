@@ -221,14 +221,20 @@ def add_version(state: RunState, workspace: str) -> int:
 def resolve_chunk(state: RunState, labels: frozenset[str]) -> None:
     """Load a chunked issue's processed classes once its previous chunk merged.
 
-    §FS-forge-chunked-dynamic-access
+    The label, or the coordinate's own exhaust report, makes the issue chunked
+    (§FS-forge-chunked-dynamic-access). The report is read on the pinned base,
+    before the version is added, since adding one copies its baseline's tests,
+    report included; a report naming another version holds that version's progress.
     """
-    if issue.CHUNKED_LABEL not in labels:
-        return
+    labeled: bool = issue.CHUNKED_LABEL in labels
     report_path: str | None = find_dynamic_access_exhaust_report_path(state.worktree, state.coordinate)
     if report_path is None:
-        raise ValueError(f"chunked issue has no exhaust report for {state.coordinate}")
+        if labeled:
+            raise ValueError(f"chunked issue has no exhaust report for {state.coordinate}")
+        return
     report: DynamicAccessExhaustReport = DynamicAccessExhaustReport.load(report_path)
+    if not labeled and report.coordinate != state.coordinate:
+        return
     require_previous_chunk_merged(report, state.worktree)
     state.chunk = Chunk(active=True, processed=sorted(report.processed_classes()),
                         budget=state.budgets.defer_classes)
@@ -322,9 +328,6 @@ def prepare_worktree(args: argparse.Namespace, workspace: str, repo: str, payloa
             run_note.write(workspace, state)
             print(f"[prepare] recorded {state.coordinate} as not-for-native-image at {state.checkpoint}")
         return code
-    code = add_version(state, workspace)
-    if code != OK:
-        return code
     try:
         resolve_chunk(state, parsed.labels)
     except ValueError as error_value:
@@ -332,6 +335,9 @@ def prepare_worktree(args: argparse.Namespace, workspace: str, repo: str, payloa
     except RuntimeError as error_value:
         print(f"ERROR: the previous chunk is not ready: {error_value}", file=sys.stderr)
         return INFRASTRUCTURE
+    code = add_version(state, workspace)
+    if code != OK:
+        return code
     request: str = reporter_request(payload)
     state.has_reporter_request = bool(request)
     state.requested_metadata = gates.requested_entries(request)
