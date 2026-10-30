@@ -21,7 +21,6 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskProvider
 
-import java.util.jar.JarFile
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -1077,39 +1076,8 @@ tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r -
         matched.eachWithIndex { File jarFile, int idx ->
             File outDir = effectiveDirs[idx]
             project.delete(outDir)
-            project.copy { CopySpec c ->
-                c.into(outDir)
-                // Base classes only (exclude MR payload)
-                c.from(zipTree(jarFile)) {
-                    include '**/*.class'
-                    exclude 'META-INF/versions/**'
-                }
-
-                // Overlay only versions that exist (<= runtimeMajor)
-                def existingMrJavaVersions = new TreeSet<Integer>()
-                new JarFile(jarFile).withCloseable { jf ->
-                    jf.entries().each { e ->
-                        def m = (e.name =~ /^META-INF\/versions\/(\d+)\//)
-                        if (m.find()) {
-                            int v = (m.group(1) as int)
-                            if (v <= runtimeMajor) existingMrJavaVersions.add(v)
-                        }
-                    }
-                }
-
-                // Overlay multi-release JAR bytecode in ascending version order. For each META-INF/versions/<v>/ that exists (v ≤ runtime) copy its classes into the output
-                // tree while stripping the MR prefix, so newer versioned classes overwrite older ones and the result matches JVM per-class selection semantics.
-                existingMrJavaVersions.each { int v ->
-                    c.from(zipTree(jarFile)) {
-                        include "META-INF/versions/${v}/**/*.class"
-                        eachFile { fcd ->
-                            fcd.path = fcd.path.replaceFirst("^META-INF/versions/${v}/", "")
-                        }
-                    }
-                }
-                // Ensure later copies overwrite earlier ones
-                c.duplicatesStrategy = DuplicatesStrategy.INCLUDE
-            }
+            // §AR-test-harness.8: not zipTree, which rejects entries stamped before 1970
+            JarUtils.extractEffectiveClasses(jarFile.toPath(), runtimeMajor, outDir.toPath())
         }
     }
 
