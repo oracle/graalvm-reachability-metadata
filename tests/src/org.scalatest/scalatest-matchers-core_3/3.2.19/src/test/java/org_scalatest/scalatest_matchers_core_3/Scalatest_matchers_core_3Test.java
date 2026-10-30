@@ -7,10 +7,20 @@
 package org_scalatest.scalatest_matchers_core_3;
 
 import org.junit.jupiter.api.Test;
+import org.scalatest.matchers.MatchResult;
 
-class Scalatest_matchers_core_3Test {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Scalatest_matchers_core_3Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void negationReversesMatchAndFailureMessages() {
+        MatchResult result = new MatchResult(false, "value was not ready", "value was ready");
+        MatchResult negated = result.negated();
+
+        assertThat(result.matches()).isFalse();
+        assertThat(negated.matches()).isTrue();
+        assertThat(negated.rawFailureMessage()).isEqualTo(result.rawNegatedFailureMessage());
+        assertThat(negated.rawNegatedFailureMessage()).isEqualTo(result.rawFailureMessage());
+        assertThat(negated.negated()).isEqualTo(result);
     }
 }
