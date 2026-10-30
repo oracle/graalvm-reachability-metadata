@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.file.Path;
 
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement;
@@ -56,7 +57,20 @@ public class TearDownOnVmCrashTest {
         runRecovery(null);
     }
 
+    @Test
+    void leavesSuiteFactoryCleanupAloneWhenTheForkedJvmExits() throws Exception {
+        FactoryCleanupCase.factoryCalls = 0;
+
+        runRecovery(null, FactoryCleanupCase.class.getName(), 0);
+
+        assertThat(FactoryCleanupCase.factoryCalls).isZero();
+    }
+
     private void runRecovery(ClassLoader contextLoader) throws Exception {
+        runRecovery(contextLoader, CleanupCase.class.getName(), 1);
+    }
+
+    private void runRecovery(ClassLoader contextLoader, String suiteName, int expectedCleanupCalls) throws Exception {
         CleanupCase.cleanupCalls = 0;
         CleanupCase.executions = 0;
         Project project = new Project();
@@ -78,7 +92,7 @@ public class TearDownOnVmCrashTest {
         formatter.setClassname(TearDownOnVmCrash.class.getName());
         formatter.setUseFile(false);
         task.addFormatter(formatter);
-        task.addTest(new JUnitTest(CleanupCase.class.getName()));
+        task.addTest(new JUnitTest(suiteName));
         Thread thread = Thread.currentThread();
         ClassLoader originalLoader = thread.getContextClassLoader();
 
@@ -92,7 +106,16 @@ public class TearDownOnVmCrashTest {
         assertThat(project.getProperty("fork.error")).isEqualTo("true");
         assertThat(project.getProperty("fork.failure")).isEqualTo("true");
         assertThat(CleanupCase.executions).isZero();
-        assertThat(CleanupCase.cleanupCalls).isEqualTo(1);
+        assertThat(CleanupCase.cleanupCalls).isEqualTo(expectedCleanupCalls);
+    }
+
+    public static class FactoryCleanupCase extends CleanupCase {
+        static int factoryCalls;
+
+        public static TestSuite suite() {
+            factoryCalls++;
+            return new TestSuite(CleanupCase.class);
+        }
     }
 
     public static class CleanupCase extends TestCase {
