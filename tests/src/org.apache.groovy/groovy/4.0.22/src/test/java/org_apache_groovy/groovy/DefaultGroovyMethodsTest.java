@@ -29,8 +29,9 @@ public class DefaultGroovyMethodsTest {
     @Test
     void adaptsMapMethodsToAnInterface() {
         Closure<String> closure = new Closure<String>(this) {
-            public String doCall(String name) {
-                return "Hello " + name;
+            @Override
+            public String call(Object... arguments) {
+                return "Hello " + arguments[0];
             }
         };
         Greeting greeting = DefaultGroovyMethods.asType(Map.of("greet", closure), Greeting.class);

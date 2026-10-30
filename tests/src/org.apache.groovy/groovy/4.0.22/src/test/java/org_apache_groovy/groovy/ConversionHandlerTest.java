@@ -10,6 +10,7 @@ import groovy.lang.Closure;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.junit.jupiter.api.Test;
 
+import java.util.Comparator;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,23 +20,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ConversionHandlerTest {
     @Test
     void dispatchesInterfaceDefaultsAndObjectMethodsOnAMapProxy() {
-        Closure<String> name = new Closure<String>(this) {
-            public String doCall() {
-                return "Ada";
+        Closure<Integer> comparison = new Closure<Integer>(this) {
+            @Override
+            public Integer call(Object... arguments) {
+                return ((String) arguments[0]).compareTo((String) arguments[1]);
             }
         };
-        Named proxy = DefaultGroovyMethods.asType(Map.of("name", name), Named.class);
-        assertEquals("Hello Ada", proxy.greeting());
+        Map<String, Closure<Integer>> methods = Map.of("compare", comparison);
+        Comparator<String> proxy = DefaultGroovyMethods.asType(methods, Comparator.class);
+        assertTrue(proxy.compare("Ada", "Grace") < 0);
+        assertTrue(proxy.reversed().compare("Ada", "Grace") > 0);
         assertTrue(proxy.equals(proxy));
         assertFalse(proxy.equals(new Object()));
-        assertEquals(proxy.hashCode(), proxy.hashCode());
-    }
-
-    public interface Named {
-        String name();
-
-        default String greeting() {
-            return "Hello " + name();
-        }
+        assertEquals(methods.hashCode(), proxy.hashCode());
     }
 }
