@@ -36,6 +36,10 @@ WRAPPER: re.Pattern[str] = re.compile(r"Could not resolve ")
 # A repository access failure: Gradle reports a 404 as `Could not find`, so any status here,
 # 401 and 403 included, means the repository failed (§AR-forge-workflow-pipeline.4.1).
 UNREACHABLE: re.Pattern[str] = re.compile(r"Could not (?:GET|HEAD|get resource) '")
+JAVA_TEST: str = "javaTest"
+# The extension suite the coverage report also runs (§AR-code-coverage-improvement.2).
+EXTENSION_SUITE: str = "code-coverage-improvement"
+EXTENSION_TEST: str = "codeCoverageTest"
 
 
 @dataclass
@@ -124,6 +128,17 @@ def stop_gradle_daemons(worktree: str) -> None:
 def coordinate_task(task: str, coordinate: str, *extra: str) -> list[str]:
     """The arguments of one coordinate-scoped harness task."""
     return [task, f"-Pcoordinates={coordinate}", *extra]
+
+
+def jvm_suites(test_project: str) -> list[str]:
+    """The JVM test tasks the coverage report runs: `javaTest`, then `codeCoverageTest` with an extension suite.
+
+    §AR-forge-workflow-pipeline.4.5
+    """
+    tasks: list[str] = [JAVA_TEST]
+    if os.path.isdir(os.path.join(test_project, EXTENSION_SUITE)):
+        tasks.append(EXTENSION_TEST)
+    return tasks
 
 
 def git(worktree: str, *args: str, capture_stderr: bool = False) -> str:

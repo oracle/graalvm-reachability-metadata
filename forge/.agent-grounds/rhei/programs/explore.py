@@ -12,7 +12,7 @@ that gained, resets one that did not, and advances the mode
 (§AR-forge-workflow-pipeline.4.2, §AR-forge-workflow-pipeline.7). The
 dynamic-access report is the only oracle (§FS-forge-chunked-dynamic-access);
 when the image does not build, there is none, and one basic pass that keeps
-`javaTest` green is all exploration does.
+every JVM suite green is all exploration does.
 """
 from __future__ import annotations
 
@@ -25,19 +25,28 @@ from utility_scripts.dynamic_access_report import DynamicAccessCoverageReport, l
 
 import cover_prompts
 import handoff
-from build_tools import TaskResult, checkpoint, coordinate_task, head, reset_to, run_gradle
+from build_tools import (
+    TaskResult,
+    Unreachable,
+    checkpoint,
+    coordinate_task,
+    dependency_failure,
+    head,
+    jvm_suites,
+    reset_to,
+    run_gradle,
+)
 from cover_prompts import MODE_BASIC, MODE_BULK, MODE_CLASS
-from exit_codes import AGENT_WORK, INFRASTRUCTURE, JVM_TESTS_FAIL, NOTHING_TO_DO, OK
+from exit_codes import AGENT_WORK, INFRASTRUCTURE, JVM_TESTS_FAIL, NOTHING_TO_DO, OK, BadInput
 from run_state import ROUTE_NEW, ROUTE_REPAIR, Budgets, Chunk, Explore, RunState, load, runtime_path, save
 
 SENDER: str = "measure"
+ANALYZE: str = "analyze"
 MODE_SKIP: str = "skip"
 MODE_DEFER: str = "defer"
 CALL_SITES: str = "call-sites"
 ACCEPTED_REPORT: str = "coverage.json"
 CALL_SITES_PROPERTY: str = "tck.dynamicAccess.callSites"
-# The extension suite the coverage report also runs (§AR-code-coverage-improvement.2).
-EXTENSION_SUITE: str = "code-coverage-improvement"
 
 
 @dataclass(frozen=True)
@@ -205,6 +214,20 @@ def list_call_sites(workspace: str, state: RunState) -> bool:
     return True
 
 
+def first_report_failed(workspace: str, measured: TaskResult) -> int:
+    """Stop the run on a failed first report: no cover pass is there to blame, and a retry fails the same way.
+
+    Only a repository the report could not reach is an infrastructure failure, which a later
+    cycle retries (§AR-forge-workflow-pipeline.4.5).
+    """
+    failure: BadInput | Unreachable | None = dependency_failure(measured, "a declared dependency does not resolve")
+    if isinstance(failure, Unreachable):
+        print(f"ERROR: a repository could not be reached:\n{failure.detail}", file=sys.stderr)
+        return INFRASTRUCTURE
+    print(f"ERROR: the first coverage report failed:\n{measured.tail}", file=sys.stderr)
+    return handoff.still_failing(workspace, ANALYZE, [handoff.Failure(measured.command, measured.tail)])
+
+
 def analyze(workspace: str) -> int:
     state: RunState = load(workspace)
     cover_prompts.write_placeholder(workspace)
@@ -217,8 +240,7 @@ def analyze(workspace: str) -> int:
         return AGENT_WORK
     measured: TaskResult = correlate(workspace, state, "analyze-coverage.log")
     if not measured.ok:
-        print(f"ERROR: the first coverage report failed:\n{measured.tail}", file=sys.stderr)
-        return INFRASTRUCTURE
+        return first_report_failed(workspace, measured)
     report: DynamicAccessCoverageReport = accept_report(workspace, state)
     decision: Decision = decide(state.route, report, state.budgets, state.chunk,
                                 state.goal_covered_calls, state.goal_total_calls, state.has_reporter_request)
@@ -241,30 +263,27 @@ def analyze(workspace: str) -> int:
 
 
 def measure_unlisted(workspace: str, state: RunState) -> int:
-    """Keep the basic pass over an unlisted library when `javaTest` passes.
+    """Keep the basic pass over an unlisted library when every JVM suite passes.
 
     §AR-forge-workflow-pipeline.7
     """
     explore: Explore = state.explore
-    tested: TaskResult = run_gradle(
-        state.worktree, coordinate_task("javaTest", state.coordinate),
-        runtime_path(workspace, "logs", f"measure-{explore.passes + 1}-javaTest.log"),
-    )
-    if not tested.ok and not handoff.guard_tripped(state, SENDER):
-        handoff.write_fix_request(workspace, state, SENDER, [handoff.Failure(tested.command, tested.tail)])
+    failures: list[handoff.Failure] = failing_jvm_suites(workspace, state)
+    if failures and not handoff.guard_tripped(state, SENDER):
+        handoff.write_fix_request(workspace, state, SENDER, failures)
         save(workspace, state)
         print("[measure] the cover pass broke the JVM tests; a fix request follows")
         return JVM_TESTS_FAIL
     state.pending_request = None
     explore.passes += 1
-    if tested.ok:
+    if not failures:
         explore.checkpoint = checkpoint(state.worktree, state.coordinate_paths,
                                         f"Cover {state.coordinate}, pass {explore.passes}")
     else:
         reset_to(state.worktree, explore.checkpoint, [state.test_dir])
     state.checkpoint = explore.checkpoint
     save(workspace, state)
-    print(f"[measure] basic pass {'kept' if tested.ok else 'reset'}; next: native")
+    print(f"[measure] basic pass {'reset' if failures else 'kept'}; next: native")
     return OK
 
 
@@ -273,11 +292,8 @@ def failing_jvm_suites(workspace: str, state: RunState) -> list[handoff.Failure]
 
     §AR-forge-workflow-pipeline.4.5
     """
-    tasks: list[str] = ["javaTest"]
-    if os.path.isdir(state.path(os.path.join(state.test_dir, EXTENSION_SUITE))):
-        tasks.append("codeCoverageTest")
     failures: list[handoff.Failure] = []
-    for task in tasks:
+    for task in jvm_suites(state.path(state.test_dir)):
         tested: TaskResult = run_gradle(
             state.worktree, coordinate_task(task, state.coordinate),
             runtime_path(workspace, "logs", f"measure-{state.explore.passes + 1}-{task}.log"),

@@ -24,7 +24,7 @@ from __future__ import annotations
 # metadata names `Fixed`), checkFails,
 # styleFails (the failing style task), listFails, listsNoCalls (the listing
 # succeeds without output, as for a library without calls; an empty stored
-# listing then reports no calls), coverageFails, indexFails, and
+# listing then reports no calls), coverageFails ("unreachable" as above), indexFails, and
 # stats (the dynamicAccess generateLibraryStats writes; else the coverage report's),
 # and matrixFails (the native-image mode whose `test` fails, as a missing registration).
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
@@ -162,6 +162,8 @@ elif task == "generateDynamicAccessReport":
     os.makedirs(out, exist_ok=True)
     open(os.path.join(out, "lib.json"), "w").write("[]")
 elif task == "generateDynamicAccessCoverageReport":
+    if control.get("coverageFails") == "unreachable":
+        fail_unreachable("jacocoAgent")
     stored = prop("tck.dynamicAccess.callSites")
     if stored is None or not os.path.isdir(stored) or any(
             control.get(key) for key in ("javaFails", "extensionFails", "coverageFails")):

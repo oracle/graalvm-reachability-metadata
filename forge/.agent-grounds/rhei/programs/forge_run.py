@@ -93,6 +93,9 @@ def outcome(step: str, code: int, bad_input: BadInput | None = None) -> dict[str
     """
     if step == "audit" and code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": "the audit's edit fails the checks it reran"}
+    if step == "analyze" and code == STILL_FAILING:
+        # No fix can follow it (§AR-forge-workflow-pipeline.4.5).
+        return {"outcome": "human-intervention", "reason": "the first coverage report fails before any cover pass"}
     if code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": f"{step} still fails after its fix"}
     if step == "fix-route" and code == CANNOT_FIX:
