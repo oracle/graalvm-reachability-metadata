@@ -131,10 +131,21 @@ def _index_entry(files: _Files, group: str, artifact: str, version: str) -> dict
     return None
 
 
+def _split_source(files: _Files, group: str, artifact: str, version: str) -> str | None:
+    """The base bucket's metadata that routing copied when it split `version` into its own bucket."""
+    index: Any = files.json(f"metadata/{group}/{artifact}/index.json", at_base=True)
+    for entry in index if isinstance(index, list) else []:
+        if (isinstance(entry, dict) and entry.get("metadata-version") != version
+                and version in (entry.get("tested-versions") or [])):
+            return f"metadata/{group}/{artifact}/{entry['metadata-version']}/{METADATA_FILE}"
+    return None
+
+
 def _routed_owner(files: _Files, owner: tuple[str, str, str]) -> bool:
     """Whether the owner's metadata only gained entries, each conditioned on the owner's packages.
 
-    §root/FS-contribution-contract.2
+    A bucket that routing split off starts as a copy of the bucket it left, so
+    its entries are measured against that copy (§root/FS-contribution-contract.2).
     """
     group, artifact, version = owner
     if files.read(f"metadata/{group}/{artifact}/index.json", at_base=True) is None:
@@ -142,7 +153,9 @@ def _routed_owner(files: _Files, owner: tuple[str, str, str]) -> bool:
     entry: dict[str, Any] | None = _index_entry(files, group, artifact, version)
     packages: list[str] = list((entry or {}).get("allowed-packages") or [])
     path: str = f"metadata/{group}/{artifact}/{version}/{METADATA_FILE}"
-    before: Counter[str] = _entries(files.json(path, at_base=True))
+    source: str | None = path if files.read(path, at_base=True) is not None else _split_source(
+        files, group, artifact, version)
+    before: Counter[str] = _entries(files.json(source, at_base=True)) if source else Counter()
     after: Counter[str] = _entries(files.json(path))
     if not packages or not after or before - after:
         return False

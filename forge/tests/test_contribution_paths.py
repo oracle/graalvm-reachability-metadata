@@ -41,8 +41,8 @@ class ContributionPathsTest(unittest.TestCase):
         self.write("metadata/org.example/lib/2.0.0/reachability-metadata.json", json.dumps({"reflection": []}))
         self.write("tests/src/org.example/lib/2.0.0/build.gradle", "// 2.0.0\n")
         self.write("tests/src/org.example/lib/1.0.0/build.gradle", "// 1.0.0\n")
-        self.write("metadata/org.example/owner/index.json",
-                   json.dumps([{"metadata-version": "3.0.0", "allowed-packages": ["org.example.owner"]}]))
+        self.write("metadata/org.example/owner/index.json", json.dumps([
+            {"metadata-version": "3.0.0", "tested-versions": ["3.0.0", "3.1.0"], "allowed-packages": ["org.example.owner"]}]))
         self.write(OWNER_METADATA, json.dumps({"reflection": [KEPT]}))
         _git("add", "-A", cwd=self.repo)
         _git("commit", "-q", "-m", "base", cwd=self.repo)
@@ -86,6 +86,17 @@ class ContributionPathsTest(unittest.TestCase):
         self.write(OWNER_METADATA, json.dumps({"reflection": [KEPT, unconditioned]}))
         self.assertEqual([OWNER_METADATA, "metadata/org.example/owner/index.json"],
                          self.stray(OWNER_METADATA, "metadata/org.example/owner/index.json"))
+
+    def test_a_bucket_routing_split_off_is_measured_against_the_bucket_it_left(self) -> None:
+        split: str = "metadata/org.example/owner/3.1.0/reachability-metadata.json"
+        index: str = "metadata/org.example/owner/index.json"
+        self.write(index, json.dumps([
+            {"metadata-version": "3.0.0", "tested-versions": ["3.0.0"], "allowed-packages": ["org.example.owner"]},
+            {"metadata-version": "3.1.0", "tested-versions": ["3.1.0"], "allowed-packages": ["org.example.owner"]}]))
+        self.write(split, json.dumps({"reflection": [KEPT, ROUTED]}))
+        self.assertEqual([], self.stray(split, index, "stats/org.example/owner/3.1.0/stats.json"))
+        self.write(split, json.dumps({"reflection": [ROUTED]}))
+        self.assertEqual([split, index], self.stray(split, index))
 
     def test_metadata_of_a_library_the_repository_does_not_host_does_not_belong(self) -> None:
         foreign: str = "metadata/org.other/new/1.0.0/reachability-metadata.json"
