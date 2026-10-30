@@ -1,0 +1,175 @@
+# Executes one layered-test lane with an independent coordinate matrix. §AR-layered-tests.
+name: "Layered test shards"
+
+on:
+  workflow_call:
+    inputs:
+      lane:
+        description: "JSON lane configuration (name, task, failureReport, deleteDedicatedLayer)"
+        required: true
+        type: string
+      coordinate-matrix:
+        description: "JSON coordinate matrix for this lane (at most 256 shards)"
+        required: true
+        type: string
+      ref:
+        description: "Branch, tag, or SHA to test"
+        required: true
+        type: string
+      java-version:
+        description: "GraalVM Java version"
+        required: true
+        type: string
+      native-image-mode:
+        description: "Native Image mode from ci.json"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  # One producer per shared matrix; dedicated shards skip it. §FS-tests.3.6
+  prepare-base-layer:
+    name: "Prepare common shared base"
+    if: fromJson(inputs.lane).name == 'Shared'
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 90
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode }}
+    outputs:
+      artifact-name: ${{ steps.archive.outputs.artifact-name }}
+    steps:
+      - name: "Checkout test ref"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: "Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "Download GraalVM for base preparation"
+        uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
+        with:
+          distribution: "graalvm"
+          java-version: ${{ inputs.java-version }}
+          set-java-home: "true"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Restore or build common base"
+        id: base
+        uses: ./.github/actions/setup-native-image-base-layer
+
+      - name: "Archive complete base directory"
+        id: archive
+        env:
+          BASE_LAYER_DIR: ${{ steps.base.outputs.base-layer-dir }}
+        run: |
+          python3 .github/scripts/prepared_base_layer.py pack \
+            --base-layer-dir "${BASE_LAYER_DIR}" --archive "${RUNNER_TEMP}/shared-base.tar"
+          echo "artifact-name=shared-base-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "${GITHUB_OUTPUT}"
+
+      - name: "Publish prepared base"
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ steps.archive.outputs.artifact-name }}
+          path: ${{ runner.temp }}/shared-base.tar
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
+  layered-tests:
+    name: "${{ fromJson(inputs.lane).name }} layer tests for ${{ matrix.coordinates }} on ${{ inputs.ref }}"
+    needs: prepare-base-layer
+    if: ${{ !cancelled() && (fromJson(inputs.lane).name != 'Shared' || needs.prepare-base-layer.result == 'success') }}
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(inputs.coordinate-matrix) }}
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode }}
+
+    steps:
+      - name: "Checkout test ref"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: "Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "Download GraalVM for layered metadata testing"
+        uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
+        with:
+          distribution: "graalvm"
+          java-version: ${{ inputs.java-version }}
+          set-java-home: "true"
+          native-image-job-reports: "true"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Download prepared common base"
+        if: fromJson(inputs.lane).name == 'Shared'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: ${{ needs.prepare-base-layer.outputs.artifact-name }}
+          path: ${{ runner.temp }}/prepared-base-download
+
+      - name: "Verify and restore common base"
+        if: fromJson(inputs.lane).name == 'Shared'
+        run: |
+          python3 .github/scripts/prepared_base_layer.py restore \
+            --archive "${RUNNER_TEMP}/prepared-base-download/shared-base.tar" \
+            --destination "${RUNNER_TEMP}/prepared-base"
+
+      - name: "Pull allowed docker images"
+        run: |
+          ./gradlew pullAllowedDockerImages -Pcoordinates="${{ matrix.coordinates }}"
+
+      - name: "Check metadata files content"
+        run: |
+          ./gradlew checkMetadataFiles -Pcoordinates="${{ matrix.coordinates }}"
+
+      - name: "Run layered tests"
+        env:
+          LAYER_NAME: ${{ fromJson(inputs.lane).name }}
+          LAYER_TASK: ${{ fromJson(inputs.lane).task }}
+          FAILURE_REPORT_NAME: ${{ fromJson(inputs.lane).failureReport }}
+          EXCLUDED_COORDINATES_FILE: ${{ fromJson(inputs.lane).exclusions }}
+          DELETE_DEDICATED_LAYER: ${{ fromJson(inputs.lane).deleteDedicatedLayer }}
+          GVM_TCK_DEDICATED_LAYER_ROOT: ${{ runner.temp }}/native-image-dedicated-layers
+        run: |
+          failure_report="${RUNNER_TEMP}/${FAILURE_REPORT_NAME}"
+          base_options=()
+          if [[ "${LAYER_NAME}" == "Shared" ]]; then
+            base_options+=(-Ptck.baseLayer.requireExisting=true)
+          fi
+          set +e
+          ./gradlew "${LAYER_TASK}" \
+            "${base_options[@]}" \
+            -Pcoordinates="${{ matrix.coordinates }}" \
+            -Ptck.excludedCoordinatesFile="${EXCLUDED_COORDINATES_FILE}" \
+            -Ptck.layered.continueOnCoordinateFailure=true \
+            -Ptck.layered.coordinateFailureReport="${failure_report}" \
+            -Ptck.layered.deleteDedicatedLayerAfterTest="${DELETE_DEDICATED_LAYER}" \
+            --stacktrace
+          result=$?
+          set -e
+
+          if [[ -s "${failure_report}" ]]; then
+            failure_count="$(wc -l < "${failure_report}" | tr -d ' ')"
+            {
+              echo "### ${LAYER_NAME} layer test failures"
+              echo
+              echo "Failing libraries: ${failure_count}"
+              echo
+              while IFS= read -r coordinates; do
+                echo "- \`${coordinates}\`"
+              done < "${failure_report}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+
+            echo "${LAYER_NAME} layer test failures (${failure_count}):"
+            sed 's/^/ - /' "${failure_report}"
+          fi
+
+          exit "${result}"
