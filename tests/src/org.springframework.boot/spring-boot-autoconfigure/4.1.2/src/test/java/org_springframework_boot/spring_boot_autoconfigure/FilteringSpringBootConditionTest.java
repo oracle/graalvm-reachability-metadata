@@ -97,7 +97,7 @@ public class FilteringSpringBootConditionTest {
     @Configuration(proxyBeanMethods = false)
     public static class ConditionalConfiguration {
         @Bean
-        @ConditionalOnClass(name = "com.fasterxml.jackson.databind.ObjectMapper")
+        @ConditionalOnClass(name = "tools.jackson.databind.ObjectMapper")
         String jsonSupport() {
             return "json available";
         }
@@ -115,7 +115,7 @@ public class FilteringSpringBootConditionTest {
         }
 
         @Bean
-        @ConditionalOnMissingClass("com.fasterxml.jackson.databind.ObjectMapper")
+        @ConditionalOnMissingClass("tools.jackson.databind.ObjectMapper")
         String unneededFallback() {
             return "no json";
         }

@@ -26,8 +26,8 @@ public class AutoConfigurationMetadataLoaderTest {
     private void assertCandidateFiltering(ClassLoader classLoader) {
         AutoConfigurationImportSelector selector = AutoConfigurationTestSupport.selector(classLoader);
         assertFalse(selector.getExclusionFilter().test(
-                "org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration"));
+                "org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration"));
         assertTrue(selector.getExclusionFilter().test(
-                "org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration"));
+                "org.springframework.boot.autoconfigure.task.TaskExecutorConfigurations$TaskExecutorContextPropagationConfiguration"));
     }
 }

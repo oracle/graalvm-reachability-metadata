@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
-import org.springframework.hateoas.server.mvc.TypeConstrainedMappingJackson2HttpMessageConverter;
+import org.springframework.boot.http.converter.autoconfigure.HttpMessageConverters;
+import org.springframework.hateoas.server.mvc.TypeConstrainedJacksonJsonHttpMessageConverter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,14 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HttpMessageConvertersTest {
     @Test
     void mergesEquivalentJsonConvertersWithoutReplacingConstrainedConverters() throws Exception {
-        TypeConstrainedMappingJackson2HttpMessageConverter constrained =
-                new TypeConstrainedMappingJackson2HttpMessageConverter(Map.class);
+        TypeConstrainedJacksonJsonHttpMessageConverter constrained =
+                new TypeConstrainedJacksonJsonHttpMessageConverter(Map.class);
         GsonHttpMessageConverter gson = new GsonHttpMessageConverter();
         List<HttpMessageConverter<?>> converters = new HttpMessageConverters(constrained, gson).getConverters();
         assertEquals(constrained, converters.getFirst());
         int jacksonIndex = -1;
         for (int index = 0; index < converters.size(); index++) {
-            if (converters.get(index).getClass() == MappingJackson2HttpMessageConverter.class) {
+            if (converters.get(index).getClass() == JacksonJsonHttpMessageConverter.class) {
                 jacksonIndex = index;
             }
         }

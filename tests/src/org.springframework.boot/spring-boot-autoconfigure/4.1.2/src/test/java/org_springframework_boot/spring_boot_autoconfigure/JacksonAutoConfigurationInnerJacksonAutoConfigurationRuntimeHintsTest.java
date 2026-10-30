@@ -8,12 +8,12 @@ package org_springframework_boot.spring_boot_autoconfigure;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.predicate.RuntimeHintsPredicates;
 import org.springframework.core.io.support.SpringFactoriesLoader;
+import tools.jackson.databind.PropertyNamingStrategies;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,7 +27,7 @@ public class JacksonAutoConfigurationInnerJacksonAutoConfigurationRuntimeHintsTe
                 .load(RuntimeHintsRegistrar.class)
                 .stream()
                 .filter(registrar -> registrar.getClass().getName().equals(
-                        "org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$JacksonAutoConfigurationRuntimeHints"))
+                        "org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration$JacksonAutoConfigurationRuntimeHints"))
                 .toList();
         assertEquals(1, registrars.size());
         RuntimeHints hints = new RuntimeHints();

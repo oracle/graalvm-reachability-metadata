@@ -18,9 +18,9 @@ public class AutoConfigurationReplacementsTest {
     void appliesExclusionsUsingTheOldConfigurationName() {
         AutoConfigurationImportSelector selector = AutoConfigurationTestSupport.selector(getClass().getClassLoader());
         assertThat(selector.selectImports(AnnotationMetadata.introspect(DefaultApplication.class)))
-                .contains("org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration");
+                .contains("org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration");
         assertThat(selector.selectImports(AnnotationMetadata.introspect(ExcludingApplication.class)))
-                .doesNotContain("org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration")
+                .doesNotContain("org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration")
                 .contains("org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration");
     }
 
