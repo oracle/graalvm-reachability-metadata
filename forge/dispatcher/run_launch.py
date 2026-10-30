@@ -27,6 +27,7 @@ from utility_scripts.metadata_index import extract_coordinate_parts
 
 from dispatcher.claim_preflight import refresh_issue_payload_for_claim
 from dispatcher.config import LABEL_HUMAN_INTERVENTION
+from dispatcher.github_api import format_github_exception_details
 from dispatcher.issue_admin import add_issue_label, post_issue_comment
 from dispatcher.issue_claiming import revert_issue_claim, try_claim_issue
 from dispatcher.issue_form import check_issue_form, reject_issue_form
@@ -244,8 +245,27 @@ def intervention_comment(outcome: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def hand_to_maintainer(number: int, outcome: dict[str, Any]) -> bool:
+    """Label the issue `human-intervention` and post its comment; return whether the label landed."""
+    try:
+        add_issue_label(number, LABEL_HUMAN_INTERVENTION)
+    except Exception as exc:
+        print(f"ERROR: Issue #{number} could not be labeled {LABEL_HUMAN_INTERVENTION}: "
+              f"{format_github_exception_details(exc)}", file=sys.stderr)
+        return False
+    try:
+        post_issue_comment(number, intervention_comment(outcome))
+    except Exception as exc:
+        print(f"ERROR: Issue #{number} intervention comment could not be posted: "
+              f"{format_github_exception_details(exc)}", file=sys.stderr)
+    return True
+
+
 def close_out(claimed: Claim, outcome: dict[str, Any]) -> None:
-    """Apply the bookkeeping the final state implies (§AR-forge-workflow-pipeline.1)."""
+    """Apply the bookkeeping the final state implies; GitHub refusing it does not stop the launcher.
+
+    §AR-forge-workflow-pipeline.1
+    """
     number: int = claimed.issue["number"]
     kind: str = outcome.get("outcome", "failed")
     reason: str = outcome.get("reason", "")
@@ -253,8 +273,11 @@ def close_out(claimed: Claim, outcome: dict[str, Any]) -> None:
         print(f"Issue #{number}: published; the pull request closes it.")
         return
     needs_human: bool = kind in ("human-intervention", "nothing-to-publish") or outcome.get("kind") == "bad-input"
-    if needs_human:
-        add_issue_label(number, LABEL_HUMAN_INTERVENTION)
-        post_issue_comment(number, intervention_comment(outcome))
-    revert_issue_claim(claimed.item_id, number, reason or kind)
-    print(f"Issue #{number}: {kind} ({reason}); claim released.", file=sys.stderr)
+    if needs_human and not hand_to_maintainer(number, outcome):
+        # Released unlabeled, the issue would be claimed again and fail the same way.
+        print(f"ERROR: Issue #{number}: {kind} ({reason}); it could not be labeled {LABEL_HUMAN_INTERVENTION}; "
+              "the claim is kept to hold it out of the queue.", file=sys.stderr)
+        return
+    released: bool = revert_issue_claim(claimed.item_id, number, reason or kind)
+    print(f"Issue #{number}: {kind} ({reason}); claim {'released' if released else 'release unconfirmed'}.",
+          file=sys.stderr)

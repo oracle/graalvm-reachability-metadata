@@ -21,7 +21,7 @@ import unittest
 from unittest.mock import ANY, Mock, patch
 
 import forge_metadata
-from dispatcher import issue_fetch, pr_review, run_launch
+from dispatcher import issue_claiming, issue_fetch, pr_review, run_launch
 from tests.test_gradle_environment import _init_git_repo_with_worktree
 from utility_scripts.gradle_environment import FORGE_GRADLE_USER_HOME_ENV, gradle_command_environment
 
@@ -249,6 +249,44 @@ class CloseOutTest(unittest.TestCase):
         labels, comments, reverts = self.close_out({"outcome": "failed", "kind": "infrastructure", "reason": "x"})
         self.assertEqual(([], []), (labels, comments))
         self.assertEqual(1, len(reverts))
+
+    def test_an_unreachable_github_at_close_out_does_not_stop_the_launcher(self) -> None:
+        # The release's own reads fail on the outage that ended the run (#9622).
+        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
+        with patch.object(issue_claiming, "set_item_status", side_effect=outage), \
+                patch.object(issue_claiming, "clear_issue_assignees", side_effect=outage), \
+                patch.object(issue_claiming, "get_item_status", side_effect=outage), \
+                patch.object(issue_claiming, "get_issue_assignees", side_effect=outage), \
+                patch.object(issue_claiming.time, "sleep"), \
+                contextlib.redirect_stderr(io.StringIO()) as stderr:
+            run_launch.close_out(claimed, {"outcome": "failed", "kind": "infrastructure", "reason": "x"})
+        self.assertIn("Issue #7: failed (x); claim release unconfirmed.", stderr.getvalue())
+
+    def test_a_label_github_refuses_keeps_the_claim_that_holds_the_issue(self) -> None:
+        # Released unlabeled, the issue would be claimed again and fail the same way.
+        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
+        with patch.object(run_launch, "add_issue_label", side_effect=outage), \
+                patch.object(run_launch, "post_issue_comment") as comment, \
+                patch.object(run_launch, "revert_issue_claim") as revert, \
+                contextlib.redirect_stderr(io.StringIO()) as stderr:
+            run_launch.close_out(claimed, {"outcome": "human-intervention", "reason": "native still fails"})
+        comment.assert_not_called()
+        revert.assert_not_called()
+        self.assertIn("could not be labeled human-intervention; the claim is kept", stderr.getvalue())
+
+    def test_a_comment_github_refuses_still_releases_the_labeled_issue(self) -> None:
+        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
+        with patch.object(run_launch, "add_issue_label"), \
+                patch.object(run_launch, "post_issue_comment", side_effect=outage), \
+                patch.object(run_launch, "revert_issue_claim", return_value=True) as revert, \
+                contextlib.redirect_stderr(io.StringIO()) as stderr:
+            run_launch.close_out(claimed, {"outcome": "human-intervention", "reason": "native still fails"})
+        revert.assert_called_once_with("item", 7, "native still fails")
+        self.assertIn("Issue #7 intervention comment could not be posted", stderr.getvalue())
+        self.assertIn("claim released.", stderr.getvalue())
 
     def test_a_run_without_an_outcome_is_an_infrastructure_failure(self) -> None:
         self.assertEqual("infrastructure", run_launch.record_outcome(tempfile.mkdtemp())["kind"])
