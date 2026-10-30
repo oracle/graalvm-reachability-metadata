@@ -6,12 +6,18 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
+    id "scala"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String scala3Version = tck.scala3Version.get()
 
 dependencies {
     testImplementation "org.scalatest:scalatest-core_3:$libraryVersion"
+    testImplementation "org.scalatest:scalatest-funsuite_3:$libraryVersion"
+    testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
+    testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
+    testImplementation "org.scala-sbt:test-interface:1.0"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
