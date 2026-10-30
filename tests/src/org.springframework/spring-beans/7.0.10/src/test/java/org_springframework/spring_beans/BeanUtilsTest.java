@@ -53,6 +53,23 @@ public class BeanUtilsTest {
         assertThat(((ConventionValue) editor.getValue()).getValue()).isEqualTo("spring");
     }
 
+    @Test
+    void instantiatesRecordUsingItsCanonicalConstructor() {
+        Constructor<Delivery> constructor = BeanUtils.findPrimaryConstructor(Delivery.class);
+
+        assertThat(constructor).isNotNull();
+        Delivery delivery = BeanUtils.instantiateClass(constructor, "warehouse", 4);
+
+        assertThat(delivery.destination()).isEqualTo("warehouse");
+        assertThat(delivery.parcels()).isEqualTo(4);
+    }
+
+    public record Delivery(String destination, int parcels) {
+        public Delivery(String destination) {
+            this(destination, 1);
+        }
+    }
+
     public static class ConventionValue {
         private final String value;
 

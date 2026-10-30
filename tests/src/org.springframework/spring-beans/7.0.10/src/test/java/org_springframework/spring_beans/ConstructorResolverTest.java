@@ -6,9 +6,12 @@
  */
 package org_springframework.spring_beans;
 
+import java.lang.reflect.Executable;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.support.RegisteredBean;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,6 +55,61 @@ public class ConstructorResolverTest {
         factory.registerBeanDefinition("product", definition);
 
         assertThat(factory.getBean("product", Product.class).getName()).isEqualTo("factory");
+    }
+
+    @Test
+    void createsBeansUsingPreferredPublicAndNonPublicConstructors() {
+        DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+        factory.registerSingleton("message", "injected");
+
+        assertThat(factory.createBean(RequiredBean.class).getValue()).isEqualTo("injected");
+        assertThat(factory.createBean(HiddenBean.class).value()).isEqualTo("injected");
+        assertThat(factory.createBean(DefaultBean.class).value()).isEqualTo("default");
+    }
+
+    @Test
+    void resolvesConstructorsForAotRegistrationWithBothAccessPolicies() {
+        DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+        RootBeanDefinition publicDefinition = new RootBeanDefinition(RequiredBean.class);
+        publicDefinition.setNonPublicAccessAllowed(false);
+        publicDefinition.getConstructorArgumentValues().addIndexedArgumentValue(0, "public");
+        factory.registerBeanDefinition("publicBean", publicDefinition);
+        RootBeanDefinition hiddenDefinition = new RootBeanDefinition(HiddenBean.class);
+        hiddenDefinition.getConstructorArgumentValues().addIndexedArgumentValue(0, "hidden");
+        factory.registerBeanDefinition("hiddenBean", hiddenDefinition);
+
+        Executable publicConstructor = RegisteredBean.of(factory, "publicBean")
+                .resolveConstructorOrFactoryMethod();
+        Executable hiddenConstructor = RegisteredBean.of(factory, "hiddenBean")
+                .resolveConstructorOrFactoryMethod();
+
+        assertThat(publicConstructor.getDeclaringClass()).isEqualTo(RequiredBean.class);
+        assertThat(publicConstructor.getParameterTypes()).containsExactly(String.class);
+        assertThat(hiddenConstructor.getDeclaringClass()).isEqualTo(HiddenBean.class);
+        assertThat(hiddenConstructor.getParameterTypes()).containsExactly(String.class);
+        assertThat(factory.getBean("publicBean", RequiredBean.class).getValue()).isEqualTo("public");
+        assertThat(factory.getBean("hiddenBean", HiddenBean.class).value()).isEqualTo("hidden");
+    }
+
+    private static class HiddenBean {
+        private final String value;
+
+        private HiddenBean(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return this.value;
+        }
+    }
+
+    public static class DefaultBean {
+        public DefaultBean() {
+        }
+
+        public String value() {
+            return "default";
+        }
     }
 
     public static class VarargBean {

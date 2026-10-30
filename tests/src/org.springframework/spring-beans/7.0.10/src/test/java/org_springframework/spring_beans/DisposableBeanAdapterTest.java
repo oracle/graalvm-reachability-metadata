@@ -6,6 +6,8 @@
  */
 package org_springframework.spring_beans;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -44,6 +46,26 @@ public class DisposableBeanAdapterTest {
         factory.destroySingletons();
 
         assertThat(bean.isCleaned()).isTrue();
+    }
+
+    @Test
+    void infersExecutorShutdownDuringSingletonDestruction() {
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+        DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+        try {
+            RootBeanDefinition definition = new RootBeanDefinition(
+                    ScheduledThreadPoolExecutor.class, () -> executor);
+            definition.setDestroyMethodName(AbstractBeanDefinition.INFER_METHOD);
+            factory.registerBeanDefinition("executor", definition);
+            assertThat(factory.getBean("executor")).isSameAs(executor);
+
+            factory.destroySingletons();
+
+            assertThat(executor.isShutdown()).isTrue();
+        } finally {
+            factory.destroySingletons();
+            executor.shutdownNow();
+        }
     }
 
     public static class CloseBean {

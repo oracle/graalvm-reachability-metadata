@@ -43,6 +43,28 @@ public class TypeConverterDelegateTest {
         assertThat(bean.getMapping()).containsEntry(8, 9);
     }
 
+    @Test
+    void convertsCommaDelimitedTextToTypedEnumCollection() {
+        StateListBean bean = new StateListBean();
+        BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(bean);
+
+        wrapper.setPropertyValue("states", "READY,DONE");
+
+        assertThat(bean.getStates()).containsExactly(State.READY, State.DONE);
+    }
+
+    public static class StateListBean {
+        private List<State> states;
+
+        public List<State> getStates() {
+            return this.states;
+        }
+
+        public void setStates(List<State> states) {
+            this.states = states;
+        }
+    }
+
     public enum State {
         READY,
         DONE
