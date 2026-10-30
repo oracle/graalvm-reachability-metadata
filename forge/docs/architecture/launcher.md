@@ -110,7 +110,9 @@ has created it, after the claim, and only an issue's latest attempt can be
 live. A `rhei run` holds an exclusive `flock` on its workspace's
 `.rhei/run.lock` while it lives, so a shared lock that cannot be taken there
 marks a run that outlived its launcher, or one a launcher started before this
-lock existed.
+lock existed. The pre-publication gate reads the same locks, its own issue's
+aside, before and after each test run, to tell whether another run could have
+pulled a Docker image it finds (§FS-local-ci-equivalent-verification.2.2).
 
 After the fetch, the launcher lists the issues whose latest attempt has no
 `runtime/forge/outcome.json`, oldest issue first, from the runs directory

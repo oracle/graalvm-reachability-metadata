@@ -15,7 +15,6 @@ Before either, it retries the releases an outage left pending
 from __future__ import annotations
 
 import contextlib
-import fcntl
 import os
 import re
 import sys
@@ -23,6 +22,7 @@ from datetime import datetime
 from typing import Any, Iterator
 
 from git_scripts.github_cli import is_github_outage
+from utility_scripts.issue_locks import issue_lock, lock_held
 
 from dispatcher.claim_preflight import get_issue_claim_cache_observation_from_payload
 from dispatcher.config import REPO, STATUS_IN_PROGRESS
@@ -36,50 +36,14 @@ from dispatcher.pending_releases import (PendingRelease, drop_pending_release, i
 from dispatcher.project_board import get_project_item_state
 from dispatcher.run_launch import OUTCOME, Claim, workspace_path
 
-# One lock per issue, beside its attempts: a new attempt's workspace exists only after the claim.
-LOCKS: str = os.path.join("runs", "locks")
 # What a live `rhei run` holds exclusively in its workspace.
 RHEI_RUN_LOCK: str = os.path.join(".rhei", "run.lock")
 ATTEMPT: re.Pattern[str] = re.compile(r"^forge-(\d+)-(\d+)$")
 
 
-@contextlib.contextmanager
-def issue_lock(forge_dir: str, issue_number: int) -> Iterator[bool]:
-    """Hold the issue's launcher lock for the block; `False` when another launcher holds it.
-
-    The kernel drops a `flock` with the last descriptor of its holder, so the death
-    of the launcher, `SIGKILL` included, frees the issue (§FS-forge-stranded-claims.2).
-    The descriptor is not inheritable, so no child of the run can keep it.
-    """
-    path: str = os.path.join(forge_dir, LOCKS, f"forge-{issue_number}.lock")
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "a+", encoding="utf-8") as handle:
-        try:
-            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            yield False
-            return
-        # For a reader only: the lock, not this record, says who holds the issue.
-        handle.seek(0)
-        handle.truncate()
-        handle.write(f"pid={os.getpid()}\n")
-        handle.flush()
-        yield True
-
-
 def rhei_run_live(workspace: str) -> bool:
     """Whether a `rhei run` holds the workspace, as one that outlived its launcher does."""
-    try:
-        handle = open(os.path.join(workspace, RHEI_RUN_LOCK), encoding="utf-8")
-    except FileNotFoundError:
-        return False
-    with handle:
-        try:
-            fcntl.flock(handle.fileno(), fcntl.LOCK_SH | fcntl.LOCK_NB)
-        except BlockingIOError:
-            return True
-        fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
-    return False
+    return lock_held(os.path.join(workspace, RHEI_RUN_LOCK))
 
 
 def unfinished_issues(forge_dir: str) -> list[int]:

@@ -27,6 +27,7 @@ from unittest.mock import Mock, patch
 import forge_metadata
 from dispatcher import run_launch, stranded_claims
 from tests.test_forge_launcher import FORGE_DIR, issue
+from utility_scripts.issue_locks import LOCKS
 
 USER: str = "forge-bot"
 ORPHAN: str = os.path.join("runtime", "logs", "task-forge-7-1.forge-finalize.log")
@@ -102,14 +103,14 @@ class StrandedClaimTest(StrandedCase):
         self.claimed_on_github(7)
         holder = subprocess.Popen(
             [sys.executable, "-c", "import sys, time\n"
-                                   "from dispatcher.stranded_claims import issue_lock\n"
+                                   "from utility_scripts.issue_locks import issue_lock\n"
                                    "with issue_lock(sys.argv[1], 7) as held:\n"
                                    "    print(held, flush=True)\n"
                                    "    time.sleep(120)\n", self.forge],
             cwd=FORGE_DIR, stdout=subprocess.PIPE, text=True)
         self.addCleanup(holder.kill)
         self.assertEqual("True", holder.stdout.readline().strip())
-        with open(os.path.join(self.forge, stranded_claims.LOCKS, "forge-7.lock"), encoding="utf-8") as handle:
+        with open(os.path.join(self.forge, LOCKS, "forge-7.lock"), encoding="utf-8") as handle:
             self.assertEqual(f"pid={holder.pid}\n", handle.read())
         self.assertIsNone(self.stranded())
         holder.kill()

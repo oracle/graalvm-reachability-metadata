@@ -33,9 +33,10 @@ from dispatcher.issue_fetch import QUEUE_LABELS, fetch_candidates, fetch_command
 from dispatcher.pr_review import review_pass, review_target_error
 from dispatcher.run_launch import (BUDGET_HALT_KIND, NO_ADVANCE_KIND, Claim, Started, claim, close_out, finish_run,
                                    start_run, target_error)
-from dispatcher.stranded_claims import issue_lock, release_pending, stranded_claim
+from dispatcher.stranded_claims import release_pending, stranded_claim
 from git_scripts.github_cli import is_github_outage
 from utility_scripts.host_requirements import TRANSIENT_FAILURE_EXIT_STATUS
+from utility_scripts.issue_locks import issue_lock
 
 FORGE_DIR: str = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR: str = os.path.dirname(FORGE_DIR)

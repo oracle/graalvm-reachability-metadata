@@ -91,6 +91,7 @@ def run_lane(workspace: str, state: RunState, prefix: str) -> list[handoff.Failu
             base_commit=state.base_commit,
             max_fixup_attempts=0,
             test_lanes=native_lanes(state),
+            issue_number=state.issue_number,
         )
     except LocalCIVerificationError as error:
         if not error.result.commands:
