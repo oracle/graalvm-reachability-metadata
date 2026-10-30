@@ -55,6 +55,13 @@ fetching it again rather than editing it by hand.
 - Fix versions: none
 - Public links: none
 
+## GR-80256: Native Image retains Netty NetUtil.LOOPBACK_IF network interface during build-time initialization
+
+- Status: In Progress
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: none
+
 ## GR-80923: \[Native Image\] Agent in conditional mode writes resource `bundle` entries without their inferred `typeReached` condition
 
 - Status: Open

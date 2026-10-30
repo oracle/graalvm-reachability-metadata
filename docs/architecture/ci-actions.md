@@ -28,11 +28,13 @@ build against.
 
 A composite action that restores or builds the shared JDK-module Native Image
 base layer used by the layered TCK lane (§AR-test-harness.3). Its cache key is
-derived from the actual installed `native-image --version`, runner
+derived from the actual installed `native-image --version`, the JDK `release`
+file's content hash, runner
 OS/architecture, selected native-image mode, `ci.json`, and TCK build
 logic inputs. The action exports `GVM_TCK_BASE_LAYER_DIR` so subsequent Gradle
-invocations in the manual layered workflow consume the exact cached layer
-directory.
+invocations consume the exact cached layer directory. The layered matrix uses
+this action only in its common-base preparation job; shards consume the run's
+artifact instead (§FS-tests.3.6).
 Serves §FS-repository-functional-spec.5.4 — the shared base layer belongs to the mode
 matrix.
 
