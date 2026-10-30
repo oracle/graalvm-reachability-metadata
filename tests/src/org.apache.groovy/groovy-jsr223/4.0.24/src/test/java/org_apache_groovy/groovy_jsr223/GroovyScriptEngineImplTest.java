@@ -6,6 +6,9 @@
  */
 package org_apache_groovy.groovy_jsr223;
 
+import groovy.lang.Binding;
+import groovy.lang.Script;
+import org.codehaus.groovy.jsr223.GroovyCompiledScript;
 import org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.junit.jupiter.api.Test;
@@ -39,6 +42,41 @@ public class GroovyScriptEngineImplTest {
             assertThat(greeting.greet("Margaret")).isEqualTo("Welcome, Margaret");
         } finally {
             engine.getClassLoader().close();
+        }
+    }
+
+    @Test
+    void evaluatesPrecompiledScriptsAndPublishesTheirMethodsAsGlobalFunctions() throws Exception {
+        GroovyScriptEngineImpl engine = new GroovyScriptEngineImpl();
+        try {
+            engine.put("prefix", "Hello, ");
+            engine.put("name", "Ada");
+            GroovyCompiledScript script = new GroovyCompiledScript(engine, GreetingScript.class);
+
+            assertThat(script.eval()).isEqualTo("Hello, Ada");
+            assertThat(engine.invokeFunction("greet", "Grace")).isEqualTo("Hello, Grace");
+
+            engine.put("prefix", "Welcome, ");
+            engine.put("name", "Margaret");
+            assertThat(script.eval()).isEqualTo("Welcome, Margaret");
+            assertThat(engine.invokeFunction("greet", "Linus")).isEqualTo("Welcome, Linus");
+        } finally {
+            engine.getClassLoader().close();
+        }
+    }
+
+    public static class GreetingScript extends Script {
+        public GreetingScript(Binding binding) {
+            super(binding);
+        }
+
+        @Override
+        public Object run() {
+            return greet((String) getBinding().getVariable("name"));
+        }
+
+        public String greet(String name) {
+            return (String) getBinding().getVariable("prefix") + name;
         }
     }
 
