@@ -34,10 +34,10 @@ import java.util.zip.ZipFile;
 /**
  * Relocates foreign-condition metadata to an exact supported owner/version.
  *
- * Owner discovery locates {@code typeReached} in the tested library's resolved
- * runtime dependency JARs. Checked-in {@code tested-versions} then decides
+ * Owner discovery locates {@code typeReached} in the JARs of the test project's
+ * resolved runtime classpath. Checked-in {@code tested-versions} then decides
  * whether that exact dependency version has a supported destination.
- * §FS-metadata
+ * §FS-metadata.2.2
  */
 final class MetadataOwnershipRouter {
     private static final String INDEX_FILE = "index.json";
