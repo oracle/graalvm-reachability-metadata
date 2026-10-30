@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import io.sundr.deps.org.apache.commons.collections.Factory;
 import io.sundr.deps.org.apache.commons.collections.functors.PrototypeFactory;
+import io.sundr.deps.org.apache.commons.lang.SerializationUtils;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -26,5 +28,29 @@ public class PrototypeFactoryInnerPrototypeCloneFactoryTest {
         assertNotSame(original, copy);
         copy.add("new");
         assertEquals(List.of("seed"), original);
+    }
+
+    @Test
+    void restoresTheCloneMethodAfterAnOptedInFactoryRoundTrip() {
+        String property = "io.sundr.deps.org.apache.commons.collections.enableUnsafeSerialization";
+        String previous = System.getProperty(property);
+        try {
+            System.setProperty(property, "true");
+            ArrayList<String> prototype = new ArrayList<>(List.of("seed"));
+            Factory original = PrototypeFactory.getInstance(prototype);
+            Factory restored = (Factory) SerializationUtils.clone((Serializable) original);
+            ArrayList copy = (ArrayList) restored.create();
+            assertNotSame(original, restored);
+            assertEquals(List.of("seed"), copy);
+            copy.add("changed");
+            assertEquals(List.of("seed"), prototype);
+            assertEquals(List.of("seed"), restored.create());
+        } finally {
+            if (previous == null) {
+                System.clearProperty(property);
+            } else {
+                System.setProperty(property, previous);
+            }
+        }
     }
 }

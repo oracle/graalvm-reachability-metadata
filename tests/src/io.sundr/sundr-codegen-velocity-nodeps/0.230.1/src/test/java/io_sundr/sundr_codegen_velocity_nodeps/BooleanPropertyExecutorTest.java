@@ -19,4 +19,22 @@ public class BooleanPropertyExecutorTest {
         context.put("bean", new TestSupport.Person());
         assertEquals("enabled", TestSupport.render(context, "#if($bean.active)enabled#end"));
     }
+
+    @Test
+    void readsBoxedBooleanProperties() {
+        VelocityContext context = new VelocityContext();
+        context.put("bean", new BoxedStatus());
+        assertEquals("ready|offline", TestSupport.render(context,
+                "#if($bean.ready)ready#end|#if($bean.online)online#{else}offline#end"));
+    }
+
+    public static class BoxedStatus {
+        public Boolean isReady() {
+            return Boolean.TRUE;
+        }
+
+        public Boolean isOnline() {
+            return Boolean.FALSE;
+        }
+    }
 }

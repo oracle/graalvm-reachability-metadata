@@ -8,6 +8,7 @@ package io_sundr.sundr_codegen_velocity_nodeps;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.sundr.deps.org.apache.velocity.VelocityContext;
@@ -25,5 +26,14 @@ public class ResourceManagerImplTest {
         engine.getTemplate("fixtures/greeting.vm", "UTF-8").merge(context, output);
         assertEquals("Hello Ada", output.toString());
         assertTrue(engine.resourceExists("fixtures/greeting.vm"));
+    }
+
+    @Test
+    void rejectsCacheClassesThatDoNotImplementResourceCache() {
+        VelocityEngine engine = TestSupport.engine();
+        engine.setProperty("resource.manager.cache.class", StringBuilder.class.getName());
+        RuntimeException exception = assertThrows(RuntimeException.class, engine::init);
+        assertTrue(exception.getMessage().contains("must implement"));
+        assertTrue(exception.getMessage().contains("io.sundr.deps.org.apache.velocity.runtime.resource.ResourceCache"));
     }
 }

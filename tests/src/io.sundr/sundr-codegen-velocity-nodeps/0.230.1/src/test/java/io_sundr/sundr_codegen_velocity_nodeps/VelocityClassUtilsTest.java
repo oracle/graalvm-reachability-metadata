@@ -28,4 +28,22 @@ public class VelocityClassUtilsTest {
             assertTrue(new String(stream.readAllBytes(), StandardCharsets.UTF_8).contains("greeting=hello"));
         }
     }
+
+    @Test
+    void resolvesClassesAndResourcesWithoutAContextClassLoader() throws Exception {
+        Thread thread = Thread.currentThread();
+        ClassLoader original = thread.getContextClassLoader();
+        try {
+            thread.setContextClassLoader(null);
+            StringBuilder builder = (StringBuilder) ClassUtils.getNewInstance("java.lang.StringBuilder");
+            assertEquals("fallback", builder.append("fallback").toString());
+            try (InputStream stream = ClassUtils.getResourceAsStream(VelocityClassUtilsTest.class,
+                    "/fixtures/settings.properties")) {
+                assertNotNull(stream);
+                assertTrue(new String(stream.readAllBytes(), StandardCharsets.UTF_8).contains("greeting=hello"));
+            }
+        } finally {
+            thread.setContextClassLoader(original);
+        }
+    }
 }
