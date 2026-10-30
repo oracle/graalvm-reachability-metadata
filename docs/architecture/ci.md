@@ -189,18 +189,40 @@ and releases flowing without a human in the loop.
 Every Sunday at 00:30 UTC (`30 0 * * 0`) and on manual dispatch. The scheduled
 run checks every supported library on the default branch with GraalVM `latest-ea`
 and the `current-defaults` Native Image mode, using the cached shared base layer
-(§AR-test-harness.3). An `all` selection uses 16 independent shared-layer
-shards and 128 independent dedicated-layer shards, allows up to 64 matrix jobs
-to run in parallel, and permits six hours per shard. Manual dispatch defaults
-to both lanes, `master`, `all`, and `latest-ea`; it may instead run only the
+(§AR-test-harness.3). An `all` selection uses 32 independent shared-layer
+shards and 128 independent dedicated-layer shards to reduce the work each job
+must finish within the six-hour hosted-runner limit (§FS-repository-functional-spec.6).
+The first batch releases every shared shard and dedicated shards 1 through 64;
+the second releases dedicated shards 65 through 128 after the first batch
+finishes. This bounds the number of jobs waiting for runners, with one barrier
+between batches. Test failures do not skip the second batch, but cancellation
+or failed matrix preparation does. Every dedicated shard keeps the denominator
+128, so splitting submission does not change coordinate assignment or coverage.
+Each lane and batch calls the same reusable shard workflow with its own matrix,
+keeping each matrix within GitHub Actions' 256-job limit. No matrix has a
+`max-parallel` cap; available organization runner capacity controls concurrency.
+Manual dispatch defaults to both lanes, `master`, `all`, and `latest-ea`;
+it may instead run only the
 shared or dedicated lane and select a different ref, coordinate, JDK, or mode.
-A concrete coordinate creates one job per selected lane. The scheduled
-workflow runs both independent matrix lanes: the original shared JDK-layer
+A concrete coordinate or explicit shard creates one job per selected lane in
+the first batch only. Selecting only dedicated tests retains both batches;
+selecting only shared tests needs only the first. The scheduled workflow runs
+both matrix lanes: the original shared JDK-layer
 lane and a library-layer lane that creates one base layer per coordinate with
 the tested library code included (§AR-test-harness.3).
 Dedicated layers are deleted after each coordinate to bound runner disk use;
 failures are collected independently so the two layer layouts remain directly
 comparable.
+
+The matrix preparation resolves the requested ref to one immutable commit.
+Inside the shared reusable workflow, a single job restores or builds the common
+base with §AR-setup-native-image-base-layer and uploads its complete directory
+as a tar artifact (§FS-tests.3.6). Shared shards depend on this job, download its
+artifact, verify repository, JDK release/version, mode, and runner identity, and
+require the existing base manifest to match their build policy. The artifact
+name is passed through job outputs so failed-job reruns can reuse the successful
+producer's artifact. Dedicated shards skip that dependency's work and proceed
+independently; custom shared bases still rebuild per coordinate.
 Serves §FS-repository-functional-spec.5.4 — the Native Image mode this lane pins.
 
 ### AR-test-all-metadata: Test all metadata
@@ -427,11 +449,13 @@ build against.
 
 A composite action that restores or builds the shared JDK-module Native Image
 base layer used by the layered TCK lane (§AR-test-harness.3). Its cache key is
-derived from the actual installed `native-image --version`, runner
+derived from the actual installed `native-image --version`, the JDK `release`
+file's content hash, runner
 OS/architecture, selected native-image mode, `ci.json`, and TCK build
 logic inputs. The action exports `GVM_TCK_BASE_LAYER_DIR` so subsequent Gradle
-invocations in the manual layered workflow consume the exact cached layer
-directory.
+invocations consume the exact cached layer directory. The layered matrix uses
+this action only in its common-base preparation job; shards consume the run's
+artifact instead (§FS-tests.3.6).
 Serves §FS-repository-functional-spec.5.4 — the shared base layer belongs to the mode
 matrix.
 

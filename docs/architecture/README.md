@@ -43,6 +43,7 @@ rather than by kind.
 | [§AR-setup-crema-jdk](ci.md#ar-setup-crema-jdk-setup-crema-jdk-action) | setup-crema-jdk action |
 | [§AR-shared-scripts](ci.md#ar-shared-scripts-shared-scripts-and-test-isolation) | Shared scripts and test isolation |
 | [§AR-test-harness](tck.md#ar-test-harness-test-harness-tck-task-groups) | Test harness (TCK) task groups |
+| [§AR-native-test-layers](native-test-layers.md#ar-native-test-layers-native-test-layer-construction) | Shared and dedicated native test layers |
 
 This index is navigational. Cite the specific declaration ID rather than this
 file.
