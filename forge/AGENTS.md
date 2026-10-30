@@ -40,7 +40,7 @@ Agents MUST read and strictly adhere to the following before making any changes:
 - `.agent-grounds/rhei/programs/`: the programs the template's states run. Put deterministic setup, build runs, routing decisions, and publication here, never in an agent prompt. §AR-forge-workflow-pipeline.4
 - `dispatcher/`: the claim, the issue-form gate, the project board, and the launcher's review of published pull requests. §FS-published-pr-review
 - `ai_workflows/agents/`: the Pi and Claude Code adapters the code coverage workflow still drives. §AR-forge-strategy-agent-boundary
-- `git_scripts/`: Git and GitHub automation for branches, descriptors, and stats formatting. Shared GitHub or git helpers belong in `git_scripts/common_git.py`. §AR-forge-publication
+- `git_scripts/`: Git and GitHub automation for branches and descriptors; the trusted publisher renders the PR body's stats (§AR-pr-body). Shared GitHub or git helpers belong in `git_scripts/common_git.py`. §AR-forge-publication
 - `utility_scripts/`: shared support code the programs and launchers import. Check here first before adding helper logic anywhere else. §AR-forge-workflow-boundary
 - `benchmarks/`: the code coverage benchmark. §FS-code-coverage-benchmarking
 - `prompt_templates/`: prompt text only. Put instruction wording here when behavior does not require Python changes. §AR-forge-workflow-prompts

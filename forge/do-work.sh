@@ -9,5 +9,5 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Keep this bootstrap wrapper stable: the Forge launcher loop is run-forge.sh
-# (§AR-forge-workflow-pipeline.1).
+# (§AR-forge-launcher.1).
 exec "$SCRIPT_DIR/run-forge.sh" "$@"

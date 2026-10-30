@@ -22,6 +22,12 @@
       "4.1.52.Final",
       "4.1.53.Final"
     ],
+    "skipped-versions" : [
+      {
+        "version" : "4.1.54.Final",
+        "reason" : "io.netty:netty-transport-native-epoll:4.1.54.Final depends on io.netty:netty-common:4.1.54.Final, whose published jar ships the Native Image substitution io.netty.util.NetUtilSubstitutions with @InjectAccessors accessor classes for NetUtil.LOCALHOST, LOCALHOST4 and LOCALHOST6 that define get() but no set(), so native-image aborts with a HostedError ('found no method named set or setLOCALHOST4') when it parses NetUtil's static initializer; fixed upstream in 4.1.55.Final (netty/netty#10799), which adds the setters."
+      }
+    ],
     "allowed-packages" : [
       "io.netty.channel.epoll"
     ]

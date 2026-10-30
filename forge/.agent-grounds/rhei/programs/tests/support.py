@@ -201,10 +201,12 @@ class FakeRepository:
 
     @staticmethod
     def index_entry(version: str, tested_versions: tuple[str, ...]) -> dict[str, Any]:
+        # Unreachable `file:` URLs, as in test_workflow.py: a source download fails at once, never on the network.
         return {"metadata-version": version, "tested-versions": list(tested_versions), "latest": True,
-                "allowed-packages": ["org.example"], "source-code-url": "https://example.org/src",
-                "test-code-url": "https://example.org/test", "documentation-url": "https://example.org/doc",
-                "repository-url": "https://example.org/repo"}
+                "allowed-packages": ["org.example"], "source-code-url": "file:///nonexistent/index/src.jar",
+                "test-code-url": "file:///nonexistent/index/test.jar",
+                "documentation-url": "file:///nonexistent/index/doc.jar",
+                "repository-url": "file:///nonexistent/index/repo"}
 
     def supported_files(self, version: str, covered: int, total: int) -> None:
         self.write(f"metadata/org.example/lib/{version}/reachability-metadata.json", "{}\n")
@@ -218,7 +220,7 @@ class FakeRepository:
                                                   "coverageRatio": round(covered / max(total, 1), 2), "breakdown": {}}}]}))
 
     def issue(self, label: str, title: str = f"Support {COORDINATE}", author: str = "reporter",
-              body: str = "", extra_labels: tuple[str, ...] = ()) -> None:
-        self.control({"issue": {"number": 7, "title": title, "state": "OPEN", "body": body,
+              body: str = "", extra_labels: tuple[str, ...] = (), state: str = "OPEN") -> None:
+        self.control({"issue": {"number": 7, "title": title, "state": state, "body": body,
                                 "author": {"login": author},
                                 "labels": [{"name": name} for name in (label, *extra_labels)]}})
