@@ -33,6 +33,8 @@ public class GroovyResultSetProxyTest {
             sql.executeUpdate("INSERT INTO inventory VALUES (?, ?, ?)", List.of(1, "notebook", 3));
             sql.executeUpdate("INSERT INTO inventory VALUES (?, ?, ?)", List.of(2, "pencil", 7));
 
+            assertEquals(2L, sql.firstRow("SELECT COUNT(*) AS total FROM inventory").get("TOTAL"));
+
             List<Integer> ids = new ArrayList<>();
             List<String> names = new ArrayList<>();
             List<Object> quantities = new ArrayList<>();
