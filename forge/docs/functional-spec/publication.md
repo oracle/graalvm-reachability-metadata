@@ -171,6 +171,31 @@ Rerunning that lane is enough for the repair; the next finalization runs every
 lane again, and so does the rerun after an audit edit
 (§FS-local-branch-review.3).
 
+#### 2.2 A test run pulls no Docker image
+
+CI pulls the declared images with `pullAllowedDockerImages` and then disables
+Docker networking, so a test that pulls an image on demand fails there.
+Disabling networking needs `sudo`, so the gate instead lists the Docker
+daemon's images before and after each of its test runs, a lane of 2.1 or an
+entry of the full reproduction's matrix, and an image that appeared fails it.
+
+The daemon is the host's, and several Forge runs share one host
+(§FS-forge-host-requirements), so an image another run pulls during the test
+run appears in this run's list too. CI stays the authoritative gate and this
+one is an early warning: blaming a run for another's pull costs the whole run
+and a maintainer hand-off, while missing a real pull costs one CI failure. Each
+launcher's mark (§FS-forge-stranded-claims.2) is read before and after the test
+run, and another Forge run counts as live when either reading shows it:
+
+- With no other run live, every new image fails the test run.
+- With another run live, a new image fails it only when the test run's own
+  output names it, by its repository name with or without its registry and tag
+  (`nginx`, `library/nginx`, `docker.io/library/nginx:1-alpine-slim`). Any
+  other new image is a warning that names it and the other runs' issues, and the
+  test run passes. The Docker CLI names the image it pulls in that output, so a
+  test that runs it to pull still fails here; a pull its output does not name
+  is left to CI.
+
 ## FS-native-test-verification-gate: Native test verification gate
 
 Metadata production for a coordinate begins with an *approximation*. The JVM
