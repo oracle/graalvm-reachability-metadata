@@ -60,7 +60,7 @@ from build_tools import (
     stop_gradle_daemons,
     upstream_remote,
 )
-from exit_codes import INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput
+from exit_codes import INFRASTRUCTURE, ISSUE_CLOSED, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput
 from run_state import ROUTE_NEW, Budgets, Chunk, RunState, load, runtime_path, save, write_text
 
 # <agent>[<mode>]:<model> with agent pi or claude-code (§FS-forge-agent-runtime-selection).
@@ -304,6 +304,10 @@ def run(args: argparse.Namespace) -> int:
         return INFRASTRUCTURE
     try:
         parsed: issue.Issue = issue.parse_issue(payload)
+    except issue.IssueClosed as closed:
+        # Not a bad input: the issue left the queue (§FS-forge-run-requirements.2).
+        print(f"[prepare] issue #{args.issue_number}: {closed}; nothing to do")
+        return ISSUE_CLOSED
     except ValueError as error_value:
         raise BadInput(str(error_value)) from error_value
     run_name: str = "forge-" + parsed.coordinate.replace(":", "-")

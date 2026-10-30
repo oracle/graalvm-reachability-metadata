@@ -156,6 +156,30 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> bool:
     return False
 
 
+def release_closed_issue_claim(issue_number: int, reason: str) -> bool:
+    """Clear the Forge assignee from an issue that closed after its claim; return whether it was cleared.
+
+    The issue left the queue, so it gets no label, comment or board move
+    (§FS-forge-run-requirements.2). A clear GitHub refuses is reported, not
+    raised, since it must not stop the launcher (§FS-forge-run-requirements).
+    """
+    if is_fixture_testing_enabled():
+        log_stage("issue-revert", f"Fixture mode: no GitHub claim was created for issue #{issue_number}.")
+        return True
+    log_debug("issue-revert", f"Clearing the Forge assignee from closed issue #{issue_number} because {reason}")
+    try:
+        clear_issue_assignees(issue_number)
+    except Exception as exc:
+        print(
+            f"ERROR: Issue #{issue_number} closed after its claim, but its Forge assignee could not be cleared: "
+            f"{format_github_exception_details(exc)}. Clear it by hand.",
+            file=sys.stderr,
+        )
+        return False
+    invalidate_issue_claim_cache_entry(issue_number)
+    return True
+
+
 def _has_published_dynamic_access_chunk(claimed_issue: ClaimedIssue) -> bool:
     """Return whether the issue's exhaust report records a published chunk."""
     report_path: str | None = find_dynamic_access_exhaust_report_path(

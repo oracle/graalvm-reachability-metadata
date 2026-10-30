@@ -220,7 +220,7 @@ class FakeRepository:
                                                   "coverageRatio": round(covered / max(total, 1), 2), "breakdown": {}}}]}))
 
     def issue(self, label: str, title: str = f"Support {COORDINATE}", author: str = "reporter",
-              body: str = "", extra_labels: tuple[str, ...] = ()) -> None:
-        self.control({"issue": {"number": 7, "title": title, "state": "OPEN", "body": body,
+              body: str = "", extra_labels: tuple[str, ...] = (), state: str = "OPEN") -> None:
+        self.control({"issue": {"number": 7, "title": title, "state": state, "body": body,
                                 "author": {"login": author},
                                 "labels": [{"name": name} for name in (label, *extra_labels)]}})

@@ -36,7 +36,7 @@ from utility_scripts.dynamic_access_exhaust_report import (  # noqa: E402
     DynamicAccessExhaustReport,
 )
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
-from exit_codes import BAD_INPUT, INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput  # noqa: E402
+from exit_codes import BAD_INPUT, INFRASTRUCTURE, ISSUE_CLOSED, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput  # noqa: E402
 from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, RunState, load, read_json, runtime_path, save  # noqa: E402
 
 SETUP_AGENT: str = "claude-code[medium]:sonnet"
@@ -359,6 +359,16 @@ class PrepareTest(unittest.TestCase):
                     "state": "OPEN", "number": 7, "title": f"Fails {COORDINATE}",
                     "labels": [{"name": "library-unsupported-version"}, {"name": label}]})
                 self.assertEqual((label, ROUTE_REPAIR, fix), (parsed.label, parsed.route, issue.TASK_TYPES[label]))
+
+    def test_an_issue_closed_after_the_claim_is_dropped_not_a_bad_input(self) -> None:
+        """It left the queue, so the close-out takes no issue action (FS-forge-run-requirements.2)."""
+        self.fake.issue("library-new-request", state="CLOSED")
+        with contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(ISSUE_CLOSED, self.prepare())
+        self.assertIn("issue is CLOSED, not open", output.getvalue())
+        recorded: dict[str, Any] = read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
+        self.assertEqual(("failed", "issue-closed"), (recorded["outcome"], recorded["kind"]))
+        self.assertFalse(os.path.isfile(runtime_path(self.fake.workspace, "state.json")))
 
     def test_two_workflow_labels_are_a_bad_input(self) -> None:
         self.fake.issue("fails-javac-compile", extra_labels=("fails-java-run",))
