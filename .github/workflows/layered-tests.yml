@@ -46,8 +46,20 @@ jobs:
     timeout-minutes: 5
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
+      second-matrix: ${{ steps.matrix.outputs.second-matrix }}
+      has-second-batch: ${{ steps.matrix.outputs.has-second-batch }}
+      revision: ${{ steps.revision.outputs.sha }}
 
     steps:
+      - name: "Resolve test ref"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ inputs.ref || github.event.repository.default_branch }}
+
+      - name: "Record test revision"
+        id: revision
+        run: echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+
       - name: "Create coordinate matrix"
         id: matrix
         env:
@@ -60,114 +72,80 @@ jobs:
             [
               {
                 selection: "Shared Layered Tests",
-                shards: 16,
+                shards: 32,
                 name: "Shared",
+                exclusions: "tests/tck-build-logic/src/main/resources/shared-layered-test-exclusions.txt",
                 task: "testSharedLayer",
                 failureReport: "shared-layer-test-failures.txt",
-                exclusions: "tests/tck-build-logic/src/main/resources/shared-layered-test-exclusions.txt",
                 deleteDedicatedLayer: "false"
               },
               {
                 selection: "Dedicated Layered Tests",
                 shards: 128,
                 name: "Dedicated",
+                exclusions: "tests/tck-build-logic/src/main/resources/dedicated-layer-test-exclusions.txt",
                 task: "testDedicatedLayer",
                 failureReport: "dedicated-layer-test-failures.txt",
-                exclusions: "tests/tck-build-logic/src/main/resources/dedicated-layer-test-exclusions.txt",
                 deleteDedicatedLayer: "true"
               }
             ]
             | if $selection == "All Layered Tests" then . else map(select(.selection == $selection)) end
+            | [
+                .[] as $lane
+                | {
+                    lane: $lane,
+                    coordinateMatrix: {
+                      coordinates: (if $coordinates == "all" then
+                        [range(1; $lane.shards + 1) | "\(.)/\($lane.shards)"]
+                      else
+                        [$coordinates]
+                      end)
+                    }
+                  }
+              ] as $lanes
             | {
-                include: [
-                  .[] as $lane
-                  | if $coordinates == "all" then
-                      range(1; $lane.shards + 1) as $shard
-                      | {coordinates: "\($shard)/\($lane.shards)", lane: $lane}
-                    else
-                      {coordinates: $coordinates, lane: $lane}
-                    end
-                ]
+                first: {include: [
+                  $lanes[]
+                  | if .lane.name == "Dedicated" and $coordinates == "all" then
+                      .coordinateMatrix.coordinates |= .[:length / 2]
+                    else . end
+                ]},
+                second: {include: [
+                  $lanes[]
+                  | select(.lane.name == "Dedicated" and $coordinates == "all")
+                  | .coordinateMatrix.coordinates |= .[length / 2:]
+                ]}
               }')"
-          echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
+          echo "matrix=$(jq -c '.first' <<< "${matrix}")" >> "${GITHUB_OUTPUT}"
+          echo "second-matrix=$(jq -c '.second' <<< "${matrix}")" >> "${GITHUB_OUTPUT}"
+          echo "has-second-batch=$(jq '.second.include | length > 0' <<< "${matrix}")" >> "${GITHUB_OUTPUT}"
 
   layered-tests:
-    name: "${{ matrix.lane.name }} layer tests for ${{ matrix.coordinates }} on ${{ inputs.ref || github.event.repository.default_branch }}"
-    runs-on: "ubuntu-latest"
-    timeout-minutes: 360
+    name: "${{ matrix.lane.name }} layer tests (batch 1)"
     needs: prepare-shards
     strategy:
       fail-fast: false
-      max-parallel: 64
       matrix: ${{ fromJson(needs.prepare-shards.outputs.matrix) }}
-    env:
-      GVM_TCK_NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode || 'current-defaults' }}
+    uses: ./.github/workflows/layered-test-shards.yml
+    with:
+      lane: ${{ toJson(matrix.lane) }}
+      coordinate-matrix: ${{ toJson(matrix.coordinateMatrix) }}
+      ref: ${{ needs.prepare-shards.outputs.revision }}
+      java-version: ${{ inputs.java-version || 'latest-ea' }}
+      native-image-mode: ${{ inputs.native-image-mode || 'current-defaults' }}
 
-    steps:
-      - name: "Checkout test ref"
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          ref: ${{ inputs.ref || github.event.repository.default_branch }}
-
-      - name: "Setup latest native-build-tools snapshot"
-        uses: ./.github/actions/setup-native-build-tools
-
-      - name: "Download GraalVM for layered metadata testing"
-        uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
-        with:
-          distribution: "graalvm"
-          java-version: ${{ inputs.java-version || 'latest-ea' }}
-          set-java-home: "true"
-          native-image-job-reports: "true"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "Setup Native Image base layer"
-        if: matrix.lane.name == 'Shared'
-        uses: ./.github/actions/setup-native-image-base-layer
-
-      - name: "Pull allowed docker images"
-        run: |
-          ./gradlew pullAllowedDockerImages -Pcoordinates="${{ matrix.coordinates }}"
-
-      - name: "Check metadata files content"
-        run: |
-          ./gradlew checkMetadataFiles -Pcoordinates="${{ matrix.coordinates }}"
-
-      - name: "Run layered tests"
-        env:
-          LAYER_NAME: ${{ matrix.lane.name }}
-          LAYER_TASK: ${{ matrix.lane.task }}
-          FAILURE_REPORT_NAME: ${{ matrix.lane.failureReport }}
-          EXCLUDED_COORDINATES_FILE: ${{ matrix.lane.exclusions }}
-          DELETE_DEDICATED_LAYER: ${{ matrix.lane.deleteDedicatedLayer }}
-          GVM_TCK_DEDICATED_LAYER_ROOT: ${{ runner.temp }}/native-image-dedicated-layers
-        run: |
-          failure_report="${RUNNER_TEMP}/${FAILURE_REPORT_NAME}"
-          set +e
-          ./gradlew "${LAYER_TASK}" \
-            -Pcoordinates="${{ matrix.coordinates }}" \
-            -Ptck.excludedCoordinatesFile="${EXCLUDED_COORDINATES_FILE}" \
-            -Ptck.layered.continueOnCoordinateFailure=true \
-            -Ptck.layered.coordinateFailureReport="${failure_report}" \
-            -Ptck.layered.deleteDedicatedLayerAfterTest="${DELETE_DEDICATED_LAYER}" \
-            --stacktrace
-          result=$?
-          set -e
-
-          if [[ -s "${failure_report}" ]]; then
-            failure_count="$(wc -l < "${failure_report}" | tr -d ' ')"
-            {
-              echo "### ${LAYER_NAME} layer test failures"
-              echo
-              echo "Failing libraries: ${failure_count}"
-              echo
-              while IFS= read -r coordinates; do
-                echo "- \`${coordinates}\`"
-              done < "${failure_report}"
-            } >> "${GITHUB_STEP_SUMMARY}"
-
-            echo "${LAYER_NAME} layer test failures (${failure_count}):"
-            sed 's/^/ - /' "${failure_report}"
-          fi
-
-          exit "${result}"
+  second-batch:
+    name: "${{ matrix.lane.name }} layer tests (batch 2)"
+    needs: [prepare-shards, layered-tests]
+    # Complete the sweep after test failures; stop on cancellation. §AR-layered-tests.
+    if: ${{ !cancelled() && needs.prepare-shards.result == 'success' && needs.prepare-shards.outputs.has-second-batch == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare-shards.outputs.second-matrix) }}
+    uses: ./.github/workflows/layered-test-shards.yml
+    with:
+      lane: ${{ toJson(matrix.lane) }}
+      coordinate-matrix: ${{ toJson(matrix.coordinateMatrix) }}
+      ref: ${{ needs.prepare-shards.outputs.revision }}
+      java-version: ${{ inputs.java-version || 'latest-ea' }}
+      native-image-mode: ${{ inputs.native-image-mode || 'current-defaults' }}
