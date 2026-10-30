@@ -8,6 +8,8 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.util.MethodInvoker;
 
@@ -25,6 +27,17 @@ public class MethodInvokerTest {
 
         assertThat(invoker.isPrepared()).isTrue();
         assertThat(result).isEqualTo("Hello Spring");
+    }
+
+    @Test
+    void invokesPublicInterfaceMethodOnEncapsulatedJdkImplementation() throws Exception {
+        MethodInvoker invoker = new MethodInvoker();
+        invoker.setTargetObject(List.of("first", "second"));
+        invoker.setTargetMethod("size");
+
+        invoker.prepare();
+
+        assertThat(invoker.invoke()).isEqualTo(2);
     }
 
     public static final class GreetingService {

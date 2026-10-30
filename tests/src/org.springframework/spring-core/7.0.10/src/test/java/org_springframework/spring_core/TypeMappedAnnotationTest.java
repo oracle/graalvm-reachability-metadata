@@ -55,6 +55,19 @@ public class TypeMappedAnnotationTest {
         assertThat(nestedMaps[1].get("value")).isEqualTo("second");
     }
 
+    @Test
+    void adaptsScalarToDeclaredAnnotationArrayType() {
+        MergedAnnotation<Labels> annotation = MergedAnnotation.of(Labels.class, Map.of("value", "single"));
+
+        assertThat(annotation.getStringArray("value")).containsExactly("single");
+        assertThat(annotation.synthesize().value()).containsExactly("single");
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Labels {
+        String[] value();
+    }
+
     private static Map<String, Object> nestedAttributes(String value) {
         Map<String, Object> attributes = new LinkedHashMap<>();
         attributes.put("value", value);

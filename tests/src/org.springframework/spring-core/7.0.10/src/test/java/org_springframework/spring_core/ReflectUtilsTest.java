@@ -74,6 +74,19 @@ public class ReflectUtilsTest {
         assertThat(interfaceMethod.getDeclaringClass()).isEqualTo(DecoratingProxy.class);
     }
 
+    @Test
+    void loadsResourceImplementationByNameAndConstructsIt() throws Exception {
+        Class<?> type = ReflectUtils.loadClass("org.springframework.core.io.ByteArrayResource",
+                getClass().getClassLoader());
+        byte[] content = new byte[] {7, 8};
+
+        ByteArrayResource resource = (ByteArrayResource) ReflectUtils.newInstance(type,
+                new Class<?>[] {byte[].class}, new Object[] {content});
+
+        assertThat(resource.getByteArray()).isSameAs(content);
+        assertThat(resource.contentLength()).isEqualTo(2);
+    }
+
     private static List<String> methodNames(List<Method> methods) {
         List<String> names = new ArrayList<>();
         for (Method method : methods) {
