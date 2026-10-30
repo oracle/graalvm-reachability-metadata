@@ -96,7 +96,10 @@ failure, the same for every pull request it breaks, such as
 `ni-25.0-spring-security-type-not-found`. When the evidence is a GraalVM defect — a builder-internal
 `VMError`, `HostedError` or `shouldNotReachHere`, or forbidden metadata the agent emits on every
 generation — say so in `cause` and quote it in the body: a maintainer files the GraalVM ticket from it
-(§root/FS-graalvm-blocked-work.1).
+(§root/FS-graalvm-blocked-work.1). The primary error decides: a `VMError` or `HostedError` reported
+only as `Suppressed:` beside another failure, such as oracle/graal#14823's "Reflection metadata
+cannot be queried before analysis is complete", is not the cause; handle the primary error under
+the usual rules.
 
 ## Metadata rules
 
