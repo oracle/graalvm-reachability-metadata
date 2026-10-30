@@ -6,7 +6,9 @@ One recurring scanner task drives `{{repo}}` through
 `queue-check` state performs the cheap GitHub availability check before spending
 an agent run. The scanner never opens GitHub issues. It only scans the open
 `{{source}}` carrying `human-intervention`, extracts the direct reason each item
-got the label, groups common causes, and writes group reports.
+got the label, groups common causes, and writes group reports. It leaves out
+every item that also carries `graalvm-bug`: that item is a declared GraalVM
+blocker whose cause is already diagnosed and linked.
 
 Only groups with at least `{{min_group_size}}` source items get generated
 investigation tasks. Smaller groups are recorded in `runtime/scan/groups.md` as

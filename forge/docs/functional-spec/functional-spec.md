@@ -23,8 +23,8 @@ review and repository CI remain the final merge boundary.
 This shortens the path described in §GOAL-shorten-issue-to-shipped-metadata.
 
 A supported issue starts from a work label such as `library-new-request`,
-`library-update-request`, `fails-javac-compile`, `fails-java-run`, or
-`fails-native-image-run`. §FS-forge-scope enumerates the queues Forge resolves,
+`library-update-request`, `fails-javac-compile`, `fails-java-run`,
+`fails-native-image-build`, or `fails-native-image-run`. §FS-forge-scope enumerates the queues Forge resolves,
 and §FS-forge-scope.1 records where the `fails-*` work comes from. Forge drains
 each pipeline by priority tier rather than by scan batch: every `high-priority`
 issue first, then every `priority` issue, then the remaining issues.
@@ -47,14 +47,18 @@ The project covers these supported issue-resolution queues
    no longer compile against a bumped library version.
 5. **Java runtime fixes** (`fails-java-run`) — repair JVM-mode test
    failures that surface when raising a tested library to a new version.
-6. **Native-image runtime fixes** (`fails-native-image-run`) — update
+6. **Native-image build fixes** (`fails-native-image-build`) — repair the
+   test project, its allowed native-image flags, or the reachability metadata
+   so the native test image builds against the new library version.
+7. **Native-image runtime fixes** (`fails-native-image-run`) — update
    reachability metadata so `nativeTest` passes against the new library
    version, using the native metadata exploration phase.
 
 Successful fixes use the matching PR labels (`library-new-request`,
-`library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`, or
-`fixes-native-image-run-fail`) so the launcher's review recognizes the pull
-request as Forge's (§FS-published-pr-review.1).
+`library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`,
+`fixes-native-image-build-fail`, or `fixes-native-image-run-fail`) so the
+launcher's review recognizes the pull request as Forge's
+(§FS-published-pr-review.1).
 
 Out of scope: anything that does not produce reachability metadata or its
 supporting tests for the reachability repo.
@@ -70,6 +74,10 @@ the stage that broke (`fails-javac-compile`, `fails-java-run`,
 `fails-native-image-build`, or `fails-native-image-run`). Forge claims those
 issues; it never opens them. The producer's contract is the reachability repo's
 Library version update automation (§root/FS-library-version-update-automation).
+That automation also assigns each `fails-native-image-build` issue to a
+maintainer (§root/FS-library-version-update-automation.4), and Forge fetches
+only unassigned issues (§AR-forge-launcher.1), so a maintainer hands
+one to Forge by removing the assignment.
 
 ## FS-forge-glossary: Glossary
 
@@ -105,182 +113,6 @@ same for every issue. **Run requirements** (§FS-forge-run-requirements) are wha
 one work cycle must resolve for itself — the agent targets it will run, the
 issue it may claim, the form of that issue, and the run context `prepare` builds. Each
 is a gate, and they run in that order (§AR-forge-workflow-pipeline).
-
-## FS-forge-host-requirements: Host requirements
-
-§GOAL-shorten-issue-to-shipped-metadata §root/PRCPL-verify-inputs
-
-Before Forge performs a self-update, queries queue state, claims an issue,
-creates a review worktree, or invokes an agent, it must validate every host
-capability the invoked mode needs, and it must do so without invoking a model or
-mutating GitHub. This section is the complete list: what `forge_metadata.py`
-needs in order to work is what the host requirements gate checks, and the
-requirement has exactly one definition, so a repeated check elsewhere resolves
-to the same rule rather than a second one.
-
-The host must provide:
-
-- **Executables on `PATH`**: the selected Python interpreter, `git`, the GitHub
-  CLI, the agent backends the enabled roles select, the Docker CLI, the pinned
-  `grype` release, the pinned `rhei` release, and the selected
-  repository's Gradle wrapper. Every mode requires `rhei`, because each
-  launcher runs its work as a Rhei workflow, and the shipped templates are
-  written in the plan language of exactly that release.
-- **A usable GitHub account**: the CLI authenticated, `Contents`, `Issues`, and
-  `Pull requests` write on the repository, and `Projects` write on the tracked
-  project board — read access alone is not enough, because Forge assigns and
-  labels issues, comments, pushes generated branches, submits reviews, and
-  merges eligible pull requests. The local process never holds the Forge
-  publisher App credentials: it neither opens pull requests nor creates
-  publication follow-up issues.
-- **Agents that are usable, not merely installed**: each selected backend
-  authenticated against its provider with unattended tool approval and a
-  writable state directory. Validation covers only the executables, models, and
-  state roots the enabled roles actually select
-  (§FS-forge-agent-runtime-selection) — supporting a backend is not a reason to
-  require it.
-- **Every Java lane**, each pointing at a GraalVM distribution that provides
-  Native Image, allows its `bin/java` to load the `native-image-agent`, and
-  contains the reachability-metadata schema the checked-out repository requires:
-  `GRAALVM_HOME` at the latest published GraalVM GA
-  release, `GRAALVM_HOME_LATEST_EA` at the newest published Oracle GraalVM EA
-  build, and `GRAALVM_HOME_25_0` at the repository-pinned 25.0.x release in
-  `graalvm-versions.json`. The agent probe writes to a disposable output
-  directory, so it verifies the JVM capability metadata generation depends on
-  without leaving generated configuration behind. `GRAALVM_HOME` also provides
-  `native-image-utils`, in `bin` or `lib/svm/bin`: metadata generation merges
-  the agent's trace output with it, so a distribution without it cannot produce
-  metadata. The operator updates the pinned value deliberately;
-  GA and EA freshness are resolved from their authoritative release metadata on
-  every run. An Oracle EA release label can advance without the runtime or
-  JVMCI revision its binaries report changing, so the gate identifies the EA
-  build by its JDK version, its Graal major.minor, and the `oracle/graal`
-  commit its release notes name, which the installed `release` file records. `GRAALVM_HOME` and `JAVA_HOME` are aligned to one
-  distribution, and `GRADLE_JAVA_HOME` and Gradle's `org.gradle.java.home`
-  system property are pinned to that same distribution, so inherited host
-  `GRADLE_OPTS` cannot silently hand Gradle test workers an agent-less JVM. A
-  review-only host needs a working JDK on `JAVA_HOME` instead of the lanes.
-  Every agent repair step runs against the exact distribution whose Gradle or
-  Native Image failure triggered it — the selected `GRAALVM_HOME`, `JAVA_HOME`,
-  and full `native-image --version` output go into the agent's instructions and
-  its environment — and Forge fails rather than reproducing or verifying against
-  a different installation.
-- **Access to the Docker daemon**, not just the client.
-- **Filesystem write access** to the Forge checkout, the `.git` directory of
-  every checkout the run writes branches into, `local_repositories`, and
-  temporary Gradle state.
-- **Network reachability** on 443 to GitHub, the agent provider, the Gradle
-  distribution and plugin services, Maven Central, and the Docker registry and
-  its auth endpoint. Reachability is checked over the route Forge's own tools
-  take — directly, or through the proxy the environment configures for HTTPS —
-  so a proxied host is not reported as offline. Every configured artifact
-  repository is checked at its exact base URL with an HTTP `HEAD` request and
-  must return `200`, so Forge proves the same DNS, proxy, TLS, and HTTP path the
-  issue-form artifact lookup will use before it claims an issue.
-- **Git transport** to the monitored branch from every checkout the run uses.
-- **A complete reachability repository** for anything that runs its Gradle
-  tasks: testing, dynamic-access reporting, native metadata exploration,
-  metadata generation, and final verification must run inside a whole
-  `graalvm-reachability-metadata` checkout or worktree — repository root,
-  `gradlew`, Gradle build logic, shared test infrastructure, `metadata/`,
-  `tests/`, and `forge/` when the run records metrics, logs, or resumable
-  state — never in a copied per-library directory, an extracted dependency
-  artifact, or any partial tree. Isolated worktrees, resumable artifacts, and
-  archives must each preserve that whole context; missing repository context is
-  a hard setup failure.
-
-Two path sets are validated for what each owns. Forge-owned paths — the Forge
-checkout, its `local_repositories`, the pinned GraalVM configuration, and the
-self-update remote — always resolve from the checkout that contains Forge.
-Repository-owned paths — the Gradle wrapper, the Git metadata generated branches
-are written into, and the origin remote they are pushed to — resolve from the
-repository the run selected, which may be a different checkout. The selected
-repository is therefore resolved before the gate runs, so a run against another
-checkout can neither pass on a broken target nor be rejected because an
-unrelated parent checkout is broken.
-
-Requirements are scoped to what the invoked mode actually does: a review-only
-run does not need the issue-work Java lanes or Docker; an issue run
-needs everything its enabled queues select; a fixture-testing run needs no live
-GitHub access, because it mutates no GitHub state. Only the release-version
-comparison for the Java lanes is relaxable, and relaxing it never waives Native
-Image, the `native-image-agent`, or the reachability-metadata schema.
-
-Code-coverage work is a separate host-requirement mode because its operator
-entry point does not pass through `forge_metadata.py`. It needs the build
-capabilities used by issue work, but only one GraalVM distribution: use
-`GRAALVM_HOME`, taking the value of `JAVA_HOME` when it is unset, and require
-JDK 25 or newer with Native Image, native-image-agent, and the
-reachability-metadata schema. It does not require the three release-comparison
-lanes or `grype`.
-
-The gate must always print an operator-facing report. Each entry names the
-capability, whether the invoked mode requires it, the exact executable,
-environment variable, path, host, or permission checked, and — on failure —
-exactly one concrete `Fix:` instruction, with current and required values shown
-explicitly and command output reduced to the relevant fact.
-
-The gate runs at the start of every work-starting `forge_metadata.py`
-invocation, not only from the worker loop, and because the worker re-execs
-itself between cycles, every new worker process revalidates the host before
-doing more work. A standalone work-starting entry point must invoke the same
-gate before its first queue query; the code-coverage launcher does so in its
-coverage mode before selecting an issue or creating a Rhei workspace. The Forge
-launcher does so before every claim in the issue-work mode with PR review
-enabled, for its worker, setup, and review agents, because each of its cycles
-may work an issue or review published pull requests. Any
-failed required check stops the run with a non-zero exit before the first work
-cycle; only the Forge launcher's loop waits out a failure that is transient
-(§FS-forge-host-requirements.1). Capabilities the mode does not need are
-reported as not required, a relaxed version mismatch does not fail startup, and
-commands that start no work — stop, resume, help, cache maintenance — do not run
-the gate at all.
-
-### 1. A transient failure waits
-
-A failed check is either a host fault or a transient condition, and the two
-call for opposite responses. A host fault — a missing tool, credential,
-permission, Docker daemon, agent login, or Java lane — lasts until the operator
-fixes it, so it stops the worker loudly. A transient condition clears on its own
-and says nothing about how the host is set up, so stopping on it only loses the
-worker's throughput until a person notices and restarts it. Two conditions are
-transient:
-
-- **A GitHub rate limit**, primary or secondary. Several workers may share one
-  GitHub account, and GitHub's short-lived limits trip while the hourly budget
-  still has room, so one worker hitting a limit is not a missing permission.
-  The gate recognizes a rate limit by the same rule as Forge's other GitHub
-  calls (§FS-human-intervention-policy), and reports it as a rate limit whose
-  fix is to wait, not to check access grants that are fine.
-- **An endpoint that cannot be reached**: a required host whose name does not
-  resolve, whose connection fails, which does not answer in time, or which
-  answers with a server error or a rate-limit status. A check that depends on
-  such an endpoint — a GitHub query, a Git transport, an agent login that
-  refreshes its token — and fails while the endpoint cannot be reached reports
-  the outage, not the account, so it is transient too. An endpoint or proxy
-  that answers but refuses the request for any other reason, such as a proxy's
-  403 or 407 or a repository's 404, or that presents a certificate the host
-  does not trust, is a host fault: that policy will not change by itself.
-
-A gate whose every failed check is transient exits with a distinct status, 75
-(`EX_TEMPFAIL`), and reports only the failed checks. The Forge launcher then
-starts no work, waits, and runs the gate again, with a backoff that doubles from
-one minute to at most fifteen and one log line per wait. It waits for as long as
-the condition lasts: a worker that waits resumes on its own once the condition
-clears, and one that stops needs a person. Any host fault among the failures
-still stops the run with the full report. Every other entry point exits with the
-gate's status, so whatever started it can tell the two apart.
-
-The launcher waits only once the gate has passed in the same process; before
-that, a transient failure stops it like a host fault. A host that has never
-passed proves nothing about its setup, and a misconfiguration can fail exactly
-as an outage does — a sandbox that blocks an agent provider, or a host name that
-never resolves — so a new worker that waited would hide the fault from the
-operator who just started it. A worker that has passed has shown its setup
-works, so its later transient failures are outages and it waits them out. A
-work cycle that fails waits on the same backoff before the next gate, so a
-failure the gate did not see, such as an outage that starts mid-cycle, does not
-turn the loop into a tight retry against the same endpoints.
 
 ## FS-forge-agent-runtime-selection: Two agent inputs
 
@@ -347,6 +179,15 @@ issue form is the one requirement that then ends the issue rather than leaving
 it queued, because its defect is in the issue itself and no later cycle can
 repair it (see 3 below).
 
+A release counts only once GitHub confirms it: the issue reads back in `Todo`
+with no assignee. GitHub may be down at the very moment a release is needed,
+since an outage is often why the run failed, so a release whose calls fail
+transiently is retried a few times, then by the next cycle
+(§FS-forge-stranded-claims.4.2). One GitHub refused, or answered but still
+shows claimed, is reported as unconfirmed, naming the issue to release by hand,
+never as released: a retry would be refused again or clear a claim made since.
+An unconfirmed release must not stop the launcher or hide the failure behind it.
+
 ### 1. Agent targets
 
 Both agent targets must be valid before the launcher fetches a queue: each is
@@ -357,7 +198,7 @@ error: the launcher exits before it claims an issue, not one issue at a time.
 ### 2. Issue claimability
 
 Claiming is exclusive, and the decision must be made against live GitHub state
-rather than the fetch that led to it (§AR-forge-workflow-pipeline.1). The issue
+rather than the fetch that led to it (§AR-forge-launcher.1). The issue
 payload is re-read at claim time and must still be open, still carry the queue
 label, be unassigned or assigned only to the authenticated user, carry no open
 blockers, and sit in project status `Todo`. Once those live conditions hold, the
@@ -375,7 +216,9 @@ run's base, and creates the isolated worktree from it; a base that cannot be
 resolved fails the run before anything is changed. Every repository-dependent
 precondition runs inside the run against that worktree: a
 `chunked-dynamic-access` issue must resolve its exhaust report and find the
-preceding chunk merged (§AR-dynamic-access-exhaust-report). A failed
+preceding chunk merged (§AR-dynamic-access-exhaust-report), and a
+`library-new-request` must request a version the base does not support yet
+(see 2.2). A failed
 precondition ends the run, the launcher releases the claim back to `Todo`, and
 its classification decides what happens to the issue
 (§FS-human-intervention-policy). An infrastructure failure takes no issue
@@ -383,6 +226,12 @@ action, so a later cycle retries it. A bad input would fail identically on every
 retry: Forge posts a comment naming the reason and labels the issue
 `human-intervention`, which takes it out of the queue until a maintainer
 resolves it.
+
+An issue can still close between the claim and `prepare`'s own live read.
+Such an issue is not a bad input: it has left the queue, and nothing is left
+for a maintainer to do. `prepare` ends the run on it, and the launcher only
+clears the Forge assignee the claim set. It adds no label, posts no comment,
+and leaves the board item where closing the issue put it.
 
 #### 2.1 An issue blocked on GraalVM is not claimed
 
@@ -395,6 +244,26 @@ still holds. Neither `resumable` nor the blocked-issue override lifts it:
 `resumable` lifts no hold, and the override concerns open GitHub blockers,
 while this label marks a defect outside the repository that only a
 maintainer's release clears (§root/FS-graalvm-blocked-work.3).
+
+#### 2.2 A new library the base already supports is a bad input
+
+A `library-new-request` asks for support the repository lacks
+(§FS-forge-scope). When an entry of the artifact's `index.json` on the pinned
+base already lists the requested version, in `tested-versions` or as its
+`metadata-version`, the version's metadata, tests, and stats already ship. A
+run would spend its agent budget re-creating them, only to publish a duplicate
+or to end with nothing to publish. `prepare` therefore stops such a run before
+any agent state, as a bad input whose comment names the commit that added the
+version. A maintainer then closes the issue as a duplicate, or relabels it a
+`library-update-request` when the reporter asks for more than the shipped
+version covers. A `default-for` range does not list a version, and a version
+the index does not list passes, whatever other versions are supported.
+
+A chunked issue is the exception (§FS-forge-chunked-dynamic-access): its
+earlier chunk merged the version, and the next chunk resumes from the
+`chunked-dynamic-access` label or the coordinate-local exhaust report. That
+report lives in the version's test project, not in `index.json`, so the rule
+is a precondition of the run rather than an issue-form rule (see 3).
 
 ### 3. Issue form
 
@@ -508,254 +377,10 @@ before it publishes. The `setup` state and the setup tail own library setup
 inside that context (§AR-forge-workflow-pipeline.4.1); neither owns queue
 policy or repository resolution.
 
-## FS-forge-outputs: Run outputs
-
-- **Per-run metrics record** persisted to
-  `stats/<group>/<artifact>/<version>/execution-metrics.json`, as required by
-  §FS-forge-run-metrics.
-- **Durable session and generation logs** for every agent session,
-  generation attempt, deterministic Gradle command, metadata fixup, native
-  trace cycle, and local verification gate that contributes to the run, as
-  required by §FS-durable-generation-logs.
-- **Generated tests + metadata + index.json** committed on a per-run feature
-  branch in the reachability repo, named `ai/<authenticated-login>/<suffix>`
-  where `<suffix>` names the route and encodes the coordinate (e.g.
-  `add-lib-support-<group>-<artifact>-<version>` for new-library support,
-  `library-update-request-…`, `fixes-javac-fail-…`, `fixes-java-run-fail-…`,
-  `fixes-native-image-run-fail-…`). Publication branches are
-  unique per publication ID and are pushed directly to
-  `oracle/graalvm-reachability-metadata` so the repository's `push` workflow can
-  observe them.
-- **Pull request** created asynchronously by the trusted Forge Actions
-  publisher after Branch Ready accepts the exact pushed SHA.
-
-### FS-forge-run-output-legibility: Legible run output
-
-The run's own output is one of the run outputs defined by §FS-forge-outputs.
-Whoever is running generation watches it live, so it must answer two questions
-at a glance: which concrete step the run is in right now, and — when the run
-stops — what exactly failed. Clarity is the requirement, not volume: a wall of
-text that has to be read backwards to locate the current step fails this section
-as surely as silence does. This is the live counterpart of the durable record
-required by §FS-durable-generation-logs, and it keeps the loop short as called
-for by §GOAL-shorten-issue-to-shipped-metadata.
-
-#### 1. Every step locates its state
-
-On entering a pipeline step, the normal output prints one concise line naming
-the phase, the work and its operand, plus the step's derived position as
-`(n/total)` (`setup/neural_setup`, `explore/native_trace_gate`,
-`finalization/local_ci_check`, …). A completed step or unit adds one outcome
-line under the same position instead of narrating its intermediate work. The
-reader must never have to infer the current step from incidental output such as
-a Gradle banner or an agent's prose.
-
-#### 2. Every failure names its location and its cause
-
-A failing run states the phase, the step, the operand, and the concrete reason
-it stopped, in that order, before any surrounding detail — the same pair
-required everywhere a failure surfaces by
-§FS-forge-run-location-reporting.3. A failure reported only as a
-status, a stack trace, or a generic message does not satisfy this requirement.
-
-#### 3. The inside of a step stays quiet
-
-Work within a step is reported by outcome, not by narration: one line per
-completed unit (a generated class, a passed gate, a trace cycle) and nothing per
-intermediate operation. Repeated or retried work says that it is a retry and
-which attempt it is, so a stalled loop is visible as a loop.
-
-#### 4. Detail lives in the logs, not in the terminal
-
-Full agent conversations, Gradle output, and native-image output are written to
-the durable logs; the run output prints the path to the relevant log instead of
-reproducing it, so a maintainer can escalate from the summary to the evidence in
-one step (§FS-durable-generation-logs).
-
-#### 5. Verbose mode restores narration
-
-`--verbose` adds the intermediate operations hidden by normal output, including
-the registered method-style step announcement and deterministic setup details.
-It never replaces the concise progress and outcome lines. A failed gate prints
-the detail needed to diagnose that failure even when verbose mode is off.
-
-Inside a `forge-metadata` run each state writes its own log, and the dashboard
-names the state; a program prints one line per check it runs and its outcome,
-and command output, branch commands, source downloads, and checkpoints stay in
-the state's log (§AR-forge-workflow-pipeline.3). A failed command remains
-visible with its cause and durable log path.
-
-For `fix` and `explore`, normal output names the diagram step and only the unit
-that advances it. Test generation identifies either the selected class and its
-`current/total` class position, a bulk iteration, or an unguided generation
-attempt. Beneath that state, tests report their bounded attempt, terminal task,
-and whether `nativeTest` was reached; an agent retry is one indented `feedback
-fix` state. The native-trace gate reports start, terminal status, and a nested
-`agent_fix` state only when deterministic tracing cannot converge. Agent session
-announcements, static start/completion lines, Gradle commands, report refreshes,
-trace directories, metadata paths, cycle internals, and failure-log excerpts
-are verbose narration. The in-place agent heartbeat remains the normal live
-timer. Terminal failures still name their cause and durable log.
-
-For `finalization`, normal output shows the terminal native-trace gate, then
-the three native-test lanes with their `current/total` lane position, toolchain,
-and Native Image mode. The remaining deterministic production work is one
-`final repository checks` state per coordinate, followed by the finalization
-outcome. An agent entered by a failed native lane, metadata check, or Checkstyle
-check is reported as the separate `agent_fix` step with its attempt and target.
-Metadata splitting, individual validation and style tasks, statistics and
-metrics generation, schema validation, Gradle commands, paths, and timings are
-verbose narration. A failed command or agent remains visible with its cause and
-durable log path.
-
-## FS-forge-run-metrics: Per-run metrics record
-§GOAL-minimize-generation-cost
-
-Every run must persist a per-library metrics record to
-`stats/<group>/<artifact>/<version>/execution-metrics.json` so cost, token,
-coverage, and status evidence stays attached to the library version it describes
-(§GOAL-maximize-library-coverage). `publish` builds the record from the run's
-own token accounting just before it writes the publication descriptor
-(§AR-forge-workflow-pipeline.4).
-Run metrics may identify the generated metadata artifact, but must not record a
-single test-file artifact: the version-controlled test tree and pull-request
-diff are the authoritative set of test files for the run.
-A run Rhei resumes keeps its workspace, so its accounting already holds the
-usage of the attempts before the resume.
-
-## FS-durable-generation-logs: Durable generation and session logs
-
-Every Forge session and generation step must be logged and saved to a stable
-path because durable logs are the primary debugging surface for generated work.
-This includes agent prompts and responses, session or thread identifiers,
-persistent-instruction state, Gradle command output, metadata-fix output,
-native check output, fix requests and fix reports, and local verification
-output.
-
-Logs must be scoped by task and coordinate where possible, and the workflow
-must print or record the log path so a maintainer can inspect the exact
-conversation or command that produced a generated artifact; the live run output
-that points at those paths is specified by §FS-forge-run-output-legibility.
-A workflow must not rely on transient terminal output as the only record of a
-generation step.
-If a run fails or times out, the saved logs are part of the diagnostic artifact
-set that allows maintainers or a later Forge run to continue from evidence,
-keeping the loop short as called for by §GOAL-shorten-issue-to-shipped-metadata.
-
-## FS-forge-run-location-reporting: Run location in progress and failure output
-
-A Forge run must always be able to say **where** it is: the phase it is in and
-the step inside it. That location is one vocabulary used twice — to narrate
-progress while the run works, and to report the location of a failure — so a
-reader of a live run and a reader of a failed run name the same thing the same
-way, serving §GOAL-shorten-issue-to-shipped-metadata. Inside a `forge-metadata`
-run the location is the Rhei state, which the dashboard and the state's log
-already name (§AR-forge-workflow-pipeline.3); the vocabulary below is the
-launcher's and the code coverage workflow's.
-
-### 1. Vocabulary
-
-A **phase** is one banded segment of the run: `claim`, `setup`, `fix`,
-`explore`, `finalization`, or `publication`. `claim` is the launcher-side
-segment that runs before a run exists, and the phases are declared once, in the
-run-location table (§AR-forge-run-location).
-
-A **step** is the method that is executing, written with its parentheses —
-for example `check_host_requirements()`, `claim_issue()`, `generate_tests()`,
-`native_trace_gate()`, `agent_fix()`, `local_ci_check()`, `publish_branch()`. A step
-is registered under the phase that runs it, and a phase's registered steps are
-ordered by the order the run enters them, so a step has a position `<n>` within
-a total `<total>`. A step name may belong to more than one phase when more than
-one phase runs it, but the registry is the only place the binding is written: a
-step the run enters must be registered, and `<total>` is derived from the
-registry rather than counted by hand.
-
-Only steps the pipeline actually enters are registered. A pipeline method that
-is still folded into a larger one is registered when it becomes a step of its
-own, so `<n>/<total>` never counts a step that never runs.
-
-A step may carry an **operand**: the one value the step was working on when it
-ran — the class being generated, the gate command that returned non-zero, the
-coordinate being published. A location renders as `<phase>/<step>` without an
-operand and `<phase>/<step>[<operand>]` with one.
-
-### 2. Progress output
-
-Entering a phase prints a bounded, visually distinct banner naming the phase and
-the run it belongs to, so a phase transition is findable by eye in a long run
-log even when runs are interleaved (§AR-forge-run-location). The
-banner marks a transition: re-entering the phase the run is already in prints
-nothing.
-
-Entering a step prints exactly one line:
-
-```
-Running step <step> (<n>/<total>) of phase <phase>
-```
-
-with ` on <operand>` appended when the step has an operand. The words "Running
-step" and "of phase" are fixed: this line is the anchor a reader and a log
-search look for.
-
-### 3. Failure output
-
-A terminal failure prints one line before its error detail:
-
-```
-run failed in <phase>/<step>
-```
-
-The same pair must appear, unchanged, in every place the failure surfaces: the
-worker's terminal output and run log, the run status the workflow returns, and
-the human-intervention comment, which leads with it
-(§FS-human-intervention-policy).
-
-The location is reported once per run — the failure that ends a run is one
-failure, and the first boundary to report it owns the line — and the innermost
-step that failed is the one reported, however many intermediate handlers the
-failure passes through. A failure that returns a status code instead of raising
-records its location at the point it gives up, so both routes out reach the
-lifecycle boundary with one location.
-
-A user interrupt is not a run failure: it carries no location, records none, and
-prints none.
-
-No failure path may report a phase without a step. A failure raised outside
-every step boundary is a defect in Forge, not a formatting gap: it is reported
-with the step `<unlocated-step>` and an explicit defect notice on stderr, so it
-is visible rather than silently tolerated.
-
-### 4. Failure output stays short
-
-Failure output is the location, the error, and the preserved-work link. The
-human-intervention handoff itself is unchanged
-(§FS-human-intervention-policy) — the work is still preserved on a branch, the
-comment is still posted, the label is still applied — but its narration is
-debugging detail, not failure output: branch switches, staging, commits, pushes,
-and claim-revert bookkeeping are logged at debug level and are off unless debug
-logging is enabled. Errors, the failure location, and the preserved branch URL
-are never suppressed.
-
-## FS-forge-run-status: Run status semantics
-
-Every `forge-metadata` run ends in one final state, and the launcher acts on it
-(§AR-forge-workflow-pipeline.1):
-
-| Final state | Meaning |
-| --- | --- |
-| `completed` | Every check and the local CI-equivalent verification passed (§FS-local-ci-equivalent-verification) and the publication branch is pushed. A chunk that is not the last is published the same way, with `RUN_STATUS_CHUNK_READY` in its metrics; the issue must not be resumed until that chunk's PR has merged. A skip record is published the same way (§FS-unsupportable-version-diagnosis.3), and so is a not-for-native-image record (§FS-not-for-native-image-record.2). |
-| `nothing-to-publish` | The coordinate's paths are unchanged, counting the exhaust record a chunk writes first (§FS-forge-chunked-dynamic-access); no branch is pushed. A chunk that is not the last and completed or exhausted a class, or a last chunk that removes an earlier chunk's report, always has something to publish. |
-| `human-intervention` | A check still failed after its fix, or the fix reported that nothing within the rules helps; no branch is pushed (§FS-human-intervention-policy). |
-| `failed` | A bad input or an infrastructure failure; no branch is pushed. |
-
-A run whose checks pass only after a fix request is still `completed`: the fix
-request and report stay in the workspace, and the PR body carries the run's
-metrics like any other.
-
 ## FS-unsupportable-version-diagnosis: Unsupportable-version verdict in setup
 
-For `fails-javac-compile`, `fails-java-run`, and `fails-native-image-run`
-issues, the `setup` state answers one more question before any repair starts:
+For `fails-javac-compile`, `fails-java-run`, `fails-native-image-build`, and
+`fails-native-image-run` issues, the `setup` state answers one more question before any repair starts:
 does covering the library's dynamic-access calls require behavior Native Image
 does not support (§root/FS-test-contract.4.5)? The inputs — the issue's failure
 evidence and the library's sources for this and newer versions — all exist
@@ -765,7 +390,7 @@ turn and saves the whole repair. Without it, the disposition of
 that fails honestly ends in `human-intervention` and publishes nothing. Issues
 without failure evidence are never asked: a `library-new-request` has no index
 entry to record a skip into, and a `library-update-request` carries no failure
-to diagnose. `run.md` names the bar only for the three `fails-*` labels
+to diagnose. `run.md` names the bar only for the four `fails-*` labels
 (§AR-forge-workflow-prompts.2).
 
 ### 1. The bar
@@ -809,7 +434,7 @@ a repairable verdict it adds no entry.
 
 ### 3. The skip record is the run's outcome
 
-The setup tail keeps `skipped-versions` additions on the three `fails-*` labels
+The setup tail keeps `skipped-versions` additions on the four `fails-*` labels
 and reverts them on every other label (§AR-forge-workflow-pipeline.4.1). When
 the index gained an entry for the target version, `setup-check` turns the run into
 the skip record before anything else. The coordinate's paths return to the
@@ -906,7 +531,7 @@ Rhei template (§AR-forge-workflow-pipeline.3). The issue label picks the route:
 | --- | --- |
 | `library-new-request` | scaffold, then exploration; no repair |
 | `library-update-request` | add the version, repair, then exploration |
-| `fails-javac-compile`, `fails-java-run`, `fails-native-image-run` | one shared route: repair, then exploration |
+| `fails-javac-compile`, `fails-java-run`, `fails-native-image-build`, `fails-native-image-run` | one shared route: repair, then exploration |
 | `code-coverage-improvement` | its own template (§AR-code-coverage-improvement) |
 
 Exploration always tries bulk passes before class passes, and `analyze` picks

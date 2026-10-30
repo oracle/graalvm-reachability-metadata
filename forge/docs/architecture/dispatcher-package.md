@@ -8,7 +8,7 @@ and a consumer lifecycle that reviews the pull requests those runs produce
 (§FS-published-pr-review). Its implementation is therefore a package,
 `dispatcher/`, whose module boundaries follow those lifecycles rather than
 call-graph proximity; `forge_metadata.py` stays the single CLI entry point that
-parses arguments and wires them together (§AR-forge-workflow-pipeline.1).
+parses arguments and wires them together (§AR-forge-launcher.1).
 
 The producer side decomposes along the fetch-to-run path: the per-label,
 per-tier issue fetch, claim preflight against live GitHub state, the optimistic

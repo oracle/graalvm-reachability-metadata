@@ -15,6 +15,12 @@
     "tested-versions" : [
       "3.24.0",
       "3.24.1"
+    ],
+    "skipped-versions" : [
+      {
+        "version" : "3.25.0",
+        "reason" : "Published jar for org.jline:jline:3.25.0 declares --features=org.fusesource.jansi.internal.NativeImageFeature in META-INF/native-image/jansi/native-image.properties, but no published jline or jansi jar contains that class, so every native-image build fails with 'User-enabled Feature ... class not found'; fixed upstream in 3.25.1, which drops the declaration."
+      }
     ]
   },
   {

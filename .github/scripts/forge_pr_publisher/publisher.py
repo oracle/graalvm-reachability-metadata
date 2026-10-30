@@ -48,12 +48,14 @@ REAL_USE_STATS_SCHEMA_PATH = (
 REAL_USE_STATS_PATH_PATTERN = re.compile(
     r"real-use-tests/stats/([^/]+)/([^/]+)/([^/]+)/stats\.json"
 )
+# Every route carries `GenAI`, which the drain queue selects by (§forge/AR-issue-linking).
 ROUTE_LABELS = {
     "library-new-request": ["GenAI", "library-new-request"],
     "library-update-request": ["GenAI", "library-update-request"],
     "fixes-javac-fail": ["GenAI", "fixes-javac-fail"],
     "fixes-java-run-fail": ["GenAI", "fixes-java-run-fail"],
-    "fixes-native-image-run-fail": ["fixes-native-image-run-fail"],
+    "fixes-native-image-build-fail": ["GenAI", "fixes-native-image-build-fail"],
+    "fixes-native-image-run-fail": ["GenAI", "fixes-native-image-run-fail"],
     "not-for-native-image": ["GenAI", "library-new-request", "not-for-native-image"],
     "code-coverage-benchmark-result": ["GenAI", "code-coverage-improvement", "rhei"],
     "code-coverage-improvement": ["GenAI", "code-coverage-improvement", "rhei"],
@@ -347,6 +349,7 @@ def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
     if template_type in {
         "fixes-javac-fail",
         "fixes-java-run-fail",
+        "fixes-native-image-build-fail",
         "fixes-native-image-run-fail",
     } and descriptor.get("previous_library") is None:
         raise ValueError(f"Template {template_type!r} requires previous_library")
@@ -814,17 +817,24 @@ Summary:
     return title, body
 
 
-def _render_java_fix(
+def _repair_title(descriptor: dict[str, Any]) -> str:
+    """The one title of every repair route, run fix included (§forge/AR-pr-body.3)."""
+    coordinates = descriptor["library"]["coordinates"]
+    return f"[GenAI] Test fix for {coordinates} using {_model_display_name(descriptor)}"
+
+
+def _render_repair_fix(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
         *,
         failure_description: str,
 ) -> tuple[str, str]:
+    """One body for the agent repairs of a failed compatibility stage (§forge/AR-pr-body.2)."""
     coordinates = descriptor["library"]["coordinates"]
     previous = descriptor.get("previous_library") or {}
     previous_coordinates = previous.get("coordinates")
     metrics = _summary_metrics(descriptor)
-    title = f"[GenAI] Test fix for {coordinates} using {_model_display_name(descriptor)}"
+    title = _repair_title(descriptor)
 
     coverage_deferred = any(
         follow_up["type"] == "deferred_dynamic_access_coverage"
@@ -870,7 +880,7 @@ def _render_javac_fix(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
 ) -> tuple[str, str]:
-    return _render_java_fix(
+    return _render_repair_fix(
         descriptor, validated, failure_description="compile java failures",
     )
 
@@ -879,8 +889,17 @@ def _render_java_run_fix(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
 ) -> tuple[str, str]:
-    return _render_java_fix(
+    return _render_repair_fix(
         descriptor, validated, failure_description="runtime java test failures",
+    )
+
+
+def _render_native_image_build_fix(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    return _render_repair_fix(
+        descriptor, validated, failure_description="Native Image build failures",
     )
 
 
@@ -888,10 +907,11 @@ def _render_native_image_run_fix(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
 ) -> tuple[str, str]:
+    """The metadata-first run-fix body; a deferred repair adds its trailer (§forge/AR-pr-body.3)."""
     coordinates = descriptor["library"]["coordinates"]
     previous_coordinates = (descriptor.get("previous_library") or {}).get("coordinates")
     render = descriptor["render"]
-    title = f"[Automation] Generated metadata for {coordinates}"
+    title = _repair_title(descriptor)
 
     previous_entries = int(render.get("baseline_metadata_entries") or 0)
     current_entries = int(render.get("current_metadata_entries") or 0)
@@ -926,7 +946,8 @@ def _render_native_image_run_fix(
         "addressing Native Image run failures caused by changes in the updated library version."
         f"{metrics_section}"
         f"{_format_forge_metrics_summary_section(descriptor)}"
-        f"\n\n{_format_forge_revision_section(descriptor)}"
+        f"\n\n{_format_deferred_dynamic_access_section(descriptor)}"
+        f"{_format_forge_revision_section(descriptor)}"
         f"{_format_stats_diff(validated, previous_coordinates, coordinates)}"
         f"{_format_bounded_test_diff_section(validated)}"
     )
@@ -1279,6 +1300,7 @@ SKIP_RECORD_TEMPLATES = frozenset({
     "library-update-request",
     "fixes-javac-fail",
     "fixes-java-run-fail",
+    "fixes-native-image-build-fail",
     "fixes-native-image-run-fail",
 })
 
@@ -1362,6 +1384,7 @@ _TEMPLATE_BUILDERS = {
     "library-new-request": _render_library_new_request,
     "fixes-javac-fail": _render_javac_fix,
     "fixes-java-run-fail": _render_java_run_fix,
+    "fixes-native-image-build-fail": _render_native_image_build_fix,
     "fixes-native-image-run-fail": _render_native_image_run_fix,
     "not-for-native-image": _render_not_for_native_image,
     "code-coverage-improvement": _render_code_coverage_improvement,
@@ -1555,7 +1578,14 @@ def _format_local_ci_verification_section(verification: dict[str, Any] | None) -
     return body
 
 
-def _format_dynamic_access_entry(stats: dict[str, Any]) -> str:
+def _format_dynamic_access_entry(stats: Any) -> str:
+    """One dynamic-access figure, or `N/A` when the stats hold none.
+
+    A native build that fails leaves `"N/A"` in place of the figure, and the body
+    must still render (§forge/AR-code-coverage-improvement.5, §forge/AR-pr-body).
+    """
+    if not _is_dynamic_access_stats_entry(stats):
+        return "N/A"
     return "{covered}/{total} covered calls ({ratio:.2f}%)".format(
         covered=stats["coveredCalls"],
         total=stats["totalCalls"],
@@ -1567,6 +1597,12 @@ def _is_dynamic_access_stats_entry(stats: Any) -> bool:
     return isinstance(stats, dict) and all(
         key in stats for key in ("coveredCalls", "totalCalls", "coverageRatio")
     )
+
+
+def _dynamic_access_breakdown(stats: Any) -> dict[str, Any]:
+    """The per-category figures, empty when the stats are `"N/A"` or carry none."""
+    breakdown: Any = stats.get("breakdown") if isinstance(stats, dict) else None
+    return breakdown if isinstance(breakdown, dict) else {}
 
 
 def _format_coverage_entry(entry: Any) -> str:
@@ -1586,7 +1622,7 @@ def _format_dynamic_access_section(dynamic_access_stats: Any) -> str:
         "Dynamic access coverage:",
         f"- Overall: {_format_dynamic_access_entry(dynamic_access_stats)}",
     ]
-    breakdown = dynamic_access_stats.get("breakdown", {})
+    breakdown: dict[str, Any] = _dynamic_access_breakdown(dynamic_access_stats)
     for category in sorted(breakdown):
         if not _is_dynamic_access_stats_entry(breakdown[category]):
             continue
@@ -1655,15 +1691,13 @@ def _format_stats_comparison(
             before_label, after_label, before_da, after_da, _format_dynamic_access_entry,
         ))
 
-        all_categories: set[str] = set()
-        if before_da:
-            all_categories.update(before_da.get("breakdown", {}).keys())
-        if after_da:
-            all_categories.update(after_da.get("breakdown", {}).keys())
-        for category in sorted(all_categories):
+        # A side whose figure is `"N/A"` shows `N/A` for every category the other side has.
+        before_breakdown: dict[str, Any] = _dynamic_access_breakdown(before_da)
+        after_breakdown: dict[str, Any] = _dynamic_access_breakdown(after_da)
+        for category in sorted(before_breakdown.keys() | after_breakdown.keys()):
             display_name = category[0].upper() + category[1:]
-            before_category = before_da.get("breakdown", {}).get(category) if before_da else None
-            after_category = after_da.get("breakdown", {}).get(category) if after_da else None
+            before_category = before_breakdown.get(category)
+            after_category = after_breakdown.get(category)
             lines.append("")
             lines.append(f"**{display_name}:**")
             lines.extend(_format_comparison_pair(

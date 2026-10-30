@@ -223,16 +223,34 @@ def _resolve_git_dir(repo_path: str) -> str | None:
 
 
 def _find_git_entry(repo_path: str) -> tuple[str, str] | None:
-    """Return the nearest enclosing directory with a `.git` entry and that entry."""
+    """Return the nearest enclosing directory with a `.git` entry and that entry.
+
+    A `.git` directory that holds no repository, such as an empty one left in
+    `/tmp`, is skipped the way git skips it. Taking it for a checkout would key
+    every path below it to one Gradle home (§FS-forge-run-requirements.4).
+    """
     current = os.path.realpath(repo_path)
     while True:
         git_path = os.path.join(current, ".git")
-        if os.path.isdir(git_path) or os.path.isfile(git_path):
+        if _is_git_directory(git_path) or os.path.isfile(git_path):
             return current, git_path
         parent = os.path.dirname(current)
         if parent == current:
             return None
         current = parent
+
+
+def _is_git_directory(path: str) -> bool:
+    """Return True when `path` is a git directory by git's own test.
+
+    That test is a `HEAD` file, plus `objects` and `refs` in the common directory.
+    """
+    if not os.path.isfile(os.path.join(path, "HEAD")):
+        return False
+    common_dir = _read_git_pointer_file(os.path.join(path, "commondir")) or path
+    if not os.path.isabs(common_dir):
+        common_dir = os.path.join(path, common_dir)
+    return all(os.path.isdir(os.path.join(common_dir, entry)) for entry in ("objects", "refs"))
 
 
 def _resolve_linked_git_dir(repo_path: str, git_file_path: str) -> str | None:

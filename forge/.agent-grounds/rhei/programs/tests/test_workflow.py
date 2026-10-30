@@ -22,6 +22,7 @@ from typing import Any
 from support import COORDINATE, REPOSITORY, FakeRepository, play_fix, working_directory
 from test_prepare import prepare_arguments
 
+import build_tools  # noqa: E402
 import explore  # noqa: E402
 import fix_route  # noqa: E402
 import forge_run  # noqa: E402
@@ -52,13 +53,18 @@ URLS: dict[str, str] = {
 }
 
 
-def rendered_body(descriptor: dict[str, Any]) -> str:
-    """The pull request body the trusted publisher renders, loaded from its file as Actions runs it."""
+def trusted_publisher() -> Any:
+    """The trusted publisher, loaded from its file as Actions runs it."""
     spec: Any = importlib.util.spec_from_file_location("forge_pr_publisher_workflow", PUBLISHER)
     publisher: Any = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = publisher
     spec.loader.exec_module(publisher)
-    return publisher.render_publication(descriptor)[1]
+    return publisher
+
+
+def rendered_body(descriptor: dict[str, Any]) -> str:
+    """The pull request body the trusted publisher renders."""
+    return trusted_publisher().render_publication(descriptor)[1]
 
 
 class WorkflowTest(unittest.TestCase):
@@ -309,7 +315,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step("native-repair"))
         self.assertEqual(AGENT_WORK, self.step("analyze"))
 
-        broken = self.state.path(os.path.join(self.state.test_dir, explore.EXTENSION_SUITE, "src", "test", "java",
+        broken = self.state.path(os.path.join(self.state.test_dir, build_tools.EXTENSION_SUITE, "src", "test", "java",
                                               "org_example", "CodecCoverageTest.java"))
         os.makedirs(os.path.dirname(broken))
         with open(broken, "w", encoding="utf-8") as handle:

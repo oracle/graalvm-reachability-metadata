@@ -229,7 +229,7 @@ class CheckStateTest(FinalizedRun):
         self.assertEqual(STILL_FAILING, self.step("finalize"))
         self.assertEqual("human-intervention", self.outcome())
         self.assertEqual(5, self.state.finalize_requests)
-        # What stopped the run is recorded for the close-out (§AR-forge-workflow-pipeline.1).
+        # What stopped the run is recorded for the close-out (§AR-forge-launcher.1).
         outcome: dict[str, Any] = self.recorded_outcome()
         self.assertEqual("finalize", outcome["sender"])
         self.assertEqual([{"command": f"./gradlew checkstyle -Pcoordinates={COORDINATE}",

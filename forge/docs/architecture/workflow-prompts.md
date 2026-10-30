@@ -33,7 +33,7 @@ the absolute test-project and metadata paths, the allowed packages, the main
 sources directory, the URL discovery command, the path of the reporter's issue
 body when there is one, and the run's search roots: the absolute path of each
 run tree an agent may walk that exists when `prepare` writes the note
-(§FS-forge-agent-runtime-selection.1). On the three `fails-*` labels it also
+(§FS-forge-agent-runtime-selection.1). On the four `fails-*` labels it also
 carries the unsupportable-version bar (§FS-unsupportable-version-diagnosis.1);
 no other label sees it.
 
