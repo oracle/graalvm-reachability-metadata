@@ -1,0 +1,138 @@
+# One shard matrix within the calling workflow run. §AR-layered-tests, §FS-tests.3.6
+name: "Layered test shards"
+on:
+  workflow_call:
+    inputs:
+      coordinate-matrix:
+        required: true
+        type: string
+      ref:
+        required: true
+        type: string
+      native-image-mode:
+        required: true
+        type: string
+      graalvm-artifact:
+        required: true
+        type: string
+      base-artifact:
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  test:
+    name: "${{ matrix.lane }} ${{ matrix.coordinates }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 64
+      matrix: ${{ fromJson(inputs.coordinate-matrix) }}
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode }}
+      COORDINATES: ${{ matrix.coordinates }}
+      LAYER_NAME: ${{ matrix.lane }}
+      LAYER_TASK: ${{ matrix.lane == 'Shared' && 'testSharedLayer' || 'testDedicatedLayer' }}
+      FAILURE_REPORT_NAME: ${{ matrix.lane == 'Shared' && 'shared-layer-test-failures.txt' || 'dedicated-layer-test-failures.txt' }}
+      EXCLUDED_COORDINATES_FILE: ${{ matrix.lane == 'Shared' && 'tests/tck-build-logic/src/main/resources/shared-layered-test-exclusions.txt' || 'tests/tck-build-logic/src/main/resources/dedicated-layer-test-exclusions.txt' }}
+      DELETE_DEDICATED_LAYER: ${{ matrix.lane == 'Dedicated' }}
+      BASE_ARTIFACT: ${{ inputs.base-artifact }}
+
+    steps:
+      - name: "Checkout workflow code"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      - name: "Keep the archive helper for testing older revisions"
+        run: |
+          if [[ "${LAYER_NAME}" == "Shared" && -z "${BASE_ARTIFACT}" ]]; then
+            echo "::error::Common shared base preparation failed."
+            exit 1
+          fi
+          cp .github/scripts/prepared_base_layer.py "${RUNNER_TEMP}/prepared_base_layer.py"
+
+      - name: "Checkout test revision"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - name: "Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "Download resolved GraalVM"
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: ${{ inputs.graalvm-artifact }}
+          path: ${{ runner.temp }}/graalvm-download
+
+      - name: "Install resolved GraalVM"
+        run: |
+          mkdir -p "${RUNNER_TEMP}/graalvm"
+          tar -xzf "${RUNNER_TEMP}/graalvm-download/graalvm.tar.gz" -C "${RUNNER_TEMP}/graalvm"
+          echo "JAVA_HOME=${RUNNER_TEMP}/graalvm" >> "${GITHUB_ENV}"
+          echo "GRAALVM_HOME=${RUNNER_TEMP}/graalvm" >> "${GITHUB_ENV}"
+          echo "${RUNNER_TEMP}/graalvm/bin" >> "${GITHUB_PATH}"
+
+      - name: "Download prepared common base"
+        if: env.LAYER_NAME == 'Shared'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: ${{ inputs.base-artifact }}
+          path: ${{ runner.temp }}/prepared-base-download
+
+      - name: "Verify and restore common base"
+        if: env.LAYER_NAME == 'Shared'
+        run: |
+          python3 "${RUNNER_TEMP}/prepared_base_layer.py" restore \
+            --archive "${RUNNER_TEMP}/prepared-base-download/shared-base.tar" \
+            --destination "${RUNNER_TEMP}/prepared-base"
+
+      - name: "Pull allowed docker images"
+        run: |
+          ./gradlew pullAllowedDockerImages -Pcoordinates="${COORDINATES}"
+
+      - name: "Check metadata files content"
+        run: |
+          ./gradlew checkMetadataFiles -Pcoordinates="${COORDINATES}"
+
+      - name: "Run layered tests"
+        env:
+          GVM_TCK_DEDICATED_LAYER_ROOT: ${{ runner.temp }}/native-image-dedicated-layers
+        run: |
+          failure_report="${RUNNER_TEMP}/${FAILURE_REPORT_NAME}"
+          base_options=()
+          if [[ "${LAYER_NAME}" == "Shared" ]]; then
+            base_options+=(-Ptck.baseLayer.requireExisting=true)
+          fi
+          set +e
+          ./gradlew "${LAYER_TASK}" \
+            "${base_options[@]}" \
+            -Pcoordinates="${COORDINATES}" \
+            -Ptck.excludedCoordinatesFile="${EXCLUDED_COORDINATES_FILE}" \
+            -Ptck.layered.continueOnCoordinateFailure=true \
+            -Ptck.layered.coordinateFailureReport="${failure_report}" \
+            -Ptck.layered.deleteDedicatedLayerAfterTest="${DELETE_DEDICATED_LAYER}" \
+            --stacktrace
+          result=$?
+          set -e
+
+          if [[ -s "${failure_report}" ]]; then
+            failure_count="$(wc -l < "${failure_report}" | tr -d ' ')"
+            {
+              echo "### ${LAYER_NAME} layer test failures"
+              echo
+              echo "Failing libraries: ${failure_count}"
+              echo
+              while IFS= read -r coordinates; do
+                echo "- \`${coordinates}\`"
+              done < "${failure_report}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+
+            echo "${LAYER_NAME} layer test failures (${failure_count}):"
+            sed 's/^/ - /' "${failure_report}"
+          fi
+
+          exit "${result}"
