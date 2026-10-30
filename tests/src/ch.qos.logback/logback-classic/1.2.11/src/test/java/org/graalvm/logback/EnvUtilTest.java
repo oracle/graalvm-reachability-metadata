@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EnvUtilTest {
 
   @Test
-  void detectsThatOptionalGroovyConfigurationIsUnavailable() {
-    assertThat(EnvUtil.isGroovyAvailable()).isFalse();
+  void detectsTheOptionalGroovyConfigurationDependency() {
+    assertThat(EnvUtil.isGroovyAvailable()).isTrue();
   }
 }
