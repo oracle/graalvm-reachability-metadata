@@ -249,8 +249,9 @@ def resolve_chunk(state: RunState, labels: frozenset[str]) -> None:
 
     The label, or the coordinate's own exhaust report, makes the issue chunked
     (§FS-forge-chunked-dynamic-access). The report is read on the pinned base,
-    before the version is added, since adding one copies its baseline's tests,
-    report included; a report naming another version holds that version's progress.
+    before the version is added, which copies its baseline's tests but not its
+    report (§FS-library-update-tested-version-split.3); a report naming another
+    version holds that version's progress.
     """
     labeled: bool = issue.CHUNKED_LABEL in labels
     report_path: str | None = find_dynamic_access_exhaust_report_path(state.worktree, state.coordinate)
