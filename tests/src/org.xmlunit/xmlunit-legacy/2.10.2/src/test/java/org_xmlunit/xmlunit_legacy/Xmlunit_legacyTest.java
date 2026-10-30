@@ -6,11 +6,30 @@
  */
 package org_xmlunit.xmlunit_legacy;
 
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
 
-class Xmlunit_legacyTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Xmlunit_legacyTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void parsesControlAndTestDocumentsWithNamespacesAndEscapedText() throws Exception {
+        String xml = """
+                <order xmlns="urn:orders" id="purchase">
+                    <item>Pen &amp; paper</item>
+                </order>
+                """;
+
+        Document control = XMLUnit.buildControlDocument(xml);
+        Document test = XMLUnit.buildTestDocument(xml);
+
+        for (Document document : new Document[]{control, test}) {
+            assertThat(document.getDocumentElement().getLocalName()).isEqualTo("order");
+            assertThat(document.getDocumentElement().getNamespaceURI()).isEqualTo("urn:orders");
+            assertThat(document.getDocumentElement().getAttribute("id")).isEqualTo("purchase");
+            assertThat(document.getElementsByTagNameNS("urn:orders", "item").item(0).getTextContent())
+                    .isEqualTo("Pen & paper");
+        }
     }
 }
