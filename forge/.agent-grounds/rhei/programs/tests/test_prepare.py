@@ -70,7 +70,7 @@ class PrepareCase(unittest.TestCase):
     def assert_worktree_given_up(self) -> None:
         """The spawned worktree is gone with its Gradle home and daemons; its run branch stays.
 
-        Without a state the close-out finds no worktree to give up (§AR-forge-workflow-pipeline.1).
+        Without a state the close-out finds no worktree to give up (§AR-forge-launcher.1).
         """
         run_name: str = "forge-" + COORDINATE.replace(":", "-")
         worktree: str = os.path.realpath(os.path.join(self.fake.tmp, "runs", "worktrees", run_name))

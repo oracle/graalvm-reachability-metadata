@@ -76,7 +76,7 @@ issues; it never opens them. The producer's contract is the reachability repo's
 Library version update automation (§root/FS-library-version-update-automation).
 That automation also assigns each `fails-native-image-build` issue to a
 maintainer (§root/FS-library-version-update-automation.4), and Forge fetches
-only unassigned issues (§AR-forge-workflow-pipeline.1), so a maintainer hands
+only unassigned issues (§AR-forge-launcher.1), so a maintainer hands
 one to Forge by removing the assignment.
 
 ## FS-forge-glossary: Glossary
@@ -198,7 +198,7 @@ error: the launcher exits before it claims an issue, not one issue at a time.
 ### 2. Issue claimability
 
 Claiming is exclusive, and the decision must be made against live GitHub state
-rather than the fetch that led to it (§AR-forge-workflow-pipeline.1). The issue
+rather than the fetch that led to it (§AR-forge-launcher.1). The issue
 payload is re-read at claim time and must still be open, still carry the queue
 label, be unassigned or assigned only to the authenticated user, carry no open
 blockers, and sit in project status `Todo`. Once those live conditions hold, the
