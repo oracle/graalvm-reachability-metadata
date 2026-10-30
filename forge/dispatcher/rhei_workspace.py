@@ -8,7 +8,7 @@
 Its spawn records say whether a `rhei run` ran a state, its logs which state a
 dead launcher was killed in, and its event log why a run ran none. The launcher
 resumes an interrupted attempt and bounds the runs that cannot advance it
-(§AR-forge-workflow-pipeline.1); one that still cannot is held for a maintainer
+(§AR-forge-launcher.1); one that still cannot is held for a maintainer
 with its work kept (§FS-human-intervention-policy).
 """
 from __future__ import annotations
@@ -19,11 +19,11 @@ import os
 import re
 from typing import Any
 
-# Where a resumed attempt's interrupted state logs go (§AR-forge-workflow-pipeline.1).
+# Where a resumed attempt's interrupted state logs go (§AR-forge-launcher.1).
 INTERRUPTED: str = os.path.join("runtime", "forge", "interrupted")
 # A Rhei log: its invocation's name, then `-attempt<n>` for a retry within one visit.
 RHEI_LOG: re.Pattern[str] = re.compile(r"^(?P<invocation>.+?)(?:-attempt(?P<attempt>[0-9]+))?\.log$")
-# An attempt's no-advance halts in a row; the second ends it (§AR-forge-workflow-pipeline.1).
+# An attempt's no-advance halts in a row; the second ends it (§AR-forge-launcher.1).
 NO_ADVANCE: str = os.path.join("runtime", "forge", "no-advance.json")
 NO_ADVANCE_LIMIT: int = 2
 # Rhei's event log of the workspace's last run, truncated when a run starts.
@@ -59,7 +59,7 @@ def set_aside_interrupted_logs(workspace: str) -> list[str]:
     Such a log is the state a dead launcher was killed in: Rhei writes the record
     only when the worker ends, and refuses to spawn over a log no record accounts
     for, so without the move the attempt could never be resumed
-    (§AR-forge-workflow-pipeline.1). An unreadable record is left to Rhei.
+    (§AR-forge-launcher.1). An unreadable record is left to Rhei.
     """
     logs: str = os.path.join(workspace, "runtime", "logs")
     moved: list[str] = []
@@ -126,7 +126,7 @@ def budget_halted(events: list[dict[str, Any]]) -> bool:
     """Whether a Rhei budget refused the run: a transient host condition, never a no-advance halt.
 
     It resets with the allowance, so counting it would hold every issue claimed
-    while the budget is spent (§AR-forge-workflow-pipeline.1).
+    while the budget is spent (§AR-forge-launcher.1).
     """
     return any(record.get("event") == "budget_halt" for record in events)
 
@@ -135,7 +135,7 @@ def count_no_advance(workspace: str) -> int:
     """Count a no-advance halt of the attempt, and return how many there are in a row.
 
     The count keeps the spawn records it was taken at, so a run that ran a state
-    in between resets it, even one whose launcher died (§AR-forge-workflow-pipeline.1).
+    in between resets it, even one whose launcher died (§AR-forge-launcher.1).
     """
     path: str = os.path.join(workspace, NO_ADVANCE)
     records: dict[str, int] = spawn_records(workspace)
