@@ -50,7 +50,12 @@ GITHUB_QUERY_LOG_ENV_VAR = "FORGE_LOG_GITHUB_QUERIES"
 
 
 def ensure_gh_authenticated() -> None:
-    """Ensure the GitHub CLI (gh) is installed and authenticated for github.com."""
+    """Ensure the GitHub CLI (gh) is installed and authenticated for github.com.
+
+    The probe is a call GitHub answers, retried like every other GitHub call, so an
+    outage raises `GitHubError` after the retries and only a refused login stops
+    the process (§FS-human-intervention-policy, §FS-forge-host-requirements.1).
+    """
     if shutil.which("gh") is None:
         print(
             "The GitHub CLI (gh) is required to create a PR. "
@@ -58,7 +63,7 @@ def ensure_gh_authenticated() -> None:
         )
         sys.exit(1)
     try:
-        gh("auth", "status", "--hostname", "github.com")
+        get_authenticated_login()
     except subprocess.CalledProcessError:
         print("GitHub CLI is not authenticated for github.com. Run 'gh auth login' and try again.")
         sys.exit(1)
@@ -93,7 +98,14 @@ def is_github_rate_limit_errors(errors: object) -> bool:
 
 
 def is_github_transient_failure_text(text: str) -> bool:
-    """Return True when GitHub CLI output describes a retryable server or network failure."""
+    """Return True when GitHub CLI output describes a retryable server or network failure.
+
+    GitHub that cannot be reached is a network failure: gh reports a host that does not
+    resolve as `error connecting to <host>`, and a failed dial in Go's net error text
+    (§FS-human-intervention-policy). GraphQL reports its own server error, a timeout
+    included, as `Something went wrong while executing your query`
+    (§FS-forge-host-requirements.1).
+    """
     normalized_text = text.lower()
     return (
         "http 500" in normalized_text
@@ -108,6 +120,11 @@ def is_github_transient_failure_text(text: str) -> bool:
         or "tls handshake timeout" in normalized_text
         or "i/o timeout" in normalized_text
         or "context deadline exceeded" in normalized_text
+        or "error connecting to" in normalized_text
+        or "no such host" in normalized_text
+        or "network is unreachable" in normalized_text
+        or "connection refused" in normalized_text
+        or "something went wrong while executing your query" in normalized_text
     )
 
 
@@ -133,6 +150,20 @@ def github_error_text_from_exception(exc: subprocess.CalledProcessError) -> str:
         for text in (exc.stderr, exc.stdout)
         if isinstance(text, str) and text.strip()
     )
+
+
+def is_github_outage(exc: BaseException) -> bool:
+    """Whether a failed GitHub call met a rate limit or an unreachable GitHub, not a refusal.
+
+    The retrying runners raise `GitHubError` for both; a bare `gh` failure is read
+    with the same classifiers (§FS-forge-host-requirements.1).
+    """
+    if isinstance(exc, GitHubError):
+        return True
+    if not isinstance(exc, subprocess.CalledProcessError):
+        return False
+    text: str = github_error_text_from_exception(exc)
+    return is_github_rate_limit_text(text) or is_github_transient_failure_text(text)
 
 
 def format_github_retry_reason(reason: str) -> str:
@@ -278,18 +309,37 @@ def gh(
     raise RuntimeError("GitHub command exhausted retries")
 
 
+def waited_out_rate_limit(retry_rate_limit: bool, attempt: int, max_attempts: int, quiet: bool) -> bool:
+    """Back off before the next attempt at a rate-limited call; `False` when the caller must raise.
+
+    Only a caller that asks waits a rate limit out: a claim or release write whose
+    failure strands an issue (§FS-forge-stranded-claims.4.1). Every other call raises
+    at once, so the run stops and retries after the reset.
+    """
+    if not retry_rate_limit or attempt == max_attempts:
+        return False
+    log_github_transient_retry("GitHub API rate limit exceeded", attempt, max_attempts, quiet)
+    time.sleep(github_retry_delay_seconds(attempt))
+    return True
+
+
 def run_github_json_with_retries(
         gh_runner: Callable[..., subprocess.CompletedProcess],
         args: tuple[str, ...],
         *,
         quiet: bool = False,
         max_attempts: int = GITHUB_TRANSIENT_RETRY_ATTEMPTS,
+        retry_rate_limit: bool = False,
 ) -> Any:
     """Run a read-only gh command, retrying transient GitHub failures before parsing JSON."""
     for attempt in range(1, max_attempts + 1):
         command_quiet = quiet or attempt < max_attempts
         try:
             result = run_gh_runner_once(gh_runner, args, command_quiet)
+        except GitHubRateLimitExceeded:
+            if not waited_out_rate_limit(retry_rate_limit, attempt, max_attempts, quiet):
+                raise
+            continue
         except subprocess.CalledProcessError as exc:
             error_text = github_error_text_from_exception(exc)
             if is_github_transient_failure_text(error_text):
@@ -306,7 +356,9 @@ def run_github_json_with_retries(
         data = json.loads(result.stdout)
         if isinstance(data, dict) and data.get("errors"):
             if is_github_rate_limit_errors(data["errors"]):
-                raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
+                if not waited_out_rate_limit(retry_rate_limit, attempt, max_attempts, quiet):
+                    raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
+                continue
             if is_github_transient_errors(data["errors"]):
                 if attempt < max_attempts:
                     log_github_transient_retry(str(data["errors"]), attempt, max_attempts, quiet)
@@ -327,12 +379,16 @@ def run_github_command_with_retries(
         *,
         quiet: bool = False,
         max_attempts: int = GITHUB_TRANSIENT_RETRY_ATTEMPTS,
+        retry_rate_limit: bool = False,
 ) -> subprocess.CompletedProcess:
     """Run an idempotent gh command, retrying transient GitHub failures."""
     for attempt in range(1, max_attempts + 1):
         command_quiet = quiet or attempt < max_attempts
         try:
             return run_gh_runner_once(gh_runner, args, command_quiet)
+        except GitHubRateLimitExceeded:
+            if not waited_out_rate_limit(retry_rate_limit, attempt, max_attempts, quiet):
+                raise
         except subprocess.CalledProcessError as exc:
             error_text = github_error_text_from_exception(exc)
             if is_github_transient_failure_text(error_text):

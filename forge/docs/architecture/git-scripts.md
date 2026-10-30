@@ -260,15 +260,17 @@ remains the explore goal and the coverage gate's baseline
 New-library PRs link with `Fixes:` for a single-PR run and `Refs:` for non-final
 chunked dynamic-access chunks (§AR-chunked-linking).
 
-### 2. Java fail-fix (javac and java-run)
+### 2. Repair fail-fix (javac, java-run, and native-image build)
 
-Trusted templates `fixes-javac-fail` and `fixes-java-run-fail` share one body
-shape:
+Trusted templates `fixes-javac-fail`, `fixes-java-run-fail`, and
+`fixes-native-image-build-fail` share one body shape:
 the agent generation metrics, a stats comparison for the bumped version, and a
 bounded test-source comparison so reviewers can see what the fix changed without
-preventing PR creation. The two differ only in workflow identity (compilation
-vs. runtime wording), the metrics file, and the PR label
-(§AR-java-fail-fix-workflow).
+preventing PR creation. The three differ only in workflow identity (Java
+compilation, JVM runtime, or Native Image build wording), the metrics file, and
+the PR label (§AR-java-fail-fix-workflow). A native-image build repair is an
+agent repair of the test project, its flags, or its metadata like the other
+two, so it takes their shape rather than the run-fix template below.
 
 When post-repair dynamic-access exploration is skipped because the report
 exceeds the configured class threshold, the body reports only what that run
@@ -288,18 +290,25 @@ The locally generated follow-up issue keeps the coordinate in its title and uses
 brief sentence stating that it was opened while resolving the repair issue
 because the dynamic-access class count exceeded the threshold.
 
-Neither template blocks on a dynamic-access category regression between the
+None of the three blocks on a dynamic-access category regression between the
 previous and repaired version; coverage trade-offs are settled in review
 (§AR-java-fail-fix-workflow).
 
 ### 3. Native-image run-fix
 
-The trusted `fixes-native-image-run-fail` template represents a workflow that
-workflow is metadata-first and does not produce agent token metrics, so its body
-omits them. It reports the previous and new library-coverage percentages, a
+The trusted `fixes-native-image-run-fail` template keeps a body of its own,
+because its repair is metadata-first, but takes the title of the other repairs,
+`[GenAI] Test fix for <coordinate> using <model>`, with the prefix the label
+contract gives generated work (§root/FS-repository-functional-spec.4.6.1).
+It reports the previous and new metadata-entry counts and library-coverage
+percentages, the run's strategy, agent, model, token, and iteration summary, a
 stats diff between the previous and new coordinate, a severe-metadata-drop note
 when the new version's metadata shrank suspiciously, and the local
-CI-equivalent verification section (§AR-forge-workflow-pipeline.5).
+CI-equivalent verification section (§AR-forge-workflow-pipeline.5). The repair
+runs on the shared repair route (§FS-forge-workflow-spec-catalog), so a
+deferred exploration adds the deferred-exploration section of §AR-pr-body.2,
+with its `Refs:` line and `Forge-Unblocks-Issue:` trailer. The rest of the body
+stays, since the severe-drop note compares the entry counts.
 
 ### 4. Not-for-native-image
 
@@ -362,7 +371,10 @@ publication source of truth. Both paths render the pull request that
 Publication owns user-visible GitHub linkage: PR labels, `Fixes:` issue
 references, review text, metrics summaries, and human-intervention visibility.
 It must apply the PR label that corresponds to the successful workflow result,
-not the issue queue label when those differ. A single-PR workflow links the PR
+not the issue queue label when those differ. Every route also applies `GenAI`:
+each publishes generated work (§root/FS-repository-functional-spec.4.6.1), and
+the maintainer drain queue takes a held pull request only by that label
+(§root/FS-maintainer-agent-queues.3). A single-PR workflow links the PR
 to its claimed issue with `Fixes: #<issue>`, so merging the PR closes the issue.
 When a library-update publication splits tested versions or test-version
 consumers according to §FS-library-update-tested-version-split, the PR body

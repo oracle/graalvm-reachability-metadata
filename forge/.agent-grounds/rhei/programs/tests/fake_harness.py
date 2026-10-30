@@ -26,7 +26,8 @@ from __future__ import annotations
 # succeeds without output, as for a library without calls; an empty stored
 # listing then reports no calls), coverageFails, indexFails, and
 # stats (the dynamicAccess generateLibraryStats writes; else the coverage report's),
-# and matrixFails (the native-image mode whose `test` fails, as a missing registration).
+# matrixFails (the native-image mode whose `test` fails, as a missing registration),
+# and unreachableIn (the task, in any lane, that fails on Maven Central answering 502).
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
 import glob, json, os, sys
 args = sys.argv[1:]
@@ -97,6 +98,8 @@ mode = os.environ.get("GVM_TCK_NATIVE_IMAGE_MODE")
 lane = " [%s %s %s]" % (os.environ.get("GVM_TCK_LV"), mode, os.environ.get("JAVA_HOME")) if mode else ""
 with open(os.path.join(root, "gradle-calls.log"), "a") as log:
     log.write(" ".join(args) + lane + "\n")
+if control.get("unreachableIn") == task:
+    fail_unreachable("testRuntimeClasspath")
 if task == "scaffold":
     if control.get("scaffoldFails"):
         fail_scaffold(control["scaffoldFails"])
