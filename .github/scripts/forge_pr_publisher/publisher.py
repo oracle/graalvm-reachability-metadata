@@ -1555,7 +1555,14 @@ def _format_local_ci_verification_section(verification: dict[str, Any] | None) -
     return body
 
 
-def _format_dynamic_access_entry(stats: dict[str, Any]) -> str:
+def _format_dynamic_access_entry(stats: Any) -> str:
+    """One dynamic-access figure, or `N/A` when the stats hold none.
+
+    A native build that fails leaves `"N/A"` in place of the figure, and the body
+    must still render (§forge/AR-code-coverage-improvement.5, §forge/AR-pr-body).
+    """
+    if not _is_dynamic_access_stats_entry(stats):
+        return "N/A"
     return "{covered}/{total} covered calls ({ratio:.2f}%)".format(
         covered=stats["coveredCalls"],
         total=stats["totalCalls"],
@@ -1567,6 +1574,12 @@ def _is_dynamic_access_stats_entry(stats: Any) -> bool:
     return isinstance(stats, dict) and all(
         key in stats for key in ("coveredCalls", "totalCalls", "coverageRatio")
     )
+
+
+def _dynamic_access_breakdown(stats: Any) -> dict[str, Any]:
+    """The per-category figures, empty when the stats are `"N/A"` or carry none."""
+    breakdown: Any = stats.get("breakdown") if isinstance(stats, dict) else None
+    return breakdown if isinstance(breakdown, dict) else {}
 
 
 def _format_coverage_entry(entry: Any) -> str:
@@ -1586,7 +1599,7 @@ def _format_dynamic_access_section(dynamic_access_stats: Any) -> str:
         "Dynamic access coverage:",
         f"- Overall: {_format_dynamic_access_entry(dynamic_access_stats)}",
     ]
-    breakdown = dynamic_access_stats.get("breakdown", {})
+    breakdown: dict[str, Any] = _dynamic_access_breakdown(dynamic_access_stats)
     for category in sorted(breakdown):
         if not _is_dynamic_access_stats_entry(breakdown[category]):
             continue
@@ -1655,15 +1668,13 @@ def _format_stats_comparison(
             before_label, after_label, before_da, after_da, _format_dynamic_access_entry,
         ))
 
-        all_categories: set[str] = set()
-        if before_da:
-            all_categories.update(before_da.get("breakdown", {}).keys())
-        if after_da:
-            all_categories.update(after_da.get("breakdown", {}).keys())
-        for category in sorted(all_categories):
+        # A side whose figure is `"N/A"` shows `N/A` for every category the other side has.
+        before_breakdown: dict[str, Any] = _dynamic_access_breakdown(before_da)
+        after_breakdown: dict[str, Any] = _dynamic_access_breakdown(after_da)
+        for category in sorted(before_breakdown.keys() | after_breakdown.keys()):
             display_name = category[0].upper() + category[1:]
-            before_category = before_da.get("breakdown", {}).get(category) if before_da else None
-            after_category = after_da.get("breakdown", {}).get(category) if after_da else None
+            before_category = before_breakdown.get(category)
+            after_category = after_breakdown.get(category)
             lines.append("")
             lines.append(f"**{display_name}:**")
             lines.extend(_format_comparison_pair(
