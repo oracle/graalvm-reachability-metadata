@@ -6,7 +6,7 @@
  */
 package org_apache_aries_testsupport.org_apache_aries_testsupport_unit;
 
-import java.util.Hashtable;
+import java.util.Dictionary;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.aries.mocks.BundleContextMock;
@@ -36,7 +36,7 @@ public class BundleContextMockTest {
         BundleContextMock context = new BundleContextMock(bundle);
         AtomicInteger invocations = new AtomicInteger();
         Runnable service = invocations::incrementAndGet;
-        Hashtable<String, Object> properties = new Hashtable<>();
+        Dictionary<String, Object> properties = new MapDictionary<>();
         properties.put("role", "worker");
 
         ServiceRegistration<?> registration = context.registerService(Runnable.class.getName(), service, properties);

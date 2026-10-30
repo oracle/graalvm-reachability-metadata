@@ -11,7 +11,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
-import java.util.Hashtable;
 
 import org.apache.aries.mocks.BundleMock;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class BundleMockTest {
     @Test
     void findsAnExistingClasspathResource() throws Exception {
-        BundleMock bundle = new BundleMock("fixture.bundle", new Hashtable<String, String>());
+        BundleMock bundle = new BundleMock("fixture.bundle", new MapDictionary<String, String>());
         try (URLClassLoader loader = (URLClassLoader) bundle.getClassLoader()) {
             URL resource = bundle.getResource("aries-fixtures/payload.txt");
 
@@ -37,7 +36,7 @@ public class BundleMockTest {
 
     @Test
     void enumeratesExistingClasspathResources() throws Exception {
-        BundleMock bundle = new BundleMock("fixture.bundle", new Hashtable<String, String>());
+        BundleMock bundle = new BundleMock("fixture.bundle", new MapDictionary<String, String>());
         try (URLClassLoader loader = (URLClassLoader) bundle.getClassLoader()) {
             Enumeration<URL> resources = bundle.getResources("aries-fixtures/payload.txt");
 
@@ -55,7 +54,7 @@ public class BundleMockTest {
 
     @Test
     void resolvesAnAlreadyAvailableClassThroughTheParentLoader() throws Exception {
-        BundleMock bundle = new BundleMock("fixture.bundle", new Hashtable<String, String>());
+        BundleMock bundle = new BundleMock("fixture.bundle", new MapDictionary<String, String>());
         try (URLClassLoader loader = (URLClassLoader) bundle.getClassLoader()) {
             assertSame(String.class, bundle.loadClass("java.lang.String"));
         }
