@@ -8,9 +8,18 @@ package javax_servlet.jsp_api;
 
 import org.junit.jupiter.api.Test;
 
-class Jsp_apiTest {
+import javax.servlet.jsp.JspException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+public class Jsp_apiTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void preservesPageFailureMessageAndRootCause() {
+        IllegalArgumentException cause = new IllegalArgumentException("Invalid page parameter");
+        JspException exception = new JspException("Page rendering failed", cause);
+
+        assertEquals("Page rendering failed", exception.getMessage());
+        assertSame(cause, exception.getRootCause());
     }
 }
