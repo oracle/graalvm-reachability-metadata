@@ -9,6 +9,7 @@ package org_codehaus_plexus.plexus_i18n;
 import org.codehaus.plexus.i18n.DefaultI18N;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -16,6 +17,7 @@ import java.util.ResourceBundle;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ResourceLock("default-locale")
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class DefaultI18NTest {
     private static final String MESSAGES = "org_codehaus_plexus.plexus_i18n.messages";
     private static final String REGIONAL_MESSAGES = "org_codehaus_plexus.plexus_i18n.regional";
@@ -48,6 +50,32 @@ public class DefaultI18NTest {
                 .isEqualTo("From Paris to Lyon");
         assertThat(i18n.format(MESSAGES, Locale.FRENCH, "route", new Object[]{"Paris", "Lyon"}))
                 .isEqualTo("De Paris vers Lyon");
+    }
+
+    @Test
+    void loadsLocalizedMessagesInDevelopmentMode() throws Exception {
+        String originalDevMode = System.getProperty("PLEXUS_DEV_MODE");
+        try {
+            System.setProperty("PLEXUS_DEV_MODE", "true");
+            DefaultI18N i18n = new DefaultI18N();
+            i18n.initialize();
+
+            ResourceBundle english = i18n.getBundle(MESSAGES, Locale.ENGLISH);
+            ResourceBundle french = i18n.getBundle(MESSAGES, Locale.FRENCH);
+
+            assertThat(english.getString("greeting")).isEqualTo("Hello");
+            assertThat(french.getString("greeting")).isEqualTo("Bonjour");
+            assertThat(french.getLocale()).isEqualTo(Locale.FRENCH);
+            assertThat(i18n.getString(MESSAGES, Locale.FRENCH, "rootOnly")).isEqualTo("Shared text");
+            assertThat(i18n.format(MESSAGES, Locale.FRENCH, "welcome", "Alex"))
+                    .isEqualTo("Bienvenue, Alex !");
+        } finally {
+            if (originalDevMode == null) {
+                System.clearProperty("PLEXUS_DEV_MODE");
+            } else {
+                System.setProperty("PLEXUS_DEV_MODE", originalDevMode);
+            }
+        }
     }
 
     @Test
