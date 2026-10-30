@@ -10,8 +10,6 @@ import java.time.MonthDay;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.xml.namespace.QName;
-
 import io.helidon.config.mp.MpConfigSources;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
@@ -43,12 +41,12 @@ public class MpConfigImplTest {
 
     @Test
     void convertsValueUsingValueOfFactory() {
-        Config config = config(Map.of("element", "{urn:example:orders}order"));
+        Config config = config(Map.of("endpoint", "api.internal:8080"));
 
-        QName element = config.getValue("element", QName.class);
+        Endpoint endpoint = config.getValue("endpoint", Endpoint.class);
 
-        assertEquals("urn:example:orders", element.getNamespaceURI());
-        assertEquals("order", element.getLocalPart());
+        assertEquals("api.internal", endpoint.host());
+        assertEquals(8080, endpoint.port());
     }
 
     @Test
@@ -94,6 +92,13 @@ public class MpConfigImplTest {
         assertArrayEquals(new MonthDay[]{MonthDay.of(2, 14), MonthDay.of(10, 31)},
                 anniversaries.convert("--02-14,--10-31"));
         assertArrayEquals(new String[]{"primary,east", "backup"}, labels.convert("primary\\,east,backup"));
+    }
+
+    public record Endpoint(String host, int port) {
+        public static Endpoint valueOf(String value) {
+            int separator = value.lastIndexOf(':');
+            return new Endpoint(value.substring(0, separator), Integer.parseInt(value.substring(separator + 1)));
+        }
     }
 
     private static Config config(Map<String, String> values) {
