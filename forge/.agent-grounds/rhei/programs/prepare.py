@@ -26,7 +26,7 @@ from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
     find_dynamic_access_exhaust_report_path,
 )
-from utility_scripts.gradle_dependency_cache import ensure_shared_dependency_cache
+from utility_scripts.gradle_dependency_cache import discard_worktree_gradle_home, ensure_shared_dependency_cache
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_measurements import load_library_baseline
 from utility_scripts.library_stats import load_library_stats_entry
@@ -106,6 +106,21 @@ def share_dependency_cache(repo: str, worktree: str) -> None:
         ensure_shared_dependency_cache(repo, worktree)
     except OSError as error:
         print(f"WARNING: the shared Gradle dependency cache was not prepared: {error}", file=sys.stderr)
+
+
+def give_up_worktree(repo: str, worktree: str) -> None:
+    """Remove the worktree `run` spawned, with its Gradle daemons and home; its branch stays.
+
+    A prepare that exits without saving its state is a finished attempt whose
+    worktree the close-out cannot find, so it gives the worktree up as the
+    close-out would (§AR-forge-workflow-pipeline.1). Best effort: a failure is
+    reported, and the exit the prepare took stands.
+    """
+    try:
+        discard_worktree_gradle_home(worktree, repo)
+        git(repo, "worktree", "remove", "--force", worktree)
+    except (OSError, subprocess.CalledProcessError) as error:
+        print(f"WARNING: the worktree {worktree} was not removed: {error}", file=sys.stderr)
 
 
 def attach_worktree(workspace: str, worktree: str) -> None:
@@ -258,7 +273,20 @@ def run(args: argparse.Namespace) -> int:
         spawn_worktree(repo, worktree, branch, base)
     except subprocess.CalledProcessError as error_value:
         raise BadInput(f"worktree: {error_value}", error_value.stderr or "") from error_value
-    state = RunState(
+    saved: bool = False
+    try:
+        code: int = prepare_worktree(args, workspace, repo, payload, parsed, worktree, branch, base)
+        saved = code in (OK, NOT_FOR_NATIVE_IMAGE_RECORDED)
+        return code
+    finally:
+        if not saved:
+            give_up_worktree(repo, worktree)
+
+
+def prepare_worktree(args: argparse.Namespace, workspace: str, repo: str, payload: dict[str, Any],
+                     parsed: issue.Issue, worktree: str, branch: str, base: str) -> int:
+    """Prepare the run in the worktree `run` spawned; only an `OK` or `22` exit saves its state."""
+    state: RunState = RunState(
         issue_number=parsed.number,
         label=parsed.label,
         route=parsed.route,

@@ -14,6 +14,7 @@ import os
 import subprocess
 import unittest
 from typing import Any
+from unittest import mock
 
 import yaml
 
@@ -23,6 +24,7 @@ from utility_scripts.gradle_environment import (
     checkout_gradle_home_for_repo,
     gradle_user_home_for_repo,
     read_only_dependency_cache_path,
+    worktree_gradle_home,
 )
 
 import forge_run  # noqa: E402
@@ -354,6 +356,77 @@ class PrepareTest(unittest.TestCase):
                 self.assertEqual(INFRASTRUCTURE, self.prepare())
                 self.assertEqual(("prepare: infrastructure failure", "infrastructure"),
                                  (self.outcome()["reason"], self.outcome()["kind"]))
+
+    def assert_worktree_given_up(self) -> None:
+        """The spawned worktree is gone with its Gradle home and daemons; its run branch stays.
+
+        Without a state the close-out finds no worktree to give up (§AR-forge-workflow-pipeline.1).
+        """
+        run_name: str = "forge-" + COORDINATE.replace(":", "-")
+        worktree: str = os.path.realpath(os.path.join(self.fake.tmp, "runs", "worktrees", run_name))
+        home: str = worktree_gradle_home(checkout_gradle_home_for_repo(self.fake.repo), worktree)
+        listed: str = subprocess.run(["git", "worktree", "list", "--porcelain"], cwd=self.fake.repo, check=True,
+                                     stdout=subprocess.PIPE, text=True).stdout
+        branches: list[str] = subprocess.run(["git", "branch", "--list", "--format=%(refname:short)", "rhei/*"],
+                                             cwd=self.fake.repo, check=True, stdout=subprocess.PIPE,
+                                             text=True).stdout.split()
+        self.assertFalse(os.path.exists(runtime_path(self.fake.workspace, "state.json")))
+        self.assertFalse(os.path.exists(worktree))
+        self.assertNotIn(f"worktree {worktree}\n", listed)
+        self.assertFalse(os.path.exists(home))
+        self.assertEqual((home, worktree), self.fake.stop_daemons.call_args.args[:2])
+        self.fake.stop_daemons.assert_called_once()
+        self.assertEqual(1, len(branches), branches)
+
+    def test_a_failed_scaffold_gives_up_its_worktree_and_keeps_its_record(self) -> None:
+        # Another run's worktree is never touched; the workspace and its logs stay as the record.
+        other: str = os.path.join(self.fake.tmp, "runs", "worktrees", "forge-org.example-other-1.0.0")
+        subprocess.run(["git", "worktree", "add", "-q", "--detach", other], cwd=self.fake.repo, check=True)
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "unreachable"})
+        self.assertEqual(INFRASTRUCTURE, self.prepare())
+        self.assert_worktree_given_up()
+        self.assertTrue(os.path.isdir(other))
+        with open(runtime_path(self.fake.workspace, "logs", "scaffold.log"), encoding="utf-8") as handle:
+            self.assertIn("Received status code 502", handle.read())
+        self.assertEqual("infrastructure", self.outcome()["kind"])
+
+    def test_a_chunk_without_its_report_gives_up_the_worktree(self) -> None:
+        self.fake.supported_library()
+        self.fake.issue("library-update-request", extra_labels=("chunked-dynamic-access",))
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assert_worktree_given_up()
+
+    def test_an_artifact_marked_not_for_native_image_gives_up_the_worktree(self) -> None:
+        self.fake.write("metadata/org.example/lib/index.json",
+                        json.dumps([{"not-for-native-image": True, "reason": "Maven packaging is `klib`."}]))
+        self.fake.commit("mark lib as not for native image")
+        self.fake.issue("library-update-request")
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assert_worktree_given_up()
+
+    def test_a_crash_after_the_spawn_gives_up_the_worktree(self) -> None:
+        self.fake.issue("library-new-request")
+        crash: subprocess.CalledProcessError = subprocess.CalledProcessError(1, ["git", "commit"])
+        with mock.patch.object(prepare, "checkpoint", side_effect=crash), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(INFRASTRUCTURE, self.prepare())
+        self.assert_worktree_given_up()
+
+    def test_a_prepare_that_saves_its_state_keeps_its_worktree(self) -> None:
+        # Prepared, then resumed in the worktree its state names; the close-out gives it up later.
+        self.fake.issue("library-new-request")
+        for _ in range(2):
+            self.assertEqual(OK, self.prepare())
+            self.assertTrue(os.path.isdir(load(self.fake.workspace).worktree))
+        self.fake.stop_daemons.assert_not_called()
+
+    def test_a_recorded_non_jvm_artifact_keeps_its_worktree(self) -> None:
+        self.fake.issue("library-new-request")
+        self.fake.artifact.return_value = NativeImageEligibility(True, "Maven packaging is `klib`, not a JVM JAR.")
+        for _ in range(2):
+            self.assertEqual(NOT_FOR_NATIVE_IMAGE_RECORDED, self.prepare())
+            self.assertTrue(os.path.isdir(load(self.fake.workspace).worktree))
+        self.fake.stop_daemons.assert_not_called()
 
     def test_a_bad_input_reason_is_one_line(self) -> None:
         # Further lines follow as detail (§FS-forge-run-requirements.2).

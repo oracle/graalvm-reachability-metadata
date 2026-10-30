@@ -117,6 +117,9 @@ class FakeRepository:
         # The fake harness has no root build to warm; `prepare` asks for the shared cache all the same.
         self.shared_cache_patch: Any = mock.patch.object(prepare, "ensure_shared_dependency_cache")
         self.shared_cache: mock.MagicMock = self.shared_cache_patch.start()
+        # Nor a daemon to stop when `prepare` gives a worktree up; the tests see the stop it asks for.
+        self.stop_daemons_patch: Any = mock.patch("utility_scripts.gradle_dependency_cache.stop_gradle_daemons_of_home")
+        self.stop_daemons: mock.MagicMock = self.stop_daemons_patch.start()
         self.artifact_patch: Any = mock.patch.object(index_record, "inspect_maven_artifact",
                                                      return_value=NativeImageEligibility(False))
         self.artifact: mock.MagicMock = self.artifact_patch.start()
@@ -152,6 +155,7 @@ class FakeRepository:
 
     def close(self) -> None:
         self.shared_cache_patch.stop()
+        self.stop_daemons_patch.stop()
         self.artifact_patch.stop()
         os.environ.clear()
         os.environ.update(self.saved_environment)

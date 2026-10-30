@@ -96,9 +96,8 @@ class CheckStateTest(FinalizedRun):
         self.assertEqual("prepare: bad input: the pre-publication gate rejected the not-for-native-image "
                          "record: Local CI verification failed at gate 'index-file-validation'",
                          self.recorded_outcome()["reason"])
-        worktree: str = gate.call_args.kwargs["repo_path"]
-        with open(os.path.join(worktree, "gradle-calls.log"), encoding="utf-8") as handle:
-            self.assertNotIn("scaffold", handle.read())
+        # A scaffold would have logged in the workspace, which outlives the given-up worktree.
+        self.assertFalse(os.path.exists(runtime_path(self.fake.workspace, "logs", "scaffold.log")))
         self.assertEqual(0, gate.call_args.kwargs["max_fixup_attempts"])
 
     def test_a_non_new_route_without_an_index_is_never_asked(self) -> None:
