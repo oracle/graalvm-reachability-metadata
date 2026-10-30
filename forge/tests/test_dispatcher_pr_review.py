@@ -24,6 +24,8 @@ from datetime import datetime, timezone
 from typing import Any
 from unittest.mock import patch
 
+import yaml
+
 from dispatcher import issue_admin, pr_review
 from dispatcher.config import (LABEL_FORGE_MERGE_FOLLOW_UP, LABEL_GRAALVM_BUG, LABEL_HUMAN_INTERVENTION,
                                LABEL_HUMAN_INTERVENTION_FIXED, REPO)
@@ -383,6 +385,49 @@ class ReviewTest(unittest.TestCase):
         self.assertEqual({"GenAI", "library-new-request", LABEL_HUMAN_INTERVENTION, "reviewed"}, self.labels())
         self.assertIn("tracked in #42", self.comments()[-1])
 
+    def signed_issues(self) -> None:
+        """Open issues the review may reuse, and ones it must not list."""
+        def issue(number: int, key: str | None, state: str = "OPEN", *labels: str) -> dict[str, Any]:
+            return {"number": number, "state": state, "title": f"Failure {number}",
+                    "body": "..." + (f"\n\n<!-- forge-ci-signature: {key} -->" if key else ""),
+                    "labels": [{"name": name} for name in labels]}
+        state: dict[str, Any] = self.state()
+        state["issues"] = [issue(39, "older-failure"), issue(40, "spring-side-failure"),
+                           issue(41, "ni-25.0-clinit-mismatch", "OPEN", LABEL_GRAALVM_BUG),
+                           issue(42, "closed-failure", "CLOSED"), issue(43, "pr-7-0123456789ab-unverified"),
+                           issue(44, None)]
+        self.save(state)
+
+    def test_the_prompt_lists_open_signature_issues_graalvm_bug_first(self) -> None:
+        self.signed_issues()
+        with patch.object(pr_review, "ISSUE_LIMIT", 2):
+            self.run_pass(dry_run=True)
+        prompt: str = self.invocations()[0]["prompt"]
+        listed: str = (f"- #41 `ni-25.0-clinit-mismatch` [{LABEL_GRAALVM_BUG}]: Failure 41\n"
+                       f"- #40 `spring-side-failure`: Failure 40\n")
+        self.assertIn(listed, prompt)
+        for absent in ("older-failure", "closed-failure", "pr-7-0123456789ab", "#44"):
+            self.assertNotIn(absent, prompt)
+
+    def test_an_answer_with_a_listed_signature_links_that_issue(self) -> None:
+        self.signed_issues()
+        self.plan({"answer": self.answer("issue", case=4, cause="Native Image 25.0 bug",
+                                         issue={"title": "t", "body": "b", "signature": "ni-25.0-clinit-mismatch"})})
+        self.assertIn("issue (terminal): reused #41", self.run_pass())
+        self.assertEqual(6, len(self.state()["issues"]))
+        self.assertIn("tracked in #41", self.comments()[-1])
+        self.assertTrue({LABEL_HUMAN_INTERVENTION, "reviewed"} <= self.labels())
+
+    def test_a_failure_no_open_issue_tracks_opens_one(self) -> None:
+        self.signed_issues()
+        self.plan({"answer": self.answer("issue", case=3, cause="Native Image 25.0 bug",
+                                         issue={"title": "New", "body": "b", "signature": "ni-25.0-new-failure"})})
+        self.assertIn("issue (terminal): opened #506", self.run_pass())
+        opened: dict[str, Any] = self.state()["issues"][-1]
+        self.assertEqual(("New", "b\n\n<!-- forge-ci-signature: ni-25.0-new-failure -->"),
+                         (opened["title"], opened["body"]))
+        self.assertIn("tracked in #506", self.comments()[-1])
+
     def test_a_missing_answer_is_escalated_with_the_evidence(self) -> None:
         self.run_pass()
         body: str = self.state()["issues"][0]["body"]
@@ -431,6 +476,17 @@ class ReviewTest(unittest.TestCase):
         self.assertIn("typeReached", rules)
         self.assertIn("Native Image", rules)
         self.assertNotIn("Before your final message", rules)
+
+    def test_the_primary_error_decides_in_the_review_and_the_fix_state(self) -> None:
+        """A suppressed `HostedError` is not the GraalVM defect (§root/FS-graalvm-blocked-work.1)."""
+        rule: str = ("The primary error decides: a `VMError` or `HostedError` reported only as `Suppressed:` beside "
+                     "another failure, such as oracle/graal#14823's \"Reflection metadata cannot be queried before "
+                     "analysis is complete\", is not the cause; handle the primary error under the usual rules.")
+        self.run_pass()
+        with open(pr_review.STATES, encoding="utf-8") as handle:
+            fix: str = yaml.safe_load(handle)["states"]["fix"]["instructions"]
+        for prompt in (self.invocations()[0]["prompt"], fix):
+            self.assertIn(rule, " ".join(prompt.split()))
 
 
 if __name__ == "__main__":

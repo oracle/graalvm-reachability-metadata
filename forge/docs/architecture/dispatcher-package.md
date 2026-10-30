@@ -48,7 +48,12 @@ The agent runs in a detached worktree of the head. Its instruction is the
 template `prompt_templates/pr_review/review.md`, with the `Metadata` and
 `Native Image` rules of the `fix` state cut from the template's `states.yaml`
 so both agents follow one copy, and its evidence (`evidence.md`,
-`pull-request.md`) sits in the worktree's parent directory. It writes
+`pull-request.md`) sits in the worktree's parent directory. The instruction
+lists the open issues whose body carries a `forge-ci-signature` — `graalvm-bug`
+ones first, at most twenty, without the program's own per-head escalations —
+read again for each pull request, so an issue an earlier review of the pass
+opened is among them, and the agent answers with the key of the one its failure
+already has (§FS-published-pr-review.4.6). It writes
 `review.json` there: `outcome` (`approve`, `rerun`, `fix`, or `issue`), `case`,
 `cause`, `summary`, and, for an issue, the issue's `title`, `body`, and
 `signature`. The program confirms the outcome against GitHub — the approval of

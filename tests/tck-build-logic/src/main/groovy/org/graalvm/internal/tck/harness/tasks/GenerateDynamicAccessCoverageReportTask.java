@@ -8,6 +8,7 @@ package org.graalvm.internal.tck.harness.tasks;
 
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
+import org.graalvm.internal.tck.stats.CoverageMeasurement;
 import org.graalvm.internal.tck.stats.LibraryStatsModels;
 import org.graalvm.internal.tck.stats.LibraryStatsSupport;
 
@@ -59,9 +60,10 @@ public abstract class GenerateDynamicAccessCoverageReportTask extends AbstractLi
 
     /// Gradle property naming a copy of an earlier `dynamic-access` output.
     ///
-    /// When it is set, the native listing build is skipped and only JaCoCo is
-    /// correlated against the copy: the call sites depend only on the library JARs,
-    /// which the tracking build preserves whole (§AR-test-harness.8).
+    /// When it is set, the native listing build is skipped and the fresh JaCoCo report,
+    /// with agent origins when a site needs them (§AR-test-harness.8.1), is correlated
+    /// against the copy: the call sites depend only on the library JARs, which the
+    /// tracking build preserves whole (§AR-test-harness.8).
     static final String CALL_SITES_PROPERTY = "tck.dynamicAccess.callSites";
 
     @TaskAction
@@ -82,12 +84,12 @@ public abstract class GenerateDynamicAccessCoverageReportTask extends AbstractLi
             requireDynamicAccessInput(coordinate, dynamicAccessAvailable, dynamicAccessDir);
             List<Path> libraryJars = listLibraryJars(coordinate);
             Path originsOutput = maybeCollectAgentOrigins(coordinate, libraryJars, dynamicAccessDir);
-            LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
+            LibraryStatsModels.DynamicAccessCoverageReport report = CoverageMeasurement.buildDynamicAccessCoverageReport(
                     coordinate,
                     libraryJars,
                     dynamicAccessDir,
                     getJacocoReport(coordinate),
-                    LibraryStatsSupport.parseAgentOrigins(originsOutput, dynamicAccessDir)
+                    CoverageMeasurement.parseAgentOrigins(originsOutput, dynamicAccessDir)
             );
             Path outputFile = getDynamicAccessCoverageReport(coordinate);
             LibraryStatsSupport.writeJson(outputFile, report);

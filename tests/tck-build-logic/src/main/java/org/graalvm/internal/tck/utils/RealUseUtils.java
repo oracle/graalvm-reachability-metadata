@@ -28,7 +28,7 @@ public final class RealUseUtils {
 
     private static final Set<String> SCALA_TOOLCHAIN = Set.of(
             "scala-library", "scala-compiler", "scala-reflect", "scala3-library_3", "scala3-compiler_3");
-    private static final String AGENT_METADATA = "native/agent-output/test/reachability-metadata.json";
+    private static final String AGENT_METADATA = GeneralUtils.AGENT_OUTPUT_DIRECTORY + "/reachability-metadata.json";
 
     private RealUseUtils() {
     }

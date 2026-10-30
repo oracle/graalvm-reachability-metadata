@@ -16,6 +16,7 @@ import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.graalvm.internal.tck.Coordinates;
+import org.graalvm.internal.tck.stats.CoverageMeasurement;
 import org.graalvm.internal.tck.stats.LibraryStatsModels;
 import org.graalvm.internal.tck.stats.LibraryStatsSchemaValidator;
 import org.graalvm.internal.tck.stats.LibraryStatsSupport;
@@ -217,7 +218,7 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
         // When library JARs contain no bytecode (no .class files), JaCoCo has nothing
         // to instrument and produces no report. Keep coverage as N/A, but model
         // dynamic access as an empty fully-covered set like other empty fallbacks.
-        if (!LibraryStatsSupport.containsClassFiles(libraryJars)) {
+        if (!CoverageMeasurement.containsClassFiles(libraryJars)) {
             getLogger().warn(
                     "Library JARs for {} contain no bytecode. Writing empty dynamic access stats and N/A coverage.",
                     coordinates
@@ -232,32 +233,34 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
         boolean dynamicAccessAvailable = generateReportsForCoordinate(coordinates);
         if (dynamicAccessAvailable) {
             Path originsOutput = maybeCollectAgentOrigins(coordinates, libraryJars);
-            return LibraryStatsSupport.buildVersionStats(
+            return CoverageMeasurement.buildVersionStats(
                     coordinates,
                     libraryJars,
                     getDynamicAccessDir(coordinates),
                     getJacocoReport(coordinates),
-                    LibraryStatsSupport.parseAgentOrigins(originsOutput, getDynamicAccessDir(coordinates))
+                    CoverageMeasurement.parseAgentOrigins(originsOutput, getDynamicAccessDir(coordinates))
             );
         }
-        return LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(
+        return CoverageMeasurement.buildVersionStatsWithoutDynamicAccess(
                 coordinates,
                 getJacocoReport(coordinates)
         );
     }
 
-    /// §AR-test-harness.8: agent-origin fallback for coordinates whose dynamic-access frames carry
-    /// no line numbers. Returns null (today's behaviour) unless line-based matching is impossible;
-    /// otherwise runs the JVM-only `javaTest` lane under `native-image-agent` and returns its
-    /// configuration-origin directory. `javaTest` avoids re-running and clobbering the native
-    /// dynamic-access reports. Failed or missing origins degrade gracefully to today's behaviour.
+    /// §AR-test-harness.8.1: agent-origin fallback for coordinates with a dynamic-access call site
+    /// that line matching cannot decide: a line-less frame, or one in a method JaCoCo filtered out
+    /// of an analyzed class. Returns null unless such a site exists; otherwise runs the JVM-only
+    /// `javaTest` lane over the regular and extension suites under `native-image-agent` and returns
+    /// its configuration-origin directory. `javaTest` avoids re-running and clobbering the native
+    /// dynamic-access reports. A run that fails or writes no origins fails the task. Needs the
+    /// coordinate's JaCoCo report.
     protected Path maybeCollectAgentOrigins(String coordinates, List<Path> libraryJars) {
         return maybeCollectAgentOrigins(coordinates, libraryJars, getDynamicAccessDir(coordinates));
     }
 
     /// The agent-origin fallback for call sites read from `dynamicAccessDir`.
     protected Path maybeCollectAgentOrigins(String coordinates, List<Path> libraryJars, Path dynamicAccessDir) {
-        if (!LibraryStatsSupport.lineMatchingImpossible(dynamicAccessDir, libraryJars)) {
+        if (!CoverageMeasurement.lineMatchingUndecided(dynamicAccessDir, libraryJars, getJacocoReport(coordinates))) {
             return null;
         }
         Path originsOutput = tckExtension.getTestDir(coordinates)
@@ -267,27 +270,36 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
                 .resolve("agent-origins");
         Path originsFile = originsOutput.resolve("reachability-metadata-origins.txt");
         getLogger().lifecycle(
-                "Dynamic-access frames for {} carry no line numbers; collecting native-image-agent origins.",
+                "Line matching cannot decide some dynamic-access call sites of {}; collecting native-image-agent origins.",
                 coordinates
         );
         try {
             Files.createDirectories(originsOutput);
             Files.deleteIfExists(originsFile);
         } catch (IOException e) {
-            getLogger().warn("Could not prepare agent-origin output for {}: {}", coordinates, e.getMessage());
-            return null;
+            throw new GradleException("Could not prepare the agent-origin output " + originsOutput + " for " + coordinates, e);
         }
+        // The combined JaCoCo report measures the extension suite too, so the agent run must as well.
         CommandResult origins = runGradle(
-                List.of("javaTest", "-Pcoordinates=" + coordinates, "-PdynamicAccessOriginsOutput=" + originsOutput),
+                List.of(
+                        "javaTest",
+                        "-Pcoordinates=" + coordinates,
+                        "-PincludeCodeCoverageSuite=true",
+                        "-PdynamicAccessOriginsOutput=" + originsOutput
+                ),
                 true
         );
         if (origins.exitCode() != 0 || !Files.isRegularFile(originsFile)) {
-            getLogger().warn(
-                    "Agent-origin collection for {} failed (exit code {}); falling back to line-based coverage only.",
+            throw new GradleException("""
+                    Dynamic-access coverage of %s needs native-image-agent origins for call sites that \
+                    line matching cannot decide, but the agent run of `javaTest` %s.
+                    Reporting without them would count those sites as uncovered; fix the JVM test run \
+                    and rerun.""".formatted(
                     coordinates,
-                    origins.exitCode()
-            );
-            return null;
+                    origins.exitCode() != 0
+                            ? "failed with exit code " + origins.exitCode()
+                            : "wrote no origins to " + originsFile
+            ));
         }
         return originsOutput;
     }
