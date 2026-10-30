@@ -64,6 +64,12 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    characters, with `§` escaped as `<§>` and every `@` kept from mentioning. A
    bad input's comment also names the step's reason and quotes the output it
    was read from (§FS-forge-run-requirements.2).
+   Bookkeeping GitHub refuses does not stop the launcher
+   (§FS-forge-run-requirements). A `human-intervention` label that cannot be
+   added keeps the claim, which holds the issue out of the queue as the label
+   would: released unlabeled, it would be claimed again and fail the same way.
+   A comment that cannot be posted is logged, and the labeled issue is still
+   released.
 
 `run-forge.sh` loops cycles until stopped, checks the host before each claim
 (§FS-forge-host-requirements), and every third run, and whenever nothing can be
