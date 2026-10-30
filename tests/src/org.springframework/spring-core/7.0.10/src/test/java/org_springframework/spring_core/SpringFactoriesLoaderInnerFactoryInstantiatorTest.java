@@ -8,9 +8,6 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 
@@ -18,7 +15,7 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 public class SpringFactoriesLoaderInnerFactoryInstantiatorTest {
     @Test
     void selectsDefaultConstructorForOverloadedFactory() {
-        SpringFactoriesLoader loader = new ConfiguredLoader();
+        SpringFactoriesLoader loader = SpringFactoriesLoader.forDefaultResourceLocation(getClass().getClassLoader());
 
         assertThat(loader.load(Service.class)).singleElement().extracting(Service::name).isEqualTo("default");
     }
@@ -44,10 +41,4 @@ public class SpringFactoriesLoaderInnerFactoryInstantiatorTest {
         }
     }
 
-    private static class ConfiguredLoader extends SpringFactoriesLoader {
-        ConfiguredLoader() {
-            super(SpringFactoriesLoaderInnerFactoryInstantiatorTest.class.getClassLoader(),
-                    Map.of(Service.class.getName(), List.of(OverloadedService.class.getName())));
-        }
-    }
 }
