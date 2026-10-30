@@ -101,8 +101,8 @@ The job installs only `forge/requirements.txt`, on Python 3.10, the floor of
 (§forge/FS-forge-host-requirements), without which the code coverage tests that
 compile and run Java skip. No GitHub credentials reach the tests, and the suites
 must pass on any host and from any checkout location: they isolate the home,
-temporary and Gradle user directories, never reach the network, and compute the
-paths they expect. It is a single job, so its name is the required context itself
+temporary and Gradle user directories, give every repository they commit in its
+own git identity, never reach the network, and compute the paths they expect. It is a single job, so its name is the required context itself
 (§AR-required-status-checks).
 
 ### AR-test-changed-infrastructure: Test changed infrastructure

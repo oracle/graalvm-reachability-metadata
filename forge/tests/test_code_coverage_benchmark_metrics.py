@@ -265,18 +265,12 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         repository.mkdir()
         _git(remote, "init", "--bare", "-b", "master")
         _git(repository, "init", "-b", "master")
+        # The publication commits too; a host without a git identity must not fail it.
+        _git(repository, "config", "user.name", "test")
+        _git(repository, "config", "user.email", "test@example.com")
         (repository / "README.md").write_text("seed\n", encoding="utf-8")
         _git(repository, "add", "README.md")
-        _git(
-            repository,
-            "-c",
-            "user.name=test",
-            "-c",
-            "user.email=test@example.com",
-            "commit",
-            "-m",
-            "seed",
-        )
+        _git(repository, "commit", "-m", "seed")
         _git(repository, "remote", "add", "origin", str(remote))
         _git(repository, "push", "-u", "origin", "master")
         workspace = root / "run-1" / "code-coverage-99000"
