@@ -68,6 +68,39 @@ public class SkeletonTest {
     }
 
     @Test
+    void retainsBooleanPropertiesWithMatchingAccessorTypes() {
+        BooleanBean bean = Skeleton.newMock(BooleanBean.class);
+        assertFalse(bean.isVisible());
+        assertFalse(bean.isSelected());
+
+        bean.setVisible(true);
+        bean.setSelected(Boolean.TRUE);
+
+        assertTrue(bean.isVisible());
+        assertTrue(bean.isSelected());
+
+        bean.setVisible(false);
+        bean.setSelected(Boolean.FALSE);
+
+        assertFalse(bean.isVisible());
+        assertFalse(bean.isSelected());
+    }
+
+    @Test
+    void recordsPrimitiveWriteOnlyPropertyCalls() {
+        WriteOnlyBean bean = Skeleton.newMock(WriteOnlyBean.class);
+
+        bean.setLimit(24);
+        bean.setAvailable(true);
+        bean.setAvailable(false);
+
+        Skeleton skeleton = Skeleton.getSkeleton(bean);
+        skeleton.assertCalledExactNumberOfTimes(new MethodCall(WriteOnlyBean.class, "setLimit", 24), 1);
+        skeleton.assertCalledExactNumberOfTimes(new MethodCall(WriteOnlyBean.class, "setAvailable", true), 1);
+        skeleton.assertCalledExactNumberOfTimes(new MethodCall(WriteOnlyBean.class, "setAvailable", false), 1);
+    }
+
+    @Test
     void injectsTheBackingSkeletonIntoATemplate() {
         ActivityTemplate template = new ActivityTemplate();
         Activity activity = Skeleton.newMock(template, Activity.class);
@@ -108,6 +141,22 @@ public class SkeletonTest {
         void setOnly(Boolean value);
 
         int getRevision();
+    }
+
+    public interface BooleanBean {
+        boolean isVisible();
+
+        void setVisible(boolean visible);
+
+        Boolean isSelected();
+
+        void setSelected(Boolean selected);
+    }
+
+    public interface WriteOnlyBean {
+        void setLimit(int limit);
+
+        void setAvailable(boolean available);
     }
 
     public static class ActivityTemplate {
