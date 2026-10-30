@@ -11,8 +11,6 @@ import java.nio.charset.StandardCharsets;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.ConfigurationFactory;
-import net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory;
-import net.sf.ehcache.distribution.RMICacheReplicatorFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 

@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PropertyUtilTest {
     @Test
     void parsesCommaSeparatedFactoryPropertiesAndTrimsValues() {
-        Properties properties = PropertyUtil.parseProperties("peerDiscovery=manual, enabled= true ,capacity=25");
+        Properties properties = PropertyUtil.parseProperties("peerDiscovery=manual, enabled= true " + ",capacity=25");
         assertEquals("manual", PropertyUtil.extractAndLogProperty("peerDiscovery", properties));
         assertEquals("25", PropertyUtil.extractAndLogProperty("capacity", properties));
         assertTrue(PropertyUtil.parseBoolean(PropertyUtil.extractAndLogProperty("enabled", properties)));

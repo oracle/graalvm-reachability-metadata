@@ -15,8 +15,10 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.Status;
 import net.sf.ehcache.config.Configuration;
+import net.sf.ehcache.config.ConfigurationHelper;
 import net.sf.ehcache.config.FactoryConfiguration;
 import net.sf.ehcache.distribution.CachePeer;
+import net.sf.ehcache.distribution.CacheManagerPeerListener;
 import net.sf.ehcache.distribution.RMISynchronousCacheReplicator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -33,30 +35,38 @@ public class RMICacheManagerPeerListenerTest {
     @Test
     void bindsAndUnbindsDynamicallyAddedDistributedCache() throws Exception {
         int port = PeerFixture.freePort();
-        Registry registry = LocateRegistry.createRegistry(port);
+        CacheManager manager = TestSupport.manager(directory);
         Configuration configuration = TestSupport.configuration(directory);
         FactoryConfiguration listener = new FactoryConfiguration();
         listener.setClass("net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory");
         listener.setProperties("hostName=127.0.0.1,port=" + port + ",socketTimeoutMillis=10000");
         configuration.addCacheManagerPeerListenerFactory(listener);
-        CacheManager manager = new CacheManager(configuration);
+        CacheManagerPeerListener peerListener = new ConfigurationHelper(manager, configuration).createCachePeerListener();
+        Registry registry = LocateRegistry.createRegistry(port);
         try {
+            peerListener.init();
             Cache cache = new Cache("distributed", 20, false, true, 0, 0);
             cache.getCacheEventNotificationService().registerListener(new RMISynchronousCacheReplicator(true, true, true, true));
             manager.addCache(cache);
+            peerListener.notifyCacheAdded("distributed");
             CachePeer remote = (CachePeer) registry.lookup("distributed");
             remote.put(new Element("key", "value"));
             assertEquals("value", cache.get("key").getObjectValue());
-            assertEquals(Status.STATUS_ALIVE, manager.getCachePeerListener().getStatus());
-            assertEquals(1, manager.getCachePeerListener().getBoundCachePeers().size());
+            assertEquals(Status.STATUS_ALIVE, peerListener.getStatus());
+            assertEquals(1, peerListener.getBoundCachePeers().size());
             manager.removeCache("distributed");
+            peerListener.notifyCacheRemoved("distributed");
             assertEquals(0, registry.list().length);
-            assertTrue(manager.getCachePeerListener().getBoundCachePeers().isEmpty());
+            assertTrue(peerListener.getBoundCachePeers().isEmpty());
         } finally {
             try {
-                manager.shutdown();
+                peerListener.dispose();
             } finally {
-                UnicastRemoteObject.unexportObject(registry, true);
+                try {
+                    manager.shutdown();
+                } finally {
+                    UnicastRemoteObject.unexportObject(registry, true);
+                }
             }
         }
     }

@@ -29,7 +29,6 @@ final class JndiFixture implements AutoCloseable {
 
     JndiFixture(Path directory) throws Exception {
         int port = PeerFixture.freePort();
-        registry = LocateRegistry.createRegistry(port);
         manager = TestSupport.replicatingManager(directory, "");
         cache = manager.getCache("replicated");
         cache.getCacheEventNotificationService().registerListener(new RMISynchronousCacheReplicator(true, true, true, true));
@@ -40,6 +39,7 @@ final class JndiFixture implements AutoCloseable {
         System.setProperty(Context.PROVIDER_URL, providerUrl);
         url = providerUrl + "/replicated";
         listener = new JNDIRMICacheManagerPeerListener("127.0.0.1", port, manager, 10000);
+        registry = LocateRegistry.createRegistry(port);
         listener.init();
     }
 
