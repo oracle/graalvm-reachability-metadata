@@ -479,9 +479,14 @@ which includes the rare case of an agent timeout. A workflow failure is
 exception from the dependency boundary Forge itself crosses: GitHub (`gh`: rate
 limits and 5xx/network) as `GitHubError` / `GitHubRateLimitExceeded`, remote
 git operations (push/pull/fetch/clone/ls-remote) as `GitTransportError`, and a
-Gradle build that never left configuration as `GradleBootstrapFailure`. Maven
-Central and Docker registry failures have no such boundary — Gradle owns them
-inside `./gradlew test` and they reach Forge only as an opaque CI-check `rc != 0`,
+Gradle build that never left configuration as `GradleBootstrapFailure`. Every
+Gradle build a run starts, the pre-publication gate's included, crosses one
+more: a build whose output names a repository that could not be reached, or that
+answered with anything but not-found, surfaces as `RepositoryUnreachable` in
+whichever step it happens, before that step reads the failure as a fix request,
+an explore mode, or a stop (§AR-forge-workflow-pipeline.4.1). A not-found is no
+outage: the module is absent, a bad input. Docker registry failures have no such
+boundary — they reach Forge only as an opaque CI-check `rc != 0`,
 indistinguishable from a real test failure once the in-workflow retries have run —
 so they are not special-cased and fall through to the safe logical default. When a
 failure is external, Forge takes no issue action: it applies no

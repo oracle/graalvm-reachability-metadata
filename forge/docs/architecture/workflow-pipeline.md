@@ -226,7 +226,10 @@ published only for a non-JVM platform: it fails identically on every retry, in
 `prepare`'s scaffold as in this tail. A repository that could not be reached,
 or that answered with anything but not-found, is not a bad input but an
 infrastructure failure, which a later cycle retries
-(§FS-forge-run-requirements.2). The tail does not resolve the test
+(§FS-forge-run-requirements.2), here and in every later Gradle build of the run,
+the pre-publication gate's included: the programs' Gradle runner raises it
+before any program reads the failure as a fix request, an explore mode, or a
+stop (§FS-human-intervention-policy). The tail does not resolve the test
 dependencies `setup` declares: on every route but a new library's, `jvm`
 resolves them in `javaTest` and reports one that does not resolve as a bad
 input. A new library then exits `20` to `analyze`, since it has no version to
