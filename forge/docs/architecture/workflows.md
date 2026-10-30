@@ -50,6 +50,13 @@ stale one. Its location is derived from the coordinate and it is stored with the
 library's test suite, so each merged chunk carries the state the next run needs
 without any resume argument being passed.
 
+`prepare` reads it on the pinned base, before it adds the version, and a report
+there resumes the chunk whether or not the issue still carries the
+`chunked-dynamic-access` label. Without the label, the report counts only when
+it names the run's coordinate. A version is added as a copy of its baseline's
+tests, so reading after the copy would resume the new version from its
+baseline's progress, and so would a report that names another version.
+
 Repository-wide stats stay authoritative: coverage is reported against the full
 current dynamic-access surface, and a chunk may additionally report how many
 classes it processed and how many remain.

@@ -31,6 +31,10 @@ import forge_run  # noqa: E402
 import issue  # noqa: E402
 import prepare  # noqa: E402
 import run_note  # noqa: E402
+from utility_scripts.dynamic_access_exhaust_report import (  # noqa: E402
+    EXHAUST_REPORT_FILENAME,
+    DynamicAccessExhaustReport,
+)
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput  # noqa: E402
 from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, RunState, load, read_json, runtime_path, save  # noqa: E402
@@ -363,6 +367,42 @@ class PrepareTest(unittest.TestCase):
     def test_title_without_a_coordinate_is_a_bad_input(self) -> None:
         self.fake.issue("library-new-request", title="Support something")
         self.assertEqual(BAD_INPUT, self.prepare())
+
+    def exhaust_report(self, version: str, coordinate: str) -> None:
+        """A merged chunk's report in `version`'s tests, naming `coordinate`, with no PR to look up."""
+        report: DynamicAccessExhaustReport = DynamicAccessExhaustReport.create(coordinate=coordinate, issue_number=7)
+        report.mark_completed("org_example.Done")
+        report.mark_exhausted("org_example.Hard")
+        report.save(os.path.join(self.fake.repo, "tests", "src", "org.example", "lib", version, EXHAUST_REPORT_FILENAME))
+        self.fake.commit(f"chunk of {coordinate}")
+
+    def test_the_coordinates_exhaust_report_chunks_the_issue_with_or_without_the_label(self) -> None:
+        """The label can be removed by hand; the report still resumes the chunk (FS-forge-chunked-dynamic-access)."""
+        for labels in ((), ("chunked-dynamic-access",)):
+            with self.subTest(labels=labels):
+                self.setUp()
+                self.fake.supported_library()
+                self.fake.supported_version("2.0.0", covered=5, total=6)
+                self.exhaust_report("2.0.0", COORDINATE)
+                self.fake.issue("library-update-request", extra_labels=labels)
+                self.assertEqual(OK, self.prepare())
+                chunk = load(self.fake.workspace).chunk
+                self.assertEqual((True, ["org_example.Done", "org_example.Hard"], 15),
+                                 (chunk.active, chunk.processed, chunk.budget))
+
+    def test_another_versions_report_does_not_chunk_an_unlabeled_issue(self) -> None:
+        """Neither the copy a new version is cloned with nor a report naming another version is its own."""
+        cases: dict[str, tuple[str, ...]] = {"cloned beside 1.5.0's": (), "naming 1.5.0": ("2.0.0",)}
+        for case, owned in cases.items():
+            with self.subTest(case=case):
+                self.setUp()
+                self.fake.supported_library()
+                for version in owned:
+                    self.fake.supported_version(version, covered=5, total=6)
+                self.exhaust_report(owned[0] if owned else "1.5.0", PREVIOUS)
+                self.fake.issue("library-update-request")
+                self.assertEqual(OK, self.prepare())
+                self.assertFalse(load(self.fake.workspace).chunk.active)
 
     def test_chunked_issue_without_exhaust_report_is_a_bad_input(self) -> None:
         self.fake.supported_library()
