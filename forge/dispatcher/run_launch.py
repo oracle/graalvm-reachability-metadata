@@ -22,6 +22,7 @@ import tempfile
 from dataclasses import dataclass
 from typing import Any, Iterator
 
+from git_scripts.common_git import stage_and_commit
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import extract_coordinate_parts
 
@@ -30,6 +31,9 @@ from dispatcher.config import LABEL_HUMAN_INTERVENTION
 from dispatcher.issue_admin import add_issue_label, post_issue_comment
 from dispatcher.issue_claiming import revert_issue_claim, try_claim_issue
 from dispatcher.issue_form import check_issue_form, reject_issue_form
+from dispatcher.rhei_workspace import (EVENTS, NO_ADVANCE, NO_ADVANCE_LIMIT, budget_halted, count_no_advance,
+                                       current_state, file_stamp, halt_message, run_events,
+                                       set_aside_interrupted_logs, spawn_records)
 from dispatcher.worktrees import fetch_issue_base_commit, remove_worktree
 
 TEMPLATE: str = "forge-metadata"
@@ -42,6 +46,11 @@ QUOTE_LIMIT: int = 1500
 UNESCAPED_MARKER: re.Pattern[str] = re.compile(r"(?<!<)§(?!>)")
 MENTION: re.Pattern[str] = re.compile(r"@(?=[A-Za-z0-9])")
 BACKTICKS: re.Pattern[str] = re.compile(r"`+")
+# Where a held attempt keeps its work, one ref per attempt (§FS-human-intervention-policy).
+HELD_REFS: str = "refs/forge-held"
+# The close-out kinds of a halt that a later claim resumes: the issue only returns to `Todo`.
+NO_ADVANCE_KIND: str = "no-advance"
+BUDGET_HALT_KIND: str = "budget-halt"
 
 
 @dataclass(frozen=True)
@@ -49,6 +58,19 @@ class Claim:
     issue: dict[str, Any]
     label: str
     item_id: str
+
+
+@dataclass(frozen=True)
+class Started:
+    """An attempt `rhei run` returned from."""
+
+    workspace: str
+    # Whether Rhei ran a state of it; a run that ran none changed nothing.
+    advanced: bool
+    # What Rhei logged about a run that ran no state.
+    halt: str = ""
+    # Whether a Rhei budget refused that run, a transient host condition.
+    budget: bool = False
 
 
 def target_error(setup_agent: str, worker_agent: str) -> str | None:
@@ -151,6 +173,48 @@ def release_worktree(repo: str, workspace: str, keep_branch: bool = False) -> No
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
+def held(outcome: dict[str, Any]) -> bool:
+    """Whether the close-out labels the issue `human-intervention` (§FS-human-intervention-policy)."""
+    return outcome.get("outcome") in ("human-intervention", "nothing-to-publish") or outcome.get("kind") == "bad-input"
+
+
+def git(cwd: str, *args: str) -> str:
+    """Run git and return its stripped stdout; a failure raises with git's message on it."""
+    return subprocess.run(["git", *args], cwd=cwd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                          text=True).stdout.strip()
+
+
+def keep_held_work(repo: str, workspace: str, outcome: dict[str, Any]) -> str | None:
+    """Commit what a held run left uncommitted on its branch, and keep that commit at the attempt's own ref.
+
+    No later run moves or deletes the ref, so a rerun of the issue cannot discard
+    the checkpoint (§FS-human-intervention-policy). Checkouts share one ref namespace,
+    so a ref an attempt of the same name in another checkout keeps is never moved
+    either. `None` when the attempt has no run state, or when git fails; the
+    worktree then stays.
+    """
+    state_path: str = os.path.join(workspace, "runtime", "forge", "state.json")
+    if not os.path.isfile(state_path):
+        return None
+    with open(state_path, encoding="utf-8") as handle:
+        state: dict[str, Any] = json.load(handle)
+    worktree: str = state["worktree"]
+    stopped: str = outcome.get("sender") or outcome.get("step") or "an unrecorded state"
+    ref: str = f"{HELD_REFS}/{os.path.basename(workspace)}"
+    try:
+        if os.path.isdir(worktree):
+            stage_and_commit(["."], f"Held at {stopped}: uncommitted work", cwd=worktree)
+            tip: str = git(worktree, "rev-parse", "HEAD")
+        else:
+            tip = git(repo, "rev-parse", "--verify", f"refs/heads/{state['branch']}")
+        git(repo, "update-ref", ref, tip, "")  # The empty old value creates the ref only if it does not exist.
+    except subprocess.CalledProcessError as error:
+        print(f"ERROR: the work of held run {os.path.basename(workspace)} was not kept at {ref}, so its "
+              f"worktree {worktree} stays: {(error.stderr or '').strip() or error}", file=sys.stderr)
+        return None
+    return ref
+
+
 def agent_environment(repo: str, workspace: str, issue: dict[str, Any]) -> dict[str, str] | None:
     """The `rhei run` environment, so agents build in the run worktree's Gradle home.
 
@@ -166,8 +230,8 @@ def agent_environment(repo: str, workspace: str, issue: dict[str, Any]) -> dict[
 
 
 def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: str,
-              rhei_args: list[str]) -> str | None:
-    """Instantiate and run the issue's attempt; its workspace, or `None` when it could not be created."""
+              rhei_args: list[str]) -> Started | None:
+    """Instantiate or resume the issue's attempt and run it; `None` when its workspace could not be created."""
     number: int = claimed.issue["number"]
     workspace: str = workspace_path(forge_dir, number)
     if not os.path.isdir(workspace):
@@ -176,9 +240,34 @@ def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: st
         created = subprocess.run(instantiate_command(number, setup_agent, worker_agent, workspace), cwd=forge_dir)
         if created.returncode != 0:
             return None
+    else:
+        for moved in set_aside_interrupted_logs(workspace):
+            print(f"[resume] moved the log of the interrupted state to {moved}", file=sys.stderr)
+    before: dict[str, int] = spawn_records(workspace)
+    events: tuple[int, int, int] | None = file_stamp(os.path.join(workspace, EVENTS))
     subprocess.run(["rhei", "run", workspace, "--dashboard", *rhei_args], cwd=forge_dir,
                    env=agent_environment(os.path.dirname(forge_dir), workspace, claimed.issue))
-    return workspace
+    if spawn_records(workspace) != before:
+        return Started(workspace=workspace, advanced=True)
+    # An event log this run did not rewrite is an earlier run's.
+    rewritten: bool = file_stamp(os.path.join(workspace, EVENTS)) != events
+    logged: list[dict[str, Any]] = run_events(workspace) if rewritten else []
+    return Started(workspace=workspace, advanced=False, halt=halt_message(logged, QUOTE_LIMIT),
+                   budget=budget_halted(logged))
+
+
+def hold_unadvanced(workspace: str, halt: str) -> None:
+    """Record the `human-intervention` outcome of an attempt Rhei ran no state of twice in a row."""
+    outcome: dict[str, Any] = {
+        "outcome": "human-intervention",
+        "reason": f"Rhei ran no state of {os.path.basename(workspace)} in {NO_ADVANCE_LIMIT} runs in a row",
+        "halt": halt or "Rhei logged no message for this run.",
+    }
+    state: str | None = current_state(workspace)
+    if state is not None:
+        outcome["sender"] = state
+    with open(os.path.join(workspace, OUTCOME), "w", encoding="utf-8") as handle:
+        json.dump(outcome, handle)
 
 
 def record_outcome(workspace: str) -> dict[str, Any]:
@@ -197,15 +286,37 @@ def record_outcome(workspace: str) -> dict[str, Any]:
         return json.load(handle)
 
 
-def finish_run(repo: str, workspace: str) -> dict[str, Any]:
-    """Record the outcome of a run `rhei run` returned from, then give up its worktree.
+def finish_run(repo: str, started: Started) -> dict[str, Any]:
+    """Record the outcome of a run, then give up its worktree.
 
-    A finished attempt keeps only its workspace and branch as the record; one whose
-    launcher died never gets here, so it is resumed in its worktree
-    (§AR-forge-workflow-pipeline.1).
+    A finished attempt keeps only its workspace and branch as the record, and a held
+    one first keeps its work at its own ref (§FS-human-intervention-policy). One
+    whose launcher died never gets here, and neither a budget halt nor the first
+    no-advance halt finished anything: they keep their worktree, so a later claim
+    resumes them. The second no-advance halt in a row holds the attempt; a budget
+    halt leaves the count as it was (§AR-forge-workflow-pipeline.1).
     """
-    outcome: dict[str, Any] = record_outcome(workspace)
-    release_worktree(repo, workspace, keep_branch=True)
+    count: str = os.path.join(started.workspace, NO_ADVANCE)
+    attempt: str = os.path.basename(started.workspace)
+    if started.advanced:
+        with contextlib.suppress(FileNotFoundError):
+            os.remove(count)
+    elif started.budget:
+        print(f"[budget] {started.halt}", file=sys.stderr)
+        return {"outcome": "failed", "kind": BUDGET_HALT_KIND,
+                "reason": f"a Rhei budget refused the run of {attempt}, which a later claim resumes"}
+    elif count_no_advance(started.workspace) < NO_ADVANCE_LIMIT:
+        return {"outcome": "failed", "kind": NO_ADVANCE_KIND,
+                "reason": f"rhei run ran no state of {attempt}, which a later claim resumes"}
+    else:
+        hold_unadvanced(started.workspace, started.halt)
+    outcome: dict[str, Any] = record_outcome(started.workspace)
+    if held(outcome):
+        ref: str | None = keep_held_work(repo, started.workspace, outcome)
+        if ref is None:
+            return outcome
+        outcome = {**outcome, "held_ref": ref}
+    release_worktree(repo, started.workspace, keep_branch=True)
     return outcome
 
 
@@ -226,7 +337,8 @@ def intervention_comment(outcome: dict[str, Any]) -> str:
     """The comment a maintainer continues from: the reason and what the run recorded.
 
     That is a bad input's detail, the state that stopped, its failing commands with
-    their output excerpts, and the last fix report (§FS-human-intervention-policy).
+    their output excerpts, the last fix report, and the ref that keeps the run's
+    work (§FS-human-intervention-policy).
     """
     lines: list[str] = ["Human intervention needed", "",
                         f"Forge could not finish this issue: {outcome.get('reason', '')}."]
@@ -241,6 +353,12 @@ def intervention_comment(outcome: dict[str, Any]) -> str:
     if outcome.get("fix_summary"):
         result: str = f" `{outcome['fix_result']}`" if outcome.get("fix_result") else ""
         lines += ["", f"The last fix reported{result}:", "", *quoted(outcome["fix_summary"])]
+    if outcome.get("halt"):
+        lines += ["", "Rhei's halt message:", "", *fenced(outcome["halt"])]
+    if outcome.get("held_ref"):
+        ref: str = outcome["held_ref"]
+        lines += ["", f"The run's work, uncommitted edits included, is kept on the Forge host at `{ref}`. "
+                      f"Continue from it on a branch of your own: `git worktree add -b <branch> <path> {ref}`."]
     return "\n".join(lines) + "\n"
 
 

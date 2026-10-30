@@ -316,7 +316,8 @@ class ReleaseTest(unittest.TestCase):
         recorded: list[bool] = []
         self.stop_daemons.side_effect = lambda *_: recorded.append(
             os.path.isfile(os.path.join(self.workspace, run_launch.OUTCOME)))
-        self.assertEqual("infrastructure", run_launch.finish_run(self.repo, self.workspace)["kind"])
+        started = run_launch.Started(workspace=self.workspace, advanced=True)
+        self.assertEqual("infrastructure", run_launch.finish_run(self.repo, started)["kind"])
         # The daemons are stopped with the worktree's own wrapper, before the worktree goes.
         self.assertEqual([True], recorded)
         self.assertEqual((self.home, self.worktree), self.stop_daemons.call_args.args[:2])
@@ -335,7 +336,8 @@ class ReleaseTest(unittest.TestCase):
         claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         forge: str = os.path.dirname(os.path.dirname(self.workspace))
         with patch.object(run_launch.subprocess, "run") as run:
-            self.assertEqual(self.workspace, run_launch.start_run(forge, claimed, "claude-code:sonnet", "pi:x/y", []))
+            started = run_launch.start_run(forge, claimed, "claude-code:sonnet", "pi:x/y", [])
+        self.assertEqual(self.workspace, started.workspace)
         self.assertEqual([["rhei", "run", self.workspace, "--dashboard"]], [call.args[0] for call in run.call_args_list])
         self.assertTrue(os.path.isdir(self.worktree))
 
@@ -343,15 +345,16 @@ class ReleaseTest(unittest.TestCase):
         claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         steps = Mock()
         steps.finish_run.return_value = {"outcome": "completed"}
+        started = run_launch.Started(workspace=self.workspace, advanced=True)
         with patch.object(forge_metadata, "fetch_candidates", return_value=[("library-new-request", claimed.issue)]), \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(forge_metadata, "claim", return_value=claimed), \
-                patch.object(forge_metadata, "start_run", return_value=self.workspace), \
+                patch.object(forge_metadata, "start_run", return_value=started), \
                 patch.object(forge_metadata, "finish_run", steps.finish_run), \
                 patch.object(forge_metadata, "close_out", steps.close_out), \
                 contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(forge_metadata.RAN, forge_metadata.main([]))
-        self.assertEqual([("finish_run", (forge_metadata.REPO_DIR, self.workspace)),
+        self.assertEqual([("finish_run", (forge_metadata.REPO_DIR, started)),
                           ("close_out", (claimed, {"outcome": "completed"}))],
                          [(name, args) for name, args, _ in steps.mock_calls])
 
