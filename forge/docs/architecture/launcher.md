@@ -27,7 +27,8 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    (§FS-forge-scope). A fixture file can stand in for GitHub.
 2. **Claim.** The live claimability check and the optimistic claim are the
    dispatcher's (§FS-forge-run-requirements.2): assign, wait, verify, move the
-   board item to `In Progress`, release on any failure.
+   board item to `In Progress`, release on any failure. A GitHub outage there
+   ends the cycle with `75` (§AR-forge-launcher.1.2).
 3. **Issue form.** The five form rules decide against the pinned base's
    `index.json`; a malformed issue gets the predefined comment and is closed
    (§FS-forge-run-requirements.3).
@@ -119,6 +120,33 @@ issue and its project item, two GitHub reads; a read GitHub refuses skips the
 issue for this cycle instead of stopping the launcher. The first stranded claim
 found is run, its lock held, through the same resume and close-out as a claimed
 issue, so the cycle exits with the same statuses.
+
+### 1.2 Board writes and pending releases
+
+The claim's and the release's GitHub calls are the project status edit
+(`gh project item-edit` and the field lookup it needs), the assignee `PATCH`,
+and the reads that verify them. They go through the shared retrying runners
+with rate limits retried too: up to five attempts, two seconds apart and
+doubling, on a server error, an endpoint that does not connect or answer, or a
+rate limit (§FS-forge-stranded-claims.4.1). GraphQL's `Something went wrong
+while executing your query` is a server error. Every other GitHub call still
+raises on a rate limit at once, so a run stops for the reset. A release
+repeats its round, a minute apart, only while a call fails transiently.
+
+A release that still fails transiently writes `runs/releases/forge-<issue>.json`
+with the project item, the reason and the time; one GitHub confirms or refuses
+removes it (§FS-forge-stranded-claims.4.2). Before the stranded-claim scan a
+cycle lists these records, oldest issue first, and for each takes the issue's
+lock, skipping an issue a live launcher holds, reads the record again under it,
+since another launcher on the host may have retried it, then reads the issue
+over REST.
+A record whose issue is closed, assigned to anyone but the user, or updated
+after the record was written is removed, and the issue named for a
+maintainer. Any other is released again through the same release. A release
+GitHub still refuses, or an issue it cannot read, ends the cycle with `75`
+before the scan, so the loop backs off (§FS-forge-stranded-claims.4.3). A claim
+whose GitHub calls still fail is released the same way, and the cycle ends
+with `75` too (§FS-forge-stranded-claims.4.4).
 
 ## 2. Exit codes
 
