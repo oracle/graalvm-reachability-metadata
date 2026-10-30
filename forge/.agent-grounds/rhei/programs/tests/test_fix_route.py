@@ -3,9 +3,9 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for `fix-route` (§AR-forge-workflow-pipeline.2, §AR-forge-workflow-pipeline.6).
+"""Tests for `fix-route` (§AR-forge-launcher.2, §AR-forge-workflow-pipeline.6).
 
-A run it stops records what the close-out quotes (§AR-forge-workflow-pipeline.1),
+A run it stops records what the close-out quotes (§AR-forge-launcher.1),
 and each fix request files a report of its own (§FS-durable-generation-logs).
 """
 from __future__ import annotations

@@ -8,7 +8,7 @@
 One query per label and priority tier, `high-priority` first, then `priority`,
 then the rest, oldest first, unassigned, and never `not-for-native-image`,
 `graalvm-bug`, `human-intervention`, or, unless blocked issues are taken,
-blocked (§AR-forge-workflow-pipeline.1, §FS-forge-scope,
+blocked (§AR-forge-launcher.1, §FS-forge-scope,
 §FS-forge-run-requirements.2.1). A fixture file of issue payloads can stand in
 for GitHub.
 """
@@ -57,7 +57,7 @@ def fetch_command(
         take_blocked: bool = False,
 ) -> list[str]:
     """The one `gh issue list` of a label and tier."""
-    # A held or blocked issue takes a place the claim cannot use (§AR-forge-workflow-pipeline.1).
+    # A held or blocked issue takes a place the claim cannot use (§AR-forge-launcher.1).
     search: list[str] = ["no:assignee"]
     search += [f"-label:{name}" for name in (*ALWAYS_EXCLUDED_ISSUE_LABELS, LABEL_HUMAN_INTERVENTION)]
     if not take_blocked:
