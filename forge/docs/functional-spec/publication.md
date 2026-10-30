@@ -497,6 +497,19 @@ a later retry. The same classification applies to every issue queue, including
 the `fails-*` repair queues, and to the claim-time preconditions that run before
 any workflow phase (§FS-forge-run-requirements.2).
 
+A retry later runs every state of the run again, so the push of the publication
+branch, which comes after all of them, is retried before the run gives up. A
+push that fails on a transient condition of §FS-forge-host-requirements.1 is
+pushed again, a few times, with a backoff that doubles from seconds to a minute
+and one log line per retry: GitHub that cannot be reached or does not answer in
+time, a connection it drops mid-push, a ref update it reports only as `failed`,
+a server error, or a rate limit. A push GitHub refuses for a reason, such as a
+protected branch or a ruleset, a denied permission, a repository it does not
+find, or a hook that declines with a message, would be refused again, so it
+fails at once. A push that still fails after its retries is external like any
+other `GitTransportError`: the claim is released, and a later attempt starts the
+run over.
+
 The label can appear on issues or pull requests. On an issue, it means Forge
 could not safely produce a PR-ready result and posted enough diagnostics for a
 maintainer to continue. On a pull request, it means Forge produced a reviewable
