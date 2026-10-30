@@ -58,10 +58,27 @@ public class SerializationUtilsTest {
     }
 
     @Test
+    void preservesSerializableExceptionContext() {
+        Headers headers = new RecordHeaders();
+        byte[] payload = {5, 8};
+        SerializationUtils.deserializationException(headers, payload, new PayloadException("unreadable key", "order-42"), true);
+
+        DeserializationException failure = SerializationUtils.byteArrayToDeserializationException(
+                new LogAccessor(SerializationUtilsTest.class), headers.lastHeader(KafkaUtils.KEY_DESERIALIZER_EXCEPTION_HEADER));
+
+        assertNotNull(failure);
+        assertTrue(failure.isKey());
+        assertArrayEquals(payload, failure.getData());
+        assertEquals(PayloadException.class, failure.getCause().getClass());
+        assertEquals("unreadable key", failure.getCause().getMessage());
+        assertEquals("order-42", ((PayloadException) failure.getCause()).context);
+    }
+
+    @Test
     void retainsFailureDetailsWhenOriginalExceptionCannotBeSerialized() {
         Headers headers = new RecordHeaders();
         byte[] payload = {5, 8};
-        SerializationUtils.deserializationException(headers, payload, new PayloadException("unreadable key"), true);
+        SerializationUtils.deserializationException(headers, payload, new PayloadException("unreadable key", new Object()), true);
 
         DeserializationException failure = SerializationUtils.byteArrayToDeserializationException(
                 new LogAccessor(SerializationUtilsTest.class), headers.lastHeader(KafkaUtils.KEY_DESERIALIZER_EXCEPTION_HEADER));
@@ -81,10 +98,11 @@ public class SerializationUtilsTest {
     public static class PayloadException extends RuntimeException {
         private static final long serialVersionUID = 1L;
 
-        private final Object context = new Object();
+        private final Object context;
 
-        public PayloadException(String message) {
+        public PayloadException(String message, Object context) {
             super(message);
+            this.context = context;
         }
     }
 }
