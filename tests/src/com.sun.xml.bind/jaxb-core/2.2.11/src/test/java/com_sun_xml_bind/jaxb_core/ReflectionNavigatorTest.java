@@ -53,6 +53,28 @@ public class ReflectionNavigatorTest {
         assertThat(navigator.getComponentType(type)).isEqualTo(int.class);
     }
 
+    @Test
+    void resolvesAnArrayTypeArgumentThroughGenericInheritance() {
+        Navigator<Type, Class, Field, Method> navigator = NavigatorSupport.navigator();
+        Type base = navigator.getBaseClass(TextSequence.class, Sequence.class);
+        Type element = navigator.getTypeArgument(base, 0);
+
+        assertThat(navigator.isParameterizedType(base)).isTrue();
+        assertThat(element).isEqualTo(String[].class);
+        assertThat(navigator.isArray(element)).isTrue();
+        assertThat(navigator.getComponentType(element)).isEqualTo(String.class);
+        assertThat(navigator.getTypeName(element)).isEqualTo("java.lang.String[]");
+    }
+
+    public interface Sequence<T> {
+    }
+
+    public static class ArraySequence<T> implements Sequence<T[]> {
+    }
+
+    public static class TextSequence extends ArraySequence<String> {
+    }
+
     public enum Priority {
         NORMAL, URGENT
     }
