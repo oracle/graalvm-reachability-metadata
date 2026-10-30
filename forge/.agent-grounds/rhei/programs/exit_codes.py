@@ -5,7 +5,7 @@
 
 """Exit codes the program states return; `states.yaml` routes on each one.
 
-The table is §AR-forge-workflow-pipeline.2: a program's exit code is the whole
+The table is §AR-forge-launcher.2: a program's exit code is the whole
 decision the orchestrator makes after it (§FS-forge-issue-resolution-goal).
 """
 from __future__ import annotations
@@ -21,9 +21,11 @@ NOTHING_TO_DO: int = 20
 SKIP_RECORDED: int = 21
 # `prepare` only: the artifact's index is the record (§FS-not-for-native-image-record.2).
 NOT_FOR_NATIVE_IMAGE_RECORDED: int = 22
+# `prepare` only: the issue closed after its claim (§FS-forge-run-requirements.2).
+ISSUE_CLOSED: int = 23
 CANNOT_FIX: int = 40
 
-# The `fix-route` exits, one per sender (§AR-forge-workflow-pipeline.2).
+# The `fix-route` exits, one per sender (§AR-forge-launcher.2).
 RETURN_JVM: int = 30
 RETURN_MEASURE: int = 31
 RETURN_NATIVE: int = 32

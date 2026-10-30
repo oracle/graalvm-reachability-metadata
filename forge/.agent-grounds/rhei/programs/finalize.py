@@ -32,7 +32,8 @@ from utility_scripts.local_ci_verification import (
 
 import gates
 import handoff
-from build_tools import TaskResult, checkpoint, coordinate_task, head, rebase_onto_upstream, run_gradle
+from build_tools import (TaskResult, checkpoint, coordinate_task, head, rebase_onto_upstream, require_reachable,
+                         run_gradle)
 from exit_codes import AGENT_WORK, OK
 from run_state import RunState, load, runtime_path, save
 
@@ -90,11 +91,14 @@ def run_lane(workspace: str, state: RunState, prefix: str) -> list[handoff.Failu
             base_commit=state.base_commit,
             max_fixup_attempts=0,
             test_lanes=native_lanes(state),
+            issue_number=state.issue_number,
         )
     except LocalCIVerificationError as error:
         if not error.result.commands:
             return [handoff.Failure(f"pre-publication gate {error.result.failure_gate}", str(error))]
         failed: CommandRecord = error.result.commands[-1]
+        # A lane's outage is no fix request either (§AR-forge-workflow-pipeline.4.1).
+        require_reachable(reproduction_command(failed), failed.output_excerpt)
         return [handoff.Failure(reproduction_command(failed), failed.output_excerpt)]
     state.local_ci = verification.to_metrics()
     return []

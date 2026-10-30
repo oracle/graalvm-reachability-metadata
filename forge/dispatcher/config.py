@@ -156,9 +156,10 @@ PUBLICATION_METRICS_EXTRA_KEYS: tuple[str, ...] = (
 # by default. The only exception is an external dependency failure, which surfaces
 # as a typed exception at the Python boundary that issues it: GitHub (`gh`) as
 # `GitHubError` / `GitHubRateLimitExceeded`, remote git as `GitTransportError`, and
-# a Gradle build that never left configuration as `GradleBootstrapFailure`.
-# Maven Central and Docker registry failures have no such boundary (Gradle owns
-# them inside `./gradlew test`); they fall through to the safe logical default.
+# a Gradle build that never left configuration as `GradleBootstrapFailure`. A
+# run's Gradle builds raise `RepositoryUnreachable` on a repository that failed;
+# Docker registry failures have no such boundary and fall through to the safe
+# logical default.
 # §FS-human-intervention-policy
 NOT_FOR_NATIVE_IMAGE_LABEL_COLOR = "5319E7"
 NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION = (

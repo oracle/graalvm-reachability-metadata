@@ -8,7 +8,7 @@
 The launcher only finds and claims work: the live claimability check, the
 optimistic claim, and the issue-form gate are the dispatcher's, unchanged
 (§FS-forge-run-requirements.2, §FS-forge-run-requirements.3), and every
-decision about the issue is the run's (§AR-forge-workflow-pipeline.1).
+decision about the issue is the run's (§AR-forge-launcher.1).
 """
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ from dispatcher.claim_preflight import refresh_issue_payload_for_claim
 from dispatcher.config import LABEL_HUMAN_INTERVENTION
 from dispatcher.github_api import format_github_exception_details
 from dispatcher.issue_admin import add_issue_label, post_issue_comment
-from dispatcher.issue_claiming import revert_issue_claim, try_claim_issue
+from dispatcher.issue_claiming import release_closed_issue_claim, revert_issue_claim, try_claim_issue
 from dispatcher.issue_form import check_issue_form, reject_issue_form
 from dispatcher.rhei_workspace import (EVENTS, NO_ADVANCE, NO_ADVANCE_LIMIT, budget_halted, count_no_advance,
                                        current_state, file_stamp, halt_message, run_events,
@@ -142,7 +142,7 @@ def workspace_path(forge_dir: str, issue_number: int) -> str:
     """The attempt to run: the latest one while it is unfinished, else a new one.
 
     Rhei keys a workspace's budget ledger by its path, so a finished attempt's
-    path is never reused (§AR-forge-workflow-pipeline.1).
+    path is never reused (§AR-forge-launcher.1).
     """
     found: list[str] = attempts(forge_dir, issue_number)
     if found and not os.path.isfile(os.path.join(found[-1], OUTCOME)):
@@ -275,7 +275,7 @@ def record_outcome(workspace: str) -> dict[str, Any]:
     """The run's terminal outcome, recording an infrastructure failure when it never reached one.
 
     A halted run is finished: Rhei never re-runs a state whose attempts are spent
-    (§AR-forge-workflow-pipeline.1).
+    (§AR-forge-launcher.1).
     """
     path: str = os.path.join(workspace, OUTCOME)
     if not os.path.isfile(path):
@@ -295,7 +295,7 @@ def finish_run(repo: str, started: Started) -> dict[str, Any]:
     whose launcher died never gets here, and neither a budget halt nor the first
     no-advance halt finished anything: they keep their worktree, so a later claim
     resumes them. The second no-advance halt in a row holds the attempt; a budget
-    halt leaves the count as it was (§AR-forge-workflow-pipeline.1).
+    halt leaves the count as it was (§AR-forge-launcher.1).
     """
     count: str = os.path.join(started.workspace, NO_ADVANCE)
     attempt: str = os.path.basename(started.workspace)
@@ -382,13 +382,18 @@ def hand_to_maintainer(number: int, outcome: dict[str, Any]) -> bool:
 def close_out(claimed: Claim, outcome: dict[str, Any]) -> None:
     """Apply the bookkeeping the final state implies; GitHub refusing it does not stop the launcher.
 
-    §AR-forge-workflow-pipeline.1
+    §AR-forge-launcher.1
     """
     number: int = claimed.issue["number"]
     kind: str = outcome.get("outcome", "failed")
     reason: str = outcome.get("reason", "")
     if kind == "completed":
         print(f"Issue #{number}: published; the pull request closes it.")
+        return
+    if outcome.get("kind") == "issue-closed":
+        cleared: bool = release_closed_issue_claim(number, reason)
+        print(f"Issue #{number}: closed after the claim; dropped"
+              f"{'' if cleared else ', its Forge assignee not cleared'}.", file=sys.stderr)
         return
     needs_human: bool = kind in ("human-intervention", "nothing-to-publish") or outcome.get("kind") == "bad-input"
     if needs_human and not hand_to_maintainer(number, outcome):
