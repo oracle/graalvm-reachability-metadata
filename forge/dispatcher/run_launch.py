@@ -232,7 +232,7 @@ def intervention_comment(outcome: dict[str, Any]) -> str:
                         f"Forge could not finish this issue: {outcome.get('reason', '')}."]
     if outcome.get("detail"):
         # The output a bad input was read from (§FS-forge-run-requirements.2).
-        lines += ["", "```text", outcome["detail"], "```"]
+        lines += ["", *fenced(outcome["detail"])]
     if outcome.get("sender"):
         lines += ["", f"Stopped in `{outcome['sender']}`."]
     for failure in outcome.get("failures", []):

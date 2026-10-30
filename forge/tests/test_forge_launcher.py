@@ -231,6 +231,13 @@ class CloseOutTest(unittest.TestCase):
             "```text\n> Could not find org.example:missing:1.0.\n```\n",
             comments[0].args[1])
 
+    def test_a_bad_input_detail_with_a_fence_cannot_close_its_own(self) -> None:
+        # §AR-forge-workflow-pipeline.1
+        _, comments, _ = self.close_out({
+            "outcome": "failed", "kind": "bad-input", "reason": "jvm: bad input: x",
+            "detail": "> ```\n> @Test fails"})
+        self.assertTrue(comments[0].args[1].endswith("````text\n> ```\n> @Test fails\n````\n"))
+
     def test_infrastructure_failure_only_releases_the_claim(self) -> None:
         # External and transient failures take no issue action (§FS-human-intervention-policy).
         labels, comments, reverts = self.close_out({"outcome": "failed", "kind": "infrastructure", "reason": "x"})
