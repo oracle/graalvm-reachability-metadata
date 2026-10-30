@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import javax.net.ssl.SSLEngine;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +21,7 @@ public class BouncyCastleAlpnSslUtilsAnonymous1Test {
     @Test
     void advertisesTheConfiguredApplicationProtocol() throws Exception {
         SslContext context = TlsTestSupport.context(false,
-                new BouncyCastleJsseProvider(new BouncyCastleProvider()), SslProvider.JDK, "h2");
+                new BouncyCastleJsseProvider(), SslProvider.JDK, "h2");
         SSLEngine engine = context.newEngine(ByteBufAllocator.DEFAULT);
         assertArrayEquals(new String[] {"h2"}, engine.getSSLParameters().getApplicationProtocols());
         engine.closeOutbound();

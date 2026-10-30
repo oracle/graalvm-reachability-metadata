@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.net.ssl.SSLEngine;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +23,7 @@ public class BouncyCastleAlpnSslUtilsAnonymous5Test {
     @Test
     void declinesProtocolsNotSupportedByTheServer() throws Exception {
         SslContext context = TlsTestSupport.context(true,
-                new BouncyCastleJsseProvider(new BouncyCastleProvider()), SslProvider.JDK, "h2");
+                new BouncyCastleJsseProvider(), SslProvider.JDK, "h2");
         SSLEngine engine = context.newEngine(ByteBufAllocator.DEFAULT);
         assertEquals("", engine.getHandshakeApplicationProtocolSelector().apply(engine, List.of("unknown")));
         engine.closeOutbound();

@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import javax.net.ssl.SSLEngine;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +22,7 @@ public class BouncyCastleAlpnSslUtilsAnonymous2Test {
     @Test
     void preservesClientProtocolPreferenceBeforeNegotiation() throws Exception {
         SslContext context = TlsTestSupport.context(false,
-                new BouncyCastleJsseProvider(new BouncyCastleProvider()), SslProvider.JDK, "h2", "http/1.1");
+                new BouncyCastleJsseProvider(), SslProvider.JDK, "h2", "http/1.1");
         SSLEngine engine = context.newEngine(ByteBufAllocator.DEFAULT);
         assertArrayEquals(new String[] {"h2", "http/1.1"}, engine.getSSLParameters().getApplicationProtocols());
         assertNull(engine.getApplicationProtocol());

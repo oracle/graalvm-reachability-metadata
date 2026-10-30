@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.security.Provider;
+import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
 
 import io.grpc.CallOptions;
@@ -41,12 +41,14 @@ final class TlsTestSupport {
 
     static SslContext context(boolean server, Provider provider, SslProvider sslProvider, String... protocols)
             throws Exception {
-        try (InputStream cert = resource("server-cert.pem"); InputStream key = resource("server-key.pem")) {
+        try (InputStream cert = certificate(); InputStream key = privateKey()) {
             SslContextBuilder builder = server ? SslContextBuilder.forServer(cert, key)
                     : SslContextBuilder.forClient().trustManager(cert);
             builder.sslProvider(sslProvider);
             if (provider != null) {
-                builder.sslContextProvider(provider);
+                // Netty itself runs Bouncy Castle JSSE on the JDK's crypto providers. There it needs a
+                // SecureRandom, and TLS 1.2: it offers no RSA-PSS signature for this RSA certificate.
+                builder.sslContextProvider(provider).secureRandom(new SecureRandom()).protocols("TLSv1.2");
             }
             return builder.applicationProtocolConfig(new ApplicationProtocolConfig(
                     ApplicationProtocolConfig.Protocol.ALPN,
@@ -57,9 +59,11 @@ final class TlsTestSupport {
 
     static void exchange(boolean bouncyCastle, SslProvider sslProvider, String protocol, String message)
             throws Exception {
-        Provider provider = bouncyCastle ? new BouncyCastleJsseProvider(new BouncyCastleProvider()) : null;
-        SslContext serverContext = context(true, provider, sslProvider, protocol, "http/1.1");
-        SslContext clientContext = context(false, provider, sslProvider, protocol);
+        // On the JDK's crypto providers a Bouncy Castle JSSE server selects no credentials for this RSA key,
+        // so Bouncy Castle negotiates as the client.
+        Provider clientProvider = bouncyCastle ? new BouncyCastleJsseProvider() : null;
+        SslContext serverContext = context(true, null, sslProvider, protocol, "http/1.1");
+        SslContext clientContext = context(false, clientProvider, sslProvider, protocol);
         SslHandler serverHandler = serverContext.newHandler(ByteBufAllocator.DEFAULT);
         SslHandler clientHandler = clientContext.newHandler(ByteBufAllocator.DEFAULT, "localhost", 443);
         serverHandler.setHandshakeTimeout(30, TimeUnit.SECONDS);
@@ -103,10 +107,10 @@ final class TlsTestSupport {
     static void grpcExchange(String message, CallOptions options) throws Exception {
         SslContext serverContext;
         SslContext clientContext;
-        try (InputStream cert = resource("server-cert.pem"); InputStream key = resource("server-key.pem")) {
+        try (InputStream cert = certificate(); InputStream key = privateKey()) {
             serverContext = GrpcSslContexts.configure(SslContextBuilder.forServer(cert, key), SslProvider.JDK).build();
         }
-        try (InputStream cert = resource("server-cert.pem")) {
+        try (InputStream cert = certificate()) {
             clientContext = GrpcSslContexts.configure(SslContextBuilder.forClient().trustManager(cert),
                     SslProvider.JDK).build();
         }
@@ -134,8 +138,16 @@ final class TlsTestSupport {
         destination.checkException();
     }
 
-    private static InputStream resource(String name) {
-        InputStream stream = TlsTestSupport.class.getResourceAsStream("/tls/" + name);
+    // Literal resource names let Native Image register the PEM files at build time.
+    private static InputStream certificate() {
+        return present(TlsTestSupport.class.getResourceAsStream("/tls/server-cert.pem"));
+    }
+
+    private static InputStream privateKey() {
+        return present(TlsTestSupport.class.getResourceAsStream("/tls/server-key.pem"));
+    }
+
+    private static InputStream present(InputStream stream) {
         assertNotNull(stream);
         return stream;
     }
