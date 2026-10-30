@@ -6,11 +6,33 @@
  */
 package org_springframework_retry.spring_retry;
 
-import org.junit.jupiter.api.Test;
+import java.util.concurrent.atomic.AtomicInteger;
 
-class Spring_retryTest {
+import org.junit.jupiter.api.Test;
+import org.springframework.retry.support.RetryTemplate;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Spring_retryTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void retriesTransientFailuresAndReturnsTheSuccessfulResult() {
+        RetryTemplate template = RetryTemplate.builder()
+                .maxAttempts(3)
+                .noBackoff()
+                .retryOn(IllegalStateException.class)
+                .build();
+        AtomicInteger attempts = new AtomicInteger();
+
+        String result = template.execute(context -> {
+            int attempt = attempts.incrementAndGet();
+            assertThat(context.getRetryCount()).isEqualTo(attempt - 1);
+            if (attempt < 3) {
+                throw new IllegalStateException("Service temporarily unavailable");
+            }
+            return "invoice-42";
+        });
+
+        assertThat(result).isEqualTo("invoice-42");
+        assertThat(attempts.get()).isEqualTo(3);
     }
 }
