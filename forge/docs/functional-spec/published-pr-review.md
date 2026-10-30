@@ -79,7 +79,9 @@ The agent approves, arms auto-merge, reruns jobs, and pushes with `gh` and `git`
 itself. It does not label, comment, or open issues: it reports its outcome and,
 for an issue, the issue's title, body, and signature, and the program confirms
 the outcome, files the issue, and sets the labels and markers. The agent takes
-the first case below that applies.
+the first case below that applies, in this order: all green, then a failure the
+merge base caused (§FS-published-pr-review.4.7), then the cases from
+§FS-published-pr-review.4.2 on.
 
 ### 4.1 All green
 
@@ -92,13 +94,16 @@ offered only when the program read every check as passed.
 
 ### 4.2 Infrastructure failure
 
-Every failing job died of something the change cannot have caused: the network,
-the runner, Gradle plugin resolution, a Docker pull, or a cancellation. The
-agent reruns the failed jobs of each such run: `gh run rerun <run-id> --failed`.
-This case is checked before every other failure, Spring AOT included. A
-connection error is transient only when nothing in its stack points at Native
-Image: a channel that cannot be created reflectively, or a class initializer that
-fails, is a metadata miss that looks like the network.
+Every failing job died of something a fresh run of the same merge commit could
+pass: the network, the runner, Gradle plugin resolution, a Docker pull, or a
+cancellation. The agent reruns the failed jobs of each such run:
+`gh run rerun <run-id> --failed`. A failure the merge commit itself carries is
+not one of these, even when the change cannot have caused it: a rerun replays
+that commit, so a failure `master` caused there is §FS-published-pr-review.4.7.
+This case is checked right after that one and before every other failure,
+Spring AOT included. A connection error is transient only when nothing in its
+stack points at Native Image: a channel that cannot be created reflectively, or
+a class initializer that fails, is a metadata miss that looks like the network.
 
 ### 4.3 A library test lane failed
 
@@ -153,6 +158,27 @@ a GraalVM defect, the issue names the signal it saw: the review cannot file the
 `oracle/graal` issue or the `GR-<n>` ticket, and the issue is what a maintainer
 files them from before declaring the pull request
 (§root/FS-graalvm-blocked-work.1).
+
+### 4.7 A failure the merge base caused
+
+CI tests a pull request on GitHub's merge commit of its head into `master` as
+`master` stood when the run's event fired. This case applies when every failing
+job fails because of that `master`, and current `origin/master` no longer has
+the failure: the failing job's test passes on current `origin/master`, or the
+failing check's cause is absent from it. It is checked right after all green,
+before §FS-published-pr-review.4.2. The agent merges `origin/master` into the
+head and pushes the merge: a new head gets a new merge commit, so its checks run
+on the `master` that no longer fails.
+
+The outcome is never a rerun: GitHub reruns a `pull_request` workflow on the
+original event's merge commit, so a rerun replays the old `master` and cannot
+pass, and it still spends a CI round, a review pass, and the head's one rerun.
+It is never an issue either: the change is sound, an issue would hold it as
+`human-intervention` for a break `master` has already fixed, and an issue that
+tracks that break holds every later pull request it is reused for, long after
+the fix. The merge is one of the pull request's two fix pushes
+(§FS-published-pr-review.5), so past that bound the outcome is an issue, as in
+every other case.
 
 ## 5. Outcomes, labels, and bounds
 
