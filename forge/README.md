@@ -24,7 +24,7 @@ label. A terminal outcome adds `reviewed`, so the pull request is not reviewed
 again. `python3 forge_metadata.py --review --dry-run --pr <n> [--head <sha>]`
 replays the review of one pull request, open or closed, and writes nothing on
 GitHub.
-§AR-forge-workflow-pipeline.1 §FS-published-pr-review
+§AR-forge-launcher.1 §FS-published-pr-review
 
 ```console
 ./run-forge.sh [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET]
@@ -43,7 +43,7 @@ OpenCode are not supported.
 Without `--label`, every cycle fetches every queue. Each `--label LABEL[:COUNT]`
 gives its queue COUNT runs in a row, one by default, and the queues take turns
 in the order given; one with nothing to claim passes its turn to the next
-(§AR-forge-workflow-pipeline.1). This serves two new-library requests, one
+(§AR-forge-launcher.1). This serves two new-library requests, one
 update request, and one `fails-java-run` issue, then starts over:
 
 ```console
@@ -90,7 +90,7 @@ workspace's `runtime/forge/interrupted/` first, because Rhei refuses to spawn
 over it. A resume that runs no state is retried once, by a later claim; a
 second in a row ends the attempt in `human-intervention`, with Rhei's halt
 message in the comment and its work kept at its held ref.
-§AR-forge-workflow-pipeline.1
+§AR-forge-launcher.1
 
 ## Setup
 

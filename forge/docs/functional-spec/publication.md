@@ -433,7 +433,7 @@ reports nothing within the rules can help — publishes nothing and labels the
 issue with the reason, which includes the step's own explanation: the failing
 check's error and the fix's account of why it stopped. That explanation is
 agent or tool text, so the comment quotes it, bounded in length, where it can
-neither cite nor mention anyone (§AR-forge-workflow-pipeline.1). On a
+neither cite nor mention anyone (§AR-forge-launcher.1). On a
 published pull request the label comes from the review of
 §FS-published-pr-review, or from a descriptor that still carries an older
 pre-push verdict of `rejected` with

@@ -42,6 +42,7 @@ whether a document describes structure or behavior.
 - [functional-spec/functional-spec.md](functional-spec/functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
 - [architecture/architecture.md](architecture/architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
 - [architecture/workflow-pipeline.md](architecture/workflow-pipeline.md) — `AR-forge-workflow-pipeline`: the Rhei state machine of one issue run.
+- [architecture/launcher.md](architecture/launcher.md) — `AR-forge-launcher`: the launcher loop that starts one issue run, and the programs' exit codes.
 - [architecture/workflow-prompts.md](architecture/workflow-prompts.md) — `AR-forge-workflow-prompts`: what each agent state is told.
 - [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its backend adapters.
 - [architecture/dispatcher-package.md](architecture/dispatcher-package.md) — `AR-forge-dispatcher-decomposition`: the launcher's GitHub side.

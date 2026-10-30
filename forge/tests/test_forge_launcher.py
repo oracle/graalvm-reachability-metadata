@@ -5,7 +5,7 @@
 
 """Tests for the launcher: fetch, targets, close-out, and the review's entry.
 
-§AR-forge-workflow-pipeline.1 fixes the fetch and the close-out, whose comment
+§AR-forge-launcher.1 fixes the fetch and the close-out, whose comment
 carries the diagnostics of §FS-human-intervention-policy, and
 §FS-published-pr-review the review and its agent target.
 """
@@ -239,7 +239,7 @@ class CloseOutTest(unittest.TestCase):
             comments[0].args[1])
 
     def test_a_bad_input_detail_with_a_fence_cannot_close_its_own(self) -> None:
-        # §AR-forge-workflow-pipeline.1
+        # §AR-forge-launcher.1
         _, comments, _ = self.close_out({
             "outcome": "failed", "kind": "bad-input", "reason": "jvm: bad input: x",
             "detail": "> ```\n> @Test fails"})
@@ -334,7 +334,7 @@ class WorkspaceTest(unittest.TestCase):
 
 
 class ReleaseTest(unittest.TestCase):
-    """A finished attempt gives up its worktree and Gradle home (§AR-forge-workflow-pipeline.1).
+    """A finished attempt gives up its worktree and Gradle home (§AR-forge-launcher.1).
 
     §FS-forge-run-requirements.4
     """
