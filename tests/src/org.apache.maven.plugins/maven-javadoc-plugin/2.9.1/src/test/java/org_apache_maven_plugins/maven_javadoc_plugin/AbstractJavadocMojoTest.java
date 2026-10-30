@@ -9,12 +9,22 @@ package org_apache_maven_plugins.maven_javadoc_plugin;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.repository.DefaultArtifactRepository;
+import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.javadoc.JavadocReport;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
@@ -24,10 +34,106 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class AbstractJavadocMojoTest {
     @TempDir
     Path directory;
+
+    @Test
+    @Timeout(120)
+    void requiresALocalRepositoryDirectoryForReactorDocumentation() throws Exception {
+        Path sources = Files.createDirectories(directory.resolve("application/src/main/java/example"));
+        Files.writeString(sources.resolve("Application.java"), """
+                package example;
+                /** The application entry point. */
+                public class Application { }
+                """);
+        Model model = new Model();
+        model.setGroupId("example");
+        model.setArtifactId("application");
+        model.setVersion("1");
+        Build build = new Build();
+        build.setDirectory(directory.resolve("application/target").toString());
+        build.setOutputDirectory(directory.resolve("application/target/classes").toString());
+        model.setBuild(build);
+        MavenProject project = new MavenProject(model);
+        project.setFile(directory.resolve("application/pom.xml").toFile());
+        project.addCompileSourceRoot(sources.getParent().toString());
+
+        Artifact dependency = new DefaultArtifact("example", "component", VersionRange.createFromVersion("1"),
+                "compile", "jar", null, new DefaultArtifactHandler("jar"));
+        project.setDependencyArtifacts(Set.of(dependency));
+        Model moduleModel = new Model();
+        moduleModel.setGroupId("example");
+        moduleModel.setArtifactId("component");
+        moduleModel.setVersion("1");
+        moduleModel.setUrl("https://example.invalid/component");
+        MavenProject module = new MavenProject(moduleModel);
+        module.setArtifact(dependency);
+        Path moduleDirectory = Files.createDirectories(directory.resolve("component"));
+        Path modulePom = Files.writeString(moduleDirectory.resolve("pom.xml"), """
+                <project>
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>example</groupId>
+                  <artifactId>component</artifactId>
+                  <version>1</version>
+                </project>
+                """);
+        module.setFile(modulePom.toFile());
+        Path repositoryDirectory = directory.resolve("missing-local-repository");
+        ArtifactRepository repository = new DefaultArtifactRepository("local",
+                repositoryDirectory.toUri().toString(), new DefaultRepositoryLayout());
+
+        JavadocReport report = new JavadocReport();
+        GoalLog log = new GoalLog();
+        report.setLog(log);
+        XmlPlexusConfiguration configuration = new XmlPlexusConfiguration("configuration");
+        ((XmlPlexusConfiguration) configuration.getChild("project")).setValue("${project}");
+        ((XmlPlexusConfiguration) configuration.getChild("reactorProjects")).setValue("${reactorProjects}");
+        ((XmlPlexusConfiguration) configuration.getChild("localRepository")).setValue("${localRepository}");
+        ((XmlPlexusConfiguration) configuration.getChild("detectOfflineLinks")).setValue("true");
+        ((XmlPlexusConfiguration) configuration.getChild("stylesheet")).setValue("maven");
+        ((XmlPlexusConfiguration) configuration.getChild("encoding")).setValue("UTF-8");
+        ((XmlPlexusConfiguration) configuration.getChild("docencoding")).setValue("UTF-8");
+        ((XmlPlexusConfiguration) configuration.getChild("failOnError")).setValue("true");
+        ((XmlPlexusConfiguration) configuration.getChild("javadocOptionsDir"))
+                .setValue(directory.resolve("application/options").toString());
+        ExpressionEvaluator evaluator = new ExpressionEvaluator() {
+            @Override
+            public Object evaluate(String expression) {
+                return switch (expression) {
+                    case "${project}" -> project;
+                    case "${reactorProjects}" -> List.of(module);
+                    case "${localRepository}" -> repository;
+                    default -> expression;
+                };
+            }
+
+            @Override
+            public File alignToBaseDirectory(File file) {
+                return file.isAbsolute() ? file : directory.resolve(file.getPath()).toFile();
+            }
+        };
+        new BasicComponentConfigurator().configureComponent(report, configuration, evaluator, null);
+        report.setDestDir("apidocs");
+        report.setReportOutputDirectory(directory.resolve("application/target/apidocs").toFile());
+
+        assertThatIllegalArgumentException().isThrownBy(() -> report.generate(null, Locale.ENGLISH))
+                .withMessage("localRepositoryDir '" + repositoryDirectory + "' should be a directory.");
+        assertThat(log.output.toString()).containsPattern(
+                "The goal 'org\\.apache\\.maven\\.plugins:maven-javadoc-plugin:[^:']+:javadoc'"
+                        + " has not been previously called for the module: 'example:component:jar:1'");
+    }
+
+    private static final class GoalLog extends SystemStreamLog {
+        private final StringBuilder output = new StringBuilder();
+
+        @Override
+        public void info(CharSequence message) {
+            output.append(message).append('\n');
+        }
+    }
 
     @Test
     @Timeout(120)
