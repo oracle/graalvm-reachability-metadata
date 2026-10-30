@@ -217,7 +217,7 @@ not gate the scheduled release (§AR-create-scheduled-release).
 ### AR-verify-new-library-version-compatibility: Verify new library version compatibility
 
 Every day (`0 0 * * *`) and on manual dispatch. Owns the upstream-version
-tracking loop fully specified in §FS-repository-functional-spec.9
+tracking loop fully specified in §FS-library-version-update-automation
 (§GOAL-broad-version-coverage, §GOAL-fresh-metadata): it discovers newer versions
 only for libraries whose latest index entry sets `auto-update: true`, using
 `fetchExistingLibrariesWithNewerVersions`, and builds a matrix with
