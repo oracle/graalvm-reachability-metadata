@@ -16,12 +16,14 @@ import os
 import subprocess
 import unittest
 from typing import Any
+from unittest.mock import patch
 
-from support import PREVIOUS
+from support import COORDINATE, PREVIOUS
 from test_audit import FinalizedRun
 from test_workflow import trusted_publisher
 
-from exit_codes import AGENT_WORK, OK, RETURN_AUDIT  # noqa: E402
+import publish  # noqa: E402
+from exit_codes import AGENT_WORK, NOTHING_TO_DO, OK, RETURN_AUDIT  # noqa: E402
 from run_state import RunState, read_json  # noqa: E402
 
 OWNER_INDEX: str = "metadata/org.example/owner/index.json"
@@ -88,6 +90,27 @@ class PublicationScopeTest(FinalizedRun):
         self.assertIn("Fixes: #7", body)
         self.assertIn("addressing Native Image build failures", body)
         self.assertEqual(["GenAI", "fixes-native-image-build-fail"],
+                         publisher.ROUTE_LABELS[descriptor["task_type"]])
+
+    def test_a_deferred_native_image_run_repair_unblocks_its_follow_up(self) -> None:
+        # A repair above the boundary parks its follow-up (§FS-forge-chunked-dynamic-access).
+        self.repaired("fails-native-image-run")
+        # 16 classes, each a quarter covered by `CodecTest`: above 15, below 1.5.0's goal.
+        self.fake.control({"classes": {f"org.example.p{n}.Codec": 4 for n in range(16)}})
+        self.assertEqual(NOTHING_TO_DO, self.step("analyze"))
+        with patch.object(publish, "ensure_coverage_follow_up_issue", return_value=99) as follow_up:
+            descriptor: dict[str, Any] = self.published()
+        self.assertEqual((COORDINATE, 7, 16, 15), tuple(follow_up.call_args.kwargs[key] for key in (
+            "coordinate", "repair_issue_number", "uncovered_class_count", "class_threshold")))
+        self.assertEqual([{"type": "deferred_dynamic_access_coverage", "coordinate": COORDINATE,
+                           "uncovered_class_count": 16, "class_threshold": 15, "issue_number": 99}],
+                         descriptor["follow_ups"])
+        publisher: Any = trusted_publisher()
+        title, body = publisher.render_publication(descriptor)
+        self.assertTrue(title.startswith("[GenAI] Test fix for org.example:lib:2.0.0 using "))
+        # The trailer is what releases the parked issue once the repair merges (§AR-pr-body.3).
+        self.assertIn("Refs: #99\nForge-Unblocks-Issue: #99\n", body)
+        self.assertEqual(["GenAI", "fixes-native-image-run-fail"],
                          publisher.ROUTE_LABELS[descriptor["task_type"]])
 
     def test_an_update_of_an_owned_version_is_compared_with_its_pinned_base_state(self) -> None:
