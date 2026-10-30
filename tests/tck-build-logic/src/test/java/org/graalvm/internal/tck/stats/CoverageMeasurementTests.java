@@ -14,13 +14,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LibraryStatsSupportTests {
+class CoverageMeasurementTests {
 
     @TempDir
     Path tempDir;
@@ -82,7 +81,7 @@ class LibraryStatsSupportTests {
                 StandardCharsets.UTF_8
         );
 
-        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStats(
+        LibraryStatsModels.VersionStats versionStats = CoverageMeasurement.buildVersionStats(
                 "com.example:demo:1.0.0",
                 List.of(libraryJar),
                 dynamicAccessDir,
@@ -126,7 +125,7 @@ class LibraryStatsSupportTests {
                 StandardCharsets.UTF_8
         );
 
-        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStats(
+        LibraryStatsModels.VersionStats versionStats = CoverageMeasurement.buildVersionStats(
                 "com.example:demo:1.0.0",
                 List.of(libraryJar),
                 missingDynamicAccessDir,
@@ -143,7 +142,7 @@ class LibraryStatsSupportTests {
     void buildVersionStatsTreatsLibrariesWithoutClassFilesAsEmptyDynamicAccess() throws IOException {
         Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("META-INF/MANIFEST.MF"));
 
-        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStats(
+        LibraryStatsModels.VersionStats versionStats = CoverageMeasurement.buildVersionStats(
                 "com.example:demo:1.0.0",
                 List.of(libraryJar),
                 tempDir.resolve("dynamic-access-missing"),
@@ -175,7 +174,7 @@ class LibraryStatsSupportTests {
                 StandardCharsets.UTF_8
         );
 
-        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(
+        LibraryStatsModels.VersionStats versionStats = CoverageMeasurement.buildVersionStatsWithoutDynamicAccess(
                 "com.example:demo:1.0.0",
                 jacocoReport
         );
@@ -232,7 +231,7 @@ class LibraryStatsSupportTests {
                 StandardCharsets.UTF_8
         );
 
-        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStats(
+        LibraryStatsModels.VersionStats versionStats = CoverageMeasurement.buildVersionStats(
                 "com.example:demo:1.0.0",
                 List.of(libraryJar),
                 dynamicAccessDir,
@@ -269,7 +268,7 @@ class LibraryStatsSupportTests {
                 StandardCharsets.UTF_8
         );
 
-        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(
+        LibraryStatsModels.VersionStats versionStats = CoverageMeasurement.buildVersionStatsWithoutDynamicAccess(
                 "com.example:demo:1.0.0",
                 jacocoReport
         );
@@ -347,7 +346,7 @@ class LibraryStatsSupportTests {
                 StandardCharsets.UTF_8
         );
 
-        LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
+        LibraryStatsModels.DynamicAccessCoverageReport report = CoverageMeasurement.buildDynamicAccessCoverageReport(
                 "com.example:demo:1.0.0",
                 List.of(libraryJar),
                 dynamicAccessDir,
@@ -377,108 +376,6 @@ class LibraryStatsSupportTests {
     }
 
     @Test
-    void agentOriginsMatchDelegatedApiToNearestReportedCaller() throws IOException {
-        Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Bar.class"));
-        Path dynamicAccessDir = tempDir.resolve("dynamic-access");
-        Files.createDirectories(dynamicAccessDir.resolve("demo"));
-        Files.writeString(
-                dynamicAccessDir.resolve("demo").resolve("resource-calls.json"),
-                """
-                {
-                  "java.lang.Class#getResource(java.lang.String)": [
-                    "com.example.Bar.outer(Unknown Source)",
-                    "com.example.Bar.lookup(Unknown Source)"
-                  ],
-                  "java.lang.ClassLoader#getResource(java.lang.String)": [
-                    "com.example.Bar.lookup(Unknown Source)"
-                  ]
-                }
-                """,
-                StandardCharsets.UTF_8
-        );
-
-        Path originsFile = tempDir.resolve("reachability-metadata-origins.txt");
-        Files.writeString(
-                originsFile,
-                """
-                {
-                  "resources": root
-                  └── com.example.Bar#outer()
-                      └── com.example.Bar#lookup()
-                          └── java.lang.Class#getResource(java.lang.String)
-                              └── java.lang.ClassLoader#getResource(java.lang.String)
-                                  └── jdk.internal.loader.BuiltinClassLoader#findResource(java.lang.String,java.lang.String) - [{"glob":"demo"}]
-                }
-                """,
-                StandardCharsets.UTF_8
-        );
-
-        Set<LibraryStatsSupport.AgentCoveredCallSite> coveredCallSites = LibraryStatsSupport.parseAgentOrigins(originsFile, dynamicAccessDir);
-
-        assertThat(coveredCallSites).containsExactly(new LibraryStatsSupport.AgentCoveredCallSite(
-                "java.lang.Class#getResource(java.lang.String)",
-                "com.example.Bar",
-                "lookup"
-        ));
-
-        LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
-                "com.example:demo:1.0.0",
-                List.of(libraryJar),
-                dynamicAccessDir,
-                createJacocoReportWithoutLines(tempDir.resolve("jacoco.xml")),
-                coveredCallSites
-        );
-
-        assertThat(report.totals().totalCalls()).isEqualTo(3);
-        assertThat(report.totals().coveredCalls()).isEqualTo(1);
-        assertThat(report.classes().getFirst().callSites())
-                .filteredOn(LibraryStatsModels.DynamicAccessCallSiteCoverage::covered)
-                .extracting(LibraryStatsModels.DynamicAccessCallSiteCoverage::trackedApi)
-                .containsExactly("java.lang.Class#getResource(java.lang.String)");
-        assertThat(report.classes().getFirst().callSites())
-                .filteredOn(LibraryStatsModels.DynamicAccessCallSiteCoverage::covered)
-                .extracting(LibraryStatsModels.DynamicAccessCallSiteCoverage::frame)
-                .containsExactly("com.example.Bar.lookup(Unknown Source)");
-    }
-
-    @Test
-    void agentOriginsNormalizeTrackedApiParameterSpacing() throws IOException {
-        Path dynamicAccessDir = tempDir.resolve("dynamic-access");
-        Files.createDirectories(dynamicAccessDir.resolve("demo"));
-        Files.writeString(
-                dynamicAccessDir.resolve("demo").resolve("reflection-calls.json"),
-                """
-                {
-                  "java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[])": [
-                    "com.example.Foo.invoke(Unknown Source)"
-                  ]
-                }
-                """,
-                StandardCharsets.UTF_8
-        );
-        Path originsFile = tempDir.resolve("reachability-metadata-origins.txt");
-        Files.writeString(
-                originsFile,
-                """
-                {
-                  "reflection": root
-                  └── com.example.Foo#invoke()
-                      └── java.lang.reflect.Method#invoke(java.lang.Object,java.lang.Object[]) - [{"type":"com.example.Target"}]
-                }
-                """,
-                StandardCharsets.UTF_8
-        );
-
-        Set<LibraryStatsSupport.AgentCoveredCallSite> coveredCallSites = LibraryStatsSupport.parseAgentOrigins(originsFile, dynamicAccessDir);
-
-        assertThat(coveredCallSites).containsExactly(new LibraryStatsSupport.AgentCoveredCallSite(
-                "java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[])",
-                "com.example.Foo",
-                "invoke"
-        ));
-    }
-
-    @Test
     void buildDynamicAccessCoverageReportReturnsEmptyClassesWhenDynamicAccessDirectoryIsMissing() throws IOException {
         Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Foo.class"));
 
@@ -498,7 +395,7 @@ class LibraryStatsSupportTests {
                 StandardCharsets.UTF_8
         );
 
-        LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
+        LibraryStatsModels.DynamicAccessCoverageReport report = CoverageMeasurement.buildDynamicAccessCoverageReport(
                 "com.example:demo:1.0.0",
                 List.of(libraryJar),
                 missingDynamicAccessDir,
@@ -515,7 +412,7 @@ class LibraryStatsSupportTests {
     void buildDynamicAccessCoverageReportAllowsLibrariesWithoutClassFiles() throws IOException {
         Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("META-INF/MANIFEST.MF"));
 
-        LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
+        LibraryStatsModels.DynamicAccessCoverageReport report = CoverageMeasurement.buildDynamicAccessCoverageReport(
                 "com.example:demo:1.0.0",
                 List.of(libraryJar),
                 tempDir.resolve("dynamic-access-missing"),
@@ -529,7 +426,7 @@ class LibraryStatsSupportTests {
         assertThat(report.classes()).isEmpty();
     }
 
-    private Path createLibraryJar(Path jarPath, List<String> entries) throws IOException {
+    static Path createLibraryJar(Path jarPath, List<String> entries) throws IOException {
         try (JarOutputStream jarOutputStream = new JarOutputStream(Files.newOutputStream(jarPath))) {
             for (String entry : entries) {
                 jarOutputStream.putNextEntry(new JarEntry(entry));
@@ -538,20 +435,5 @@ class LibraryStatsSupportTests {
             }
         }
         return jarPath;
-    }
-
-    private Path createJacocoReportWithoutLines(Path reportPath) throws IOException {
-        Files.writeString(
-                reportPath,
-                """
-                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                <report name="demo">
-                  <counter type="INSTRUCTION" missed="1" covered="1"/>
-                  <counter type="METHOD" missed="1" covered="1"/>
-                </report>
-                """,
-                StandardCharsets.UTF_8
-        );
-        return reportPath;
     }
 }
