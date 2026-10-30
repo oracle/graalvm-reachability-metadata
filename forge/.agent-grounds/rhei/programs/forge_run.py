@@ -37,6 +37,7 @@ import native_check  # noqa: E402
 import prepare  # noqa: E402
 import publish  # noqa: E402
 import setup_check  # noqa: E402
+from build_tools import RepositoryUnreachable  # noqa: E402
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
@@ -94,6 +95,9 @@ def outcome(step: str, code: int, bad_input: BadInput | None = None) -> dict[str
     """
     if step == "audit" and code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": "the audit's edit fails the checks it reran"}
+    if step == "analyze" and code == STILL_FAILING:
+        # No fix can follow it (§AR-forge-workflow-pipeline.4.5).
+        return {"outcome": "human-intervention", "reason": "the first coverage report fails before any cover pass"}
     if code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": f"{step} still fails after its fix"}
     if step == "fix-route" and code == CANNOT_FIX:
@@ -164,6 +168,11 @@ def main(argv: list[str] | None = None) -> int:
     except BadInput as raised:
         print(f"ERROR: {raised}", file=sys.stderr)
         bad_input, code = raised, BAD_INPUT
+    except RepositoryUnreachable as outage:
+        # External: no fix request and no issue action, so a later cycle retries
+        # (§FS-human-intervention-policy).
+        print(f"ERROR: {outage}", file=sys.stderr)
+        code = INFRASTRUCTURE
     except SystemExit as early_exit:
         # Shared helpers quit with `SystemExit`; the result file is owed all the same
         # (§AR-forge-workflow-pipeline.2).
