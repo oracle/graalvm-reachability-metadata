@@ -53,6 +53,11 @@ CLAUDE_TARGET: re.Pattern[str] = re.compile(r"^claude-code(?:\[([A-Za-z0-9_-]+)\
 OUTCOMES: tuple[str, ...] = ("approve", "rerun", "fix", "issue")
 SIGNATURE: str = "forge-ci-signature"
 EVIDENCE_LIMIT: int = 6000
+ISSUE_LIMIT: int = 20
+ISSUE_TITLE_LIMIT: int = 160
+SIGNED: re.Pattern[str] = re.compile(rf"<!-- {SIGNATURE}: (\S+) -->")
+# How `escalate` keys an issue: by one head, so no other review can reuse it.
+ESCALATION_KEY: re.Pattern[str] = re.compile(r"^pr-\d+-[0-9a-f]{12}-")
 FORGE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE: str = os.path.join(FORGE_DIR, "prompt_templates", "pr_review", "review.md")
 STATES: str = os.path.join(FORGE_DIR, ".agent-grounds", "rhei", "templates", "forge-metadata", "states.yaml")
@@ -66,7 +71,8 @@ DRY_RUN_ENVIRONMENT: dict[str, str] = {
 }
 DRY_RUN_NOTE: str = """
 This is a dry run. You have no GitHub credential and cannot push, so run no `gh`
-command and no `git push`; everything GitHub has to say is in the two files above.
+command and no `git push`; everything GitHub has to say is in the two files above
+and the open issues of case 6.
 Do everything else — read, reproduce, search the web, fix, and commit in this
 checkout — and answer with the outcome you would have taken. Reproduce locally only
 where the classification depends on it.
@@ -202,6 +208,34 @@ def find_issue(key: str) -> int | None:
     return next((issue["number"] for issue in issues if marker(key) in str(issue.get("body", ""))), None)
 
 
+def signature_issues() -> list[dict[str, Any]]:
+    """The open issues the agent may reuse, `graalvm-bug` ones first, at most `ISSUE_LIMIT`.
+
+    Shown to the agent so a failure one of them tracks keeps its key (§FS-published-pr-review.4).
+    """
+    issues: list[dict[str, Any]] = gh_json(
+        "issue", "list", "--repo", REPO, "--state", "open", "--search", f"\"{SIGNATURE}\" in:body",
+        "--limit", "100", "--json", "number,title,body,labels")
+    signed: list[dict[str, Any]] = []
+    for issue in issues:
+        found: re.Match[str] | None = SIGNED.search(str(issue.get("body", "")))
+        if found is not None and ESCALATION_KEY.match(found.group(1)) is None:
+            signed.append({"number": issue["number"], "signature": found.group(1),
+                           "title": " ".join(str(issue.get("title", "")).split())[:ISSUE_TITLE_LIMIT],
+                           "labels": sorted(label["name"] for label in issue.get("labels") or [])})
+    signed.sort(key=lambda issue: (LABEL_GRAALVM_BUG not in issue["labels"], -issue["number"]))
+    return signed[:ISSUE_LIMIT]
+
+
+def issue_lines(issues: list[dict[str, Any]]) -> str:
+    """The prompt's list of open signature issues, one line each."""
+    lines: list[str] = []
+    for issue in issues:
+        labels: str = "".join(f" [{name}]" for name in issue["labels"])
+        lines.append(f"- #{issue['number']} `{issue['signature']}`{labels}: {issue['title']}")
+    return "\n".join(lines) or "- None: no open issue carries a signature yet."
+
+
 def open_issue(title: str, body: str) -> int:
     url: str = gh("issue", "create", "--repo", REPO, "--title", title, "--body", body).stdout.strip()
     return int(url.rstrip("/").rsplit("/", 1)[1])
@@ -296,6 +330,7 @@ class Review:
                 checks="Every check on the head passed." if green else "Some checks on the head failed.",
                 reruns_left=reruns_left, pushes_left=pushes_left, dry_run=DRY_RUN_NOTE if self.dry_run else "",
                 approval=approval, metadata_rules=metadata_rules(), outcome=answer,
+                open_issues=issue_lines(signature_issues()),
                 did_suffix=", or would have done in this dry run" if self.dry_run else "")
 
     def act(self, pull: dict[str, Any], found: str, answer: dict[str, Any] | None, green: bool, reruns_left: int,
