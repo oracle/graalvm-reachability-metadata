@@ -6,7 +6,7 @@
  */
 package org_eclipse.osgi;
 
-import java.util.Hashtable;
+import java.util.Dictionary;
 
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FrameworkUtilInnerFilterImplTest {
     @Test
     public void matchesComparableAndApplicationDefinedProperties() throws Exception {
-        Hashtable<String, Object> properties = new Hashtable<>();
+        Dictionary<String, Object> properties = new MapDictionary<>();
         properties.put("revision", new Version("2.4.0"));
         properties.put("label", new FilterValues.Label("release"));
 

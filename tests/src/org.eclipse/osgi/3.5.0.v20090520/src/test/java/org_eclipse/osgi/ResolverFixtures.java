@@ -6,7 +6,7 @@
  */
 package org_eclipse.osgi;
 
-import java.util.Hashtable;
+import java.util.Dictionary;
 
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.State;
@@ -21,7 +21,7 @@ final class ResolverFixtures {
     static State state() throws BundleException {
         StateObjectFactory factory = StateObjectFactory.defaultFactory;
         State state = factory.createState(false);
-        Hashtable<String, String> manifest = new Hashtable<>();
+        Dictionary<String, String> manifest = new MapDictionary<>();
         manifest.put(Constants.BUNDLE_MANIFESTVERSION, "2");
         manifest.put(Constants.BUNDLE_SYMBOLICNAME, "example.catalog");
         manifest.put(Constants.EXPORT_PACKAGE,
