@@ -84,13 +84,18 @@ start a fresh attempt from a new base, leaves it alone. List the held refs with
 `git update-ref -d <ref>`.
 §FS-human-intervention-policy
 
-An attempt whose launcher died keeps its worktree, and the next claim of its
-issue resumes it; the log of a state the launcher was killed in is moved to the
-workspace's `runtime/forge/interrupted/` first, because Rhei refuses to spawn
-over it. A resume that runs no state is retried once, by a later claim; a
-second in a row ends the attempt in `human-intervention`, with Rhei's halt
-message in the comment and its work kept at its held ref.
-§AR-forge-launcher.1
+An attempt whose launcher died keeps its worktree and its claim: the issue stays
+assigned and `In Progress`, which no fetch or claim takes, so the next cycle of
+any launcher on the same host resumes it before claiming anything new. A
+launcher holds `runs/locks/forge-<issue>.lock` while it works on an issue, and
+only an attempt that neither a launcher nor a `rhei run` holds is resumed; an
+issue with no workspace on this host is left to the host that has one. The log
+of a state the launcher was killed in is moved to the workspace's
+`runtime/forge/interrupted/` first, because Rhei refuses to spawn over it. A
+resume that runs no state is retried once, by a later claim; a second in a row
+ends the attempt in `human-intervention`, with Rhei's halt message in the
+comment and its work kept at its held ref.
+§FS-forge-stranded-claims, §AR-forge-launcher.1.1
 
 ## Setup
 

@@ -137,6 +137,7 @@ class TargetTest(unittest.TestCase):
         self.addCleanup(os.remove, handle.name)
         for extra, expected in (([], False), (["--take-blocked-issues"], True)):
             with patch.object(forge_metadata, "claim", return_value=None) as claim, \
+                    tempfile.TemporaryDirectory() as forge, patch.object(forge_metadata, "FORGE_DIR", forge), \
                     patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                     contextlib.redirect_stderr(io.StringIO()):
                 forge_metadata.main(["--issues-fixture", handle.name, *extra])
@@ -145,6 +146,7 @@ class TargetTest(unittest.TestCase):
     def test_the_fetch_forwards_the_blocker_override(self) -> None:
         for extra, expected in (([], False), (["--take-blocked-issues"], True)):
             with patch.object(forge_metadata, "fetch_candidates", return_value=[]) as fetch, \
+                    tempfile.TemporaryDirectory() as forge, patch.object(forge_metadata, "FORGE_DIR", forge), \
                     patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                     contextlib.redirect_stderr(io.StringIO()):
                 forge_metadata.main(extra)
@@ -398,6 +400,7 @@ class ReleaseTest(unittest.TestCase):
         steps.finish_run.return_value = {"outcome": "completed"}
         started = run_launch.Started(workspace=self.workspace, advanced=True)
         with patch.object(forge_metadata, "fetch_candidates", return_value=[("library-new-request", claimed.issue)]), \
+                tempfile.TemporaryDirectory() as forge, patch.object(forge_metadata, "FORGE_DIR", forge), \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(forge_metadata, "claim", return_value=claimed), \
                 patch.object(forge_metadata, "start_run", return_value=started), \
