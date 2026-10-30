@@ -24,6 +24,8 @@ from datetime import datetime, timezone
 from typing import Any
 from unittest.mock import patch
 
+import yaml
+
 from dispatcher import issue_admin, pr_review
 from dispatcher.config import (LABEL_FORGE_MERGE_FOLLOW_UP, LABEL_GRAALVM_BUG, LABEL_HUMAN_INTERVENTION,
                                LABEL_HUMAN_INTERVENTION_FIXED, REPO)
@@ -431,6 +433,17 @@ class ReviewTest(unittest.TestCase):
         self.assertIn("typeReached", rules)
         self.assertIn("Native Image", rules)
         self.assertNotIn("Before your final message", rules)
+
+    def test_the_primary_error_decides_in_the_review_and_the_fix_state(self) -> None:
+        """A suppressed `HostedError` is not the GraalVM defect (§root/FS-graalvm-blocked-work.1)."""
+        rule: str = ("The primary error decides: a `VMError` or `HostedError` reported only as `Suppressed:` beside "
+                     "another failure, such as oracle/graal#14823's \"Reflection metadata cannot be queried before "
+                     "analysis is complete\", is not the cause; handle the primary error under the usual rules.")
+        self.run_pass()
+        with open(pr_review.STATES, encoding="utf-8") as handle:
+            fix: str = yaml.safe_load(handle)["states"]["fix"]["instructions"]
+        for prompt in (self.invocations()[0]["prompt"], fix):
+            self.assertIn(rule, " ".join(prompt.split()))
 
 
 if __name__ == "__main__":
