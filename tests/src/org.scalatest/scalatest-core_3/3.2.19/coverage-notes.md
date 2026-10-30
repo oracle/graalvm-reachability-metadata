@@ -21,4 +21,7 @@ events. These tests do not bypass visibility or reflectively invoke those intern
 The `Suite` companion's `yeOldeTestNames` method has no callers in this artifact.
 Its `checkForPublicNoArgConstructor` method is called only by `SuiteRerunner`.
 The ignored-method reporting path does exercise `Suite.getMethodForTestName`.
-The optional JUnit and TestNG runner bridges are not exercised by this project.
+The optional JUnit and TestNG runner bridges are exercised via `Runner.run` with
+`-j` and `-b`, respectively, using the real ScalaTestPlus integrations. The TestNG
+suite XML names a fixture already on the application classpath and is read as a
+normal file, not a classloader resource.

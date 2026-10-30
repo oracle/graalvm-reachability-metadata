@@ -9,11 +9,13 @@ package org_scalatest.scalatest_core_3
 import java.nio.file.{Files, Path}
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.jar.{JarEntry, JarOutputStream}
+import org.junit.{Test => JUnitTest}
 import org.junit.jupiter.api.Assertions.{assertEquals, assertTrue}
 import org.scalatest.{Args, Reporter, Suite, WrapWith}
 import org.scalatest.events.{Event, TestSucceeded}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.tools.Runner
+import org.testng.annotations.{BeforeMethod, Test => TestNGTest}
 import scala.jdk.CollectionConverters.*
 
 class PassingSuite extends AnyFunSuite {
@@ -34,6 +36,27 @@ class ConfiguringSuite(scenario: Class[?]) extends AnyFunSuite {
   }
 }
 
+class JUnitInvoiceScenario {
+  @JUnitTest
+  def sumsAnInvoice(): Unit = {
+    assertEquals(42, Seq(12, 18, 12).sum)
+  }
+}
+
+class TestNGTextScenario {
+  private var words: Seq[String] = Seq.empty
+
+  @BeforeMethod
+  def prepareWords(): Unit = {
+    words = Seq("reachability", "metadata")
+  }
+
+  @TestNGTest
+  def joinsPreparedWords(): Unit = {
+    assertEquals("reachability metadata", words.mkString(" "))
+  }
+}
+
 class CollectingReporter extends Reporter {
   override def apply(event: Event): Unit = CollectingReporter.events.add(event)
 }
@@ -49,10 +72,12 @@ class RecordingReporter extends Reporter {
 }
 
 object RunnerFixtures {
-  def run(suite: Class[?], extra: String*): Vector[Event] = {
+  def run(suite: Class[?], extra: String*): Vector[Event] =
+    runArguments((Seq("-s", suite.getName) ++ extra)*)
+
+  def runArguments(arguments: String*): Vector[Event] = {
     CollectingReporter.events.clear()
-    assertTrue(Runner.run(Array("-C", classOf[CollectingReporter].getName,
-      "-s", suite.getName) ++ extra))
+    assertTrue(Runner.run(Array("-C", classOf[CollectingReporter].getName) ++ arguments))
     CollectingReporter.events.asScala.toVector
   }
 
