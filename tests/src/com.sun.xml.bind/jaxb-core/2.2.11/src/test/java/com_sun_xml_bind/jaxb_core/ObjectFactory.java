@@ -6,11 +6,11 @@
  */
 package com_sun_xml_bind.jaxb_core;
 
-import org.junit.jupiter.api.Test;
+import javax.xml.bind.annotation.XmlRegistry;
 
-class Jaxb_coreTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+@XmlRegistry
+public class ObjectFactory {
+    public ReflectionNavigatorTest.ArrayModel createArrayModel() {
+        return new ReflectionNavigatorTest.ArrayModel();
     }
 }
