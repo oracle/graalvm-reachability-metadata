@@ -7,16 +7,24 @@
 package org.graalvm.internal.tck.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Utilities for inspecting JAR files to derive package structures.
@@ -26,6 +34,7 @@ public abstract class JarUtils {
     private static final String CLASS_SUFFIX = ".class";
     private static final String MODULE_INFO = "module-info.class";
     private static final String META_INF_VERSIONS = "META-INF/versions/";
+    private static final Pattern VERSIONED_ENTRY = Pattern.compile("META-INF/versions/([1-9][0-9]{0,8})/(.+)");
 
     /**
      * Returns whether a resolved artifact is the main JAR eligible for the coverage
@@ -40,6 +49,56 @@ public abstract class JarUtils {
             return true;
         }
         return requestedVersion.equals(resolvedVersion + "-" + classifier);
+    }
+
+    /// Extracts into `outputDir` the classes a JVM of release `runtimeMajor` loads from `jar`, one
+    /// file per class: the base classes, then each `META-INF/versions/<v>/` overlay with
+    /// `v <= runtimeMajor` in ascending order and its prefix stripped, so the newest one wins.
+    ///
+    /// Entries are read with `java.util.zip` and their timestamps are ignored, so a JAR stamped
+    /// before 1970, which Gradle's `zipTree` copy rejects, extracts like any other.
+    /// §AR-test-harness.8
+    public static void extractEffectiveClasses(Path jar, int runtimeMajor, Path outputDir) throws IOException {
+        Path root = outputDir.toAbsolutePath().normalize();
+        Files.createDirectories(root);
+        try (ZipFile zipFile = new ZipFile(jar.toFile())) {
+            Map<String, ZipEntry> baseClasses = new TreeMap<>();
+            Map<Integer, Map<String, ZipEntry>> overlays = new TreeMap<>();
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                String name = entry.getName();
+                if (entry.isDirectory() || !name.endsWith(CLASS_SUFFIX)) {
+                    continue;
+                }
+                if (!name.startsWith(META_INF_VERSIONS)) {
+                    baseClasses.put(name, entry);
+                    continue;
+                }
+                Matcher versioned = VERSIONED_ENTRY.matcher(name);
+                if (!versioned.matches()) {
+                    continue;
+                }
+                int version = Integer.parseInt(versioned.group(1));
+                if (version <= runtimeMajor) {
+                    overlays.computeIfAbsent(version, v -> new TreeMap<>()).put(versioned.group(2), entry);
+                }
+            }
+
+            Map<String, ZipEntry> effectiveClasses = new TreeMap<>(baseClasses);
+            overlays.values().forEach(effectiveClasses::putAll);
+            for (Map.Entry<String, ZipEntry> effectiveClass : effectiveClasses.entrySet()) {
+                Path target = root.resolve(effectiveClass.getKey()).normalize();
+                if (!target.startsWith(root)) {
+                    throw new IOException("Entry '" + effectiveClass.getValue().getName() + "' of " + jar
+                            + " resolves outside " + root);
+                }
+                Files.createDirectories(target.getParent());
+                try (InputStream input = zipFile.getInputStream(effectiveClass.getValue())) {
+                    Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        }
     }
 
     /**

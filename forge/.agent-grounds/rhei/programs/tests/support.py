@@ -26,6 +26,8 @@ TESTS: str = os.path.dirname(os.path.abspath(__file__))
 PROGRAMS: str = os.path.dirname(TESTS)
 FORGE: str = os.path.abspath(os.path.join(PROGRAMS, "..", "..", ".."))
 REPOSITORY: str = os.path.dirname(FORGE)
+# The forge-metadata state machine whose routes and agent instructions the tests pin.
+TEMPLATE: str = os.path.join(os.path.dirname(PROGRAMS), "templates", "forge-metadata", "states.yaml")
 for path in (TESTS, PROGRAMS, FORGE):
     if path not in sys.path:
         sys.path.insert(0, path)
@@ -47,7 +49,7 @@ def run_state(route: str = ROUTE_NEW, worktree: str = "/tmp/worktree", **changes
     """A run state for unit tests that never touch the worktree."""
     state: RunState = RunState(
         issue_number=7, label="library-new-request", route=route, coordinate=COORDINATE,
-        repo_checkout=REPOSITORY, worktree=worktree, branch="rhei/forge-org.example-lib-2.0.0", base_commit="base",
+        repo_checkout=REPOSITORY, worktree=worktree, branch=prepare.run_branch(worktree), base_commit="base",
         checkpoint="base", started_at="2026-10-22T10:00:00+00:00",
         setup_agent="claude-code[medium]:sonnet", worker_agent="pi[high]:openai-codex/gpt-5.6-luna",
         budgets=Budgets(**vars(BUDGETS)),
@@ -115,6 +117,9 @@ class FakeRepository:
         # The fake harness has no root build to warm; `prepare` asks for the shared cache all the same.
         self.shared_cache_patch: Any = mock.patch.object(prepare, "ensure_shared_dependency_cache")
         self.shared_cache: mock.MagicMock = self.shared_cache_patch.start()
+        # Nor a daemon to stop when `prepare` gives a worktree up; the tests see the stop it asks for.
+        self.stop_daemons_patch: Any = mock.patch("utility_scripts.gradle_dependency_cache.stop_gradle_daemons_of_home")
+        self.stop_daemons: mock.MagicMock = self.stop_daemons_patch.start()
         self.artifact_patch: Any = mock.patch.object(index_record, "inspect_maven_artifact",
                                                      return_value=NativeImageEligibility(False))
         self.artifact: mock.MagicMock = self.artifact_patch.start()
@@ -150,6 +155,7 @@ class FakeRepository:
 
     def close(self) -> None:
         self.shared_cache_patch.stop()
+        self.stop_daemons_patch.stop()
         self.artifact_patch.stop()
         os.environ.clear()
         os.environ.update(self.saved_environment)

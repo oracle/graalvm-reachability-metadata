@@ -69,9 +69,9 @@ match = "exact"
 rules = ["markdown-docs"]
 kind = "deferred"
 max_accepted = { value = 400, unit = "lines" }
-until = "FS-library-version-update-automation (section 9) moves to a document of its own in the functional-spec folder home, together with either section 8 (how the repository is used) or the native-build-tools interface contract (section 4.7), leaving about 240 lines"
+until = "section 8 (how the repository is used) or the native-build-tools interface contract (section 4.7) moves to a document of its own in the functional-spec folder home, leaving about 240 lines"
 reason = """
-The file measures about 390 lines. The version update automation (section 9, about 90 lines) is a declaration of its own and can move out whole, since IDs are stable across files in the folder home: only the four `FS-repository-functional-spec.9` citations grund checks are re-pointed. That alone leaves about 300, so a second subject has to go with it: the usage walkthroughs of section 8 (about 60 lines), which need new IDs and their citers migrated, or the native-build-tools interface contract of section 4.7 (about 60), whose move re-points every `FS-repository-functional-spec.4.7` citation. Each move is a change of its own rather than a side effect of adding one label row or of a grund upgrade that only rewrites citations and numbers headings here.
+The file measures about 300 lines now that the version update automation (FS-library-version-update-automation) has moved whole to library-version-update-automation.md. One more subject has to go: the usage walkthroughs of section 8 (about 60 lines), which need new IDs and their citers migrated, or the native-build-tools interface contract of section 4.7 (about 60), whose move re-points every `FS-repository-functional-spec.4.7` citation. Each move is a change of its own rather than a side effect of adding one label row or of a grund upgrade that only rewrites citations and numbers headings here.
 """
 [[exceptions]]
 path = "forge/dispatcher/claim_preflight.py"
@@ -149,4 +149,14 @@ max_accepted = { value = 400, unit = "lines" }
 until = "the review disposition (section 5) moves to a document of its own"
 reason = """
 At 353 non-blank lines, section 5, the review disposition (160), is a subject of its own; moving it leaves about 193, under the 250 soft limit. The move re-points every FS-contribution-contract.5 citation, so it is its own change, not part of a grund upgrade that only re-points one routing citation to the metadata subsection it now names.
+"""
+[[exceptions]]
+path = "docs/functional-spec/test-contract.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 501, unit = "lines" }
+until = "section 2.7's metadata and native-flag rules move to their own functional-spec document"
+reason = """
+The rules for hand-written metadata and native flags (section 2.7, about a quarter of the contract) are one subject with no document of their own yet; the remaining sections are cited by number across the specs, prompts and skills, so the split has to move 2.7 as a whole and re-point its citations.
 """

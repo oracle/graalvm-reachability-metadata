@@ -13,12 +13,13 @@ it, neither of which is about how the build produces either.
 | ID | Subject |
 | --- | --- |
 | [§FS-repository-functional-spec](functional-spec.md#fs-repository-functional-spec-repository-functional-specification) | Repository functional specification |
-| [§FS-library-version-update-automation](functional-spec.md#fs-library-version-update-automation-library-version-update-automation) | Library version update automation |
+| [§FS-library-version-update-automation](library-version-update-automation.md#fs-library-version-update-automation-library-version-update-automation) | Library version update automation |
 | [§FS-contribution-contract](contribution-contract.md#fs-contribution-contract-test-and-metadata-contribution-contract) | Test and metadata contribution contract |
 | [§FS-test-contract](test-contract.md#fs-test-contract-the-test-contract) | The test contract |
 | [§FS-repository-status-report](repository-status.md#fs-repository-status-report-repository-issue-progress-and-state) | Repository issue progress and state |
 | [§FS-maintainer-agent-queues](maintainer-agent-queues.md#fs-maintainer-agent-queues-maintainer-agent-queues) | Maintainer agent queues |
 | [§FS-graalvm-blocked-work](graalvm-blocked-work.md#fs-graalvm-blocked-work-work-blocked-on-a-graalvm-defect) | Work blocked on a GraalVM defect |
+| [§FS-native-image-gaps](native-image-gaps.md#fs-native-image-gaps-scenarios-native-image-does-not-implement) | Scenarios Native Image does not implement |
 | [§FS-metadata](metadata.md#fs-metadata-the-metadata-suite) | The `metadata/` suite |
 | [§FS-tests](tests.md#fs-tests-the-tests-suite) | The `tests/` suite |
 
@@ -27,8 +28,10 @@ file.
 
 Files:
 
-- [functional-spec.md](functional-spec.md) — the repository specification and
-  the version-update automation that feeds it.
+- [functional-spec.md](functional-spec.md) — the repository specification.
+- [library-version-update-automation.md](library-version-update-automation.md)
+  — the scheduled loop that tests newer upstream versions, records the ones
+  that pass and files issues for the ones that fail.
 - [contribution-contract.md](contribution-contract.md) — what a metadata or
   test contribution must satisfy to be accepted.
 - [test-contract.md](test-contract.md) — what a test must prove about the
@@ -39,6 +42,8 @@ Files:
   maintainer can adopt through ephor, and what the repository ships for them.
 - [graalvm-blocked-work.md](graalvm-blocked-work.md) — how work a GraalVM
   defect blocks is declared, held out of automation, and released.
+- [native-image-gaps.md](native-image-gaps.md) — why a test drops a scenario
+  Native Image does not implement, and how it marks the gap.
 - [metadata.md](metadata.md) — the `metadata/` suite: its layout, its additive
   invariants, and where each entry comes from.
 - [tests.md](tests.md) — the `tests/` suite: the per-coordinate test projects

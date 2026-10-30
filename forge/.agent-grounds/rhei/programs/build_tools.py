@@ -13,16 +13,29 @@ branch that a later program measures or restores against
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 from dataclasses import dataclass
 
 from utility_scripts.gradle_environment import gradle_command_environment
 
+from exit_codes import BadInput
+
 # The output tail a fix request carries per failing command (§AR-forge-workflow-prompts.5).
 TAIL_LINES: int = 200
 UPSTREAM: str = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH: str = "master"
+# Gradle's innermost cause for a module no repository has, or none a JVM test can use, and
+# the scaffold's for a coordinate without a JAR, such as a BOM (§AR-forge-workflow-pipeline.4.1).
+# A file of a module, `Could not find ejb-2.0.jar (javax.ejb:ejb:2.0)`, is a POM without its JAR.
+ABSENT: re.Pattern[str] = re.compile(r"Could not find (?:any matches for |any version that matches |[\w.-]+ \()?"
+                                     r"[\w.-]+:[\w.-]+|No matching variant of |Failed to resolve JAR for ")
+# The wrapper around any cause, an offline cache miss or a corrupt POM too: it only adds detail.
+WRAPPER: re.Pattern[str] = re.compile(r"Could not resolve ")
+# A repository access failure: Gradle reports a 404 as `Could not find`, so any status here,
+# 401 and 403 included, means the repository failed (§AR-forge-workflow-pipeline.4.1).
+UNREACHABLE: re.Pattern[str] = re.compile(r"Could not (?:GET|HEAD|get resource) '")
 
 
 @dataclass
@@ -37,6 +50,41 @@ class TaskResult:
     @property
     def tail(self) -> str:
         return "\n".join(self.output.splitlines()[-TAIL_LINES:])
+
+
+@dataclass
+class Unreachable:
+    """A repository the build could not reach, or that answered with anything but not-found."""
+
+    detail: str
+
+
+def dependency_failure(result: TaskResult, reason: str, coordinate: str = "") -> BadInput | Unreachable | None:
+    """What a failed build's dependency resolution says, decided as the issue-form gate decides.
+
+    A repository that failed is `Unreachable`, an infrastructure failure a later
+    cycle retries; a module or its JAR no repository has, or none a JVM test can
+    use, is a `BadInput` naming `reason`, since it fails identically on every retry
+    (§AR-forge-workflow-pipeline.4.1); anything else is `None`. Only innermost
+    cause lines decide, and with `coordinate` only those naming it. The detail is
+    the cause and wrapper lines, each once and in order: an excerpt of a long
+    output keeps only failure lines and would drop them (§FS-forge-run-requirements.2).
+    """
+    if result.ok:
+        return None
+    lines: list[str] = [line.rstrip() for line in result.output.splitlines()]
+    unreachable: list[str] = [line for line in lines if UNREACHABLE.search(line)]
+    if unreachable:
+        return Unreachable("\n".join(dict.fromkeys(unreachable)))
+    if not any(ABSENT.search(line) and _names(line, coordinate) for line in lines):
+        return None
+    detail: list[str] = [line for line in lines if WRAPPER.search(line) or ABSENT.search(line)]
+    return BadInput(reason, "\n".join(dict.fromkeys(detail)))
+
+
+def _names(line: str, coordinate: str) -> bool:
+    """Whether the line names the coordinate, not a longer one; any line does when it is empty."""
+    return not coordinate or re.search(rf"(?<![\w.-]){re.escape(coordinate)}(?![\w-]|\.\w)", line) is not None
 
 
 def gradle_display(arguments: list[str]) -> str:
@@ -78,13 +126,17 @@ def coordinate_task(task: str, coordinate: str, *extra: str) -> list[str]:
     return [task, f"-Pcoordinates={coordinate}", *extra]
 
 
-def git(worktree: str, *args: str) -> str:
-    """Run git in the worktree and return stdout; a failure raises."""
+def git(worktree: str, *args: str, capture_stderr: bool = False) -> str:
+    """Run git in the worktree and return stdout; a failure raises.
+
+    With `capture_stderr`, git's own message rides on the `CalledProcessError`.
+    """
     return subprocess.run(
         ["git", *args],
         cwd=worktree,
         check=True,
         stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE if capture_stderr else None,
         text=True,
     ).stdout
 

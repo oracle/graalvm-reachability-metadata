@@ -38,3 +38,22 @@ RETURN_CODES: dict[str, int] = {
     "audit": RETURN_AUDIT,
     "native-repair": RETURN_NATIVE_REPAIR,
 }
+
+
+class BadInput(Exception):
+    """An input the run cannot go on with: the step exits `BAD_INPUT` naming it.
+
+    `reason` is the one line the outcome's reason ends with: a longer message's
+    first line, without its closing period. The rest of the message comes first
+    in `detail`, the output the input was read from, which the close-out comment
+    quotes below the reason (§FS-forge-run-requirements.2).
+    """
+
+    def __init__(self, message: str, detail: str = "") -> None:
+        first, _, rest = message.strip().partition("\n")
+        self.reason: str = first.strip().rstrip(".")
+        self.detail: str = "\n".join(part for part in (rest.strip(), detail.strip()) if part)
+        super().__init__(self.reason)
+
+    def __str__(self) -> str:
+        return f"{self.reason}:\n{self.detail}" if self.detail else self.reason

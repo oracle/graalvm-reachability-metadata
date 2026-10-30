@@ -82,6 +82,10 @@ states:
          list, choosing only from
          `tests/tck-build-logic/src/main/resources/allowed-docker-images/`.
 
+      Walk or search the file system only from the search roots `{input.run.path}`
+      lists; outside them, open only a file whose path you were given. Never walk
+      `/tmp`, `$HOME`, or `/`, even to reach one of them (§FS-forge-agent-runtime-selection.1).
+
       Run no test task, and change nothing else: a program reverts every other
       edit. The edited files are your result; write no report.
 
@@ -153,6 +157,10 @@ states:
          `./gradlew javaTest -Pcoordinates=<coordinate>` from the worktree root,
          in the foreground, and fix the tests until it passes. Run no native task.
       4. Only after `javaTest` has passed, write the report.
+
+      Walk or search the file system only from the search roots `{input.run.path}`
+      lists; outside them, open only a file whose path you were given. Never walk
+      `/tmp`, `$HOME`, or `/`, even to reach one of them (§FS-forge-agent-runtime-selection.1).
 
       Before your final message, write `{output.report.path}` as JSON:
       `{"targets": ["<class or call site you wrote a test for>"]}`.
@@ -237,6 +245,9 @@ states:
 
       Scope
       - Edit only the files the request lists (§root/FS-contribution-contract.5.2).
+      - Walk or search the file system only from the search roots `{input.run.path}`
+        lists; outside them, open only a file whose path you were given. Never walk
+        `/tmp`, `$HOME`, or `/`, even to reach one of them (§FS-forge-agent-runtime-selection.1).
       - A defect in shared infrastructure is not yours to fix: report
         `cannot-fix` and name it (§root/FS-contribution-contract.5.3).
       - Neither is a GraalVM defect — a builder-internal `VMError`,
@@ -288,8 +299,13 @@ states:
       - Never skip or tolerate a Native Image failure (§root/FS-test-contract.4.1,
         §root/FS-test-contract.4.2); the only exception is open-ended dynamic
         class loading (§root/FS-test-contract.4.3).
-      - Reshape or delete a test that needs runtime class definition
+      - Reshape or delete a test that needs runtime class definition or
+        relinks a call site at run time (`MutableCallSite.setTarget`); cover a
+        dynamic language such as Groovy through its statically compiled path
         (§root/FS-test-contract.4.5).
+      - Drop a scenario that needs JDK behavior Native Image does not implement,
+        as its sources or a GraalVM issue show, and keep the rest of the test;
+        link that issue at the spot (§root/FS-native-image-gaps).
       - A `graalvmNative` flag is allowed only when it is on the allowed list
         below and the failure shows the library needs it; use its narrowest form.
         A forbidden flag is never added (§root/FS-test-contract.2.7.1,
@@ -300,9 +316,11 @@ states:
         - `--initialize-at-build-time=<class>`, one class the library itself forces, never a package.
         - `-H:+AddAllCharsets`, `-H:IncludeLocales=`, `-H:IncludeResourceBundles=`, for what the library needs.
         - `-H:AdditionalSecurityProviders=<provider>`, for a provider the library registers.
+        - `-H:+AllowJRTFileSystem`, when the library reads JDK platform classes through `jrt:`, as an in-process compiler does.
         - `--add-opens`, `--add-exports`, naming the package the library needs.
         - `-H:+SharedArenaSupport`, `--future-defaults=<feature>`, when the error names the feature.
         - a run-time `-D<property>` a consumer must set for the library to work.
+        - `--exclude-config <jar> <resource>`, when Native Image configuration bundled in the library or a dependency breaks the build; match only that JAR and that configuration path.
         Forbidden:
         - `--report-unsupported-elements-at-runtime`.
         - `--allow-incomplete-classpath` and `--link-at-build-time` relaxations.

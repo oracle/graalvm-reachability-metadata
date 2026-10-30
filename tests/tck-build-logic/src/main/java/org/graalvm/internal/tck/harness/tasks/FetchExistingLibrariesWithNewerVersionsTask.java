@@ -15,7 +15,9 @@ import org.graalvm.internal.tck.model.SkippedVersionEntry;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionComparator;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.VersionParser;
+import org.gradle.api.logging.Logger;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
@@ -40,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -49,6 +52,10 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
 
     @Input
     public abstract ListProperty<String> getAllLibraryCoordinates();
+
+    /// The most newer versions of one library a run tests; candidates past it are never offered.
+    @Input
+    public abstract Property<Integer> getMaxVersionsPerLibrary();
 
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example");
     private static final String MAVEN_CENTRAL_BASE_URL = "https://repo.maven.apache.org/maven2";
@@ -67,6 +74,8 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             new VersionParser()::transform,
             new DefaultVersionComparator().asVersionComparator());
     private static Instant nextRemoteRequest = Instant.EPOCH;
+    /// Relocation targets by POM URL: a released POM never changes, so each is read at most once.
+    private static final Map<String, Optional<String>> RELOCATION_TARGETS = new ConcurrentHashMap<>();
 
     @TaskAction
     public void action() {
@@ -89,10 +98,12 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
         );
 
         List<String> newerVersions = new ArrayList<>();
+        int maxVersionsPerLibrary = getMaxVersionsPerLibrary().get();
         for (String libraryName : eligibleLibraries) {
             List<String> versions = getNewerVersionsFor(libraryName, getLatestLibraryVersion(libraryName));
             List<String> skipped = getSkippedVersions(libraryName);
             versions.removeAll(skipped);
+            versions = dropRelocatedVersions(MAVEN_CENTRAL_BASE_URL, libraryName, versions, maxVersionsPerLibrary, getLogger());
             for (String v : versions) {
                 newerVersions.add(libraryName + ":" + v);
             }
@@ -173,6 +184,28 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
         newerVersions.removeAll(testedVersions);
 
         return filterPreReleases(newerVersions);
+    }
+
+    /// Takes the first `limit` versions, the ones that can enter the run, and drops each whose POM
+    /// relocates the artifact to other coordinates (§FS-library-version-update-automation.1): a build
+    /// that depends on it resolves the target, so recording it as tested helps no user. Later
+    /// versions are not read, so an artifact that moved costs at most `limit` reads a run.
+    static List<String> dropRelocatedVersions(String repositoryUrl, String library, List<String> versions,
+                                              int limit, Logger logger) {
+        String[] libraryParts = library.split(":");
+        String artifactUrl = repositoryUrl + "/" + libraryParts[0].replace(".", "/") + "/" + libraryParts[1];
+        List<String> kept = new ArrayList<>();
+        for (String version : versions.subList(0, Math.min(limit, versions.size()))) {
+            String pomUrl = artifactUrl + "/" + version + "/" + libraryParts[1] + "-" + version + ".pom";
+            Optional<String> target = RELOCATION_TARGETS.computeIfAbsent(pomUrl, url -> readMavenMetadata(url)
+                    .flatMap(pom -> PomRelocation.target(pom, libraryParts[0], libraryParts[1], version)));
+            if (target.isPresent()) {
+                logger.quiet("Skipping {}:{}: its POM relocates it to {}", library, version, target.get());
+            } else {
+                kept.add(version);
+            }
+        }
+        return kept;
     }
 
     static Optional<String> readMavenMetadata(String metadataUrl) {

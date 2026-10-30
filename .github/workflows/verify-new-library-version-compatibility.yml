@@ -356,12 +356,59 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
 
+          # Records each library on its own (§FS-library-version-update-automation.3): each recorded
+          # version is staged, so dropping unstaged changes undoes a failed addTestedVersion; that
+          # library's later versions are skipped, and the step fails once the others are pushed.
           update_new_versions() {
+            local -A failed_libraries=()
+            local coordinates last_supported_version library log_file reason
+            : > recorded_updates.txt
+            : > recording_failures.txt
             while IFS='|' read -r coordinates last_supported_version; do
-              if [[ -n "$coordinates" && -n "$last_supported_version" ]]; then
-                ./gradlew addTestedVersion -Pcoordinates="$coordinates" --lastSupportedVersion="$last_supported_version"
+              if [[ -z "$coordinates" || -z "$last_supported_version" ]]; then
+                continue
               fi
+              library="${coordinates%:*}"
+              if [[ -n "${failed_libraries[$library]+x}" ]]; then
+                echo "Skipping $coordinates: an earlier version of $library could not be recorded."
+                continue
+              fi
+              log_file="$(mktemp)"
+              if ./gradlew addTestedVersion -Pcoordinates="$coordinates" --lastSupportedVersion="$last_supported_version" \
+                  < /dev/null 2>&1 | tee "$log_file"; then
+                git add -A -- metadata stats tests/src
+                printf '%s|%s\n' "$coordinates" "$last_supported_version" >> recorded_updates.txt
+              else
+                git restore --worktree -- metadata stats tests/src
+                git clean -fdq -- metadata stats tests/src
+                failed_libraries[$library]=1
+                reason="$(awk '/^\* What went wrong:/ { found = 1; next }
+                  /^\* Try:/ { found = 0 }
+                  found && sub(/^> /, "")' "$log_file" | paste -sd ' ' -)"
+                printf '%s|%s\n' "$coordinates" "${reason:-addTestedVersion failed; see its output above}" >> recording_failures.txt
+              fi
+              rm -f "$log_file"
             done < successful_updates.txt
+          }
+
+          # Fails the step for the libraries update_new_versions could not record, naming each one.
+          report_recording_failures() {
+            local coordinates reason
+            if [[ ! -s recording_failures.txt ]]; then
+              return 0
+            fi
+            {
+              printf '### Library versions that could not be recorded\n\n'
+              printf 'The other libraries were recorded. Later versions of these libraries were skipped.\n\n'
+              while IFS='|' read -r coordinates reason; do
+                printf -- '- `%s`: %s\n' "$coordinates" "$reason"
+              done < recording_failures.txt
+            } >> "$GITHUB_STEP_SUMMARY"
+            while IFS='|' read -r coordinates reason; do
+              echo "::error title=Library version not recorded::addTestedVersion failed for" \
+                "$coordinates, so later versions of ${coordinates%:*} were skipped: ${reason//%/%25}"
+            done < recording_failures.txt
+            exit 1
           }
 
           update_root_coverage_markdown() {
@@ -382,39 +429,41 @@ jobs:
             update_new_versions
 
             git restore --source=HEAD --staged --worktree gradle/libs.versions.toml || true
-            update_root_coverage_markdown
-
-            if git status --porcelain | grep -q .; then
+            if [[ -s recorded_updates.txt ]]; then
+              update_root_coverage_markdown
               git add -A -- metadata stats tests/src COVERAGE.md
-              COMMIT_BODY_FILE="$(mktemp)"
-              {
-                printf 'Update tested library versions\n\n'
-                printf 'Added tested versions:\n'
-                awk -F'[|]' '
-                  {
-                    split($1, coordinatesParts, ":")
-                    library = coordinatesParts[1] ":" coordinatesParts[2]
-                    testedVersion = coordinatesParts[3]
-                    updates[library] = updates[library] "\n- `" testedVersion "`"
-                  }
-                  END {
-                    n = asorti(updates, libraries)
-                    for (i = 1; i <= n; i++) {
-                      library = libraries[i]
-                      printf "#### `%s`%s\n", library, updates[library]
-                    }
-                  }
-                ' successful_updates.txt
-              } > "$COMMIT_BODY_FILE"
-              git commit -F "$COMMIT_BODY_FILE"
-              rm "$COMMIT_BODY_FILE"
-            else
+            fi
+            if git diff --cached --quiet; then
               echo "No tested version updates to commit."
+              report_recording_failures
               exit 0
             fi
+            COMMIT_BODY_FILE="$(mktemp)"
+            {
+              printf 'Update tested library versions\n\n'
+              printf 'Added tested versions:\n'
+              awk -F'[|]' '
+                {
+                  split($1, coordinatesParts, ":")
+                  library = coordinatesParts[1] ":" coordinatesParts[2]
+                  testedVersion = coordinatesParts[3]
+                  updates[library] = updates[library] "\n- `" testedVersion "`"
+                }
+                END {
+                  n = asorti(updates, libraries)
+                  for (i = 1; i <= n; i++) {
+                    library = libraries[i]
+                    printf "#### `%s`%s\n", library, updates[library]
+                  }
+                }
+              ' recorded_updates.txt
+            } > "$COMMIT_BODY_FILE"
+            git commit -F "$COMMIT_BODY_FILE"
+            rm "$COMMIT_BODY_FILE"
 
             if git push origin "$BRANCH"; then
               echo "Pushed successfully."
+              report_recording_failures
               exit 0
             fi
 
@@ -426,7 +475,8 @@ jobs:
           exit 1
 
       - name: "❗ Create aggregated issues for unsupported library versions"
-        if: steps.aggregate.outputs.has-failures == 'true'
+        # Files test failures even when recording failed (§FS-library-version-update-automation.3).
+        if: ${{ !cancelled() && steps.aggregate.outputs.has-failures == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
         run: |
@@ -629,7 +679,7 @@ jobs:
           done
 
       - name: "🧹 Close old pre-release issues for tested versions"
-        if: steps.aggregate.outputs.has-successful-updates == 'true' || steps.aggregate.outputs.has-failures == 'true'
+        if: ${{ !cancelled() && (steps.aggregate.outputs.has-successful-updates == 'true' || steps.aggregate.outputs.has-failures == 'true') }}
         env:
           GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
           REPO: ${{ github.repository }}
@@ -691,7 +741,8 @@ jobs:
           rm "$LIBRARY_VERSIONS_FILE"
 
       - name: "✏️ PR for supported versions"
-        if: steps.aggregate.outputs.has-successful-updates == 'true'
+        # Runs even when recording failed: the libraries that were recorded are already pushed.
+        if: ${{ !cancelled() && steps.aggregate.outputs.has-successful-updates == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
         run: |
@@ -716,7 +767,7 @@ jobs:
                     printf "#### `%s`%s\n", library, updates[library]
                   }
                 }
-              ' successful_updates.txt
+              ' recorded_updates.txt
             } > "$PR_BODY_FILE"
             gh pr create \
               --title "${{ env.ISSUE_TITLE_PREFIX }}Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \

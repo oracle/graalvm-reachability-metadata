@@ -115,9 +115,10 @@ each only when the one before did not make the native run pass.
      errors. Metadata is never passed as an option, because the test-local
      file holds it. This overrides the flag rule of §root/FS-test-contract.2.7
      (§FS-real-use-test-contract.3).
-   - A scenario neither saves is deleted, whole: one that generates bytecode
-     or defines classes at run time (§root/FS-test-contract.4.5) at once, and
-     one whose failure survives the option attempts then.
+   - A scenario neither saves is deleted, whole: one that generates bytecode,
+     defines classes, or relinks a call site at run time
+     (§root/FS-test-contract.4.5) at once, and one whose failure survives the
+     option attempts then.
 
    It edits nothing else. Its report lists the entries it added, each option
    it added with the failure it fixes, and each scenario it deleted with the

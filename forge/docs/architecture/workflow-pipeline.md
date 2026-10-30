@@ -61,7 +61,9 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    stopped, its failing commands with a bounded excerpt of their output, and
    the last fix report. Each excerpt sits in a fence no backtick run inside it
    can close, and the report's summary, agent text, is quoted trimmed to 1500
-   characters, with `§` escaped as `<§>` and every `@` kept from mentioning.
+   characters, with `§` escaped as `<§>` and every `@` kept from mentioning. A
+   bad input's comment also names the step's reason and quotes the output it
+   was read from (§FS-forge-run-requirements.2).
 
 `run-forge.sh` loops cycles until stopped, checks the host before each claim
 (§FS-forge-host-requirements), and every third run, and whenever nothing can be
@@ -173,9 +175,9 @@ every other sender, each cover pass, and the audit one, so a run takes
 
 | State | Does |
 | --- | --- |
-| `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on `rhei/forge-<group>-<artifact>-<version>`, reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate and stopping the Gradle daemons that served it, whose in-memory build state outlives the removed files, and attaches it to the task; for a new library whose published files show it is no JVM library, writes the not-for-native-image index, validates it with `validateIndexFiles` and the pre-publication gate, checkpoints, and exits `22` (§FS-not-for-native-image-record); otherwise scaffolds a new library, or adds the version beside its nearest supported one (§FS-library-update-tested-version-split), placing and formatting its index entry as the TCK index tasks do, the latest-only fields moving with `latest` (§root/FS-metadata.1), and records the version match and the coordinate's baseline snapshot for the pull request (§AR-pr-body); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
+| `prepare` | Reads the issue; derives the route from its label and the coordinate from its title; fetches and pins `origin/master`; spawns the worktree on its run branch (§AR-forge-workflow-pipeline.4.6), reset to the pinned base after removing any leftover worktree of an earlier run of the coordinate at its path and stopping the Gradle daemons that served it, whose in-memory build state outlives the removed files, and attaches it to the task; for a new library whose published files show it is no JVM library, writes the not-for-native-image index, validates it with `validateIndexFiles` and the pre-publication gate, checkpoints, and exits `22` (§FS-not-for-native-image-record); otherwise scaffolds a new library (a coordinate the scaffold cannot resolve is a bad input, §AR-forge-workflow-pipeline.4.1), or adds the version beside its nearest supported one (§FS-library-update-tested-version-split), placing and formatting its index entry as the TCK index tasks do, the latest-only fields moving with `latest` (§root/FS-metadata.1), and records the version match and the coordinate's baseline snapshot for the pull request (§AR-pr-body); resolves the chunk state (§FS-forge-chunked-dynamic-access); stores the reporter's issue body as untrusted evidence; checkpoints; writes `run.md` |
 | `setup-check` | Once, right after `setup`: the setup tail (§AR-forge-workflow-pipeline.4.1); a recorded skip exits `21`, a new library, which has no version to repair, exits `20` to `analyze`, and every other route exits `0` to `jvm` |
-| `jvm` | Only for a version that already has tests: runs the version check, then `javaTest` and `generateMetadata` (§AR-forge-workflow-pipeline.5); the first failure is one fix request for that command alone |
+| `jvm` | Only for a version that already has tests: runs the version check, then `javaTest` and `generateMetadata` (§AR-forge-workflow-pipeline.5); the first failure is one fix request for that command alone, except that a dependency no repository has, or a repository that failed, ends the run as in the setup tail (§AR-forge-workflow-pipeline.4.1) |
 | `native-repair` | Right after `jvm`: runs only `test` (§AR-forge-workflow-pipeline.5); a failure is one fix request |
 | `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt; a listing that cannot be produced takes the basic mode instead |
 | `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; a failed report reruns each JVM suite to find the one that broke (§AR-forge-workflow-pipeline.4.5); keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
@@ -183,7 +185,7 @@ every other sender, each cover pass, and the audit one, so a run takes
 | `finalize` | `splitTestOnlyMetadata`, `routeForeignMetadata`, and `checkMetadataFiles` (§AR-forge-workflow-pipeline.5), then `spotlessApply`, `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the coordinate's three native lanes (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request, at most `finalize_fixes` times (§AR-forge-workflow-pipeline.6) |
 | `audit` | Once (§FS-local-branch-review): the first visit checkpoints and sends the audit fix request; the return visit publishes an unchanged tree, and reruns `test` and `finalize`'s lane once over a changed one, never `generateMetadata` (§AR-forge-workflow-pipeline.4.3) |
 | `fix-route` | Reads the request's return code and the fix report: `cannot-fix` exits `40`, anything else the return code |
-| `publish` | Commits only the coordinate's paths, writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), and pushes the publication branch `finalize` rebased; the metrics price each agent invocation at the rates of the model that ran it, count its cache writes as input, and count the worker's rounds, its cover passes plus its fix requests, as iterations; a deferred exploration opens its follow-up issue first |
+| `publish` | Commits only the coordinate's paths, a chunk's exhaust record included, and exits `20` when they are unchanged (§AR-chunked-dynamic-access-pr-linking); writes the run metrics (§FS-forge-run-metrics) and the descriptor (§AR-publication-descriptor), and pushes the publication branch `finalize` rebased; the metrics price each agent invocation at the rates of the model that ran it, count its cache writes as input, and count the worker's rounds, its cover passes plus its fix requests, as iterations; a deferred exploration opens its follow-up issue first |
 
 ### 4.1 The setup tail
 
@@ -198,12 +200,17 @@ checkpoints. The filter is written without compiling or running the tests,
 because the tests of a `fails-*` issue, a `fails-javac-compile` one above all,
 may not build. The project already has a filter when the file its `build.gradle`
 agent block names as `userCodeFilterPath`, or else `user-code-filter.json`,
-exists. A missing URL, or a library coordinate that does not resolve, is a bad
-input. The tail does not resolve the test dependencies `setup` declares: on
-every route but a new library's, `jvm` resolves them in `javaTest` and reports
-one that does not resolve as a bad input. A new library then exits `20` to
-`analyze`, since it has no version to repair; every other route exits `0` to
-`jvm`.
+exists. A missing URL is a bad input. So is a coordinate or declaration no
+repository has, or one a JVM test cannot use, such as a BOM or a library
+published only for a non-JVM platform: it fails identically on every retry, in
+`prepare`'s scaffold as in this tail. A repository that could not be reached,
+or that answered with anything but not-found, is not a bad input but an
+infrastructure failure, which a later cycle retries
+(§FS-forge-run-requirements.2). The tail does not resolve the test
+dependencies `setup` declares: on every route but a new library's, `jvm`
+resolves them in `javaTest` and reports one that does not resolve as a bad
+input. A new library then exits `20` to `analyze`, since it has no version to
+repair; every other route exits `0` to `jvm`.
 
 On the three `fails-*` labels `setup` may also add `skipped-versions` entries,
 its unsupportable-version verdict (§FS-unsupportable-version-diagnosis.2); on
@@ -266,6 +273,15 @@ fails the report, so when the report fails `measure` reruns each suite on its
 own and blames the pass for every suite that fails: one fix request names them
 all and `measure` exits `11`. Only a report that fails while every suite passes
 is an infrastructure failure.
+
+### 4.6 The run branch
+
+The run branch is `rhei/forge-<group>-<artifact>-<version>-<id>`, `<id>` a
+digest of the worktree's path. The repository's checkouts share one branch
+namespace and git checks a branch out in one worktree only, so the name keeps
+a run worktree of the coordinate in another checkout, stale or another
+launcher's live run, from holding the branch, and `prepare` never touches it:
+the leftover it removes first is the one at the worktree's own path.
 
 ## 5. The native check
 

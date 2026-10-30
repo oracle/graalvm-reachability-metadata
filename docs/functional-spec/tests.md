@@ -23,7 +23,9 @@ this document describes the test-project contract.
 - `build.gradle` may add test dependencies and, under `graalvmNative`, only
   the flags §FS-test-contract.2.7 allows: one from its allowed list when the
   failure shows the library needs it, or one meeting the uniform necessity
-  rule, never one from its forbidden list.
+  rule, never one from its forbidden list. A run argument the project sets
+  reaches the native run: the harness adds its own run arguments, such as the
+  timeout of §FS-test-contract.1.6, beside it and never in its place.
 - Test assertions use standard Java or library exceptions, not Gradle-only
   failure types such as `GradleException`.
 

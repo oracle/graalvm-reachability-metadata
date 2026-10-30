@@ -3,7 +3,8 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for the setup tail's source download, its filter, and the result file on an early exit.
+"""Tests for the setup tail: its source download, dependency-failure
+classification, an early exit's result, and the filter.
 
 §AR-forge-workflow-pipeline.4.1
 """
@@ -25,7 +26,8 @@ from utility_scripts.user_code_filter import DEFAULT_FILTER
 
 import forge_run  # noqa: E402
 import setup_check  # noqa: E402
-from exit_codes import BAD_INPUT, INFRASTRUCTURE, OK  # noqa: E402
+from build_tools import TaskResult, Unreachable, dependency_failure  # noqa: E402
+from exit_codes import BAD_INPUT, INFRASTRUCTURE, OK, BadInput  # noqa: E402
 from run_state import RunState, load, read_json, runtime_path  # noqa: E402
 
 
@@ -53,6 +55,72 @@ class DownloadSourcesTest(unittest.TestCase):
         denied: PreparedSourceContext = prepared("https://example.org/src", False)
         missing, pauses = self.download(*[denied] * setup_check.SOURCE_ATTEMPTS)
         self.assertEqual((["main"], setup_check.SOURCE_ATTEMPTS - 1), (missing, len(pauses)))
+
+
+class DependencyFailureTest(unittest.TestCase):
+
+    POM: str = "https://repo.maven.apache.org/maven2/com/example/lib/1.0/lib-1.0.pom"
+    CONFLUENT: str = "https://packages.confluent.io/maven/com/example/lib/1.0/lib-1.0.pom"
+    WRAPPED: str = ("> Could not resolve all files for configuration ':testRuntimeClasspath'.\n"
+                    "   > Could not resolve com.example:lib:1.0.\n     Required by:\n         root project 'lib'\n")
+
+    def failure(self, output: str) -> BadInput | Unreachable | None:
+        return dependency_failure(TaskResult("./gradlew javaTest", False, "javaTest.log", output), "unresolved")
+
+    @staticmethod
+    def answered(pom: str, status: str) -> str:
+        return (f"      > Could not get resource '{pom}'.\n"
+                f"         > Could not GET '{pom}'. Received status code {status}\n")
+
+    def test_a_repository_that_failed_is_unreachable(self) -> None:
+        # Any status: Gradle reports a 404 as `Could not find` (§AR-forge-workflow-pipeline.4.1).
+        outputs: dict[str, str] = {
+            "502": self.WRAPPED + self.answered(self.POM, "502 from server: Bad Gateway"),
+            "429": self.WRAPPED + self.answered(self.POM, "429 from server: Too Many Requests"),
+            "403": self.WRAPPED + self.answered(self.POM, "403 from server: Forbidden"),
+            "407": self.WRAPPED + self.answered(self.POM, "407 from server: Proxy Authentication Required"),
+            "Confluent 403, Central 502": self.WRAPPED + self.answered(self.CONFLUENT, "403 from server: Forbidden")
+                                          + self.answered(self.POM, "502 from server: Bad Gateway"),
+            "timeout": self.WRAPPED + f"      > Could not HEAD '{self.POM}'.\n         > Connect to "
+                                      "repo.maven.apache.org:443 [repo.maven.apache.org/151.101.0.215] failed: "
+                                      "Connection timed out",
+        }
+        for name, output in outputs.items():
+            with self.subTest(name):
+                self.assertIsInstance(self.failure(output), Unreachable)
+
+    def test_a_failure_with_no_cause_line_is_neither(self) -> None:
+        # Gradle's wrapper alone decides nothing (§AR-forge-workflow-pipeline.4.1).
+        cache: str = "/home/u/.gradle/caches/modules-2"
+        outputs: dict[str, str] = {
+            "offline": self.WRAPPED + "      > No cached version of com.example:lib:1.0 available for offline mode.",
+            "cache lock": "> Could not resolve all files for configuration ':testRuntimeClasspath'.\n"
+                          f"   > Timeout waiting to lock artifact cache ({cache}). It is currently in use by "
+                          "another Gradle instance.",
+            "corrupt POM": self.WRAPPED + f"      > Could not parse POM {cache}/files-2.1/com.example/lib/1.0/a1/"
+                                          "lib-1.0.pom\n         > Content is not allowed in prolog.",
+        }
+        for name, output in outputs.items():
+            with self.subTest(name):
+                self.assertIsNone(self.failure(output))
+
+    def test_an_artifact_no_repository_has_is_a_bad_input(self) -> None:
+        failure: BadInput | Unreachable | None = self.failure(
+            "> Could not resolve all files for configuration ':testRuntimeClasspath'.\n"
+            f"   > Could not find com.example:lib:1.0.\n     Searched in the following locations:\n       - {self.POM}")
+        self.assertIsInstance(failure, BadInput)
+        self.assertEqual("> Could not resolve all files for configuration ':testRuntimeClasspath'.\n"
+                         "   > Could not find com.example:lib:1.0.", failure.detail)
+
+    def test_a_jar_no_repository_has_is_a_bad_input(self) -> None:
+        # The POM resolves; Gradle names the missing file and its module.
+        failure: BadInput | Unreachable | None = self.failure(
+            "> Could not resolve all files for configuration ':testRuntimeClasspath'.\n"
+            "   > Could not find lib-1.0.jar (com.example:lib:1.0).\n     Searched in the following locations:\n"
+            f"         {self.POM.removesuffix('.pom')}.jar")
+        self.assertIsInstance(failure, BadInput)
+        self.assertEqual("> Could not resolve all files for configuration ':testRuntimeClasspath'.\n"
+                         "   > Could not find lib-1.0.jar (com.example:lib:1.0).", failure.detail)
 
 
 class EarlyExitTest(unittest.TestCase):
