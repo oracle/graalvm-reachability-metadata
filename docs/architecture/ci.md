@@ -77,6 +77,34 @@ It is one of the gates of §FS-repository-functional-spec.5.3, for the suite of
 §real-use-tests/FS-real-use-tests.3; the job itself is specified in
 §real-use-tests/AR-real-use-test-harness.4.
 
+### AR-test-changed-forge: Test changed Forge code
+
+Runs Forge's Python tests (`forge/tests`) and the Rhei program tests, which drive
+the `forge-metadata` state machine against a fake harness
+(§forge/AR-forge-workflow-pipeline.3), each with
+`python -m unittest discover -s tests`. It is the `test-*` gate of
+§FS-repository-functional-spec.5.3 for the Forge automation of
+§FS-repository-functional-spec.4.6, so a Forge change cannot merge with either
+suite failing.
+
+It runs the suites when a PR touches `forge/` or a file they read outside it: the
+PR publisher under `.github/scripts/forge_pr_publisher/`, the `stats/` schemas,
+and the committed run records (`stats/*/*/*/execution-metrics.json`), which the
+path-provenance tests scan for operator paths (§forge/FS-durable-generation-logs).
+A record carrying one thus fails the PR that commits it, not the next Forge
+change. On any other PR the job succeeds without running them. A push to
+`master` on those paths runs them too, since two PRs can pass apart and fail
+together.
+
+The job installs only `forge/requirements.txt`, on Python 3.10, the floor of
+`requires-python` in `forge/pyproject.toml`, and sets up a GraalVM for JDK 25
+(§forge/FS-forge-host-requirements), without which the code coverage tests that
+compile and run Java skip. No GitHub credentials reach the tests, and the suites
+must pass on any host and from any checkout location: they isolate the home,
+temporary and Gradle user directories, never reach the network, and compute the
+paths they expect. It is a single job, so its name is the required context itself
+(§AR-required-status-checks).
+
 ### AR-test-changed-infrastructure: Test changed infrastructure
 
 Triggers on PRs touching `tests/tck-build-logic/`, `gradle/`, `build.gradle`,
