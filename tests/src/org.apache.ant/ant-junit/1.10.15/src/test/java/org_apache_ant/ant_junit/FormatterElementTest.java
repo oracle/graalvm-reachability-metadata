@@ -97,11 +97,11 @@ public class FormatterElementTest {
         project.setBaseDir(directory.toFile());
         JUnitTask task = new JUnitTask();
         task.setProject(project);
-        task.init();
+        // Use application classes without scanning physical JARs for Ant's implicit classpath.
+        task.setIncludeantruntime(false);
         task.setFork(false);
         if (configureClasspath) {
             task.createClasspath();
-            task.setIncludeantruntime(false);
         }
         task.setHaltonerror(true);
         task.setHaltonfailure(true);

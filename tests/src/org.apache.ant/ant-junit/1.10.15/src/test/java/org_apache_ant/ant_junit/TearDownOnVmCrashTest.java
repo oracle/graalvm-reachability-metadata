@@ -78,7 +78,7 @@ public class TearDownOnVmCrashTest {
         project.setBaseDir(directory.toFile());
         JUnitTask task = new JUnitTask();
         task.setProject(project);
-        task.init();
+        // The fork uses an explicit executable and does not need Ant's implicit JAR classpath.
         task.setFork(true);
         task.setIncludeantruntime(false);
         task.setTimeout(10000);

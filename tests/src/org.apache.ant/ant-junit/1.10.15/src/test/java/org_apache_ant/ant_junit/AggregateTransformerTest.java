@@ -15,6 +15,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -50,6 +51,8 @@ public class AggregateTransformerTest {
         format.setValue(AggregateTransformer.NOFRAMES);
         transformer.setFormat(format);
         transformer.setTodir(directory.toFile());
+        // Interpret the stylesheet instead of defining XSLTC translet classes at runtime.
+        transformer.createFactory().setName(TransformerFactoryImpl.class.getName());
 
         aggregator.execute();
 

@@ -59,10 +59,14 @@ public class JUnitTestRunnerTest {
         JUnitTest suite = new JUnitTest(JUnit4Scenario.class.getName());
         suite.setSkipNonTests(true);
         JUnitTestRunner runner = new JUnitTestRunner(suite, false, true, false);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        PlainJUnitResultFormatter formatter = new PlainJUnitResultFormatter();
+        formatter.setOutput(output);
+        runner.addFormatter(formatter);
 
         runner.run();
 
-        assertThat(runner.getRetCode()).isZero();
+        assertThat(runner.getRetCode()).as(output.toString(StandardCharsets.UTF_8)).isZero();
         assertThat(suite.runCount()).isEqualTo(2);
         assertThat(suite.skipCount()).isEqualTo(1);
         assertThat(suite.failureCount()).isZero();

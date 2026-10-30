@@ -14,9 +14,16 @@ dependencies {
     testImplementation "org.apache.ant:ant-junit:$libraryVersion"
     testImplementation "org.apache.ant:ant-junit4:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'xalan:xalan:2.7.3'
+    testImplementation 'xalan:serializer:2.7.3'
 }
 
 graalvmNative {
+    binaries {
+        test {
+            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {

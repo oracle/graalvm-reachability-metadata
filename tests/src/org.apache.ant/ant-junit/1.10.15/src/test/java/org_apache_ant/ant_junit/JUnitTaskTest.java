@@ -35,7 +35,8 @@ public class JUnitTaskTest {
         project.setBaseDir(directory.toFile());
         JUnitTask task = new JUnitTask();
         task.setProject(project);
-        task.init();
+        // Use application classes without scanning physical JARs for Ant's implicit classpath.
+        task.setIncludeantruntime(false);
         task.setFork(false);
         task.setHaltonerror(true);
         task.setHaltonfailure(true);
@@ -69,7 +70,7 @@ public class JUnitTaskTest {
         project.setBaseDir(directory.toFile());
         JUnitTask task = new JUnitTask();
         task.setProject(project);
-        task.init();
+        // Use application classes without scanning physical JARs for Ant's implicit classpath.
         task.setFork(false);
         task.setIncludeantruntime(false);
         task.createModulepath();
