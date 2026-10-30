@@ -15,6 +15,11 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    // ReflectUtils initializes by making ClassLoader.defineClass accessible.
+    jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
