@@ -9,6 +9,10 @@ workspace records no outcome. The fetch takes only unassigned issues
 work would wait until a maintainer found it. A launcher therefore resumes the
 stranded work of its host before it claims anything new.
 
+A launcher that is alive leaves an issue the same way when GitHub refuses the
+writes that claim or release it, so those writes wait out an outage, and a
+release one still refuses is retried by the next cycle (see 4).
+
 ## 1. Stranded work
 
 A claim is stranded when all of these hold:
@@ -49,3 +53,45 @@ The resumed run ends as every run does: its outcome decides the close-out
 (§FS-human-intervention-policy), and a resume Rhei cannot advance counts as any
 no-advance halt does. A cycle resumes at most one stranded claim, whichever
 queue it serves, and claims nothing new when it does.
+
+## 4. A release an outage refuses is retried
+
+The writes that claim and release an issue, its project status and its
+assignee, meet GitHub when an outage is most likely, since an outage is often
+why the run failed. Tried once, a short outage leaves the issue assigned and
+`In Progress`, or `In Progress` with no assignee, which neither the fetch nor
+the claim offers again, and at the claim it ends the cycle on a crash.
+
+### 4.1 A write waits out a transient condition
+
+Each claim and release write, and each read that confirms one, is retried with
+a bounded backoff when it meets a transient condition of
+§FS-forge-host-requirements.1: a rate limit, or an endpoint that cannot be
+reached. A write GitHub refuses for any other reason, a 404 or a missing
+permission among them, is not retried, since that will not change by itself.
+
+### 4.2 A release an outage leaves unconfirmed is recorded
+
+A release retries its writes a few times (§FS-forge-run-requirements) only
+while one of them fails transiently. One an outage still leaves unconfirmed is
+not left for a maintainer to release by hand: the launcher records it in the
+runs directory, and reports that the next cycle retries it. A release GitHub
+refused, and one GitHub answered but still shows claimed, are reported for a
+maintainer as before, and drop any record of the issue.
+
+### 4.3 The next cycle retries it first
+
+A cycle retries the releases its host recorded before it resumes or claims
+anything. While GitHub still refuses one, the cycle claims nothing and ends as
+a transient failure, so the loop backs off rather than strand another issue in
+the same outage. A retry never undoes a claim made since: it runs only while
+no live launcher works on the issue, GitHub shows the issue assigned to the
+user alone or to nobody, and the issue has not been updated since the release
+failed. An issue updated since may have been released by hand and claimed
+again, so its record is dropped and the issue named for a maintainer instead.
+
+### 4.4 A claim an outage interrupts is released
+
+A claim whose writes still fail transiently is released as in 4.2, and the
+cycle ends as a transient failure instead of crashing, so the loop backs off
+rather than claim the next candidate into the same outage.

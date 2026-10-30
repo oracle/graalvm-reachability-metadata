@@ -60,7 +60,8 @@ Files:
 - [run-outputs.md](run-outputs.md) — what a run leaves behind and prints: the
   metrics record, durable logs, legible output, run location, and run status.
 - [stranded-claims.md](stranded-claims.md) — how a launcher finds the claims a dead
-  launcher left on its host, and resumes their attempts.
+  launcher left on its host, and resumes their attempts, and how it retries a
+  claim or release an outage refused.
 - [tested-version-split.md](tested-version-split.md) — how a library-update run
   splits the entries that can no longer share its regenerated suite.
 - [strategies.md](strategies.md) — retired: strategies are fixed per label.
