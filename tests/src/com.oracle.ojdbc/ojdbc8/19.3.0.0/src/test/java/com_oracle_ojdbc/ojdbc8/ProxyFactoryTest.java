@@ -8,15 +8,48 @@ package com_oracle_ojdbc.ojdbc8;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import oracle.jdbc.internal.OracleConnection;
 import oracle.jdbc.internal.OracleOpaque;
 import oracle.jdbc.proxy.ProxyFactory;
 import oracle.jdbc.proxy._Proxy_;
+import oracle.jdbc.replay.driver.TxnReplayableConnection;
 import oracle.jdbc.replay.driver.TxnReplayableOpaque;
 import oracle.sql.OPAQUE;
 import oracle.sql.OpaqueDescriptor;
 import org.junit.jupiter.api.Test;
 
 public class ProxyFactoryTest {
+    @Test
+    void createsAndCachesAProxyOnTheFirstCacheLookup() throws Exception {
+        ProxyFactory factory = ProxyFactory.createProxyFactory(TxnReplayableOpaque.class);
+        OpaqueDescriptor descriptor = OpaqueDescriptor.createDescriptor("SYS.ANYTYPE", null);
+        OPAQUE value = new OPAQUE(descriptor, null, new byte[] {3, 9, 27});
+
+        OracleOpaque proxy = factory.<OracleOpaque>proxyForCache(value, factory, null, null);
+
+        assertThat(proxy).isNotSameAs(value);
+        assertThat(ProxyFactory.extractDelegate((_Proxy_) proxy)).isSameAs(value);
+        assertThat(factory.<OracleOpaque>proxyForCache(value, factory, null, null)).isSameAs(proxy);
+        assertThat(value.getBytesValue()).containsExactly(3, 9, 27);
+    }
+
+    @Test
+    void storesCachedConnectionProxiesOnTheirPhysicalDelegates() throws Exception {
+        ProxyFactory factory = ProxyFactory.createProxyFactory(TxnReplayableConnection.class);
+        OfflineConnection cachedDelegate = new OfflineConnection();
+        OfflineConnection createdDelegate = new OfflineConnection();
+
+        OracleConnection cached = factory.<OracleConnection>proxyForCache(cachedDelegate, factory, null, null);
+        OracleConnection created = factory.<OracleConnection>proxyForCreateCache(createdDelegate, factory, null, null);
+
+        assertThat(cachedDelegate.getACProxy()).isSameAs(cached);
+        assertThat(createdDelegate.getACProxy()).isSameAs(created);
+        assertThat(factory.<OracleConnection>proxyForCache(cachedDelegate, factory, null, null)).isSameAs(cached);
+        assertThat(factory.<OracleConnection>proxyForCache(createdDelegate, factory, null, null)).isSameAs(created);
+        assertThat(ProxyFactory.extractDelegate((_Proxy_) cached)).isSameAs(cachedDelegate);
+        assertThat(ProxyFactory.extractDelegate((_Proxy_) created)).isSameAs(createdDelegate);
+    }
+
     @Test
     void usesPreGeneratedReplayProxiesForCacheAndCreatePolicies() throws Exception {
         ProxyFactory factory = ProxyFactory.createProxyFactory(TxnReplayableOpaque.class);
