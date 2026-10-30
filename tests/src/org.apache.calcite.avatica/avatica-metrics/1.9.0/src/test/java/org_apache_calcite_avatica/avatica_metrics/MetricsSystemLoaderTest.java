@@ -1,0 +1,31 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_apache_calcite_avatica.avatica_metrics;
+
+import org.apache.calcite.avatica.metrics.MetricsSystem;
+import org.apache.calcite.avatica.metrics.MetricsSystemLoader;
+import org.apache.calcite.avatica.metrics.noop.NoopMetricsSystem;
+import org.apache.calcite.avatica.metrics.noop.NoopMetricsSystemConfiguration;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class MetricsSystemLoaderTest {
+    @Test
+    void fallsBackToNoopWhenNoProviderIsInstalled() {
+        MetricsSystem metrics = MetricsSystemLoader.load(NoopMetricsSystemConfiguration.getInstance());
+
+        assertSame(NoopMetricsSystem.getInstance(), metrics);
+        assertSame(metrics, MetricsSystemLoader.load(NoopMetricsSystemConfiguration.getInstance()));
+    }
+
+    @Test
+    void rejectsMissingConfiguration() {
+        assertThrows(NullPointerException.class, () -> MetricsSystemLoader.load(null));
+    }
+}
