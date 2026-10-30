@@ -100,12 +100,13 @@ the stage-specific `fails-*` label — `fails-javac-compile`, `fails-java-run`,
 `fails-native-image-build`, or `fails-native-image-run` — derived from the stage
 that `run-consecutive-tests.sh` isolated. When the library's unique
 `latest: true` index entry also sets `high-priority: true`, the issue additionally
-receives the `high-priority` label. `fails-native-image-build` issues are
-assigned to a maintainer for follow-up; the other three are the queue that Forge
-claims and resolves into `fixes-*` repair PRs. The body collects one section per
-failing environment (OS, JDK, native-image mode, reproducer command, runner-log
-URL, and the log tail), proportionally truncated to stay within GitHub's issue
-size limit. Issue creation is idempotent: a pair that already has a matching open
+receives the `high-priority` label. Forge claims the issues of all four labels
+and resolves them into `fixes-*` repair PRs (§forge/FS-forge-scope.1), but a
+`fails-native-image-build` issue is assigned to a maintainer for follow-up
+first, and Forge takes it only once the maintainer removes the assignment. The
+body collects one section per failing environment (OS, JDK, native-image mode,
+reproducer command, runner-log URL, and the log tail), proportionally truncated
+to stay within GitHub's issue size limit. Issue creation is idempotent: a pair that already has a matching open
 `[Automation] … fails for …` issue is skipped, and a pair that the latest
 `origin/master` already supports is treated as a stale failure and skipped.
 

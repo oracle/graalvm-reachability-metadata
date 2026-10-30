@@ -260,15 +260,17 @@ remains the explore goal and the coverage gate's baseline
 New-library PRs link with `Fixes:` for a single-PR run and `Refs:` for non-final
 chunked dynamic-access chunks (§AR-chunked-linking).
 
-### 2. Java fail-fix (javac and java-run)
+### 2. Repair fail-fix (javac, java-run, and native-image build)
 
-Trusted templates `fixes-javac-fail` and `fixes-java-run-fail` share one body
-shape:
+Trusted templates `fixes-javac-fail`, `fixes-java-run-fail`, and
+`fixes-native-image-build-fail` share one body shape:
 the agent generation metrics, a stats comparison for the bumped version, and a
 bounded test-source comparison so reviewers can see what the fix changed without
-preventing PR creation. The two differ only in workflow identity (compilation
-vs. runtime wording), the metrics file, and the PR label
-(§AR-java-fail-fix-workflow).
+preventing PR creation. The three differ only in workflow identity (Java
+compilation, JVM runtime, or Native Image build wording), the metrics file, and
+the PR label (§AR-java-fail-fix-workflow). A native-image build repair is an
+agent repair of the test project, its flags, or its metadata like the other
+two, so it takes their shape rather than the run-fix template below.
 
 When post-repair dynamic-access exploration is skipped because the report
 exceeds the configured class threshold, the body reports only what that run
@@ -288,7 +290,7 @@ The locally generated follow-up issue keeps the coordinate in its title and uses
 brief sentence stating that it was opened while resolving the repair issue
 because the dynamic-access class count exceeded the threshold.
 
-Neither template blocks on a dynamic-access category regression between the
+None of the three blocks on a dynamic-access category regression between the
 previous and repaired version; coverage trade-offs are settled in review
 (§AR-java-fail-fix-workflow).
 
