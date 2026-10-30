@@ -344,6 +344,17 @@ class PrepareTest(unittest.TestCase):
                           f"> Failed to resolve JAR for {COORDINATE}"),
                          (self.outcome()["reason"], self.outcome()["detail"]))
 
+    def test_a_coordinate_whose_jar_no_repository_serves_is_a_bad_input(self) -> None:
+        # A POM without its JAR, as javax.ejb:ejb:2.0 on Maven Central, fails the same way on every
+        # retry; the detail names the file (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "jar"})
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assertEqual((f"prepare: bad input: {COORDINATE} has no artifact a JVM test project can use",
+                          "> Could not resolve all files for configuration ':detachedConfiguration1'.\n"
+                          f"   > Could not find lib-2.0.0.jar ({COORDINATE})."),
+                         (self.outcome()["reason"], self.outcome()["detail"]))
+
     def test_a_scaffold_that_fails_otherwise_is_an_infrastructure_failure(self) -> None:
         # An unreachable repository, or an artifact other than the coordinate missing, is retried
         # by a later cycle (§AR-forge-workflow-pipeline.4.1).

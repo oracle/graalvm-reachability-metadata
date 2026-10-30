@@ -28,8 +28,9 @@ UPSTREAM: str = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH: str = "master"
 # Gradle's innermost cause for a module no repository has, or none a JVM test can use, and
 # the scaffold's for a coordinate without a JAR, such as a BOM (§AR-forge-workflow-pipeline.4.1).
-ABSENT: re.Pattern[str] = re.compile(r"Could not find (?:any matches for |any version that matches )?[\w.-]+:[\w.-]+"
-                                     r"|No matching variant of |Failed to resolve JAR for ")
+# A file of a module, `Could not find ejb-2.0.jar (javax.ejb:ejb:2.0)`, is a POM without its JAR.
+ABSENT: re.Pattern[str] = re.compile(r"Could not find (?:any matches for |any version that matches |[\w.-]+ \()?"
+                                     r"[\w.-]+:[\w.-]+|No matching variant of |Failed to resolve JAR for ")
 # The wrapper around any cause, an offline cache miss or a corrupt POM too: it only adds detail.
 WRAPPER: re.Pattern[str] = re.compile(r"Could not resolve ")
 # A repository access failure: Gradle reports a 404 as `Could not find`, so any status here,
@@ -62,8 +63,8 @@ def dependency_failure(result: TaskResult, reason: str, coordinate: str = "") ->
     """What a failed build's dependency resolution says, decided as the issue-form gate decides.
 
     A repository that failed is `Unreachable`, an infrastructure failure a later
-    cycle retries; a module no repository has, or none a JVM test can use, is a
-    `BadInput` naming `reason`, since it fails identically on every retry
+    cycle retries; a module or its JAR no repository has, or none a JVM test can
+    use, is a `BadInput` naming `reason`, since it fails identically on every retry
     (§AR-forge-workflow-pipeline.4.1); anything else is `None`. Only innermost
     cause lines decide, and with `coordinate` only those naming it. The detail is
     the cause and wrapper lines, each once and in order: an excerpt of a long
