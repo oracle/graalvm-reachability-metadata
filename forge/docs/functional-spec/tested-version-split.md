@@ -125,3 +125,15 @@ older, nothing else moves: the new entry lists only the requested version, and
 the baseline keeps every other tested version, because its metadata already
 covers its own range and an entry left without tested versions would support
 nothing.
+
+The copy leaves out the baseline's exhaust report, so the new version starts
+with none. That report is the baseline's chunk state
+(§AR-dynamic-access-exhaust-report): its classes, its issue, and its chunk
+publication belong to the baseline's runs. Copied, it would ship with the new
+version's tests: a chunk of the new version would extend the baseline's record
+instead of starting its own, and once merged the copy would read as the new
+version's own, so a later run would skip classes no run of it processed.
+Leaving it out loses nothing: the copied tests still cover every class the
+baseline completed, and the new version's run measures its dynamic-access
+report afresh and decides from its own count whether to chunk
+(§FS-forge-chunked-dynamic-access).

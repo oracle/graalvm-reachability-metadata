@@ -351,7 +351,7 @@ class PrepareTest(PrepareCase):
                                  (chunk.active, chunk.processed, chunk.budget))
 
     def test_another_versions_report_does_not_chunk_an_unlabeled_issue(self) -> None:
-        """Neither the copy a new version is cloned with nor a report naming another version is its own."""
+        """Neither the report of the baseline it is added beside nor one naming another version is its own."""
         cases: dict[str, tuple[str, ...]] = {"cloned beside 1.5.0's": (), "naming 1.5.0": ("2.0.0",)}
         for case, owned in cases.items():
             with self.subTest(case=case):
@@ -363,6 +363,29 @@ class PrepareTest(PrepareCase):
                 self.fake.issue("library-update-request")
                 self.assertEqual(OK, self.prepare())
                 self.assertFalse(load(self.fake.workspace).chunk.active)
+
+    def test_an_added_version_starts_without_its_baselines_exhaust_report(self) -> None:
+        """The copy leaves the baseline's chunk state behind (§FS-library-update-tested-version-split.3)."""
+        cases: dict[str, tuple[tuple[str, ...], str, str]] = {
+            "a new version beside 1.5.0": (("1.5.0",), "library-update-request", f"Support {COORDINATE}"),
+            "a tested version split out of 1.5.0": (("1.5.0", "1.5.1"), "fails-javac-compile",
+                                                    "Fails org.example:lib:1.5.1"),
+        }
+        for case, (tested_versions, label, title) in cases.items():
+            with self.subTest(case=case):
+                self.setUp()
+                self.fake.supported_library(tested_versions=tested_versions)
+                self.exhaust_report("1.5.0", PREVIOUS)
+                self.fake.issue(label, title=title)
+                self.assertEqual(OK, self.prepare())
+                state = load(self.fake.workspace)
+                added: str = os.path.join(state.test_dir, EXHAUST_REPORT_FILENAME)
+                self.assertTrue(os.path.isfile(state.path(os.path.join(state.test_dir, "build.gradle"))))
+                self.assertFalse(os.path.exists(state.path(added)))
+                # The checkpoint commits the coordinate's roots, so the copy would ship with the version.
+                self.assertEqual("", git_output(state.worktree, "ls-tree", "--name-only", state.checkpoint, "--", added))
+                baseline: str = os.path.join("tests", "src", "org.example", "lib", "1.5.0", EXHAUST_REPORT_FILENAME)
+                self.assertEqual(PREVIOUS, DynamicAccessExhaustReport.load(state.path(baseline)).coordinate)
 
     def test_chunked_issue_without_exhaust_report_is_a_bad_input(self) -> None:
         self.fake.supported_library()
