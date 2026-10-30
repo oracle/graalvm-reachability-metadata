@@ -71,7 +71,27 @@ public class FormatterElementTest {
         assertThat(Files.readString(directory.resolve("preconfigured.txt"))).contains("Tests run: 1");
     }
 
+    @Test
+    void loadsACustomFormatterWithTheConfiguredTaskClassloader() throws Exception {
+        FormatterElement formatter = new FormatterElement();
+        formatter.setClassname(ProjectAwareFormatter.class.getName());
+        formatter.setExtension(".txt");
+        Project expected = new Project();
+        formatter.setProject(expected);
+
+        runWith(formatter, "task-classloader", true);
+
+        assertThat(ProjectAwareFormatter.latest.project).isSameAs(expected);
+        assertThat(ProjectAwareFormatter.latest.setterCalls).isEqualTo(1);
+        assertThat(Files.readString(directory.resolve("task-classloader.txt")))
+                .contains("Tests run: 1", "Failures: 0", "Errors: 0");
+    }
+
     private void runWith(FormatterElement formatter, String outputName) throws Exception {
+        runWith(formatter, outputName, false);
+    }
+
+    private void runWith(FormatterElement formatter, String outputName, boolean configureClasspath) throws Exception {
         Project project = new Project();
         project.init();
         project.setBaseDir(directory.toFile());
@@ -79,6 +99,10 @@ public class FormatterElementTest {
         task.setProject(project);
         task.init();
         task.setFork(false);
+        if (configureClasspath) {
+            task.createClasspath();
+            task.setIncludeantruntime(false);
+        }
         task.setHaltonerror(true);
         task.setHaltonfailure(true);
         JUnitTest suite = new JUnitTest(JUnitTaskTest.ConsumerSuite.class.getName());

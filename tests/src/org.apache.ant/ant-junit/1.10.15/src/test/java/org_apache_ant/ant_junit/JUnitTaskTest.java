@@ -61,6 +61,38 @@ public class JUnitTaskTest {
                 .contains("testConsumerCheck", "tests=\"1\"", "failures=\"0\"", "errors=\"0\"");
     }
 
+    @Test
+    void executesASuiteWithAnEmptyModulePathUsingApplicationClasses() throws Exception {
+        ConsumerCase.executions.set(0);
+        Project project = new Project();
+        project.init();
+        project.setBaseDir(directory.toFile());
+        JUnitTask task = new JUnitTask();
+        task.setProject(project);
+        task.init();
+        task.setFork(false);
+        task.setIncludeantruntime(false);
+        task.createModulepath();
+        task.setHaltonerror(true);
+        task.setHaltonfailure(true);
+
+        FormatterElement formatter = new FormatterElement();
+        FormatterElement.TypeAttribute type = new FormatterElement.TypeAttribute();
+        type.setValue("xml");
+        formatter.setType(type);
+        task.addFormatter(formatter);
+        JUnitTest suite = new JUnitTest(ConsumerSuite.class.getName());
+        suite.setTodir(directory.toFile());
+        suite.setOutfile("modulepath-results");
+        task.addTest(suite);
+
+        task.execute();
+
+        assertThat(ConsumerCase.executions.get()).isEqualTo(1);
+        assertThat(Files.readString(directory.resolve("modulepath-results.xml")))
+                .contains("testConsumerCheck", "tests=\"1\"", "failures=\"0\"", "errors=\"0\"");
+    }
+
     public static class ConsumerSuite {
         public static TestSuite suite() {
             TestSuite suite = new TestSuite("consumer suite");
