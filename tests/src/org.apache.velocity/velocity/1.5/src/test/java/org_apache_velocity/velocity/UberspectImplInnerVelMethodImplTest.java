@@ -14,11 +14,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UberspectImplInnerVelMethodImplTest {
     @Test
     void invokesContextObjectMethodsWithArguments() throws Exception {
-        StringBuilder message = new StringBuilder("Hello");
+        Message message = new Message("Hello");
         VelocityContext context = new VelocityContext();
         context.put("message", message);
         assertEquals("Hello Atlas|11", VelocityTestSupport.render(context,
                 "$message.append(' Atlas')|$message.length()"));
         assertEquals("Hello Atlas", message.toString());
+    }
+
+    public static class Message {
+        private final StringBuilder text;
+
+        public Message(String text) {
+            this.text = new StringBuilder(text);
+        }
+
+        public Message append(String suffix) {
+            text.append(suffix);
+            return this;
+        }
+
+        public int length() {
+            return text.length();
+        }
+
+        @Override
+        public String toString() {
+            return text.toString();
+        }
     }
 }
