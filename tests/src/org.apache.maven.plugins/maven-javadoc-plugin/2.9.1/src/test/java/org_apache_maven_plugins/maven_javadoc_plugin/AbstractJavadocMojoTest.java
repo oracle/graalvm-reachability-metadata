@@ -10,6 +10,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
@@ -66,7 +67,7 @@ public class AbstractJavadocMojoTest {
         ((XmlPlexusConfiguration) configuration.getChild("detectJavaApiLink")).setValue("true");
         ((XmlPlexusConfiguration) configuration.getChild("isOffline")).setValue("true");
         ((XmlPlexusConfiguration) configuration.getChild("javadocOptionsDir")).setValue(directory.resolve("options").toString());
-        new BasicComponentConfigurator().configureComponent(report, configuration, new ExpressionEvaluator() {
+        ExpressionEvaluator evaluator = new ExpressionEvaluator() {
             @Override
             public Object evaluate(String expression) {
                 return "${project}".equals(expression) ? project : expression;
@@ -76,7 +77,8 @@ public class AbstractJavadocMojoTest {
             public File alignToBaseDirectory(File file) {
                 return file.isAbsolute() ? file : directory.resolve(file.getPath()).toFile();
             }
-        }, null);
+        };
+        new BasicComponentConfigurator().configureComponent(report, configuration, evaluator, null);
         report.setDestDir("apidocs");
         Path output = directory.resolve("apidocs");
         report.setReportOutputDirectory(output.toFile());
@@ -87,5 +89,24 @@ public class AbstractJavadocMojoTest {
                 .contains("A greeting service.", "Returns a greeting.");
         assertThat(Files.readString(output.resolve("stylesheet.css"))).contains("body");
         assertThat(Files.readString(directory.resolve("options/package-list"))).contains("java.lang");
+
+        Files.writeString(sources.getParent().resolve("documentation.css"), """
+                /* Project documentation theme. */
+                body { color: #123456; }
+                """);
+        XmlPlexusConfiguration themeConfiguration = new XmlPlexusConfiguration("configuration");
+        ((XmlPlexusConfiguration) themeConfiguration.getChild("stylesheetfile")).setValue("documentation.css");
+        new BasicComponentConfigurator().configureComponent(report, themeConfiguration, evaluator, null);
+
+        report.generate(null, Locale.ENGLISH);
+
+        try (Stream<Path> generatedFiles = Files.walk(output)) {
+            Path stylesheet = generatedFiles
+                    .filter(path -> path.getFileName().toString().equals("documentation.css"))
+                    .findFirst().orElseThrow();
+            assertThat(Files.readString(stylesheet)).contains("Project documentation theme.", "#123456");
+        }
+        assertThat(Files.readString(output.resolve("example/Greeting.html")))
+                .contains("A greeting service.", "documentation.css");
     }
 }
