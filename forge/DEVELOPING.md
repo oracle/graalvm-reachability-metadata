@@ -37,6 +37,17 @@ Forge is located inside `graalvm-reachability-metadata/forge`. The parent checko
 
 Tip: Use --help on any script for detailed usage and flags.
 
+### Running the tests
+
+CI runs both suites on every pull request that touches Forge, on Python 3.10
+with only `requirements.txt` installed (§root/AR-test-changed-forge). Run them
+the same way from this directory:
+
+```console
+python3 -m unittest discover -s tests
+(cd .agent-grounds/rhei/programs && python3 -m unittest discover -s tests)
+```
+
 ### Working on the forge-metadata template
 
 The states, routes, and agent instructions live in

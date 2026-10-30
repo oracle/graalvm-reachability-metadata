@@ -201,10 +201,12 @@ class FakeRepository:
 
     @staticmethod
     def index_entry(version: str, tested_versions: tuple[str, ...]) -> dict[str, Any]:
+        # Unreachable `file:` URLs, as in test_workflow.py: a source download fails at once, never on the network.
         return {"metadata-version": version, "tested-versions": list(tested_versions), "latest": True,
-                "allowed-packages": ["org.example"], "source-code-url": "https://example.org/src",
-                "test-code-url": "https://example.org/test", "documentation-url": "https://example.org/doc",
-                "repository-url": "https://example.org/repo"}
+                "allowed-packages": ["org.example"], "source-code-url": "file:///nonexistent/index/src.jar",
+                "test-code-url": "file:///nonexistent/index/test.jar",
+                "documentation-url": "file:///nonexistent/index/doc.jar",
+                "repository-url": "file:///nonexistent/index/repo"}
 
     def supported_files(self, version: str, covered: int, total: int) -> None:
         self.write(f"metadata/org.example/lib/{version}/reachability-metadata.json", "{}\n")

@@ -140,6 +140,7 @@ class TargetTest(unittest.TestCase):
     def test_the_fetch_forwards_the_blocker_override(self) -> None:
         for extra, expected in (([], False), (["--take-blocked-issues"], True)):
             with patch.object(forge_metadata, "fetch_candidates", return_value=[]) as fetch, \
+                    patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                     contextlib.redirect_stderr(io.StringIO()):
                 forge_metadata.main(extra)
             self.assertEqual(expected, fetch.call_args.args[2])
