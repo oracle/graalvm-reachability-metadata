@@ -19,7 +19,7 @@ from typing import Any
 
 import yaml
 
-from support import COORDINATE, FakeRepository, play_fix, working_directory
+from support import COORDINATE, FakeRepository, TEMPLATE, play_fix, working_directory
 from test_prepare import prepare_arguments
 from test_workflow import URLS
 
@@ -36,8 +36,6 @@ from exit_codes import (  # noqa: E402
 )
 from run_state import RunState, load, read_json, runtime_path  # noqa: E402
 
-TEMPLATE: str = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-                             "templates", "forge-metadata", "states.yaml")
 REQUEST: str = 'It fails at runtime; please add:\n```json\n{"reflection": [{"type": "org.example.lib.Codec"}]}\n```\n'
 
 

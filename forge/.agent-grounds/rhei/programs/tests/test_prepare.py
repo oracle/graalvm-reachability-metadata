@@ -15,10 +15,19 @@ import subprocess
 import unittest
 from typing import Any
 
-from support import COORDINATE, PREVIOUS, FakeRepository, working_directory
+import yaml
+
+from support import COORDINATE, PREVIOUS, TEMPLATE, FakeRepository, working_directory
+from utility_scripts.gradle_environment import (
+    GRADLE_MODULES_CACHE_DIR,
+    checkout_gradle_home_for_repo,
+    gradle_user_home_for_repo,
+    read_only_dependency_cache_path,
+)
 
 import forge_run  # noqa: E402
 import prepare  # noqa: E402
+import run_note  # noqa: E402
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
 from exit_codes import BAD_INPUT, NOT_FOR_NATIVE_IMAGE_RECORDED, OK  # noqa: E402
 from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, load, read_json, runtime_path  # noqa: E402
@@ -151,6 +160,49 @@ class PrepareTest(unittest.TestCase):
         with contextlib.redirect_stderr(io.StringIO()) as errors:
             self.assertEqual(OK, self.prepare())
         self.assertIn("shared Gradle dependency cache was not prepared: No space left on device", errors.getvalue())
+
+    def search_roots(self) -> list[str]:
+        """The lines of the run note's search-roots section."""
+        with open(runtime_path(self.fake.workspace, "run.md"), encoding="utf-8") as handle:
+            section: str = handle.read().split("## Search roots\n", 1)[1]
+        return section.strip().split("\n\n", 1)[0].splitlines()
+
+    def test_the_run_note_lists_only_search_roots_that_exist(self) -> None:
+        # A first run has no published cache: its root is left out, never an empty path
+        # an agent's walk could turn into `/` (§FS-forge-agent-runtime-selection.1).
+        os.environ["GRAALVM_HOME"] = self.fake.graalvm("graalvm-ga")
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        state = load(self.fake.workspace)
+        self.assertEqual([f"- Run workspace: `{os.path.realpath(self.fake.workspace)}`",
+                          f"- Worktree: `{state.worktree}`",
+                          f"- Main sources: `{run_note.source_context_dir(state)}`",
+                          f"- Gradle user home: `{gradle_user_home_for_repo(state.worktree)}`",
+                          f"- GraalVM home: `{os.environ['GRAALVM_HOME']}`"], self.search_roots())
+        self.assertTrue(os.path.isdir(run_note.source_context_dir(state)))
+
+    def test_the_run_note_lists_a_published_dependency_cache(self) -> None:
+        cache: str = read_only_dependency_cache_path(checkout_gradle_home_for_repo(self.fake.repo))
+        self.fake.shared_cache.side_effect = (
+            lambda _repo, _worktree: os.makedirs(os.path.join(cache, GRADLE_MODULES_CACHE_DIR)))
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        self.assertIn(f"- Read-only Gradle dependency cache: `{cache}`", self.search_roots())
+
+    def test_every_agent_state_walks_only_from_the_search_roots(self) -> None:
+        # Any state an agent runs in can go looking for a file, so each carries the rule
+        # (§FS-forge-agent-runtime-selection.1).
+        with open(TEMPLATE, encoding="utf-8") as handle:
+            states: dict[str, dict[str, Any]] = yaml.safe_load(handle)["states"]
+        agents: dict[str, dict[str, Any]] = {name: spec for name, spec in states.items() if "target" in spec}
+        self.assertEqual({"setup", "cover", "fix"}, set(agents))
+        for name, spec in agents.items():
+            with self.subTest(state=name):
+                self.assertIn({"name": "run", "path": "runtime/forge/run.md"}, spec["inputs"])
+                self.assertIn("Walk or search the file system only from the search roots `{input.run.path}` lists; "
+                              "outside them, open only a file whose path you were given. Never walk `/tmp`, "
+                              "`$HOME`, or `/`, even to reach one of them",
+                              " ".join(spec["instructions"].split()))
 
     def test_update_adds_the_version_beside_the_supported_one(self) -> None:
         self.fake.supported_library()

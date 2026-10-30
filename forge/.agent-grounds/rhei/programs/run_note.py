@@ -14,6 +14,7 @@ from __future__ import annotations
 import os
 import re
 
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import find_index_entry_for_version
 
 import skip_record
@@ -26,6 +27,26 @@ def source_context_dir(state: RunState) -> str:
     """Where the setup tail downloads the main sources (§AR-forge-workflow-pipeline.4.1)."""
     return os.path.join(state.worktree, "forge", "local_repositories", "source_context",
                         state.group, state.artifact, state.version)
+
+
+def search_roots(workspace: str, state: RunState) -> list[tuple[str, str]]:
+    """Each run tree an agent may walk, absolute and present (§FS-forge-agent-runtime-selection.1).
+
+    The Gradle homes are the ones the run's Gradle commands get, so the
+    read-only cache is listed only once it is published. The main sources are
+    created empty here: the setup tail fills them after `setup` reads the note.
+    """
+    os.makedirs(source_context_dir(state), exist_ok=True)
+    gradle: dict[str, str] = gradle_command_environment(state.worktree)
+    roots: list[tuple[str, str]] = [
+        ("Run workspace", os.path.abspath(workspace)),
+        ("Worktree", state.worktree),
+        ("Main sources", source_context_dir(state)),
+        ("Gradle user home", gradle["GRADLE_USER_HOME"]),
+        ("Read-only Gradle dependency cache", gradle.get("GRADLE_RO_DEP_CACHE", "")),
+        ("GraalVM home", gradle.get("GRAALVM_HOME", "")),
+    ]
+    return [(label, path) for label, path in roots if path and os.path.isdir(path)]
 
 
 def url_discovery_command(state: RunState) -> str:
@@ -71,6 +92,10 @@ def write(workspace: str, state: RunState) -> None:
         f"- URL discovery: `{url_discovery_command(state)}`",
         f"- Reporter-requested metadata: `{runtime_path(workspace, 'reporter-request.md')}`"
         if state.has_reporter_request else "- Reporter-requested metadata: none",
+        "",
+        "## Search roots",
+        "",
+        *(f"- {label}: `{path}`" for label, path in search_roots(workspace, state)),
         "",
     ]
     if state.route == ROUTE_REPAIR:
