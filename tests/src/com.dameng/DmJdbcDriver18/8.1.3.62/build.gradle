@@ -17,6 +17,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // dm.jdbc.internal.enums.ENCODING eagerly resolves GB18030.
+            buildArgs.add('-H:+AddAllCharsets')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
