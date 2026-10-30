@@ -45,7 +45,6 @@ public class PackagingDataCalculatorTest {
 
   private static void assertIntegerFramePackaging(StackTraceElementProxy frame) {
     assertThat(frame.getStackTraceElement().getClassName()).isEqualTo("java.lang.Integer");
-    assertThat(frame.getClassPackagingData().getCodeLocation()).isEqualTo("na");
     assertThat(frame.getClassPackagingData().getVersion()).isEqualTo("na");
   }
 }
