@@ -7,6 +7,7 @@
 package com_google_inject.guice;
 
 import com.google.inject.Injector;
+import com_google_inject.guice.ConstructionContextTest.CircularServices;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
