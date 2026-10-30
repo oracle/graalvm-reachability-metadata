@@ -10,21 +10,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apiguardian.api.API;
 import org.junit.jupiter.api.Test;
-import org.springframework.asm.ClassReader;
 import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.core.type.classreading.AnnotationMetadataReadingVisitor;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 
-/** Verifies legacy annotation metadata resolution of enum constants. */
-@SuppressWarnings("deprecation")
+/** Verifies annotation metadata resolution of enum constants. */
 public class AbstractRecursiveAnnotationVisitorTest {
     @Test
     void resolvesEnumConstantWhileReadingDependencyClassMetadata() throws Exception {
-        AnnotationMetadataReadingVisitor visitor =
-                new AnnotationMetadataReadingVisitor(getClass().getClassLoader());
-        new ClassReader(Test.class.getName()).accept(visitor, ClassReader.SKIP_CODE);
+        MetadataReader reader = new SimpleMetadataReaderFactory(getClass().getClassLoader())
+                .getMetadataReader(Test.class.getName());
 
-        AnnotationAttributes attributes =
-                visitor.getAnnotationAttributes(API.class.getName(), false);
+        AnnotationAttributes attributes = AnnotationAttributes.fromMap(
+                reader.getAnnotationMetadata().getAnnotationAttributes(API.class.getName(), false));
 
         assertThat(attributes).isNotNull();
         API.Status status = attributes.getEnum("status");

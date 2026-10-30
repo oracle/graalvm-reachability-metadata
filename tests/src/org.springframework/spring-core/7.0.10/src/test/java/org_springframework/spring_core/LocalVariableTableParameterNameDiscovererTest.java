@@ -11,17 +11,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.io.ByteArrayResource;
 
-/** Verifies that parameter discovery reads the declaring class resource. */
-@SuppressWarnings("deprecation")
+/** Verifies default parameter discovery for a dependency method. */
 public class LocalVariableTableParameterNameDiscovererTest {
     @Test
-    void readsMethodParameterNamesFromClassResource() throws Exception {
+    void readsMethodParameterNames() throws Exception {
         Method method = ByteArrayResource.class.getDeclaredMethod("equals", Object.class);
-        LocalVariableTableParameterNameDiscoverer discoverer =
-                new LocalVariableTableParameterNameDiscoverer();
+        DefaultParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
 
         String[] names = discoverer.getParameterNames(method);
 

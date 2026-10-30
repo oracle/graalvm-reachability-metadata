@@ -12,16 +12,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.StandardReflectionParameterNameDiscoverer;
 import org.springframework.core.io.ByteArrayResource;
 
-/** Verifies executable resolution while reading local-variable tables. */
-@SuppressWarnings("deprecation")
+/** Verifies reflective parameter discovery for methods and constructors. */
 public class LocalVariableTableParameterNameDiscovererInnerLocalVariableTableVisitorTest {
     @Test
     void resolvesMethodAndConstructorParameterNames() throws Exception {
-        LocalVariableTableParameterNameDiscoverer discoverer =
-                new LocalVariableTableParameterNameDiscoverer();
+        StandardReflectionParameterNameDiscoverer discoverer =
+                new StandardReflectionParameterNameDiscoverer();
         Method method = ByteArrayResource.class.getDeclaredMethod("equals", Object.class);
         Constructor<ByteArrayResource> constructor =
                 ByteArrayResource.class.getDeclaredConstructor(byte[].class, String.class);
