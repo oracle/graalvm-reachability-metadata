@@ -23,6 +23,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-host-requirements](host-requirements.md#fs-forge-host-requirements-host-requirements) | Host requirements |
 | [§FS-forge-agent-runtime-selection](functional-spec.md#fs-forge-agent-runtime-selection-two-agent-inputs) | Two agent inputs |
 | [§FS-forge-run-requirements](functional-spec.md#fs-forge-run-requirements-run-requirements) | Run requirements |
+| [§FS-forge-stranded-claims](stranded-claims.md#fs-forge-stranded-claims-a-claim-whose-launcher-died-is-resumed) | A claim whose launcher died is resumed |
 | [§FS-forge-outputs](run-outputs.md#fs-forge-outputs-run-outputs) | Run outputs |
 | [§FS-forge-run-metrics](run-outputs.md#fs-forge-run-metrics-per-run-metrics-record) | Per-run metrics record |
 | [§FS-durable-generation-logs](run-outputs.md#fs-durable-generation-logs-durable-generation-and-session-logs) | Durable generation and session logs |
@@ -58,6 +59,8 @@ Files:
   before any work is claimed, and how a transient failure waits.
 - [run-outputs.md](run-outputs.md) — what a run leaves behind and prints: the
   metrics record, durable logs, legible output, run location, and run status.
+- [stranded-claims.md](stranded-claims.md) — how a launcher finds the claims a dead
+  launcher left on its host, and resumes their attempts.
 - [tested-version-split.md](tested-version-split.md) — how a library-update run
   splits the entries that can no longer share its regenerated suite.
 - [strategies.md](strategies.md) — retired: strategies are fixed per label.
