@@ -1,10 +1,11 @@
 # Vendor-dependent coverage
 
-- `WebSphereDataSourceAdapter` requires the IBM WebSphere runtime APIs
-  `WSDataSource`, `JDBCConnectionSpec`, and `WSRRAFactory`. They are not available
-  in this test project's dependencies. No fake vendor classes or constructor-failure
-  tests substitute for an actual WebSphere data source; these call sites remain
-  untested.
+- `WebSphereDataSourceAdapterTest` uses the real IBM WebSphere heritage JDBC API
+  dependency to exercise the documented rejection of a non-WebSphere target data
+  source. Construction resolves `WSDataSource`, `JDBCConnectionSpec`, `WSRRAFactory`,
+  and their JDBC methods. Connection creation remains untested: the API artifact
+  does not include the `JDBCConnectionSpecImpl` runtime implementation required by
+  `WSRRAFactory.createJDBCConnectionSpec()`. No fake vendor types substitute for it.
 - `OracleTableMetaDataProviderTest` exercises the supported standard-JDBC fallback
   when Oracle connection APIs are unavailable, using a real H2 database. The
   Oracle-specific synonym flag lookups and invocations require a real Oracle
