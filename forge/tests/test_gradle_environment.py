@@ -4,6 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import os
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -76,6 +77,15 @@ def _git_common_dir(cwd: str) -> str:
 
 
 class GradleEnvironmentTests(unittest.TestCase):
+    def setUp(self) -> None:
+        # Forge keeps its Gradle homes under the temp directory, which outlives a test run.
+        # A private one keeps the host's homes from leaking into these tests and back.
+        temp_root = os.path.realpath(tempfile.mkdtemp(prefix="gradle-environment-"))
+        self.addCleanup(shutil.rmtree, temp_root, ignore_errors=True)
+        temp_dir_patch = patch.object(tempfile, "tempdir", temp_root)
+        temp_dir_patch.start()
+        self.addCleanup(temp_dir_patch.stop)
+
     def test_uses_temp_gradle_home_scoped_by_repo_path(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             with patch.dict(os.environ, {}, clear=True):
@@ -152,6 +162,22 @@ class GradleEnvironmentTests(unittest.TestCase):
     def test_paths_outside_a_checkout_fall_back_to_the_path_itself(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             self.assertIsNone(_resolve_git_common_dir(temp_dir))
+
+    def test_a_git_directory_without_a_repository_is_not_a_checkout(self) -> None:
+        """git walks past an empty `.git`, like one left in `/tmp`; so must the Gradle home key."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_path = os.path.join(temp_dir, "repo")
+            worktree_path = os.path.join(temp_dir, "linked")
+            _init_git_repo_with_worktree(repo_path, worktree_path)
+
+            for checkout_path in (repo_path, worktree_path):
+                os.makedirs(os.path.join(checkout_path, "nested", ".git"))
+                nested_path = os.path.join(checkout_path, "nested", "dir")
+                os.makedirs(nested_path)
+                self.assertEqual(_resolve_git_common_dir(nested_path), _git_common_dir(nested_path), nested_path)
+                with patch.dict(os.environ, {}, clear=True):
+                    self.assertEqual(gradle_user_home_for_repo(nested_path), gradle_user_home_for_repo(checkout_path))
+                self.assertEqual(is_linked_worktree(nested_path), checkout_path == worktree_path)
 
     def test_unrelated_checkouts_do_not_share_gradle_home(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
