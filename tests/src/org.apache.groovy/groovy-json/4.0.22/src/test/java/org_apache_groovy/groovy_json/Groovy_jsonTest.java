@@ -6,11 +6,27 @@
  */
 package org_apache_groovy.groovy_json;
 
+import groovy.json.JsonSlurper;
 import org.junit.jupiter.api.Test;
 
-class Groovy_jsonTest {
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class Groovy_jsonTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void parsesNestedValuesAndEscapedStrings() {
+        String json = """
+                [{"label":"line\\n\\\"quoted\\\"","values":[3,true]},
+                 {"label":"\\u20ac","values":[]}]
+                """;
+        List<Map<String, Object>> expected = List.of(
+                Map.of("label", "line\n\"quoted\"", "values", List.of(3, true)),
+                Map.of("label", "\u20ac", "values", List.of()));
+
+        Object parsed = new JsonSlurper().parseText(json);
+
+        assertEquals(expected, parsed);
     }
 }
