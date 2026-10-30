@@ -17,10 +17,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
-    private static final String LIB_SHIPPED_METADATA = "metadata/com.example/lib/1.0.0/reachability-metadata.json";
-    private static final String LIB_TEST_METADATA =
-            "tests/src/com.example/lib/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json";
-
     @Test
     void leavesDependencyPackageStubMetadataShippedAndMovesTestFixtureMetadata() throws IOException {
         String coordinate = "io.grpc:grpc-auth:1.79.0";
@@ -273,39 +269,6 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
         assertThat(ownerMetadata.isEmpty()).isTrue();
     }
 
-    private void runSplitTask(String coordinate) {
-        Project project = ProjectBuilder.builder()
-                .withProjectDir(tempDir.toFile())
-                .build();
-        SplitTestOnlyMetadataTask task = project.getTasks()
-                .register("splitTestOnlyMetadata", SplitTestOnlyMetadataTask.class)
-                .get();
-        task.setCoordinatesOverride(List.of(coordinate));
-        task.run();
-    }
-
-    /// Writes the `com.example:lib:1.0.0` test project, whose test package is `com_example.lib`.
-    private void writeLibTestProject() throws IOException {
-        writeSource(
-                "tests/src/com.example/lib/1.0.0/src/test/java/com_example/lib/LibTest.java",
-                """
-                package com_example.lib;
-
-                import org.junit.jupiter.api.Test;
-
-                public class LibTest {
-                    @Test
-                    void exercisesLibrary() {
-                    }
-
-                    interface Callback {
-                    }
-                }
-                """
-        );
-        writeIndex("com.example", "lib", "1.0.0", List.of("1.0.0"), List.of("com.example"));
-    }
-
     /// Adds a test in `com.example.internal`, inside the `com.example` allowed package.
     private void writeTestInAllowedPackage() throws IOException {
         writeSource(
@@ -385,6 +348,7 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
         assertThat(readJson(LIB_SHIPPED_METADATA).get("resources")).containsExactly(resourceEntry);
         assertThat(tempDir.resolve(LIB_TEST_METADATA)).doesNotExist();
     }
+
 
     /// A resource entry as the agent records it when a library reads class bytes or scans a
     /// package directory as a resource.

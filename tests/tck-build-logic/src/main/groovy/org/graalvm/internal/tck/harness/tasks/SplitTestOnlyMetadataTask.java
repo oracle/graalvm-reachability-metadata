@@ -20,16 +20,14 @@ import org.graalvm.internal.tck.utils.MetadataGenerationUtils;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
-import javax.lang.model.SourceVersion;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.graalvm.internal.tck.harness.tasks.TestResourceClassifier.referencesAnyPackage;
 
 /**
  * Splits test-only entries out of library reachability metadata into a separate
@@ -41,7 +39,6 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
     private static final String REACHABILITY_METADATA_FILE = "reachability-metadata.json";
-    private static final String GLOB_METACHARACTERS = "*?{[";
 
     private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -99,8 +96,8 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         }
 
         Set<String> testPackages = MetadataGenerationUtils.discoverTestOnlyMetadataPackages(testsDirectory);
-        Set<String> testResources = discoverTestResources(testsDirectory);
         List<String> allowedPackages = indexEntry.allowedPackages() == null ? List.of() : indexEntry.allowedPackages();
+        TestResourceClassifier testResources = new TestResourceClassifier(testsDirectory, testPackages, allowedPackages);
 
         ObjectNode libraryMetadata = requireObjectNode(objectMapper.readTree(metadataFile.toFile()), metadataFile);
         ObjectNode movedMetadata = objectMapper.createObjectNode();
@@ -108,16 +105,11 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
                 .resolve("src/test/resources/META-INF/native-image")
                 .resolve(REACHABILITY_METADATA_FILE);
         ObjectNode existingTestMetadata = readReachabilityMetadataIfPresent(testMetadataFile);
-        ObjectNode retainedTestMetadata = retainTestOnlyMetadata(
-                existingTestMetadata,
-                testPackages,
-                testResources,
-                allowedPackages
-        );
+        ObjectNode retainedTestMetadata = retainTestOnlyMetadata(existingTestMetadata, testPackages, testResources);
 
         splitReflection(libraryMetadata, movedMetadata, testPackages);
         splitSerialization(libraryMetadata, movedMetadata, testPackages);
-        splitResources(libraryMetadata, movedMetadata, testPackages, testResources, allowedPackages);
+        splitResources(libraryMetadata, movedMetadata, testPackages, testResources);
 
         ObjectNode finalTestMetadata = mergeReachabilityMetadata(retainedTestMetadata, movedMetadata);
 
@@ -168,23 +160,6 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
             throw new IllegalStateException("Index entry for " + parsedCoordinates + " has no test-version or metadata-version");
         }
         return getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/" + testVersion, parsedCoordinates)).toPath();
-    }
-
-    private Set<String> discoverTestResources(Path testsDirectory) throws IOException {
-        Set<String> resources = new LinkedHashSet<>();
-        Path resourceRoot = testsDirectory.resolve("src/test/resources");
-        if (!Files.isDirectory(resourceRoot)) {
-            return resources;
-        }
-        try (var pathStream = Files.walk(resourceRoot)) {
-            pathStream.filter(Files::isRegularFile)
-                    .map(resourceRoot::relativize)
-                    .map(Path::toString)
-                    .map(this::normalizeResourcePath)
-                    .forEach(resources::add);
-        }
-
-        return resources;
     }
 
     private void splitReflection(ObjectNode source, ObjectNode moved, Set<String> testPackages) {
@@ -281,16 +256,11 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         return false;
     }
 
-    private boolean referencesAnyPackage(String value, Collection<String> packages) {
-        return packages.stream().anyMatch(packageName -> referencesPackage(value, packageName));
-    }
-
     private void splitResources(
             ObjectNode source,
             ObjectNode moved,
             Set<String> testPackages,
-            Set<String> testResources,
-            List<String> allowedPackages
+            TestResourceClassifier testResources
     ) {
         JsonNode field = source.get("resources");
         if (!(field instanceof ArrayNode sourceEntries)) {
@@ -300,8 +270,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         ArrayNode keptEntries = objectMapper.createArrayNode();
         ArrayNode movedEntries = objectMapper.createArrayNode();
         for (JsonNode entry : sourceEntries) {
-            if (globIsTestResource(entry, testPackages, testResources, allowedPackages)
-                    || isTestOnlyEntry(entry, testPackages)) {
+            if (testResources.isTestResource(entry) || isTestOnlyEntry(entry, testPackages)) {
                 movedEntries.add(entry.deepCopy());
             } else {
                 keptEntries.add(entry);
@@ -309,60 +278,6 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         }
 
         applySplitResult(source, moved, "resources", keptEntries, movedEntries);
-    }
-
-    /// A resource glob is a test resource when it names a file under the test project's
-    /// `src/test/resources` or matches only resources in a test package
-    /// (§FS-repository-functional-spec.5.1).
-    private boolean globIsTestResource(
-            JsonNode entry,
-            Set<String> testPackages,
-            Set<String> testResources,
-            List<String> allowedPackages
-    ) {
-        JsonNode globNode = entry.isObject() ? entry.get("glob") : null;
-        if (globNode == null || !globNode.isTextual()) {
-            return false;
-        }
-        String resourcePath = normalizeResourcePath(globNode.asText());
-        return testResources.contains(resourcePath)
-                || isTestPackageResourceGlob(resourcePath, testPackages, allowedPackages);
-    }
-
-    /// Whether the glob `resourcePath` can match only resources in a test package, whatever the
-    /// file name: class bytes a library reads (Guice's `$LineNumbers`) or the package directory a
-    /// classpath scan looks up (Spring's `EntityScanner`). Its literal directories, up to the
-    /// first segment with a glob metacharacter, must be identifiers naming a test package or a
-    /// package under one. In a fully literal glob, a last segment that is an identifier counts as
-    /// a directory, so the bare package directory matches too.
-    private boolean isTestPackageResourceGlob(
-            String resourcePath,
-            Set<String> testPackages,
-            List<String> allowedPackages
-    ) {
-        String[] segments = resourcePath.split("/", -1);
-        int last = segments.length - 1;
-        List<String> packageSegments = new ArrayList<>();
-        for (int i = 0; i < last && !hasGlobMetacharacter(segments[i]); i++) {
-            if (!SourceVersion.isIdentifier(segments[i])) {
-                return false;
-            }
-            packageSegments.add(segments[i]);
-        }
-        if (packageSegments.size() == last && SourceVersion.isIdentifier(segments[last])) {
-            packageSegments.add(segments[last]);
-        }
-        if (packageSegments.isEmpty()) {
-            return false;
-        }
-        String packageName = String.join(".", packageSegments);
-        // A test misplaced in a library package (§FS-test-contract.2.2) leaves its files shipped.
-        return referencesAnyPackage(packageName, testPackages)
-                && !referencesAnyPackage(packageName, allowedPackages);
-    }
-
-    private boolean hasGlobMetacharacter(String segment) {
-        return segment.chars().anyMatch(character -> GLOB_METACHARACTERS.indexOf(character) >= 0);
     }
 
     private void applySplitResult(ObjectNode source, ObjectNode moved, String fieldName, ArrayNode keptEntries, ArrayNode movedEntries) {
@@ -377,28 +292,15 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         moved.set(fieldName, movedEntries);
     }
 
-    private boolean referencesPackage(String value, String packageName) {
-        return value.equals(packageName) || value.startsWith(packageName + ".");
-    }
-
-    private String normalizeResourcePath(String path) {
-        String normalized = path.replace('\\', '/');
-        if (normalized.startsWith("/")) {
-            return normalized.substring(1);
-        }
-        return normalized;
-    }
-
     private ObjectNode retainTestOnlyMetadata(
             ObjectNode existingMetadata,
             Set<String> testPackages,
-            Set<String> testResources,
-            List<String> allowedPackages
+            TestResourceClassifier testResources
     ) {
         ObjectNode retainedMetadata = objectMapper.createObjectNode();
         splitReflection(existingMetadata.deepCopy(), retainedMetadata, testPackages);
         splitSerialization(existingMetadata.deepCopy(), retainedMetadata, testPackages);
-        splitResources(existingMetadata.deepCopy(), retainedMetadata, testPackages, testResources, allowedPackages);
+        splitResources(existingMetadata.deepCopy(), retainedMetadata, testPackages, testResources);
         return retainedMetadata;
     }
 
