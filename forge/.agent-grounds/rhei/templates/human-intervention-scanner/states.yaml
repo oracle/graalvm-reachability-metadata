@@ -72,11 +72,15 @@ states:
       # (auth/network/rate-limit). It is NOT the work-available signal (75): a
       # failed fetch tells us nothing about the queue, so it must terminate the
       # task instead of feeding the scanner empty or stale results.
+      # A `graalvm-bug` item is a declared GraalVM blocker the scan leaves alone
+      # (§FS-human-intervention-policy); the query drops it so it takes no place
+      # in the limit.
       if [ "{{source}}" = "prs" ]; then
         if ! candidates="$(gh pr list \
           --repo "{{repo}}" \
           --state open \
           --label "human-intervention" \
+          --search "-label:graalvm-bug" \
           --limit "$fetch_limit" \
           --json number \
           --jq '.[].number' 2>/dev/null)"; then
@@ -87,6 +91,7 @@ states:
           --repo "{{repo}}" \
           --state open \
           --label "human-intervention" \
+          --search "-label:graalvm-bug" \
           --limit "$fetch_limit" \
           --json number \
           --jq '.[].number' 2>/dev/null)"; then
@@ -126,7 +131,15 @@ states:
       queue: {{source}}; queue label: human-intervention.
 
       Read `runtime/scan/seen.txt` if it exists. Fetch at most {{scan_limit}}
-      open, not-yet-seen items carrying `human-intervention`.
+      open, not-yet-seen items carrying `human-intervention` and not
+      `graalvm-bug`, with the query `queue-check` uses: `gh pr list` for prs
+      or `gh issue list` for issues, each with `--state open --label
+      human-intervention --search "-label:graalvm-bug"`. An item labeled
+      `graalvm-bug` is a declared GraalVM blocker: its cause is already
+      diagnosed and linked to an `oracle/graal` issue and a `GR-` ticket, so a
+      group of such items could only find that ticket again
+      (§FS-human-intervention-policy). Leave it out entirely: do not group it,
+      list it in the report, or add it to `runtime/scan/seen.txt`.
 
       Find WHY each item got the human-intervention label. Do not guess from the
       title:
