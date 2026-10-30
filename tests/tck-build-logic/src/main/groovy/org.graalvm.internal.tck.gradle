@@ -369,6 +369,13 @@ File baseLayerFile = layeredNativeImage ? file(baseLayerFilePath) : null
 if (dedicatedLayer && !layeredNativeImage) {
     throw new GradleException("Property 'tck.dedicatedLayer=true' requires 'tck.baseLayerFile'.")
 }
+if (layeredNativeImage) {
+    // GR-80256: discover network interfaces at runtime in both layers. §FS-tests.3.1
+    nativeImageArgs.addAll([
+            "--initialize-at-run-time=io.netty.util.NetUtil",
+            "--initialize-at-run-time=io.grpc.netty.shaded.io.netty.util.NetUtil"
+    ])
+}
 
 tck.testedLibraryVersion = libraryVersion
 // This value can be used to request specific library version to test with.
