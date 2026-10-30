@@ -13,8 +13,23 @@ import net.sf.cglib.transform.TransformingClassLoader;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class AbstractClassLoaderTest {
+    @Test
+    void reportsMissingClassResourceWithoutInvokingTransformer() {
+        String className = "cglib.cglib.MissingTransformInput";
+        ClassLoader parent = AbstractClassLoaderTest.class.getClassLoader();
+        TransformingClassLoader loader = new TransformingClassLoader(
+                parent, className::equals, () -> {
+                    throw new AssertionError("Missing class resources must not be transformed");
+                });
+
+        assertThatExceptionOfType(ClassNotFoundException.class)
+                .isThrownBy(() -> loader.loadClass(className))
+                .withMessage(className);
+    }
+
     @Test
     void delegatesExcludedClassesToParentWithoutTransformingThem() throws ClassNotFoundException {
         ClassLoader parent = AbstractClassLoaderTest.class.getClassLoader();
