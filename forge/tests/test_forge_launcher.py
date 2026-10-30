@@ -54,7 +54,7 @@ class FetchTest(unittest.TestCase):
             searches: list[list[str]] = [
                 call.args[0][call.args[0].index("--search") + 1].split() for call in run.call_args_list
             ]
-            self.assertEqual(15, len(searches))
+            self.assertEqual(18, len(searches))
             for search in searches:
                 self.assertIn("-label:not-for-native-image", search)
                 self.assertIn("-label:human-intervention", search)
@@ -62,9 +62,14 @@ class FetchTest(unittest.TestCase):
 
     def test_every_label_of_a_tier_is_fetched_before_the_next_tier(self) -> None:
         commands = issue_fetch.fetch_commands(issue_fetch.QUEUE_LABELS)
-        self.assertEqual(15, len(commands))
-        self.assertTrue(all("high-priority" in command for _, command in commands[:5]))
-        self.assertTrue(all("-label:priority" in " ".join(command) for _, command in commands[10:]))
+        self.assertEqual(18, len(commands))
+        self.assertTrue(all("high-priority" in command for _, command in commands[:6]))
+        self.assertTrue(all("-label:priority" in " ".join(command) for _, command in commands[12:]))
+
+    def test_every_stage_the_compatibility_automation_files_is_a_queue(self) -> None:
+        # Forge claims the issue of each failed stage (§FS-forge-scope.1).
+        self.assertLessEqual({"fails-javac-compile", "fails-java-run", "fails-native-image-build",
+                              "fails-native-image-run"}, set(issue_fetch.QUEUE_LABELS))
 
     def test_candidates_are_unique_in_claim_order(self) -> None:
         pages = {"high": [issue(3, "fails-java-run")], "rest": [issue(3, "fails-java-run"), issue(4, "fails-java-run")]}

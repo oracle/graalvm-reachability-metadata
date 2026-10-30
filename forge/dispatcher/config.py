@@ -64,9 +64,11 @@ LABEL_LIBRARY_NEW = "library-new-request"
 LABEL_LIBRARY_UPDATE = "library-update-request"
 LABEL_JAVAC_FAIL = "fails-javac-compile"
 LABEL_JAVA_RUN_FAIL = "fails-java-run"
+LABEL_NI_BUILD_FAIL = "fails-native-image-build"
 LABEL_NI_RUN_FAIL = "fails-native-image-run"
 LABEL_PR_JAVAC_FIX = "fixes-javac-fail"
 LABEL_PR_JAVA_RUN_FIX = "fixes-java-run-fail"
+LABEL_PR_NI_BUILD_FIX = "fixes-native-image-build-fail"
 LABEL_PR_NI_RUN_FIX = "fixes-native-image-run-fail"
 LABEL_PR_LIBRARY_UPDATE = "library-update-request"
 LABEL_PR_CODE_COVERAGE = "code-coverage-improvement"
@@ -186,6 +188,7 @@ SUPPORTED_FORGE_REVIEW_TASK_TYPES = {
     "library-update-request",
     "fixes-javac-fail",
     "fixes-java-run-fail",
+    "fixes-native-image-build-fail",
     "fixes-native-image-run-fail",
     "not-for-native-image",
     BENCHMARK_PUBLICATION_TASK_TYPE,
@@ -202,8 +205,9 @@ INTERRUPT_REASON_SHUTDOWN = "shutdown request"
 INTERRUPT_REASON_GRADLE_BOOTSTRAP = "Gradle bootstrap infrastructure failure"
 SHUTDOWN_SIGNAL_POLL_SECONDS = 5.0
 
-PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
-FAILURE_PIPELINE_LABELS = {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
+# The four `fails-*` labels share the repair route. §FS-forge-scope
+FAILURE_PIPELINE_LABELS = {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_BUILD_FAIL, LABEL_NI_RUN_FAIL}
+PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, *FAILURE_PIPELINE_LABELS}
 
 # Named rules of the post-claim issue-form gate. The name of the failed rule is
 # what a rejection reports and what selects its comment. §FS-forge-run-requirements.3
