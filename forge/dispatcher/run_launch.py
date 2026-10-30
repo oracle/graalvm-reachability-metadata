@@ -8,7 +8,7 @@
 The launcher only finds and claims work: the live claimability check, the
 optimistic claim, and the issue-form gate are the dispatcher's, unchanged
 (§FS-forge-run-requirements.2, §FS-forge-run-requirements.3), and every
-decision about the issue is the run's (§AR-forge-workflow-pipeline.1).
+decision about the issue is the run's (§AR-forge-launcher.1).
 """
 from __future__ import annotations
 
@@ -142,7 +142,7 @@ def workspace_path(forge_dir: str, issue_number: int) -> str:
     """The attempt to run: the latest one while it is unfinished, else a new one.
 
     Rhei keys a workspace's budget ledger by its path, so a finished attempt's
-    path is never reused (§AR-forge-workflow-pipeline.1).
+    path is never reused (§AR-forge-launcher.1).
     """
     found: list[str] = attempts(forge_dir, issue_number)
     if found and not os.path.isfile(os.path.join(found[-1], OUTCOME)):
@@ -275,7 +275,7 @@ def record_outcome(workspace: str) -> dict[str, Any]:
     """The run's terminal outcome, recording an infrastructure failure when it never reached one.
 
     A halted run is finished: Rhei never re-runs a state whose attempts are spent
-    (§AR-forge-workflow-pipeline.1).
+    (§AR-forge-launcher.1).
     """
     path: str = os.path.join(workspace, OUTCOME)
     if not os.path.isfile(path):
@@ -295,7 +295,7 @@ def finish_run(repo: str, started: Started) -> dict[str, Any]:
     whose launcher died never gets here, and neither a budget halt nor the first
     no-advance halt finished anything: they keep their worktree, so a later claim
     resumes them. The second no-advance halt in a row holds the attempt; a budget
-    halt leaves the count as it was (§AR-forge-workflow-pipeline.1).
+    halt leaves the count as it was (§AR-forge-launcher.1).
     """
     count: str = os.path.join(started.workspace, NO_ADVANCE)
     attempt: str = os.path.basename(started.workspace)
@@ -382,7 +382,7 @@ def hand_to_maintainer(number: int, outcome: dict[str, Any]) -> bool:
 def close_out(claimed: Claim, outcome: dict[str, Any]) -> None:
     """Apply the bookkeeping the final state implies; GitHub refusing it does not stop the launcher.
 
-    §AR-forge-workflow-pipeline.1
+    §AR-forge-launcher.1
     """
     number: int = claimed.issue["number"]
     kind: str = outcome.get("outcome", "failed")

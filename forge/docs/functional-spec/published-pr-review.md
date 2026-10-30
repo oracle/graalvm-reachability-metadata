@@ -12,13 +12,20 @@ armed, a fix pushed, jobs rerun, or an issue — never to silence
 
 ## 1. Cadence and queue
 
-The launcher reviews every third run, and whenever nothing can be claimed. The
-queue is read from GitHub on every pass: the open Forge pull requests, oldest
-first, of which at most three get an agent per pass. A pull request is Forge's
-when its head repository is `oracle/graalvm-reachability-metadata`, its head
-branch is an upstream `ai/**` branch, and it carries a Forge route label
-(§FS-forge-functional-spec). No local state carries over between passes, so a
-pass on another host reaches the same decisions.
+The launcher reviews after every run, once when it starts, and whenever nothing
+can be claimed. Review throughput must exceed publication throughput: a run
+publishes up to one pull request, and other launchers add theirs to the same
+queue, so a pass every few runs at best keeps pace, and a backlog a disruption
+built up never drains. A restart must not cost the review either: a launcher
+restarted for an outage or an update may never reach a later run, so its first
+pass comes once its host gate first passes, before its first claim. A pass with
+nothing to review costs only the queue reads. The queue is read from GitHub on
+every pass: the open Forge pull requests, oldest first, of which at most three
+get an agent per pass. A pull request is Forge's when its head repository is
+`oracle/graalvm-reachability-metadata`, its head branch is an upstream `ai/**`
+branch, and it carries a Forge route label (§FS-forge-functional-spec). No local
+state carries over between passes, so a pass on another host reaches the same
+decisions.
 
 ## 2. Skipped before any agent
 
