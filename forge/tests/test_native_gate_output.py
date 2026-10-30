@@ -30,6 +30,7 @@ from utility_scripts.run_location import (  # noqa: E402
     STEP_NATIVE_TRACE_GATE,
     run_step,
 )
+from utility_scripts.task_logs import resolve_logs_root  # noqa: E402
 
 from tests.native_gate_support import (  # noqa: E402
     GATE_SUBPROCESS_RUN,
@@ -81,6 +82,8 @@ class GateOutputTests(GateHarness):
     def test_concise_agent_fix_failure_keeps_error_and_log(self) -> None:
         fake, _calls = self._fake_run_factory([1])
         output = io.StringIO()
+        # A log under Forge's log root shows as a Forge-relative path, wherever the checkout sits.
+        fix_log_path = os.path.join(resolve_logs_root(), "g:a:1.0", "native-trace", "codex.log")
         with patch.dict(
                 os.environ,
                 {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
@@ -89,7 +92,7 @@ class GateOutputTests(GateHarness):
                 side_effect=fake,
         ), patch(
                 "utility_scripts.native_test_verification.run_native_test_fix",
-                return_value=(2, "/tmp/codex.log", False, "Agent repair failed"),
+                return_value=(2, fix_log_path, False, "Agent repair failed"),
         ), redirect_stdout(output):
             with run_step(
                     PHASE_EXPLORE,
@@ -106,7 +109,7 @@ class GateOutputTests(GateHarness):
         self.assertEqual(result.status, ntv.STATUS_FAILED)
         self.assertIn(
             "[explore] Native-trace agent fix failed for g:a:1.0: "
-            "Agent repair failed (log: ../../codex.log) (3/3)",
+            "Agent repair failed (log: logs/g:a:1.0/native-trace/codex.log) (3/3)",
             output.getvalue(),
         )
 
