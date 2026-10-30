@@ -17,10 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AnnotationSerializerTest {
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void roundTripsAnnotationWithSeveralMemberTypes() throws Exception {
-        // Checkstyle: allow direct annotation access
         Policy original = Annotated.class.getAnnotation(Policy.class);
-        // Checkstyle: disallow direct annotation access
         for (boolean hessian2 : new boolean[] {false, true}) {
             Policy restored = HessianStreams.roundTrip(original, new SerializerFactory(), hessian2);
             assertEquals(Policy.class, restored.annotationType());

@@ -16,10 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AnnotationSerializerInnerLongMethodSerializerTest {
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void serializesAnnotationMemberInBothWireFormats() throws Exception {
-        // Checkstyle: allow direct annotation access
         Setting original = Annotated.class.getAnnotation(Setting.class);
-        // Checkstyle: disallow direct annotation access
         for (boolean hessian2 : new boolean[] {false, true}) {
             Setting restored = HessianStreams.roundTrip(original, new SerializerFactory(), hessian2);
             assertEquals(8000000000L, restored.value());
