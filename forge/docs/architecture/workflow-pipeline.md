@@ -46,12 +46,25 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    agent targets (§FS-forge-agent-runtime-selection), then `rhei run` with the
    dashboard. A workspace that cannot be created releases the claim. Each
    attempt at an issue has its own workspace, `runs/forge-<issue>-<attempt>`:
-   an attempt whose launcher died is resumed. One that `rhei run` returned from
-   is finished: a run halted short of a final state gets the infrastructure
-   outcome recorded, since Rhei never re-runs a state whose attempts are spent.
-   A finished attempt gives up its worktree and stays as the record, because
-   Rhei keys a workspace's budget ledger by its path and refuses a new
-   workspace on a used one.
+   an attempt whose launcher died is resumed, the log of the state it was
+   killed in moved to `runtime/forge/interrupted/` first, since no spawn record
+   accounts for it and Rhei refuses to spawn over it. One that `rhei run`
+   returned from is finished if Rhei ran a state of it, and a halted one gets
+   the infrastructure outcome recorded, since Rhei never re-runs a state whose
+   attempts are spent. A run Rhei ran no state of, once those logs are moved,
+   is a no-advance halt: the first keeps the attempt's worktree for a later
+   claim to resume, and the failed cycle backs the loop off; a second in a row
+   ends the attempt in `human-intervention`, its comment quoting Rhei's halt
+   message. The count lives in `runtime/forge/`, and any run that runs a state
+   resets it. A halt the run's event log attributes to a Rhei budget
+   (`budget_halt`) is a transient host condition that resets with the
+   allowance, so it never counts: the attempt keeps its worktree, the count
+   stays as it was, the issue returns to `Todo`, and the launcher exits with
+   the transient status `75`, so the loop backs off. A finished attempt gives
+   up its worktree and stays as the record, because Rhei keys a workspace's
+   budget ledger by its path and refuses a new workspace on a used one; one
+   labeled `human-intervention` first keeps its work at its own ref
+   (§FS-human-intervention-policy).
 5. **Close out.** The final state decides the issue's bookkeeping:
    `completed` leaves it `In Progress` for the pull request to close;
    `human-intervention` and a bad input label it `human-intervention` with the

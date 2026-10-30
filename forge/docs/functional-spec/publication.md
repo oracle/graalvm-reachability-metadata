@@ -500,5 +500,13 @@ normal review automation may treat it as safe. The companion
 follow-up and the review of §FS-published-pr-review may resume, even on a pull
 request it already labeled `reviewed`. The
 resulting labeled backlog is drained by automated resolution, not per-item
-manual triage. The run's worktree and branch stay on the host, so a maintainer
-can continue from the last checkpoint.
+manual triage. A run that labels its issue keeps its work on the host, so a
+maintainer can continue from the last checkpoint: it commits what its last
+state left uncommitted to its branch and keeps that commit at a ref of the
+attempt's own, `refs/forge-held/forge-<issue>-<attempt>`, which the comment
+names. No later run moves or deletes that ref, so a rerun of the issue, which
+starts from a fresh base, leaves it alone, and the maintainer continues from it
+on a branch of their own. The worktree goes as every finished attempt's does,
+with its Gradle daemons and home (§FS-forge-run-requirements.4), so a held run
+keeps nothing on disk but its commits, and its ref stays until a maintainer
+deletes it.
