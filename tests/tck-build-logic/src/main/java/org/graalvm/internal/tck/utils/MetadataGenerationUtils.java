@@ -376,7 +376,8 @@ public final class MetadataGenerationUtils {
     }
 
     /// Copies the agent output into `metadataDirectory`, the one step every generation flow shares,
-    /// and moves hidden-lambda conditions to their host class there (§FS-metadata.2).
+    /// and moves hidden-lambda conditions to their host class there (§FS-metadata.2). It refuses
+    /// a bundle the test run left without a condition (§FS-metadata.2.3, §graal/GR-80923).
     private static void copyAgentMetadata(
             ExecOperations execOps,
             Path gradlew,
@@ -393,6 +394,7 @@ public final class MetadataGenerationUtils {
         Path metadataFile = metadataDirectory.resolve("reachability-metadata.json");
         // The agent names a method reference's hidden class as the condition (§graal/GR-80926).
         try {
+            ResourceBundleConditions.requireRestored(metadataFile);
             if (HiddenLambdaConditions.rewriteFile(metadataFile)) {
                 GeneralUtils.printInfo("Rewrote hidden lambda conditions to their host class in " + metadataFile);
             }
@@ -439,7 +441,7 @@ public final class MetadataGenerationUtils {
         Files.copy(mergedMetadataFile, durableMetadataDirectory.resolve("reachability-metadata.json"), StandardCopyOption.REPLACE_EXISTING);
     }
 
-    private static void deleteRecursively(Path path) throws IOException {
+    static void deleteRecursively(Path path) throws IOException {
         if (!Files.exists(path)) {
             return;
         }
