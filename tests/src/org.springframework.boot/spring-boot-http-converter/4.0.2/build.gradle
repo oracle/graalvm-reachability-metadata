@@ -11,7 +11,16 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
     testImplementation "org.springframework.boot:spring-boot-http-converter:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+    // Message converters registered by the auto-configuration; versions come from the BOM.
+    testImplementation 'org.springframework:spring-web'
+    testImplementation 'org.springframework:spring-context'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'com.google.code.gson:gson'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
