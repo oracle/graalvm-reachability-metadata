@@ -105,6 +105,8 @@ if task == "scaffold":
                     "allowed-packages": [group]})
     json.dump(entries, open(index, "w"), indent=2)
 elif task == "generateUserCodeFilter":
+    if control.get("filterFails") == "unresolved":
+        fail_unresolved()
     if control.get("filterFails"):
         print(control["filterFails"])
         sys.exit(1)
