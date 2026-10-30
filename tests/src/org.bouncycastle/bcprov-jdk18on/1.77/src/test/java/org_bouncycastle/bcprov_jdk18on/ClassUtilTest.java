@@ -6,9 +6,9 @@
  */
 package org_bouncycastle.bcprov_jdk18on;
 
-import javax.crypto.Cipher;
+import java.security.AlgorithmParameters;
+
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,14 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class ClassUtilTest {
     @Test
-    void loadsCipherServicesForPaddedAesEncryption() throws Exception {
-        SecretKeySpec key = new SecretKeySpec(new byte[16], "AES");
-        IvParameterSpec iv = new IvParameterSpec(new byte[16]);
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding", KeyPairFixtures.BC);
-        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-        byte[] plaintext = new byte[] {9, 8, 7};
-        byte[] ciphertext = cipher.doFinal(plaintext);
-        cipher.init(Cipher.DECRYPT_MODE, key, iv);
-        assertArrayEquals(plaintext, cipher.doFinal(ciphertext));
+    void resolvesAesParametersFromLoadedSymmetricMappings() throws Exception {
+        // Native Image does not verify a provider created at run time, so this test round-trips
+        // the AES IV instead of running an AES/CBC/PKCS7Padding Cipher:
+        // https://github.com/oracle/graal/issues/14846 (GR-81035)
+        byte[] iv = new byte[16];
+        iv[0] = 7;
+        AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES", KeyPairFixtures.BC);
+        parameters.init(new IvParameterSpec(iv));
+        AlgorithmParameters decoded = AlgorithmParameters.getInstance("AES", KeyPairFixtures.BC);
+        decoded.init(parameters.getEncoded());
+        assertArrayEquals(iv, decoded.getParameterSpec(IvParameterSpec.class).getIV());
     }
 }

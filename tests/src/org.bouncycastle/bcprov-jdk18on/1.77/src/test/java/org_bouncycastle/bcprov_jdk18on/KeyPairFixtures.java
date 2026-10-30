@@ -46,6 +46,9 @@ import org.bouncycastle.pqc.jcajce.spec.XMSSMTParameterSpec;
 import org.bouncycastle.pqc.jcajce.spec.XMSSParameterSpec;
 
 final class KeyPairFixtures {
+    // Native Image does not verify a provider created at run time, so the tests call no
+    // javax.crypto service (Cipher, Mac, KeyAgreement, KeyGenerator, SecretKeyFactory) on these
+    // providers: https://github.com/oracle/graal/issues/14846 (GR-81035)
     static final Provider BC = new BouncyCastleProvider();
     static final Provider PQC = new BouncyCastlePQCProvider();
     private static final Map<String, KeyPair> PAIRS = new HashMap<>();
