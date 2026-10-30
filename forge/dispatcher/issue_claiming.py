@@ -21,6 +21,8 @@ from dispatcher.claim_preflight import get_open_blocking_issue_numbers, refresh_
 from dispatcher.config import (
     CLAIM_BACKOFF_MAX,
     CLAIM_BACKOFF_MIN,
+    CLAIM_RELEASE_ATTEMPTS,
+    CLAIM_RELEASE_RETRY_DELAY_SECONDS,
     DEFAULT_TAKE_BLOCKED_ISSUES,
     ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
     ISSUE_CLAIM_CACHE_REASON_BLOCKED,
@@ -53,7 +55,14 @@ def revert_issue_claim_if_still_owned_by_user(
         reason: str,
 ) -> None:
     """Revert a partially claimed issue only when we still own the assignment."""
-    assignees = get_issue_assignees(issue_number)
+    try:
+        assignees: list[str] = get_issue_assignees(issue_number)
+    except Exception as exc:
+        # Without the owner, a release could clear another runner's claim.
+        report_unconfirmed_release(
+            issue_number, f"its assignees could not be read: {format_github_exception_details(exc)}",
+        )
+        return
     if assignees == [authenticated_user]:
         revert_issue_claim(item_id, issue_number, reason)
         return
@@ -65,24 +74,26 @@ def revert_issue_claim_if_still_owned_by_user(
     )
 
 
-def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
-    """Reset an issue claim back to Todo and clear all assignment, with verification."""
-    if is_fixture_testing_enabled():
-        log_stage(
-            "issue-revert",
-            f"Fixture mode: no GitHub claim was created for issue #{issue_number}; skipping claim revert.",
-        )
-        return
+def report_unconfirmed_release(issue_number: int, why: str) -> None:
+    """Name a claim GitHub could not confirm as released (§FS-forge-run-requirements)."""
+    print(
+        f"ERROR: Issue #{issue_number} release is unconfirmed: {why}. The claim may still hold; "
+        f"release it by hand (project status {STATUS_TODO}, no assignees).",
+        file=sys.stderr,
+    )
 
-    # Claim-revert bookkeeping is narration, not failure output.
-    # §FS-forge-run-location-reporting.4
-    log_debug("issue-revert", f"Reverting issue #{issue_number} claim because {reason}")
-    revert_errors: list[Exception] = []
+
+def _release_once(item_id: str, issue_number: int) -> tuple[str | None, bool]:
+    """Return the issue to Todo unassigned and read both back.
+
+    Returns why the release is unconfirmed, or `None`, and whether a GitHub call failed.
+    """
+    failed: bool = False
     log_debug("issue-revert", f"Reverting issue #{issue_number}: setting project item {item_id} -> {STATUS_TODO}")
     try:
         set_item_status(item_id, STATUS_TODO)
     except Exception as exc:
-        revert_errors.append(exc)
+        failed = True
         print(
             f"ERROR: Issue #{issue_number} revert could not set project item {item_id} "
             f"to {STATUS_TODO}: {format_github_exception_details(exc)}",
@@ -92,28 +103,81 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
     try:
         clear_issue_assignees(issue_number)
     except Exception as exc:
-        revert_errors.append(exc)
+        failed = True
         print(
             f"ERROR: Issue #{issue_number} revert could not clear assignees: "
             f"{format_github_exception_details(exc)}",
             file=sys.stderr,
         )
-    verified_status = get_item_status(item_id)
-    verified_assignees = get_issue_assignees(issue_number)
+    try:
+        verified_status: str | None = get_item_status(item_id)
+        verified_assignees: list[str] = get_issue_assignees(issue_number)
+    except Exception as exc:
+        return f"GitHub could not be read back: {format_github_exception_details(exc)}", True
     if verified_status != STATUS_TODO or verified_assignees:
-        verification_error = RuntimeError(
-            f"Issue #{issue_number} revert verification failed: "
-            f"status={verified_status!r}, assignees={verified_assignees!r}"
+        return f"GitHub still shows status={verified_status!r}, assignees={verified_assignees!r}", failed
+    return None, failed
+
+
+def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> bool:
+    """Reset an issue claim back to Todo and clear all assignment; return whether GitHub confirmed it.
+
+    GitHub is often down when a release is needed, so a release it cannot
+    confirm is retried, then reported as unconfirmed rather than raised
+    (§FS-forge-run-requirements).
+    """
+    if is_fixture_testing_enabled():
+        log_stage(
+            "issue-revert",
+            f"Fixture mode: no GitHub claim was created for issue #{issue_number}; skipping claim revert.",
         )
-        if revert_errors:
-            raise verification_error from revert_errors[0]
-        raise verification_error
+        return True
+
+    # Claim-revert bookkeeping is narration, not failure output.
+    # §FS-forge-run-location-reporting.4
+    log_debug("issue-revert", f"Reverting issue #{issue_number} claim because {reason}")
+    unconfirmed: str | None = None
+    for attempt in range(1, CLAIM_RELEASE_ATTEMPTS + 1):
+        unconfirmed, failed = _release_once(item_id, issue_number)
+        if unconfirmed is None:
+            invalidate_issue_claim_cache_entry(issue_number)
+            log_debug("issue-revert", f"Issue #{issue_number} failed due to {reason}; verified revert")
+            return True
+        # GitHub answered every call, so a retry would only overwrite a claim made since.
+        if not failed or attempt == CLAIM_RELEASE_ATTEMPTS:
+            break
+        print(
+            f"ERROR: Issue #{issue_number} release is not confirmed: {unconfirmed}. Retrying in "
+            f"{CLAIM_RELEASE_RETRY_DELAY_SECONDS}s (attempt {attempt + 1}/{CLAIM_RELEASE_ATTEMPTS}).",
+            file=sys.stderr,
+        )
+        time.sleep(CLAIM_RELEASE_RETRY_DELAY_SECONDS)
+    report_unconfirmed_release(issue_number, str(unconfirmed))
+    return False
+
+
+def release_closed_issue_claim(issue_number: int, reason: str) -> bool:
+    """Clear the Forge assignee from an issue that closed after its claim; return whether it was cleared.
+
+    The issue left the queue, so it gets no label, comment or board move
+    (§FS-forge-run-requirements.2). A clear GitHub refuses is reported, not
+    raised, since it must not stop the launcher (§FS-forge-run-requirements).
+    """
+    if is_fixture_testing_enabled():
+        log_stage("issue-revert", f"Fixture mode: no GitHub claim was created for issue #{issue_number}.")
+        return True
+    log_debug("issue-revert", f"Clearing the Forge assignee from closed issue #{issue_number} because {reason}")
+    try:
+        clear_issue_assignees(issue_number)
+    except Exception as exc:
+        print(
+            f"ERROR: Issue #{issue_number} closed after its claim, but its Forge assignee could not be cleared: "
+            f"{format_github_exception_details(exc)}. Clear it by hand.",
+            file=sys.stderr,
+        )
+        return False
     invalidate_issue_claim_cache_entry(issue_number)
-    log_debug(
-        "issue-revert",
-        f"Issue #{issue_number} failed due to {reason}; verified revert with "
-        f"status={verified_status}, assignees={verified_assignees}",
-    )
+    return True
 
 
 def _has_published_dynamic_access_chunk(claimed_issue: ClaimedIssue) -> bool:

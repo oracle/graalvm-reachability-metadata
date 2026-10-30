@@ -1,0 +1,87 @@
+# Per-PR Forge gate: Forge's Python tests and the Rhei program tests that drive its state machine.
+# §AR-test-changed-forge; the `test-*` gate of §FS-repository-functional-spec.5.3 for the Forge
+# automation of §FS-repository-functional-spec.4.6.
+name: "Test changed Forge code"
+
+on:
+  pull_request:
+    branches:
+      - master
+  # After a merge as well: two PRs can each pass and still break the suites together.
+  push:
+    branches:
+      - master
+    # Keep in step with the detect-file-changes patterns below.
+    paths:
+      - 'forge/**'
+      - '.github/scripts/forge_pr_publisher/**'
+      - 'stats/schemas/**'
+      - 'stats/*/*/*/execution-metrics.json'
+      - '.github/workflows/test-changed-forge.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ github.ref }}, pr = ${{ github.event.pull_request.id }}"
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test-changed-forge:
+    name: "🧪 All Forge tests have passed"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 20
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          # The suites must pass without GitHub credentials, so none stay behind in .git/config.
+          persist-credentials: false
+
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        if: github.event_name == 'pull_request'
+        uses: ./.github/actions/detect-file-changes
+        with:
+          # Forge, plus what its tests read outside forge/: the PR publisher they load, the stats
+          # schemas, and the committed run records the path-provenance tests scan.
+          file-patterns: |
+            - 'forge/**'
+            - '.github/scripts/forge_pr_publisher/**'
+            - 'stats/schemas/**'
+            - 'stats/*/*/*/execution-metrics.json'
+            - '.github/workflows/test-changed-forge.yml'
+
+      - name: "🔧 Setup Python"
+        if: github.event_name == 'push' || steps.filter.outputs.changed == 'true'
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
+        with:
+          # The floor of `requires-python` in forge/pyproject.toml.
+          python-version: '3.10'
+
+      - name: "🔧 Setup Java"
+        if: github.event_name == 'push' || steps.filter.outputs.changed == 'true'
+        # The code coverage tests compile and run Java, and skip without a JDK.
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '25'
+
+      - name: "📦 Install test dependencies"
+        id: deps
+        if: github.event_name == 'push' || steps.filter.outputs.changed == 'true'
+        run: |
+          python -m pip install --disable-pip-version-check -r forge/requirements.txt
+
+      - name: "🧪 Run Forge tests"
+        if: steps.deps.outcome == 'success'
+        working-directory: forge
+        run: |
+          python -m unittest discover -s tests
+
+      - name: "🧪 Run Rhei program tests"
+        # Runs even when the Forge tests failed, so one run reports both suites.
+        if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
+        working-directory: forge/.agent-grounds/rhei/programs
+        run: |
+          python -m unittest discover -s tests

@@ -18,15 +18,16 @@ from __future__ import annotations
 # on Maven Central answering 502), filterFails (a plain `generateUserCodeFilter`
 # prints this; from the JAR, "unresolved" as above, else this), scaffoldFails
 # ("variant": the library has no JVM variant, "unreachable" as above, "bom": it
-# has no JAR, "elsewhere": an artifact of the harness's own build is missing,
-# else otherwise), generateFails (only `generateMetadata` fails), nativeFails
-# (until the shipped
+# has no JAR, "jar": its POM is served but not its JAR, "elsewhere": an artifact
+# of the harness's own build is missing, else otherwise), generateFails (only
+# `generateMetadata` fails), nativeFails (until the shipped
 # metadata names `Fixed`), checkFails,
 # styleFails (the failing style task), listFails, listsNoCalls (the listing
 # succeeds without output, as for a library without calls; an empty stored
 # listing then reports no calls), coverageFails, indexFails, and
 # stats (the dynamicAccess generateLibraryStats writes; else the coverage report's),
-# and matrixFails (the native-image mode whose `test` fails, as a missing registration).
+# matrixFails (the native-image mode whose `test` fails, as a missing registration),
+# and unreachableIn (the task, in any lane, that fails on Maven Central answering 502).
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
 import glob, json, os, sys
 args = sys.argv[1:]
@@ -81,6 +82,12 @@ def fail_scaffold(failure):
         fail_unreachable("detachedConfiguration1")
     if failure == "bom":
         fail_build("> Failed to resolve JAR for %s" % coordinate)
+    if failure == "jar":
+        jar = "%s-%s.jar" % (artifact, version)
+        fail_build("> Could not resolve all files for configuration ':detachedConfiguration1'.\n"
+                   "   > Could not find %s (%s).\n     Searched in the following locations:\n"
+                   "         https://repo.maven.apache.org/maven2/%s/%s/%s/%s"
+                   % (jar, coordinate, group.replace(".", "/"), artifact, version, jar))
     if failure == "elsewhere":
         fail_build("> Could not resolve all files for configuration ':tck-build-logic:compileClasspath'.\n"
                    "   > Could not find org.example:harness-plugin:1.0.\n     Required by:\n"
@@ -91,6 +98,8 @@ mode = os.environ.get("GVM_TCK_NATIVE_IMAGE_MODE")
 lane = " [%s %s %s]" % (os.environ.get("GVM_TCK_LV"), mode, os.environ.get("JAVA_HOME")) if mode else ""
 with open(os.path.join(root, "gradle-calls.log"), "a") as log:
     log.write(" ".join(args) + lane + "\n")
+if control.get("unreachableIn") == task:
+    fail_unreachable("testRuntimeClasspath")
 if task == "scaffold":
     if control.get("scaffoldFails"):
         fail_scaffold(control["scaffoldFails"])

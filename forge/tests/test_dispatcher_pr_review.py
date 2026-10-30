@@ -26,9 +26,9 @@ from unittest.mock import patch
 
 import yaml
 
-from dispatcher import issue_admin, pr_review
+from dispatcher import issue_admin, pr_review, pr_review_state
 from dispatcher.config import (LABEL_FORGE_MERGE_FOLLOW_UP, LABEL_GRAALVM_BUG, LABEL_HUMAN_INTERVENTION,
-                               LABEL_HUMAN_INTERVENTION_FIXED, REPO)
+                               LABEL_HUMAN_INTERVENTION_FIXED, REPO, SUPPORTED_FORGE_REVIEW_TASK_TYPES)
 from tests.pr_review_fakes import FAKE_AGENT, FAKE_GH
 
 LOGIN: str = "forge-bot"
@@ -487,6 +487,18 @@ class ReviewTest(unittest.TestCase):
             fix: str = yaml.safe_load(handle)["states"]["fix"]["instructions"]
         for prompt in (self.invocations()[0]["prompt"], fix):
             self.assertIn(rule, " ".join(prompt.split()))
+
+
+class RouteLabelTest(unittest.TestCase):
+
+    def test_every_repair_label_marks_a_forge_pull_request(self) -> None:
+        """Each `fixes-*` label of §FS-forge-scope, as the trusted publisher applies it beside `GenAI`."""
+        for label in ("fixes-javac-fail", "fixes-java-run-fail", "fixes-native-image-build-fail",
+                      "fixes-native-image-run-fail"):
+            with self.subTest(label=label):
+                pull: dict[str, Any] = {"labels": [{"name": "GenAI"}, {"name": label}]}
+                self.assertEqual(label, pr_review_state.route_label(pull))
+                self.assertIn(label, SUPPORTED_FORGE_REVIEW_TASK_TYPES)
 
 
 if __name__ == "__main__":

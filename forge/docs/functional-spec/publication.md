@@ -433,7 +433,7 @@ reports nothing within the rules can help — publishes nothing and labels the
 issue with the reason, which includes the step's own explanation: the failing
 check's error and the fix's account of why it stopped. That explanation is
 agent or tool text, so the comment quotes it, bounded in length, where it can
-neither cite nor mention anyone (§AR-forge-workflow-pipeline.1). On a
+neither cite nor mention anyone (§AR-forge-launcher.1). On a
 published pull request the label comes from the review of
 §FS-published-pr-review, or from a descriptor that still carries an older
 pre-push verdict of `rejected` with
@@ -466,7 +466,8 @@ explanation names the GraalVM signal it saw — a builder-internal `VMError`,
 `HostedError` or `shouldNotReachHere`, or forbidden metadata the agent emits on
 every generation (§root/FS-graalvm-blocked-work.1). Once a maintainer adds
 `graalvm-bug`, that label holds the item out of claiming and review on its own
-(§FS-forge-run-requirements.2.1, §FS-published-pr-review.2).
+(§FS-forge-run-requirements.2.1, §FS-published-pr-review.2), and out of the
+scanner that groups this labeled backlog by cause (§root/FS-graalvm-blocked-work.2).
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
@@ -478,9 +479,14 @@ which includes the rare case of an agent timeout. A workflow failure is
 exception from the dependency boundary Forge itself crosses: GitHub (`gh`: rate
 limits and 5xx/network) as `GitHubError` / `GitHubRateLimitExceeded`, remote
 git operations (push/pull/fetch/clone/ls-remote) as `GitTransportError`, and a
-Gradle build that never left configuration as `GradleBootstrapFailure`. Maven
-Central and Docker registry failures have no such boundary — Gradle owns them
-inside `./gradlew test` and they reach Forge only as an opaque CI-check `rc != 0`,
+Gradle build that never left configuration as `GradleBootstrapFailure`. Every
+Gradle build a run starts, the pre-publication gate's included, crosses one
+more: a build whose output names a repository that could not be reached, or that
+answered with anything but not-found, surfaces as `RepositoryUnreachable` in
+whichever step it happens, before that step reads the failure as a fix request,
+an explore mode, or a stop (§AR-forge-workflow-pipeline.4.1). A not-found is no
+outage: the module is absent, a bad input. Docker registry failures have no such
+boundary — they reach Forge only as an opaque CI-check `rc != 0`,
 indistinguishable from a real test failure once the in-workflow retries have run —
 so they are not special-cased and fall through to the safe logical default. When a
 failure is external, Forge takes no issue action: it applies no
@@ -500,5 +506,13 @@ normal review automation may treat it as safe. The companion
 follow-up and the review of §FS-published-pr-review may resume, even on a pull
 request it already labeled `reviewed`. The
 resulting labeled backlog is drained by automated resolution, not per-item
-manual triage. The run's worktree and branch stay on the host, so a maintainer
-can continue from the last checkpoint.
+manual triage. A run that labels its issue keeps its work on the host, so a
+maintainer can continue from the last checkpoint: it commits what its last
+state left uncommitted to its branch and keeps that commit at a ref of the
+attempt's own, `refs/forge-held/forge-<issue>-<attempt>`, which the comment
+names. No later run moves or deletes that ref, so a rerun of the issue, which
+starts from a fresh base, leaves it alone, and the maintainer continues from it
+on a branch of their own. The worktree goes as every finished attempt's does,
+with its Gradle daemons and home (§FS-forge-run-requirements.4), so a held run
+keeps nothing on disk but its commits, and its ref stays until a maintainer
+deletes it.

@@ -8,7 +8,8 @@
 One cycle fetches the queues with `gh issue list`, claims the first eligible
 issue whose form is valid, runs its `forge-metadata` Rhei workspace, and closes
 it out; every decision about the issue is the run's
-(§AR-forge-workflow-pipeline.1, §FS-forge-issue-resolution-goal). `--review`
+(§AR-forge-launcher.1, §FS-forge-issue-resolution-goal). A claim this host's
+dead launcher left is resumed first (§FS-forge-stranded-claims). `--review`
 reviews the published pull requests instead, and `--review --dry-run` writes
 nothing on GitHub (§FS-published-pr-review).
 
@@ -24,11 +25,15 @@ import argparse
 import os
 import shlex
 import sys
+from typing import Any
 
 from dispatcher.github_api import resolve_authenticated_user
 from dispatcher.issue_fetch import QUEUE_LABELS, fetch_candidates, fetch_commands
 from dispatcher.pr_review import review_pass, review_target_error
-from dispatcher.run_launch import Claim, claim, close_out, finish_run, start_run, target_error
+from dispatcher.run_launch import (BUDGET_HALT_KIND, NO_ADVANCE_KIND, Claim, Started, claim, close_out, finish_run,
+                                   start_run, target_error)
+from dispatcher.stranded_claims import issue_lock, stranded_claim
+from utility_scripts.host_requirements import TRANSIENT_FAILURE_EXIT_STATUS
 
 FORGE_DIR: str = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR: str = os.path.dirname(FORGE_DIR)
@@ -39,6 +44,12 @@ DEFAULT_REVIEW_AGENT: str = "claude-code[high]:opus"
 RAN: int = 0
 NOTHING_CLAIMED: int = 1
 BAD_ARGUMENTS: int = 2
+# The claimed issue's run halted without advancing for the first time: a failed cycle, so
+# the loop backs off before a later claim resumes the run (§AR-forge-launcher.1).
+RAN_NO_STATE: int = 3
+# A Rhei budget refused the claimed issue's run: a transient host condition, so the loop
+# backs off as after a transient host check (§AR-forge-launcher.1).
+BUDGET_HALTED: int = TRANSIENT_FAILURE_EXIT_STATUS
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -68,6 +79,19 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def run_claimed(claimed: Claim, args: argparse.Namespace) -> int:
+    """Run the claimed or resumed issue's attempt and close it out; the cycle's exit code."""
+    number: int = claimed.issue["number"]
+    started: Started | None = start_run(FORGE_DIR, claimed, args.setup_agent, args.worker_agent, args.rhei_args)
+    if started is None:
+        print(f"ERROR: Cannot create the workspace for issue #{number}.", file=sys.stderr)
+        close_out(claimed, {"outcome": "failed", "kind": "infrastructure", "reason": "workspace not created"})
+        return RAN
+    outcome: dict[str, Any] = finish_run(REPO_DIR, started)
+    close_out(claimed, outcome)
+    return {NO_ADVANCE_KIND: RAN_NO_STATE, BUDGET_HALT_KIND: BUDGET_HALTED}.get(str(outcome.get("kind")), RAN)
+
+
 def run_cycle(args: argparse.Namespace) -> int:
     labels: tuple[str, ...] = tuple(args.label or QUEUE_LABELS)
     if args.dry_run:
@@ -79,18 +103,18 @@ def run_cycle(args: argparse.Namespace) -> int:
             print(f"#{issue['number']} [{label}] {issue.get('title', '')}")
         return RAN if candidates else NOTHING_CLAIMED
     user: str = resolve_authenticated_user()
+    # This host's stranded work comes first, whatever the queue (§FS-forge-stranded-claims.3).
+    with stranded_claim(FORGE_DIR, user) as stranded:
+        if stranded is not None:
+            return run_claimed(stranded, args)
     for label, issue in candidates:
-        claimed: Claim | None = claim(issue, label, user, REPO_DIR, args.take_blocked_issues)
-        if claimed is None:
-            continue
-        print(f"Claimed {label} issue #{issue['number']}.")
-        workspace: str | None = start_run(FORGE_DIR, claimed, args.setup_agent, args.worker_agent, args.rhei_args)
-        if workspace is None:
-            print(f"ERROR: Cannot create the workspace for issue #{issue['number']}.", file=sys.stderr)
-            close_out(claimed, {"outcome": "failed", "kind": "infrastructure", "reason": "workspace not created"})
-            return RAN
-        close_out(claimed, finish_run(REPO_DIR, workspace))
-        return RAN
+        # Held to the close-out, so the claim never looks stranded (§FS-forge-stranded-claims.2).
+        with issue_lock(FORGE_DIR, issue["number"]) as locked:
+            claimed: Claim | None = claim(issue, label, user, REPO_DIR, args.take_blocked_issues) if locked else None
+            if claimed is None:
+                continue
+            print(f"Claimed {label} issue #{issue['number']}.")
+            return run_claimed(claimed, args)
     print("No eligible issue could be claimed.", file=sys.stderr)
     return NOTHING_CLAIMED
 

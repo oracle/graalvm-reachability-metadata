@@ -1,0 +1,36 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    // A real Micronaut application always has Micronaut service definitions
+    // (META-INF/micronaut/ entries) on its classpath, from micronaut-inject and
+    // the micronaut-inject-java annotation processor. On a classpath without
+    // any, Micronaut's ServiceLoaderFeature fails the native image build with
+    // an UnsupportedOperationException: it calls computeIfAbsent on the
+    // immutable Map.of() that findAllMicronautMetaServices returns.
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java:$libraryVersion"
+    testImplementation "io.micronaut:micronaut-core-reactive:$libraryVersion"
+    testImplementation "io.micronaut:micronaut-inject:$libraryVersion"
+    testImplementation 'io.projectreactor:reactor-core:3.8.6'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

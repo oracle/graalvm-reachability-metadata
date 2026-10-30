@@ -33,10 +33,13 @@ from utility_scripts.library_measurements import load_library_baseline
 from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.library_update_target import library_update_target_summary, prepare_library_update_target
 from utility_scripts.metadata_index import (
+    MATCH_METADATA_VERSION,
+    MATCH_TESTED_VERSION,
     LibraryUpdateTarget,
     VersionBackfillBaseline,
     is_not_for_native_image,
     nearest_prior_supported_version,
+    resolve_library_update_target,
     resolve_metadata_version,
     resolve_version_backfill_baseline,
 )
@@ -57,7 +60,7 @@ from build_tools import (
     stop_gradle_daemons,
     upstream_remote,
 )
-from exit_codes import INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput
+from exit_codes import INFRASTRUCTURE, ISSUE_CLOSED, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput
 from run_state import ROUTE_NEW, Budgets, Chunk, RunState, load, runtime_path, save, write_text
 
 # <agent>[<mode>]:<model> with agent pi or claude-code (§FS-forge-agent-runtime-selection).
@@ -123,7 +126,7 @@ def give_up_worktree(repo: str, worktree: str) -> None:
 
     A prepare that exits without saving its state is a finished attempt whose
     worktree the close-out cannot find, so it gives the worktree up as the
-    close-out would (§AR-forge-workflow-pipeline.1). Best effort: a failure is
+    close-out would (§AR-forge-launcher.1). Best effort: a failure is
     reported, and the exit the prepare took stands.
     """
     try:
@@ -175,6 +178,29 @@ def previous_version(state: RunState, baseline: VersionBackfillBaseline | None) 
     return None if prior is None else resolve_metadata_version(state.worktree, state.group, state.artifact, prior)
 
 
+def require_unsupported(state: RunState, labels: frozenset[str]) -> None:
+    """Raise `BadInput` for a new library whose version the pinned base already lists.
+
+    Such a run could only re-create shipped support, so it stops before any
+    agent state, its detail naming the commit that added the version. A chunk
+    resumes on the version its earlier chunk merged, so the label or the
+    coordinate's exhaust report exempts it (§FS-forge-run-requirements.2.2).
+    """
+    if state.route != ROUTE_NEW or issue.CHUNKED_LABEL in labels:
+        return
+    listed: LibraryUpdateTarget = resolve_library_update_target(state.worktree, state.group, state.artifact,
+                                                                state.version)
+    # A `default-for` range lists no version.
+    if listed.match_type not in (MATCH_TESTED_VERSION, MATCH_METADATA_VERSION):
+        return
+    if find_dynamic_access_exhaust_report_path(state.worktree, state.coordinate) is not None:
+        return
+    added: str = git(state.worktree, "log", "--reverse", "--format=%h %s", f'-S"{state.version}"',
+                     state.base_commit, "--", state.index_path).partition("\n")[0]
+    raise BadInput(f"{state.coordinate} is already supported: {state.index_path} lists {state.version} "
+                   f"in its {listed.resolved_metadata_version} entry", f"Added by {added}" if added else "")
+
+
 def add_version(state: RunState, workspace: str) -> int:
     """Scaffold a new library, or add the version beside its nearest supported one.
 
@@ -221,14 +247,21 @@ def add_version(state: RunState, workspace: str) -> int:
 def resolve_chunk(state: RunState, labels: frozenset[str]) -> None:
     """Load a chunked issue's processed classes once its previous chunk merged.
 
-    §FS-forge-chunked-dynamic-access
+    The label, or the coordinate's own exhaust report, makes the issue chunked
+    (§FS-forge-chunked-dynamic-access). The report is read on the pinned base,
+    before the version is added, which copies its baseline's tests but not its
+    report (§FS-library-update-tested-version-split.3); a report naming another
+    version holds that version's progress.
     """
-    if issue.CHUNKED_LABEL not in labels:
-        return
+    labeled: bool = issue.CHUNKED_LABEL in labels
     report_path: str | None = find_dynamic_access_exhaust_report_path(state.worktree, state.coordinate)
     if report_path is None:
-        raise ValueError(f"chunked issue has no exhaust report for {state.coordinate}")
+        if labeled:
+            raise ValueError(f"chunked issue has no exhaust report for {state.coordinate}")
+        return
     report: DynamicAccessExhaustReport = DynamicAccessExhaustReport.load(report_path)
+    if not labeled and report.coordinate != state.coordinate:
+        return
     require_previous_chunk_merged(report, state.worktree)
     state.chunk = Chunk(active=True, processed=sorted(report.processed_classes()),
                         budget=state.budgets.defer_classes)
@@ -272,6 +305,10 @@ def run(args: argparse.Namespace) -> int:
         return INFRASTRUCTURE
     try:
         parsed: issue.Issue = issue.parse_issue(payload)
+    except issue.IssueClosed as closed:
+        # Not a bad input: the issue left the queue (§FS-forge-run-requirements.2).
+        print(f"[prepare] issue #{args.issue_number}: {closed}; nothing to do")
+        return ISSUE_CLOSED
     except ValueError as error_value:
         raise BadInput(str(error_value)) from error_value
     run_name: str = "forge-" + parsed.coordinate.replace(":", "-")
@@ -314,6 +351,7 @@ def prepare_worktree(args: argparse.Namespace, workspace: str, repo: str, payloa
     )
     if is_not_for_native_image(worktree, state.group, state.artifact):
         raise BadInput(f"{state.group}:{state.artifact} is marked not-for-native-image")
+    require_unsupported(state, parsed.labels)
     code: int | None = index_record.record_not_for_native_image(workspace, state)
     if code is not None:
         if code == NOT_FOR_NATIVE_IMAGE_RECORDED:
@@ -322,9 +360,6 @@ def prepare_worktree(args: argparse.Namespace, workspace: str, repo: str, payloa
             run_note.write(workspace, state)
             print(f"[prepare] recorded {state.coordinate} as not-for-native-image at {state.checkpoint}")
         return code
-    code = add_version(state, workspace)
-    if code != OK:
-        return code
     try:
         resolve_chunk(state, parsed.labels)
     except ValueError as error_value:
@@ -332,6 +367,9 @@ def prepare_worktree(args: argparse.Namespace, workspace: str, repo: str, payloa
     except RuntimeError as error_value:
         print(f"ERROR: the previous chunk is not ready: {error_value}", file=sys.stderr)
         return INFRASTRUCTURE
+    code = add_version(state, workspace)
+    if code != OK:
+        return code
     request: str = reporter_request(payload)
     state.has_reporter_request = bool(request)
     state.requested_metadata = gates.requested_entries(request)
