@@ -6,11 +6,11 @@
 """Entry point for every program state of the `forge-metadata` workflow.
 
 Each subcommand is one program state of §AR-forge-workflow-pipeline.4; its exit
-code is the transition Rhei takes (§AR-forge-workflow-pipeline.2). The working
+code is the transition Rhei takes (§AR-forge-launcher.2). The working
 directory is the Rhei workspace root. Every exit writes Rhei's result file,
 which an edge into a final state requires, and a terminal outcome is recorded
 for the launcher's close-out, a `human-intervention` one with the run's
-diagnostics (§AR-forge-workflow-pipeline.1) and a bad-input one with the reason
+diagnostics (§AR-forge-launcher.1) and a bad-input one with the reason
 the step raised (§FS-forge-run-requirements.2).
 """
 from __future__ import annotations
@@ -37,6 +37,7 @@ import native_check  # noqa: E402
 import prepare  # noqa: E402
 import publish  # noqa: E402
 import setup_check  # noqa: E402
+from build_tools import RepositoryUnreachable  # noqa: E402
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
@@ -52,6 +53,7 @@ from exit_codes import (  # noqa: E402
     STILL_FAILING,
     BadInput,
 )
+from git_scripts.common_git import GitTransportError  # noqa: E402
 from run_state import load, runtime_path, write_json  # noqa: E402
 
 STEPS: dict[str, Callable[[str], int]] = {
@@ -71,7 +73,7 @@ OUTCOME: str = "outcome.json"
 KNOWN_ROUTES: frozenset[int] = frozenset(
     {OK, AGENT_WORK, JVM_TESTS_FAIL, STILL_FAILING, NOTHING_TO_DO, SKIP_RECORDED, NOT_FOR_NATIVE_IMAGE_RECORDED, CANNOT_FIX,
      *RETURN_CODES.values()})
-# What the close-out quotes of one command's output (§AR-forge-workflow-pipeline.1).
+# What the close-out quotes of one command's output (§AR-forge-launcher.1).
 EXCERPT_LINES: int = 30
 EXCERPT_WIDTH: int = 300
 # A line that reports a failure: an error, an exception, or a failed task or test.
@@ -94,6 +96,9 @@ def outcome(step: str, code: int, bad_input: BadInput | None = None) -> dict[str
     """
     if step == "audit" and code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": "the audit's edit fails the checks it reran"}
+    if step == "analyze" and code == STILL_FAILING:
+        # No fix can follow it (§AR-forge-workflow-pipeline.4.5).
+        return {"outcome": "human-intervention", "reason": "the first coverage report fails before any cover pass"}
     if code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": f"{step} still fails after its fix"}
     if step == "fix-route" and code == CANNOT_FIX:
@@ -164,9 +169,14 @@ def main(argv: list[str] | None = None) -> int:
     except BadInput as raised:
         print(f"ERROR: {raised}", file=sys.stderr)
         bad_input, code = raised, BAD_INPUT
+    except (RepositoryUnreachable, GitTransportError) as outage:
+        # External: no fix request and no issue action, so a later cycle retries
+        # (§FS-human-intervention-policy).
+        print(f"ERROR: {outage}", file=sys.stderr)
+        code = INFRASTRUCTURE
     except SystemExit as early_exit:
         # Shared helpers quit with `SystemExit`; the result file is owed all the same
-        # (§AR-forge-workflow-pipeline.2).
+        # (§AR-forge-launcher.2).
         print(f"ERROR: {args.step} quit early with exit status {early_exit.code}.", file=sys.stderr)
         code = INFRASTRUCTURE
     except Exception:

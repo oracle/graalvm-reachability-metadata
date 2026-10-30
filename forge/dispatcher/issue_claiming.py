@@ -12,6 +12,7 @@ import sys
 import time
 from typing import Optional
 
+from git_scripts.github_cli import is_github_outage
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.dynamic_access_exhaust_report import find_dynamic_access_exhaust_report_path
 from utility_scripts.run_location import PHASE_CLAIM, STEP_CLAIM_ISSUE, log_step_progress, pipeline_step
@@ -44,6 +45,7 @@ from dispatcher.issue_cache import (
     try_acquire_issue_claim_lock,
 )
 from dispatcher.issue_queue import is_assigned_only_to_authenticated_user, issue_has_label
+from dispatcher.pending_releases import drop_pending_release, record_pending_release
 from dispatcher.project_board import get_item_status, get_project_item_state, set_item_status
 from dispatcher.records import ClaimedIssue, IssueClaimCacheObservation
 
@@ -59,9 +61,13 @@ def revert_issue_claim_if_still_owned_by_user(
         assignees: list[str] = get_issue_assignees(issue_number)
     except Exception as exc:
         # Without the owner, a release could clear another runner's claim.
-        report_unconfirmed_release(
-            issue_number, f"its assignees could not be read: {format_github_exception_details(exc)}",
-        )
+        why: str = f"its assignees could not be read: {format_github_exception_details(exc)}"
+        if is_github_outage(exc):
+            # The next cycle reads the owner again first (§FS-forge-stranded-claims.4.4).
+            record_pending_release(issue_number, item_id, reason)
+            report_pending_release(issue_number, why)
+        else:
+            report_unconfirmed_release(issue_number, why)
         return
     if assignees == [authenticated_user]:
         revert_issue_claim(item_id, issue_number, reason)
@@ -83,17 +89,27 @@ def report_unconfirmed_release(issue_number: int, why: str) -> None:
     )
 
 
+def report_pending_release(issue_number: int, why: str) -> None:
+    """Name a release an outage left unconfirmed, which the next cycle retries (§FS-forge-stranded-claims.4.2)."""
+    print(
+        f"ERROR: Issue #{issue_number} release is unconfirmed: {why}. GitHub did not answer, so the release "
+        "is recorded, and the next cycle retries it before it claims new work.",
+        file=sys.stderr,
+    )
+
+
 def _release_once(item_id: str, issue_number: int) -> tuple[str | None, bool]:
     """Return the issue to Todo unassigned and read both back.
 
-    Returns why the release is unconfirmed, or `None`, and whether a GitHub call failed.
+    Returns why the release is unconfirmed, or `None`, and whether only an outage kept
+    it unconfirmed: a call failed transiently and none was refused (§FS-forge-stranded-claims.4.2).
     """
-    failed: bool = False
+    failures: list[Exception] = []
     log_debug("issue-revert", f"Reverting issue #{issue_number}: setting project item {item_id} -> {STATUS_TODO}")
     try:
         set_item_status(item_id, STATUS_TODO)
     except Exception as exc:
-        failed = True
+        failures.append(exc)
         print(
             f"ERROR: Issue #{issue_number} revert could not set project item {item_id} "
             f"to {STATUS_TODO}: {format_github_exception_details(exc)}",
@@ -103,28 +119,31 @@ def _release_once(item_id: str, issue_number: int) -> tuple[str | None, bool]:
     try:
         clear_issue_assignees(issue_number)
     except Exception as exc:
-        failed = True
+        failures.append(exc)
         print(
             f"ERROR: Issue #{issue_number} revert could not clear assignees: "
             f"{format_github_exception_details(exc)}",
             file=sys.stderr,
         )
+    unconfirmed: str | None = None
     try:
         verified_status: str | None = get_item_status(item_id)
         verified_assignees: list[str] = get_issue_assignees(issue_number)
+        if verified_status != STATUS_TODO or verified_assignees:
+            unconfirmed = f"GitHub still shows status={verified_status!r}, assignees={verified_assignees!r}"
     except Exception as exc:
-        return f"GitHub could not be read back: {format_github_exception_details(exc)}", True
-    if verified_status != STATUS_TODO or verified_assignees:
-        return f"GitHub still shows status={verified_status!r}, assignees={verified_assignees!r}", failed
-    return None, failed
+        failures.append(exc)
+        unconfirmed = f"GitHub could not be read back: {format_github_exception_details(exc)}"
+    return unconfirmed, bool(failures) and all(is_github_outage(failure) for failure in failures)
 
 
 def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> bool:
     """Reset an issue claim back to Todo and clear all assignment; return whether GitHub confirmed it.
 
-    GitHub is often down when a release is needed, so a release it cannot
-    confirm is retried, then reported as unconfirmed rather than raised
-    (§FS-forge-run-requirements).
+    GitHub is often down when a release is needed, so a release an outage keeps
+    unconfirmed is retried, then recorded for the next cycle rather than raised; one
+    GitHub refused or still shows claimed is reported for a hand release
+    (§FS-forge-run-requirements, §FS-forge-stranded-claims.4.2).
     """
     if is_fixture_testing_enabled():
         log_stage(
@@ -137,14 +156,16 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> bool:
     # §FS-forge-run-location-reporting.4
     log_debug("issue-revert", f"Reverting issue #{issue_number} claim because {reason}")
     unconfirmed: str | None = None
+    outage: bool = False
     for attempt in range(1, CLAIM_RELEASE_ATTEMPTS + 1):
-        unconfirmed, failed = _release_once(item_id, issue_number)
+        unconfirmed, outage = _release_once(item_id, issue_number)
         if unconfirmed is None:
             invalidate_issue_claim_cache_entry(issue_number)
+            drop_pending_release(issue_number)
             log_debug("issue-revert", f"Issue #{issue_number} failed due to {reason}; verified revert")
             return True
-        # GitHub answered every call, so a retry would only overwrite a claim made since.
-        if not failed or attempt == CLAIM_RELEASE_ATTEMPTS:
+        # GitHub answered every call or refused one: a retry would overwrite a claim made since, or be refused again.
+        if not outage or attempt == CLAIM_RELEASE_ATTEMPTS:
             break
         print(
             f"ERROR: Issue #{issue_number} release is not confirmed: {unconfirmed}. Retrying in "
@@ -152,7 +173,12 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> bool:
             file=sys.stderr,
         )
         time.sleep(CLAIM_RELEASE_RETRY_DELAY_SECONDS)
-    report_unconfirmed_release(issue_number, str(unconfirmed))
+    if outage:
+        record_pending_release(issue_number, item_id, reason)
+        report_pending_release(issue_number, str(unconfirmed))
+    else:
+        drop_pending_release(issue_number)
+        report_unconfirmed_release(issue_number, str(unconfirmed))
     return False
 
 

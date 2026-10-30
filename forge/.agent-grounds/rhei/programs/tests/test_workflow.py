@@ -22,6 +22,7 @@ from typing import Any
 from support import COORDINATE, REPOSITORY, FakeRepository, play_fix, working_directory
 from test_prepare import prepare_arguments
 
+import build_tools  # noqa: E402
 import explore  # noqa: E402
 import fix_route  # noqa: E402
 import forge_run  # noqa: E402
@@ -314,7 +315,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step("native-repair"))
         self.assertEqual(AGENT_WORK, self.step("analyze"))
 
-        broken = self.state.path(os.path.join(self.state.test_dir, explore.EXTENSION_SUITE, "src", "test", "java",
+        broken = self.state.path(os.path.join(self.state.test_dir, build_tools.EXTENSION_SUITE, "src", "test", "java",
                                               "org_example", "CodecCoverageTest.java"))
         os.makedirs(os.path.dirname(broken))
         with open(broken, "w", encoding="utf-8") as handle:

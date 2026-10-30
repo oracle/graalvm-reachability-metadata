@@ -9,7 +9,7 @@
 #   finalize -- 0 --> audit; 10 (at most finalize_fixes times) --> fix
 #   audit -- 10 (first visit) --> fix; 0 --> publish
 #   fix --> fix-route -- 30-35 --> back to the sender; 40 --> human-intervention
-#   every sender -- 12 (failing after its last fix) --> human-intervention
+#   every sender -- 12 (failing after its last fix; analyze: first report) --> human-intervention
 #   publish -- 0 --> completed; 20 (nothing changed) --> nothing-to-publish
 #   every program -- 2 (bad input), 3 (infrastructure), or a crash --> failed
 #
@@ -95,7 +95,7 @@ states:
     program_timeout: 60m
 
   jvm:
-    description: Make a version that already has tests work on the JVM - javaTest, then generateMetadata.
+    description: Make a version that already has tests work on the JVM - javaTest, codeCoverageTest when it has the extension suite, then generateMetadata.
     program: python3 "{{repo_checkout}}/forge/.agent-grounds/rhei/programs/forge_run.py" jvm
     program_timeout: 180m
     outputs:
@@ -416,12 +416,12 @@ transitions:
   - from: jvm
     to: native-repair
     exit_code: 0
-    description: javaTest and generateMetadata pass.
+    description: Every JVM suite and generateMetadata pass.
 
   - from: jvm
     to: fix
     exit_code: 10
-    description: javaTest or generateMetadata fails; one fix request for that command follows.
+    description: A JVM suite or generateMetadata fails; one fix request for that command follows.
 
   - from: jvm
     to: human-intervention
@@ -464,9 +464,14 @@ transitions:
     description: Nothing to explore, or exploration is deferred.
 
   - from: analyze
+    to: human-intervention
+    exit_code: 12
+    description: The first coverage report fails before any cover pass; no fix can follow it.
+
+  - from: analyze
     to: failed
     exit_code: nonzero
-    description: The first coverage report failed over listed call sites.
+    description: The first coverage report could not reach a repository, or analyze crashed.
 
   - from: cover
     to: measure
@@ -564,7 +569,7 @@ transitions:
   - from: fix-route
     to: jvm
     exit_code: 30
-    description: Back to jvm, which reruns javaTest and generateMetadata.
+    description: Back to jvm, which reruns every JVM suite and generateMetadata.
 
   - from: fix-route
     to: measure

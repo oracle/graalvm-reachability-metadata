@@ -4,7 +4,11 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """GitHub project board item state and status transitions
-(§AR-forge-dispatcher-decomposition, §FS-forge-issue-resolution-goal)."""
+(§AR-forge-dispatcher-decomposition, §FS-forge-issue-resolution-goal).
+
+The status edit and its reads wait out a rate limit as well as an outage, since
+one that fails strands the issue it claims or releases (§FS-forge-stranded-claims.4.1).
+"""
 
 import sys
 from typing import Optional
@@ -75,6 +79,7 @@ def get_item_status(item_id: str):
         "api", "graphql",
         "-f", f"query={query}",
         "-f", f"item={item_id}",
+        retry_rate_limit=True,
     )
     nodes = (
         result.get("data", {})
@@ -115,7 +120,7 @@ def get_project_field_info() -> tuple[str, str, dict[str, str]]:
       }}
     }}
     """
-    result = gh_json("api", "graphql", "-f", f"query={query}")
+    result = gh_json("api", "graphql", "-f", f"query={query}", retry_rate_limit=True)
     project = (
         result.get("data", {})
         .get("organization", {})
@@ -163,4 +168,5 @@ def set_item_status(item_id: str, status: str) -> None:
             "--field-id", field_id,
             "--single-select-option-id", option_id,
         ),
+        retry_rate_limit=True,
     )
