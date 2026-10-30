@@ -50,7 +50,12 @@ GITHUB_QUERY_LOG_ENV_VAR = "FORGE_LOG_GITHUB_QUERIES"
 
 
 def ensure_gh_authenticated() -> None:
-    """Ensure the GitHub CLI (gh) is installed and authenticated for github.com."""
+    """Ensure the GitHub CLI (gh) is installed and authenticated for github.com.
+
+    The probe is a call GitHub answers, retried like every other GitHub call, so an
+    outage raises `GitHubError` after the retries and only a refused login stops
+    the process (§FS-human-intervention-policy, §FS-forge-host-requirements.1).
+    """
     if shutil.which("gh") is None:
         print(
             "The GitHub CLI (gh) is required to create a PR. "
@@ -58,7 +63,7 @@ def ensure_gh_authenticated() -> None:
         )
         sys.exit(1)
     try:
-        gh("auth", "status", "--hostname", "github.com")
+        get_authenticated_login()
     except subprocess.CalledProcessError:
         print("GitHub CLI is not authenticated for github.com. Run 'gh auth login' and try again.")
         sys.exit(1)
@@ -93,7 +98,12 @@ def is_github_rate_limit_errors(errors: object) -> bool:
 
 
 def is_github_transient_failure_text(text: str) -> bool:
-    """Return True when GitHub CLI output describes a retryable server or network failure."""
+    """Return True when GitHub CLI output describes a retryable server or network failure.
+
+    GitHub that cannot be reached is a network failure: gh reports a host that does not
+    resolve as `error connecting to <host>`, and a failed dial in Go's net error text
+    (§FS-human-intervention-policy).
+    """
     normalized_text = text.lower()
     return (
         "http 500" in normalized_text
@@ -108,6 +118,10 @@ def is_github_transient_failure_text(text: str) -> bool:
         or "tls handshake timeout" in normalized_text
         or "i/o timeout" in normalized_text
         or "context deadline exceeded" in normalized_text
+        or "error connecting to" in normalized_text
+        or "no such host" in normalized_text
+        or "network is unreachable" in normalized_text
+        or "connection refused" in normalized_text
     )
 
 
