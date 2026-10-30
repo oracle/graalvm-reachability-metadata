@@ -13,6 +13,7 @@ structure chosen to satisfy it, with the workflow catalog in
 | ID | Concern |
 | --- | --- |
 | §AR-forge-workflow-pipeline | the Rhei state machine of one issue run, state by state |
+| §AR-forge-launcher | the launcher loop that claims an issue and starts its run, and the programs' exit codes |
 | §AR-forge-workflow-prompts | the fixed instructions and handoffs every agent state receives |
 | §AR-forge-run-location | how progress output and failure output share one phase/step vocabulary |
 | §AR-forge-control-plane | how the launcher, GitHub queues, and Rhei workspaces compose |
@@ -90,7 +91,7 @@ Forge is a small control plane around one Rhei template, serving
 §FS-forge-issue-resolution-goal. `run-forge.sh` loops until stopped; each cycle
 checks the host (§FS-forge-requirements) and runs `forge_metadata.py` once,
 which fetches the queues, claims one issue, checks its form, and starts the `forge-metadata` workspace
-(§AR-forge-workflow-pipeline.1). The claim, the board status, and the close-out
+(§AR-forge-launcher.1). The claim, the board status, and the close-out
 stay in the dispatcher's GitHub helpers; every decision about the issue itself
 is made inside the run. The run pushes one verified branch and descriptor, and
 repository Actions hand the exact SHA to trusted default-branch publisher code
