@@ -27,6 +27,13 @@ public final class SharedLayerBuildUtils {
 
     public static void build(Project project, ExecOperations execOperations, File baseLayerFile,
                              String nativeImage, String mode, List<String> arguments, boolean reuse) {
+        build(project, execOperations, baseLayerFile, nativeImage, mode, arguments, reuse, false);
+    }
+
+    /// CI consumers validate the prepared common base without rebuilding it. §FS-tests.3.6
+    public static void build(Project project, ExecOperations execOperations, File baseLayerFile,
+                             String nativeImage, String mode, List<String> arguments, boolean reuse,
+                             boolean requireExisting) {
         if (!baseLayerFile.getName().endsWith(".nil")) {
             throw new GradleException("Native Image base-layer file must end with .nil: " + baseLayerFile);
         }
@@ -39,6 +46,10 @@ public final class SharedLayerBuildUtils {
                 && expected.equals(new JsonSlurper().parse(manifest))) {
             project.getLogger().lifecycle("Reusing Native Image base layer at {}", baseLayerFile);
             return;
+        }
+        if (requireExisting) {
+            throw new GradleException("Prepared Native Image base layer is missing or incompatible at "
+                    + baseLayerFile + "; common-base rebuilding is disabled for this shard");
         }
 
         File temporary = new File(directory.getParentFile(), directory.getName() + ".tmp");

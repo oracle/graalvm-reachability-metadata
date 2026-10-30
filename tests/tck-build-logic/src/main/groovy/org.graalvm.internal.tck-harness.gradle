@@ -239,8 +239,10 @@ tasks.register("buildBaseLayer") { task ->
                 ci as Map<String, Object>, mode,
                 ["{{library.version}}": "", "{{library.coordinates}}": ""])
         // The same builder writes manifests for cached and coordinate-local bases. §FS-tests.3.3
+        // Shards must consume the prepared common base without rebuilding it. §FS-tests.3.6
         SharedLayerBuildUtils.build(project, project.services.get(ExecOperations), baseLayerFile,
-                nativeImageTool("native-image"), mode, nativeImageArgs, true)
+                nativeImageTool("native-image"), mode, nativeImageArgs, true,
+                project.findProperty("tck.baseLayer.requireExisting")?.toString()?.toBoolean() ?: false)
     }
 }
 

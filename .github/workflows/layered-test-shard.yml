@@ -1,0 +1,127 @@
+# A single admitted shard, with no write token in the test job. §AR-layered-tests, §FS-tests.3.6
+name: Layered shard
+on:
+  workflow_call:
+    inputs:
+      sweep-run-id:
+        required: true
+        type: string
+      shard:
+        required: true
+        type: string
+      dispatch-token:
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+  checks: read
+jobs:
+  test:
+    name: "Execute shard"
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: "Checkout workflow code"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      - name: "Load the recorded shard assignment"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SWEEP_RUN_ID: ${{ inputs.sweep-run-id }}
+          SHARD_INDEX: ${{ inputs.shard }}
+          DISPATCH_TOKEN: ${{ inputs.dispatch-token }}
+        run: |
+          PYTHONPATH=.github/scripts python3 -m layered_queue.cli shard
+          cp .github/scripts/prepared_base_layer.py "${RUNNER_TEMP}/prepared_base_layer.py"
+
+      - name: "Checkout test revision"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ env.TEST_REVISION }}
+          persist-credentials: false
+
+      - name: "Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "Download resolved GraalVM"
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          run-id: ${{ env.PRODUCER_RUN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ env.GRAALVM_ARTIFACT }}
+          path: ${{ runner.temp }}/graalvm-download
+
+      - name: "Install resolved GraalVM"
+        run: |
+          mkdir -p "${RUNNER_TEMP}/graalvm"
+          tar -xzf "${RUNNER_TEMP}/graalvm-download/graalvm.tar.gz" -C "${RUNNER_TEMP}/graalvm"
+          echo "JAVA_HOME=${RUNNER_TEMP}/graalvm" >> "${GITHUB_ENV}"
+          echo "GRAALVM_HOME=${RUNNER_TEMP}/graalvm" >> "${GITHUB_ENV}"
+          echo "${RUNNER_TEMP}/graalvm/bin" >> "${GITHUB_PATH}"
+
+      - name: "Download prepared common base"
+        if: env.LAYER_NAME == 'Shared'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          run-id: ${{ env.PRODUCER_RUN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ env.BASE_ARTIFACT }}
+          path: ${{ runner.temp }}/prepared-base-download
+
+      - name: "Verify and restore common base"
+        if: env.LAYER_NAME == 'Shared'
+        run: |
+          python3 "${RUNNER_TEMP}/prepared_base_layer.py" restore \
+            --archive "${RUNNER_TEMP}/prepared-base-download/shared-base.tar" \
+            --destination "${RUNNER_TEMP}/prepared-base"
+
+      - name: "Pull allowed docker images"
+        run: |
+          ./gradlew pullAllowedDockerImages -Pcoordinates="${COORDINATES}"
+
+      - name: "Check metadata files content"
+        run: |
+          ./gradlew checkMetadataFiles -Pcoordinates="${COORDINATES}"
+
+      - name: "Run layered tests"
+        env:
+          GVM_TCK_DEDICATED_LAYER_ROOT: ${{ runner.temp }}/native-image-dedicated-layers
+        run: |
+          failure_report="${RUNNER_TEMP}/${FAILURE_REPORT_NAME}"
+          base_options=()
+          if [[ "${LAYER_NAME}" == "Shared" ]]; then
+            base_options+=(-Ptck.baseLayer.requireExisting=true)
+          fi
+          set +e
+          ./gradlew "${LAYER_TASK}" \
+            "${base_options[@]}" \
+            -Pcoordinates="${COORDINATES}" \
+            -Ptck.excludedCoordinatesFile="${EXCLUDED_COORDINATES_FILE}" \
+            -Ptck.layered.continueOnCoordinateFailure=true \
+            -Ptck.layered.coordinateFailureReport="${failure_report}" \
+            -Ptck.layered.deleteDedicatedLayerAfterTest="${DELETE_DEDICATED_LAYER}" \
+            --stacktrace
+          result=$?
+          set -e
+
+          if [[ -s "${failure_report}" ]]; then
+            failure_count="$(wc -l < "${failure_report}" | tr -d ' ')"
+            {
+              echo "### ${LAYER_NAME} layer test failures"
+              echo
+              echo "Failing libraries: ${failure_count}"
+              echo
+              while IFS= read -r coordinates; do
+                echo "- \`${coordinates}\`"
+              done < "${failure_report}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+
+            echo "${LAYER_NAME} layer test failures (${failure_count}):"
+            sed 's/^/ - /' "${failure_report}"
+          fi
+
+          exit "${result}"

@@ -1,9 +1,11 @@
 # Weekly full sweep and manual test for the cached layered Native Image lane. §AR-layered-tests.
 name: "Layered tests"
+run-name: ${{ inputs.shard != '' && format('Layered shard {0} {1} {2}', inputs.sweep-run-id, inputs.shard, inputs.dispatch-token) || inputs.sweep-run-id != '' && format('Layered queue {0}', inputs.sweep-run-id) || github.event.schedule == '17,37,57 * * * *' && 'Layered queue recovery' || 'Layered sweep' }}
 
 on:
   schedule:
     - cron: "30 0 * * 0"
+    - cron: "17,37,57 * * * *"
   workflow_dispatch:
     inputs:
       lane:
@@ -31,23 +33,47 @@ on:
         description: "Native Image mode from ci.json"
         required: true
         default: "current-defaults"
+      sweep-run-id:
+        description: "Existing sweep to resume or cancel (empty starts a new sweep)"
+        default: ""
+      shard:
+        description: "Internal dispatcher shard index"
+        default: ""
+      dispatch-token:
+        description: "Internal dispatcher submission identity"
+        default: ""
+      cancel-sweep:
+        description: "Cancel the sweep identified above"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: "workflow = ${{ github.workflow }}, lane = ${{ inputs.lane || 'All Layered Tests' }}, ref = ${{ inputs.ref || github.event.repository.default_branch }}, coordinates = ${{ inputs.coordinates || 'all' }}, java = ${{ inputs.java-version || 'latest-ea' }}, mode = ${{ inputs.native-image-mode || 'current-defaults' }}"
+  group: "layered-${{ inputs.sweep-run-id || format('{0}-{1}-{2}-{3}-{4}-{5}', github.event.schedule, inputs.lane, inputs.ref, inputs.coordinates, inputs.java-version, inputs.native-image-mode) }}-${{ inputs.shard }}-${{ inputs.dispatch-token }}"
   cancel-in-progress: true
 
 jobs:
   prepare-shards:
+    if: inputs.sweep-run-id == '' && github.event.schedule != '17,37,57 * * * *'
     name: "Prepare layered test shards"
     runs-on: "ubuntu-latest"
     timeout-minutes: 5
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
+      revision: ${{ steps.revision.outputs.sha }}
 
     steps:
+      - name: "Resolve test ref"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ inputs.ref || github.event.repository.default_branch }}
+
+      - name: "Record test revision"
+        id: revision
+        run: echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+
       - name: "Create coordinate matrix"
         id: matrix
         env:
@@ -60,114 +86,103 @@ jobs:
             [
               {
                 selection: "Shared Layered Tests",
-                shards: 16,
-                name: "Shared",
-                task: "testSharedLayer",
-                failureReport: "shared-layer-test-failures.txt",
-                exclusions: "tests/tck-build-logic/src/main/resources/shared-layered-test-exclusions.txt",
-                deleteDedicatedLayer: "false"
+                shards: 32,
+                name: "Shared"
               },
               {
                 selection: "Dedicated Layered Tests",
                 shards: 128,
-                name: "Dedicated",
-                task: "testDedicatedLayer",
-                failureReport: "dedicated-layer-test-failures.txt",
-                exclusions: "tests/tck-build-logic/src/main/resources/dedicated-layer-test-exclusions.txt",
-                deleteDedicatedLayer: "true"
+                name: "Dedicated"
               }
             ]
             | if $selection == "All Layered Tests" then . else map(select(.selection == $selection)) end
-            | {
-                include: [
-                  .[] as $lane
-                  | if $coordinates == "all" then
-                      range(1; $lane.shards + 1) as $shard
-                      | {coordinates: "\($shard)/\($lane.shards)", lane: $lane}
-                    else
-                      {coordinates: $coordinates, lane: $lane}
-                    end
-                ]
-              }')"
+            | {include: [
+                .[] as $lane
+                | (if $coordinates == "all" then
+                    range(1; $lane.shards + 1) | "\(.)/\($lane.shards)"
+                  else $coordinates end) as $coordinate
+                | {lane: $lane, coordinates: $coordinate}
+              ]}')"
           echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
 
-  layered-tests:
-    name: "${{ matrix.lane.name }} layer tests for ${{ matrix.coordinates }} on ${{ inputs.ref || github.event.repository.default_branch }}"
-    runs-on: "ubuntu-latest"
-    timeout-minutes: 360
+  prepare:
     needs: prepare-shards
-    strategy:
-      fail-fast: false
-      max-parallel: 64
-      matrix: ${{ fromJson(needs.prepare-shards.outputs.matrix) }}
-    env:
-      GVM_TCK_NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode || 'current-defaults' }}
+    uses: ./.github/workflows/layered-test-shards.yml
+    with:
+      prepare-shared-base: ${{ inputs.lane != 'Dedicated Layered Tests' }}
+      ref: ${{ needs.prepare-shards.outputs.revision }}
+      java-version: ${{ inputs.java-version || 'latest-ea' }}
+      native-image-mode: ${{ inputs.native-image-mode || 'current-defaults' }}
 
+  discover:
+    if: inputs.shard == ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+      checks: read
+    outputs:
+      matrix: ${{ steps.queues.outputs.matrix }}
+      found: ${{ steps.queues.outputs.found }}
     steps:
-      - name: "Checkout test ref"
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
-          ref: ${{ inputs.ref || github.event.repository.default_branch }}
-
-      - name: "Setup latest native-build-tools snapshot"
-        uses: ./.github/actions/setup-native-build-tools
-
-      - name: "Download GraalVM for layered metadata testing"
-        uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
-        with:
-          distribution: "graalvm"
-          java-version: ${{ inputs.java-version || 'latest-ea' }}
-          set-java-home: "true"
-          native-image-job-reports: "true"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "Setup Native Image base layer"
-        if: matrix.lane.name == 'Shared'
-        uses: ./.github/actions/setup-native-image-base-layer
-
-      - name: "Pull allowed docker images"
-        run: |
-          ./gradlew pullAllowedDockerImages -Pcoordinates="${{ matrix.coordinates }}"
-
-      - name: "Check metadata files content"
-        run: |
-          ./gradlew checkMetadataFiles -Pcoordinates="${{ matrix.coordinates }}"
-
-      - name: "Run layered tests"
+          persist-credentials: false
+      - id: queues
         env:
-          LAYER_NAME: ${{ matrix.lane.name }}
-          LAYER_TASK: ${{ matrix.lane.task }}
-          FAILURE_REPORT_NAME: ${{ matrix.lane.failureReport }}
-          EXCLUDED_COORDINATES_FILE: ${{ matrix.lane.exclusions }}
-          DELETE_DEDICATED_LAYER: ${{ matrix.lane.deleteDedicatedLayer }}
-          GVM_TCK_DEDICATED_LAYER_ROOT: ${{ runner.temp }}/native-image-dedicated-layers
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RECOVERY: ${{ github.event.schedule == '17,37,57 * * * *' }}
+          SWEEP_RUN_ID: ${{ inputs.sweep-run-id || github.run_id }}
         run: |
-          failure_report="${RUNNER_TEMP}/${FAILURE_REPORT_NAME}"
-          set +e
-          ./gradlew "${LAYER_TASK}" \
-            -Pcoordinates="${{ matrix.coordinates }}" \
-            -Ptck.excludedCoordinatesFile="${EXCLUDED_COORDINATES_FILE}" \
-            -Ptck.layered.continueOnCoordinateFailure=true \
-            -Ptck.layered.coordinateFailureReport="${failure_report}" \
-            -Ptck.layered.deleteDedicatedLayerAfterTest="${DELETE_DEDICATED_LAYER}" \
-            --stacktrace
-          result=$?
-          set -e
-
-          if [[ -s "${failure_report}" ]]; then
-            failure_count="$(wc -l < "${failure_report}" | tr -d ' ')"
-            {
-              echo "### ${LAYER_NAME} layer test failures"
-              echo
-              echo "Failing libraries: ${failure_count}"
-              echo
-              while IFS= read -r coordinates; do
-                echo "- \`${coordinates}\`"
-              done < "${failure_report}"
-            } >> "${GITHUB_STEP_SUMMARY}"
-
-            echo "${LAYER_NAME} layer test failures (${failure_count}):"
-            sed 's/^/ - /' "${failure_report}"
+          if [[ "${RECOVERY}" == "true" ]]; then
+            PYTHONPATH=.github/scripts python3 -m layered_queue.cli discover
+          else
+            echo "matrix=$(jq -cn --arg sweep "${SWEEP_RUN_ID}" '{sweep: [$sweep]}')" >> "${GITHUB_OUTPUT}"
+            echo "found=true" >> "${GITHUB_OUTPUT}"
           fi
 
-          exit "${result}"
+  dispatch:
+    needs: [prepare-shards, prepare, discover]
+    if: ${{ !cancelled() && needs.discover.outputs.found == 'true' && (needs.prepare.outputs.graalvm-artifact != '' || inputs.sweep-run-id != '' || github.event.schedule == '17,37,57 * * * *') }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    permissions:
+      contents: read
+      actions: write
+      checks: write
+    uses: ./.github/workflows/layered-queue.yml
+    with:
+      sweep-run-id: ${{ matrix.sweep }}
+      initialize: ${{ matrix.sweep == format('{0}', github.run_id) }}
+      coordinate-matrix: ${{ needs.prepare-shards.outputs.matrix }}
+      ref: ${{ needs.prepare-shards.outputs.revision }}
+      native-image-mode: ${{ inputs.native-image-mode || 'current-defaults' }}
+      graalvm-artifact: ${{ needs.prepare.outputs.graalvm-artifact }}
+      base-artifact: ${{ needs.prepare.outputs.base-artifact }}
+      cancel-sweep: ${{ inputs.cancel-sweep || false }}
+
+  shard:
+    if: inputs.sweep-run-id != '' && inputs.shard != ''
+    permissions:
+      contents: read
+      actions: read
+      checks: read
+    uses: ./.github/workflows/layered-test-shard.yml
+    with:
+      sweep-run-id: ${{ inputs.sweep-run-id }}
+      shard: ${{ inputs.shard }}
+      dispatch-token: ${{ inputs.dispatch-token }}
+
+  refill:
+    needs: shard
+    if: ${{ !cancelled() && inputs.sweep-run-id != '' && inputs.shard != '' }}
+    permissions:
+      contents: read
+      actions: write
+      checks: write
+    uses: ./.github/workflows/layered-queue.yml
+    with:
+      sweep-run-id: ${{ inputs.sweep-run-id }}
+      completed-run-id: ${{ github.run_id }}
