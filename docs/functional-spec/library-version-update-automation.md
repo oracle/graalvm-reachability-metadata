@@ -37,7 +37,8 @@ The distinction matters because §FS-library-version-update-automation.2 stops a
 library at its first failing version: a version that cannot be supported and is
 not skipped both re-files its own issue indefinitely and blocks every later
 version of that library from ever being tested. Skip entries are written by the
-disposition in §FS-contribution-contract.5.4.
+disposition in §FS-contribution-contract.5.4, or for a release that is broken
+upstream by §FS-library-version-update-automation.6.
 
 A version whose POM relocates the artifact to other coordinates
 (`<distributionManagement><relocation>`) is not a candidate either: a build that
@@ -115,3 +116,21 @@ After recording results, the workflow closes superseded automation issues. When
 a full release of a base version is now handled, older pre-release issues
 (`alpha`, `beta`, `rc`, milestone, etc.) for the same library are closed as
 `not planned`, so the queue reflects only versions that still need attention.
+
+## 6. Broken upstream releases
+
+A release whose published artifacts are themselves broken cannot be supported
+either, and no metadata or test can change that. The jar can be missing from
+Maven Central. It can ship native-image configuration that Native Image rejects,
+such as a malformed configuration file or a `--features` class that no jar
+contains. Or it can ship a substitution that cannot apply to the code it is
+released with. The failure reproduces with nothing but the published artifacts,
+and a later release of the same library fixes it.
+
+Such a version is skipped like §FS-contribution-contract.5.4. A
+`skipped-versions` entry goes on the artifact's `latest: true` index entry, its
+`reason` names the defect and the release that fixes it, and the failure ticket
+closes. Only the broken release is skipped, so the release that fixes it enters
+the next run (§FS-library-version-update-automation.1). A failure that is only
+suspected to come from upstream, or that a newer GraalVM fixes, is not this
+case: it stays an open ticket until it is diagnosed.
