@@ -41,7 +41,6 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
     private static final String REACHABILITY_METADATA_FILE = "reachability-metadata.json";
-    private static final String CLASS_FILE_SUFFIX = ".class";
     private static final String GLOB_METACHARACTERS = "*?{[";
 
     private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -313,7 +312,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
     }
 
     /// A resource glob is a test resource when it names a file under the test project's
-    /// `src/test/resources` or matches only class files of test-package classes
+    /// `src/test/resources` or matches only resources in a test package
     /// (§FS-repository-functional-spec.5.1).
     private boolean globIsTestResource(
             JsonNode entry,
@@ -327,34 +326,37 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         }
         String resourcePath = normalizeResourcePath(globNode.asText());
         return testResources.contains(resourcePath)
-                || isTestPackageClassFileGlob(resourcePath, testPackages, allowedPackages);
+                || isTestPackageResourceGlob(resourcePath, testPackages, allowedPackages);
     }
 
-    /// Whether the `.class` glob `resourcePath` can match only class files in a test package, as
-    /// libraries that read class bytes record it (Guice's `$LineNumbers`, `EntityScanner`).
-    /// Its literal directories, up to the first segment with a glob metacharacter, must be
-    /// identifiers naming a test package or a package under one.
-    private boolean isTestPackageClassFileGlob(
+    /// Whether the glob `resourcePath` can match only resources in a test package, whatever the
+    /// file name: class bytes a library reads (Guice's `$LineNumbers`) or the package directory a
+    /// classpath scan looks up (Spring's `EntityScanner`). Its literal directories, up to the
+    /// first segment with a glob metacharacter, must be identifiers naming a test package or a
+    /// package under one. In a fully literal glob, a last segment that is an identifier counts as
+    /// a directory, so the bare package directory matches too.
+    private boolean isTestPackageResourceGlob(
             String resourcePath,
             Set<String> testPackages,
             List<String> allowedPackages
     ) {
-        if (!resourcePath.endsWith(CLASS_FILE_SUFFIX)) {
-            return false;
-        }
         String[] segments = resourcePath.split("/", -1);
+        int last = segments.length - 1;
         List<String> packageSegments = new ArrayList<>();
-        for (int i = 0; i < segments.length - 1 && !hasGlobMetacharacter(segments[i]); i++) {
+        for (int i = 0; i < last && !hasGlobMetacharacter(segments[i]); i++) {
             if (!SourceVersion.isIdentifier(segments[i])) {
                 return false;
             }
             packageSegments.add(segments[i]);
         }
+        if (packageSegments.size() == last && SourceVersion.isIdentifier(segments[last])) {
+            packageSegments.add(segments[last]);
+        }
         if (packageSegments.isEmpty()) {
             return false;
         }
         String packageName = String.join(".", packageSegments);
-        // A test misplaced in a library package (§FS-test-contract.2.2) leaves its classes shipped.
+        // A test misplaced in a library package (§FS-test-contract.2.2) leaves its files shipped.
         return referencesAnyPackage(packageName, testPackages)
                 && !referencesAnyPackage(packageName, allowedPackages);
     }

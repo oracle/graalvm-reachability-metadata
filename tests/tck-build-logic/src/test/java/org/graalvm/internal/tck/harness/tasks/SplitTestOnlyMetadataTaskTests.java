@@ -191,22 +191,31 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
 
     @Test
     void keepsClassFileResourceOfTestPlacedInAllowedPackage() throws IOException {
-        writeSource(
-                "tests/src/com.example/lib/1.0.0/src/test/java/com/example/internal/InternalTest.java",
-                """
-                package com.example.internal;
-
-                import org.junit.jupiter.api.Test;
-
-                class InternalTest {
-                    @Test
-                    void readsInternals() {
-                    }
-                }
-                """
-        );
+        writeTestInAllowedPackage();
 
         assertResourceStaysShipped("com/example/internal/Helper.class");
+    }
+
+    @Test
+    void movesTestPackageDirectoryResource() throws IOException {
+        assertResourceMoves("com_example/lib");
+    }
+
+    @Test
+    void movesNonClassResourceInTestPackage() throws IOException {
+        assertResourceMoves("com_example/lib/sub/fixture.xml");
+    }
+
+    @Test
+    void keepsResourceDirectoryAboveTestPackage() throws IOException {
+        assertResourceStaysShipped("com_example");
+    }
+
+    @Test
+    void keepsPackageDirectoryResourceOfTestPlacedInAllowedPackage() throws IOException {
+        writeTestInAllowedPackage();
+
+        assertResourceStaysShipped("com/example/internal");
     }
 
     @Test
@@ -228,7 +237,7 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
     void retainsExistingTestClassFileResource() throws IOException {
         writeLibTestProject();
         writeJson(LIB_SHIPPED_METADATA, "{}");
-        String resourceEntry = classFileResourceEntry("com_example/lib/LibTest$Report.class");
+        String resourceEntry = resourceGlobEntry("com_example/lib/LibTest$Report.class");
         writeJson(LIB_TEST_METADATA, """
                 {
                   "resources": [%s]
@@ -297,6 +306,24 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
         writeIndex("com.example", "lib", "1.0.0", List.of("1.0.0"), List.of("com.example"));
     }
 
+    /// Adds a test in `com.example.internal`, inside the `com.example` allowed package.
+    private void writeTestInAllowedPackage() throws IOException {
+        writeSource(
+                "tests/src/com.example/lib/1.0.0/src/test/java/com/example/internal/InternalTest.java",
+                """
+                package com.example.internal;
+
+                import org.junit.jupiter.api.Test;
+
+                class InternalTest {
+                    @Test
+                    void readsInternals() {
+                    }
+                }
+                """
+        );
+    }
+
     /// Writes a `com.example:lib:1.0.0` project whose only metadata entry is a lambda gated on a
     /// library type, splits it, and returns that entry.
     private JsonNode splitLambdaMetadata(String declaringClass, List<String> interfaces) throws IOException {
@@ -331,7 +358,7 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
     /// gated on a library type, splits it, and returns that entry.
     private JsonNode splitResourceMetadata(String glob) throws IOException {
         writeLibTestProject();
-        String resourceEntry = classFileResourceEntry(glob);
+        String resourceEntry = resourceGlobEntry(glob);
         writeJson(
                 LIB_SHIPPED_METADATA,
                 """
@@ -359,8 +386,9 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
         assertThat(tempDir.resolve(LIB_TEST_METADATA)).doesNotExist();
     }
 
-    /// A resource entry as the agent records it when a library reads class bytes as a resource.
-    private String classFileResourceEntry(String glob) {
+    /// A resource entry as the agent records it when a library reads class bytes or scans a
+    /// package directory as a resource.
+    private String resourceGlobEntry(String glob) {
         return """
                 {
                   "condition": {
