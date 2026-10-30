@@ -8,9 +8,19 @@ package com_caucho.hessian;
 
 import org.junit.jupiter.api.Test;
 
-class HessianTest {
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class HessianTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void preservesNestedValuesAndNulls() throws Exception {
+        Map<String, Object> original = new LinkedHashMap<>();
+        original.put("items", Arrays.asList("parcel", null, 23));
+        original.put("enabled", true);
+        original.put("optional", null);
+        assertEquals(original, HessianStreams.roundTrip(original));
     }
 }
