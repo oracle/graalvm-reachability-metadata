@@ -29,8 +29,10 @@ scope inputs, rather than asserting library defects.
 
 `ClasspathResourceLoader.class$` only runs when classpath stream lookup throws
 an exception. A missing resource returns `null` and takes a different path.
-Reaching the catch would require an artificial throwing class loader or a
-security-manager setup, neither of which is a supported test scenario here.
+The resource-access policy test denies one template through the thread context
+class loader and verifies that the public loader API preserves the denial as
+the cause of `ResourceNotFoundException`. This resource-only policy delegates
+class loading and does not define or introduce classes or use a security manager.
 
 The JaCoCo XML omits synthetic `class$` methods, although the dynamic-access
 report counts their calls. For example, the existing `MultiValueMap` constructor
