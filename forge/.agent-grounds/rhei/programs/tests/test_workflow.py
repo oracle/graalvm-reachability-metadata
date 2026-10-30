@@ -52,13 +52,18 @@ URLS: dict[str, str] = {
 }
 
 
-def rendered_body(descriptor: dict[str, Any]) -> str:
-    """The pull request body the trusted publisher renders, loaded from its file as Actions runs it."""
+def trusted_publisher() -> Any:
+    """The trusted publisher, loaded from its file as Actions runs it."""
     spec: Any = importlib.util.spec_from_file_location("forge_pr_publisher_workflow", PUBLISHER)
     publisher: Any = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = publisher
     spec.loader.exec_module(publisher)
-    return publisher.render_publication(descriptor)[1]
+    return publisher
+
+
+def rendered_body(descriptor: dict[str, Any]) -> str:
+    """The pull request body the trusted publisher renders."""
+    return trusted_publisher().render_publication(descriptor)[1]
 
 
 class WorkflowTest(unittest.TestCase):
@@ -441,7 +446,31 @@ class WorkflowTest(unittest.TestCase):
         self.fake.issue("library-new-request")
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.assertEqual(BAD_INPUT, self.step("setup-check"))
-        self.assertEqual("failed", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["outcome"])
+        outcome = read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
+        reason: str = (f"setup-check: bad input: {COORDINATE} has no {', '.join(URLS)} "
+                       f"in {self.state.index_path}")
+        self.assertEqual(("failed", reason), (outcome["outcome"], outcome["reason"]))
+        with open(os.environ["RHEI_RESULT_PATH"], encoding="utf-8") as handle:
+            self.assertIn(reason, handle.read())
+
+    def test_a_filter_that_cannot_resolve_the_library_is_a_bad_input(self) -> None:
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.fake.control({"filterFails": "unresolved"})
+        self.assertEqual(BAD_INPUT, self.step("setup-check"))
+        outcome = read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
+        self.assertEqual("setup-check: bad input: a declared dependency does not resolve, so the filter could not "
+                         "be written from the library JAR", outcome["reason"])
+        self.assertIn("   > Could not find org.example:missing:1.0.", outcome["detail"].splitlines())
+
+    def test_a_filter_that_fails_otherwise_is_an_infrastructure_failure(self) -> None:
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.fake.control({"filterFails": "process"})
+        self.assertEqual(INFRASTRUCTURE, self.step("setup-check"))
+        self.assertEqual("infrastructure", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["kind"])
 
     def test_unchanged_coordinate_has_nothing_to_publish(self) -> None:
         self.fake.issue("library-new-request")

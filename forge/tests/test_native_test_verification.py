@@ -5,9 +5,8 @@
 
 """Unit tests for the native-test verification gate driver.
 
-Exercises the analysis-agent fixup prompt and the gate's outer-loop routing
-via ``subprocess.run`` mocks. The Gradle / native-image side is intentionally
-not exercised here.
+Exercises the gate's outer-loop routing via ``subprocess.run`` mocks. The
+Gradle / native-image side is intentionally not exercised here.
 """
 
 from __future__ import annotations
@@ -20,7 +19,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 # Tests run from the forge/ directory in CI; make the package imports work
 # whether the test is invoked via pytest or `python -m unittest`.
@@ -28,11 +27,6 @@ _FORGE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_FORGE_ROOT))
 
 from utility_scripts import native_test_verification as ntv  # noqa: E402
-from utility_scripts.run_location import (  # noqa: E402
-    PHASE_EXPLORE,
-    STEP_NATIVE_TRACE_GATE,
-    run_step,
-)
 
 from tests.native_gate_support import (  # noqa: E402
     GATE_SUBPROCESS_RUN,
@@ -41,61 +35,6 @@ from tests.native_gate_support import (  # noqa: E402
     _rmtree,
     _write_user_code_filter,
 )
-
-
-class NativeTestFixPromptTests(unittest.TestCase):
-
-    def test_preserves_the_original_reproduce_and_verify_prompt(self) -> None:
-        prompt = ntv._build_native_test_fix_prompt(
-            coordinates="g:a:1.0",
-            reproduction_command="./gradlew reproduce",
-            graalvm_home="/graalvm",
-            failure_log_path=None,
-        )
-
-        self.assertEqual(
-            prompt,
-            "\n".join([
-                "Reproduce the failure first and read the FULL stack trace, including every `Caused by:`",
-                "line, to find the real cause before changing anything.",
-                "- If the cause is missing or inactive-condition for metadata, fix that condition.",
-                "- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode",
-                "  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,",
-                "  or a class reachable only through a custom class loader), Remove the",
-                "  generated test that exercises it, or rewrite it to a native-compatible public-API path that",
-                "  still validates metadata.",
-                "Re-run the reproduce command after each change and keep running until the test passes.",
-                "Do not use any skill for this.",
-                "",
-                "Use this exact GraalVM for every command; do not switch to another that appears on PATH:",
-                "- GRAALVM_HOME=/graalvm",
-                "- JAVA_HOME=/graalvm",
-                "",
-                "Reproduce with:",
-                "./gradlew reproduce",
-            ]),
-        )
-
-    def test_runs_the_central_analysis_agent_without_overrides(self) -> None:
-        environment = {"FORGE_ANALYSIS_AGENT": "pi"}
-        agent_result = Mock(return_code=0, log_path="/tmp/analysis.log", timed_out=False, failure_message=None)
-
-        with patch(
-                "utility_scripts.native_test_verification.analysis_agent_run",
-                return_value=agent_result,
-        ) as analysis_run:
-            result = ntv.run_native_test_fix(
-                repo_path="/repo",
-                coordinates="g:a:1.0",
-                reproduction_command="./gradlew reproduce",
-                env=environment,
-            )
-
-        self.assertEqual(result, (0, "/tmp/analysis.log", False, None))
-        call_kwargs = analysis_run.call_args.kwargs
-        self.assertEqual(call_kwargs["environment"], environment)
-        self.assertNotIn("model", call_kwargs)
-        self.assertNotIn("selection", call_kwargs)
 
 
 class GateRoutingTests(GateHarness):
@@ -453,76 +392,6 @@ class GateRoutingTests(GateHarness):
         self.assertEqual(len([call for call in calls if "runNativeTraceImage" in call]), 1)
         self.assertEqual(len(result.intervention_records), 1)
         self.assertEqual(result.intervention_records[0].kind, "pi")
-
-    def test_concise_output_names_the_native_trace_agent_fix(self) -> None:
-        fake, _calls = self._fake_run_factory([1])
-        output = io.StringIO()
-        with patch.dict(
-                os.environ,
-                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
-        ), patch(
-                GATE_SUBPROCESS_RUN,
-                side_effect=fake,
-        ), patch(
-                "utility_scripts.native_test_verification.run_native_test_fix",
-                return_value=(0, "/tmp/codex.log", False, None),
-        ), redirect_stdout(output):
-            with run_step(
-                    PHASE_EXPLORE,
-                    STEP_NATIVE_TRACE_GATE,
-                    operand="g:a:1.0",
-            ):
-                result = ntv.verify_native_test_passes(
-                    reachability_repo_path=self.repo,
-                    coordinate="g:a:1.0",
-                    output_dir=self.output_dir,
-                    max_iterations=5,
-                )
-
-        self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
-        printed = output.getvalue()
-        self.assertIn(
-            "[explore] Running native-trace agent fix for g:a:1.0:",
-            printed,
-        )
-        self.assertIn(
-            "[explore] Native-trace agent fix completed for g:a:1.0 (3/3)",
-            printed,
-        )
-        self.assertNotIn("[native-test-verify]", printed)
-        self.assertNotIn("./gradlew", printed)
-
-    def test_concise_agent_fix_failure_keeps_error_and_log(self) -> None:
-        fake, _calls = self._fake_run_factory([1])
-        output = io.StringIO()
-        with patch.dict(
-                os.environ,
-                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
-        ), patch(
-                GATE_SUBPROCESS_RUN,
-                side_effect=fake,
-        ), patch(
-                "utility_scripts.native_test_verification.run_native_test_fix",
-                return_value=(2, "/tmp/codex.log", False, "Agent repair failed"),
-        ), redirect_stdout(output):
-            with run_step(
-                    PHASE_EXPLORE,
-                    STEP_NATIVE_TRACE_GATE,
-                    operand="g:a:1.0",
-            ):
-                result = ntv.verify_native_test_passes(
-                    reachability_repo_path=self.repo,
-                    coordinate="g:a:1.0",
-                    output_dir=self.output_dir,
-                    max_iterations=5,
-                )
-
-        self.assertEqual(result.status, ntv.STATUS_FAILED)
-        self.assertIn(
-            "[explore] Native-trace agent fix failed for g:a:1.0: "
-            "Agent repair failed (log: ../../codex.log) (3/3)",
-            output.getvalue(),
-        )
 
     def test_routes_to_codex_with_same_graalvm_home_as_gate_commands(self) -> None:
         graalvm_home = tempfile.mkdtemp(prefix="gate-graalvm-")

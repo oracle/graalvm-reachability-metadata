@@ -8,6 +8,7 @@ package org.graalvm.internal.tck.harness.tasks;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import org.gradle.api.logging.Logging;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -318,6 +320,106 @@ class FetchExistingLibrariesWithNewerVersionsTaskTests {
                 .isFalse();
         assertThat(FetchExistingLibrariesWithNewerVersionsTask.isAutoUpdateEnabled(enabledIndex.toFile()))
                 .isTrue();
+    }
+
+    /// `jakarta.enterprise:jakarta.enterprise.lang-model:5.0.0` ships only this POM. Recording it
+    /// failed every daily run, and a build resolves the target anyway.
+    private static final String RELOCATION_POM = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project xmlns="http://maven.apache.org/POM/4.0.0">
+                <modelVersion>4.0.0</modelVersion>
+                <parent>
+                    <groupId>jakarta.enterprise</groupId>
+                    <artifactId>jakarta.enterprise.cdi-parent</artifactId>
+                    <version>5.0.0</version>
+                </parent>
+                <artifactId>jakarta.enterprise.lang-model</artifactId>
+                <packaging>pom</packaging>
+                <distributionManagement>
+                    <relocation>
+                        <groupId>jakarta.cdi</groupId>
+                        <artifactId>jakarta.cdi-lang-model-api</artifactId>
+                    </relocation>
+                </distributionManagement>
+            </project>
+            """;
+
+    private static final String LIBRARY_POM = """
+            <project xmlns="http://maven.apache.org/POM/4.0.0">
+                <groupId>jakarta.enterprise</groupId>
+                <artifactId>jakarta.enterprise.lang-model</artifactId>
+                <version>4.1.0</version>
+                <build>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-shade-plugin</artifactId>
+                            <configuration>
+                                <relocations>
+                                    <relocation>
+                                        <pattern>org.example</pattern>
+                                        <shadedPattern>shaded.org.example</shadedPattern>
+                                    </relocation>
+                                </relocations>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </build>
+            </project>
+            """;
+
+    @Test
+    void pomRelocationReadsOnlyTheDistributionManagementRelocation() {
+        assertThat(PomRelocation.target(
+                RELOCATION_POM, "jakarta.enterprise", "jakarta.enterprise.lang-model", "5.0.0"))
+                .hasValue("jakarta.cdi:jakarta.cdi-lang-model-api:5.0.0");
+        assertThat(PomRelocation.target(
+                LIBRARY_POM, "jakarta.enterprise", "jakarta.enterprise.lang-model", "4.1.0"))
+                .isEmpty();
+        assertThat(PomRelocation.target(
+                "<project><distributionManagement><relocation><version>1.0</version></relocation>"
+                        + "</distributionManagement></project>", "com.example", "demo", "1.0"))
+                .isEmpty();
+        assertThat(PomRelocation.target(
+                "not a pom", "com.example", "demo", "1.0"))
+                .isEmpty();
+    }
+
+    /// The relocated version leaves the candidates, the version past the cap is neither read nor
+    /// offered, and a second run reads nothing again.
+    @Test
+    void dropRelocatedVersionsReadsOnlyTheVersionsThatCanEnterTheRun() throws IOException {
+        List<String> requestedPaths = new CopyOnWriteArrayList<>();
+        HttpServer server = startServer(exchange -> {
+            String path = exchange.getRequestURI().getPath();
+            requestedPaths.add(path);
+            String pom = path.contains("/5.0.0/") ? RELOCATION_POM : path.contains("/5.0.3/") ? null : LIBRARY_POM;
+            if (pom == null) {
+                exchange.sendResponseHeaders(404, -1);
+            } else {
+                byte[] response = pom.getBytes();
+                exchange.sendResponseHeaders(200, response.length);
+                exchange.getResponseBody().write(response);
+            }
+            exchange.close();
+        });
+        String repositoryUrl = "http://localhost:" + server.getAddress().getPort() + "/maven2";
+        List<String> candidates = List.of("5.0.0", "5.0.1", "5.0.3", "5.0.4");
+
+        try {
+            for (int run = 0; run < 2; run++) {
+                assertThat(FetchExistingLibrariesWithNewerVersionsTask.dropRelocatedVersions(
+                        repositoryUrl, "jakarta.enterprise:jakarta.enterprise.lang-model", candidates, 3,
+                        Logging.getLogger(FetchExistingLibrariesWithNewerVersionsTaskTests.class)))
+                        .containsExactly("5.0.1", "5.0.3");
+            }
+        } finally {
+            server.stop(0);
+        }
+
+        assertThat(requestedPaths).containsExactly(
+                "/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/5.0.0/jakarta.enterprise.lang-model-5.0.0.pom",
+                "/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/5.0.1/jakarta.enterprise.lang-model-5.0.1.pom",
+                "/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/5.0.3/jakarta.enterprise.lang-model-5.0.3.pom");
     }
 
     private HttpServer startServer(ThrowingExchangeHandler handler) throws IOException {

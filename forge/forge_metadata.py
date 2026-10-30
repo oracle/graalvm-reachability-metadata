@@ -24,11 +24,14 @@ import argparse
 import os
 import shlex
 import sys
+from typing import Any
 
 from dispatcher.github_api import resolve_authenticated_user
 from dispatcher.issue_fetch import QUEUE_LABELS, fetch_candidates, fetch_commands
 from dispatcher.pr_review import review_pass, review_target_error
-from dispatcher.run_launch import Claim, claim, close_out, finish_run, start_run, target_error
+from dispatcher.run_launch import (BUDGET_HALT_KIND, NO_ADVANCE_KIND, Claim, Started, claim, close_out, finish_run,
+                                   start_run, target_error)
+from utility_scripts.host_requirements import TRANSIENT_FAILURE_EXIT_STATUS
 
 FORGE_DIR: str = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR: str = os.path.dirname(FORGE_DIR)
@@ -39,6 +42,12 @@ DEFAULT_REVIEW_AGENT: str = "claude-code[high]:opus"
 RAN: int = 0
 NOTHING_CLAIMED: int = 1
 BAD_ARGUMENTS: int = 2
+# The claimed issue's run halted without advancing for the first time: a failed cycle, so
+# the loop backs off before a later claim resumes the run (§AR-forge-workflow-pipeline.1).
+RAN_NO_STATE: int = 3
+# A Rhei budget refused the claimed issue's run: a transient host condition, so the loop
+# backs off as after a transient host check (§AR-forge-workflow-pipeline.1).
+BUDGET_HALTED: int = TRANSIENT_FAILURE_EXIT_STATUS
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -84,13 +93,14 @@ def run_cycle(args: argparse.Namespace) -> int:
         if claimed is None:
             continue
         print(f"Claimed {label} issue #{issue['number']}.")
-        workspace: str | None = start_run(FORGE_DIR, claimed, args.setup_agent, args.worker_agent, args.rhei_args)
-        if workspace is None:
+        started: Started | None = start_run(FORGE_DIR, claimed, args.setup_agent, args.worker_agent, args.rhei_args)
+        if started is None:
             print(f"ERROR: Cannot create the workspace for issue #{issue['number']}.", file=sys.stderr)
             close_out(claimed, {"outcome": "failed", "kind": "infrastructure", "reason": "workspace not created"})
             return RAN
-        close_out(claimed, finish_run(REPO_DIR, workspace))
-        return RAN
+        outcome: dict[str, Any] = finish_run(REPO_DIR, started)
+        close_out(claimed, outcome)
+        return {NO_ADVANCE_KIND: RAN_NO_STATE, BUDGET_HALT_KIND: BUDGET_HALTED}.get(str(outcome.get("kind")), RAN)
     print("No eligible issue could be claimed.", file=sys.stderr)
     return NOTHING_CLAIMED
 

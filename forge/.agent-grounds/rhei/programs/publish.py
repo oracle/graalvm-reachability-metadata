@@ -12,10 +12,10 @@ committed, and a path outside it stops the run (§AR-expected-paths); the run
 metrics and the descriptor are written (§FS-forge-run-metrics, §AR-publication-descriptor),
 and the pushed `ai/**` branch is the whole handoff to the trusted publisher
 (§AR-forge-verification-publication-boundary). A deferred exploration opens its
-follow-up issue first, and a chunk records its identity for the next run
-(§FS-forge-chunked-dynamic-access). Index records ship only their index and
-descriptor, with no execution metrics (§FS-not-for-native-image-record.2,
-§FS-unsupportable-version-diagnosis.3).
+follow-up issue first; a chunk records its exhaust state before the change
+check, and its identity for the next run (§FS-forge-chunked-dynamic-access).
+Index records ship only their index and descriptor, with no execution metrics
+(§FS-not-for-native-image-record.2, §FS-unsupportable-version-diagnosis.3).
 """
 from __future__ import annotations
 
@@ -97,29 +97,46 @@ def chunk_is_final(workspace: str, state: RunState) -> bool:
     return state.chunk.final and not explore.remaining(state.explore, explore.accepted_report(workspace))
 
 
-def record_chunk(state: RunState, final: bool, publication_id: str, branch: str) -> dict[str, Any] | None:
-    """Update the coordinate's exhaust report: drop it for a final chunk, record this chunk otherwise."""
-    if not state.chunk.active:
-        return None
+def exhaust_report(state: RunState) -> tuple[str, DynamicAccessExhaustReport]:
+    """The coordinate's exhaust report, or a new one, with this run's chunk limits."""
     path: str = dynamic_access_exhaust_report_path(state.worktree, state.coordinate)
     report: DynamicAccessExhaustReport = (
         DynamicAccessExhaustReport.load(path) if os.path.isfile(path)
         else DynamicAccessExhaustReport.create(coordinate=state.coordinate, issue_number=state.issue_number)
     )
+    report.update_chunk_limits(state.budgets.defer_classes, state.chunk.budget or state.budgets.defer_classes)
+    return path, report
+
+
+def record_chunk(state: RunState, final: bool) -> dict[str, Any] | None:
+    """Commit the chunk's exhaust record before publication asks whether anything changed.
+
+    A final chunk drops the report; any other chunk writes the classes it
+    completed or exhausted, and leaves the report untouched when there are none
+    (§FS-forge-chunked-dynamic-access).
+    """
+    if not state.chunk.active:
+        return None
+    path, report = exhaust_report(state)
     for name in state.explore.completed:
         report.mark_completed(name)
     for name in state.explore.exhausted:
         report.mark_exhausted(name)
-    report.update_chunk_limits(state.budgets.defer_classes, state.chunk.budget or state.budgets.defer_classes)
-    summary: dict[str, Any] = report.to_dict()
     if final:
         if os.path.isfile(path):
             os.remove(path)
-    else:
-        report.record_publication_identity(publication_id, branch)
+    elif state.explore.completed or state.explore.exhausted:
         report.save(path)
     commit_contribution(state, f"Record the chunk of {state.coordinate}")
-    return summary
+    return report.to_dict()
+
+
+def name_chunk(state: RunState, publication_id: str, branch: str) -> None:
+    """Record a published non-final chunk's identity, which the next chunk resolves (§AR-chunked-linking)."""
+    path, report = exhaust_report(state)
+    report.record_publication_identity(publication_id, branch)
+    report.save(path)
+    commit_contribution(state, f"Name the chunk of {state.coordinate}")
 
 
 def follow_ups(state: RunState) -> list[dict[str, Any]]:
@@ -286,20 +303,22 @@ def publish(workspace: str) -> int:
         print(f"ERROR: paths outside the contribution's file set: {', '.join(outside)}", file=sys.stderr)
         return INFRASTRUCTURE
     state.checkpoint = commit_contribution(state, f"Finish {state.coordinate}")
+    final: bool = state.index_only or chunk_is_final(workspace, state)
+    # The exhaust record counts as a change of the coordinate (§FS-forge-run-status).
+    chunk_summary: dict[str, Any] | None = None if state.index_only else record_chunk(state, final)
     if not has_changes(state):
         print(f"[publish] {state.coordinate} is unchanged; nothing to publish")
         return NOTHING_TO_DO
     task_type: str = ("not-for-native-image" if state.not_for_native_image is not None
                       else issue.TASK_TYPES[state.label])
-    final: bool = state.index_only or chunk_is_final(workspace, state)
     status: str = STATUS_SUCCESS if final else STATUS_CHUNK_READY
     producer: str = get_authenticated_login(cwd=state.worktree)
     publication_id: str = build_publication_id(state.issue_number, state.started_at, state.coordinate, task_type)
     new_library: bool = state.route == ROUTE_NEW and state.not_for_native_image is None
     suffix: str = f"{'add-lib-support' if new_library else task_type}-{state.group}-{state.artifact}-{state.version}"
     branch: str = build_publication_branch(producer, suffix, publication_id)
-    chunk_summary: dict[str, Any] | None = None if state.index_only else record_chunk(
-        state, final, publication_id, branch)
+    if chunk_summary is not None and not final:
+        name_chunk(state, publication_id, branch)
     descriptor_follow_ups: list[dict[str, Any]] = [] if state.index_only else follow_ups(state)
     metrics: dict[str, Any] = run_metrics(workspace, state, status)
     if not state.index_only:

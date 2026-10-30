@@ -15,7 +15,6 @@ has no version to repair and goes to `analyze`; every other route goes to
 from __future__ import annotations
 
 import os
-import re
 import sys
 import time
 from typing import Any
@@ -25,15 +24,23 @@ from utility_scripts.source_context import PreparedSourceContext, prepare_source
 from utility_scripts.user_code_filter import user_code_filter_path
 
 import skip_record
-from build_tools import TaskResult, changed_paths, checkpoint, coordinate_task, restore_paths, run_gradle
-from exit_codes import BAD_INPUT, INFRASTRUCTURE, NOTHING_TO_DO, OK
+from build_tools import (
+    TaskResult,
+    Unreachable,
+    changed_paths,
+    checkpoint,
+    coordinate_task,
+    dependency_failure,
+    restore_paths,
+    run_gradle,
+)
+from exit_codes import INFRASTRUCTURE, NOTHING_TO_DO, OK, BadInput
 from run_state import ROUTE_NEW, ROUTE_REPAIR, RunState, load, runtime_path, save
 
 URL_FIELDS: tuple[str, ...] = ("source-code-url", "test-code-url", "documentation-url", "repository-url")
 DECLARATION_FILES: tuple[str, ...] = ("build.gradle", "required-docker-images.txt")
 # Resolves only the library JAR; no test compiles or runs (§AR-forge-workflow-pipeline.4.1).
 FILTER_TASK: str = "generateUserCodeFilter"
-UNRESOLVED: re.Pattern[str] = re.compile(r"Could not resolve|Could not find [\w.-]+:[\w.-]+")
 # A source download the network denies is retried after a pause (§AR-forge-workflow-pipeline.4.1).
 SOURCE_ATTEMPTS: int = 3
 SOURCE_RETRY_SECONDS: int = 300
@@ -115,7 +122,10 @@ def missing_urls(state: RunState) -> list[str]:
 
 
 def apply_setup(workspace: str, state: RunState) -> int:
-    """The setup tail (§AR-forge-workflow-pipeline.4.1)."""
+    """The setup tail (§AR-forge-workflow-pipeline.4.1).
+
+    A bad input raises `BadInput` naming it (§FS-forge-run-requirements.2).
+    """
     reverted: list[str] = revert_out_of_scope(state)
     if reverted:
         print(f"[setup-check] reverted setup edits outside its scope: {', '.join(reverted)}")
@@ -125,8 +135,7 @@ def apply_setup(workspace: str, state: RunState) -> int:
             return skipped
     missing: list[str] = missing_urls(state)
     if missing:
-        print(f"ERROR: {state.coordinate} has no {', '.join(missing)} in {state.index_path}.", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(f"{state.coordinate} has no {', '.join(missing)} in {state.index_path}")
     download_sources(state)
     if not os.path.isfile(user_code_filter_path(state.path(state.test_dir))):
         generated: TaskResult = run_gradle(
@@ -135,9 +144,13 @@ def apply_setup(workspace: str, state: RunState) -> int:
             runtime_path(workspace, "logs", f"setup-{FILTER_TASK}.log"),
         )
         if not generated.ok:
-            unresolved: bool = UNRESOLVED.search(generated.output) is not None
+            failure: BadInput | Unreachable | None = dependency_failure(
+                generated, "a declared dependency does not resolve, so the filter could not be written "
+                           "from the library JAR")
+            if isinstance(failure, BadInput):
+                raise failure
             print(f"ERROR: the filter could not be written from the library JAR:\n{generated.tail}", file=sys.stderr)
-            return BAD_INPUT if unresolved else INFRASTRUCTURE
+            return INFRASTRUCTURE
     state.checkpoint = checkpoint(state.worktree, state.coordinate_paths, f"Set up {state.coordinate}")
     return OK
 

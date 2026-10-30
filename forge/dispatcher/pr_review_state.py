@@ -29,6 +29,7 @@ ROUTE_LABELS: tuple[str, ...] = (
     "library-update-request",
     "fixes-javac-fail",
     "fixes-java-run-fail",
+    "fixes-native-image-build-fail",
     "fixes-native-image-run-fail",
 )
 FIELDS: str = ("number,state,createdAt,title,body,headRefName,headRefOid,headRepository,reviewDecision,labels,"

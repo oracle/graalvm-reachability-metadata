@@ -6,7 +6,7 @@
 """Read the issue a run resolves and derive its route.
 
 The label decides the route and the title the coordinate
-(§FS-forge-scope, §FS-forge-run-requirements.3); the three `fails-*` labels
+(§FS-forge-scope, §FS-forge-run-requirements.3); the four `fails-*` labels
 share one route (§AR-forge-control-plane).
 """
 from __future__ import annotations
@@ -26,6 +26,7 @@ ROUTES: dict[str, str] = {
     "library-update-request": ROUTE_UPDATE,
     "fails-javac-compile": ROUTE_REPAIR,
     "fails-java-run": ROUTE_REPAIR,
+    "fails-native-image-build": ROUTE_REPAIR,
     "fails-native-image-run": ROUTE_REPAIR,
 }
 # The trusted publisher's route for each issue label (§AR-actions-publication).
@@ -34,6 +35,7 @@ TASK_TYPES: dict[str, str] = {
     "library-update-request": "library-update-request",
     "fails-javac-compile": "fixes-javac-fail",
     "fails-java-run": "fixes-java-run-fail",
+    "fails-native-image-build": "fixes-native-image-build-fail",
     "fails-native-image-run": "fixes-native-image-run-fail",
 }
 CHUNKED_LABEL: str = "chunked-dynamic-access"
@@ -73,7 +75,11 @@ def parse_issue(payload: dict[str, Any]) -> Issue:
 
 
 def read_issue(number: int, cwd: str) -> dict[str, Any]:
-    """The issue's number, title, state, labels, body, and author, read with `gh`."""
+    """The issue's number, title, state, labels, body, and author, read with `gh`.
+
+    The claim has just read the same issue, so a failed read is GitHub's failure, not
+    the issue's: it raises `RuntimeError`, never `ValueError` (§FS-human-intervention-policy).
+    """
     completed: subprocess.CompletedProcess[str] = subprocess.run(
         ["gh", "issue", "view", str(number), "--repo", REPOSITORY, "--json", "number,title,state,labels,body,author"],
         cwd=cwd,
@@ -82,5 +88,5 @@ def read_issue(number: int, cwd: str) -> dict[str, Any]:
         text=True,
     )
     if completed.returncode != 0:
-        raise ValueError(f"cannot read issue #{number}: {completed.stderr.strip()}")
+        raise RuntimeError(f"cannot read issue #{number}: {completed.stderr.strip()}")
     return json.loads(completed.stdout)

@@ -26,6 +26,7 @@ from dispatcher.config import (
     LABEL_JAVAC_FAIL,
     LABEL_LIBRARY_NEW,
     LABEL_LIBRARY_UPDATE,
+    LABEL_NI_BUILD_FAIL,
     LABEL_NI_RUN_FAIL,
     LABEL_PRIORITY,
     REPO,
@@ -36,6 +37,7 @@ QUEUE_LABELS: tuple[str, ...] = (
     LABEL_LIBRARY_UPDATE,
     LABEL_JAVAC_FAIL,
     LABEL_JAVA_RUN_FAIL,
+    LABEL_NI_BUILD_FAIL,
     LABEL_NI_RUN_FAIL,
 )
 # Each tier excludes the labels of the tiers above it, so an issue is served once, in its highest tier.

@@ -116,11 +116,19 @@ Native tracing can observe an entry whose `condition.typeReached` belongs to a
 different artifact than the coordinate under test. After `checkMetadataFiles`
 reports such an entry outside the source artifact's `allowed-packages`, the
 metadata finalization flow invokes deterministic ownership routing before any
-allowed-package repair. The router resolves the tested library's runtime
-dependency closure and locates `typeReached` in the runtime-visible view of
-those JARs. It may move the entry only when exactly one resolved dependency
-coordinate owns the class and that exact dependency version is listed in the
-owner's metadata index with a compatible `allowed-packages` entry.
+allowed-package repair. The router resolves the test project's runtime
+classpath: the tested library's dependency closure plus the dependencies the
+test project's build file declares and their closures, without the test
+project's own classes. An entry is active only when its condition class is
+reached, so the JAR holding that class owns it, and a published POM can omit an
+optional dependency that the build file then declares. What the harness adds
+itself, such as the test framework, is not a candidate owner, even when the
+build file repeats it, unless the closure of the tested library or of another
+declared dependency reaches it: an entry traced while testing another library
+must not move into the framework's shipped metadata. The router locates `typeReached` in the runtime-visible view of those JARs. It
+may move the entry only when exactly one resolved dependency coordinate owns
+the class and that exact dependency version is listed in the owner's metadata
+index with a compatible `allowed-packages` entry.
 
 The resolved dependency version, rather than the source artifact's version,
 selects the destination. When it sits inside a shared metadata bucket, the task

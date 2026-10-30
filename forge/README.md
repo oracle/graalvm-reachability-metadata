@@ -66,6 +66,32 @@ that cannot be reached, makes it claim nothing and check again after a backoff
 from one minute to fifteen. A failed cycle waits on the same backoff.
 §FS-forge-host-requirements.1
 
+## Continuing a held run
+
+A run that labels its issue `human-intervention` keeps its work in the
+checkout: its branch, with whatever its last state left uncommitted committed
+on top, is kept at `refs/forge-held/forge-<issue>-<attempt>`, and the issue
+comment names the ref. Its worktree is removed like every finished run's.
+Continue from the ref on a branch of your own, in a directory outside `runs/`:
+
+```console
+git worktree add -b <branch> <path> refs/forge-held/forge-<issue>-<attempt>
+```
+
+No later run moves or deletes the ref, so removing the label, which lets Forge
+start a fresh attempt from a new base, leaves it alone. List the held refs with
+`git for-each-ref refs/forge-held`, and delete one you no longer need with
+`git update-ref -d <ref>`.
+§FS-human-intervention-policy
+
+An attempt whose launcher died keeps its worktree, and the next claim of its
+issue resumes it; the log of a state the launcher was killed in is moved to the
+workspace's `runtime/forge/interrupted/` first, because Rhei refuses to spawn
+over it. A resume that runs no state is retried once, by a later claim; a
+second in a row ends the attempt in `human-intervention`, with Rhei's halt
+message in the comment and its work kept at its held ref.
+§AR-forge-workflow-pipeline.1
+
 ## Setup
 
 Run commands from this directory unless a command says otherwise.

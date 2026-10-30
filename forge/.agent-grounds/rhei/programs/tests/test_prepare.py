@@ -14,25 +14,45 @@ import os
 import subprocess
 import unittest
 from typing import Any
+from unittest import mock
 
-from support import COORDINATE, PREVIOUS, FakeRepository, working_directory
+import yaml
+
+from support import COORDINATE, PREVIOUS, TEMPLATE, FakeRepository, working_directory
+from utility_scripts.gradle_environment import (
+    GRADLE_MODULES_CACHE_DIR,
+    checkout_gradle_home_for_repo,
+    gradle_user_home_for_repo,
+    read_only_dependency_cache_path,
+    worktree_gradle_home,
+)
 
 import forge_run  # noqa: E402
+import issue  # noqa: E402
 import prepare  # noqa: E402
+import run_note  # noqa: E402
+from utility_scripts.dynamic_access_exhaust_report import (  # noqa: E402
+    EXHAUST_REPORT_FILENAME,
+    DynamicAccessExhaustReport,
+)
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
-from exit_codes import BAD_INPUT, NOT_FOR_NATIVE_IMAGE_RECORDED, OK  # noqa: E402
-from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, load, read_json, runtime_path  # noqa: E402
+from exit_codes import BAD_INPUT, INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput  # noqa: E402
+from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, RunState, load, read_json, runtime_path, save  # noqa: E402
 
 SETUP_AGENT: str = "claude-code[medium]:sonnet"
 WORKER_AGENT: str = "pi[high]:openai-codex/gpt-5.6-luna"
 
 
 def prepare_arguments(setup_agent: str = SETUP_AGENT, worker_agent: str = WORKER_AGENT,
-                      passes: str = "20") -> list[str]:
+                      passes: str = "20", repo: str = "../../repo", worktree_root: str = "../worktrees") -> list[str]:
     return ["prepare", "--issue-number", "7", "--setup-agent", setup_agent, "--worker-agent", worker_agent,
             "--bulk-min-classes", "5", "--bulk-passes", "3", "--class-attempts", "3", "--defer-classes", "15",
-            "--explore-passes", passes, "--finalize-fixes", "5", "--native-fixes", "3", "--repo-checkout", "../../repo",
-            "--worktree-root", "../worktrees"]
+            "--explore-passes", passes, "--finalize-fixes", "5", "--native-fixes", "3", "--repo-checkout", repo,
+            "--worktree-root", worktree_root]
+
+
+def git_output(cwd: str, *args: str) -> str:
+    return subprocess.run(["git", *args], cwd=cwd, check=True, stdout=subprocess.PIPE, text=True).stdout.strip()
 
 
 def jackson(entries: list[dict[str, Any]]) -> str:
@@ -50,11 +70,25 @@ class PrepareTest(unittest.TestCase):
         with working_directory(self.fake.workspace):
             return forge_run.main(list(arguments) or prepare_arguments())
 
+    def prepare_in_another_checkout(self) -> RunState:
+        """Prepare the coordinate as a launcher in a second checkout of the repository does."""
+        checkout: str = os.path.join(self.fake.tmp, "other-checkout")
+        subprocess.run(["git", "worktree", "add", "--quiet", "--detach", checkout], cwd=self.fake.repo, check=True)
+        workspace: str = os.path.join(checkout, "forge", "runs", "ws")
+        os.makedirs(workspace)
+        with working_directory(workspace):
+            code: int = forge_run.main(prepare_arguments(repo=checkout, worktree_root="../worktrees"))
+        self.assertEqual(OK, code)
+        return load(workspace)
+
     def test_new_library_is_scaffolded_on_its_run_branch(self) -> None:
         self.fake.issue("library-new-request")
         self.assertEqual(OK, self.prepare())
         state = load(self.fake.workspace)
-        self.assertEqual((ROUTE_NEW, COORDINATE, "rhei/forge-org.example-lib-2.0.0"), (state.route, state.coordinate, state.branch))
+        self.assertEqual((ROUTE_NEW, COORDINATE), (state.route, state.coordinate))
+        # Named after the worktree's path (§AR-forge-workflow-pipeline.4.6).
+        self.assertRegex(state.branch, r"^rhei/forge-org\.example-lib-2\.0\.0-[0-9a-f]{8}$")
+        self.assertEqual(state.branch, git_output(state.worktree, "branch", "--show-current"))
         self.assertTrue(os.path.isdir(state.path(state.test_dir)))
         log: str = subprocess.run(["git", "log", "--format=%s", "-1"], cwd=state.worktree, check=True,
                                   stdout=subprocess.PIPE, text=True).stdout.strip()
@@ -120,6 +154,10 @@ class PrepareTest(unittest.TestCase):
         self.assertIn("validateIndexFiles rejected", output.getvalue())
         self.assertIn("index.json does not validate", output.getvalue())
         self.assertEqual("bad-input", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["kind"])
+        # The close-out comment names the rejection (§FS-forge-run-requirements.2).
+        self.assertEqual("prepare: bad input: validateIndexFiles rejected the not-for-native-image record",
+                         self.outcome()["reason"])
+        self.assertIn("index.json does not validate", self.outcome()["detail"])
 
     def test_an_existing_index_is_never_asked(self) -> None:
         """Existing support excludes a verdict (§FS-not-for-native-image-record.1)."""
@@ -134,6 +172,37 @@ class PrepareTest(unittest.TestCase):
         self.fake.issue("fails-java-run")
         self.assertEqual(OK, self.prepare())
         self.fake.artifact.assert_not_called()
+
+    def test_a_new_library_the_pinned_base_already_lists_is_a_bad_input(self) -> None:
+        """No agent re-creates shipped support (§FS-forge-run-requirements.2.2)."""
+        for entry, commit in (("2.0.0", "support lib 2.0.0"), ("1.5.0", "support lib 1.5.0")):
+            with self.subTest(entry=entry):
+                self.setUp()
+                self.fake.supported_library(tested_versions=("1.5.0",) if entry == "2.0.0" else ("1.5.0", "2.0.0"))
+                if entry == "2.0.0":
+                    self.fake.supported_version("2.0.0", covered=5, total=6)
+                with open(os.path.join(self.fake.repo, "metadata/org.example/lib/index.json"), "a",
+                          encoding="utf-8") as handle:
+                    handle.write("\n")
+                self.fake.commit("touch the index")
+                self.fake.issue("library-new-request")
+                self.assertEqual(BAD_INPUT, self.prepare())
+                self.assertEqual(f"prepare: bad input: {COORDINATE} is already supported: "
+                                 f"metadata/org.example/lib/index.json lists 2.0.0 in its {entry} entry",
+                                 self.outcome()["reason"])
+                # The commit that added the version, not the latest one to touch the index.
+                self.assertRegex(self.outcome()["detail"], rf"^Added by [0-9a-f]{{7,}} {commit}$")
+                self.fake.artifact.assert_not_called()
+                self.assert_worktree_given_up()
+
+    def test_a_chunk_resumes_on_the_version_its_earlier_chunk_merged(self) -> None:
+        """Its exhaust report exempts it even without the label (§FS-forge-run-requirements.2.2)."""
+        self.fake.supported_library()
+        self.fake.supported_version("2.0.0", covered=5, total=6)
+        self.fake.write("tests/src/org.example/lib/2.0.0/dynamic-access-exhaust-report.json", "{}\n")
+        self.fake.commit("merge the first chunk")
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
 
     def test_the_new_worktree_readies_the_shared_dependency_cache(self) -> None:
         worktrees: list[bool] = []
@@ -151,6 +220,49 @@ class PrepareTest(unittest.TestCase):
         with contextlib.redirect_stderr(io.StringIO()) as errors:
             self.assertEqual(OK, self.prepare())
         self.assertIn("shared Gradle dependency cache was not prepared: No space left on device", errors.getvalue())
+
+    def search_roots(self) -> list[str]:
+        """The lines of the run note's search-roots section."""
+        with open(runtime_path(self.fake.workspace, "run.md"), encoding="utf-8") as handle:
+            section: str = handle.read().split("## Search roots\n", 1)[1]
+        return section.strip().split("\n\n", 1)[0].splitlines()
+
+    def test_the_run_note_lists_only_search_roots_that_exist(self) -> None:
+        # A first run has no published cache: its root is left out, never an empty path
+        # an agent's walk could turn into `/` (§FS-forge-agent-runtime-selection.1).
+        os.environ["GRAALVM_HOME"] = self.fake.graalvm("graalvm-ga")
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        state = load(self.fake.workspace)
+        self.assertEqual([f"- Run workspace: `{os.path.realpath(self.fake.workspace)}`",
+                          f"- Worktree: `{state.worktree}`",
+                          f"- Main sources: `{run_note.source_context_dir(state)}`",
+                          f"- Gradle user home: `{gradle_user_home_for_repo(state.worktree)}`",
+                          f"- GraalVM home: `{os.environ['GRAALVM_HOME']}`"], self.search_roots())
+        self.assertTrue(os.path.isdir(run_note.source_context_dir(state)))
+
+    def test_the_run_note_lists_a_published_dependency_cache(self) -> None:
+        cache: str = read_only_dependency_cache_path(checkout_gradle_home_for_repo(self.fake.repo))
+        self.fake.shared_cache.side_effect = (
+            lambda _repo, _worktree: os.makedirs(os.path.join(cache, GRADLE_MODULES_CACHE_DIR)))
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        self.assertIn(f"- Read-only Gradle dependency cache: `{cache}`", self.search_roots())
+
+    def test_every_agent_state_walks_only_from_the_search_roots(self) -> None:
+        # Any state an agent runs in can go looking for a file, so each carries the rule
+        # (§FS-forge-agent-runtime-selection.1).
+        with open(TEMPLATE, encoding="utf-8") as handle:
+            states: dict[str, dict[str, Any]] = yaml.safe_load(handle)["states"]
+        agents: dict[str, dict[str, Any]] = {name: spec for name, spec in states.items() if "target" in spec}
+        self.assertEqual({"setup", "cover", "fix"}, set(agents))
+        for name, spec in agents.items():
+            with self.subTest(state=name):
+                self.assertIn({"name": "run", "path": "runtime/forge/run.md"}, spec["inputs"])
+                self.assertIn("Walk or search the file system only from the search roots `{input.run.path}` lists; "
+                              "outside them, open only a file whose path you were given. Never walk `/tmp`, "
+                              "`$HOME`, or `/`, even to reach one of them",
+                              " ".join(spec["instructions"].split()))
 
     def test_update_adds_the_version_beside_the_supported_one(self) -> None:
         self.fake.supported_library()
@@ -233,9 +345,20 @@ class PrepareTest(unittest.TestCase):
 
     def test_fails_labels_share_the_repair_route(self) -> None:
         self.fake.supported_library()
-        self.fake.issue("fails-native-image-run")
+        self.fake.issue("fails-native-image-build")
         self.assertEqual(OK, self.prepare())
         self.assertEqual(ROUTE_REPAIR, load(self.fake.workspace).route)
+
+    def test_each_fails_label_repairs_under_its_own_fix_label(self) -> None:
+        # The automation files each stage beside `library-unsupported-version` (§FS-forge-scope.1).
+        for label, fix in (("fails-javac-compile", "fixes-javac-fail"), ("fails-java-run", "fixes-java-run-fail"),
+                           ("fails-native-image-build", "fixes-native-image-build-fail"),
+                           ("fails-native-image-run", "fixes-native-image-run-fail")):
+            with self.subTest(label=label):
+                parsed: issue.Issue = issue.parse_issue({
+                    "state": "OPEN", "number": 7, "title": f"Fails {COORDINATE}",
+                    "labels": [{"name": "library-unsupported-version"}, {"name": label}]})
+                self.assertEqual((label, ROUTE_REPAIR, fix), (parsed.label, parsed.route, issue.TASK_TYPES[label]))
 
     def test_two_workflow_labels_are_a_bad_input(self) -> None:
         self.fake.issue("fails-javac-compile", extra_labels=("fails-java-run",))
@@ -245,14 +368,204 @@ class PrepareTest(unittest.TestCase):
         self.fake.issue("library-new-request", title="Support something")
         self.assertEqual(BAD_INPUT, self.prepare())
 
+    def exhaust_report(self, version: str, coordinate: str) -> None:
+        """A merged chunk's report in `version`'s tests, naming `coordinate`, with no PR to look up."""
+        report: DynamicAccessExhaustReport = DynamicAccessExhaustReport.create(coordinate=coordinate, issue_number=7)
+        report.mark_completed("org_example.Done")
+        report.mark_exhausted("org_example.Hard")
+        report.save(os.path.join(self.fake.repo, "tests", "src", "org.example", "lib", version, EXHAUST_REPORT_FILENAME))
+        self.fake.commit(f"chunk of {coordinate}")
+
+    def test_the_coordinates_exhaust_report_chunks_the_issue_with_or_without_the_label(self) -> None:
+        """The label can be removed by hand; the report still resumes the chunk (FS-forge-chunked-dynamic-access)."""
+        for labels in ((), ("chunked-dynamic-access",)):
+            with self.subTest(labels=labels):
+                self.setUp()
+                self.fake.supported_library()
+                self.fake.supported_version("2.0.0", covered=5, total=6)
+                self.exhaust_report("2.0.0", COORDINATE)
+                self.fake.issue("library-update-request", extra_labels=labels)
+                self.assertEqual(OK, self.prepare())
+                chunk = load(self.fake.workspace).chunk
+                self.assertEqual((True, ["org_example.Done", "org_example.Hard"], 15),
+                                 (chunk.active, chunk.processed, chunk.budget))
+
+    def test_another_versions_report_does_not_chunk_an_unlabeled_issue(self) -> None:
+        """Neither the copy a new version is cloned with nor a report naming another version is its own."""
+        cases: dict[str, tuple[str, ...]] = {"cloned beside 1.5.0's": (), "naming 1.5.0": ("2.0.0",)}
+        for case, owned in cases.items():
+            with self.subTest(case=case):
+                self.setUp()
+                self.fake.supported_library()
+                for version in owned:
+                    self.fake.supported_version(version, covered=5, total=6)
+                self.exhaust_report(owned[0] if owned else "1.5.0", PREVIOUS)
+                self.fake.issue("library-update-request")
+                self.assertEqual(OK, self.prepare())
+                self.assertFalse(load(self.fake.workspace).chunk.active)
+
     def test_chunked_issue_without_exhaust_report_is_a_bad_input(self) -> None:
         self.fake.supported_library()
         self.fake.issue("library-update-request", extra_labels=("chunked-dynamic-access",))
         self.assertEqual(BAD_INPUT, self.prepare())
+        # The close-out comment names the reason (§FS-forge-run-requirements.2).
+        outcome: dict[str, str] = self.outcome()
+        self.assertEqual(("bad-input", f"prepare: bad input: chunked issue has no exhaust report for {COORDINATE}", ""),
+                         (outcome["kind"], outcome["reason"], outcome["detail"]))
+
+    def outcome(self) -> dict[str, str]:
+        return read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
+
+    def test_an_issue_gh_cannot_read_is_an_infrastructure_failure(self) -> None:
+        # GitHub failed, not the issue: no hold (§FS-human-intervention-policy).
+        self.fake.control({"issueError": "API rate limit exceeded for user ID 1.\nsecond line"})
+        self.assertEqual(INFRASTRUCTURE, self.prepare())
+        self.assertEqual(("prepare: infrastructure failure", "infrastructure"),
+                         (self.outcome()["reason"], self.outcome()["kind"]))
+
+    def test_a_library_without_a_jvm_variant_is_a_bad_input(self) -> None:
+        # Every retry would fail the same way (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "variant"})
+        self.assertEqual(BAD_INPUT, self.prepare())
+        outcome: dict[str, str] = self.outcome()
+        self.assertEqual(("bad-input", f"prepare: bad input: {COORDINATE} has no artifact a JVM test project can use"),
+                         (outcome["kind"], outcome["reason"]))
+        # The lines naming the coordinate and why it does not resolve, not Gradle's hint after them.
+        self.assertEqual("> Could not resolve all files for configuration ':detachedConfiguration1'.\n"
+                         f"   > Could not resolve {COORDINATE}.\n"
+                         f"      > No matching variant of {COORDINATE} was found. The consumer was configured to "
+                         "find attribute 'org.gradle.jvm.environment' with value 'standard-jvm' but:",
+                         outcome["detail"])
+
+    def test_a_coordinate_without_a_jar_is_a_bad_input(self) -> None:
+        # A BOM fails the same way on every retry (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "bom"})
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assertEqual((f"prepare: bad input: {COORDINATE} has no artifact a JVM test project can use",
+                          f"> Failed to resolve JAR for {COORDINATE}"),
+                         (self.outcome()["reason"], self.outcome()["detail"]))
+
+    def test_a_coordinate_whose_jar_no_repository_serves_is_a_bad_input(self) -> None:
+        # A POM without its JAR, as javax.ejb:ejb:2.0 on Maven Central, fails the same way on every
+        # retry; the detail names the file (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "jar"})
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assertEqual((f"prepare: bad input: {COORDINATE} has no artifact a JVM test project can use",
+                          "> Could not resolve all files for configuration ':detachedConfiguration1'.\n"
+                          f"   > Could not find lib-2.0.0.jar ({COORDINATE})."),
+                         (self.outcome()["reason"], self.outcome()["detail"]))
+
+    def test_a_scaffold_that_fails_otherwise_is_an_infrastructure_failure(self) -> None:
+        # An unreachable repository, or an artifact other than the coordinate missing, is retried
+        # by a later cycle (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        for failure in ("unreachable", "elsewhere", "process"):
+            with self.subTest(failure=failure):
+                self.fake.control({"scaffoldFails": failure})
+                self.assertEqual(INFRASTRUCTURE, self.prepare())
+                self.assertEqual(("prepare: infrastructure failure", "infrastructure"),
+                                 (self.outcome()["reason"], self.outcome()["kind"]))
+
+    def assert_worktree_given_up(self) -> None:
+        """The spawned worktree is gone with its Gradle home and daemons; its run branch stays.
+
+        Without a state the close-out finds no worktree to give up (§AR-forge-workflow-pipeline.1).
+        """
+        run_name: str = "forge-" + COORDINATE.replace(":", "-")
+        worktree: str = os.path.realpath(os.path.join(self.fake.tmp, "runs", "worktrees", run_name))
+        home: str = worktree_gradle_home(checkout_gradle_home_for_repo(self.fake.repo), worktree)
+        listed: str = subprocess.run(["git", "worktree", "list", "--porcelain"], cwd=self.fake.repo, check=True,
+                                     stdout=subprocess.PIPE, text=True).stdout
+        branches: list[str] = subprocess.run(["git", "branch", "--list", "--format=%(refname:short)", "rhei/*"],
+                                             cwd=self.fake.repo, check=True, stdout=subprocess.PIPE,
+                                             text=True).stdout.split()
+        self.assertFalse(os.path.exists(runtime_path(self.fake.workspace, "state.json")))
+        self.assertFalse(os.path.exists(worktree))
+        self.assertNotIn(f"worktree {worktree}\n", listed)
+        self.assertFalse(os.path.exists(home))
+        self.assertEqual((home, worktree), self.fake.stop_daemons.call_args.args[:2])
+        self.fake.stop_daemons.assert_called_once()
+        self.assertEqual(1, len(branches), branches)
+
+    def test_a_failed_scaffold_gives_up_its_worktree_and_keeps_its_record(self) -> None:
+        # Another run's worktree is never touched; the workspace and its logs stay as the record.
+        other: str = os.path.join(self.fake.tmp, "runs", "worktrees", "forge-org.example-other-1.0.0")
+        subprocess.run(["git", "worktree", "add", "-q", "--detach", other], cwd=self.fake.repo, check=True)
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "unreachable"})
+        self.assertEqual(INFRASTRUCTURE, self.prepare())
+        self.assert_worktree_given_up()
+        self.assertTrue(os.path.isdir(other))
+        with open(runtime_path(self.fake.workspace, "logs", "scaffold.log"), encoding="utf-8") as handle:
+            self.assertIn("Received status code 502", handle.read())
+        self.assertEqual("infrastructure", self.outcome()["kind"])
+
+    def test_a_chunk_without_its_report_gives_up_the_worktree(self) -> None:
+        self.fake.supported_library()
+        self.fake.issue("library-update-request", extra_labels=("chunked-dynamic-access",))
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assert_worktree_given_up()
+
+    def test_an_artifact_marked_not_for_native_image_gives_up_the_worktree(self) -> None:
+        self.fake.write("metadata/org.example/lib/index.json",
+                        json.dumps([{"not-for-native-image": True, "reason": "Maven packaging is `klib`."}]))
+        self.fake.commit("mark lib as not for native image")
+        self.fake.issue("library-update-request")
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assert_worktree_given_up()
+
+    def test_a_crash_after_the_spawn_gives_up_the_worktree(self) -> None:
+        self.fake.issue("library-new-request")
+        crash: subprocess.CalledProcessError = subprocess.CalledProcessError(1, ["git", "commit"])
+        with mock.patch.object(prepare, "checkpoint", side_effect=crash), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(INFRASTRUCTURE, self.prepare())
+        self.assert_worktree_given_up()
+
+    def test_a_prepare_that_saves_its_state_keeps_its_worktree(self) -> None:
+        # Prepared, then resumed in the worktree its state names; the close-out gives it up later.
+        self.fake.issue("library-new-request")
+        for _ in range(2):
+            self.assertEqual(OK, self.prepare())
+            self.assertTrue(os.path.isdir(load(self.fake.workspace).worktree))
+        self.fake.stop_daemons.assert_not_called()
+
+    def test_a_recorded_non_jvm_artifact_keeps_its_worktree(self) -> None:
+        self.fake.issue("library-new-request")
+        self.fake.artifact.return_value = NativeImageEligibility(True, "Maven packaging is `klib`, not a JVM JAR.")
+        for _ in range(2):
+            self.assertEqual(NOT_FOR_NATIVE_IMAGE_RECORDED, self.prepare())
+            self.assertTrue(os.path.isdir(load(self.fake.workspace).worktree))
+        self.fake.stop_daemons.assert_not_called()
+
+    def test_a_bad_input_reason_is_one_line(self) -> None:
+        # Further lines follow as detail (§FS-forge-run-requirements.2).
+        error: BadInput = BadInput("cannot parse the issue form.\nsecond line", "build output")
+        self.assertEqual(("cannot parse the issue form", "second line\nbuild output"),
+                         (error.reason, error.detail))
+
+    def test_a_worktree_git_refuses_quotes_git(self) -> None:
+        self.fake.issue("library-new-request")
+        # Named after the worktree's path, not the coordinate alone
+        # (§AR-forge-workflow-pipeline.4.6).
+        worktree: str = os.path.realpath(
+            os.path.join(self.fake.workspace, "..", "worktrees", "forge-org.example-lib-2.0.0"))
+        branch: str = prepare.run_branch(worktree)
+        subprocess.run(["git", "worktree", "add", "-q", "-b", branch, os.path.join(self.fake.tmp, "elsewhere")],
+                       cwd=self.fake.repo, check=True)
+        self.assertEqual(BAD_INPUT, self.prepare())
+        reason: str = self.outcome()["reason"]
+        self.assertTrue(reason.startswith("prepare: bad input: worktree: Command"), reason)
+        self.assertFalse(reason.endswith("."), reason)
+        self.assertIn(f"fatal: '{branch}' is already", self.outcome()["detail"])
 
     def test_setup_agent_must_be_claude_code(self) -> None:
         self.fake.issue("library-new-request")
         self.assertEqual(BAD_INPUT, self.prepare(*prepare_arguments(setup_agent=WORKER_AGENT)))
+        self.assertEqual(f"prepare: bad input: setup_agent {WORKER_AGENT} must be a claude-code target, "
+                         "which has web search", self.outcome()["reason"])
 
     def test_codex_targets_are_rejected(self) -> None:
         self.fake.issue("library-new-request")
@@ -269,8 +582,23 @@ class PrepareTest(unittest.TestCase):
         self.assertEqual(OK, self.prepare())
         first = load(self.fake.workspace)
         self.assertEqual(OK, self.prepare())
-        self.assertEqual(first.checkpoint, load(self.fake.workspace).checkpoint)
+        self.assertEqual((first.checkpoint, first.branch),
+                         (load(self.fake.workspace).checkpoint, load(self.fake.workspace).branch))
         self.fake.shared_cache.assert_called_once()
+
+    def test_a_resumed_prepare_keeps_a_branch_named_before_the_worktree_path(self) -> None:
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        first = load(self.fake.workspace)
+        # A run in flight across the rename keeps the branch its state records.
+        legacy: str = "rhei/forge-org.example-lib-2.0.0"
+        subprocess.run(["git", "branch", "-m", first.branch, legacy], cwd=first.worktree, check=True)
+        first.branch = legacy
+        save(self.fake.workspace, first)
+        self.assertEqual(OK, self.prepare())
+        resumed = load(self.fake.workspace)
+        self.assertEqual((first.checkpoint, legacy), (resumed.checkpoint, resumed.branch))
+        self.assertEqual(legacy, git_output(resumed.worktree, "branch", "--show-current"))
 
     def test_a_leftover_run_branch_restarts_from_the_pinned_base(self) -> None:
         self.fake.issue("library-new-request")
@@ -281,11 +609,39 @@ class PrepareTest(unittest.TestCase):
         self.fake.commit("master moved on")
         self.assertEqual(OK, self.prepare())
         second = load(self.fake.workspace)
+        self.assertEqual((first.worktree, first.branch), (second.worktree, second.branch))
         self.assertNotEqual(first.base_commit, second.base_commit)
-        self.assertEqual(second.base_commit, subprocess.run(
-            ["git", "rev-parse", "HEAD~1"], cwd=second.worktree, check=True, stdout=subprocess.PIPE, text=True).stdout.strip())
+        self.assertEqual(second.base_commit, git_output(second.worktree, "rev-parse", "HEAD~1"))
         self.assertNotEqual(0, subprocess.run(["git", "merge-base", "--is-ancestor", first.checkpoint, "HEAD"],
                                               cwd=second.worktree).returncode)
+
+    def test_a_leftover_on_a_branch_named_before_the_worktree_path_is_removed(self) -> None:
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.prepare())
+        first = load(self.fake.workspace)
+        legacy: str = "rhei/forge-org.example-lib-2.0.0"
+        subprocess.run(["git", "branch", "-m", first.branch, legacy], cwd=first.worktree, check=True)
+        os.remove(runtime_path(self.fake.workspace, "state.json"))
+        self.assertEqual(OK, self.prepare())
+        second = load(self.fake.workspace)
+        self.assertEqual((first.worktree, first.branch), (second.worktree, second.branch))
+        self.assertEqual(first.branch, git_output(second.worktree, "branch", "--show-current"))
+
+    def test_another_checkouts_run_worktree_neither_blocks_the_run_nor_is_touched(self) -> None:
+        """Checkouts share branches, not run worktrees (§AR-forge-workflow-pipeline.4.6)."""
+        self.fake.issue("library-new-request")
+        other: RunState = self.prepare_in_another_checkout()
+        self.fake.commit("master moved on")
+        self.assertEqual(OK, self.prepare())
+        own = load(self.fake.workspace)
+        self.assertEqual(os.path.basename(other.worktree), os.path.basename(own.worktree))
+        self.assertNotEqual(other.branch, own.branch)
+        self.assertNotEqual(other.base_commit, own.base_commit)
+        # The other launcher's worktree, stale or live, is exactly as it left it.
+        self.assertEqual(other.branch, git_output(other.worktree, "branch", "--show-current"))
+        self.assertEqual(other.checkpoint, git_output(other.worktree, "rev-parse", "HEAD"))
+        self.assertEqual(other.checkpoint, git_output(self.fake.repo, "rev-parse", other.branch))
+        self.assertEqual("", git_output(other.worktree, "status", "--porcelain", "--untracked-files=no"))
 
     def test_validate_inputs_rejects_non_positive_budgets(self) -> None:
         namespace = argparse.Namespace(bulk_min_classes=0, bulk_passes=3, class_attempts=3, defer_classes=15,

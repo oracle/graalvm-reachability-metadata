@@ -50,6 +50,13 @@ stale one. Its location is derived from the coordinate and it is stored with the
 library's test suite, so each merged chunk carries the state the next run needs
 without any resume argument being passed.
 
+`prepare` reads it on the pinned base, before it adds the version, and a report
+there resumes the chunk whether or not the issue still carries the
+`chunked-dynamic-access` label. Without the label, the report counts only when
+it names the run's coordinate. A version is added as a copy of its baseline's
+tests, so reading after the copy would resume the new version from its
+baseline's progress, and so would a report that names another version.
+
 Repository-wide stats stay authoritative: coverage is reported against the full
 current dynamic-access surface, and a chunk may additionally report how many
 classes it processed and how many remain.
@@ -63,6 +70,12 @@ carries the merged exhaust state the next run needs. Iterative exploration can
 attribute completed, skipped, exhausted, and failed classes and records all four
 states its run can attribute: `measure` records the classes a pass fully
 covered and the ones class mode exhausted (§AR-forge-workflow-pipeline.7).
+
+`publish` writes those classes into the report, or removes the report for the
+last chunk, and commits that before it compares the coordinate with its base, so
+the record weighs in that comparison like a test or metadata change. A chunk
+that is not the last and recorded no class leaves the report untouched, so it
+cannot turn a run with nothing else to show into a publication.
 
 Each chunk also records its publication identity and unique head branch in the
 exhaust report before the verified push, which is how a later chunk resolves the

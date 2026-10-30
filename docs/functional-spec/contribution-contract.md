@@ -104,7 +104,7 @@ API surface.
 | --- | --- |
 | `library-new-request` | Dynamic-access coverage above 20% when the report has calls to cover. |
 | `library-update-request` | Coverage percentage does not drop at all against the previously supported version. |
-| `fixes-javac-fail`, `fixes-java-run-fail`, `fixes-native-image-run-fail` | Each overall or breakdown scope passes the repair comparison below. |
+| `fixes-javac-fail`, `fixes-java-run-fail`, `fixes-native-image-build-fail`, `fixes-native-image-run-fail` | Each overall or breakdown scope passes the repair comparison below. |
 
 For the `fixes-*` labels, apply this ordered comparison independently to the
 overall dynamic-access report and every breakdown present in either version.

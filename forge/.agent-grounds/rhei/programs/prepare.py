@@ -26,16 +26,20 @@ from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
     find_dynamic_access_exhaust_report_path,
 )
-from utility_scripts.gradle_dependency_cache import ensure_shared_dependency_cache
+from utility_scripts.gradle_dependency_cache import discard_worktree_gradle_home, ensure_shared_dependency_cache
+from utility_scripts.gradle_environment import worktree_id
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_measurements import load_library_baseline
 from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.library_update_target import library_update_target_summary, prepare_library_update_target
 from utility_scripts.metadata_index import (
+    MATCH_METADATA_VERSION,
+    MATCH_TESTED_VERSION,
     LibraryUpdateTarget,
     VersionBackfillBaseline,
     is_not_for_native_image,
     nearest_prior_supported_version,
+    resolve_library_update_target,
     resolve_metadata_version,
     resolve_version_backfill_baseline,
 )
@@ -44,8 +48,19 @@ import gates
 import issue
 import index_record
 import run_note
-from build_tools import BASE_BRANCH, checkpoint, git, head, run_gradle, stop_gradle_daemons, upstream_remote
-from exit_codes import BAD_INPUT, INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK
+from build_tools import (
+    BASE_BRANCH,
+    TaskResult,
+    Unreachable,
+    checkpoint,
+    dependency_failure,
+    git,
+    head,
+    run_gradle,
+    stop_gradle_daemons,
+    upstream_remote,
+)
+from exit_codes import INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput
 from run_state import ROUTE_NEW, Budgets, Chunk, RunState, load, runtime_path, save, write_text
 
 # <agent>[<mode>]:<model> with agent pi or claude-code (§FS-forge-agent-runtime-selection).
@@ -66,19 +81,28 @@ def pin_base(repo: str) -> str:
     return git(repo, "rev-parse", f"{remote}/{BASE_BRANCH}").strip()
 
 
+def run_branch(worktree: str) -> str:
+    """The run branch, named after the worktree's path (§AR-forge-workflow-pipeline.4.6).
+
+    A worktree of the coordinate in another checkout of the repository, which
+    shares its branches, therefore never holds it, and is never touched.
+    """
+    return f"rhei/{worktree_id(worktree)}"
+
+
 def spawn_worktree(repo: str, path: str, branch: str, base: str) -> None:
     """Create the run worktree on its branch, reset to the pinned base.
 
-    A leftover of an earlier run of the coordinate, its worktree or its branch
-    alone, is removed first: a run never carries old commits over a new base
-    (§AR-forge-workflow-pipeline.4). A resumed run never gets here, because
-    `run` keeps a worktree its own state names.
+    A leftover of an earlier run of the coordinate at `path`, its worktree or
+    its branch alone, is removed first: a run never carries old commits over a
+    new base (§AR-forge-workflow-pipeline.4). A resumed run never gets here,
+    because `run` keeps a worktree its own state names.
     """
     git(repo, "worktree", "prune")
     if os.path.exists(path):
         git(repo, "worktree", "remove", "--force", path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    git(repo, "worktree", "add", "--quiet", "-B", branch, path, base)
+    git(repo, "worktree", "add", "--quiet", "-B", branch, path, base, capture_stderr=True)
     # The path's Gradle home outlives the worktree, and so do its idle daemons.
     stop_gradle_daemons(path)
     share_dependency_cache(repo, path)
@@ -95,6 +119,21 @@ def share_dependency_cache(repo: str, worktree: str) -> None:
         ensure_shared_dependency_cache(repo, worktree)
     except OSError as error:
         print(f"WARNING: the shared Gradle dependency cache was not prepared: {error}", file=sys.stderr)
+
+
+def give_up_worktree(repo: str, worktree: str) -> None:
+    """Remove the worktree `run` spawned, with its Gradle daemons and home; its branch stays.
+
+    A prepare that exits without saving its state is a finished attempt whose
+    worktree the close-out cannot find, so it gives the worktree up as the
+    close-out would (§AR-forge-workflow-pipeline.1). Best effort: a failure is
+    reported, and the exit the prepare took stands.
+    """
+    try:
+        discard_worktree_gradle_home(worktree, repo)
+        git(repo, "worktree", "remove", "--force", worktree)
+    except (OSError, subprocess.CalledProcessError) as error:
+        print(f"WARNING: the worktree {worktree} was not removed: {error}", file=sys.stderr)
 
 
 def attach_worktree(workspace: str, worktree: str) -> None:
@@ -139,15 +178,48 @@ def previous_version(state: RunState, baseline: VersionBackfillBaseline | None) 
     return None if prior is None else resolve_metadata_version(state.worktree, state.group, state.artifact, prior)
 
 
+def require_unsupported(state: RunState, labels: frozenset[str]) -> None:
+    """Raise `BadInput` for a new library whose version the pinned base already lists.
+
+    Such a run could only re-create shipped support, so it stops before any
+    agent state, its detail naming the commit that added the version. A chunk
+    resumes on the version its earlier chunk merged, so the label or the
+    coordinate's exhaust report exempts it (§FS-forge-run-requirements.2.2).
+    """
+    if state.route != ROUTE_NEW or issue.CHUNKED_LABEL in labels:
+        return
+    listed: LibraryUpdateTarget = resolve_library_update_target(state.worktree, state.group, state.artifact,
+                                                                state.version)
+    # A `default-for` range lists no version.
+    if listed.match_type not in (MATCH_TESTED_VERSION, MATCH_METADATA_VERSION):
+        return
+    if find_dynamic_access_exhaust_report_path(state.worktree, state.coordinate) is not None:
+        return
+    added: str = git(state.worktree, "log", "--reverse", "--format=%h %s", f'-S"{state.version}"',
+                     state.base_commit, "--", state.index_path).partition("\n")[0]
+    raise BadInput(f"{state.coordinate} is already supported: {state.index_path} lists {state.version} "
+                   f"in its {listed.resolved_metadata_version} entry", f"Added by {added}" if added else "")
+
+
 def add_version(state: RunState, workspace: str) -> int:
-    """Scaffold a new library, or add the version beside its nearest supported one."""
+    """Scaffold a new library, or add the version beside its nearest supported one.
+
+    A coordinate the scaffold cannot resolve raises `BadInput`, judged only by the
+    lines naming it, since the scaffold resolves nothing else; any other scaffold
+    failure, an unreachable repository included, is an infrastructure failure
+    (§AR-forge-workflow-pipeline.4.1).
+    """
     if state.route == ROUTE_NEW:
         if os.path.isdir(state.path(state.test_dir)):
             return OK
-        scaffold = run_gradle(
+        scaffold: TaskResult = run_gradle(
             state.worktree, ["scaffold", f"--coordinates={state.coordinate}"],
             runtime_path(workspace, "logs", "scaffold.log"),
         )
+        failure: BadInput | Unreachable | None = dependency_failure(
+            scaffold, f"{state.coordinate} has no artifact a JVM test project can use", state.coordinate)
+        if isinstance(failure, BadInput):
+            raise failure
         if not scaffold.ok or not os.path.isdir(state.path(state.test_dir)):
             print(f"ERROR: scaffolding {state.coordinate} failed:\n{scaffold.tail}", file=sys.stderr)
             return INFRASTRUCTURE
@@ -175,14 +247,20 @@ def add_version(state: RunState, workspace: str) -> int:
 def resolve_chunk(state: RunState, labels: frozenset[str]) -> None:
     """Load a chunked issue's processed classes once its previous chunk merged.
 
-    §FS-forge-chunked-dynamic-access
+    The label, or the coordinate's own exhaust report, makes the issue chunked
+    (§FS-forge-chunked-dynamic-access). The report is read on the pinned base,
+    before the version is added, since adding one copies its baseline's tests,
+    report included; a report naming another version holds that version's progress.
     """
-    if issue.CHUNKED_LABEL not in labels:
-        return
+    labeled: bool = issue.CHUNKED_LABEL in labels
     report_path: str | None = find_dynamic_access_exhaust_report_path(state.worktree, state.coordinate)
     if report_path is None:
-        raise ValueError(f"chunked issue has no exhaust report for {state.coordinate}")
+        if labeled:
+            raise ValueError(f"chunked issue has no exhaust report for {state.coordinate}")
+        return
     report: DynamicAccessExhaustReport = DynamicAccessExhaustReport.load(report_path)
+    if not labeled and report.coordinate != state.coordinate:
+        return
     require_previous_chunk_merged(report, state.worktree)
     state.chunk = Chunk(active=True, processed=sorted(report.processed_classes()),
                         budget=state.budgets.defer_classes)
@@ -203,6 +281,10 @@ def validate_inputs(args: argparse.Namespace) -> str | None:
 
 
 def run(args: argparse.Namespace) -> int:
+    """Resume the run, or verify its inputs and prepare it.
+
+    A bad input raises `BadInput` naming it (§FS-forge-run-requirements.2).
+    """
     workspace: str = os.path.abspath(args.workspace)
     if os.path.isfile(runtime_path(workspace, "state.json")):
         state: RunState = load(workspace)
@@ -212,26 +294,41 @@ def run(args: argparse.Namespace) -> int:
             return NOT_FOR_NATIVE_IMAGE_RECORDED if state.not_for_native_image is not None else OK
     error: str | None = validate_inputs(args)
     if error is not None:
-        print(f"ERROR: {error}.", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(error)
     repo: str = _resolve(workspace, args.repo_checkout)
     try:
         payload: dict[str, Any] = issue.read_issue(args.issue_number, repo)
+    except RuntimeError as error_value:
+        # External: no issue action, so a later cycle retries (§FS-human-intervention-policy).
+        print(f"ERROR: {error_value}", file=sys.stderr)
+        return INFRASTRUCTURE
+    try:
         parsed: issue.Issue = issue.parse_issue(payload)
     except ValueError as error_value:
-        print(f"ERROR: issue #{args.issue_number}: {error_value}", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(str(error_value)) from error_value
     run_name: str = "forge-" + parsed.coordinate.replace(":", "-")
     # Resolved like git's own top-level path, which the worktree ref must name.
     worktree: str = os.path.realpath(os.path.join(_resolve(workspace, args.worktree_root), run_name))
-    branch: str = f"rhei/{run_name}"
+    branch: str = run_branch(worktree)
     base: str = pin_base(repo)
     try:
         spawn_worktree(repo, worktree, branch, base)
     except subprocess.CalledProcessError as error_value:
-        print(f"ERROR: worktree: {error_value}", file=sys.stderr)
-        return BAD_INPUT
-    state = RunState(
+        raise BadInput(f"worktree: {error_value}", error_value.stderr or "") from error_value
+    saved: bool = False
+    try:
+        code: int = prepare_worktree(args, workspace, repo, payload, parsed, worktree, branch, base)
+        saved = code in (OK, NOT_FOR_NATIVE_IMAGE_RECORDED)
+        return code
+    finally:
+        if not saved:
+            give_up_worktree(repo, worktree)
+
+
+def prepare_worktree(args: argparse.Namespace, workspace: str, repo: str, payload: dict[str, Any],
+                     parsed: issue.Issue, worktree: str, branch: str, base: str) -> int:
+    """Prepare the run in the worktree `run` spawned; only an `OK` or `22` exit saves its state."""
+    state: RunState = RunState(
         issue_number=parsed.number,
         label=parsed.label,
         route=parsed.route,
@@ -248,8 +345,8 @@ def run(args: argparse.Namespace) -> int:
                         args.defer_classes, args.explore_passes, args.finalize_fixes, args.native_fixes),
     )
     if is_not_for_native_image(worktree, state.group, state.artifact):
-        print(f"ERROR: {state.group}:{state.artifact} is marked not-for-native-image.", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(f"{state.group}:{state.artifact} is marked not-for-native-image")
+    require_unsupported(state, parsed.labels)
     code: int | None = index_record.record_not_for_native_image(workspace, state)
     if code is not None:
         if code == NOT_FOR_NATIVE_IMAGE_RECORDED:
@@ -258,17 +355,16 @@ def run(args: argparse.Namespace) -> int:
             run_note.write(workspace, state)
             print(f"[prepare] recorded {state.coordinate} as not-for-native-image at {state.checkpoint}")
         return code
-    code = add_version(state, workspace)
-    if code != OK:
-        return code
     try:
         resolve_chunk(state, parsed.labels)
     except ValueError as error_value:
-        print(f"ERROR: {error_value}", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(str(error_value)) from error_value
     except RuntimeError as error_value:
         print(f"ERROR: the previous chunk is not ready: {error_value}", file=sys.stderr)
         return INFRASTRUCTURE
+    code = add_version(state, workspace)
+    if code != OK:
+        return code
     request: str = reporter_request(payload)
     state.has_reporter_request = bool(request)
     state.requested_metadata = gates.requested_entries(request)

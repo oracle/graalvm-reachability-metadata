@@ -280,6 +280,39 @@ opens with both, as in `This is blocked on a GraalVM defect: oracle/graal#<n>
 and a reproducer. A workaround cites the ticket, so it can be removed once the
 fix reaches CI's GraalVM (§FS-graalvm-blocked-work.3).
 
+## Reviewing hand-authored maintainer PRs
+
+A maintainer branch can carry hand-authored commits even though `graalvmbot`
+opens the pull request (see Publishing changes for a maintainer, above) —
+`vjovanov`'s queue mixes these with Forge-generated ones. A PR titled
+`[GenAI] Add support for ...` or `[GenAI] Test fix for ...` is Forge's own
+templated output and already covered by its automated review; skip it.
+Everything else on that account is written by hand and needs a real review.
+
+Review these with one subagent per PR, fanned out in parallel, each checking:
+
+- **Soundness.** The stated problem is real, the diff matches the claim,
+  every cited `§` point resolves and actually supports the claim, and tests
+  are substantive rather than restating the change they are meant to prove.
+- **Proportionality.** The change stays inside the bug's actual scope; it
+  never narrows a general spec point to carve out one edge case.
+- **A GraalVM defect must go through the hold, not around it.** A new
+  `--initialize-at-build-time`-style flag must be justified by real library
+  behavior. Citing a GraalVM ticket in its justification is only a legitimate
+  release path when the underlying defect was actually labeled `graalvm-bug`
+  and held (§FS-graalvm-blocked-work.3) — not used as an uncatalogued
+  workaround for a defect nobody filed.
+- **Root cause over symptom.** A PR that patches around a named,
+  already-filed infra or Forge bug must say so explicitly; prefer the fix
+  landing in the infra itself over repeating the workaround in each PR.
+
+A review verdict is not a merge. Approve a sound PR with a real
+`gh pr review --approve` — arming auto-merge alone leaves `reviewDecision:
+REVIEW_REQUIRED` under branch protection and nothing lands. Comment on an
+unsound PR naming the concern and suggesting the author close it; never close
+another author's PR directly. Re-review a PR only once its content has
+changed since the last pass.
+
 <!-- BEGIN FISSILE MANAGED BLOCK -->
 ## Keeping Files Small With fissile (v3)
 

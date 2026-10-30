@@ -10,8 +10,21 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+// Audit mode is selected once when AnnotatedMBean initializes.
+tasks.withType(Test).configureEach {
+    systemProperty 'org.apache.activemq.audit', 'all'
+}
+
+tasks.named('nativeTest') {
+    runtimeArgs.add('-Dorg.apache.activemq.audit=all')
+}
+
 dependencies {
     testImplementation "org.apache.activemq:activemq-broker:$libraryVersion"
+    testImplementation "org.apache.activemq:activemq-jaas:$libraryVersion"
+    testImplementation "org.apache.activemq:activemq-kahadb-store:$libraryVersion"
+    testImplementation 'org.bouncycastle:bcprov-jdk18on:1.77'
+    testImplementation 'org.apache.logging.log4j:log4j-core:2.25.3'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 

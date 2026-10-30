@@ -23,8 +23,8 @@ review and repository CI remain the final merge boundary.
 This shortens the path described in §GOAL-shorten-issue-to-shipped-metadata.
 
 A supported issue starts from a work label such as `library-new-request`,
-`library-update-request`, `fails-javac-compile`, `fails-java-run`, or
-`fails-native-image-run`. §FS-forge-scope enumerates the queues Forge resolves,
+`library-update-request`, `fails-javac-compile`, `fails-java-run`,
+`fails-native-image-build`, or `fails-native-image-run`. §FS-forge-scope enumerates the queues Forge resolves,
 and §FS-forge-scope.1 records where the `fails-*` work comes from. Forge drains
 each pipeline by priority tier rather than by scan batch: every `high-priority`
 issue first, then every `priority` issue, then the remaining issues.
@@ -47,14 +47,18 @@ The project covers these supported issue-resolution queues
    no longer compile against a bumped library version.
 5. **Java runtime fixes** (`fails-java-run`) — repair JVM-mode test
    failures that surface when raising a tested library to a new version.
-6. **Native-image runtime fixes** (`fails-native-image-run`) — update
+6. **Native-image build fixes** (`fails-native-image-build`) — repair the
+   test project, its allowed native-image flags, or the reachability metadata
+   so the native test image builds against the new library version.
+7. **Native-image runtime fixes** (`fails-native-image-run`) — update
    reachability metadata so `nativeTest` passes against the new library
    version, using the native metadata exploration phase.
 
 Successful fixes use the matching PR labels (`library-new-request`,
-`library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`, or
-`fixes-native-image-run-fail`) so the launcher's review recognizes the pull
-request as Forge's (§FS-published-pr-review.1).
+`library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`,
+`fixes-native-image-build-fail`, or `fixes-native-image-run-fail`) so the
+launcher's review recognizes the pull request as Forge's
+(§FS-published-pr-review.1).
 
 Out of scope: anything that does not produce reachability metadata or its
 supporting tests for the reachability repo.
@@ -70,6 +74,10 @@ the stage that broke (`fails-javac-compile`, `fails-java-run`,
 `fails-native-image-build`, or `fails-native-image-run`). Forge claims those
 issues; it never opens them. The producer's contract is the reachability repo's
 Library version update automation (§root/FS-library-version-update-automation).
+That automation also assigns each `fails-native-image-build` issue to a
+maintainer (§root/FS-library-version-update-automation.4), and Forge fetches
+only unassigned issues (§AR-forge-workflow-pipeline.1), so a maintainer hands
+one to Forge by removing the assignment.
 
 ## FS-forge-glossary: Glossary
 
@@ -317,6 +325,22 @@ and authenticated (§FS-forge-host-requirements). Each target reaches its agent
 states unchanged, so the agent and model of every edit are the ones the
 operator selected and the run's metrics record them.
 
+### 1. File-system scope
+
+The run's agent states, `setup`, `cover`, and `fix`, walk or search the file
+system only inside the run's own trees: the run workspace, which holds the run
+note and the reports; the worktree; the main sources, a tree of their own
+because the worktree ignores them and a walk that honors its ignore files never
+reaches them; the Gradle user home and the read-only dependency cache the run
+builds with; and the GraalVM home. The run note lists each as an absolute search root that
+exists when it is written (§AR-forge-workflow-prompts.2). Outside those trees an
+agent opens only a file whose path it was given, such as a jar under the local
+Maven repository that a build's output names. It never walks a shared host
+location such as `/tmp`, the home directory, or `/`, even to reach a run tree
+that lies inside one: anything another process left there can stall a walk or
+exhaust the memory every run on the host shares, and one file that never ends
+is enough. Nothing the run needs lies there unnamed.
+
 ## FS-forge-run-requirements: Run requirements
 
 
@@ -330,6 +354,15 @@ the claim and returns the issue to `Todo` rather than failing the issue. The
 issue form is the one requirement that then ends the issue rather than leaving
 it queued, because its defect is in the issue itself and no later cycle can
 repair it (see 3 below).
+
+A release counts only once GitHub confirms it: the issue reads back in `Todo`
+with no assignee. GitHub may be down at the very moment a release is needed,
+since an outage is often why the run failed, so a release whose GitHub calls
+fail is retried a few times. One GitHub still cannot confirm is reported as
+unconfirmed, naming the issue to release by hand, never as released; one GitHub
+answered but shows still claimed is not retried, since a retry could clear a
+claim made since. An unconfirmed release must not stop the launcher or hide the
+failure that led to it.
 
 ### 1. Agent targets
 
@@ -359,7 +392,9 @@ run's base, and creates the isolated worktree from it; a base that cannot be
 resolved fails the run before anything is changed. Every repository-dependent
 precondition runs inside the run against that worktree: a
 `chunked-dynamic-access` issue must resolve its exhaust report and find the
-preceding chunk merged (§AR-dynamic-access-exhaust-report). A failed
+preceding chunk merged (§AR-dynamic-access-exhaust-report), and a
+`library-new-request` must request a version the base does not support yet
+(see 2.2). A failed
 precondition ends the run, the launcher releases the claim back to `Todo`, and
 its classification decides what happens to the issue
 (§FS-human-intervention-policy). An infrastructure failure takes no issue
@@ -379,6 +414,26 @@ still holds. Neither `resumable` nor the blocked-issue override lifts it:
 `resumable` lifts no hold, and the override concerns open GitHub blockers,
 while this label marks a defect outside the repository that only a
 maintainer's release clears (§root/FS-graalvm-blocked-work.3).
+
+#### 2.2 A new library the base already supports is a bad input
+
+A `library-new-request` asks for support the repository lacks
+(§FS-forge-scope). When an entry of the artifact's `index.json` on the pinned
+base already lists the requested version, in `tested-versions` or as its
+`metadata-version`, the version's metadata, tests, and stats already ship. A
+run would spend its agent budget re-creating them, only to publish a duplicate
+or to end with nothing to publish. `prepare` therefore stops such a run before
+any agent state, as a bad input whose comment names the commit that added the
+version. A maintainer then closes the issue as a duplicate, or relabels it a
+`library-update-request` when the reporter asks for more than the shipped
+version covers. A `default-for` range does not list a version, and a version
+the index does not list passes, whatever other versions are supported.
+
+A chunked issue is the exception (§FS-forge-chunked-dynamic-access): its
+earlier chunk merged the version, and the next chunk resumes from the
+`chunked-dynamic-access` label or the coordinate-local exhaust report. That
+report lives in the version's test project, not in `index.json`, so the rule
+is a precondition of the run rather than an issue-form rule (see 3).
 
 ### 3. Issue form
 
@@ -506,7 +561,7 @@ policy or repository resolution.
   where `<suffix>` names the route and encodes the coordinate (e.g.
   `add-lib-support-<group>-<artifact>-<version>` for new-library support,
   `library-update-request-…`, `fixes-javac-fail-…`, `fixes-java-run-fail-…`,
-  `fixes-native-image-run-fail-…`). Publication branches are
+  `fixes-native-image-build-fail-…`, `fixes-native-image-run-fail-…`). Publication branches are
   unique per publication ID and are pushed directly to
   `oracle/graalvm-reachability-metadata` so the repository's `push` workflow can
   observe them.
@@ -728,7 +783,7 @@ Every `forge-metadata` run ends in one final state, and the launcher acts on it
 | Final state | Meaning |
 | --- | --- |
 | `completed` | Every check and the local CI-equivalent verification passed (§FS-local-ci-equivalent-verification) and the publication branch is pushed. A chunk that is not the last is published the same way, with `RUN_STATUS_CHUNK_READY` in its metrics; the issue must not be resumed until that chunk's PR has merged. A skip record is published the same way (§FS-unsupportable-version-diagnosis.3), and so is a not-for-native-image record (§FS-not-for-native-image-record.2). |
-| `nothing-to-publish` | The coordinate's paths are unchanged; no branch is pushed. |
+| `nothing-to-publish` | The coordinate's paths are unchanged, counting the exhaust record a chunk writes first (§FS-forge-chunked-dynamic-access); no branch is pushed. A chunk that is not the last and completed or exhausted a class, or a last chunk that removes an earlier chunk's report, always has something to publish. |
 | `human-intervention` | A check still failed after its fix, or the fix reported that nothing within the rules helps; no branch is pushed (§FS-human-intervention-policy). |
 | `failed` | A bad input or an infrastructure failure; no branch is pushed. |
 
@@ -738,8 +793,8 @@ metrics like any other.
 
 ## FS-unsupportable-version-diagnosis: Unsupportable-version verdict in setup
 
-For `fails-javac-compile`, `fails-java-run`, and `fails-native-image-run`
-issues, the `setup` state answers one more question before any repair starts:
+For `fails-javac-compile`, `fails-java-run`, `fails-native-image-build`, and
+`fails-native-image-run` issues, the `setup` state answers one more question before any repair starts:
 does covering the library's dynamic-access calls require behavior Native Image
 does not support (§root/FS-test-contract.4.5)? The inputs — the issue's failure
 evidence and the library's sources for this and newer versions — all exist
@@ -749,7 +804,7 @@ turn and saves the whole repair. Without it, the disposition of
 that fails honestly ends in `human-intervention` and publishes nothing. Issues
 without failure evidence are never asked: a `library-new-request` has no index
 entry to record a skip into, and a `library-update-request` carries no failure
-to diagnose. `run.md` names the bar only for the three `fails-*` labels
+to diagnose. `run.md` names the bar only for the four `fails-*` labels
 (§AR-forge-workflow-prompts.2).
 
 ### 1. The bar
@@ -793,7 +848,7 @@ a repairable verdict it adds no entry.
 
 ### 3. The skip record is the run's outcome
 
-The setup tail keeps `skipped-versions` additions on the three `fails-*` labels
+The setup tail keeps `skipped-versions` additions on the four `fails-*` labels
 and reverts them on every other label (§AR-forge-workflow-pipeline.4.1). When
 the index gained an entry for the target version, `setup-check` turns the run into
 the skip record before anything else. The coordinate's paths return to the
@@ -843,6 +898,18 @@ report behind, so the next claim decides afresh. A chunk is the last when its
 run left no target uncovered and unexhausted; a bulk pass only lowers the count,
 so a library at or below the boundary never needs a later chunk.
 
+The exhaust record is a result of its own, so `publish` writes it before
+deciding whether the coordinate changed. Exhausting a class spends every
+attempt class mode gives it: a chunk that drops the record leaves the next
+claim to repeat those attempts, and a last chunk that drops it never closes its
+issue. A chunk that is not the last therefore publishes the classes it completed
+or exhausted with `Refs: #<issue>` even when the report is its only change, and
+the last chunk removes the report an earlier chunk left and publishes that with
+`Fixes: #<issue>`, whether or not it processed a class itself. A chunk whose
+record changes nothing — one that is not the last and completed or exhausted no
+class, or a last chunk with no report to remove — publishes only what else it
+changed (§FS-forge-run-status).
+
 Chunked mode is automatic once the issue carries the `chunked-dynamic-access`
 label. The normal project status remains the run-state signal: `Todo` means
 Forge may claim the next chunk, `In Progress` means a chunk is being generated
@@ -878,7 +945,7 @@ Rhei template (§AR-forge-workflow-pipeline.3). The issue label picks the route:
 | --- | --- |
 | `library-new-request` | scaffold, then exploration; no repair |
 | `library-update-request` | add the version, repair, then exploration |
-| `fails-javac-compile`, `fails-java-run`, `fails-native-image-run` | one shared route: repair, then exploration |
+| `fails-javac-compile`, `fails-java-run`, `fails-native-image-build`, `fails-native-image-run` | one shared route: repair, then exploration |
 | `code-coverage-improvement` | its own template (§AR-code-coverage-improvement) |
 
 Exploration always tries bulk passes before class passes, and `analyze` picks
