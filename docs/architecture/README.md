@@ -30,13 +30,13 @@ rather than by kind.
 | [§AR-scan-docker-images](ci.md#ar-scan-docker-images-scan-docker-images) | Scan Docker images |
 | [§AR-sync-docker-images](ci.md#ar-sync-docker-images-sync-docker-images) | Sync Docker images |
 | [§AR-macaron-check](ci.md#ar-macaron-check-check-github-actions-with-macaron) | Check GitHub Actions with Macaron |
-| [§AR-layered-tests](ci.md#ar-layered-tests-shared-and-dedicated-native-image-layer-tests) | Shared and dedicated Native Image layer tests |
-| [§AR-test-all-metadata](ci.md#ar-test-all-metadata-test-all-metadata) | Test all metadata |
-| [§AR-verify-new-library-version-compatibility](ci.md#ar-verify-new-library-version-compatibility-verify-new-library-version-compatibility) | Verify new library version compatibility |
-| [§AR-publish-scheduled-coverage](ci.md#ar-publish-scheduled-coverage-publish-scheduled-coverage) | Publish scheduled coverage |
-| [§AR-create-scheduled-release](ci.md#ar-create-scheduled-release-create-scheduled-release) | Create scheduled release |
-| [§AR-create-snapshot-release](ci.md#ar-create-snapshot-release-create-snapshot-release) | Create snapshot release |
-| [§AR-test-all-metadata-crema](ci.md#ar-test-all-metadata-crema-test-all-metadata-on-the-crema-jvm) | Test all metadata on the Crema JVM |
+| [§AR-layered-tests](ci-scheduled.md#ar-layered-tests-shared-and-dedicated-native-image-layer-tests) | Shared and dedicated Native Image layer tests |
+| [§AR-test-all-metadata](ci-scheduled.md#ar-test-all-metadata-test-all-metadata) | Test all metadata |
+| [§AR-verify-new-library-version-compatibility](ci-scheduled.md#ar-verify-new-library-version-compatibility-verify-new-library-version-compatibility) | Verify new library version compatibility |
+| [§AR-publish-scheduled-coverage](ci-scheduled.md#ar-publish-scheduled-coverage-publish-scheduled-coverage) | Publish scheduled coverage |
+| [§AR-create-scheduled-release](ci-scheduled.md#ar-create-scheduled-release-create-scheduled-release) | Create scheduled release |
+| [§AR-create-snapshot-release](ci-scheduled.md#ar-create-snapshot-release-create-snapshot-release) | Create snapshot release |
+| [§AR-test-all-metadata-crema](ci-scheduled.md#ar-test-all-metadata-crema-test-all-metadata-on-the-crema-jvm) | Test all metadata on the Crema JVM |
 | [§AR-triage-new-issues](ci.md#ar-triage-new-issues-triage-new-issues) | Triage new issues |
 | [§AR-ci-composite-actions](ci-actions.md#ar-ci-composite-actions-composite-actions-the-ci-workflows-reuse) | Composite actions the CI workflows reuse |
 | [§AR-detect-file-changes](ci-actions.md#ar-detect-file-changes-detect-file-changes-action) | detect-file-changes action |
@@ -45,6 +45,7 @@ rather than by kind.
 | [§AR-setup-crema-jdk](ci-actions.md#ar-setup-crema-jdk-setup-crema-jdk-action) | setup-crema-jdk action |
 | [§AR-shared-scripts](ci.md#ar-shared-scripts-shared-scripts-and-test-isolation) | Shared scripts and test isolation |
 | [§AR-test-harness](tck.md#ar-test-harness-test-harness-tck-task-groups) | Test harness (TCK) task groups |
+| [§AR-native-test-layers](native-test-layers.md#ar-native-test-layers-native-test-layer-construction) | Shared and dedicated native test layers |
 
 This index is navigational. Cite the specific declaration ID rather than this
 file.
