@@ -93,6 +93,74 @@ class FixPublisherStatsTests(unittest.TestCase):
         self.assertIn(f"- {old_coordinates}: 97/2238 (4.33%)", comparison)
         self.assertIn(f"- {new_coordinates}: 110/2263 (4.86%)", comparison)
 
+    def test_before_after_renders_dynamic_access_lost_to_not_available(self) -> None:
+        coordinates = "org.apache.tomcat.embed:tomcat-embed-core:11.0.18"
+        before: dict[str, Any] = _stats_document(
+            "11.0.18", covered=1, total=2, ratio=0.5,
+        )["versions"][0]
+        after: dict[str, Any] = {**before, "dynamicAccess": "N/A"}
+
+        comparison: str = publisher._format_stats_before_after(before, after, coordinates)
+
+        self.assertIn(f"- Before ({coordinates}): 1/1 covered calls (100.00%)", comparison)
+        self.assertIn(f"- After ({coordinates}): N/A", comparison)
+        self.assertIn("**Reflection:**", comparison)
+        self.assertEqual(2, comparison.count(f"- After ({coordinates}): N/A"))
+
+    def test_before_after_renders_dynamic_access_gained_from_not_available(self) -> None:
+        coordinates = "org.apache.tomcat.embed:tomcat-embed-core:11.0.18"
+        after: dict[str, Any] = _stats_document(
+            "11.0.18", covered=1, total=2, ratio=0.5,
+        )["versions"][0]
+        before: dict[str, Any] = {**after, "dynamicAccess": "N/A"}
+
+        comparison: str = publisher._format_stats_before_after(before, after, coordinates)
+
+        self.assertEqual(2, comparison.count(f"- Before ({coordinates}): N/A"))
+        self.assertIn(f"- After ({coordinates}): 1/1 covered calls (100.00%)", comparison)
+
+    def test_stats_diff_renders_dynamic_access_not_available_on_either_side(self) -> None:
+        validated = publisher.ValidatedPublication({}, "descriptor.json", "a" * 40)
+        old_coordinates = "com.example:demo:1.0.0"
+        new_coordinates = "com.example:demo:2.0.0"
+        old_document: dict[str, Any] = _stats_document("1.0.0", covered=1, total=2, ratio=0.5)
+        old_document["versions"][0]["dynamicAccess"] = "N/A"
+        documents: dict[str, dict[str, Any]] = {
+            "stats/com.example/demo/1.0.0/stats.json": old_document,
+            "stats/com.example/demo/2.0.0/stats.json": _stats_document("2.0.0", covered=1, total=2, ratio=0.5),
+        }
+
+        with patch.object(
+                publisher,
+                "read_json_at_commit",
+                side_effect=lambda _commit, path: documents[path],
+        ):
+            comparison: str = publisher._format_stats_diff(validated, old_coordinates, new_coordinates)
+
+        self.assertEqual(2, comparison.count(f"- {old_coordinates}: N/A"))
+        self.assertIn(f"- {new_coordinates}: 1/1 covered calls (100.00%)", comparison)
+
+    def test_before_after_renders_library_coverage_not_available_on_either_side(self) -> None:
+        coordinates = "com.example:demo:1.0.0"
+        measured: dict[str, Any] = _stats_document("1.0.0", covered=1, total=2, ratio=0.5)["versions"][0]
+        unmeasured: dict[str, Any] = {**measured, "libraryCoverage": {"line": "N/A"}}
+
+        lost: str = publisher._format_stats_before_after(measured, unmeasured, coordinates)
+        gained: str = publisher._format_stats_before_after(unmeasured, measured, coordinates)
+
+        self.assertIn(f"- Before ({coordinates}): 1/2 (50.00%)", lost)
+        self.assertIn(f"- After ({coordinates}): N/A", lost)
+        self.assertIn(f"- Before ({coordinates}): N/A", gained)
+        self.assertIn(f"- After ({coordinates}): 1/2 (50.00%)", gained)
+
+    def test_stats_section_omits_dynamic_access_not_available(self) -> None:
+        stats: dict[str, Any] = _stats_document("1.0.0", covered=1, total=2, ratio=0.5)["versions"][0]
+
+        section: str = publisher._format_stats_section({**stats, "dynamicAccess": "N/A"})
+
+        self.assertNotIn("Dynamic access coverage", section)
+        self.assertIn("- Line: 1/2 (50.00%)", section)
+
     def test_stats_loader_rejects_a_document_without_the_coordinate_version(self) -> None:
         validated = publisher.ValidatedPublication({}, "descriptor.json", "a" * 40)
 
