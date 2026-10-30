@@ -12,6 +12,7 @@ import org.osgi.service.cdi.annotations.Service;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServiceInnerLiteralTest {
     @Test
@@ -23,6 +24,7 @@ public class ServiceInnerLiteralTest {
         assertEquals(Service.class, service.annotationType());
         assertEquals(equivalent, service);
         assertEquals(equivalent.hashCode(), service.hashCode());
+        assertTrue(service.toString().contains("value="));
         assertNotEquals(Service.Literal.of(new Class<?>[]{Runnable.class}), service);
         assertNotEquals(Service.Literal.of(new Class<?>[]{AutoCloseable.class, Runnable.class}), service);
     }
