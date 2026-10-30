@@ -29,7 +29,7 @@ import forge_run  # noqa: E402
 import prepare  # noqa: E402
 import run_note  # noqa: E402
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
-from exit_codes import BAD_INPUT, NOT_FOR_NATIVE_IMAGE_RECORDED, OK  # noqa: E402
+from exit_codes import BAD_INPUT, INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput  # noqa: E402
 from run_state import ROUTE_NEW, ROUTE_REPAIR, ROUTE_UPDATE, load, read_json, runtime_path  # noqa: E402
 
 SETUP_AGENT: str = "claude-code[medium]:sonnet"
@@ -129,6 +129,10 @@ class PrepareTest(unittest.TestCase):
         self.assertIn("validateIndexFiles rejected", output.getvalue())
         self.assertIn("index.json does not validate", output.getvalue())
         self.assertEqual("bad-input", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["kind"])
+        # The close-out comment names the rejection (§FS-forge-run-requirements.2).
+        self.assertEqual("prepare: bad input: validateIndexFiles rejected the not-for-native-image record",
+                         self.outcome()["reason"])
+        self.assertIn("index.json does not validate", self.outcome()["detail"])
 
     def test_an_existing_index_is_never_asked(self) -> None:
         """Existing support excludes a verdict (§FS-not-for-native-image-record.1)."""
@@ -301,10 +305,78 @@ class PrepareTest(unittest.TestCase):
         self.fake.supported_library()
         self.fake.issue("library-update-request", extra_labels=("chunked-dynamic-access",))
         self.assertEqual(BAD_INPUT, self.prepare())
+        # The close-out comment names the reason (§FS-forge-run-requirements.2).
+        outcome: dict[str, str] = self.outcome()
+        self.assertEqual(("bad-input", f"prepare: bad input: chunked issue has no exhaust report for {COORDINATE}", ""),
+                         (outcome["kind"], outcome["reason"], outcome["detail"]))
+
+    def outcome(self) -> dict[str, str]:
+        return read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
+
+    def test_an_issue_gh_cannot_read_is_an_infrastructure_failure(self) -> None:
+        # GitHub failed, not the issue: no hold (§FS-human-intervention-policy).
+        self.fake.control({"issueError": "API rate limit exceeded for user ID 1.\nsecond line"})
+        self.assertEqual(INFRASTRUCTURE, self.prepare())
+        self.assertEqual(("prepare: infrastructure failure", "infrastructure"),
+                         (self.outcome()["reason"], self.outcome()["kind"]))
+
+    def test_a_library_without_a_jvm_variant_is_a_bad_input(self) -> None:
+        # Every retry would fail the same way (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "variant"})
+        self.assertEqual(BAD_INPUT, self.prepare())
+        outcome: dict[str, str] = self.outcome()
+        self.assertEqual(("bad-input", f"prepare: bad input: {COORDINATE} has no artifact a JVM test project can use"),
+                         (outcome["kind"], outcome["reason"]))
+        # The lines naming the coordinate and why it does not resolve, not Gradle's hint after them.
+        self.assertEqual("> Could not resolve all files for configuration ':detachedConfiguration1'.\n"
+                         f"   > Could not resolve {COORDINATE}.\n"
+                         f"      > No matching variant of {COORDINATE} was found. The consumer was configured to "
+                         "find attribute 'org.gradle.jvm.environment' with value 'standard-jvm' but:",
+                         outcome["detail"])
+
+    def test_a_coordinate_without_a_jar_is_a_bad_input(self) -> None:
+        # A BOM fails the same way on every retry (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        self.fake.control({"scaffoldFails": "bom"})
+        self.assertEqual(BAD_INPUT, self.prepare())
+        self.assertEqual((f"prepare: bad input: {COORDINATE} has no artifact a JVM test project can use",
+                          f"> Failed to resolve JAR for {COORDINATE}"),
+                         (self.outcome()["reason"], self.outcome()["detail"]))
+
+    def test_a_scaffold_that_fails_otherwise_is_an_infrastructure_failure(self) -> None:
+        # An unreachable repository, or an artifact other than the coordinate missing, is retried
+        # by a later cycle (§AR-forge-workflow-pipeline.4.1).
+        self.fake.issue("library-new-request")
+        for failure in ("unreachable", "elsewhere", "process"):
+            with self.subTest(failure=failure):
+                self.fake.control({"scaffoldFails": failure})
+                self.assertEqual(INFRASTRUCTURE, self.prepare())
+                self.assertEqual(("prepare: infrastructure failure", "infrastructure"),
+                                 (self.outcome()["reason"], self.outcome()["kind"]))
+
+    def test_a_bad_input_reason_is_one_line(self) -> None:
+        # Further lines follow as detail (§FS-forge-run-requirements.2).
+        error: BadInput = BadInput("cannot parse the issue form.\nsecond line", "build output")
+        self.assertEqual(("cannot parse the issue form", "second line\nbuild output"),
+                         (error.reason, error.detail))
+
+    def test_a_worktree_git_refuses_quotes_git(self) -> None:
+        self.fake.issue("library-new-request")
+        branch: str = "rhei/forge-org.example-lib-2.0.0"
+        subprocess.run(["git", "worktree", "add", "-q", "-b", branch, os.path.join(self.fake.tmp, "elsewhere")],
+                       cwd=self.fake.repo, check=True)
+        self.assertEqual(BAD_INPUT, self.prepare())
+        reason: str = self.outcome()["reason"]
+        self.assertTrue(reason.startswith("prepare: bad input: worktree: Command"), reason)
+        self.assertFalse(reason.endswith("."), reason)
+        self.assertIn(f"fatal: '{branch}' is already", self.outcome()["detail"])
 
     def test_setup_agent_must_be_claude_code(self) -> None:
         self.fake.issue("library-new-request")
         self.assertEqual(BAD_INPUT, self.prepare(*prepare_arguments(setup_agent=WORKER_AGENT)))
+        self.assertEqual(f"prepare: bad input: setup_agent {WORKER_AGENT} must be a claude-code target, "
+                         "which has web search", self.outcome()["reason"])
 
     def test_codex_targets_are_rejected(self) -> None:
         self.fake.issue("library-new-request")

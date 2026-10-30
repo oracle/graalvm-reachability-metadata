@@ -35,6 +35,7 @@ from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
+    INFRASTRUCTURE,
     NOT_FOR_NATIVE_IMAGE_RECORDED,
     OK,
     RETURN_AUDIT,
@@ -92,6 +93,9 @@ class CheckStateTest(FinalizedRun):
                 self.assertEqual(BAD_INPUT, self.step(*prepare_arguments()))
         self.assertEqual("failed", self.outcome())
         self.assertIn("index-file-validation", output.getvalue())
+        self.assertEqual("prepare: bad input: the pre-publication gate rejected the not-for-native-image "
+                         "record: Local CI verification failed at gate 'index-file-validation'",
+                         self.recorded_outcome()["reason"])
         worktree: str = gate.call_args.kwargs["repo_path"]
         with open(os.path.join(worktree, "gradle-calls.log"), encoding="utf-8") as handle:
             self.assertNotIn("scaffold", handle.read())
@@ -116,6 +120,29 @@ class CheckStateTest(FinalizedRun):
         self.fake.control({"generateFails": False})
         self.assertEqual(OK, self.step("jvm"))
         self.assertIsNone(self.state.pending_request)
+
+    def test_an_unresolved_dependency_in_jvm_names_itself_and_quotes_the_build(self) -> None:
+        # One line of reason, then the build's output (§FS-forge-run-requirements.2).
+        self.assertEqual(OK, self.set_up("fails-java-run"))
+        self.fake.control({"unresolved": True})
+        self.assertEqual(BAD_INPUT, self.step("jvm"))
+        outcome: dict[str, Any] = self.recorded_outcome()
+        self.assertEqual(("bad-input", "jvm: bad input: a declared dependency does not resolve"),
+                         (outcome["kind"], outcome["reason"]))
+        # Each unresolved line once and in order, though an excerpt of the long output drops them.
+        self.assertEqual("> Could not resolve all files for configuration ':testCompileClasspath'.\n"
+                         "   > Could not find org.example:missing:1.0.\n"
+                         "> Could not resolve all files for configuration ':testRuntimeClasspath'.",
+                         outcome["detail"])
+
+    def test_an_unreachable_repository_in_jvm_sends_no_fix_request(self) -> None:
+        # A later cycle retries it (§AR-forge-workflow-pipeline.4.1).
+        self.assertEqual(OK, self.set_up("fails-java-run"))
+        self.fake.control({"unresolved": "unreachable"})
+        self.assertEqual(INFRASTRUCTURE, self.step("jvm"))
+        self.assertEqual("infrastructure", self.recorded_outcome()["kind"])
+        self.assertIsNone(self.state.pending_request)
+        self.assertTrue(self.read("fix-request.md").startswith("No fix request"))
 
     def test_native_repair_tests_the_fix_metadata_without_regenerating(self) -> None:
         self.assertEqual(OK, self.set_up("fails-native-image-run"))

@@ -219,6 +219,18 @@ class CloseOutTest(unittest.TestCase):
         self.assertEqual(1, len(labels))
         self.assertEqual(1, len(reverts))
 
+    def test_a_bad_input_comment_names_the_reason_and_quotes_its_detail(self) -> None:
+        # §FS-forge-run-requirements.2
+        _, comments, _ = self.close_out({
+            "outcome": "failed", "kind": "bad-input", "step": "jvm", "exit": "2",
+            "reason": "jvm: bad input: a declared dependency does not resolve",
+            "detail": "> Could not find org.example:missing:1.0."})
+        self.assertEqual(
+            "Human intervention needed\n\n"
+            "Forge could not finish this issue: jvm: bad input: a declared dependency does not resolve.\n\n"
+            "```text\n> Could not find org.example:missing:1.0.\n```\n",
+            comments[0].args[1])
+
     def test_infrastructure_failure_only_releases_the_claim(self) -> None:
         # External and transient failures take no issue action (§FS-human-intervention-policy).
         labels, comments, reverts = self.close_out({"outcome": "failed", "kind": "infrastructure", "reason": "x"})
