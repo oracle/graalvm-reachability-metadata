@@ -6,8 +6,14 @@
   },
   "agents": {
     "pi": {
-      "command": ["pi"],
+      "command": [
+        "sh",
+        "-c",
+        "left=$#; for arg do shift; left=$((left - 1)); if [ \"$left\" -gt 0 ] || [ \"$arg\" != -- ]; then set -- \"$@\" \"$arg\"; fi; done; exec pi \"$@\"",
+        "pi"
+      ],
       "prompt_flag": "-p",
+      "stdin_prompt": true,
       "model_flag": "--model",
       "session": {
         "session_dir_flag": "--session-dir",

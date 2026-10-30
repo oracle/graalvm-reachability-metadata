@@ -1,0 +1,34 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
+    testImplementation "org.springframework.boot:spring-boot-sql:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
+    // Script-based initialization runs against a real DataSource; versions come from the BOM.
+    testImplementation 'org.springframework:spring-jdbc'
+    testImplementation 'com.h2database:h2'
+    testImplementation 'org.assertj:assertj-core'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

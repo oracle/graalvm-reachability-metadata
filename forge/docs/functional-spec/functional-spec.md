@@ -317,6 +317,22 @@ and authenticated (§FS-forge-host-requirements). Each target reaches its agent
 states unchanged, so the agent and model of every edit are the ones the
 operator selected and the run's metrics record them.
 
+### 1. File-system scope
+
+The run's agent states, `setup`, `cover`, and `fix`, walk or search the file
+system only inside the run's own trees: the run workspace, which holds the run
+note and the reports; the worktree; the main sources, a tree of their own
+because the worktree ignores them and a walk that honors its ignore files never
+reaches them; the Gradle user home and the read-only dependency cache the run
+builds with; and the GraalVM home. The run note lists each as an absolute search root that
+exists when it is written (§AR-forge-workflow-prompts.2). Outside those trees an
+agent opens only a file whose path it was given, such as a jar under the local
+Maven repository that a build's output names. It never walks a shared host
+location such as `/tmp`, the home directory, or `/`, even to reach a run tree
+that lies inside one: anything another process left there can stall a walk or
+exhaust the memory every run on the host shares, and one file that never ends
+is enough. Nothing the run needs lies there unnamed.
+
 ## FS-forge-run-requirements: Run requirements
 
 

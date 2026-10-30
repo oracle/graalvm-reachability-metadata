@@ -320,7 +320,7 @@ class WorkflowTest(unittest.TestCase):
         failing: str = self.read("fix-request.md").split("## Failing commands", 1)[1].split("\n## ", 1)[0]
         self.assertEqual([f"- ./gradlew codeCoverageTest -Pcoordinates={COORDINATE}"],
                          [line for line in failing.splitlines() if line.startswith("- ")])
-        self.fix("fixed", 1)
+        self.fix("fixed")
         self.assertEqual(RETURN_MEASURE, self.step("fix-route"))
         self.assertEqual(AGENT_WORK, self.step("measure"))
         self.assertIn("could not be fixed", self.state.explore.feedback)
@@ -441,7 +441,31 @@ class WorkflowTest(unittest.TestCase):
         self.fake.issue("library-new-request")
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.assertEqual(BAD_INPUT, self.step("setup-check"))
-        self.assertEqual("failed", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["outcome"])
+        outcome = read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
+        reason: str = (f"setup-check: bad input: {COORDINATE} has no {', '.join(URLS)} "
+                       f"in {self.state.index_path}")
+        self.assertEqual(("failed", reason), (outcome["outcome"], outcome["reason"]))
+        with open(os.environ["RHEI_RESULT_PATH"], encoding="utf-8") as handle:
+            self.assertIn(reason, handle.read())
+
+    def test_a_filter_that_cannot_resolve_the_library_is_a_bad_input(self) -> None:
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.fake.control({"filterFails": "unresolved"})
+        self.assertEqual(BAD_INPUT, self.step("setup-check"))
+        outcome = read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))
+        self.assertEqual("setup-check: bad input: a declared dependency does not resolve, so the filter could not "
+                         "be written from the library JAR", outcome["reason"])
+        self.assertIn("   > Could not find org.example:missing:1.0.", outcome["detail"].splitlines())
+
+    def test_a_filter_that_fails_otherwise_is_an_infrastructure_failure(self) -> None:
+        self.fake.issue("library-new-request")
+        self.assertEqual(OK, self.step(*prepare_arguments()))
+        self.setup_agent()
+        self.fake.control({"filterFails": "process"})
+        self.assertEqual(INFRASTRUCTURE, self.step("setup-check"))
+        self.assertEqual("infrastructure", read_json(runtime_path(self.fake.workspace, forge_run.OUTCOME))["kind"])
 
     def test_unchanged_coordinate_has_nothing_to_publish(self) -> None:
         self.fake.issue("library-new-request")

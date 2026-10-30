@@ -26,7 +26,7 @@ from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
     find_dynamic_access_exhaust_report_path,
 )
-from utility_scripts.gradle_dependency_cache import ensure_shared_dependency_cache
+from utility_scripts.gradle_dependency_cache import discard_worktree_gradle_home, ensure_shared_dependency_cache
 from utility_scripts.gradle_environment import worktree_id
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_measurements import load_library_baseline
@@ -45,8 +45,19 @@ import gates
 import issue
 import index_record
 import run_note
-from build_tools import BASE_BRANCH, checkpoint, git, head, run_gradle, stop_gradle_daemons, upstream_remote
-from exit_codes import BAD_INPUT, INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK
+from build_tools import (
+    BASE_BRANCH,
+    TaskResult,
+    Unreachable,
+    checkpoint,
+    dependency_failure,
+    git,
+    head,
+    run_gradle,
+    stop_gradle_daemons,
+    upstream_remote,
+)
+from exit_codes import INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput
 from run_state import ROUTE_NEW, Budgets, Chunk, RunState, load, runtime_path, save, write_text
 
 # <agent>[<mode>]:<model> with agent pi or claude-code (§FS-forge-agent-runtime-selection).
@@ -88,7 +99,7 @@ def spawn_worktree(repo: str, path: str, branch: str, base: str) -> None:
     if os.path.exists(path):
         git(repo, "worktree", "remove", "--force", path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    git(repo, "worktree", "add", "--quiet", "-B", branch, path, base)
+    git(repo, "worktree", "add", "--quiet", "-B", branch, path, base, capture_stderr=True)
     # The path's Gradle home outlives the worktree, and so do its idle daemons.
     stop_gradle_daemons(path)
     share_dependency_cache(repo, path)
@@ -105,6 +116,21 @@ def share_dependency_cache(repo: str, worktree: str) -> None:
         ensure_shared_dependency_cache(repo, worktree)
     except OSError as error:
         print(f"WARNING: the shared Gradle dependency cache was not prepared: {error}", file=sys.stderr)
+
+
+def give_up_worktree(repo: str, worktree: str) -> None:
+    """Remove the worktree `run` spawned, with its Gradle daemons and home; its branch stays.
+
+    A prepare that exits without saving its state is a finished attempt whose
+    worktree the close-out cannot find, so it gives the worktree up as the
+    close-out would (§AR-forge-workflow-pipeline.1). Best effort: a failure is
+    reported, and the exit the prepare took stands.
+    """
+    try:
+        discard_worktree_gradle_home(worktree, repo)
+        git(repo, "worktree", "remove", "--force", worktree)
+    except (OSError, subprocess.CalledProcessError) as error:
+        print(f"WARNING: the worktree {worktree} was not removed: {error}", file=sys.stderr)
 
 
 def attach_worktree(workspace: str, worktree: str) -> None:
@@ -150,14 +176,24 @@ def previous_version(state: RunState, baseline: VersionBackfillBaseline | None) 
 
 
 def add_version(state: RunState, workspace: str) -> int:
-    """Scaffold a new library, or add the version beside its nearest supported one."""
+    """Scaffold a new library, or add the version beside its nearest supported one.
+
+    A coordinate the scaffold cannot resolve raises `BadInput`, judged only by the
+    lines naming it, since the scaffold resolves nothing else; any other scaffold
+    failure, an unreachable repository included, is an infrastructure failure
+    (§AR-forge-workflow-pipeline.4.1).
+    """
     if state.route == ROUTE_NEW:
         if os.path.isdir(state.path(state.test_dir)):
             return OK
-        scaffold = run_gradle(
+        scaffold: TaskResult = run_gradle(
             state.worktree, ["scaffold", f"--coordinates={state.coordinate}"],
             runtime_path(workspace, "logs", "scaffold.log"),
         )
+        failure: BadInput | Unreachable | None = dependency_failure(
+            scaffold, f"{state.coordinate} has no artifact a JVM test project can use", state.coordinate)
+        if isinstance(failure, BadInput):
+            raise failure
         if not scaffold.ok or not os.path.isdir(state.path(state.test_dir)):
             print(f"ERROR: scaffolding {state.coordinate} failed:\n{scaffold.tail}", file=sys.stderr)
             return INFRASTRUCTURE
@@ -213,6 +249,10 @@ def validate_inputs(args: argparse.Namespace) -> str | None:
 
 
 def run(args: argparse.Namespace) -> int:
+    """Resume the run, or verify its inputs and prepare it.
+
+    A bad input raises `BadInput` naming it (§FS-forge-run-requirements.2).
+    """
     workspace: str = os.path.abspath(args.workspace)
     if os.path.isfile(runtime_path(workspace, "state.json")):
         state: RunState = load(workspace)
@@ -222,15 +262,18 @@ def run(args: argparse.Namespace) -> int:
             return NOT_FOR_NATIVE_IMAGE_RECORDED if state.not_for_native_image is not None else OK
     error: str | None = validate_inputs(args)
     if error is not None:
-        print(f"ERROR: {error}.", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(error)
     repo: str = _resolve(workspace, args.repo_checkout)
     try:
         payload: dict[str, Any] = issue.read_issue(args.issue_number, repo)
+    except RuntimeError as error_value:
+        # External: no issue action, so a later cycle retries (§FS-human-intervention-policy).
+        print(f"ERROR: {error_value}", file=sys.stderr)
+        return INFRASTRUCTURE
+    try:
         parsed: issue.Issue = issue.parse_issue(payload)
     except ValueError as error_value:
-        print(f"ERROR: issue #{args.issue_number}: {error_value}", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(str(error_value)) from error_value
     run_name: str = "forge-" + parsed.coordinate.replace(":", "-")
     # Resolved like git's own top-level path, which the worktree ref must name.
     worktree: str = os.path.realpath(os.path.join(_resolve(workspace, args.worktree_root), run_name))
@@ -239,9 +282,21 @@ def run(args: argparse.Namespace) -> int:
     try:
         spawn_worktree(repo, worktree, branch, base)
     except subprocess.CalledProcessError as error_value:
-        print(f"ERROR: worktree: {error_value}", file=sys.stderr)
-        return BAD_INPUT
-    state = RunState(
+        raise BadInput(f"worktree: {error_value}", error_value.stderr or "") from error_value
+    saved: bool = False
+    try:
+        code: int = prepare_worktree(args, workspace, repo, payload, parsed, worktree, branch, base)
+        saved = code in (OK, NOT_FOR_NATIVE_IMAGE_RECORDED)
+        return code
+    finally:
+        if not saved:
+            give_up_worktree(repo, worktree)
+
+
+def prepare_worktree(args: argparse.Namespace, workspace: str, repo: str, payload: dict[str, Any],
+                     parsed: issue.Issue, worktree: str, branch: str, base: str) -> int:
+    """Prepare the run in the worktree `run` spawned; only an `OK` or `22` exit saves its state."""
+    state: RunState = RunState(
         issue_number=parsed.number,
         label=parsed.label,
         route=parsed.route,
@@ -258,8 +313,7 @@ def run(args: argparse.Namespace) -> int:
                         args.defer_classes, args.explore_passes, args.finalize_fixes, args.native_fixes),
     )
     if is_not_for_native_image(worktree, state.group, state.artifact):
-        print(f"ERROR: {state.group}:{state.artifact} is marked not-for-native-image.", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(f"{state.group}:{state.artifact} is marked not-for-native-image")
     code: int | None = index_record.record_not_for_native_image(workspace, state)
     if code is not None:
         if code == NOT_FOR_NATIVE_IMAGE_RECORDED:
@@ -274,8 +328,7 @@ def run(args: argparse.Namespace) -> int:
     try:
         resolve_chunk(state, parsed.labels)
     except ValueError as error_value:
-        print(f"ERROR: {error_value}", file=sys.stderr)
-        return BAD_INPUT
+        raise BadInput(str(error_value)) from error_value
     except RuntimeError as error_value:
         print(f"ERROR: the previous chunk is not ready: {error_value}", file=sys.stderr)
         return INFRASTRUCTURE

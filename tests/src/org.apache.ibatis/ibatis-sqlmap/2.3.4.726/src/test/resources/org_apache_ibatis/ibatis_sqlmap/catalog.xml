@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="catalog">
+    <typeAlias alias="catalogBean" type="org_apache_ibatis.ibatis_sqlmap.SqlMapFixture$Catalog"/>
+    <resultMap id="collections" class="catalogBean">
+        <result property="id" column="id"/>
+        <result property="names" column="id" select="catalog.names"/>
+        <result property="uniqueNames" column="id" select="catalog.names"/>
+    </resultMap>
+    <resultMap id="arrays" class="catalogBean">
+        <result property="id" column="id"/>
+        <result property="nameArray" column="id" select="catalog.names"/>
+        <result property="orderArray" column="id" select="catalog.orders"/>
+    </resultMap>
+    <select id="collectionCatalog" parameterClass="int" resultMap="collections">
+        SELECT #value# AS id
+    </select>
+    <select id="arrayCatalog" parameterClass="int" resultMap="arrays">
+        SELECT #value# AS id
+    </select>
+    <select id="names" parameterClass="int" resultClass="string">
+        SELECT item_name FROM catalog_items WHERE owner_id = #value# ORDER BY item_order
+    </select>
+    <select id="orders" parameterClass="int" resultClass="int">
+        SELECT item_order FROM catalog_items WHERE owner_id = #value# ORDER BY item_order
+    </select>
+</sqlMap>

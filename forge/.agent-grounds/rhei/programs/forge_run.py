@@ -10,7 +10,8 @@ code is the transition Rhei takes (§AR-forge-workflow-pipeline.2). The working
 directory is the Rhei workspace root. Every exit writes Rhei's result file,
 which an edge into a final state requires, and a terminal outcome is recorded
 for the launcher's close-out, a `human-intervention` one with the run's
-diagnostics (§AR-forge-workflow-pipeline.1).
+diagnostics (§AR-forge-workflow-pipeline.1) and a bad-input one with the reason
+the step raised (§FS-forge-run-requirements.2).
 """
 from __future__ import annotations
 
@@ -48,6 +49,7 @@ from exit_codes import (  # noqa: E402
     OK,
     RETURN_CODES,
     STILL_FAILING,
+    BadInput,
 )
 from run_state import load, runtime_path, write_json  # noqa: E402
 
@@ -84,7 +86,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def outcome(step: str, code: int) -> dict[str, str] | None:
+def outcome(step: str, code: int, bad_input: BadInput | None = None) -> dict[str, str] | None:
     """The final state an exit leads to, for the launcher's close-out, or `None` to go on.
 
     §FS-forge-run-status
@@ -100,7 +102,10 @@ def outcome(step: str, code: int) -> dict[str, str] | None:
     if step == "publish" and code == NOTHING_TO_DO:
         return {"outcome": "nothing-to-publish", "reason": "the coordinate's paths are unchanged"}
     if code == BAD_INPUT:
-        return {"outcome": "failed", "reason": f"{step}: bad input", "kind": "bad-input"}
+        # The close-out comment names what the step rejected (§FS-forge-run-requirements.2).
+        named: str = f": {bad_input.reason}" if bad_input is not None else ""
+        detail: str = excerpt(bad_input.detail) if bad_input is not None else ""
+        return {"outcome": "failed", "reason": f"{step}: bad input{named}", "kind": "bad-input", "detail": detail}
     if code == INFRASTRUCTURE or (code != OK and code not in KNOWN_ROUTES):
         return {"outcome": "failed", "reason": f"{step}: infrastructure failure", "kind": "infrastructure"}
     return None
@@ -133,8 +138,8 @@ def diagnostics(workspace: str, step: str) -> dict[str, Any]:
     }
 
 
-def _write_result(workspace: str, step: str, code: int) -> None:
-    result: dict[str, Any] | None = outcome(step, code)
+def _write_result(workspace: str, step: str, code: int, bad_input: BadInput | None = None) -> None:
+    result: dict[str, Any] | None = outcome(step, code, bad_input)
     if result is not None:
         if result["outcome"] == "human-intervention":
             result = {**result, **diagnostics(workspace, step)}
@@ -150,8 +155,12 @@ def _write_result(workspace: str, step: str, code: int) -> None:
 def main(argv: list[str] | None = None) -> int:
     args: argparse.Namespace = build_parser().parse_args(argv)
     args.workspace = os.getcwd()
+    bad_input: BadInput | None = None
     try:
         code: int = prepare.run(args) if args.step == "prepare" else STEPS[args.step](args.workspace)
+    except BadInput as raised:
+        print(f"ERROR: {raised}", file=sys.stderr)
+        bad_input, code = raised, BAD_INPUT
     except SystemExit as early_exit:
         # Shared helpers quit with `SystemExit`; the result file is owed all the same
         # (§AR-forge-workflow-pipeline.2).
@@ -160,7 +169,7 @@ def main(argv: list[str] | None = None) -> int:
     except Exception:
         traceback.print_exc()
         code = INFRASTRUCTURE
-    _write_result(args.workspace, args.step, code)
+    _write_result(args.workspace, args.step, code, bad_input)
     return code
 
 

@@ -30,10 +30,12 @@ fixed instruction (template)  +  run.md (prepare)  +  handoff (sender program)
 `prepare` writes `runtime/forge/run.md` once and every agent state reads it
 first: the coordinate, the issue and its label, the route and its explore goal,
 the absolute test-project and metadata paths, the allowed packages, the main
-sources directory, the URL discovery command, and the path of the reporter's
-issue body when there is one. On the three `fails-*` labels it also carries
-the unsupportable-version bar (§FS-unsupportable-version-diagnosis.1); no
-other label sees it.
+sources directory, the URL discovery command, the path of the reporter's issue
+body when there is one, and the run's search roots: the absolute path of each
+run tree an agent may walk that exists when `prepare` writes the note
+(§FS-forge-agent-runtime-selection.1). On the three `fails-*` labels it also
+carries the unsupportable-version bar (§FS-unsupportable-version-diagnosis.1);
+no other label sees it.
 
 ## 3. By state
 
@@ -42,6 +44,10 @@ other label sees it.
 | `setup` | how to find the four URLs, declare companion libraries, choose Docker images, and record a verdict when `run.md` names the bar | none; `run.md` only |
 | `cover` | the step order, how a test reaches a call site, and the test rules | the mode and the exact targets |
 | `fix` | the general rules for scope, tests, metadata, and Native Image | failing commands, the commands they kept from running, output, editable files, return code; for `audit`, the audit as its task |
+
+Each of the three also carries the run's file-system scope
+(§FS-forge-agent-runtime-selection.1), because any agent state can go looking
+for a file.
 
 The `fix` rules hold for every failure, which is why they live in the
 instruction: scope (§root/FS-contribution-contract.5.2,
