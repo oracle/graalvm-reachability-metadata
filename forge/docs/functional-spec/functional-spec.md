@@ -375,7 +375,9 @@ run's base, and creates the isolated worktree from it; a base that cannot be
 resolved fails the run before anything is changed. Every repository-dependent
 precondition runs inside the run against that worktree: a
 `chunked-dynamic-access` issue must resolve its exhaust report and find the
-preceding chunk merged (§AR-dynamic-access-exhaust-report). A failed
+preceding chunk merged (§AR-dynamic-access-exhaust-report), and a
+`library-new-request` must request a version the base does not support yet
+(see 2.2). A failed
 precondition ends the run, the launcher releases the claim back to `Todo`, and
 its classification decides what happens to the issue
 (§FS-human-intervention-policy). An infrastructure failure takes no issue
@@ -395,6 +397,26 @@ still holds. Neither `resumable` nor the blocked-issue override lifts it:
 `resumable` lifts no hold, and the override concerns open GitHub blockers,
 while this label marks a defect outside the repository that only a
 maintainer's release clears (§root/FS-graalvm-blocked-work.3).
+
+#### 2.2 A new library the base already supports is a bad input
+
+A `library-new-request` asks for support the repository lacks
+(§FS-forge-scope). When an entry of the artifact's `index.json` on the pinned
+base already lists the requested version, in `tested-versions` or as its
+`metadata-version`, the version's metadata, tests, and stats already ship. A
+run would spend its agent budget re-creating them, only to publish a duplicate
+or to end with nothing to publish. `prepare` therefore stops such a run before
+any agent state, as a bad input whose comment names the commit that added the
+version. A maintainer then closes the issue as a duplicate, or relabels it a
+`library-update-request` when the reporter asks for more than the shipped
+version covers. A `default-for` range does not list a version, and a version
+the index does not list passes, whatever other versions are supported.
+
+A chunked issue is the exception (§FS-forge-chunked-dynamic-access): its
+earlier chunk merged the version, and the next chunk resumes from the
+`chunked-dynamic-access` label or the coordinate-local exhaust report. That
+report lives in the version's test project, not in `index.json`, so the rule
+is a precondition of the run rather than an issue-form rule (see 3).
 
 ### 3. Issue form
 

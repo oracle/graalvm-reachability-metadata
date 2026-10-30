@@ -33,10 +33,13 @@ from utility_scripts.library_measurements import load_library_baseline
 from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.library_update_target import library_update_target_summary, prepare_library_update_target
 from utility_scripts.metadata_index import (
+    MATCH_METADATA_VERSION,
+    MATCH_TESTED_VERSION,
     LibraryUpdateTarget,
     VersionBackfillBaseline,
     is_not_for_native_image,
     nearest_prior_supported_version,
+    resolve_library_update_target,
     resolve_metadata_version,
     resolve_version_backfill_baseline,
 )
@@ -173,6 +176,29 @@ def previous_version(state: RunState, baseline: VersionBackfillBaseline | None) 
         return baseline.metadata_version
     prior: str | None = nearest_prior_supported_version(state.worktree, state.group, state.artifact, state.version)
     return None if prior is None else resolve_metadata_version(state.worktree, state.group, state.artifact, prior)
+
+
+def require_unsupported(state: RunState, labels: frozenset[str]) -> None:
+    """Raise `BadInput` for a new library whose version the pinned base already lists.
+
+    Such a run could only re-create shipped support, so it stops before any
+    agent state, its detail naming the commit that added the version. A chunk
+    resumes on the version its earlier chunk merged, so the label or the
+    coordinate's exhaust report exempts it (§FS-forge-run-requirements.2.2).
+    """
+    if state.route != ROUTE_NEW or issue.CHUNKED_LABEL in labels:
+        return
+    listed: LibraryUpdateTarget = resolve_library_update_target(state.worktree, state.group, state.artifact,
+                                                                state.version)
+    # A `default-for` range lists no version.
+    if listed.match_type not in (MATCH_TESTED_VERSION, MATCH_METADATA_VERSION):
+        return
+    if find_dynamic_access_exhaust_report_path(state.worktree, state.coordinate) is not None:
+        return
+    added: str = git(state.worktree, "log", "--reverse", "--format=%h %s", f'-S"{state.version}"',
+                     state.base_commit, "--", state.index_path).partition("\n")[0]
+    raise BadInput(f"{state.coordinate} is already supported: {state.index_path} lists {state.version} "
+                   f"in its {listed.resolved_metadata_version} entry", f"Added by {added}" if added else "")
 
 
 def add_version(state: RunState, workspace: str) -> int:
@@ -314,6 +340,7 @@ def prepare_worktree(args: argparse.Namespace, workspace: str, repo: str, payloa
     )
     if is_not_for_native_image(worktree, state.group, state.artifact):
         raise BadInput(f"{state.group}:{state.artifact} is marked not-for-native-image")
+    require_unsupported(state, parsed.labels)
     code: int | None = index_record.record_not_for_native_image(workspace, state)
     if code is not None:
         if code == NOT_FOR_NATIVE_IMAGE_RECORDED:
