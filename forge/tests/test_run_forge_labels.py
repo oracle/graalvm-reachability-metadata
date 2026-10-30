@@ -55,6 +55,12 @@ printf '{"event": "sleep", "arguments": ["%s"]}\\n' "$1" >> "$FORGE_TEST_LOG"
 """
 
 
+def names(calls: list[dict], reviews: bool = False) -> list[str]:
+    """The events of `calls`, the review passes only with `reviews`: one follows every run
+    (§FS-published-pr-review.1), so the tests of the rotation and the waits leave them out."""
+    return [call["event"] for call in calls if reviews or call["event"] != "review"]
+
+
 class LabelRotationTest(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -95,23 +101,36 @@ class LabelRotationTest(unittest.TestCase):
             calls: list[dict] = [json.loads(line) for line in handle]
         return completed, calls
 
-    def events(self, *arguments: str, iterations: int, statuses: tuple[int, ...] = ()) -> list[str]:
+    def events(self, *arguments: str, iterations: int, statuses: tuple[int, ...] = (),
+               host_statuses: tuple[int, ...] = (), reviews: bool = False) -> list[str]:
         """The calls of a loop that stopped at its host check after `iterations` iterations."""
-        completed, calls = self.launch(*arguments, iterations=iterations, statuses=statuses)
+        completed, calls = self.launch(*arguments, iterations=iterations, statuses=statuses,
+                                       host_statuses=host_statuses)
         self.assertEqual(1, completed.returncode, completed.stderr)
         self.assertEqual("host", calls[-1]["event"])
-        return [call["event"] for call in calls[:-1]]
+        return names(calls[:-1], reviews)
 
-    def test_labels_take_their_counts_in_turn_and_the_review_every_third_run(self) -> None:
+    def test_labels_take_their_counts_in_turn(self) -> None:
         events: list[str] = self.events("--label", f"{NEW}:2", "--label", UPDATE, "--label", JAVA_RUN,
                                         iterations=9)
         self.assertEqual(9, events.count("host"))
-        self.assertEqual([NEW, NEW, UPDATE, "review", JAVA_RUN, NEW, NEW, "review", UPDATE, JAVA_RUN, NEW, "review"],
+        self.assertEqual([NEW, NEW, UPDATE, JAVA_RUN, NEW, NEW, UPDATE, JAVA_RUN, NEW],
                          [event for event in events if event != "host"])
+
+    def test_the_launcher_reviews_before_its_first_claim_and_after_every_run(self) -> None:
+        # A restart must not cost the review, and a failed run is a run.
+        self.assertEqual(
+            ["host", "review", NEW, "review", "sleep", "host", NEW, "review", "host", NEW, "review"],
+            self.events("--label", NEW, iterations=3, statuses=(3,), reviews=True))
+
+    def test_only_the_first_gate_to_pass_is_followed_by_a_start_up_review(self) -> None:
+        self.assertEqual(
+            ["host", "review", NEW, "review", "host", "sleep", "host", NEW, "review"],
+            self.events("--label", NEW, iterations=3, host_statuses=(0, 75, 0), reviews=True))
 
     def test_a_count_defaults_to_one(self) -> None:
         self.assertEqual(
-            ["host", JAVA_RUN, "host", UPDATE, "host", JAVA_RUN, "review"],
+            ["host", JAVA_RUN, "host", UPDATE, "host", JAVA_RUN],
             self.events("--label", JAVA_RUN, "--label", UPDATE, iterations=3))
 
     def test_an_empty_queue_passes_its_turns_on_within_one_host_check(self) -> None:
@@ -122,34 +141,36 @@ class LabelRotationTest(unittest.TestCase):
     def test_a_rotation_with_nothing_to_claim_reviews_waits_and_keeps_its_turn(self) -> None:
         # The second turn of the new-library queue comes after the idle wait, then fails-java-run.
         self.assertEqual(
-            ["host", NEW, "host", NEW, JAVA_RUN, "review", "sleep", "host", NEW, "host", JAVA_RUN, "review"],
-            self.events("--label", f"{NEW}:2", "--label", JAVA_RUN, iterations=4, statuses=(0, 1, 1)))
+            ["host", "review", NEW, "review", "host", NEW, JAVA_RUN, "review", "sleep", "host", NEW, "review",
+             "host", JAVA_RUN, "review"],
+            self.events("--label", f"{NEW}:2", "--label", JAVA_RUN, iterations=4, statuses=(0, 1, 1),
+                        reviews=True))
 
     def test_a_failed_cycle_counts_as_a_run_and_spends_its_turn(self) -> None:
         self.assertEqual(
-            ["host", NEW, "sleep", "host", UPDATE, "host", NEW, "review"],
+            ["host", NEW, "sleep", "host", UPDATE, "host", NEW],
             self.events("--label", NEW, "--label", UPDATE, iterations=3, statuses=(3,)))
 
     def test_failed_cycles_back_off_until_one_succeeds(self) -> None:
         completed, calls = self.launch("--label", NEW, iterations=5, statuses=(3, 3, 3, 0, 3))
         self.assertEqual(1, completed.returncode, completed.stderr)
         self.assertEqual(
-            ["host", NEW, "sleep", "host", NEW, "sleep", "host", NEW, "review", "sleep", "host", NEW,
+            ["host", NEW, "sleep", "host", NEW, "sleep", "host", NEW, "sleep", "host", NEW,
              "host", NEW, "sleep", "host"],
-            [call["event"] for call in calls])
+            names(calls))
         self.assertEqual(["60", "120", "240", "60"],
                          [call["arguments"][0] for call in calls if call["event"] == "sleep"])
         self.assertEqual(4, completed.stderr.count("ERROR: The cycle failed with status 3; checking the host again in"))
 
     def test_without_a_label_every_cycle_fetches_every_queue(self) -> None:
-        self.assertEqual(["host", "every queue", "review", "sleep"],
+        self.assertEqual(["host", "every queue", "sleep"],
                          self.events(iterations=1, statuses=(1,)))
 
     def test_the_cycle_gets_its_label_and_the_other_claim_arguments(self) -> None:
         _, calls = self.launch("--label", f"{JAVA_RUN}:2", "--take-blocked-issues", "--", "--max-steps", "3",
                                iterations=1)
         self.assertEqual(["--label", JAVA_RUN, "--take-blocked-issues", "--", "--max-steps", "3"],
-                         calls[1]["arguments"][4:])
+                         next(call for call in calls if call["event"] == JAVA_RUN)["arguments"][4:])
 
     def test_a_transient_host_failure_waits_with_a_bounded_backoff_and_claims_nothing(self) -> None:
         completed, calls = self.launch("--label", NEW, iterations=9,
@@ -158,7 +179,7 @@ class LabelRotationTest(unittest.TestCase):
         self.assertEqual(
             ["host", NEW, "host", "sleep", "host", "sleep", "host", "sleep", "host", "sleep", "host", "sleep",
              "host", "sleep", "host", NEW, "host", "sleep", "host"],
-            [call["event"] for call in calls])
+            names(calls))
         # One minute, doubling to fifteen; a passing check starts the next wait at one minute again.
         self.assertEqual(["60", "120", "240", "480", "900", "900", "60"],
                          [call["arguments"][0] for call in calls if call["event"] == "sleep"])
@@ -167,7 +188,7 @@ class LabelRotationTest(unittest.TestCase):
     def test_a_host_fault_stops_the_loop_without_waiting(self) -> None:
         completed, calls = self.launch("--label", NEW, iterations=3, host_statuses=(0, 75, 2))
         self.assertEqual(2, completed.returncode, completed.stderr)
-        self.assertEqual(["host", NEW, "host", "sleep", "host"], [call["event"] for call in calls])
+        self.assertEqual(["host", NEW, "host", "sleep", "host"], names(calls))
 
     def test_a_transient_failure_before_the_gate_ever_passed_stops_the_loop(self) -> None:
         # A new host that fails like an outage is more likely misconfigured; it stops loudly.
