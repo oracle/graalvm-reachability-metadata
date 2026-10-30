@@ -19,6 +19,7 @@ import org.springframework.boot.persistence.autoconfigure.EntityScanner;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.stereotype.Indexed;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -70,11 +71,13 @@ public class EntityScannerTest {
     public static class EntityConfiguration {
     }
 
+    @Indexed
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     public @interface StoredRecord {
     }
 
+    @Indexed
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     public @interface StoredEvent {
