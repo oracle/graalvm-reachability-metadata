@@ -36,6 +36,20 @@ public class EntityScanPackagesTest {
     }
 
     @Test
+    void childBeanFactoryInheritsPackagesUntilItRegistersItsOwn() {
+        DefaultListableBeanFactory parent = new DefaultListableBeanFactory();
+        EntityScanPackages.register(parent, "app.shared");
+        DefaultListableBeanFactory child = new DefaultListableBeanFactory(parent);
+
+        assertThat(EntityScanPackages.get(child)).isSameAs(EntityScanPackages.get(parent));
+
+        EntityScanPackages.register(child, "app.local");
+
+        assertThat(EntityScanPackages.get(child).getPackageNames()).containsExactly("app.local");
+        assertThat(EntityScanPackages.get(parent).getPackageNames()).containsExactly("app.shared");
+    }
+
+    @Test
     void blankPackageNamesAreExcluded() {
         DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
         EntityScanPackages.register(factory, "", "app.inventory", "   ");

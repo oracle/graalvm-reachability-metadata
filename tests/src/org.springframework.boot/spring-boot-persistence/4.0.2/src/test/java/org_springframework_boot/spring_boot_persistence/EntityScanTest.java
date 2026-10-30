@@ -55,6 +55,20 @@ public class EntityScanTest {
         }
     }
 
+    @Test
+    void multipleConfigurationsContributeDistinctPackages() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+                AliasedPackages.class, AdditionalPackages.class)) {
+            assertThat(EntityScanPackages.get(context).getPackageNames())
+                    .containsExactly("app.accounts", "app.audit", "app.inventory");
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @EntityScan(basePackages = {"app.audit", "app.inventory"})
+    public static class AdditionalPackages {
+    }
+
     @Configuration(proxyBeanMethods = false)
     @EntityScan(basePackages = "${entity.packages}")
     public static class PropertyPackages {

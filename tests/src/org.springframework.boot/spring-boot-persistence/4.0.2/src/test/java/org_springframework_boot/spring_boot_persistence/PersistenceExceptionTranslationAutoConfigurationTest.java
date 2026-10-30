@@ -49,6 +49,19 @@ public class PersistenceExceptionTranslationAutoConfigurationTest {
     }
 
     @Test
+    void exceptionsNotHandledByTheTranslatorArePropagatedUnchanged() {
+        try (AnnotationConfigApplicationContext context = repositoryContext(Map.of("spring.aop.proxy-target-class", false))) {
+            context.refresh();
+            Catalog catalog = context.getBean(Catalog.class);
+
+            assertThatThrownBy(catalog::update)
+                    .isInstanceOf(UnsupportedOperationException.class)
+                    .hasMessage("Catalog is read-only")
+                    .hasNoCause();
+        }
+    }
+
+    @Test
     void disablingTranslationLeavesTheOriginalRepositoryException() {
         try (AnnotationConfigApplicationContext context = repositoryContext(
                 Map.of("spring.persistence.exceptiontranslation.enabled", false))) {
@@ -91,6 +104,8 @@ public class PersistenceExceptionTranslationAutoConfigurationTest {
         String description();
 
         String lookup();
+
+        void update();
     }
 
     @Repository
@@ -103,6 +118,11 @@ public class PersistenceExceptionTranslationAutoConfigurationTest {
         @Override
         public String lookup() {
             throw new IllegalArgumentException("Unknown record");
+        }
+
+        @Override
+        public void update() {
+            throw new UnsupportedOperationException("Catalog is read-only");
         }
     }
 }
