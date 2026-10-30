@@ -46,7 +46,7 @@ leaves as released metadata:
 Two scheduled loops keep this self-sustaining: the full metadata sweep guards
 against regressions before releases, and the upstream-version tracker discovers
 new versions, records the passing ones, and files failure issues that become the
-Forge repair queue (§FS-repository-functional-spec.9, §AR-repository-ci).
+Forge repair queue (§FS-library-version-update-automation, §AR-repository-ci).
 
 ## 3. Implementation overview
 

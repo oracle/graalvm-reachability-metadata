@@ -172,7 +172,7 @@ Tasks that create or update metadata, tests, and index entries.
 | `splitTestOnlyMetadata` | Move test-only metadata into test resources (§FS-repository-functional-spec.5.1, §FS-metadata). |
 | `routeForeignMetadata` | After metadata validation fails, relocate uniquely owned foreign-condition entries to supported artifact/version buckets, validate the affected owners, and regenerate their statistics (§FS-metadata). |
 | `fixTestNativeImageRun` | Regenerate metadata for a new version failing a native-image run. |
-| `addTestedVersion` | Record a newly passing version in the artifact's `index.json` and refresh the mirrored stats and shared test sources; used by the compatibility workflow (§FS-repository-functional-spec.9). |
+| `addTestedVersion` | Record a newly passing version in the artifact's `index.json` and refresh the mirrored stats and shared test sources; used by the compatibility workflow (§FS-library-version-update-automation.3). |
 | `addLibraryMetadataIndexJson`, `addLibraryAsLatestMetadataIndexJson`, `extractLibraryTestParams` | Lower-level index and parameter helpers. |
 
 ## 6. Docker image management
