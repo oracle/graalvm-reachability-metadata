@@ -11,6 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.util.HttpURLConnection;
@@ -25,7 +28,13 @@ public class HttpURLConnectionTest {
             GetMethod method = new GetMethod(server.url("/adapter"));
             try {
                 assertEquals(200, LocalHttpServer.client().executeMethod(method));
-                HttpURLConnection connection = new HttpURLConnection(method, URI.create(server.url("/adapter")).toURL());
+                URL url = URL.of(URI.create(server.url("/adapter")), new URLStreamHandler() {
+                    @Override
+                    protected URLConnection openConnection(URL target) {
+                        return new HttpURLConnection(method, target);
+                    }
+                });
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 assertEquals("GET", connection.getRequestMethod());
                 assertEquals(200, connection.getResponseCode());
                 assertEquals("OK", connection.getResponseMessage());
