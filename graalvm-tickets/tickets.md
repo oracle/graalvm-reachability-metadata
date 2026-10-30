@@ -20,6 +20,13 @@ fetching it again rather than editing it by hand.
 - Fix versions: none
 - Public links: none
 
+## GR-72683: VirtualThreadSchedulerMXBean is unavailable as it "is not a platform management interface"
+
+- Status: In Progress
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: none
+
 ## GR-73955: Improve Missing*RegistrationErrors for conditions
 
 - Status: In Progress
