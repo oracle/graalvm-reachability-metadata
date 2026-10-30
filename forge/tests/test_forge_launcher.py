@@ -21,7 +21,7 @@ import unittest
 from unittest.mock import ANY, Mock, patch
 
 import forge_metadata
-from dispatcher import issue_claiming, issue_fetch, pr_review, run_launch
+from dispatcher import issue_claiming, issue_fetch, pending_releases, pr_review, run_launch
 from tests.test_gradle_environment import _init_git_repo_with_worktree
 from utility_scripts.gradle_environment import FORGE_GRADLE_USER_HOME_ENV, gradle_command_environment
 
@@ -257,13 +257,15 @@ class CloseOutTest(unittest.TestCase):
         # The release's own reads fail on the outage that ended the run (#9622).
         claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
-        with patch.object(issue_claiming, "set_item_status", side_effect=outage), \
+        with tempfile.TemporaryDirectory() as releases, patch.object(pending_releases, "RELEASES", releases), \
+                patch.object(issue_claiming, "set_item_status", side_effect=outage), \
                 patch.object(issue_claiming, "clear_issue_assignees", side_effect=outage), \
                 patch.object(issue_claiming, "get_item_status", side_effect=outage), \
                 patch.object(issue_claiming, "get_issue_assignees", side_effect=outage), \
                 patch.object(issue_claiming.time, "sleep"), \
                 contextlib.redirect_stderr(io.StringIO()) as stderr:
             run_launch.close_out(claimed, {"outcome": "failed", "kind": "infrastructure", "reason": "x"})
+            self.assertTrue(pending_releases.is_release_pending(7))  # §FS-forge-stranded-claims.4.2
         self.assertIn("Issue #7: failed (x); claim release unconfirmed.", stderr.getvalue())
 
     def test_a_label_github_refuses_keeps_the_claim_that_holds_the_issue(self) -> None:
