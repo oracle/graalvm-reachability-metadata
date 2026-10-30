@@ -7,10 +7,15 @@
 package org_springframework_boot.spring_boot;
 
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.ApplicationContextFactory;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 
@@ -25,28 +30,34 @@ public class EnvironmentConverterTest {
         source.getPropertySources()
                 .addFirst(new MapPropertySource("deployment", Collections.singletonMap("demo.region", "eu-west")));
 
-        ConvertingApplication.main(new String[0]);
-        StandardEnvironment converted = ConvertingApplication.convert(source);
+        SpringApplication application = new SpringApplication(ConvertingApplication.class);
+        application.setWebApplicationType(WebApplicationType.NONE);
+        application.setBannerMode(Banner.Mode.OFF);
+        application.setLogStartupInfo(false);
+        application.setRegisterShutdownHook(false);
+        application.setApplicationContextFactory(new ApplicationContextFactory() {
+            @Override
+            public ConfigurableEnvironment createEnvironment(WebApplicationType webApplicationType) {
+                return source;
+            }
 
-        assertThat(converted).isNotSameAs(source);
-        assertThat(converted.getClass()).isNotEqualTo(StandardEnvironment.class);
-        assertThat(converted.getActiveProfiles()).containsExactly("cloud");
-        assertThat(converted.getProperty("demo.region")).isEqualTo("eu-west");
-        assertThat(converted.getPropertySources().contains("deployment")).isTrue();
-        assertThat(converted.getConversionService()).isSameAs(source.getConversionService());
+            @Override
+            public ConfigurableApplicationContext create(WebApplicationType webApplicationType) {
+                return new AnnotationConfigApplicationContext();
+            }
+        });
+
+        try (ConfigurableApplicationContext context = application.run()) {
+            ConfigurableEnvironment converted = context.getEnvironment();
+            assertThat(converted).isNotSameAs(source);
+            assertThat(converted.getClass()).isNotEqualTo(StandardEnvironment.class);
+            assertThat(converted.getActiveProfiles()).containsExactly("cloud");
+            assertThat(converted.getProperty("demo.region")).isEqualTo("eu-west");
+            assertThat(converted.getPropertySources().contains("deployment")).isTrue();
+            assertThat(converted.getConversionService()).isSameAs(source.getConversionService());
+        }
     }
 
     public static class ConvertingApplication {
-
-        static final AtomicReference<SpringApplication> APPLICATION = new AtomicReference<>();
-
-        public static void main(String[] args) {
-            APPLICATION.set(new SpringApplication(ConvertingApplication.class));
-        }
-
-        @SuppressWarnings("deprecation")
-        static StandardEnvironment convert(StandardEnvironment environment) {
-            return APPLICATION.get().convertEnvironment(environment);
-        }
     }
 }
