@@ -64,6 +64,12 @@ attribute completed, skipped, exhausted, and failed classes and records all four
 states its run can attribute: `measure` records the classes a pass fully
 covered and the ones class mode exhausted (§AR-forge-workflow-pipeline.7).
 
+`publish` writes those classes into the report, or removes the report for the
+last chunk, and commits that before it compares the coordinate with its base, so
+the record weighs in that comparison like a test or metadata change. A chunk
+that is not the last and recorded no class leaves the report untouched, so it
+cannot turn a run with nothing else to show into a publication.
+
 Each chunk also records its publication identity and unique head branch in the
 exhaust report before the verified push, which is how a later chunk resolves the
 preceding PR without committing a GitHub-assigned number back to the branch. The
