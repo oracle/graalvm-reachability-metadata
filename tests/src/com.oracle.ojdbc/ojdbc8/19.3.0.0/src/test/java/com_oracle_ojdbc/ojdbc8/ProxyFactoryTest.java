@@ -20,6 +20,33 @@ import org.junit.jupiter.api.Test;
 
 public class ProxyFactoryTest {
     @Test
+    void reusesThePreparedConstructorForAdditionalCachedConnections() throws Exception {
+        ProxyFactory factory = ProxyFactory.createProxyFactory(TxnReplayableConnection.class);
+        OfflineConnection firstDelegate = new OfflineConnection();
+        OfflineConnection secondDelegate = new OfflineConnection();
+        OfflineConnection thirdDelegate = new OfflineConnection();
+        OfflineConnection fourthDelegate = new OfflineConnection();
+
+        OracleConnection first = factory.<OracleConnection>proxyForCache(firstDelegate, factory, null, null);
+        OracleConnection second = factory.<OracleConnection>proxyForCache(secondDelegate, factory, null, null);
+        OracleConnection third = factory.<OracleConnection>proxyForCreateCache(thirdDelegate, factory, null, null);
+        OracleConnection fourth = factory.<OracleConnection>proxyForCreateCache(fourthDelegate, factory, null, null);
+
+        assertThat(second).isNotSameAs(first);
+        assertThat(fourth).isNotSameAs(third);
+        assertThat(firstDelegate.getACProxy()).isSameAs(first);
+        assertThat(secondDelegate.getACProxy()).isSameAs(second);
+        assertThat(thirdDelegate.getACProxy()).isSameAs(third);
+        assertThat(fourthDelegate.getACProxy()).isSameAs(fourth);
+        assertThat(ProxyFactory.extractDelegate((_Proxy_) second)).isSameAs(secondDelegate);
+        assertThat(ProxyFactory.extractDelegate((_Proxy_) third)).isSameAs(thirdDelegate);
+        assertThat(ProxyFactory.extractDelegate((_Proxy_) fourth)).isSameAs(fourthDelegate);
+        assertThat(factory.<OracleConnection>proxyForCache(secondDelegate, factory, null, null)).isSameAs(second);
+        assertThat(factory.<OracleConnection>proxyForCache(thirdDelegate, factory, null, null)).isSameAs(third);
+        assertThat(factory.<OracleConnection>proxyForCache(fourthDelegate, factory, null, null)).isSameAs(fourth);
+    }
+
+    @Test
     void createsAndCachesAProxyOnTheFirstCacheLookup() throws Exception {
         ProxyFactory factory = ProxyFactory.createProxyFactory(TxnReplayableOpaque.class);
         OpaqueDescriptor descriptor = OpaqueDescriptor.createDescriptor("SYS.ANYTYPE", null);
