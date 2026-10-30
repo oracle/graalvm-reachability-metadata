@@ -216,3 +216,7 @@ ISSUE_FORM_REJECTION_MARKER_PREFIX = "<!-- forge-issue-form-rejection"
 
 CLAIM_BACKOFF_MIN = 5  # Minimum seconds to wait before verifying claim
 CLAIM_BACKOFF_MAX = 10  # Maximum seconds to wait before verifying claim
+# A release GitHub cannot confirm is retried this often, this far apart, then
+# reported as unconfirmed. §FS-forge-run-requirements
+CLAIM_RELEASE_ATTEMPTS = 3
+CLAIM_RELEASE_RETRY_DELAY_SECONDS = 60
