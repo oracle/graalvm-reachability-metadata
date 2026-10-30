@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OracleTableMetaDataProviderTest {
     @Test
-    void usesStandardJdbcMetadataWhenVendorConnectionApiIsUnavailable() throws Exception {
+    void usesStandardJdbcMetadataWhenConnectionIsNotOracle() throws Exception {
         try (Connection connection = JdbcTestSupport.dataSource().getConnection();
                 Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE customers (id INTEGER NOT NULL, display_name VARCHAR(80))");
@@ -37,6 +37,9 @@ public class OracleTableMetaDataProviderTest {
             TableParameterMetaData name = provider.getTableParameterMetaData().get(1);
             assertThat(name.getSqlType()).isEqualTo(Types.VARCHAR);
             assertThat(name.isNullable()).isTrue();
+            assertThat(connection.isClosed()).isFalse();
+            assertThat(statement.executeUpdate("INSERT INTO customers VALUES (1, 'Ada')")).isEqualTo(1);
+            assertThat(JdbcTestSupport.queryInt(connection, "SELECT COUNT(*) FROM customers")).isEqualTo(1);
         }
     }
 }
