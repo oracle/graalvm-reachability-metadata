@@ -19,7 +19,23 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-stdlib:2.3.21'
 }
 
+processTestResources {
+    from(tasks.named("compileTestJava")) {
+        include "org_jetbrains_kotlin/kotlin_scripting_jvm_host/ScriptFixtures.class"
+        rename "ScriptFixtures.class", "ScriptFixtures.bytecode"
+    }
+}
+
 graalvmNative {
+    binaries {
+        test {
+            // The compiler JAR omits the configuration resources these JLine directives reference.
+            buildArgs(
+                    "--exclude-config",
+                    ".*kotlin-compiler-embeddable-[^/]+\\.jar",
+                    "META-INF/native-image/org\\.jline/jline-terminal(-jansi|-jna|-jni)?/native-image\\.properties")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {

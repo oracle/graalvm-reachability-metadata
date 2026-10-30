@@ -45,7 +45,7 @@ final class ScriptFixtures {
     }
 
     static byte[] classBytes() throws IOException {
-        try (InputStream input = ScriptFixtures.class.getResourceAsStream("/" + CLASS_ENTRY)) {
+        try (InputStream input = ScriptFixtures.class.getResourceAsStream("ScriptFixtures.bytecode")) {
             if (input == null) {
                 throw new IOException("Missing compiled fixture resource: " + CLASS_ENTRY);
             }
