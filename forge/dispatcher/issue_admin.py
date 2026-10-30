@@ -8,7 +8,10 @@ comments, and closing (§AR-forge-dispatcher-decomposition,
 §FS-forge-issue-resolution-goal)."""
 
 import sys
+from functools import partial
 from urllib.parse import quote
+
+from git_scripts.github_cli import run_github_command_with_retries
 
 from utility_scripts.stage_logger import log_debug, log_stage
 
@@ -47,29 +50,25 @@ from dispatcher.fixture_support import is_fixture_testing_enabled, require_fixtu
 ensured_issue_labels: set[str] = set()
 
 def set_issue_assignee(issue_number: int, username: str):
-    """Set a single assignee to an issue."""
-    gh(
-        "api",
-        "--method",
-        "PATCH",
-        f"/repos/{REPO}/issues/{issue_number}",
-        "-f",
-        f"assignees[]={username}",
+    """Set a single assignee to an issue.
+
+    The claim's and the release's assignee calls wait out a rate limit as well as an
+    outage, since one that fails strands the issue (§FS-forge-stranded-claims.4.1).
+    """
+    run_github_command_with_retries(
+        gh,
+        ("api", "--method", "PATCH", f"/repos/{REPO}/issues/{issue_number}", "-f", f"assignees[]={username}"),
+        retry_rate_limit=True,
     )
 
 
 def clear_issue_assignees(issue_number: int):
     """Remove all assignees from an issue."""
-    gh(
-        "api",
-        "--method",
-        "PATCH",
-        f"/repos/{REPO}/issues/{issue_number}",
-        "--input",
-        "-",
-        input_text='{"assignees":[]}',
+    run_github_command_with_retries(
+        partial(gh, input_text='{"assignees":[]}'),
+        ("api", "--method", "PATCH", f"/repos/{REPO}/issues/{issue_number}", "--input", "-"),
+        retry_rate_limit=True,
     )
-
 
 
 def get_issue_assignees(issue_number: int) -> list[str]:
@@ -82,6 +81,7 @@ def get_issue_assignees(issue_number: int) -> list[str]:
         REPO,
         "--json",
         "assignees",
+        retry_rate_limit=True,
     )
     return [a["login"] for a in data.get("assignees", [])]
 

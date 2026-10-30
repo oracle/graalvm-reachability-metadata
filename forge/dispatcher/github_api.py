@@ -87,9 +87,9 @@ def gh(
     raise RuntimeError("GitHub command exhausted retries")
 
 
-def gh_json(*args: str, quiet: bool = False) -> any:
-    """Run a gh CLI command and parse its stdout as JSON."""
-    return run_github_json_with_retries(gh, args, quiet=quiet)
+def gh_json(*args: str, quiet: bool = False, retry_rate_limit: bool = False) -> any:
+    """Run a gh CLI command and parse its stdout as JSON; `retry_rate_limit` waits out a limit too."""
+    return run_github_json_with_retries(gh, args, quiet=quiet, retry_rate_limit=retry_rate_limit)
 
 
 def format_github_exception_details(exc: Exception) -> str:

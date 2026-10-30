@@ -181,12 +181,12 @@ repair it (see 3 below).
 
 A release counts only once GitHub confirms it: the issue reads back in `Todo`
 with no assignee. GitHub may be down at the very moment a release is needed,
-since an outage is often why the run failed, so a release whose GitHub calls
-fail is retried a few times. One GitHub still cannot confirm is reported as
-unconfirmed, naming the issue to release by hand, never as released; one GitHub
-answered but shows still claimed is not retried, since a retry could clear a
-claim made since. An unconfirmed release must not stop the launcher or hide the
-failure that led to it.
+since an outage is often why the run failed, so a release whose calls fail
+transiently is retried a few times, then by the next cycle
+(§FS-forge-stranded-claims.4.2). One GitHub refused, or answered but still
+shows claimed, is reported as unconfirmed, naming the issue to release by hand,
+never as released: a retry would be refused again or clear a claim made since.
+An unconfirmed release must not stop the launcher or hide the failure behind it.
 
 ### 1. Agent targets
 
