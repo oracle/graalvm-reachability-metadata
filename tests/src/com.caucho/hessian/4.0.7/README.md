@@ -16,7 +16,10 @@ Some reported sites have no supported consumer path:
 - `JavaSerializer`'s external replacement-factory branch has no assignment to
   its factory field; normal object replacement is tested instead.
 - `WriteReplaceSerializer` overwrites a discovered external replacement method
-  with the object's method. Its working object-replacement path is tested;
-  the external-adapter path is not asserted as a failure.
+  with the object's zero-argument method, but passes one argument when invoking
+  an external replacement factory. That invocation cannot succeed. Tests cover
+  object replacement and explicit replacement-codec registration in preference
+  to a working convention-named codec, including discovery and inspection of
+  that codec. The external replacement invocation is not asserted as a failure.
 - Constructor fallbacks without an instantiable class, and collection fallbacks
   requiring a non-collection type, are not exercised through invalid inputs.
