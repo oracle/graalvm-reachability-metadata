@@ -91,12 +91,29 @@ version), quotes the error, and says why it is not our metadata. For a library
 lane it adds the local reproduction with exact versions and the suspected Native
 Image cause with `oracle/graal` commit and pull request links. For a Spring AOT
 smoke test it adds the project and branch, and asks the assignee to find whether
-the bug is on the Native Image side or the Spring side. The signature is a short stable key of the
-failure, the same for every pull request it breaks, such as
-`ni-25.0-spring-security-type-not-found`. When the evidence is a GraalVM defect — a builder-internal
+the bug is on the Native Image side or the Spring side. When the evidence is a GraalVM defect — a builder-internal
 `VMError`, `HostedError` or `shouldNotReachHere`, or forbidden metadata the agent emits on every
 generation — say so in `cause` and quote it in the body: a maintainer files the GraalVM ticket from it
 (§root/FS-graalvm-blocked-work.1).
+
+The signature is a short stable key of the failure, the same for every pull
+request it breaks. These open issues already carry one, `graalvm-bug` ones
+first; each of those is a GraalVM defect a maintainer declared:
+
+{open_issues}
+
+When your failure is one of them — the same error from the same cause, whatever
+library, lane, or smoke test met it — answer with that issue's signature exactly
+as listed, and the program links that issue instead of opening another. Still
+write `title` and `body`: they are used only if the issue closed meanwhile. Read
+an issue with `gh issue view <n> --repo {repo}` when its title is not enough to
+tell. A failure an issue above tracks is never case 2, even when the issue says
+a re-run may pass: a maintainer, not the review, releases a pull request a
+GraalVM defect holds (§root/FS-graalvm-blocked-work.3). Only a failure none of
+them describes gets a new signature, such as
+`ni-25.0-spring-security-type-not-found`: it names the error and where it fails,
+never the library, project, or lane that met it, so the next pull request it
+breaks derives the same one.
 
 ## Metadata rules
 
