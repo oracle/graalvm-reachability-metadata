@@ -11,7 +11,7 @@ running, each command's output tail, and the files the fix may edit
 (§AR-forge-workflow-prompts.5). The rules live in the `fix` instruction. Sending
 a request arms the loop guard (§AR-forge-workflow-pipeline.6). The failures of
 the last request, or those that stop the run, are also kept as data for the
-close-out comment (§AR-forge-workflow-pipeline.1).
+close-out comment (§AR-forge-launcher.1).
 """
 from __future__ import annotations
 
@@ -103,7 +103,7 @@ def write_fix_request(workspace: str, state: RunState, sender: str, failures: li
 
 
 def record_failures(workspace: str, sender: str, failures: list[Failure]) -> None:
-    """Keep the sender and its failures for the close-out (§AR-forge-workflow-pipeline.1)."""
+    """Keep the sender and its failures for the close-out (§AR-forge-launcher.1)."""
     write_json(runtime_path(workspace, FAILURES), {"sender": sender, "failures": [asdict(f) for f in failures]})
 
 
