@@ -39,6 +39,13 @@ not skipped both re-files its own issue indefinitely and blocks every later
 version of that library from ever being tested. Skip entries are written by the
 disposition in §FS-contribution-contract.5.4.
 
+A version whose POM relocates the artifact to other coordinates
+(`<distributionManagement><relocation>`) is not a candidate either: a build that
+depends on it resolves the relocation target, and Native Build Tools looks up
+metadata under the target's own coordinates, so recording the relocated version
+as tested helps no user. Only the versions that can enter the run under the
+per-library cap are checked, which keeps the extra Maven Central reads bounded.
+
 `generateNewLibraryVersionCompatibilityMatrix` turns the surviving candidates
 into the CI test matrix, bounded by the per-run library budget and the
 ≤ 30-newer-versions-per-library cap (§FS-repository-functional-spec.5.3). When
@@ -71,6 +78,13 @@ which appends the version to the artifact's `index.json` and refreshes the
 mirrored `stats/` and shared test sources. The updates are committed to the
 working branch (staging only `metadata`, `stats`, and `tests/src`) under a
 fetch-rebase-retry loop so concurrent scheduled runs do not clobber each other.
+Recording is isolated per library, because one broken library must not block
+recording for all the others: when `addTestedVersion` fails, that library's
+files are restored to their state before the failed version and its remaining
+versions are skipped, while the other libraries are still recorded, committed
+and proposed. The run then fails, naming each library it could not record and
+the error, and still files the failure tickets of
+§FS-library-version-update-automation.4.
 When the branch carries changes, the workflow opens one pull request labeled
 `library-bulk-update` (reviewers `kimeta`, `vjovanov`, `jormundur00`; assignee
 `vjovanov`) summarizing the added tested versions per library. This PR records
