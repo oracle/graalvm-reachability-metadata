@@ -112,6 +112,16 @@ class DependencyFailureTest(unittest.TestCase):
         self.assertEqual("> Could not resolve all files for configuration ':testRuntimeClasspath'.\n"
                          "   > Could not find com.example:lib:1.0.", failure.detail)
 
+    def test_a_jar_no_repository_has_is_a_bad_input(self) -> None:
+        # The POM resolves; Gradle names the missing file and its module.
+        failure: BadInput | Unreachable | None = self.failure(
+            "> Could not resolve all files for configuration ':testRuntimeClasspath'.\n"
+            "   > Could not find lib-1.0.jar (com.example:lib:1.0).\n     Searched in the following locations:\n"
+            f"         {self.POM.removesuffix('.pom')}.jar")
+        self.assertIsInstance(failure, BadInput)
+        self.assertEqual("> Could not resolve all files for configuration ':testRuntimeClasspath'.\n"
+                         "   > Could not find lib-1.0.jar (com.example:lib:1.0).", failure.detail)
+
 
 class EarlyExitTest(unittest.TestCase):
 
