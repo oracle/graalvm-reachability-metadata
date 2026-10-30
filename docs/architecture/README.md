@@ -37,10 +37,11 @@ rather than by kind.
 | [§AR-create-snapshot-release](ci.md#ar-create-snapshot-release-create-snapshot-release) | Create snapshot release |
 | [§AR-test-all-metadata-crema](ci.md#ar-test-all-metadata-crema-test-all-metadata-on-the-crema-jvm) | Test all metadata on the Crema JVM |
 | [§AR-triage-new-issues](ci.md#ar-triage-new-issues-triage-new-issues) | Triage new issues |
-| [§AR-detect-file-changes](ci.md#ar-detect-file-changes-detect-file-changes-action) | detect-file-changes action |
-| [§AR-setup-native-build-tools](ci.md#ar-setup-native-build-tools-setup-native-build-tools-action) | setup-native-build-tools action |
-| [§AR-setup-native-image-base-layer](ci.md#ar-setup-native-image-base-layer-setup-native-image-base-layer-action) | setup-native-image-base-layer action |
-| [§AR-setup-crema-jdk](ci.md#ar-setup-crema-jdk-setup-crema-jdk-action) | setup-crema-jdk action |
+| [§AR-ci-composite-actions](ci-actions.md#ar-ci-composite-actions-composite-actions-the-ci-workflows-reuse) | Composite actions the CI workflows reuse |
+| [§AR-detect-file-changes](ci-actions.md#ar-detect-file-changes-detect-file-changes-action) | detect-file-changes action |
+| [§AR-setup-native-build-tools](ci-actions.md#ar-setup-native-build-tools-setup-native-build-tools-action) | setup-native-build-tools action |
+| [§AR-setup-native-image-base-layer](ci-actions.md#ar-setup-native-image-base-layer-setup-native-image-base-layer-action) | setup-native-image-base-layer action |
+| [§AR-setup-crema-jdk](ci-actions.md#ar-setup-crema-jdk-setup-crema-jdk-action) | setup-crema-jdk action |
 | [§AR-shared-scripts](ci.md#ar-shared-scripts-shared-scripts-and-test-isolation) | Shared scripts and test isolation |
 | [§AR-test-harness](tck.md#ar-test-harness-test-harness-tck-task-groups) | Test harness (TCK) task groups |
 
@@ -55,5 +56,7 @@ Files:
   plugins, and scaffolding the suites run on.
 - [tck.md](tck.md) — the harness task groups: selection, validation, test lanes,
   tracing, authoring, matrices, and reporting.
-- [ci.md](ci.md) — the workflows, composite actions, and shared scripts, one
+- [ci.md](ci.md) — the workflows and shared scripts, one citable declaration
+  each.
+- [ci-actions.md](ci-actions.md) — the composite actions the workflows reuse, one
   citable declaration each.
