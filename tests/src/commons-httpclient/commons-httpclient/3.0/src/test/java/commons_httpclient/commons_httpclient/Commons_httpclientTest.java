@@ -6,11 +6,22 @@
  */
 package commons_httpclient.commons_httpclient;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class Commons_httpclientTest {
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.URI;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+@Timeout(120)
+public class Commons_httpclientTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void configuresSecureHostFromUri() throws Exception {
+        HostConfiguration host = new HostConfiguration();
+        host.setHost(new URI("https://example.test:8443/resource", false));
+        assertEquals("example.test", host.getHost());
+        assertEquals(8443, host.getPort());
+        assertTrue(host.getProtocol().isSecure());
     }
 }
