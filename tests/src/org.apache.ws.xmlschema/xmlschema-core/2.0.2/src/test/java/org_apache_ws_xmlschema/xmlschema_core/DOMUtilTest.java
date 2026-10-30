@@ -10,9 +10,11 @@ import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.constants.Constants;
-import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xerces.parsers.XIncludeAwareParserConfiguration;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.xml.namespace.QName;
 
@@ -51,10 +53,11 @@ public class DOMUtilTest {
                     <xs:element name="greeting" type="xs:string"/>
                 </xs:schema>
                 """;
-        DocumentBuilderFactoryImpl factory = new DocumentBuilderFactoryImpl();
-        factory.setNamespaceAware(true);
+        DOMParser parser = new DOMParser(new XIncludeAwareParserConfiguration());
+        parser.setFeature("http://xml.org/sax/features/namespaces", true);
         try (ByteArrayInputStream input = new ByteArrayInputStream(schema.getBytes(StandardCharsets.ISO_8859_1))) {
-            return factory.newDocumentBuilder().parse(input);
+            parser.parse(new InputSource(input));
+            return parser.getDocument();
         }
     }
 

@@ -11,7 +11,8 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.extensions.ExtensionRegistry;
-import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xerces.parsers.XIncludeAwareParserConfiguration;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
@@ -40,10 +41,11 @@ public class XmlSchemaCollectionTest {
                         <xs:element name="order" type="xs:string" ext:category="priority"/>
                     </xs:schema>
                     """;
-            DocumentBuilderFactoryImpl factory = new DocumentBuilderFactoryImpl();
-            factory.setNamespaceAware(true);
+            DOMParser parser = new DOMParser(new XIncludeAwareParserConfiguration());
+            parser.setFeature("http://xml.org/sax/features/namespaces", true);
             try (StringReader reader = new StringReader(source)) {
-                XmlSchema schema = collection.read(factory.newDocumentBuilder().parse(new InputSource(reader)));
+                parser.parse(new InputSource(reader));
+                XmlSchema schema = collection.read(parser.getDocument());
                 QName elementName = new QName("urn:order", "order");
                 XmlSchemaElement element = schema.getElementByName(elementName);
 
