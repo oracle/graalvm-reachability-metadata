@@ -25,8 +25,7 @@ public class AnsiOutputTest {
 
             assertThat(status).isIn("ready", "\u001b[32mready\u001b[0;39m");
             assertThat(AnsiOutput.encode(AnsiColor.GREEN)).isEqualTo(status.equals("ready") ? "" : "\u001b[32m");
-        }
-        finally {
+        } finally {
             AnsiOutput.setEnabled(previous);
             AnsiOutput.setConsoleAvailable(null);
         }

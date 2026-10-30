@@ -8,22 +8,17 @@ package org_springframework_boot.spring_boot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.info.ProcessInfo;
-import org.springframework.boot.info.ProcessInfo.VirtualThreadsInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessInfoTest {
 
+    // Native Image has no VirtualThreadSchedulerMXBean, so getVirtualThreads() is not covered:
+    // https://github.com/oracle/graal/issues/12802 (GR-72683).
     @Test
-    void reportsVirtualThreadSchedulerAndProcessIdentity() {
+    void reportsProcessIdentity() {
         ProcessInfo process = new ProcessInfo();
-        VirtualThreadsInfo threads = process.getVirtualThreads();
 
-        assertThat(threads).isNotNull();
-        assertThat(threads.getParallelism()).isPositive();
-        assertThat(threads.getMounted()).isGreaterThanOrEqualTo(0);
-        assertThat(threads.getQueued()).isGreaterThanOrEqualTo(0);
-        assertThat(threads.getPoolSize()).isGreaterThanOrEqualTo(0);
         assertThat(process.getPid()).isEqualTo(ProcessHandle.current().pid());
         assertThat(process.getCpus()).isPositive();
     }

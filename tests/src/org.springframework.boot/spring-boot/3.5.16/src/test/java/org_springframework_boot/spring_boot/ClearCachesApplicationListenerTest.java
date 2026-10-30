@@ -40,8 +40,7 @@ public class ClearCachesApplicationListenerTest {
                 assertThat(context.getBean("cacheStatus")).isEqualTo("ready");
                 assertThat(loader.getClearCount()).isEqualTo(1);
             }
-        }
-        finally {
+        } finally {
             thread.setContextClassLoader(original);
         }
     }
