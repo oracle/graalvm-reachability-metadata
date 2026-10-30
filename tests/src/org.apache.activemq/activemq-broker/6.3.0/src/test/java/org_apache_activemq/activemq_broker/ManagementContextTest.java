@@ -55,7 +55,8 @@ public class ManagementContextTest {
             assertThat(context.isConnectorStarted()).isTrue();
             JMXServiceURL url = new JMXServiceURL(
                     "service:jmx:rmi:///jndi/rmi://127.0.0.1:" + port + "/jmxrmi");
-            try (JMXConnector connector = JMXConnectorFactory.connect(url)) {
+            try (JMXConnector connector = JMXConnectorFactory.newJMXConnector(url, null)) {
+                connector.connect();
                 Object name = connector.getMBeanServerConnection().getAttribute(
                         new ObjectName("java.lang:type=Runtime"), "Name");
                 assertThat(name).isEqualTo(ManagementFactory.getRuntimeMXBean().getName());
