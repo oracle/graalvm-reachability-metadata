@@ -36,6 +36,7 @@ runs:
           printf '%s\n' "${{ runner.arch }}"
           printf '%s\n' "$mode"
           cat "$RUNNER_TEMP/native-base-layer-key/native-image-version.txt"
+          sha256sum "$JAVA_HOME/release" | cut -d' ' -f1
           sha256sum ci.json
           find tests/tck-build-logic/src/main -type f -print0 | sort -z | xargs -0 sha256sum
         } > "$RUNNER_TEMP/native-base-layer-key/cache-input.txt"
