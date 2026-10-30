@@ -329,6 +329,7 @@ narrowest form:
 | `--add-opens`, `--add-exports` | the library needs that module access; name the package |
 | `-H:+SharedArenaSupport`, `--future-defaults=<feature>` | the library uses that feature; the error names it |
 | run-time `-D<property>` | a consumer must set that property for the library to work |
+| `--exclude-config <jar> <resource>` | Native Image configuration bundled in the library or a dependency breaks the build, such as a `native-image.properties` that names configuration files its JAR does not ship; match only that JAR and that configuration path |
 
 #### 2.7.2 Forbidden flags
 
