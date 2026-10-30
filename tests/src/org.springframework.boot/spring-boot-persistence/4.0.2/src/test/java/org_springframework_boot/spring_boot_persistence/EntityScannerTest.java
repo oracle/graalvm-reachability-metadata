@@ -58,6 +58,17 @@ public class EntityScannerTest {
     }
 
     @Test
+    void explicitPackagesExcludeEntitiesFromAutoConfigurationPackages() throws ClassNotFoundException {
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            AutoConfigurationPackages.register(context, EntityScannerTest.class.getPackageName());
+            EntityScanPackages.register(context, "app.no_entities");
+            context.refresh();
+
+            assertThat(new EntityScanner(context).scan(StoredRecord.class, StoredEvent.class)).isEmpty();
+        }
+    }
+
+    @Test
     void scanningWithoutRegisteredPackagesReturnsNoEntities() throws ClassNotFoundException {
         try (GenericApplicationContext context = new GenericApplicationContext()) {
             context.refresh();
