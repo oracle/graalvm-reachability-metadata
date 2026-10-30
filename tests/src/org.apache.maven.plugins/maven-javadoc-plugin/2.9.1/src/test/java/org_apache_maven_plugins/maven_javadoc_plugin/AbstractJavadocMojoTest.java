@@ -99,6 +99,8 @@ public class AbstractJavadocMojoTest {
         ((XmlPlexusConfiguration) configuration.getChild("failOnError")).setValue("true");
         ((XmlPlexusConfiguration) configuration.getChild("javadocOptionsDir"))
                 .setValue(directory.resolve("application/options").toString());
+        ((XmlPlexusConfiguration) configuration.getChild("javadocExecutable"))
+                .setValue(Path.of(System.getenv("JAVA_HOME"), "bin").toString());
         ExpressionEvaluator evaluator = new ExpressionEvaluator() {
             @Override
             public Object evaluate(String expression) {
@@ -173,6 +175,8 @@ public class AbstractJavadocMojoTest {
         ((XmlPlexusConfiguration) configuration.getChild("detectJavaApiLink")).setValue("true");
         ((XmlPlexusConfiguration) configuration.getChild("isOffline")).setValue("true");
         ((XmlPlexusConfiguration) configuration.getChild("javadocOptionsDir")).setValue(directory.resolve("options").toString());
+        ((XmlPlexusConfiguration) configuration.getChild("javadocExecutable"))
+                .setValue(Path.of(System.getenv("JAVA_HOME"), "bin").toString());
         ExpressionEvaluator evaluator = new ExpressionEvaluator() {
             @Override
             public Object evaluate(String expression) {
