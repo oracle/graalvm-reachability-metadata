@@ -20,8 +20,12 @@ public class CloserInnerSuppressingSuppressorTest {
         IOException first = new IOException("first close");
         IOException second = new IOException("second close");
         Closer closer = Closer.create();
-        closer.register(() -> { throw second; });
-        closer.register(() -> { throw first; });
+        closer.register(() -> {
+            throw second;
+        });
+        closer.register(() -> {
+            throw first;
+        });
         assertSame(first, assertThrows(IOException.class, closer::close));
         assertArrayEquals(new Throwable[] {second}, first.getSuppressed());
     }

@@ -7,6 +7,7 @@
 package io_trino.trino_jdbc;
 
 import io.trino.jdbc.$internal.guava.reflect.Reflection;
+import java.util.concurrent.Callable;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,15 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReflectionTest {
     @Test
-    void initializesClassAndCreatesInterfaceProxy() {
+    void initializesClassAndCreatesInterfaceProxy() throws Exception {
         Reflection.initialize(Registration.class);
         assertTrue(Registry.registered);
-        Greeting greeting = Reflection.newProxy(Greeting.class, (proxy, method, arguments) -> "Hello " + arguments[0]);
-        assertEquals("Hello Ada", greeting.greet("Ada"));
-    }
-
-    public interface Greeting {
-        String greet(String name);
+        Callable<?> greeting = Reflection.newProxy(Callable.class,
+                (proxy, method, arguments) -> "Hello Ada");
+        assertEquals("Hello Ada", greeting.call());
     }
 
     public static class Registry {
