@@ -18,6 +18,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JarUtilsTests {
 
@@ -51,6 +52,17 @@ class JarUtilsTests {
 
         assertThat(JarUtils.loadClassNames(List.of(jar)))
                 .containsExactlyInAnyOrder("com.example.Base", "com.example.Versioned");
+    }
+
+    @Test
+    void extractEffectiveClassesRejectsEntriesOutsideTheOutputDirectory() throws IOException {
+        Path jar = createLibraryJar(tempDir.resolve("library.jar"), List.of("../Escaped.class"));
+        Path outputDir = tempDir.resolve("effective");
+
+        assertThatThrownBy(() -> JarUtils.extractEffectiveClasses(jar, 25, outputDir))
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("../Escaped.class");
+        assertThat(tempDir.resolve("Escaped.class")).doesNotExist();
     }
 
     @Test
