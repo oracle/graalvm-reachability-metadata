@@ -10,7 +10,7 @@ import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.ResultSetDynaClass;
 import org.junit.jupiter.api.Test;
 
-import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ResultSetDynaClassTest {
     @Test
     void wrapsAndIteratesJdbcRowsWithTheirColumnTypes() throws Exception {
-        try (CachedRowSet rows = JdbcRows.create()) {
+        try (ResultSet rows = JdbcRows.create()) {
             ResultSetDynaClass schema = new ResultSetDynaClass(rows, false);
             assertEquals(Integer.class, schema.getDynaProperty("ID").getType());
             assertEquals(String.class, schema.getDynaProperty("LABEL").getType());

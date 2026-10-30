@@ -10,7 +10,7 @@ import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 import org.junit.jupiter.api.Test;
 
-import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,7 +18,7 @@ public class JDBCDynaClassTest {
     @Test
     void derivesColumnTypesAndCopiesDisconnectedRows() throws Exception {
         RowSetDynaClass schema;
-        try (CachedRowSet rows = JdbcRows.create()) {
+        try (ResultSet rows = JdbcRows.create()) {
             schema = new RowSetDynaClass(rows);
         }
 

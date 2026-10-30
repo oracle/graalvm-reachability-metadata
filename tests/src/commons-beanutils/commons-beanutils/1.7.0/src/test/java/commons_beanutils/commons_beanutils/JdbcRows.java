@@ -6,32 +6,20 @@
  */
 package commons_beanutils.commons_beanutils;
 
-import javax.sql.rowset.CachedRowSet;
-import javax.sql.rowset.RowSetMetaDataImpl;
-import javax.sql.rowset.RowSetProvider;
-import java.sql.SQLException;
+import org.h2.tools.SimpleResultSet;
+
+import java.sql.ResultSet;
 import java.sql.Types;
 
 final class JdbcRows {
     private JdbcRows() {
     }
 
-    static CachedRowSet create() throws SQLException {
-        RowSetMetaDataImpl metadata = new RowSetMetaDataImpl();
-        metadata.setColumnCount(2);
-        metadata.setColumnName(1, "ID");
-        metadata.setColumnType(1, Types.INTEGER);
-        metadata.setColumnName(2, "LABEL");
-        metadata.setColumnType(2, Types.VARCHAR);
-
-        CachedRowSet rows = RowSetProvider.newFactory().createCachedRowSet();
-        rows.setMetaData(metadata);
-        rows.moveToInsertRow();
-        rows.updateInt(1, 7);
-        rows.updateString(2, "Ada");
-        rows.insertRow();
-        rows.moveToCurrentRow();
-        rows.beforeFirst();
+    static ResultSet create() {
+        SimpleResultSet rows = new SimpleResultSet();
+        rows.addColumn("ID", Types.INTEGER, 10, 0);
+        rows.addColumn("LABEL", Types.VARCHAR, 40, 0);
+        rows.addRow(7, "Ada");
         return rows;
     }
 }
