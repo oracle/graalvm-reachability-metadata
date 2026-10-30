@@ -29,6 +29,14 @@ public class VelocityExceptionUtilsTest {
         assertTrue(fallback.getMessage().contains("source"));
     }
 
+    @Test
+    void createsRuntimeExceptionsWithMessageAndCause() {
+        Throwable cause = new IllegalStateException("source");
+        RuntimeException exception = ExceptionUtils.createRuntimeException("operation", cause);
+        assertEquals("operation", exception.getMessage());
+        assertSame(cause, exception.getCause());
+    }
+
     public static class MessageException extends RuntimeException {
         public MessageException(String message) {
             super(message);

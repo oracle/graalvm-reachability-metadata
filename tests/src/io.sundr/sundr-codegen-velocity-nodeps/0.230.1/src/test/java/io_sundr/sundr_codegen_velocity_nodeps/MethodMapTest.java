@@ -20,6 +20,25 @@ public class MethodMapTest {
         assertEquals("text:word|number:3", TestSupport.render(context, "$formatter.describe('word')|$formatter.describe(3)"));
     }
 
+    @Test
+    void choosesTheMostSpecificApplicableOverload() {
+        VelocityContext context = new VelocityContext();
+        context.put("formatter", new SpecificFormatter());
+        context.put("number", Integer.valueOf(7));
+        assertEquals("text:word|object:7", TestSupport.render(context,
+                "$formatter.describe('word')|$formatter.describe($number)"));
+    }
+
+    public static class SpecificFormatter {
+        public String describe(Object value) {
+            return "object:" + value;
+        }
+
+        public String describe(String value) {
+            return "text:" + value;
+        }
+    }
+
     public static class Formatter {
         public String describe(String value) {
             return "text:" + value;
