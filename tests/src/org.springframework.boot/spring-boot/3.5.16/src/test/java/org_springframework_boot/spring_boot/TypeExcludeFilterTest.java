@@ -9,7 +9,13 @@ package org_springframework_boot.spring_boot;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.boot.Banner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.context.TypeExcludeFilter;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.aot.AotApplicationContextInitializer;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
@@ -23,10 +29,24 @@ public class TypeExcludeFilterTest {
 
     @Test
     void delegatesExclusionsToFiltersFromTheBeanFactory() throws IOException {
-        try (GenericApplicationContext context = new GenericApplicationContext()) {
+        SpringApplication application = new SpringApplication(TypeExcludeFilter.class);
+        application.setMainApplicationClass(TypeExcludeFilterTest.class);
+        application.setWebApplicationType(WebApplicationType.NONE);
+        application.setBannerMode(Banner.Mode.OFF);
+        application.setLogStartupInfo(false);
+        application.setRegisterShutdownHook(false);
+        application.setApplicationContextFactory(webType -> new GenericApplicationContext());
+        application.addInitializers((AotApplicationContextInitializer<GenericApplicationContext>) context -> {
+            GenericBeanDefinition definition = new GenericBeanDefinition();
+            definition.setBeanClassName("org.springframework.boot.context.TypeExcludeFilter");
+            context.registerBeanDefinition("exclusionFilter", definition);
+        });
+
+        try (ConfigurableApplicationContext applicationContext = application.run();
+                GenericApplicationContext context = new GenericApplicationContext()) {
             InternalEndpointExclusion exclusion = new InternalEndpointExclusion();
             context.getBeanFactory().registerSingleton("internalEndpointExclusion", exclusion);
-            TypeExcludeFilter filter = new TypeExcludeFilter();
+            TypeExcludeFilter filter = applicationContext.getBean("exclusionFilter", TypeExcludeFilter.class);
             filter.setBeanFactory(context.getBeanFactory());
             MetadataReaderFactory readers = new SimpleMetadataReaderFactory();
 
