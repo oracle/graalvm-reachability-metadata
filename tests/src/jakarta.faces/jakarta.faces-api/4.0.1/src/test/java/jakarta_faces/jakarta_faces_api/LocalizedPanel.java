@@ -6,11 +6,7 @@
  */
 package jakarta_faces.jakarta_faces_api;
 
-import org.junit.jupiter.api.Test;
+import jakarta.faces.component.UIPanel;
 
-class Jakarta_faces_apiTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
-    }
+public class LocalizedPanel extends UIPanel {
 }
