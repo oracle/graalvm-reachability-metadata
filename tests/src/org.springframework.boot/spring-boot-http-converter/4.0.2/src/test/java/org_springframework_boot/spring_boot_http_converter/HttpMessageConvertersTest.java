@@ -15,16 +15,19 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.boot.http.converter.autoconfigure.HttpMessageConverters;
+import org.springframework.hateoas.server.mvc.TypeConstrainedJacksonJsonHttpMessageConverter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -75,9 +78,46 @@ public class HttpMessageConvertersTest {
         assertTrue(MediaType.APPLICATION_JSON.isCompatibleWith(output.headers.getContentType()));
     }
 
+    @Test
+    void constrainedJsonConverterKeepsPriorityWithoutReplacingGeneralDefaults() throws Exception {
+        TypeConstrainedJacksonJsonHttpMessageConverter constrained =
+                new TypeConstrainedJacksonJsonHttpMessageConverter(Map.class);
+        List<HttpMessageConverter<?>> converters = new HttpMessageConverters(constrained).getConverters();
+
+        assertSame(constrained, converters.getFirst());
+        JacksonJsonHttpMessageConverter general = converters.stream()
+                .filter(converter -> converter.getClass() == JacksonJsonHttpMessageConverter.class)
+                .map(JacksonJsonHttpMessageConverter.class::cast)
+                .findFirst().orElseThrow();
+        assertTrue(converters.indexOf(general) > 1, "General JSON support must keep its default position");
+        assertTrue(constrained.canRead(Map.class, MediaType.APPLICATION_JSON));
+        assertFalse(constrained.canRead(List.class, MediaType.APPLICATION_JSON));
+        assertTrue(general.canRead(List.class, MediaType.APPLICATION_JSON));
+
+        AllEncompassingFormHttpMessageConverter form = converters.stream()
+                .filter(AllEncompassingFormHttpMessageConverter.class::isInstance)
+                .map(AllEncompassingFormHttpMessageConverter.class::cast)
+                .findFirst().orElseThrow();
+        assertSame(constrained, form.getPartConverters().getFirst());
+        assertTrue(form.getPartConverters().stream()
+                .anyMatch(converter -> converter.getClass() == JacksonJsonHttpMessageConverter.class));
+
+        BufferedOutput mapOutput = new BufferedOutput();
+        constrained.write(Map.of("tracking", "parcel-17"), MediaType.APPLICATION_JSON, mapOutput);
+        assertEquals("""
+                {"tracking":"parcel-17"}""", mapOutput.body.toString(StandardCharsets.UTF_8));
+        assertTrue(MediaType.APPLICATION_JSON.isCompatibleWith(mapOutput.headers.getContentType()));
+
+        BufferedOutput listOutput = new BufferedOutput();
+        general.write(List.of("queued", "shipped"), MediaType.APPLICATION_JSON, listOutput);
+        assertEquals("""
+                ["queued","shipped"]""", listOutput.body.toString(StandardCharsets.UTF_8));
+    }
+
     private static void assertGsonBeforeJackson(List<HttpMessageConverter<?>> converters, GsonHttpMessageConverter gson) {
         HttpMessageConverter<?> jackson = converters.stream()
-                .filter(MappingJackson2HttpMessageConverter.class::isInstance)
+                .filter(converter -> converter instanceof MappingJackson2HttpMessageConverter
+                        || converter instanceof JacksonJsonHttpMessageConverter)
                 .findFirst().orElseThrow();
         int gsonIndex = converters.indexOf(gson);
         assertTrue(gsonIndex > 0, "The JSON replacement must not displace non-JSON defaults");
