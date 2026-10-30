@@ -6,11 +6,33 @@
  */
 package org_apache_ws_xmlschema.xmlschema_core;
 
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.constants.Constants;
 import org.junit.jupiter.api.Test;
 
-class Xmlschema_coreTest {
+import javax.xml.namespace.QName;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+public class Xmlschema_coreTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void resolvesReferencesToProgrammaticallyRegisteredElements() {
+        XmlSchemaCollection collection = new XmlSchemaCollection();
+        XmlSchema schema = new XmlSchema("urn:inventory", collection);
+        XmlSchemaElement product = new XmlSchemaElement(schema, true);
+        product.setName("product");
+        product.setSchemaTypeName(Constants.XSD_STRING);
+
+        QName productName = new QName("urn:inventory", "product");
+        XmlSchemaElement reference = new XmlSchemaElement(schema, false);
+        reference.getRef().setTargetQName(productName);
+
+        assertSame(product, schema.getElementByName(productName));
+        assertSame(product, collection.getElementByQName(productName));
+        assertSame(product, reference.getRef().getTarget());
+        assertEquals(Constants.XSD_STRING, reference.getRef().getTarget().getSchemaTypeName());
     }
 }
