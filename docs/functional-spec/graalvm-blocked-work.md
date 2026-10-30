@@ -53,7 +53,10 @@ again, on its own, whether or not the item also carries `human-intervention`:
 - the maintainer drain queue leaves such a pull request alone
   (§FS-maintainer-agent-queues.3);
 - the real-use review skips such a pull request
-  (§real-use-tests/FS-real-use-test-generation.4).
+  (§real-use-tests/FS-real-use-test-generation.4);
+- Forge's human-intervention scanner neither fetches nor groups such an item:
+  its cause is already diagnosed and linked, so a scan could only find again
+  the ticket the item names.
 
 Every attempt on a blocked item meets the same defect, so automation spent on
 it buys nothing until GraalVM changes. A maintainer who assigns a blocked issue

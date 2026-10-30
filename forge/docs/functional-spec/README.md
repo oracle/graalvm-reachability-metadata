@@ -20,13 +20,14 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-scope](functional-spec.md#fs-forge-scope-supported-issue-queues) | Supported issue queues |
 | [§FS-forge-glossary](functional-spec.md#fs-forge-glossary-glossary) | Glossary |
 | [§FS-forge-requirements](functional-spec.md#fs-forge-requirements-requirement-gates) | Requirement gates |
-| [§FS-forge-host-requirements](functional-spec.md#fs-forge-host-requirements-host-requirements) | Host requirements |
+| [§FS-forge-host-requirements](host-requirements.md#fs-forge-host-requirements-host-requirements) | Host requirements |
 | [§FS-forge-agent-runtime-selection](functional-spec.md#fs-forge-agent-runtime-selection-two-agent-inputs) | Two agent inputs |
 | [§FS-forge-run-requirements](functional-spec.md#fs-forge-run-requirements-run-requirements) | Run requirements |
-| [§FS-forge-outputs](functional-spec.md#fs-forge-outputs-run-outputs) | Run outputs |
-| [§FS-forge-run-metrics](functional-spec.md#fs-forge-run-metrics-per-run-metrics-record) | Per-run metrics record |
-| [§FS-durable-generation-logs](functional-spec.md#fs-durable-generation-logs-durable-generation-and-session-logs) | Durable generation and session logs |
-| [§FS-forge-run-location-reporting](functional-spec.md#fs-forge-run-location-reporting-run-location-in-progress-and-failure-output) | Run location in progress and failure output |
+| [§FS-forge-stranded-claims](stranded-claims.md#fs-forge-stranded-claims-a-claim-whose-launcher-died-is-resumed) | A claim whose launcher died is resumed |
+| [§FS-forge-outputs](run-outputs.md#fs-forge-outputs-run-outputs) | Run outputs |
+| [§FS-forge-run-metrics](run-outputs.md#fs-forge-run-metrics-per-run-metrics-record) | Per-run metrics record |
+| [§FS-durable-generation-logs](run-outputs.md#fs-durable-generation-logs-durable-generation-and-session-logs) | Durable generation and session logs |
+| [§FS-forge-run-location-reporting](run-outputs.md#fs-forge-run-location-reporting-run-location-in-progress-and-failure-output) | Run location in progress and failure output |
 | [§FS-forge-publication-readiness](publication.md#fs-forge-publication-readiness-publication-readiness) | Publication readiness |
 | [§FS-local-ci-equivalent-verification](publication.md#fs-local-ci-equivalent-verification-local-pre-publication-verification) | Local pre-publication verification |
 | [§FS-native-test-verification-gate](publication.md#fs-native-test-verification-gate-native-test-verification-gate) | Native test verification gate |
@@ -34,10 +35,10 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-library-update-tested-version-split](tested-version-split.md#fs-library-update-tested-version-split-library-update-tested-version-split) | Library-update tested-version split |
 | [§FS-human-intervention-policy](publication.md#fs-human-intervention-policy-human-intervention-policy) | Human intervention policy |
 | [§FS-published-pr-review](published-pr-review.md#fs-published-pr-review-review-of-a-published-pull-request) | Review of a published pull request |
-| [§FS-forge-run-status](functional-spec.md#fs-forge-run-status-run-status-semantics) | Run status semantics |
+| [§FS-forge-run-status](run-outputs.md#fs-forge-run-status-run-status-semantics) | Run status semantics |
 | [§FS-unsupportable-version-diagnosis](functional-spec.md#fs-unsupportable-version-diagnosis-unsupportable-version-verdict-in-setup) | Unsupportable-version verdict in setup |
 | [§FS-not-for-native-image-record](not-for-native-image-record.md#fs-not-for-native-image-record-not-for-native-image-record-in-prepare) | Not-for-native-image record in prepare |
-| [§FS-forge-run-output-legibility](functional-spec.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |
+| [§FS-forge-run-output-legibility](run-outputs.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |
 | [§FS-forge-chunked-dynamic-access](functional-spec.md#fs-forge-chunked-dynamic-access-chunked-dynamic-access-semantics) | Chunked dynamic-access semantics |
 | [§FS-forge-workflow-spec-catalog](functional-spec.md#fs-forge-workflow-spec-catalog-workflow-specifications) | Workflow specifications catalog |
 | [§FS-workflow-strategy-registry](strategies.md#fs-workflow-strategy-registry-predefined-strategy-registry-retired) | Predefined strategy registry (retired) |
@@ -54,6 +55,13 @@ Files:
 - [functional-spec.md](functional-spec.md) — the specification itself:
   requirements, outputs, verification, and the policies that decide a run's
   outcome. Start here.
+- [host-requirements.md](host-requirements.md) — what the host must provide
+  before any work is claimed, and how a transient failure waits.
+- [run-outputs.md](run-outputs.md) — what a run leaves behind and prints: the
+  metrics record, durable logs, legible output, run location, and run status.
+- [stranded-claims.md](stranded-claims.md) — how a launcher finds the claims a dead
+  launcher left on its host, and resumes their attempts, and how it retries a
+  claim or release an outage refused.
 - [tested-version-split.md](tested-version-split.md) — how a library-update run
   splits the entries that can no longer share its regenerated suite.
 - [strategies.md](strategies.md) — retired: strategies are fixed per label.

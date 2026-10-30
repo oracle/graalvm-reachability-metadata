@@ -5,7 +5,7 @@
 
 """Tests for the launcher: fetch, targets, close-out, and the review's entry.
 
-§AR-forge-workflow-pipeline.1 fixes the fetch and the close-out, whose comment
+§AR-forge-launcher.1 fixes the fetch and the close-out, whose comment
 carries the diagnostics of §FS-human-intervention-policy, and
 §FS-published-pr-review the review and its agent target.
 """
@@ -21,7 +21,7 @@ import unittest
 from unittest.mock import ANY, Mock, patch
 
 import forge_metadata
-from dispatcher import issue_fetch, pr_review, run_launch
+from dispatcher import issue_claiming, issue_fetch, pending_releases, pr_review, run_launch
 from tests.test_gradle_environment import _init_git_repo_with_worktree
 from utility_scripts.gradle_environment import FORGE_GRADLE_USER_HOME_ENV, gradle_command_environment
 
@@ -54,7 +54,7 @@ class FetchTest(unittest.TestCase):
             searches: list[list[str]] = [
                 call.args[0][call.args[0].index("--search") + 1].split() for call in run.call_args_list
             ]
-            self.assertEqual(15, len(searches))
+            self.assertEqual(18, len(searches))
             for search in searches:
                 self.assertIn("-label:not-for-native-image", search)
                 self.assertIn("-label:human-intervention", search)
@@ -62,9 +62,14 @@ class FetchTest(unittest.TestCase):
 
     def test_every_label_of_a_tier_is_fetched_before_the_next_tier(self) -> None:
         commands = issue_fetch.fetch_commands(issue_fetch.QUEUE_LABELS)
-        self.assertEqual(15, len(commands))
-        self.assertTrue(all("high-priority" in command for _, command in commands[:5]))
-        self.assertTrue(all("-label:priority" in " ".join(command) for _, command in commands[10:]))
+        self.assertEqual(18, len(commands))
+        self.assertTrue(all("high-priority" in command for _, command in commands[:6]))
+        self.assertTrue(all("-label:priority" in " ".join(command) for _, command in commands[12:]))
+
+    def test_every_stage_the_compatibility_automation_files_is_a_queue(self) -> None:
+        # Forge claims the issue of each failed stage (§FS-forge-scope.1).
+        self.assertLessEqual({"fails-javac-compile", "fails-java-run", "fails-native-image-build",
+                              "fails-native-image-run"}, set(issue_fetch.QUEUE_LABELS))
 
     def test_candidates_are_unique_in_claim_order(self) -> None:
         pages = {"high": [issue(3, "fails-java-run")], "rest": [issue(3, "fails-java-run"), issue(4, "fails-java-run")]}
@@ -132,6 +137,7 @@ class TargetTest(unittest.TestCase):
         self.addCleanup(os.remove, handle.name)
         for extra, expected in (([], False), (["--take-blocked-issues"], True)):
             with patch.object(forge_metadata, "claim", return_value=None) as claim, \
+                    tempfile.TemporaryDirectory() as forge, patch.object(forge_metadata, "FORGE_DIR", forge), \
                     patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                     contextlib.redirect_stderr(io.StringIO()):
                 forge_metadata.main(["--issues-fixture", handle.name, *extra])
@@ -140,6 +146,8 @@ class TargetTest(unittest.TestCase):
     def test_the_fetch_forwards_the_blocker_override(self) -> None:
         for extra, expected in (([], False), (["--take-blocked-issues"], True)):
             with patch.object(forge_metadata, "fetch_candidates", return_value=[]) as fetch, \
+                    tempfile.TemporaryDirectory() as forge, patch.object(forge_metadata, "FORGE_DIR", forge), \
+                    patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                     contextlib.redirect_stderr(io.StringIO()):
                 forge_metadata.main(extra)
             self.assertEqual(expected, fetch.call_args.args[2])
@@ -158,6 +166,7 @@ class CloseOutTest(unittest.TestCase):
         with patch.object(run_launch, "add_issue_label") as label, \
                 patch.object(run_launch, "post_issue_comment") as comment, \
                 patch.object(run_launch, "revert_issue_claim") as revert, \
+                patch.object(run_launch, "release_closed_issue_claim") as self.released, \
                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             run_launch.close_out(claimed, outcome)
         return label.call_args_list, comment.call_args_list, revert.call_args_list
@@ -232,7 +241,7 @@ class CloseOutTest(unittest.TestCase):
             comments[0].args[1])
 
     def test_a_bad_input_detail_with_a_fence_cannot_close_its_own(self) -> None:
-        # §AR-forge-workflow-pipeline.1
+        # §AR-forge-launcher.1
         _, comments, _ = self.close_out({
             "outcome": "failed", "kind": "bad-input", "reason": "jvm: bad input: x",
             "detail": "> ```\n> @Test fails"})
@@ -243,6 +252,52 @@ class CloseOutTest(unittest.TestCase):
         labels, comments, reverts = self.close_out({"outcome": "failed", "kind": "infrastructure", "reason": "x"})
         self.assertEqual(([], []), (labels, comments))
         self.assertEqual(1, len(reverts))
+
+    def test_an_unreachable_github_at_close_out_does_not_stop_the_launcher(self) -> None:
+        # The release's own reads fail on the outage that ended the run (#9622).
+        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
+        with tempfile.TemporaryDirectory() as releases, patch.object(pending_releases, "RELEASES", releases), \
+                patch.object(issue_claiming, "set_item_status", side_effect=outage), \
+                patch.object(issue_claiming, "clear_issue_assignees", side_effect=outage), \
+                patch.object(issue_claiming, "get_item_status", side_effect=outage), \
+                patch.object(issue_claiming, "get_issue_assignees", side_effect=outage), \
+                patch.object(issue_claiming.time, "sleep"), \
+                contextlib.redirect_stderr(io.StringIO()) as stderr:
+            run_launch.close_out(claimed, {"outcome": "failed", "kind": "infrastructure", "reason": "x"})
+            self.assertTrue(pending_releases.is_release_pending(7))  # §FS-forge-stranded-claims.4.2
+        self.assertIn("Issue #7: failed (x); claim release unconfirmed.", stderr.getvalue())
+
+    def test_a_label_github_refuses_keeps_the_claim_that_holds_the_issue(self) -> None:
+        # Released unlabeled, the issue would be claimed again and fail the same way.
+        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
+        with patch.object(run_launch, "add_issue_label", side_effect=outage), \
+                patch.object(run_launch, "post_issue_comment") as comment, \
+                patch.object(run_launch, "revert_issue_claim") as revert, \
+                contextlib.redirect_stderr(io.StringIO()) as stderr:
+            run_launch.close_out(claimed, {"outcome": "human-intervention", "reason": "native still fails"})
+        comment.assert_not_called()
+        revert.assert_not_called()
+        self.assertIn("could not be labeled human-intervention; the claim is kept", stderr.getvalue())
+
+    def test_a_comment_github_refuses_still_releases_the_labeled_issue(self) -> None:
+        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
+        with patch.object(run_launch, "add_issue_label"), \
+                patch.object(run_launch, "post_issue_comment", side_effect=outage), \
+                patch.object(run_launch, "revert_issue_claim", return_value=True) as revert, \
+                contextlib.redirect_stderr(io.StringIO()) as stderr:
+            run_launch.close_out(claimed, {"outcome": "human-intervention", "reason": "native still fails"})
+        revert.assert_called_once_with("item", 7, "native still fails")
+        self.assertIn("Issue #7 intervention comment could not be posted", stderr.getvalue())
+        self.assertIn("claim released.", stderr.getvalue())
+
+    def test_an_issue_closed_after_the_claim_only_loses_its_forge_assignee(self) -> None:
+        # It left the queue: no label, comment or board move (§FS-forge-run-requirements.2).
+        self.assertEqual(([], [], []), self.close_out(
+            {"outcome": "failed", "kind": "issue-closed", "reason": "the issue closed after the claim"}))
+        self.released.assert_called_once_with(7, "the issue closed after the claim")
 
     def test_a_run_without_an_outcome_is_an_infrastructure_failure(self) -> None:
         self.assertEqual("infrastructure", run_launch.record_outcome(tempfile.mkdtemp())["kind"])
@@ -283,7 +338,7 @@ class WorkspaceTest(unittest.TestCase):
 
 
 class ReleaseTest(unittest.TestCase):
-    """A finished attempt gives up its worktree and Gradle home (§AR-forge-workflow-pipeline.1).
+    """A finished attempt gives up its worktree and Gradle home (§AR-forge-launcher.1).
 
     §FS-forge-run-requirements.4
     """
@@ -316,7 +371,8 @@ class ReleaseTest(unittest.TestCase):
         recorded: list[bool] = []
         self.stop_daemons.side_effect = lambda *_: recorded.append(
             os.path.isfile(os.path.join(self.workspace, run_launch.OUTCOME)))
-        self.assertEqual("infrastructure", run_launch.finish_run(self.repo, self.workspace)["kind"])
+        started = run_launch.Started(workspace=self.workspace, advanced=True)
+        self.assertEqual("infrastructure", run_launch.finish_run(self.repo, started)["kind"])
         # The daemons are stopped with the worktree's own wrapper, before the worktree goes.
         self.assertEqual([True], recorded)
         self.assertEqual((self.home, self.worktree), self.stop_daemons.call_args.args[:2])
@@ -335,7 +391,8 @@ class ReleaseTest(unittest.TestCase):
         claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         forge: str = os.path.dirname(os.path.dirname(self.workspace))
         with patch.object(run_launch.subprocess, "run") as run:
-            self.assertEqual(self.workspace, run_launch.start_run(forge, claimed, "claude-code:sonnet", "pi:x/y", []))
+            started = run_launch.start_run(forge, claimed, "claude-code:sonnet", "pi:x/y", [])
+        self.assertEqual(self.workspace, started.workspace)
         self.assertEqual([["rhei", "run", self.workspace, "--dashboard"]], [call.args[0] for call in run.call_args_list])
         self.assertTrue(os.path.isdir(self.worktree))
 
@@ -343,15 +400,17 @@ class ReleaseTest(unittest.TestCase):
         claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         steps = Mock()
         steps.finish_run.return_value = {"outcome": "completed"}
+        started = run_launch.Started(workspace=self.workspace, advanced=True)
         with patch.object(forge_metadata, "fetch_candidates", return_value=[("library-new-request", claimed.issue)]), \
+                tempfile.TemporaryDirectory() as forge, patch.object(forge_metadata, "FORGE_DIR", forge), \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(forge_metadata, "claim", return_value=claimed), \
-                patch.object(forge_metadata, "start_run", return_value=self.workspace), \
+                patch.object(forge_metadata, "start_run", return_value=started), \
                 patch.object(forge_metadata, "finish_run", steps.finish_run), \
                 patch.object(forge_metadata, "close_out", steps.close_out), \
                 contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(forge_metadata.RAN, forge_metadata.main([]))
-        self.assertEqual([("finish_run", (forge_metadata.REPO_DIR, self.workspace)),
+        self.assertEqual([("finish_run", (forge_metadata.REPO_DIR, started)),
                           ("close_out", (claimed, {"outcome": "completed"}))],
                          [(name, args) for name, args, _ in steps.mock_calls])
 

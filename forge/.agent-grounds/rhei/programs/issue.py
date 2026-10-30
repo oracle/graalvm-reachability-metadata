@@ -6,7 +6,7 @@
 """Read the issue a run resolves and derive its route.
 
 The label decides the route and the title the coordinate
-(§FS-forge-scope, §FS-forge-run-requirements.3); the three `fails-*` labels
+(§FS-forge-scope, §FS-forge-run-requirements.3); the four `fails-*` labels
 share one route (§AR-forge-control-plane).
 """
 from __future__ import annotations
@@ -26,6 +26,7 @@ ROUTES: dict[str, str] = {
     "library-update-request": ROUTE_UPDATE,
     "fails-javac-compile": ROUTE_REPAIR,
     "fails-java-run": ROUTE_REPAIR,
+    "fails-native-image-build": ROUTE_REPAIR,
     "fails-native-image-run": ROUTE_REPAIR,
 }
 # The trusted publisher's route for each issue label (§AR-actions-publication).
@@ -34,9 +35,14 @@ TASK_TYPES: dict[str, str] = {
     "library-update-request": "library-update-request",
     "fails-javac-compile": "fixes-javac-fail",
     "fails-java-run": "fixes-java-run-fail",
+    "fails-native-image-build": "fixes-native-image-build-fail",
     "fails-native-image-run": "fixes-native-image-run-fail",
 }
 CHUNKED_LABEL: str = "chunked-dynamic-access"
+
+
+class IssueClosed(ValueError):
+    """The issue is no longer open: it left the queue after the claim (§FS-forge-run-requirements.2)."""
 
 
 @dataclass(frozen=True)
@@ -53,9 +59,9 @@ class Issue:
 
 
 def parse_issue(payload: dict[str, Any]) -> Issue:
-    """The open issue's one workflow label and one coordinate; `ValueError` otherwise."""
+    """The open issue's one workflow label and one coordinate; `IssueClosed` or `ValueError` otherwise."""
     if str(payload.get("state", "")).upper() != "OPEN":
-        raise ValueError(f"issue is {payload.get('state')}, not open")
+        raise IssueClosed(f"issue is {payload.get('state')}, not open")
     labels: frozenset[str] = frozenset(label.get("name", "") for label in payload.get("labels", []))
     workflow_labels: list[str] = sorted(labels & ROUTES.keys())
     if len(workflow_labels) != 1:

@@ -31,6 +31,7 @@ ALLOWED_PROJECT_STATUSES = {"Todo", "In Progress", "Done"}
 LABEL_LIBRARY_NEW = "library-new-request"
 LABEL_JAVAC_FAIL = "fails-javac-compile"
 LABEL_JAVA_RUN_FAIL = "fails-java-run"
+LABEL_NI_BUILD_FAIL = "fails-native-image-build"
 LABEL_NI_RUN_FAIL = "fails-native-image-run"
 
 JsonObject = dict[str, Any]
@@ -318,7 +319,7 @@ class FixtureGitHubState:
             )
         if label == LABEL_LIBRARY_NEW:
             self._prepare_new_library_worktree(issue, label, worktree_path)
-        elif label in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}:
+        elif label in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_BUILD_FAIL, LABEL_NI_RUN_FAIL}:
             self._prepare_version_failure_worktree(issue, label, worktree_path)
         else:
             _log_fixture_setup(
@@ -403,9 +404,9 @@ class FixtureGitHubState:
     ) -> None:
         """Mask the requested version so a failure fixture replays a current -> new upgrade.
 
-        Shared by `fails-javac-compile`, `fails-java-run`, and `fails-native-image-run`:
-        all three model a scheduled-compatibility failure where the requested version is
-        not yet supported and `latest` resolves to the previous tested version.
+        Shared by the four `fails-*` labels: each models a scheduled-compatibility failure
+        where the requested version is not yet supported and `latest` resolves to the
+        previous tested version.
         """
         coordinate = _extract_coordinate_parts(issue.title)
         if coordinate is None:

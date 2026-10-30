@@ -8,7 +8,7 @@
 `fix` has one outgoing edge, so this program routes on the open request's
 sender and the fix report: `cannot-fix` exits `40`, except for `native`, whose
 budget it spends; anything else the sender's return code, whose own check then
-decides (§AR-forge-workflow-pipeline.2,
+decides (§AR-forge-launcher.2,
 §AR-forge-workflow-pipeline.6). A report is evidence, never a verdict.
 
 `fix` writes the open request's report to one path, the one Rhei checks it

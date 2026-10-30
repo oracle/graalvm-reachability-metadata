@@ -339,6 +339,71 @@ class GitHubRateLimitTests(unittest.TestCase):
         self.assertEqual(run.call_args_list[1].kwargs["cwd"], "/repo")
         sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
 
+    def test_get_authenticated_login_retries_unresolvable_github(self) -> None:
+        with patch.object(common_git.subprocess, "run", side_effect=[UNREACHABLE, LOGIN]) as run, \
+                patch.object(github_cli.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO):
+            self.assertEqual(common_git.get_authenticated_login(cwd="/repo"), "vjovanov")
+
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+
+
+# What gh prints when api.github.com does not resolve (issue #9621).
+UNREACHABLE = subprocess.CompletedProcess(
+    ["gh"],
+    1,
+    stdout="",
+    stderr="error connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+)
+LOGIN = subprocess.CompletedProcess(["gh"], 0, stdout="vjovanov\n", stderr="")
+
+
+class EnsureGhAuthenticatedTests(unittest.TestCase):
+    """A GitHub outage is not a missing login (FS-human-intervention-policy)."""
+
+    def ensure(self, *results: subprocess.CompletedProcess) -> tuple[unittest.mock.MagicMock, str]:
+        with patch.object(github_cli.shutil, "which", return_value="/usr/bin/gh"), \
+                patch.object(github_cli.subprocess, "run", side_effect=list(results)) as run, \
+                patch.object(github_cli.time, "sleep"), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout, \
+                patch("sys.stderr", new_callable=io.StringIO):
+            github_cli.ensure_gh_authenticated()
+        return run, stdout.getvalue()
+
+    def test_a_blip_is_retried_instead_of_exiting(self) -> None:
+        run, _ = self.ensure(UNREACHABLE, LOGIN)
+
+        self.assertEqual(run.call_count, 2)
+
+    def test_an_outage_that_outlasts_the_retries_is_a_github_error(self) -> None:
+        with self.assertRaises(github_cli.GitHubError):
+            self.ensure(*[UNREACHABLE] * github_cli.GITHUB_TRANSIENT_RETRY_ATTEMPTS)
+
+    def test_rejected_credentials_stop_without_retrying(self) -> None:
+        rejected = subprocess.CompletedProcess(["gh"], 1, stdout="", stderr="gh: Bad credentials (HTTP 401)")
+        with self.assertRaises(SystemExit) as stopped:
+            self.ensure(rejected)
+
+        self.assertEqual(stopped.exception.code, 1)
+
+
+class TransientFailureTextTests(unittest.TestCase):
+    def test_github_that_cannot_be_reached_is_transient(self) -> None:
+        for text in (
+                UNREACHABLE.stderr,
+                'Post "https://api.github.com/graphql": dial tcp: lookup api.github.com: no such host',
+                'Get "https://api.github.com/user": dial tcp 140.82.121.5:443: connect: network is unreachable',
+                'Get "https://api.github.com/user": dial tcp 140.82.121.5:443: connect: connection refused',
+        ):
+            with self.subTest(text=text):
+                self.assertTrue(github_cli.is_github_transient_failure_text(text))
+
+    def test_an_answer_that_refuses_the_request_is_not_transient(self) -> None:
+        for text in ("gh: Bad credentials (HTTP 401)", "gh: Not Found (HTTP 404)", "gh: Resource not accessible"):
+            with self.subTest(text=text):
+                self.assertFalse(github_cli.is_github_transient_failure_text(text))
+
 
 if __name__ == "__main__":
     unittest.main()
