@@ -170,3 +170,12 @@ with `75` too (§FS-forge-stranded-claims.4.4).
 Every program also routes any other non-zero exit to `failed`, and every exit
 writes Rhei's result file, which an edge into a final state requires; a crash,
 a `SystemExit` from a shared helper included, is an infrastructure exit.
+
+`forge_metadata.py`'s own statuses are read by `run-forge.sh` alone: `0` an
+issue ran, `4` nothing could be claimed, `3` the run halted without advancing,
+`75` a transient halt, and `2` bad arguments. Nothing claimed has a status no
+crash produces, because an uncaught exception exits `1`: the loop idles only on
+`4`, and backs off on every status but `0` and `4`, a crash included
+(§AR-forge-launcher.1). A crash caused by a GitHub rate limit or an unreachable
+GitHub, the failure carried as the exception or its cause, is a transient halt:
+it exits `75` with one line instead of a traceback.

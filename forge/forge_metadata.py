@@ -43,9 +43,10 @@ REPO_DIR: str = os.path.dirname(FORGE_DIR)
 DEFAULT_SETUP_AGENT: str = "claude-code[medium]:sonnet"
 DEFAULT_WORKER_AGENT: str = "pi[high]:openai-codex/gpt-5.6-luna"
 DEFAULT_REVIEW_AGENT: str = "claude-code[high]:opus"
-# Exit codes the loop reads: an issue ran, or nothing could be claimed.
+# Exit codes the loop reads: an issue ran, or nothing could be claimed. An uncaught exception
+# exits 1, so nothing claimed has a status no crash produces (§AR-forge-launcher.2).
 RAN: int = 0
-NOTHING_CLAIMED: int = 1
+NOTHING_CLAIMED: int = 4
 BAD_ARGUMENTS: int = 2
 # The claimed issue's run halted without advancing for the first time: a failed cycle, so
 # the loop backs off before a later claim resumes the run (§AR-forge-launcher.1).
@@ -148,18 +149,37 @@ def argument_error(args: argparse.Namespace) -> str | None:
     return target_error(args.setup_agent, args.worker_agent)
 
 
+def github_outage_cause(error: BaseException) -> BaseException | None:
+    """The exception, or the first of its `__cause__` chain, that is a transient GitHub failure."""
+    link: BaseException | None = error
+    while link is not None:
+        if is_github_outage(link):
+            return link
+        link = link.__cause__
+    return None
+
+
 def main(argv: list[str] | None = None) -> int:
     args: argparse.Namespace = parse_args(argv)
     error: str | None = argument_error(args)
     if error is not None:
         print(f"ERROR: {error}.", file=sys.stderr)
         return BAD_ARGUMENTS
-    if args.review:
-        reviewed: int = review_pass(REPO_DIR, args.review_agent, resolve_authenticated_user(), args.dry_run, args.pr,
-                                    args.head)
-        print(f"[review] reviewed {reviewed} pull requests", file=sys.stderr)
-        return RAN
-    return run_cycle(args)
+    try:
+        if args.review:
+            reviewed: int = review_pass(REPO_DIR, args.review_agent, resolve_authenticated_user(), args.dry_run,
+                                        args.pr, args.head)
+            print(f"[review] reviewed {reviewed} pull requests", file=sys.stderr)
+            return RAN
+        return run_cycle(args)
+    except Exception as crash:
+        # A crash GitHub caused transiently halts like the other transient halts; any other keeps
+        # its traceback and exits 1, a failed cycle (§AR-forge-launcher.2).
+        cause: BaseException | None = github_outage_cause(crash)
+        if cause is None:
+            raise
+        print(f"ERROR: GitHub failed transiently: {format_github_exception_details(cause)}", file=sys.stderr)
+        return GITHUB_OUTAGE
 
 
 if __name__ == "__main__":

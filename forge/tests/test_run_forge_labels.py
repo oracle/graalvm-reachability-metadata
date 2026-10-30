@@ -18,10 +18,14 @@ import sys
 import tempfile
 import unittest
 
+import forge_metadata
+
 FORGE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NEW: str = "library-new-request"
 UPDATE: str = "library-update-request"
 JAVA_RUN: str = "fails-java-run"
+# The cycle's status when nothing could be claimed; no crash exits with it (§AR-forge-launcher.2).
+NOTHING: int = forge_metadata.NOTHING_CLAIMED
 # Records each call of the launcher; the host check exits with its next scripted status, then
 # passes until its budget is spent, which ends the loop, and the claim cycle exits with the next
 # scripted status, 0 once they run out.
@@ -136,14 +140,14 @@ class LabelRotationTest(unittest.TestCase):
     def test_an_empty_queue_passes_its_turns_on_within_one_host_check(self) -> None:
         self.assertEqual(
             ["host", NEW, UPDATE, "host", NEW, UPDATE],
-            self.events("--label", f"{NEW}:2", "--label", UPDATE, iterations=2, statuses=(1, 0, 1, 0)))
+            self.events("--label", f"{NEW}:2", "--label", UPDATE, iterations=2, statuses=(NOTHING, 0, NOTHING, 0)))
 
     def test_a_rotation_with_nothing_to_claim_reviews_waits_and_keeps_its_turn(self) -> None:
         # The second turn of the new-library queue comes after the idle wait, then fails-java-run.
         self.assertEqual(
             ["host", "review", NEW, "review", "host", NEW, JAVA_RUN, "review", "sleep", "host", NEW, "review",
              "host", JAVA_RUN, "review"],
-            self.events("--label", f"{NEW}:2", "--label", JAVA_RUN, iterations=4, statuses=(0, 1, 1),
+            self.events("--label", f"{NEW}:2", "--label", JAVA_RUN, iterations=4, statuses=(0, NOTHING, NOTHING),
                         reviews=True))
 
     def test_a_failed_cycle_counts_as_a_run_and_spends_its_turn(self) -> None:
@@ -164,7 +168,7 @@ class LabelRotationTest(unittest.TestCase):
 
     def test_without_a_label_every_cycle_fetches_every_queue(self) -> None:
         self.assertEqual(["host", "every queue", "sleep"],
-                         self.events(iterations=1, statuses=(1,)))
+                         self.events(iterations=1, statuses=(NOTHING,)))
 
     def test_the_cycle_gets_its_label_and_the_other_claim_arguments(self) -> None:
         _, calls = self.launch("--label", f"{JAVA_RUN}:2", "--take-blocked-issues", "--", "--max-steps", "3",

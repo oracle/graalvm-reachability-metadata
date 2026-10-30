@@ -81,7 +81,10 @@ def _run(command: list[str]) -> list[dict[str, Any]]:
         command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
     )
     if completed.returncode != 0:
-        raise RuntimeError(f"cannot list issues with {' '.join(command)}: {completed.stderr.strip()}")
+        # gh's output rides as the cause, so an outage is told from a crash (§AR-forge-launcher.2).
+        failure: subprocess.CalledProcessError = subprocess.CalledProcessError(
+            completed.returncode, command, completed.stdout, completed.stderr)
+        raise RuntimeError(f"cannot list issues with {' '.join(command)}: {completed.stderr.strip()}") from failure
     return json.loads(completed.stdout)
 
 
