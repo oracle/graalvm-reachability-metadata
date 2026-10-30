@@ -466,7 +466,8 @@ explanation names the GraalVM signal it saw — a builder-internal `VMError`,
 `HostedError` or `shouldNotReachHere`, or forbidden metadata the agent emits on
 every generation (§root/FS-graalvm-blocked-work.1). Once a maintainer adds
 `graalvm-bug`, that label holds the item out of claiming and review on its own
-(§FS-forge-run-requirements.2.1, §FS-published-pr-review.2).
+(§FS-forge-run-requirements.2.1, §FS-published-pr-review.2), and out of the
+scanner that groups this labeled backlog by cause (§root/FS-graalvm-blocked-work.2).
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
