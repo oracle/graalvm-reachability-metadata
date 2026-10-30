@@ -8,7 +8,8 @@ belongs in [../functional-spec/](../functional-spec/README.md).
 
 One kind lives here: every declaration in this folder is an `AR-` ID, whichever
 file it sits in. Architecture that belongs to one component — the issue run in
-[workflow-pipeline.md](workflow-pipeline.md) and its prompts in
+[workflow-pipeline.md](workflow-pipeline.md), the launcher that starts it and
+the programs' exit codes in [launcher.md](launcher.md), its prompts in
 [workflow-prompts.md](workflow-prompts.md), the dispatcher in
 [dispatcher-package.md](dispatcher-package.md), publication in
 [git-scripts.md](git-scripts.md), the exhaust report and chunk linking in
@@ -21,6 +22,7 @@ hold only retired stubs.
 | --- | --- |
 | [§AR-forge-architecture](architecture.md#ar-forge-architecture-forge-architecture) | Forge architecture, and the map of every architecture ID |
 | [§AR-forge-workflow-pipeline](workflow-pipeline.md#ar-forge-workflow-pipeline-forge-workflow-pipeline) | The Rhei state machine of one issue run, state by state |
+| [§AR-forge-launcher](launcher.md#ar-forge-launcher-forge-launcher-and-exit-codes) | The launcher loop that claims an issue and starts its run, and the programs' exit codes |
 | [§AR-forge-workflow-prompts](workflow-prompts.md#ar-forge-workflow-prompts-forge-workflow-prompts) | The fixed instructions and handoffs every agent state receives |
 | [§AR-forge-run-location](architecture.md#ar-forge-run-location-one-run-location-for-progress-and-failure) | How progress and failure output share one phase/step vocabulary |
 | [§AR-forge-control-plane](architecture.md#ar-forge-control-plane-the-launcher-owns-queue-control) | The launcher owns queue control |
@@ -67,6 +69,8 @@ Files:
 
 - [workflow-pipeline.md](workflow-pipeline.md) — the Rhei state machine of one
   issue run. Start here.
+- [launcher.md](launcher.md) — the launcher loop that claims an issue and
+  starts its run, and the exit codes by which the programs route it.
 - [workflow-prompts.md](workflow-prompts.md) — what each agent state is told.
 - [architecture.md](architecture.md) — the control plane and the boundaries that
   keep generated work reviewable.

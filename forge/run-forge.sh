@@ -14,7 +14,7 @@ readonly DEFAULT_WORKER_AGENT="pi[high]:openai-codex/gpt-5.6-luna"
 readonly DEFAULT_REVIEW_AGENT="claude-code[high]:opus"
 
 # Claim and run Forge issues until stopped, reviewing the open Forge pull requests.
-# §FS-forge-issue-resolution-goal §AR-forge-workflow-pipeline.1 §FS-published-pr-review.1
+# §FS-forge-issue-resolution-goal §AR-forge-launcher.1 §FS-published-pr-review.1
 
 usage() {
     cat <<USAGE
@@ -60,7 +60,7 @@ setup_agent="$DEFAULT_SETUP_AGENT"
 worker_agent="$DEFAULT_WORKER_AGENT"
 review_agent="$DEFAULT_REVIEW_AGENT"
 claim_arguments=()
-# The --label rotation: each queue label and its turns in a row (§AR-forge-workflow-pipeline.1).
+# The --label rotation: each queue label and its turns in a row (§AR-forge-launcher.1).
 labels=()
 counts=()
 add_label() {
@@ -164,7 +164,7 @@ turn=0
 taken=0
 # Run one cycle on the queue whose turn it is; a queue with nothing to claim passes the turn, and
 # the rest of its turns, to the next. Returns 1 only when no queue claimed anything, leaving the
-# rotation where it stood (§AR-forge-workflow-pipeline.1).
+# rotation where it stood (§AR-forge-launcher.1).
 claim_next() {
     local attempt index status
     if (( ${#labels[@]} == 0 )); then

@@ -126,7 +126,7 @@ def give_up_worktree(repo: str, worktree: str) -> None:
 
     A prepare that exits without saving its state is a finished attempt whose
     worktree the close-out cannot find, so it gives the worktree up as the
-    close-out would (§AR-forge-workflow-pipeline.1). Best effort: a failure is
+    close-out would (§AR-forge-launcher.1). Best effort: a failure is
     reported, and the exit the prepare took stands.
     """
     try:

@@ -8,7 +8,7 @@
 One cycle fetches the queues with `gh issue list`, claims the first eligible
 issue whose form is valid, runs its `forge-metadata` Rhei workspace, and closes
 it out; every decision about the issue is the run's
-(§AR-forge-workflow-pipeline.1, §FS-forge-issue-resolution-goal). `--review`
+(§AR-forge-launcher.1, §FS-forge-issue-resolution-goal). `--review`
 reviews the published pull requests instead, and `--review --dry-run` writes
 nothing on GitHub (§FS-published-pr-review).
 
@@ -43,10 +43,10 @@ RAN: int = 0
 NOTHING_CLAIMED: int = 1
 BAD_ARGUMENTS: int = 2
 # The claimed issue's run halted without advancing for the first time: a failed cycle, so
-# the loop backs off before a later claim resumes the run (§AR-forge-workflow-pipeline.1).
+# the loop backs off before a later claim resumes the run (§AR-forge-launcher.1).
 RAN_NO_STATE: int = 3
 # A Rhei budget refused the claimed issue's run: a transient host condition, so the loop
-# backs off as after a transient host check (§AR-forge-workflow-pipeline.1).
+# backs off as after a transient host check (§AR-forge-launcher.1).
 BUDGET_HALTED: int = TRANSIENT_FAILURE_EXIT_STATUS
 
 
