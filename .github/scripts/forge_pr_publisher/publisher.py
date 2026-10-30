@@ -53,6 +53,7 @@ ROUTE_LABELS = {
     "library-update-request": ["GenAI", "library-update-request"],
     "fixes-javac-fail": ["GenAI", "fixes-javac-fail"],
     "fixes-java-run-fail": ["GenAI", "fixes-java-run-fail"],
+    "fixes-native-image-build-fail": ["GenAI", "fixes-native-image-build-fail"],
     "fixes-native-image-run-fail": ["fixes-native-image-run-fail"],
     "not-for-native-image": ["GenAI", "library-new-request", "not-for-native-image"],
     "code-coverage-benchmark-result": ["GenAI", "code-coverage-improvement", "rhei"],
@@ -347,6 +348,7 @@ def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
     if template_type in {
         "fixes-javac-fail",
         "fixes-java-run-fail",
+        "fixes-native-image-build-fail",
         "fixes-native-image-run-fail",
     } and descriptor.get("previous_library") is None:
         raise ValueError(f"Template {template_type!r} requires previous_library")
@@ -814,12 +816,13 @@ Summary:
     return title, body
 
 
-def _render_java_fix(
+def _render_repair_fix(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
         *,
         failure_description: str,
 ) -> tuple[str, str]:
+    """One body for the agent repairs of a failed compatibility stage (§forge/AR-pr-body.2)."""
     coordinates = descriptor["library"]["coordinates"]
     previous = descriptor.get("previous_library") or {}
     previous_coordinates = previous.get("coordinates")
@@ -870,7 +873,7 @@ def _render_javac_fix(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
 ) -> tuple[str, str]:
-    return _render_java_fix(
+    return _render_repair_fix(
         descriptor, validated, failure_description="compile java failures",
     )
 
@@ -879,8 +882,17 @@ def _render_java_run_fix(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
 ) -> tuple[str, str]:
-    return _render_java_fix(
+    return _render_repair_fix(
         descriptor, validated, failure_description="runtime java test failures",
+    )
+
+
+def _render_native_image_build_fix(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    return _render_repair_fix(
+        descriptor, validated, failure_description="Native Image build failures",
     )
 
 
@@ -1279,6 +1291,7 @@ SKIP_RECORD_TEMPLATES = frozenset({
     "library-update-request",
     "fixes-javac-fail",
     "fixes-java-run-fail",
+    "fixes-native-image-build-fail",
     "fixes-native-image-run-fail",
 })
 
@@ -1362,6 +1375,7 @@ _TEMPLATE_BUILDERS = {
     "library-new-request": _render_library_new_request,
     "fixes-javac-fail": _render_javac_fix,
     "fixes-java-run-fail": _render_java_run_fix,
+    "fixes-native-image-build-fail": _render_native_image_build_fix,
     "fixes-native-image-run-fail": _render_native_image_run_fix,
     "not-for-native-image": _render_not_for_native_image,
     "code-coverage-improvement": _render_code_coverage_improvement,

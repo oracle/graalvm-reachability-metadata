@@ -34,8 +34,8 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    labels is served once, in its highest tier, as the repository status
    classifies it (§root/FS-repository-status-report.1). The labels are
    `library-new-request`, `library-update-request`, `fails-javac-compile`,
-   `fails-java-run`, and `fails-native-image-run` (§FS-forge-scope). A fixture
-   file can stand in for GitHub.
+   `fails-java-run`, `fails-native-image-build`, and `fails-native-image-run`
+   (§FS-forge-scope). A fixture file can stand in for GitHub.
 2. **Claim.** The live claimability check and the optimistic claim are the
    dispatcher's (§FS-forge-run-requirements.2): assign, wait, verify, move the
    board item to `In Progress`, release on any failure.
@@ -212,7 +212,7 @@ resolves them in `javaTest` and reports one that does not resolve as a bad
 input. A new library then exits `20` to `analyze`, since it has no version to
 repair; every other route exits `0` to `jvm`.
 
-On the three `fails-*` labels `setup` may also add `skipped-versions` entries,
+On the four `fails-*` labels `setup` may also add `skipped-versions` entries,
 its unsupportable-version verdict (§FS-unsupportable-version-diagnosis.2); on
 every other label the tail reverts them with the rest. Before anything else,
 when the index gained an entry for the target version, the tail returns the

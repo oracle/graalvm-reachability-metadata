@@ -28,6 +28,7 @@ from utility_scripts.gradle_environment import (
 )
 
 import forge_run  # noqa: E402
+import issue  # noqa: E402
 import prepare  # noqa: E402
 import run_note  # noqa: E402
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
@@ -340,9 +341,20 @@ class PrepareTest(unittest.TestCase):
 
     def test_fails_labels_share_the_repair_route(self) -> None:
         self.fake.supported_library()
-        self.fake.issue("fails-native-image-run")
+        self.fake.issue("fails-native-image-build")
         self.assertEqual(OK, self.prepare())
         self.assertEqual(ROUTE_REPAIR, load(self.fake.workspace).route)
+
+    def test_each_fails_label_repairs_under_its_own_fix_label(self) -> None:
+        # The automation files each stage beside `library-unsupported-version` (§FS-forge-scope.1).
+        for label, fix in (("fails-javac-compile", "fixes-javac-fail"), ("fails-java-run", "fixes-java-run-fail"),
+                           ("fails-native-image-build", "fixes-native-image-build-fail"),
+                           ("fails-native-image-run", "fixes-native-image-run-fail")):
+            with self.subTest(label=label):
+                parsed: issue.Issue = issue.parse_issue({
+                    "state": "OPEN", "number": 7, "title": f"Fails {COORDINATE}",
+                    "labels": [{"name": "library-unsupported-version"}, {"name": label}]})
+                self.assertEqual((label, ROUTE_REPAIR, fix), (parsed.label, parsed.route, issue.TASK_TYPES[label]))
 
     def test_two_workflow_labels_are_a_bad_input(self) -> None:
         self.fake.issue("fails-javac-compile", extra_labels=("fails-java-run",))

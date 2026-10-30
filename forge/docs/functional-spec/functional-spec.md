@@ -23,8 +23,8 @@ review and repository CI remain the final merge boundary.
 This shortens the path described in §GOAL-shorten-issue-to-shipped-metadata.
 
 A supported issue starts from a work label such as `library-new-request`,
-`library-update-request`, `fails-javac-compile`, `fails-java-run`, or
-`fails-native-image-run`. §FS-forge-scope enumerates the queues Forge resolves,
+`library-update-request`, `fails-javac-compile`, `fails-java-run`,
+`fails-native-image-build`, or `fails-native-image-run`. §FS-forge-scope enumerates the queues Forge resolves,
 and §FS-forge-scope.1 records where the `fails-*` work comes from. Forge drains
 each pipeline by priority tier rather than by scan batch: every `high-priority`
 issue first, then every `priority` issue, then the remaining issues.
@@ -47,14 +47,18 @@ The project covers these supported issue-resolution queues
    no longer compile against a bumped library version.
 5. **Java runtime fixes** (`fails-java-run`) — repair JVM-mode test
    failures that surface when raising a tested library to a new version.
-6. **Native-image runtime fixes** (`fails-native-image-run`) — update
+6. **Native-image build fixes** (`fails-native-image-build`) — repair the
+   test project, its allowed native-image flags, or the reachability metadata
+   so the native test image builds against the new library version.
+7. **Native-image runtime fixes** (`fails-native-image-run`) — update
    reachability metadata so `nativeTest` passes against the new library
    version, using the native metadata exploration phase.
 
 Successful fixes use the matching PR labels (`library-new-request`,
-`library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`, or
-`fixes-native-image-run-fail`) so the launcher's review recognizes the pull
-request as Forge's (§FS-published-pr-review.1).
+`library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`,
+`fixes-native-image-build-fail`, or `fixes-native-image-run-fail`) so the
+launcher's review recognizes the pull request as Forge's
+(§FS-published-pr-review.1).
 
 Out of scope: anything that does not produce reachability metadata or its
 supporting tests for the reachability repo.
@@ -70,6 +74,10 @@ the stage that broke (`fails-javac-compile`, `fails-java-run`,
 `fails-native-image-build`, or `fails-native-image-run`). Forge claims those
 issues; it never opens them. The producer's contract is the reachability repo's
 Library version update automation (§root/FS-library-version-update-automation).
+That automation also assigns each `fails-native-image-build` issue to a
+maintainer (§root/FS-library-version-update-automation.4), and Forge fetches
+only unassigned issues (§AR-forge-workflow-pipeline.1), so a maintainer hands
+one to Forge by removing the assignment.
 
 ## FS-forge-glossary: Glossary
 
@@ -544,7 +552,7 @@ policy or repository resolution.
   where `<suffix>` names the route and encodes the coordinate (e.g.
   `add-lib-support-<group>-<artifact>-<version>` for new-library support,
   `library-update-request-…`, `fixes-javac-fail-…`, `fixes-java-run-fail-…`,
-  `fixes-native-image-run-fail-…`). Publication branches are
+  `fixes-native-image-build-fail-…`, `fixes-native-image-run-fail-…`). Publication branches are
   unique per publication ID and are pushed directly to
   `oracle/graalvm-reachability-metadata` so the repository's `push` workflow can
   observe them.
@@ -776,8 +784,8 @@ metrics like any other.
 
 ## FS-unsupportable-version-diagnosis: Unsupportable-version verdict in setup
 
-For `fails-javac-compile`, `fails-java-run`, and `fails-native-image-run`
-issues, the `setup` state answers one more question before any repair starts:
+For `fails-javac-compile`, `fails-java-run`, `fails-native-image-build`, and
+`fails-native-image-run` issues, the `setup` state answers one more question before any repair starts:
 does covering the library's dynamic-access calls require behavior Native Image
 does not support (§root/FS-test-contract.4.5)? The inputs — the issue's failure
 evidence and the library's sources for this and newer versions — all exist
@@ -787,7 +795,7 @@ turn and saves the whole repair. Without it, the disposition of
 that fails honestly ends in `human-intervention` and publishes nothing. Issues
 without failure evidence are never asked: a `library-new-request` has no index
 entry to record a skip into, and a `library-update-request` carries no failure
-to diagnose. `run.md` names the bar only for the three `fails-*` labels
+to diagnose. `run.md` names the bar only for the four `fails-*` labels
 (§AR-forge-workflow-prompts.2).
 
 ### 1. The bar
@@ -831,7 +839,7 @@ a repairable verdict it adds no entry.
 
 ### 3. The skip record is the run's outcome
 
-The setup tail keeps `skipped-versions` additions on the three `fails-*` labels
+The setup tail keeps `skipped-versions` additions on the four `fails-*` labels
 and reverts them on every other label (§AR-forge-workflow-pipeline.4.1). When
 the index gained an entry for the target version, `setup-check` turns the run into
 the skip record before anything else. The coordinate's paths return to the
@@ -928,7 +936,7 @@ Rhei template (§AR-forge-workflow-pipeline.3). The issue label picks the route:
 | --- | --- |
 | `library-new-request` | scaffold, then exploration; no repair |
 | `library-update-request` | add the version, repair, then exploration |
-| `fails-javac-compile`, `fails-java-run`, `fails-native-image-run` | one shared route: repair, then exploration |
+| `fails-javac-compile`, `fails-java-run`, `fails-native-image-build`, `fails-native-image-run` | one shared route: repair, then exploration |
 | `code-coverage-improvement` | its own template (§AR-code-coverage-improvement) |
 
 Exploration always tries bulk passes before class passes, and `analyze` picks

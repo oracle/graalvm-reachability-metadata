@@ -97,7 +97,7 @@ repository Actions hand the exact SHA to trusted default-branch publisher code
 (§AR-actions-publication), which owns PR creation and publication-related
 GitHub mutations.
 
-Issue work is routed by issue label, not by PR label, and the three `fails-*`
+Issue work is routed by issue label, not by PR label, and the four `fails-*`
 labels share one route:
 
 | Issue label | Route in `prepare` | Successful PR label |
@@ -106,6 +106,7 @@ labels share one route:
 | `library-update-request` | add the version, repair, explore | `library-update-request` |
 | `fails-javac-compile` | add the version, repair, explore | `fixes-javac-fail` |
 | `fails-java-run` | add the version, repair, explore | `fixes-java-run-fail` |
+| `fails-native-image-build` | add the version, repair, explore | `fixes-native-image-build-fail` |
 | `fails-native-image-run` | add the version, repair, explore | `fixes-native-image-run-fail` |
 
 ```mermaid

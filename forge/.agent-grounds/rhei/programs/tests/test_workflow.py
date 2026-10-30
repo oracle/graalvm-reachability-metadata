@@ -52,13 +52,18 @@ URLS: dict[str, str] = {
 }
 
 
-def rendered_body(descriptor: dict[str, Any]) -> str:
-    """The pull request body the trusted publisher renders, loaded from its file as Actions runs it."""
+def trusted_publisher() -> Any:
+    """The trusted publisher, loaded from its file as Actions runs it."""
     spec: Any = importlib.util.spec_from_file_location("forge_pr_publisher_workflow", PUBLISHER)
     publisher: Any = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = publisher
     spec.loader.exec_module(publisher)
-    return publisher.render_publication(descriptor)[1]
+    return publisher
+
+
+def rendered_body(descriptor: dict[str, Any]) -> str:
+    """The pull request body the trusted publisher renders."""
+    return trusted_publisher().render_publication(descriptor)[1]
 
 
 class WorkflowTest(unittest.TestCase):

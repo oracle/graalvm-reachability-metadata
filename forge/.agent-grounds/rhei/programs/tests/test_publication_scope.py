@@ -19,6 +19,7 @@ from typing import Any
 
 from support import PREVIOUS
 from test_audit import FinalizedRun
+from test_workflow import trusted_publisher
 
 from exit_codes import AGENT_WORK, OK, RETURN_AUDIT  # noqa: E402
 from run_state import RunState, read_json  # noqa: E402
@@ -73,6 +74,21 @@ class PublicationScopeTest(FinalizedRun):
         metrics: dict[str, dict[str, Any]] = read_json(self.state.path(os.path.join(
             "stats", "org.example", "lib", "2.0.0", "execution-metrics.json")))
         self.assertEqual([PREVIOUS], [entry["previous_library"] for entry in metrics.values()])
+
+    def test_a_native_image_build_repair_publishes_as_its_own_fix(self) -> None:
+        # The fourth `fails-*` label takes the repair route and its own PR label (§FS-forge-scope).
+        self.repaired("fails-native-image-build")
+        descriptor: dict[str, Any] = self.published()
+        self.assertEqual(("fixes-native-image-build-fail", "fixes-native-image-build-fail"),
+                         (descriptor["task_type"], descriptor["template_type"]))
+        self.assertIn("/fixes-native-image-build-fail-org.example-lib-2.0.0-", descriptor["branch"])
+        publisher: Any = trusted_publisher()
+        title, body = publisher.render_publication(descriptor)
+        self.assertTrue(title.startswith("[GenAI] Test fix for org.example:lib:2.0.0 using "))
+        self.assertIn("Fixes: #7", body)
+        self.assertIn("addressing Native Image build failures", body)
+        self.assertEqual(["GenAI", "fixes-native-image-build-fail"],
+                         publisher.ROUTE_LABELS[descriptor["task_type"]])
 
     def test_an_update_of_an_owned_version_is_compared_with_its_pinned_base_state(self) -> None:
         self.repaired("library-update-request", owns_version=True)

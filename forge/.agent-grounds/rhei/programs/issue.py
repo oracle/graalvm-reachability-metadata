@@ -6,7 +6,7 @@
 """Read the issue a run resolves and derive its route.
 
 The label decides the route and the title the coordinate
-(§FS-forge-scope, §FS-forge-run-requirements.3); the three `fails-*` labels
+(§FS-forge-scope, §FS-forge-run-requirements.3); the four `fails-*` labels
 share one route (§AR-forge-control-plane).
 """
 from __future__ import annotations
@@ -26,6 +26,7 @@ ROUTES: dict[str, str] = {
     "library-update-request": ROUTE_UPDATE,
     "fails-javac-compile": ROUTE_REPAIR,
     "fails-java-run": ROUTE_REPAIR,
+    "fails-native-image-build": ROUTE_REPAIR,
     "fails-native-image-run": ROUTE_REPAIR,
 }
 # The trusted publisher's route for each issue label (§AR-actions-publication).
@@ -34,6 +35,7 @@ TASK_TYPES: dict[str, str] = {
     "library-update-request": "library-update-request",
     "fails-javac-compile": "fixes-javac-fail",
     "fails-java-run": "fixes-java-run-fail",
+    "fails-native-image-build": "fixes-native-image-build-fail",
     "fails-native-image-run": "fixes-native-image-run-fail",
 }
 CHUNKED_LABEL: str = "chunked-dynamic-access"
