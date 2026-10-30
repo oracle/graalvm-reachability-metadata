@@ -6,11 +6,46 @@
  */
 package org_typelevel.simulacrum_scalafix_annotations_3;
 
-import org.junit.jupiter.api.Test;
+import java.util.Arrays;
 
-class Simulacrum_scalafix_annotations_3Test {
+import org.junit.jupiter.api.Test;
+import scala.collection.immutable.List;
+import scala.jdk.javaapi.CollectionConverters;
+import simulacrum.noop;
+import simulacrum.op;
+import simulacrum.typeclass;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class Simulacrum_scalafix_annotations_3Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void typeclassDefaultsExcludeNoParentsAndGenerateAllOperations() {
+        List<String> excludedParents = typeclass.$lessinit$greater$default$1();
+        boolean generateAllOps = typeclass.$lessinit$greater$default$2();
+
+        assertTrue(excludedParents.isEmpty());
+        assertTrue(generateAllOps);
+        assertDoesNotThrow(() -> new typeclass(excludedParents, generateAllOps));
+    }
+
+    @Test
+    void operationDefaultsToRenamingWithoutAnAlias() {
+        boolean alias = op.$lessinit$greater$default$2();
+
+        assertFalse(alias);
+        assertDoesNotThrow(() -> new op("|+|", alias));
+    }
+
+    @Test
+    void constructsExplicitTypeclassOperationAndOptOutMarkers() {
+        List<String> excludedParents = CollectionConverters.asScala(
+                Arrays.asList("Serializable", "Product")).toList();
+
+        // These compile-time markers accept configuration but retain no runtime attributes.
+        assertDoesNotThrow(() -> new typeclass(excludedParents, false));
+        assertDoesNotThrow(() -> new op("combine", true));
+        assertDoesNotThrow(noop::new);
     }
 }
