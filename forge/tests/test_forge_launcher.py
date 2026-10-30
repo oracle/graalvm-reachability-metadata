@@ -5,7 +5,7 @@
 
 """Tests for the launcher: fetch, targets, close-out, and the review's entry.
 
-§AR-forge-workflow-pipeline.1 fixes the fetch and the close-out, whose comment
+§AR-forge-launcher.1 fixes the fetch and the close-out, whose comment
 carries the diagnostics of §FS-human-intervention-policy, and
 §FS-published-pr-review the review and its agent target.
 """
@@ -21,7 +21,7 @@ import unittest
 from unittest.mock import ANY, Mock, patch
 
 import forge_metadata
-from dispatcher import issue_claiming, issue_fetch, pr_review, run_launch
+from dispatcher import issue_claiming, issue_fetch, pending_releases, pr_review, run_launch
 from tests.test_gradle_environment import _init_git_repo_with_worktree
 from utility_scripts.gradle_environment import FORGE_GRADLE_USER_HOME_ENV, gradle_command_environment
 
@@ -137,6 +137,7 @@ class TargetTest(unittest.TestCase):
         self.addCleanup(os.remove, handle.name)
         for extra, expected in (([], False), (["--take-blocked-issues"], True)):
             with patch.object(forge_metadata, "claim", return_value=None) as claim, \
+                    tempfile.TemporaryDirectory() as forge, patch.object(forge_metadata, "FORGE_DIR", forge), \
                     patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                     contextlib.redirect_stderr(io.StringIO()):
                 forge_metadata.main(["--issues-fixture", handle.name, *extra])
@@ -145,6 +146,7 @@ class TargetTest(unittest.TestCase):
     def test_the_fetch_forwards_the_blocker_override(self) -> None:
         for extra, expected in (([], False), (["--take-blocked-issues"], True)):
             with patch.object(forge_metadata, "fetch_candidates", return_value=[]) as fetch, \
+                    tempfile.TemporaryDirectory() as forge, patch.object(forge_metadata, "FORGE_DIR", forge), \
                     patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                     contextlib.redirect_stderr(io.StringIO()):
                 forge_metadata.main(extra)
@@ -164,6 +166,7 @@ class CloseOutTest(unittest.TestCase):
         with patch.object(run_launch, "add_issue_label") as label, \
                 patch.object(run_launch, "post_issue_comment") as comment, \
                 patch.object(run_launch, "revert_issue_claim") as revert, \
+                patch.object(run_launch, "release_closed_issue_claim") as self.released, \
                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             run_launch.close_out(claimed, outcome)
         return label.call_args_list, comment.call_args_list, revert.call_args_list
@@ -238,7 +241,7 @@ class CloseOutTest(unittest.TestCase):
             comments[0].args[1])
 
     def test_a_bad_input_detail_with_a_fence_cannot_close_its_own(self) -> None:
-        # §AR-forge-workflow-pipeline.1
+        # §AR-forge-launcher.1
         _, comments, _ = self.close_out({
             "outcome": "failed", "kind": "bad-input", "reason": "jvm: bad input: x",
             "detail": "> ```\n> @Test fails"})
@@ -254,13 +257,15 @@ class CloseOutTest(unittest.TestCase):
         # The release's own reads fail on the outage that ended the run (#9622).
         claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
-        with patch.object(issue_claiming, "set_item_status", side_effect=outage), \
+        with tempfile.TemporaryDirectory() as releases, patch.object(pending_releases, "RELEASES", releases), \
+                patch.object(issue_claiming, "set_item_status", side_effect=outage), \
                 patch.object(issue_claiming, "clear_issue_assignees", side_effect=outage), \
                 patch.object(issue_claiming, "get_item_status", side_effect=outage), \
                 patch.object(issue_claiming, "get_issue_assignees", side_effect=outage), \
                 patch.object(issue_claiming.time, "sleep"), \
                 contextlib.redirect_stderr(io.StringIO()) as stderr:
             run_launch.close_out(claimed, {"outcome": "failed", "kind": "infrastructure", "reason": "x"})
+            self.assertTrue(pending_releases.is_release_pending(7))  # §FS-forge-stranded-claims.4.2
         self.assertIn("Issue #7: failed (x); claim release unconfirmed.", stderr.getvalue())
 
     def test_a_label_github_refuses_keeps_the_claim_that_holds_the_issue(self) -> None:
@@ -287,6 +292,12 @@ class CloseOutTest(unittest.TestCase):
         revert.assert_called_once_with("item", 7, "native still fails")
         self.assertIn("Issue #7 intervention comment could not be posted", stderr.getvalue())
         self.assertIn("claim released.", stderr.getvalue())
+
+    def test_an_issue_closed_after_the_claim_only_loses_its_forge_assignee(self) -> None:
+        # It left the queue: no label, comment or board move (§FS-forge-run-requirements.2).
+        self.assertEqual(([], [], []), self.close_out(
+            {"outcome": "failed", "kind": "issue-closed", "reason": "the issue closed after the claim"}))
+        self.released.assert_called_once_with(7, "the issue closed after the claim")
 
     def test_a_run_without_an_outcome_is_an_infrastructure_failure(self) -> None:
         self.assertEqual("infrastructure", run_launch.record_outcome(tempfile.mkdtemp())["kind"])
@@ -327,7 +338,7 @@ class WorkspaceTest(unittest.TestCase):
 
 
 class ReleaseTest(unittest.TestCase):
-    """A finished attempt gives up its worktree and Gradle home (§AR-forge-workflow-pipeline.1).
+    """A finished attempt gives up its worktree and Gradle home (§AR-forge-launcher.1).
 
     §FS-forge-run-requirements.4
     """
@@ -391,6 +402,7 @@ class ReleaseTest(unittest.TestCase):
         steps.finish_run.return_value = {"outcome": "completed"}
         started = run_launch.Started(workspace=self.workspace, advanced=True)
         with patch.object(forge_metadata, "fetch_candidates", return_value=[("library-new-request", claimed.issue)]), \
+                tempfile.TemporaryDirectory() as forge, patch.object(forge_metadata, "FORGE_DIR", forge), \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(forge_metadata, "claim", return_value=claimed), \
                 patch.object(forge_metadata, "start_run", return_value=started), \

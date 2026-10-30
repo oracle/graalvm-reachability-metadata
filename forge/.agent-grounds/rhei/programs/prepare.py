@@ -60,7 +60,7 @@ from build_tools import (
     stop_gradle_daemons,
     upstream_remote,
 )
-from exit_codes import INFRASTRUCTURE, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput
+from exit_codes import INFRASTRUCTURE, ISSUE_CLOSED, NOT_FOR_NATIVE_IMAGE_RECORDED, OK, BadInput
 from run_state import ROUTE_NEW, Budgets, Chunk, RunState, load, runtime_path, save, write_text
 
 # <agent>[<mode>]:<model> with agent pi or claude-code (§FS-forge-agent-runtime-selection).
@@ -126,7 +126,7 @@ def give_up_worktree(repo: str, worktree: str) -> None:
 
     A prepare that exits without saving its state is a finished attempt whose
     worktree the close-out cannot find, so it gives the worktree up as the
-    close-out would (§AR-forge-workflow-pipeline.1). Best effort: a failure is
+    close-out would (§AR-forge-launcher.1). Best effort: a failure is
     reported, and the exit the prepare took stands.
     """
     try:
@@ -249,8 +249,9 @@ def resolve_chunk(state: RunState, labels: frozenset[str]) -> None:
 
     The label, or the coordinate's own exhaust report, makes the issue chunked
     (§FS-forge-chunked-dynamic-access). The report is read on the pinned base,
-    before the version is added, since adding one copies its baseline's tests,
-    report included; a report naming another version holds that version's progress.
+    before the version is added, which copies its baseline's tests but not its
+    report (§FS-library-update-tested-version-split.3); a report naming another
+    version holds that version's progress.
     """
     labeled: bool = issue.CHUNKED_LABEL in labels
     report_path: str | None = find_dynamic_access_exhaust_report_path(state.worktree, state.coordinate)
@@ -304,6 +305,10 @@ def run(args: argparse.Namespace) -> int:
         return INFRASTRUCTURE
     try:
         parsed: issue.Issue = issue.parse_issue(payload)
+    except issue.IssueClosed as closed:
+        # Not a bad input: the issue left the queue (§FS-forge-run-requirements.2).
+        print(f"[prepare] issue #{args.issue_number}: {closed}; nothing to do")
+        return ISSUE_CLOSED
     except ValueError as error_value:
         raise BadInput(str(error_value)) from error_value
     run_name: str = "forge-" + parsed.coordinate.replace(":", "-")

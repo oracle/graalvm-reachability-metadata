@@ -7,6 +7,7 @@ from contextlib import redirect_stdout
 from unittest.mock import MagicMock
 
 from dispatcher_test_support import *  # noqa: F401,F403 - shared dispatcher test fixtures
+from dispatcher import pending_releases
 
 
 class IssueClaimLockTests(unittest.TestCase):
@@ -246,6 +247,46 @@ class IssueClaimLockTests(unittest.TestCase):
         set_item_status.assert_called_once_with("item-1", config.STATUS_TODO)
         clear_issue_assignees.assert_called_once_with(1412)
 
+    def test_a_closed_issue_only_loses_its_assignee_and_keeps_its_board_status(self) -> None:
+        # It left the queue; closing it set its board status (§FS-forge-run-requirements.2).
+        with tempfile.TemporaryDirectory() as lock_root:
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
+                issue_cache.record_issue_claim_cache_observations(
+                    [
+                        records.IssueClaimCacheObservation(
+                            issue_number=1412,
+                            reason=config.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+                            project_status=config.STATUS_IN_PROGRESS,
+                        ),
+                    ],
+                )
+
+                with patch.object(issue_claiming, "set_item_status") as set_item_status, \
+                        patch.object(issue_claiming, "clear_issue_assignees") as clear_issue_assignees:
+                    issue_claiming.release_closed_issue_claim(1412, "the issue closed after the claim")
+
+                self.assertEqual(issue_cache.read_issue_claim_cache(), {})
+
+        set_item_status.assert_not_called()
+        clear_issue_assignees.assert_called_once_with(1412)
+
+    def test_a_closed_issue_whose_assignee_github_cannot_clear_is_reported_not_raised(self) -> None:
+        # Bookkeeping: an outage must not stop the launcher (§FS-forge-run-requirements).
+        outage = subprocess.CalledProcessError(
+            1, ["gh", "api"], output="", stderr="error connecting to api.github.com",
+        )
+        with patch.object(issue_claiming, "set_item_status") as set_item_status, \
+                patch.object(issue_claiming, "clear_issue_assignees", side_effect=outage), \
+                patch.object(issue_claiming, "invalidate_issue_claim_cache_entry") as invalidate, \
+                patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            cleared = issue_claiming.release_closed_issue_claim(1412, "the issue closed after the claim")
+
+        self.assertFalse(cleared)
+        set_item_status.assert_not_called()
+        invalidate.assert_not_called()
+        self.assertIn("Issue #1412 closed after its claim, but its Forge assignee could not be cleared",
+                      stderr.getvalue())
+
     def test_revert_issue_claim_clears_assignees_after_status_update_error(self) -> None:
         status_error = subprocess.CalledProcessError(
             1,
@@ -270,7 +311,8 @@ class IssueClaimLockTests(unittest.TestCase):
             1, ["gh", "api", "graphql"], output="", stderr="error connecting to api.github.com",
         )
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(pending_releases, "RELEASES", os.path.join(lock_root, "releases")):
                 issue_cache.record_issue_claim_cache_observations([
                     records.IssueClaimCacheObservation(
                         issue_number=1412,
@@ -287,12 +329,14 @@ class IssueClaimLockTests(unittest.TestCase):
                     released = issue_claiming.revert_issue_claim("item-1", 1412, "test")
 
                 self.assertIn(1412, issue_cache.read_issue_claim_cache())
+                # An outage is not left to a hand release (§FS-forge-stranded-claims.4.2).
+                self.assertTrue(pending_releases.is_release_pending(1412))
 
         self.assertFalse(released)
         self.assertEqual(config.CLAIM_RELEASE_ATTEMPTS, set_item_status.call_count)
         self.assertEqual(config.CLAIM_RELEASE_ATTEMPTS - 1, sleep.call_count)
         self.assertIn("Issue #1412 release is unconfirmed", stderr.getvalue())
-        self.assertIn("release it by hand", stderr.getvalue())
+        self.assertIn("the next cycle retries it", stderr.getvalue())
 
     def test_a_release_github_confirms_on_a_later_attempt_is_verified(self) -> None:
         outage = subprocess.CalledProcessError(
@@ -327,10 +371,14 @@ class IssueClaimLockTests(unittest.TestCase):
         outage = subprocess.CalledProcessError(
             1, ["gh", "issue", "view"], output="", stderr="error connecting to api.github.com",
         )
-        with patch.object(issue_claiming, "get_issue_assignees", side_effect=outage), \
+        with tempfile.TemporaryDirectory() as root, \
+                patch.object(pending_releases, "RELEASES", root), \
+                patch.object(issue_claiming, "get_issue_assignees", side_effect=outage), \
                 patch.object(issue_claiming, "revert_issue_claim") as revert_issue_claim, \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
             issue_claiming.revert_issue_claim_if_still_owned_by_user("item-1", 1412, "automation-user", "test")
+            # The next cycle reads the owner again first (§FS-forge-stranded-claims.4.4).
+            self.assertTrue(pending_releases.is_release_pending(1412))
 
         revert_issue_claim.assert_not_called()
         self.assertIn("Issue #1412 release is unconfirmed", stderr.getvalue())

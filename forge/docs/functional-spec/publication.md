@@ -433,7 +433,7 @@ reports nothing within the rules can help — publishes nothing and labels the
 issue with the reason, which includes the step's own explanation: the failing
 check's error and the fix's account of why it stopped. That explanation is
 agent or tool text, so the comment quotes it, bounded in length, where it can
-neither cite nor mention anyone (§AR-forge-workflow-pipeline.1). On a
+neither cite nor mention anyone (§AR-forge-launcher.1). On a
 published pull request the label comes from the review of
 §FS-published-pr-review, or from a descriptor that still carries an older
 pre-push verdict of `rejected` with
@@ -479,9 +479,14 @@ which includes the rare case of an agent timeout. A workflow failure is
 exception from the dependency boundary Forge itself crosses: GitHub (`gh`: rate
 limits and 5xx/network) as `GitHubError` / `GitHubRateLimitExceeded`, remote
 git operations (push/pull/fetch/clone/ls-remote) as `GitTransportError`, and a
-Gradle build that never left configuration as `GradleBootstrapFailure`. Maven
-Central and Docker registry failures have no such boundary — Gradle owns them
-inside `./gradlew test` and they reach Forge only as an opaque CI-check `rc != 0`,
+Gradle build that never left configuration as `GradleBootstrapFailure`. Every
+Gradle build a run starts, the pre-publication gate's included, crosses one
+more: a build whose output names a repository that could not be reached, or that
+answered with anything but not-found, surfaces as `RepositoryUnreachable` in
+whichever step it happens, before that step reads the failure as a fix request,
+an explore mode, or a stop (§AR-forge-workflow-pipeline.4.1). A not-found is no
+outage: the module is absent, a bad input. Docker registry failures have no such
+boundary — they reach Forge only as an opaque CI-check `rc != 0`,
 indistinguishable from a real test failure once the in-workflow retries have run —
 so they are not special-cased and fall through to the safe logical default. When a
 failure is external, Forge takes no issue action: it applies no
@@ -491,6 +496,19 @@ Rate limits and shared bootstrap failures additionally stop the current run for
 a later retry. The same classification applies to every issue queue, including
 the `fails-*` repair queues, and to the claim-time preconditions that run before
 any workflow phase (§FS-forge-run-requirements.2).
+
+A retry later runs every state of the run again, so the push of the publication
+branch, which comes after all of them, is retried before the run gives up. A
+push that fails on a transient condition of §FS-forge-host-requirements.1 is
+pushed again, a few times, with a backoff that doubles from seconds to a minute
+and one log line per retry: GitHub that cannot be reached or does not answer in
+time, a connection it drops mid-push, a ref update it reports only as `failed`,
+a server error, or a rate limit. A push GitHub refuses for a reason, such as a
+protected branch or a ruleset, a denied permission, a repository it does not
+find, or a hook that declines with a message, would be refused again, so it
+fails at once. A push that still fails after its retries is external like any
+other `GitTransportError`: the claim is released, and a later attempt starts the
+run over.
 
 The label can appear on issues or pull requests. On an issue, it means Forge
 could not safely produce a PR-ready result and posted enough diagnostics for a

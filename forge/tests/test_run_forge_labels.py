@@ -5,7 +5,7 @@
 
 """Tests for the `run-forge.sh` loop, driven against stub tools.
 
-§AR-forge-workflow-pipeline.1 fixes the rotation, §FS-published-pr-review.1 the review cadence it
+§AR-forge-launcher.1 fixes the rotation, §FS-published-pr-review.1 the review cadence it
 keeps, and §FS-forge-host-requirements.1 the waits on a transient host failure and a failed cycle.
 """
 from __future__ import annotations

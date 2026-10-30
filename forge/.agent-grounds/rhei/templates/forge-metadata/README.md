@@ -5,7 +5,7 @@ and the loop guard are §AR-forge-workflow-pipeline, and what each agent state
 is told is §AR-forge-workflow-prompts.
 
 From `forge/`, check the host, claim the next eligible issue, and run it with
-the dashboard (§AR-forge-workflow-pipeline.1):
+the dashboard (§AR-forge-launcher.1):
 
 ```console
 ./run-forge.sh
