@@ -20,6 +20,26 @@ import org.junit.jupiter.api.Test;
 
 public class ProxyFactoryTest {
     @Test
+    void createsAndStoresTheFirstConnectionProxyWithTheCreateCachePolicy() throws Exception {
+        ProxyFactory factory = ProxyFactory.createProxyFactory(TxnReplayableConnection.class);
+        OfflineConnection delegate = new OfflineConnection();
+
+        OracleConnection first = factory.<OracleConnection>proxyForCreateCache(delegate, factory, null, null);
+
+        assertThat(first).isNotSameAs(delegate);
+        assertThat(delegate.getACProxy()).isSameAs(first);
+        assertThat(ProxyFactory.extractDelegate((_Proxy_) first)).isSameAs(delegate);
+        assertThat(factory.<OracleConnection>proxyForCache(delegate, factory, null, null)).isSameAs(first);
+
+        OracleConnection replacement = factory.<OracleConnection>proxyForCreateCache(delegate, factory, null, null);
+
+        assertThat(replacement).isNotSameAs(first);
+        assertThat(delegate.getACProxy()).isSameAs(replacement);
+        assertThat(ProxyFactory.extractDelegate((_Proxy_) replacement)).isSameAs(delegate);
+        assertThat(factory.<OracleConnection>proxyForCache(delegate, factory, null, null)).isSameAs(replacement);
+    }
+
+    @Test
     void reusesThePreparedConstructorForAdditionalCachedConnections() throws Exception {
         ProxyFactory factory = ProxyFactory.createProxyFactory(TxnReplayableConnection.class);
         OfflineConnection firstDelegate = new OfflineConnection();
