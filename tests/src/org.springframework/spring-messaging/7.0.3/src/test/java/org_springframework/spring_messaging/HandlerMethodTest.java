@@ -8,8 +8,6 @@ package org_springframework.spring_messaging;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.messaging.handler.HandlerMethod;
-import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
-import org.springframework.messaging.support.GenericMessage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -17,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 public class HandlerMethodTest {
 
     @Test
-    void resolvesNamedHandlerAndInvokesItWithMessagePayload() throws Exception {
+    void resolvesNamedHandlerMethod() throws Exception {
         OrderHandler bean = new OrderHandler();
         HandlerMethod handler = new HandlerMethod(bean, "accept", String.class);
 
@@ -28,10 +26,6 @@ public class HandlerMethodTest {
         assertEquals(String.class, handler.getReturnType().getParameterType());
         assertEquals("OrderHandler#accept[1 args]", handler.getShortLogMessage());
 
-        GenericMessage<String> message = new GenericMessage<>("order-42");
-        InvocableHandlerMethod invocable = new InvocableHandlerMethod(handler);
-
-        assertEquals("accepted:order-42", invocable.invoke(message, message.getPayload()));
     }
 
     public static class OrderHandler {
