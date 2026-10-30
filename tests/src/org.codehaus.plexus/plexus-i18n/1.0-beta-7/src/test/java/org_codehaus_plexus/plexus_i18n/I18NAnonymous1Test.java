@@ -23,9 +23,9 @@ public class I18NAnonymous1Test {
         try {
             I18N i18n = (I18N) container.lookup(I18N.ROLE);
             try {
-                assertThat(i18n.getString(MESSAGES, Locale.FRENCH, "greeting")).isEqualTo("Bonjour");
-                assertThat(i18n.format(MESSAGES, Locale.FRENCH, "welcome", "Camille"))
-                        .isEqualTo("Bienvenue, Camille !");
+                assertThat(i18n.getString(MESSAGES, Locale.US, "greeting")).isEqualTo("Howdy");
+                assertThat(i18n.format(MESSAGES, Locale.US, "welcome", "Camille"))
+                        .isEqualTo("Howdy, Camille!");
                 assertThat(i18n.getLocale("fr-FR,en;q=0.5")).isEqualTo(Locale.FRANCE);
             } finally {
                 container.release(i18n);

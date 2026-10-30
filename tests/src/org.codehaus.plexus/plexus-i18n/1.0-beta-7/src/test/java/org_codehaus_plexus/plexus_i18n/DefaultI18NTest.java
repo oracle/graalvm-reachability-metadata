@@ -28,14 +28,14 @@ public class DefaultI18NTest {
         i18n.initialize();
 
         ResourceBundle english = i18n.getBundle(MESSAGES, Locale.ENGLISH);
-        ResourceBundle french = i18n.getBundle(MESSAGES, Locale.FRENCH);
+        ResourceBundle american = i18n.getBundle(MESSAGES, Locale.US);
 
         assertThat(english.getString("greeting")).isEqualTo("Hello");
-        assertThat(french.getString("greeting")).isEqualTo("Bonjour");
-        assertThat(french.getLocale()).isEqualTo(Locale.FRENCH);
-        assertThat(i18n.getBundle(MESSAGES, Locale.FRENCH)).isSameAs(french);
-        assertThat(i18n.getBundle("  " + MESSAGES + "  ", "fr;q=1.0,en;q=0.5")).isSameAs(french);
-        assertThat(i18n.getString(MESSAGES, Locale.FRENCH, "rootOnly")).isEqualTo("Shared text");
+        assertThat(american.getString("greeting")).isEqualTo("Howdy");
+        assertThat(american.getLocale()).isEqualTo(Locale.US);
+        assertThat(i18n.getBundle(MESSAGES, Locale.US)).isSameAs(american);
+        assertThat(i18n.getBundle("  " + MESSAGES + "  ", "en-US;q=1.0,en;q=0.5")).isSameAs(american);
+        assertThat(i18n.getString(MESSAGES, Locale.US, "rootOnly")).isEqualTo("Shared text");
         assertThat(i18n.getString(MESSAGES, Locale.ENGLISH, "greeting")).isEqualTo("Hello");
     }
 
@@ -45,11 +45,11 @@ public class DefaultI18NTest {
         i18n.initialize();
 
         assertThat(i18n.format(MESSAGES, Locale.ENGLISH, "welcome", "Alex")).isEqualTo("Welcome, Alex!");
-        assertThat(i18n.format(MESSAGES, Locale.FRENCH, "welcome", "Alex")).isEqualTo("Bienvenue, Alex !");
+        assertThat(i18n.format(MESSAGES, Locale.US, "welcome", "Alex")).isEqualTo("Howdy, Alex!");
         assertThat(i18n.format(MESSAGES, Locale.ENGLISH, "route", "Paris", "Lyon"))
                 .isEqualTo("From Paris to Lyon");
-        assertThat(i18n.format(MESSAGES, Locale.FRENCH, "route", new Object[]{"Paris", "Lyon"}))
-                .isEqualTo("De Paris vers Lyon");
+        assertThat(i18n.format(MESSAGES, Locale.US, "route", new Object[]{"Paris", "Lyon"}))
+                .isEqualTo("Traveling from Paris to Lyon");
     }
 
     @Test
@@ -61,14 +61,14 @@ public class DefaultI18NTest {
             i18n.initialize();
 
             ResourceBundle english = i18n.getBundle(MESSAGES, Locale.ENGLISH);
-            ResourceBundle french = i18n.getBundle(MESSAGES, Locale.FRENCH);
+            ResourceBundle american = i18n.getBundle(MESSAGES, Locale.US);
 
             assertThat(english.getString("greeting")).isEqualTo("Hello");
-            assertThat(french.getString("greeting")).isEqualTo("Bonjour");
-            assertThat(french.getLocale()).isEqualTo(Locale.FRENCH);
-            assertThat(i18n.getString(MESSAGES, Locale.FRENCH, "rootOnly")).isEqualTo("Shared text");
-            assertThat(i18n.format(MESSAGES, Locale.FRENCH, "welcome", "Alex"))
-                    .isEqualTo("Bienvenue, Alex !");
+            assertThat(american.getString("greeting")).isEqualTo("Howdy");
+            assertThat(american.getLocale()).isEqualTo(Locale.US);
+            assertThat(i18n.getString(MESSAGES, Locale.US, "rootOnly")).isEqualTo("Shared text");
+            assertThat(i18n.format(MESSAGES, Locale.US, "welcome", "Alex"))
+                    .isEqualTo("Howdy, Alex!");
         } finally {
             if (originalDevMode == null) {
                 System.clearProperty("PLEXUS_DEV_MODE");
