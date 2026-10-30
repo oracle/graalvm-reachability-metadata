@@ -465,7 +465,8 @@ class PrepareTest(unittest.TestCase):
 
     def test_a_worktree_git_refuses_quotes_git(self) -> None:
         self.fake.issue("library-new-request")
-        # Named after the worktree's path (§AR-forge-workflow-pipeline.4.6), not the coordinate alone.
+        # Named after the worktree's path, not the coordinate alone
+        # (§AR-forge-workflow-pipeline.4.6).
         worktree: str = os.path.realpath(
             os.path.join(self.fake.workspace, "..", "worktrees", "forge-org.example-lib-2.0.0"))
         branch: str = prepare.run_branch(worktree)
