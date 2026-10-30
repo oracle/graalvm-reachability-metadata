@@ -728,7 +728,7 @@ Every `forge-metadata` run ends in one final state, and the launcher acts on it
 | Final state | Meaning |
 | --- | --- |
 | `completed` | Every check and the local CI-equivalent verification passed (§FS-local-ci-equivalent-verification) and the publication branch is pushed. A chunk that is not the last is published the same way, with `RUN_STATUS_CHUNK_READY` in its metrics; the issue must not be resumed until that chunk's PR has merged. A skip record is published the same way (§FS-unsupportable-version-diagnosis.3), and so is a not-for-native-image record (§FS-not-for-native-image-record.2). |
-| `nothing-to-publish` | The coordinate's paths are unchanged; no branch is pushed. |
+| `nothing-to-publish` | The coordinate's paths are unchanged, counting the exhaust record a chunk writes first (§FS-forge-chunked-dynamic-access); no branch is pushed. A chunk that is not the last and completed or exhausted a class, or a last chunk that removes an earlier chunk's report, always has something to publish. |
 | `human-intervention` | A check still failed after its fix, or the fix reported that nothing within the rules helps; no branch is pushed (§FS-human-intervention-policy). |
 | `failed` | A bad input or an infrastructure failure; no branch is pushed. |
 
@@ -842,6 +842,18 @@ not the last. A run that ends before publishing leaves no label and no exhaust
 report behind, so the next claim decides afresh. A chunk is the last when its
 run left no target uncovered and unexhausted; a bulk pass only lowers the count,
 so a library at or below the boundary never needs a later chunk.
+
+The exhaust record is a result of its own, so `publish` writes it before
+deciding whether the coordinate changed. Exhausting a class spends every
+attempt class mode gives it: a chunk that drops the record leaves the next
+claim to repeat those attempts, and a last chunk that drops it never closes its
+issue. A chunk that is not the last therefore publishes the classes it completed
+or exhausted with `Refs: #<issue>` even when the report is its only change, and
+the last chunk removes the report an earlier chunk left and publishes that with
+`Fixes: #<issue>`, whether or not it processed a class itself. A chunk whose
+record changes nothing — one that is not the last and completed or exhausted no
+class, or a last chunk with no report to remove — publishes only what else it
+changed (§FS-forge-run-status).
 
 Chunked mode is automatic once the issue carries the `chunked-dynamic-access`
 label. The normal project status remains the run-state signal: `Todo` means
