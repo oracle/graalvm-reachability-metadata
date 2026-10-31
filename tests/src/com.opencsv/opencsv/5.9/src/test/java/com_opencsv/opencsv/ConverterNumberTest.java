@@ -73,6 +73,18 @@ public class ConverterNumberTest {
                 .hasMessageContaining("not-a-number");
     }
 
+    @Test
+    void writingReportsValuesThatRequireForbiddenRounding() {
+        ConverterNumber converter = new ConverterNumber(
+                BigDecimal.class, US_LOCALE, US_LOCALE, ERROR_LOCALE,
+                DECIMAL_PATTERN, DECIMAL_PATTERN, RoundingMode.UNNECESSARY);
+
+        assertThatThrownBy(() -> converter.convertToWrite(new BigDecimal("12.345")))
+                .isInstanceOf(CsvDataTypeMismatchException.class)
+                .hasMessageContaining("12.345")
+                .hasCauseInstanceOf(ArithmeticException.class);
+    }
+
     private static ConverterNumber numberConverter(
             Class<?> type, String readFormat, String writeFormat) {
         return new ConverterNumber(
