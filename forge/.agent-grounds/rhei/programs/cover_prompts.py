@@ -91,12 +91,10 @@ def class_prompt(workspace: str, state: RunState, report: DynamicAccessCoverageR
 
 
 def basic_prompt(workspace: str, state: RunState) -> str:
-    why: str = ("No dynamic-access call site is left to target." if state.explore.listed else
-                "The dynamic-access call sites could not be listed: the native test image does not build yet.")
     lines: list[str] = [
         f"# Cover: {state.coordinate}",
         "",
-        f"{why} Write tests for the main public API in the allowed packages.",
+        "No dynamic-access call site is left to target. Write tests for the main public API in the allowed packages.",
         "",
         "## Reporter-requested metadata",
         "",
@@ -105,10 +103,10 @@ def basic_prompt(workspace: str, state: RunState) -> str:
     return "\n".join(lines) + "\n"
 
 
-def write_prompt(workspace: str, state: RunState, report: DynamicAccessCoverageReport | None) -> None:
+def write_prompt(workspace: str, state: RunState, report: DynamicAccessCoverageReport) -> None:
     """Render the prompt of the current mode into the `cover` handoff."""
     mode: str = state.explore.mode
-    if mode == MODE_BASIC or report is None:
+    if mode == MODE_BASIC:
         text: str = basic_prompt(workspace, state)
     elif mode == MODE_BULK:
         text = bulk_prompt(workspace, state, report)

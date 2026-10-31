@@ -97,9 +97,6 @@ def worker_model(state: RunState) -> tuple[str, str]:
 def chunk_is_final(workspace: str, state: RunState) -> bool:
     if not state.chunk.active:
         return True
-    if not state.explore.listed:
-        # Without a listing the chunk's progress is unknown, so its issue stays open.
-        return False
     return state.chunk.final and not explore.remaining(state.explore, explore.accepted_report(workspace))
 
 
