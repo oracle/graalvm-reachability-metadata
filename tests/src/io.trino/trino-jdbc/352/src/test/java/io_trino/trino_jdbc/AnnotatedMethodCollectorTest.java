@@ -22,6 +22,22 @@ public class AnnotatedMethodCollectorTest {
         assertEquals("Rae", mapper.readTree(mapper.writeValueAsString(person)).get("full_name").asText());
     }
 
+    @Test
+    void exposesObjectHashCodeThroughGlobalMixIn() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.addMixIn(Object.class, ObjectMixIn.class);
+        Person person = new Person();
+        person.setName("Mira");
+        String json = mapper.writeValueAsString(person);
+        assertEquals(person.hashCode(), mapper.readTree(json).get("fingerprint").asInt());
+        assertEquals("Mira", mapper.readTree(json).get("name").asText());
+    }
+
+    public abstract static class ObjectMixIn {
+        @JsonProperty("fingerprint")
+        public abstract int hashCode();
+    }
+
     public static class Person {
         private String name;
 

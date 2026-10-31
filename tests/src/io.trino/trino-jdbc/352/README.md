@@ -11,6 +11,11 @@ Joda-Time components. Reflection appears only where it is the API's input or
 output: Guava's `Invokable`, `Enums`, and generic type resolution. No test calls
 private library code or uses Java object serialization to manufacture coverage.
 
+Additional Jackson scenarios exercise no-argument creator factories, field and
+method injection, field-backed builders, property-based identity binding and
+reference output, an `Object` accessor mix-in, interface-typed set multimaps,
+and canonical type resolution without a thread context classloader.
+
 Some reported accesses have no suitable path in this suite:
 
 - Guava collection serialization hooks, `Serialization` and its `FieldSetter`,
@@ -33,6 +38,14 @@ Some reported accesses have no suitable path in this suite:
 - OkHttp `Util.addSuppressedIfPossible` requires multiple connection attempts
   failing inside the connection loop. The loopback tests cover successful
   requests rather than depending on machine-specific route failure ordering.
+
+The remaining Jackson accesses include object-stream `readResolve` hooks,
+unused deprecated reflection wrappers in `ClassUtil`, its missing-class
+classloader recovery branch, and `AnnotatedMethod.callOn`, which has no caller
+in the bundled Jackson code. The deprecated single-enum-name introspector is
+also unused by the mapper. `VersionUtil.mavenVersionFor` expects Maven
+`pom.properties` resources; the shaded driver does not ship them. These paths
+are not forced with low-level helper calls or fabricated library resources.
 
 Partially reached classes may retain serialization, legacy-runtime, or
 classloader-recovery call sites. Tests do not force those paths through direct

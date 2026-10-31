@@ -6,9 +6,11 @@
  */
 package io_trino.trino_jdbc;
 
+import io.trino.jdbc.$internal.jackson.annotation.JacksonInject;
 import io.trino.jdbc.$internal.jackson.annotation.JsonCreator;
 import io.trino.jdbc.$internal.jackson.annotation.JsonProperty;
 import io.trino.jdbc.$internal.jackson.annotation.JsonValue;
+import io.trino.jdbc.$internal.jackson.databind.InjectableValues;
 import io.trino.jdbc.$internal.jackson.databind.ObjectMapper;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,34 @@ public class AnnotatedMethodTest {
         assertEquals("\"NORTH\"", mapper.writeValueAsString(label));
         Pair pair = mapper.readValue("{\"left\":\"a\",\"right\":\"b\"}", Pair.class);
         assertEquals("a:b", pair.joined);
+    }
+
+    @Test
+    void createsWithNoArgumentFactoryAndInjectsThroughMethod() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setInjectableValues(new InjectableValues.Std().addValue("region", "west"));
+        Deployment deployment = mapper.readValue("{}", Deployment.class);
+        assertEquals("factory", deployment.origin);
+        assertEquals("west", deployment.region);
+    }
+
+    public static class Deployment {
+        public final String origin;
+        private String region;
+
+        private Deployment(String origin) {
+            this.origin = origin;
+        }
+
+        @JsonCreator
+        public static Deployment create() {
+            return new Deployment("factory");
+        }
+
+        @JacksonInject("region")
+        public void setRegion(String region) {
+            this.region = region;
+        }
     }
 
     public static class Label {
