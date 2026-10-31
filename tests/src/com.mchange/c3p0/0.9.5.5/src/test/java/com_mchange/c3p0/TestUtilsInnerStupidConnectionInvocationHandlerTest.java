@@ -17,6 +17,26 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestUtilsInnerStupidConnectionInvocationHandlerTest {
     @Test
+    void delegatesQueriesWithRetriesForInjectedConnectionFailures() throws Exception {
+        for (int attempt = 0; attempt < 10; attempt++) {
+            ComboPooledDataSource source = C3p0Support.pool();
+            try {
+                try (Connection connection = TestUtils.unreliableCommitDataSource(source).getConnection()) {
+                    C3p0Support.assertQuery(connection, 74);
+                    return;
+                } catch (SQLException failure) {
+                    // Retry only the fatal connection failure this utility deliberately injects.
+                    if (!"Random Fatal Exception Occurred!!!".equals(failure.getMessage()) || attempt == 9) {
+                        throw failure;
+                    }
+                }
+            } finally {
+                source.close();
+            }
+        }
+    }
+
+    @Test
     void closedConnectionRejectsFurtherOperations() throws Exception {
         ComboPooledDataSource source = C3p0Support.pool();
         try {
