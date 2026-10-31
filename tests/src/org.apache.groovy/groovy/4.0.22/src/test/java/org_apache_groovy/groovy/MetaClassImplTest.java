@@ -7,6 +7,9 @@
 package org_apache_groovy.groovy;
 
 import groovy.lang.Closure;
+import groovy.lang.GroovyObjectSupport;
+import groovy.lang.MetaClassImpl;
+import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.codehaus.groovy.runtime.MethodClosure;
 
@@ -16,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MetaClassImplTest {
     @Test
@@ -66,6 +70,16 @@ public class MetaClassImplTest {
     }
 
     @Test
+    void recoversTheSourceAstForAClasspathGroovyObject() {
+        MetaClassImpl metaClass = new MetaClassImpl(AstViewModel.class);
+        metaClass.initialize();
+        ClassNode model = metaClass.getClassNode();
+        assertNotNull(model);
+        assertEquals(AstViewModel.class.getName(), model.getName());
+        assertEquals("java.lang.String", model.getProperty("reference").getType().getName());
+    }
+
+    @Test
     void createsMultidimensionalArraysThroughAConstructorMethodClosure() {
         MethodClosure constructor = new MethodClosure(String[][].class, "new");
         String[][] matrix = (String[][]) constructor.call(2, 3);
@@ -74,4 +88,8 @@ public class MetaClassImplTest {
         matrix[1][2] = "end";
         assertEquals("end", matrix[1][2]);
     }
+}
+
+class AstViewModel extends GroovyObjectSupport {
+    public String reference;
 }
