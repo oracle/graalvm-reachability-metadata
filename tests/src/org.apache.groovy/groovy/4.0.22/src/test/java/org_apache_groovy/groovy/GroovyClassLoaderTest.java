@@ -22,6 +22,7 @@ public class GroovyClassLoaderTest {
         try (GroovyClassLoader loader = new GroovyClassLoader(getClass().getClassLoader())) {
             URL source = loader.getResourceLoader().loadGroovySource("examples.Inventory");
             assertNotNull(source);
+            assertEquals(getClass().getResource("/examples/Inventory.groovy"), source);
             try (InputStream input = source.openStream()) {
                 assertEquals("class Inventory { String reference }\n", new String(input.readAllBytes(), StandardCharsets.UTF_8));
             }
