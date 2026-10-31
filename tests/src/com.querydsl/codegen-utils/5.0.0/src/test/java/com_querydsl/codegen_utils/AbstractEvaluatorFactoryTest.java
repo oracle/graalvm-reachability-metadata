@@ -24,13 +24,13 @@ public class AbstractEvaluatorFactoryTest {
     void propagatesCompilationDiagnosticsForAnIncompatibleProjection() {
         AbstractEvaluatorFactory factory = new ECJEvaluatorFactory(getClass().getClassLoader());
         ClassType projection = new ClassType(TypeCategory.SIMPLE, String.class);
-        Type parameterType = new ClassType(TypeCategory.SIMPLE, Integer.class);
+        Type parameterType = new ClassType(TypeCategory.SIMPLE, int.class);
 
         assertThatThrownBy(() -> factory.createEvaluator(
                 "return value;", projection, new String[]{"value"},
-                new Type[]{parameterType}, new Class<?>[]{Integer.class}, Collections.emptyMap()))
+                new Type[]{parameterType}, new Class<?>[]{int.class}, Collections.emptyMap()))
                 .isInstanceOf(CodegenException.class)
                 .hasMessageContaining("return value;")
-                .hasMessageContaining("cannot convert from Integer to String");
+                .hasMessageContaining("cannot convert from int to String");
     }
 }
