@@ -131,3 +131,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14812
+
+## GR-81035: \[Native Image\] -H:AdditionalSecurityProviders does not verify a provider installed at run time, so its javax.crypto services always fail although the error recommends the option
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14846
