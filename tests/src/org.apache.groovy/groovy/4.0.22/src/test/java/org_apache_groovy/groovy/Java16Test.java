@@ -46,6 +46,13 @@ public class Java16Test {
         assertEquals(int.class, node.getRecordComponents().get(1).getType().getTypeClass());
     }
 
+    @Test
+    void invokesAPublicMethodFromANonOpenJdkModule() throws Throwable {
+        Method method = CharSequence.class.getMethod("length");
+        Object handle = VMPluginFactory.getPlugin().getInvokeSpecialHandle(method, "parcel");
+        assertEquals(6, VMPluginFactory.getPlugin().invokeHandle(handle, new Object[]{}));
+    }
+
     public record Line(String name, int quantity) {
     }
 }

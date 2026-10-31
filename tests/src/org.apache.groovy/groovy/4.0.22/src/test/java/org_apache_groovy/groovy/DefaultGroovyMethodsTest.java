@@ -7,6 +7,8 @@
 package org_apache_groovy.groovy;
 
 import groovy.lang.Closure;
+import groovy.lang.ExpandoMetaClass;
+import groovy.lang.GroovyObjectSupport;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +45,27 @@ public class DefaultGroovyMethodsTest {
         };
         Greeting greeting = DefaultGroovyMethods.asType(Map.of("greet", closure), Greeting.class);
         assertEquals("Hello Ada", greeting.greet("Ada"));
+    }
+
+    @Test
+    void coercesCollectionElementsToPrimitiveAndReferenceArrayComponents() {
+        assertArrayEquals(new int[]{3, 7}, DefaultGroovyMethods.asType(List.of(3, 7), int[].class));
+        assertArrayEquals(new Long[]{3L, 7L}, DefaultGroovyMethods.asType(List.of(3, 7), Long[].class));
+    }
+
+    @Test
+    void installsAnInstanceMetaclassAndUpdatesItsOptimizationFlag() {
+        DynamicParcel parcel = new DynamicParcel();
+        ExpandoMetaClass replacement = new ExpandoMetaClass(DynamicParcel.class, false, true);
+        replacement.registerBeanProperty("status", "ready");
+        replacement.initialize();
+        DefaultGroovyMethods.setMetaClass(parcel, replacement);
+        assertTrue(DynamicParcel.__$stMC);
+        assertEquals("ready", parcel.getProperty("status"));
+    }
+
+    public static class DynamicParcel extends GroovyObjectSupport {
+        public static boolean __$stMC;
     }
 
     public interface Greeting {

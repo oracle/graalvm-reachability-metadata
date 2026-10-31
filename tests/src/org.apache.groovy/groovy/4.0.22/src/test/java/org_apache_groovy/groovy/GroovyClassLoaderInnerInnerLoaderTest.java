@@ -24,6 +24,7 @@ public class GroovyClassLoaderInnerInnerLoaderTest {
         try (GroovyClassLoader parent = new GroovyClassLoader(getClass().getClassLoader());
                 GroovyClassLoader.InnerLoader loader = new GroovyClassLoader.InnerLoader(parent)) {
             assertSame(Entry.class, loader.loadClass(Entry.class.getName()));
+            assertSame(Entry.class, loader.loadClass(Entry.class.getName(), false, true, false));
             String name = "org_apache_groovy/groovy/messages.properties";
             URL resource = loader.getResource(name);
             Properties messages = new Properties();

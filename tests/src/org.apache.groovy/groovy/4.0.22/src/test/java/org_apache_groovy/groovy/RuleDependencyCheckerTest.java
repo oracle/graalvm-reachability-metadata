@@ -11,6 +11,7 @@ import groovyjarjarantlr4.v4.runtime.misc.RuleDependencyChecker;
 import org.apache.groovy.parser.antlr4.GroovyParser;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,6 +22,11 @@ public class RuleDependencyCheckerTest {
         assertEquals(3, dependencies.size());
         assertTrue(dependencies.stream().allMatch(dependency -> dependency.getItem1().recognizer() == GroovyParser.class));
         assertTrue(dependencies.stream().allMatch(dependency -> dependency.getItem1().rule() == GroovyParser.RULE_compilationUnit));
+    }
+
+    @Test
+    void validatesTheDeclaredParserRuleDependencies() {
+        assertDoesNotThrow(() -> RuleDependencyChecker.checkDependencies(ParserConsumer.class));
     }
 
     public static class ParserConsumer {
