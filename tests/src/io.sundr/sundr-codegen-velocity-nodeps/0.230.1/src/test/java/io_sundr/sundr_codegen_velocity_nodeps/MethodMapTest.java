@@ -29,6 +29,24 @@ public class MethodMapTest {
                 "$formatter.describe('word')|$formatter.describe($number)"));
     }
 
+    @Test
+    void choosesCharSequenceOverObjectForMutableText() {
+        VelocityContext context = new VelocityContext();
+        context.put("formatter", new TextFormatter());
+        context.put("text", new StringBuilder("draft"));
+        assertEquals("text:draft", TestSupport.render(context, "$formatter.describe($text)"));
+    }
+
+    public static class TextFormatter {
+        public String describe(Object value) {
+            return "object:" + value;
+        }
+
+        public String describe(CharSequence value) {
+            return "text:" + value;
+        }
+    }
+
     public static class SpecificFormatter {
         public String describe(Object value) {
             return "object:" + value;
