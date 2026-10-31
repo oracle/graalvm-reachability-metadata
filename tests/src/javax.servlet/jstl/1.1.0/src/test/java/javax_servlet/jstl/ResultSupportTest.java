@@ -11,10 +11,8 @@ import java.sql.Types;
 
 import javax.servlet.jsp.jstl.sql.Result;
 import javax.servlet.jsp.jstl.sql.ResultSupport;
-import javax.sql.rowset.CachedRowSet;
-import javax.sql.rowset.RowSetMetaDataImpl;
-import javax.sql.rowset.RowSetProvider;
 
+import org.h2.tools.SimpleResultSet;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -28,7 +26,7 @@ public class ResultSupportTest {
     @Test
     void snapshotsRowsForIndexedAndCaseInsensitiveColumnAccess() throws SQLException {
         Result result;
-        try (CachedRowSet rows = rows(1)) {
+        try (SimpleResultSet rows = rows(1)) {
             result = ResultSupport.toResult(rows);
         }
 
@@ -44,7 +42,7 @@ public class ResultSupportTest {
 
     @Test
     void reportsWhenAdditionalRowsAreExcludedByTheLimit() throws SQLException {
-        try (CachedRowSet rows = rows(3)) {
+        try (SimpleResultSet rows = rows(3)) {
             Result result = ResultSupport.toResult(rows, 2);
 
             assertNotNull(result);
@@ -57,7 +55,7 @@ public class ResultSupportTest {
 
     @Test
     void doesNotReportTruncationWhenAllRowsFit() throws SQLException {
-        try (CachedRowSet rows = rows(2)) {
+        try (SimpleResultSet rows = rows(2)) {
             Result result = ResultSupport.toResult(rows, 2);
 
             assertNotNull(result);
@@ -68,7 +66,7 @@ public class ResultSupportTest {
 
     @Test
     void retainsColumnNamesForAnEmptyResult() throws SQLException {
-        try (CachedRowSet rows = rows(0)) {
+        try (SimpleResultSet rows = rows(0)) {
             Result result = ResultSupport.toResult(rows);
 
             assertNotNull(result);
@@ -80,23 +78,13 @@ public class ResultSupportTest {
         }
     }
 
-    private static CachedRowSet rows(int count) throws SQLException {
-        RowSetMetaDataImpl metadata = new RowSetMetaDataImpl();
-        metadata.setColumnCount(2);
-        metadata.setColumnName(1, "Id");
-        metadata.setColumnType(1, Types.INTEGER);
-        metadata.setColumnName(2, "Description");
-        metadata.setColumnType(2, Types.VARCHAR);
-        CachedRowSet rows = RowSetProvider.newFactory().createCachedRowSet();
-        rows.setMetaData(metadata);
+    private static SimpleResultSet rows(int count) {
+        SimpleResultSet rows = new SimpleResultSet();
+        rows.addColumn("Id", Types.INTEGER, 10, 0);
+        rows.addColumn("Description", Types.VARCHAR, 40, 0);
         for (int id = 1; id <= count; id++) {
-            rows.moveToInsertRow();
-            rows.updateInt(1, id);
-            rows.updateNull(2);
-            rows.insertRow();
-            rows.moveToCurrentRow();
+            rows.addRow(id, null);
         }
-        rows.beforeFirst();
         return rows;
     }
 }

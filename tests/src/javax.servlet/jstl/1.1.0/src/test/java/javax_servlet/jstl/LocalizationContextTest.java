@@ -25,12 +25,12 @@ public class LocalizationContextTest {
     @Test
     void suppliesTheBundleAndLocaleForMessageFormatting() throws IOException {
         ResourceBundle bundle = new PropertyResourceBundle(new StringReader("price=Total: {0,number,#,##0.00}"));
-        LocalizationContext context = new LocalizationContext(bundle, Locale.GERMANY);
+        LocalizationContext context = new LocalizationContext(bundle, Locale.US);
 
         MessageFormat format = new MessageFormat(context.getResourceBundle().getString("price"), context.getLocale());
-        assertEquals("Total: 1.234,50", format.format(new Object[]{1234.5}));
+        assertEquals("Total: 1,234.50", format.format(new Object[]{1234.5}));
         assertSame(bundle, context.getResourceBundle());
-        assertEquals(Locale.GERMANY, context.getLocale());
+        assertEquals(Locale.US, context.getLocale());
     }
 
     @Test
