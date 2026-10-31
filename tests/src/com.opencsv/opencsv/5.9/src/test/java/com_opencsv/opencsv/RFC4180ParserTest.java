@@ -24,7 +24,7 @@ public class RFC4180ParserTest {
     void parsesDoubledQuotesAndPreservesBackslashesWhitespaceAndTrailingFields() throws Exception {
         RFC4180Parser parser = new RFC4180Parser();
 
-        assertThat(parser.parseLine("\"Doe, Jane\",\"said \"\"hello\"\"\",C:\\reports,  padded  ,"))
+        assertThat(parser.parseLine("\"Doe, Jane\",\"said \"\"hello\"\"\",C:\\reports,  padded  " + ","))
                 .containsExactly("Doe, Jane", "said \"hello\"", "C:\\reports", "  padded  ", "");
     }
 
