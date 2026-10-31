@@ -6,11 +6,6 @@
  */
 package org_jboss_weld.weld_core;
 
-import org.junit.jupiter.api.Test;
-
-class Weld_coreTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
-    }
+public interface GreetingService {
+    String greet(String name);
 }
