@@ -9,6 +9,7 @@ package io_trino.trino_jdbc;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 
 final class TrinoProtocolServer implements AutoCloseable {
     private final HttpServer server;
@@ -35,6 +37,10 @@ final class TrinoProtocolServer implements AutoCloseable {
     final List<String> users = new CopyOnWriteArrayList<>();
 
     TrinoProtocolServer(boolean secure) throws Exception {
+        this(secure, new String[0]);
+    }
+
+    TrinoProtocolServer(boolean secure, String... protocols) throws Exception {
         this.secure = secure;
         if (secure) {
             trustStore = Files.createTempFile("trino-test-trust-", ".p12");
@@ -50,7 +56,16 @@ final class TrinoProtocolServer implements AutoCloseable {
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(managers.getKeyManagers(), null, null);
             HttpsServer https = HttpsServer.create(new InetSocketAddress("localhost", 0), 0);
-            https.setHttpsConfigurator(new HttpsConfigurator(context));
+            https.setHttpsConfigurator(new HttpsConfigurator(context) {
+                @Override
+                public void configure(HttpsParameters parameters) {
+                    SSLParameters sslParameters = getSSLContext().getDefaultSSLParameters();
+                    if (protocols.length > 0) {
+                        sslParameters.setProtocols(protocols);
+                    }
+                    parameters.setSSLParameters(sslParameters);
+                }
+            });
             server = https;
         } else {
             trustStore = null;

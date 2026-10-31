@@ -15,6 +15,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TypeFactoryTest {
     @Test
+    void resolvesCanonicalTypeWithoutThreadContextClassLoader() throws Exception {
+        Thread thread = Thread.currentThread();
+        ClassLoader previous = thread.getContextClassLoader();
+        try {
+            thread.setContextClassLoader(null);
+            ObjectMapper mapper = new ObjectMapper();
+            JavaType type = mapper.getTypeFactory().constructFromCanonical("java.util.Map<java.lang.String,java.lang.Integer>");
+            Map<String, Integer> data = mapper.readValue("{\"count\":27}", type);
+            assertEquals(Map.of("count", 27), data);
+        } finally {
+            thread.setContextClassLoader(previous);
+        }
+    }
+
+    @Test
     void resolvesCanonicalGenericTypeForReading() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         JavaType type = mapper.getTypeFactory().constructFromCanonical("java.util.Map<java.lang.String,java.lang.Integer>");
