@@ -157,7 +157,8 @@ elif task == "test" and mode is None:
         sys.exit(1)
 elif task == "generateDynamicAccessReport":
     if control.get("listFails"):
-        sys.exit(1)
+        fail_build("Fatal error: com.oracle.graal.pointsto.constraints.UnsupportedFeatureException: "
+                   "Unresolved type found: org.example.missing.Location")
     if control.get("listsNoCalls"):
         print("No dynamic access JSON files were generated because the output directory is missing")
         sys.exit(0)
