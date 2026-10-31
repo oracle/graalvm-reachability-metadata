@@ -22,6 +22,12 @@ tasks.withType(Test).configureEach {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // Certificate pinning reads SSLSocketFactoryImpl.context and SSLContextImpl.trustManager.
+            buildArgs.add('--add-opens=java.base/sun.security.ssl=ALL-UNNAMED')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {

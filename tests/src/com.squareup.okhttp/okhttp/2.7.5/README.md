@@ -6,8 +6,8 @@
   loopback server. It asserts that the final handshake exception preserves the
   earlier failure as a suppressed exception.
 - `PlatformTest` verifies a certificate-pinned HTTPS request, which requires
-  extracting the trust manager from the client's socket factory. On the JVM,
-  this library operation requires
+  extracting the trust manager from the client's socket factory. On both the
+  JVM and Native Image, this library operation requires
   `--add-opens=java.base/sun.security.ssl=ALL-UNNAMED`: without it, the pinned
   request throws `InaccessibleObjectException` when OkHttp reads
   `SSLSocketFactoryImpl.context`. The opening also permits its subsequent read
