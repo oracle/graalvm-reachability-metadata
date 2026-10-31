@@ -14,6 +14,22 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class ClassConverterTest {
     @Test
+    void resolvesTypeNamesWithoutAThreadContextClassLoader() {
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        try {
+            thread.setContextClassLoader(null);
+            ClassConverter converter = new ClassConverter();
+
+            assertSame(String.class, converter.convert(Class.class, "java.lang.String"));
+            assertSame(SampleBean.class,
+                    converter.convert(Class.class, "commons_beanutils.commons_beanutils.SampleBean"));
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
     void resolvesConfiguredTypeNamesForConversion() {
         ClassConverter converter = new ClassConverter();
 
