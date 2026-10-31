@@ -501,5 +501,19 @@ class RouteLabelTest(unittest.TestCase):
                 self.assertIn(label, SUPPORTED_FORGE_REVIEW_TASK_TYPES)
 
 
+class PromptCaseTest(unittest.TestCase):
+
+    def test_every_case_of_the_prompt_is_the_spec_s_case_of_that_number(self) -> None:
+        """The agent's `case` names the §FS-published-pr-review.4 point that applied, by number and title."""
+        with open(f"{pr_review.FORGE_DIR}/docs/functional-spec/published-pr-review.md", encoding="utf-8") as handle:
+            spec: list[str] = [line.removeprefix("### 4.").replace(" ", ". ", 1)
+                               for line in handle.read().splitlines() if line.startswith("### 4.")]
+        with open(pr_review.TEMPLATE, encoding="utf-8") as handle:
+            prompt: list[str] = [line.removeprefix("## ") for line in handle.read().splitlines()
+                                 if line.startswith("## ") and line[3:4].isdigit()]
+        self.assertEqual(spec, prompt)
+        self.assertEqual("7. A failure the merge base caused", prompt[-1])
+
+
 if __name__ == "__main__":
     unittest.main()
