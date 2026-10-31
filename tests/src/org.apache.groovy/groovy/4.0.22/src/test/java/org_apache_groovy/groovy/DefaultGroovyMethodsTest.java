@@ -7,7 +7,7 @@
 package org_apache_groovy.groovy;
 
 import groovy.lang.Closure;
-import groovy.lang.ExpandoMetaClass;
+import groovy.lang.DelegatingMetaClass;
 import groovy.lang.GroovyObjectSupport;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.junit.jupiter.api.Test;
@@ -56,8 +56,12 @@ public class DefaultGroovyMethodsTest {
     @Test
     void installsAnInstanceMetaclassAndUpdatesItsOptimizationFlag() {
         DynamicParcel parcel = new DynamicParcel();
-        ExpandoMetaClass replacement = new ExpandoMetaClass(DynamicParcel.class, false, true);
-        replacement.registerBeanProperty("status", "ready");
+        DelegatingMetaClass replacement = new DelegatingMetaClass(parcel.getMetaClass()) {
+            @Override
+            public Object getProperty(Object object, String property) {
+                return "status".equals(property) ? "ready" : super.getProperty(object, property);
+            }
+        };
         replacement.initialize();
         DefaultGroovyMethods.setMetaClass(parcel, replacement);
         assertTrue(DynamicParcel.__$stMC);
@@ -65,6 +69,7 @@ public class DefaultGroovyMethodsTest {
     }
 
     public static class DynamicParcel extends GroovyObjectSupport {
+        @SuppressWarnings("checkstyle:StaticVariableName") // Groovy's primitive-dispatch flag name.
         public static boolean __$stMC;
     }
 

@@ -20,7 +20,8 @@ public class ParserATNFactoryTest {
         Grammar grammar = new Grammar("grammar Entries; entries: ID (',' ID)* EOF; ID: [a-z]+;");
         CommonTokenStream tokens = new CommonTokenStream(grammar.createLexerInterpreter(CharStreams.fromString("ada,lin")));
         ParserInterpreter parser = grammar.createParserInterpreter(tokens);
-        assertEquals("(entries ada , lin <EOF>)", parser.parse(grammar.getRule("entries").index).toStringTree(parser));
+        assertEquals(String.join(" ", "(entries", "ada", ",", "lin", "<EOF>)"),
+                parser.parse(grammar.getRule("entries").index).toStringTree(parser));
         assertEquals(0, parser.getNumberOfSyntaxErrors());
     }
 }

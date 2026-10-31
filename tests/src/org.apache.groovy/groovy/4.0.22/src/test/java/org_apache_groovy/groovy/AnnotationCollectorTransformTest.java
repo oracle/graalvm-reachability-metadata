@@ -16,9 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnnotationCollectorTransformTest {
     @Test
-    void expandsThePrecompiledCanonicalAnnotation() throws Exception {
+    void expandsASourceDeclaredCanonicalAnnotation() throws Exception {
         ClassNode model = AstCompilationSupport.canonicalize("Address", """
-                @groovy.transform.Canonical
+                @groovy.transform.AnnotationCollector([
+                    groovy.transform.ToString,
+                    groovy.transform.EqualsAndHashCode,
+                    groovy.transform.TupleConstructor
+                ])
+                @interface AddressModel {}
+                @AddressModel
                 class Address { String city; String street }
                 """);
         assertNotNull(model.getDeclaredMethod("toString", Parameter.EMPTY_ARRAY));
