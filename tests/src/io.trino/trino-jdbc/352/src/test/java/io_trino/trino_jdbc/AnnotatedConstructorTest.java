@@ -9,6 +9,7 @@ package io_trino.trino_jdbc;
 import io.trino.jdbc.$internal.jackson.annotation.JsonCreator;
 import io.trino.jdbc.$internal.jackson.annotation.JsonProperty;
 import io.trino.jdbc.$internal.jackson.databind.ObjectMapper;
+import io.trino.jdbc.$internal.jackson.databind.introspect.AnnotatedConstructor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +23,20 @@ public class AnnotatedConstructorTest {
         assertEquals(8, point.y);
         assertEquals("token", mapper.readValue("\"token\"", Token.class).value);
         assertEquals("ready", mapper.readValue("{}", Defaults.class).state);
+    }
+
+    @Test
+    void restoresIntrospectedCreatorAndConstructsNewValues() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        AnnotatedConstructor creator = mapper.getDeserializationConfig()
+                .introspect(mapper.constructType(Token.class)).getConstructors().get(0);
+        AnnotatedConstructor restored = SerializationRoundTrip.copy(creator);
+
+        assertEquals(Token.class, restored.getDeclaringClass());
+        assertEquals(1, restored.getParameterCount());
+        assertEquals(String.class, restored.getRawParameterType(0));
+        assertEquals("restored", ((Token) restored.call1("restored")).value);
+        assertEquals("another", ((Token) restored.call1("another")).value);
     }
 
     public static class Point {
