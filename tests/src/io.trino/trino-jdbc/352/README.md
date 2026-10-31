@@ -5,6 +5,10 @@ pagination, typed values, SQL nulls, and result metadata against a loopback HTTP
 server. `Jdk9PlatformTest` repeats query execution over certificate-verified TLS.
 The bundled `localhost.p12` contains a self-signed, test-only localhost key and
 certificate; its password is `changeit`. Neither test requires external services.
+`UtilTest` configures a TLS 1.2-only loopback server and an OkHttp connection-spec
+fallback list. It verifies a successful request after two TLS 1.3 handshake
+failures and checks that the first failure retains the second as a suppressed
+exception.
 
 Dedicated tests exercise the public APIs of the bundled Jackson, Guava, and
 Joda-Time components. Reflection appears only where it is the API's input or
@@ -35,9 +39,6 @@ Some reported accesses have no suitable path in this suite:
 - `ClassUtil.EnumTypeLocator`'s empty enum-container introspection and the base
   OkHttp `Platform`'s socket-factory introspection inspect private JDK fields.
   The suite does not open JDK modules merely to enter these fallback paths.
-- OkHttp `Util.addSuppressedIfPossible` requires multiple connection attempts
-  failing inside the connection loop. The loopback tests cover successful
-  requests rather than depending on machine-specific route failure ordering.
 
 The remaining Jackson accesses include object-stream `readResolve` hooks,
 unused deprecated reflection wrappers in `ClassUtil`, its missing-class
