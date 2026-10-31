@@ -15,6 +15,11 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    // Certificate pinning extracts the trust manager from the JDK's SSL socket factory.
+    jvmArgs '--add-opens=java.base/sun.security.ssl=ALL-UNNAMED'
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
