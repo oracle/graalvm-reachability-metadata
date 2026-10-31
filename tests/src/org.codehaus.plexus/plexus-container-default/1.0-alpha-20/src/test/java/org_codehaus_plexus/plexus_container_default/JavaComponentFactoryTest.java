@@ -6,8 +6,8 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
-import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.java.JavaComponentFactory;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.junit.jupiter.api.Test;

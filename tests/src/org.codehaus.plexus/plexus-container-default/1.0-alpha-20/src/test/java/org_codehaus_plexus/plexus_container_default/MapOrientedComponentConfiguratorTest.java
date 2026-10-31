@@ -6,8 +6,8 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
-import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.MapOrientedComponentConfigurator;
@@ -18,12 +18,9 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,8 +31,6 @@ public class MapOrientedComponentConfiguratorTest {
     public void rejectsComponentsThatDoNotAcceptMapConfiguration() throws Exception {
         MapOrientedComponentConfigurator configurator = new MapOrientedComponentConfigurator();
         Object component = nonMapOrientedComponentSelectedAtRuntime();
-        clearCompilerGeneratedClassCache();
-        assertNull(cachedMapOrientedComponentType());
 
         ComponentConfigurationException exception = assertThrows(
             ComponentConfigurationException.class,
@@ -50,7 +45,6 @@ public class MapOrientedComponentConfiguratorTest {
 
         assertTrue(exception.getMessage().contains("can only process implementations"));
         assertTrue(exception.getMessage().contains(MapOrientedComponent.class.getName()));
-        assertEquals(MapOrientedComponent.class, cachedMapOrientedComponentType());
     }
 
     @Test
@@ -70,26 +64,6 @@ public class MapOrientedComponentConfiguratorTest {
 
         assertEquals("localhost", component.configuration.get("host"));
         assertEquals("8080", component.configuration.get("port"));
-    }
-
-    private static void clearCompilerGeneratedClassCache() throws Exception {
-        classCacheHandle().set(null);
-    }
-
-    private static Class<?> cachedMapOrientedComponentType() throws Exception {
-        return (Class<?>) classCacheHandle().get();
-    }
-
-    private static VarHandle classCacheHandle() throws Exception {
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
-            MapOrientedComponentConfigurator.class,
-            MethodHandles.lookup()
-        );
-        return lookup.findStaticVarHandle(
-            MapOrientedComponentConfigurator.class,
-            "class$org$codehaus$plexus$component$MapOrientedComponent",
-            Class.class
-        );
     }
 
     private static Object nonMapOrientedComponentSelectedAtRuntime() {

@@ -6,8 +6,8 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
-import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.FieldComponentComposer;
@@ -17,14 +17,12 @@ import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.Reader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
@@ -139,7 +137,7 @@ public class FieldComponentComposerTest {
         }
     }
 
-    private static final class RecordingPlexusContainer implements PlexusContainer {
+    private static final class RecordingPlexusContainer extends PlexusContainerAdapter {
         private final Map<String, Object> components = new HashMap<>();
 
         private final Map<String, List> lists = new HashMap<>();
@@ -184,7 +182,7 @@ public class FieldComponentComposerTest {
 
         @Override
         public Object lookup(String role, String roleHint) throws ComponentLookupException {
-            return lookup(role + roleHint);
+            return lookup("default".equals(roleHint) ? role : role + roleHint);
         }
 
         @Override
@@ -255,7 +253,7 @@ public class FieldComponentComposerTest {
         @Override
         public void addComponentDescriptor(ComponentDescriptor componentDescriptor)
             throws ComponentRepositoryException {
-            descriptors.put(componentDescriptor.getComponentKey(), componentDescriptor);
+            descriptors.put(componentDescriptor.getRole(), componentDescriptor);
         }
 
         @Override
@@ -294,14 +292,6 @@ public class FieldComponentComposerTest {
         }
 
         @Override
-        public void initialize() throws PlexusContainerException {
-        }
-
-        @Override
-        public void start() throws PlexusContainerException {
-        }
-
-        @Override
         public void dispose() {
         }
 
@@ -312,11 +302,6 @@ public class FieldComponentComposerTest {
 
         @Override
         public void addContextValue(Object key, Object value) {
-        }
-
-        @Override
-        public void setConfigurationResource(Reader configuration) throws PlexusConfigurationResourceException {
-            throw new UnsupportedOperationException();
         }
 
         @Override

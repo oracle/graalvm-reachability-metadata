@@ -17,7 +17,7 @@ public class DefaultPlexusContainerTest {
     void constructorInitializesCoreRealmAndContainerContext() throws Exception {
         DefaultPlexusContainer container = new DefaultPlexusContainer(
             "test-container",
-            DefaultPlexusContainerTest.class.getClassLoader()
+            null
         );
 
         try {
@@ -37,7 +37,7 @@ public class DefaultPlexusContainerTest {
     void createAndAutowireInstantiatesNamedComponentFromContainerRealm() throws Exception {
         DefaultPlexusContainer container = new DefaultPlexusContainer(
             "autowire-container",
-            DefaultPlexusContainerTest.class.getClassLoader()
+            null
         );
 
         try {

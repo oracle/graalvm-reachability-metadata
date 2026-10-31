@@ -6,7 +6,7 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
-import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
@@ -20,7 +20,6 @@ import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -30,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.File;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,7 +48,7 @@ public class MapOrientedComponentComposerTest {
     public void containerComposerManagerRejectsPlainComponentsForMapOrientedComposer() throws Exception {
         DefaultPlexusContainer container = new DefaultPlexusContainer(
             "map-oriented-composer-test",
-            MapOrientedComponentComposerTest.class.getClassLoader()
+            null
         );
         ComponentDescriptor descriptor = descriptor(PlainComponent.class.getName());
         descriptor.setComponentComposer("map-oriented");
@@ -89,7 +87,7 @@ public class MapOrientedComponentComposerTest {
     public void lookupFailsWhenDescriptorSelectsMapOrientedComposerForPlainComponent() throws Exception {
         DefaultPlexusContainer container = new DefaultPlexusContainer(
             "map-oriented-composer-lookup-test",
-            MapOrientedComponentComposerTest.class.getClassLoader()
+            null
         );
         ComponentDescriptor descriptor = descriptor(PlainComponent.class.getName());
         descriptor.setComponentComposer("map-oriented");
@@ -218,7 +216,7 @@ public class MapOrientedComponentComposerTest {
         }
     }
 
-    private static final class RecordingPlexusContainer implements PlexusContainer {
+    private static final class RecordingPlexusContainer extends PlexusContainerAdapter {
         private final Map<String, Object> components = new HashMap<>();
 
         private final Map<String, List> lists = new HashMap<>();
@@ -263,7 +261,7 @@ public class MapOrientedComponentComposerTest {
 
         @Override
         public Object lookup(String role, String roleHint) throws ComponentLookupException {
-            return lookup(role + roleHint);
+            return lookup("default".equals(roleHint) ? role : role + roleHint);
         }
 
         @Override
@@ -334,7 +332,7 @@ public class MapOrientedComponentComposerTest {
         @Override
         public void addComponentDescriptor(ComponentDescriptor componentDescriptor)
             throws ComponentRepositoryException {
-            descriptors.put(componentDescriptor.getComponentKey(), componentDescriptor);
+            descriptors.put(componentDescriptor.getRole(), componentDescriptor);
         }
 
         @Override
@@ -373,14 +371,6 @@ public class MapOrientedComponentComposerTest {
         }
 
         @Override
-        public void initialize() throws PlexusContainerException {
-        }
-
-        @Override
-        public void start() throws PlexusContainerException {
-        }
-
-        @Override
         public void dispose() {
         }
 
@@ -391,11 +381,6 @@ public class MapOrientedComponentComposerTest {
 
         @Override
         public void addContextValue(Object key, Object value) {
-        }
-
-        @Override
-        public void setConfigurationResource(Reader configuration) throws PlexusConfigurationResourceException {
-            throw new UnsupportedOperationException();
         }
 
         @Override

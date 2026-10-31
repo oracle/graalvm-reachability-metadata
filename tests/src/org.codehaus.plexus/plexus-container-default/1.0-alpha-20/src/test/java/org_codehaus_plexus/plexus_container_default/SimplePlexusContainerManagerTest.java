@@ -11,7 +11,8 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.junit.jupiter.api.Test;
 
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,8 +37,10 @@ public class SimplePlexusContainerManagerTest {
         Map context = new HashMap();
         context.put("configured-key", "configured-value");
         DefaultPlexusContainer container = new DefaultPlexusContainer(
-            new StringReader("<plexus><components/></plexus>"),
-            context
+            "configured-container",
+            context,
+            null,
+            new ByteArrayInputStream("<plexus><components/></plexus>".getBytes(StandardCharsets.UTF_8))
         );
 
         try {
