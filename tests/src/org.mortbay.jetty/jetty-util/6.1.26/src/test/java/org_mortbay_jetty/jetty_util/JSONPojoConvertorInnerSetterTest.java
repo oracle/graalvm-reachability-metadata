@@ -49,6 +49,27 @@ public class JSONPojoConvertorInnerSetterTest {
         assertArrayEquals(new int[]{3, 4}, settings.getWeights());
     }
 
+    @Test
+    public void preservesNullElementsInCompatibleBoxedNumberArrays() {
+        NullableWeights settings = new NullableWeights();
+        JSONPojoConvertor convertor = new JSONPojoConvertor(NullableWeights.class);
+        Integer[] weights = {2, null, 5};
+        assertEquals(1, convertor.setProps(settings, Map.of("weights", weights)));
+        assertArrayEquals(new Integer[]{2, null, 5}, settings.getWeights());
+    }
+
+    public static class NullableWeights {
+        private Integer[] weights;
+
+        public Integer[] getWeights() {
+            return weights;
+        }
+
+        public void setWeights(Integer[] weights) {
+            this.weights = weights;
+        }
+    }
+
     public static class Settings {
         private int count;
         private String[] tags;
