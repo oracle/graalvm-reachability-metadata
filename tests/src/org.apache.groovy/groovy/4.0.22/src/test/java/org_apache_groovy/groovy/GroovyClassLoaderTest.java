@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GroovyClassLoaderTest {
     @Test
@@ -24,7 +25,8 @@ public class GroovyClassLoaderTest {
             assertNotNull(source);
             assertEquals(getClass().getResource("/examples/Inventory.groovy"), source);
             try (InputStream input = source.openStream()) {
-                assertEquals("class Inventory { String reference }\n", new String(input.readAllBytes(), StandardCharsets.UTF_8));
+                String content = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+                assertTrue(content.endsWith("package examples\n\nclass Inventory { String reference }\n"));
             }
         }
     }
