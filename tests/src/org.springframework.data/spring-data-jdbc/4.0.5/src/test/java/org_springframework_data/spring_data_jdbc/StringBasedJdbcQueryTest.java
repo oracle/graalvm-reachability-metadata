@@ -6,6 +6,7 @@
  */
 package org_springframework_data.spring_data_jdbc;
 
+import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,29 +29,25 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Timeout(30)
 public class StringBasedJdbcQueryTest {
-    private EmbeddedDatabase database;
+    private JdbcDataSource database;
     private BookRepository repository;
 
     @BeforeEach
     void setUp() {
-        database = new EmbeddedDatabaseBuilder()
-                .generateUniqueName(true)
-                .setType(EmbeddedDatabaseType.H2)
-                .build();
+        database = new JdbcDataSource();
+        database.setURL("jdbc:h2:mem:" + UUID.randomUUID() + ";DB_CLOSE_DELAY=-1");
         JdbcTemplate jdbc = new JdbcTemplate(database);
         jdbc.execute("CREATE TABLE inventory (id BIGINT PRIMARY KEY, title VARCHAR(100))");
         jdbc.update("INSERT INTO inventory (id, title) VALUES (?, ?)", 1L, "Orchard");
@@ -71,7 +68,7 @@ public class StringBasedJdbcQueryTest {
     @AfterEach
     void tearDown() {
         if (database != null) {
-            database.shutdown();
+            new JdbcTemplate(database).execute("SHUTDOWN");
         }
     }
 
