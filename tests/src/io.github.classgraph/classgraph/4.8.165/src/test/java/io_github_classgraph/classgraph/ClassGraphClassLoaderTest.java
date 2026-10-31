@@ -13,6 +13,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ClassGraphClassLoaderTest {
     @TempDir
@@ -23,6 +24,27 @@ public class ClassGraphClassLoaderTest {
         try (ScanResult scan = ScanSupport.discover(ScanSupport.archive(directory))) {
             assertSame(String.class, scan.loadClass(String.class.getName(), false));
             assertSame(ScanFixtures.Child.class, scan.loadClass(ScanFixtures.Child.class.getName(), false));
+        }
+    }
+
+    @Test
+    void fallsBackToAddedApplicationLoader() throws Exception {
+        try (ScanResult scan = ScanSupport.graph(ScanSupport.archive(directory))
+                .overrideClassLoaders(ClassLoader.getPlatformClassLoader())
+                .addClassLoader(ScanFixtures.class.getClassLoader()).scan(2)) {
+            assertSame(ScanFixtures.Subject.class,
+                    scan.loadClass(ScanFixtures.Subject.class.getName(), Runnable.class, false));
+            assertSame(ScanFixtures.Child.class,
+                    scan.loadClass(ScanFixtures.Child.class.getName(), Runnable.class, false));
+        }
+    }
+
+    @Test
+    void rejectsUnknownClassAfterSearchingClasspath() throws Exception {
+        try (ScanResult scan = ScanSupport.discover(ScanSupport.archive(directory))) {
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                    () -> scan.loadClass(ScanSupport.PACKAGE + ".AbsentCatalogEntry", false));
+            assertSame(ClassNotFoundException.class, exception.getCause().getClass());
         }
     }
 }

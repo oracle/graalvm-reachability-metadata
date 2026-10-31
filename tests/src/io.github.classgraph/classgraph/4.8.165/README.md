@@ -48,11 +48,18 @@ The remaining reported sites are not forced through internal APIs:
   `canAccess`. Normal successful access does not select either fallback.
   Driver field setters have no consumer-facing setter API, and constructor
   enumeration is used to initialize the optional JVM-Driver backend.
-- `ClassGraphClassLoader`'s additional class-finding routes require other
-  delegation arrangements; tests load only classes already in the application.
-  Its resource methods dereference delegation sets that can be null and, in
-  the environment route, a null loader entry. Tests do not assert those null
-  dereferences as supported behavior or introduce runtime-defined classes.
+- `ClassGraphClassLoaderTest` exercises an added application loader after an
+  override platform loader cannot load the scanned fixture classes. It also
+  checks the documented exception for an absent class after searching the
+  environment and classpath loaders. Neither test introduces new classes.
+  The nested-ClassGraph-loader route has no public loader accessor; obtaining
+  such a loader through a newly defined class would require runtime class
+  definition, excluded by §FS-test-contract.4.5. The per-class loader fallback
+  is reached only after earlier delegation fails; ordinary fixture loading
+  succeeds in that earlier delegation. Resource methods dereference a null
+  environment set when loaders or classpath are overridden, or a null loader
+  entry otherwise. Tests do not assert those failures as supported behavior
+  (§FS-test-contract.2.6).
 - `ScanResultObject` and `ArrayTypeSignature`'s remaining class-loading calls
   are fallbacks for objects with no associated scan result. Public scanning
   and scan-result restoration attach that result to the returned objects.
