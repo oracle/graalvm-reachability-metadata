@@ -23,8 +23,14 @@ The following dynamic-access paths are intentionally not invoked directly:
 - `FinalizableReferenceQueue.SystemLoader` and `.DecoupledLoader`: ordinary
   cache initialization can visit these internally, but there is no public API
   selecting a loader. No test installs a custom class loader to force a branch.
-- `BytecodeGen.BridgeClassLoader`: selecting this loader requires a class-loader
-  boundary; the tests use normal application classes instead.
+- `BytecodeGen.BridgeClassLoader` for a type of the platform loader, such as a
+  circular dependency on `javax.sql.CommonDataSource`: Guice proxies the type in
+  a bridge parented on the platform loader, which reaches Guice's own classes by
+  delegation. Native Image accepts a proxy loader only when the interfaces'
+  common loader is that loader or one of its parents, so the proxy fails in a
+  native image although the JVM accepts it:
+  https://github.com/oracle/graal/issues/14849 (GR-81040). The tests use
+  application interfaces instead.
 - The shaded CGLIB `ReflectUtils`, `Enhancer`, `MethodProxy`,
   `AbstractClassGenerator`, `EmitUtils`, `KeyFactory`, `MethodWrapper`,
   `ReflectUtils.2`, `CallbackInfo`, `MethodInterceptorGenerator`, `FastClass`,

@@ -131,3 +131,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14812
+
+## GR-81040: \[Native Image\] Proxy.newProxyInstance rejects a class loader that sees the interfaces through delegation, which the JVM accepts
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14849
