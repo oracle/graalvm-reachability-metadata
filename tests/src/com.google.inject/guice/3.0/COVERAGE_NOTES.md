@@ -6,6 +6,12 @@ types, typed SPI collections, diagnostic formatting, and the weak caches used by
 injector construction. Cache initialization is exercised through Guice rather
 than by importing its shaded utility classes.
 
+`InjectionPointTest` also exercises the successful same-named backing-field
+lookup in `InjectionPoint.checkForMisplacedBindingAnnotations`. It verifies
+that SPI discovery accepts a qualified accessor with a backing field and that
+member injection uses the field and parameter qualifiers, not the accessor's
+annotation. The private accessor selects ordinary reflective invocation.
+
 The following dynamic-access paths are intentionally not invoked directly:
 
 - `CustomConcurrentHashMap.Impl` serialization and its `Fields` helper,
@@ -26,6 +32,11 @@ The following dynamic-access paths are intentionally not invoked directly:
   generation for interception or optimized invocation. Tests use private
   injectable constructors and methods, which select ordinary reflection,
   rather than targeting runtime class definition or calling shaded internals.
+  `DefaultConstructionProxyFactory` routes public constructors to
+  `BytecodeGen.newFastClass`; `SingleMethodInjector` routes methods that are
+  neither private nor protected there too. Interception instead reaches
+  `ProxyFactory.ProxyConstructor`, which calls `Enhancer.createClass`. These
+  are runtime class-definition paths, not missing registration scenarios.
   The downloaded source archive omits the shaded CGLIB and ASM sources;
   their available binary API was inspected alongside Guice's dispatch code.
 - ASM `ClassReader(String)` is not the reader constructor used by Guice's

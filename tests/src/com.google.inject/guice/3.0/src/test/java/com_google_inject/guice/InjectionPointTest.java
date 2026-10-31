@@ -6,8 +6,11 @@
  */
 package com_google_inject.guice;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.ConfigurationException;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
@@ -53,6 +56,48 @@ public class InjectionPointTest {
         ConfigurationException error = assertThrows(ConfigurationException.class,
                 () -> InjectionPoint.forInstanceMethodsAndFields(MisplacedQualifier.class));
         assertTrue(error.getMessage().contains("misplaced"));
+    }
+
+    @Test
+    void discoversQualifiedAccessorsWithSameNamedBackingFields() {
+        Set<InjectionPoint> points = InjectionPoint.forInstanceMethodsAndFields(FieldBackedAccessor.class);
+        assertEquals(List.of("endpoint", "endpoint"),
+                points.stream().map(point -> point.getMember().getName()).toList());
+        assertEquals(List.of(Key.get(String.class, Names.named("field")),
+                        Key.get(String.class, Names.named("argument"))),
+                points.stream().map(point -> point.getDependencies().get(0).getKey()).toList());
+    }
+
+    @Test
+    void injectsFieldBackedAccessorsUsingParameterQualifiers() {
+        Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bindConstant().annotatedWith(Names.named("field")).to("field-value");
+                bindConstant().annotatedWith(Names.named("argument")).to("argument-value");
+            }
+        });
+        FieldBackedAccessor client = new FieldBackedAccessor();
+        injector.injectMembers(client);
+        assertEquals("field-value", client.endpoint);
+        assertEquals("field-value", client.fieldSeenByAccessor);
+        assertEquals("argument-value", client.accessorArgument);
+        assertEquals(1, client.calls);
+    }
+
+    static final class FieldBackedAccessor {
+        @Inject @Named("field") private String endpoint;
+        private String fieldSeenByAccessor;
+        private String accessorArgument;
+        private int calls;
+
+        @Inject
+        @Named("accessor")
+        private void endpoint(@Named("argument") String argument) {
+            fieldSeenByAccessor = endpoint;
+            accessorArgument = argument;
+            calls++;
+        }
     }
 
     static final class ConstructorClient {
