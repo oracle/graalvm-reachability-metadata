@@ -13,12 +13,16 @@ import org.glassfish.grizzly.http.server.util.IntrospectionUtils;
 import org.glassfish.grizzly.http.server.util.StringParser;
 import org.junit.jupiter.api.Test;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -135,6 +139,29 @@ public class IntrospectionUtilsTest {
     }
 
     @Test
+    void fallsBackToStringPropertySetterWhenBooleanOverloadHasAnotherValueType() {
+        OverloadedProperties properties = new OverloadedProperties();
+
+        assertTrue(IntrospectionUtils.setProperty(properties, "greeting", "hello"));
+
+        assertEquals("hello", properties.getProperty("greeting"));
+        assertEquals("hello", IntrospectionUtils.getProperty(properties, "greeting"));
+    }
+
+    @Test
+    void createsEmptyUrlLoaderWithParentDelegation() throws Exception {
+        ClassLoader parent = IntrospectionUtilsTest.class.getClassLoader();
+        URL[] urls = new URL[0];
+
+        try (URLClassLoader loader = assertInstanceOf(URLClassLoader.class,
+                IntrospectionUtils.getURLClassLoader(urls, parent))) {
+            assertArrayEquals(urls, loader.getURLs());
+            assertSame(parent, loader.getParent());
+            assertSame(String.class, loader.loadClass("java.lang.String"));
+        }
+    }
+
+    @Test
     void dispatchesApplicationMainWithArguments() throws Exception {
         CommandLineApplication.arguments = List.of();
 
@@ -154,6 +181,13 @@ public class IntrospectionUtilsTest {
 
         public String getProperty(String name) {
             return values.get(name);
+        }
+    }
+
+    public static class OverloadedProperties extends VoidProperties {
+        public boolean setProperty(String name, Integer value) {
+            setProperty(name, value.toString());
+            return true;
         }
     }
 
