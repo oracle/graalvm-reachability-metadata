@@ -19,7 +19,7 @@ public class BeansAccessTest {
         ModuleSettings settings = access.newInstance();
 
         assertThat(access.getAccessors()).extracting(Accessor::getName).containsExactly("name");
-        assertThat(access.getMap()).containsOnlyKeys("name");
+        assertThat(access.getMap().keySet()).containsExactly("name");
         assertThat(access.getIndex("name")).isZero();
         assertThat(access.getIndex("unknown")).isEqualTo(-1);
         assertThat(access.get(settings, "name")).isEqualTo("unassigned");

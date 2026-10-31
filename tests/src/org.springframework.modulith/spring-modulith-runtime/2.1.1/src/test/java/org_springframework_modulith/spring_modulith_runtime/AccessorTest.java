@@ -23,7 +23,7 @@ public class AccessorTest {
         Map<String, Accessor> properties = Arrays.stream(ASMUtil.getAccessors(ModuleSettings.class, null))
                 .collect(Collectors.toMap(Accessor::getName, Function.identity()));
 
-        assertThat(properties).containsOnlyKeys("name", "active", "verified");
+        assertThat(properties.keySet()).containsExactlyInAnyOrder("name", "active", "verified");
         assertProperty(properties.get("name"), String.class);
         assertProperty(properties.get("active"), boolean.class);
         assertProperty(properties.get("verified"), boolean.class);
