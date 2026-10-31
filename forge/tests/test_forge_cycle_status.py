@@ -22,6 +22,7 @@ from unittest.mock import patch
 
 import forge_metadata
 from dispatcher import issue_fetch
+from git_scripts.github_cli import GitHubRateLimitExceeded
 from tests.test_forge_launcher import FORGE_DIR
 
 RATE_LIMITED: str = "HTTP 403: You have exceeded a secondary rate limit."
@@ -53,6 +54,16 @@ class CycleStatusTest(unittest.TestCase):
         self.assertEqual(75, code)
         self.assertIn("secondary rate limit", logged.getvalue())
         self.assertNotIn("Traceback", logged.getvalue())
+
+    def test_a_rate_limit_ends_the_review_in_one_line(self) -> None:
+        # The pass lets a rate limit out once its lock is released (§FS-published-pr-review.3).
+        with patch.object(forge_metadata, "review_pass",
+                          side_effect=GitHubRateLimitExceeded("GitHub API rate limit exceeded")), \
+                patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
+                contextlib.redirect_stderr(io.StringIO()) as logged:
+            self.assertEqual(forge_metadata.GITHUB_OUTAGE, forge_metadata.main(["--review"]))
+        self.assertEqual(1, len(logged.getvalue().splitlines()), logged.getvalue())
+        self.assertIn("GitHub API rate limit exceeded", logged.getvalue())
 
     def test_a_refusal_that_is_no_outage_stays_a_crash(self) -> None:
         refused = subprocess.CompletedProcess([], 1, stdout="", stderr="HTTP 404: Not Found")

@@ -52,11 +52,23 @@ swap (§root/FS-graalvm-blocked-work.3).
 
 ## 3. The in-review lock
 
-Before its agent runs, the review labels the pull request `in-review`, and it
-removes the label once the outcome is recorded, so concurrent launchers do not
-review the same head twice. Removal is a plain step, not a guaranteed cleanup:
-a killed review leaves its label behind, and a label older than three hours is
-stale and taken over by the next pass.
+Before its agent runs, the review takes the pull request's `in-review` lock, so
+concurrent launchers do not review the same head twice. Every launcher reviews
+as the same account, and adding a label that is already there leaves no trace,
+so the label alone cannot tell two holders apart. The review therefore labels
+the pull request `in-review`, posts a claim comment that carries the head and a
+token of its own, and reads the claims back. The earliest claim holds the lock;
+a review whose claim is not the earliest withdraws it and skips the pull request
+as held by another review. The holder then reads the pull request once more,
+and skips it when it ended (§FS-published-pr-review.2) or its head moved.
+
+The review releases the lock — it deletes its claim and removes the label — on
+every exit of a launcher that is still running: once the outcome is recorded,
+when the pull request is skipped, and when the review fails. A GitHub rate
+limit is such a failure, and it also ends the pass, because every later read
+would meet the same limit (§FS-human-intervention-policy). Only a killed review
+leaves its label and its claim behind: a label or a claim older than three
+hours is stale, and the next pass takes it over.
 
 ## 4. The reviewer
 
@@ -189,8 +201,9 @@ the program writes labels and markers:
    request labeled `human-intervention`. Either adds `reviewed`, so the pull
    request is never reviewed again until a maintainer reopens it
    (§FS-published-pr-review.2); an issue also removes `human-intervention-fixed`.
-2. **Not terminal.** A pushed fix or a rerun removes only `in-review` and leaves
-   a comment by the Forge account that marks the head and the action. The next
+2. **Not terminal.** A pushed fix or a rerun adds no label: the review releases
+   its lock (§FS-published-pr-review.3) and leaves a comment by the Forge account
+   that marks the head and the action. The next
    pass reviews the new head, or the rerun head, once its checks have finished.
 
 The markers bound the loop: a head is rerun at most once, and a pull request
