@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.InternetProtocolFamily;
@@ -207,6 +208,7 @@ public class Netty_codec_dnsTest {
                 .addRecord(DnsSection.ADDITIONAL, new DefaultDnsOptEcsRecord(
                         1232, InternetProtocolFamily.IPv4));
         EmbeddedChannel encoder = new EmbeddedChannel(new DatagramDnsQueryEncoder());
+        encoder.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
         EmbeddedChannel decoder = new EmbeddedChannel(new DatagramDnsQueryDecoder());
         DatagramDnsQuery decoded = null;
 
@@ -247,6 +249,7 @@ public class Netty_codec_dnsTest {
                 .setTruncated(true)
                 .addRecord(DnsSection.QUESTION, new DefaultDnsQuestion("missing.example.com.", DnsRecordType.A));
         EmbeddedChannel encoder = new EmbeddedChannel(new DatagramDnsResponseEncoder());
+        encoder.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
         EmbeddedChannel decoder = new EmbeddedChannel(new DatagramDnsResponseDecoder());
         DatagramDnsResponse decoded = null;
 
@@ -290,6 +293,7 @@ public class Netty_codec_dnsTest {
                 .addRecord(DnsSection.ANSWER, ipv4Record("edge.example.com.", 30, 198, 51, 100, 25))
                 .addRecord(DnsSection.AUTHORITY, ipv4Record("ns.example.com.", 60, 198, 51, 100, 53));
         EmbeddedChannel encoder = new EmbeddedChannel(new TcpDnsResponseEncoder());
+        encoder.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
         EmbeddedChannel decoder = new EmbeddedChannel(new TcpDnsResponseDecoder());
         DnsResponse decoded = null;
 
