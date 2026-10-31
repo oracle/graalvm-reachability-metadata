@@ -18,6 +18,15 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // Native Image initializes the com.sun.xml prefix at build time. Injector's initializer
+            // opens ClassLoader.defineClass, and the unmarshallers keep SAX helpers in static fields.
+            buildArgs.add('--initialize-at-run-time=com.sun.xml.bind.v2.runtime.reflect.opt.Injector,'
+                    + 'com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl,'
+                    + 'com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
