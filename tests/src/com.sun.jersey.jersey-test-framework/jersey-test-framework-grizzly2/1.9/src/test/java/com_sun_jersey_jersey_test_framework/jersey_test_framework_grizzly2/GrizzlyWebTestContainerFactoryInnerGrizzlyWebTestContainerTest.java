@@ -22,12 +22,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,16 +51,13 @@ public class GrizzlyWebTestContainerFactoryInnerGrizzlyWebTestContainerTest {
         try {
             container.start();
             assertEquals(baseUri, container.getBaseUri());
-            HttpURLConnection connection = (HttpURLConnection) baseUri.resolve("?name=Ada").toURL().openConnection();
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
-            try {
-                assertEquals(200, connection.getResponseCode());
-                try (InputStream response = connection.getInputStream()) {
-                    assertEquals("Hello Ada from filter", new String(response.readAllBytes(), StandardCharsets.UTF_8));
-                }
-            } finally {
-                connection.disconnect();
+            try (HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build()) {
+                HttpRequest request = HttpRequest.newBuilder(baseUri.resolve("?name=Ada"))
+                        .timeout(Duration.ofSeconds(10))
+                        .build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                assertEquals(200, response.statusCode());
+                assertEquals("Hello Ada from filter", response.body());
             }
         } finally {
             container.stop();
