@@ -18,10 +18,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.slf4j.Log4jLogger;
 import org.apache.logging.slf4j.Log4jMarkerFactory;
 import org.apache.logging.slf4j.SLF4JServiceProvider;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.IMarkerFactory;
@@ -40,6 +43,11 @@ public class Log4j_slf4j2_implTest {
     private static final String REQUEST_ID_KEY = "requestId";
     private static final String SCOPE_KEY = "scope";
     private static final String BREADCRUMBS_KEY = "breadcrumbs";
+
+    @BeforeAll
+    static void configureThreadContextMap() {
+        LoggingSystem.getInstance().setThreadContextMapFactory(DefaultThreadContextMap::new);
+    }
 
     @AfterEach
     void clearThreadContext() {
