@@ -7,6 +7,7 @@ from contextlib import redirect_stdout
 from unittest.mock import MagicMock
 
 from dispatcher_test_support import *  # noqa: F401,F403 - shared dispatcher test fixtures
+from dispatcher import pending_releases
 
 
 class IssueClaimLockTests(unittest.TestCase):
@@ -310,7 +311,8 @@ class IssueClaimLockTests(unittest.TestCase):
             1, ["gh", "api", "graphql"], output="", stderr="error connecting to api.github.com",
         )
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(pending_releases, "RELEASES", os.path.join(lock_root, "releases")):
                 issue_cache.record_issue_claim_cache_observations([
                     records.IssueClaimCacheObservation(
                         issue_number=1412,
@@ -327,12 +329,14 @@ class IssueClaimLockTests(unittest.TestCase):
                     released = issue_claiming.revert_issue_claim("item-1", 1412, "test")
 
                 self.assertIn(1412, issue_cache.read_issue_claim_cache())
+                # An outage is not left to a hand release (§FS-forge-stranded-claims.4.2).
+                self.assertTrue(pending_releases.is_release_pending(1412))
 
         self.assertFalse(released)
         self.assertEqual(config.CLAIM_RELEASE_ATTEMPTS, set_item_status.call_count)
         self.assertEqual(config.CLAIM_RELEASE_ATTEMPTS - 1, sleep.call_count)
         self.assertIn("Issue #1412 release is unconfirmed", stderr.getvalue())
-        self.assertIn("release it by hand", stderr.getvalue())
+        self.assertIn("the next cycle retries it", stderr.getvalue())
 
     def test_a_release_github_confirms_on_a_later_attempt_is_verified(self) -> None:
         outage = subprocess.CalledProcessError(
@@ -367,10 +371,14 @@ class IssueClaimLockTests(unittest.TestCase):
         outage = subprocess.CalledProcessError(
             1, ["gh", "issue", "view"], output="", stderr="error connecting to api.github.com",
         )
-        with patch.object(issue_claiming, "get_issue_assignees", side_effect=outage), \
+        with tempfile.TemporaryDirectory() as root, \
+                patch.object(pending_releases, "RELEASES", root), \
+                patch.object(issue_claiming, "get_issue_assignees", side_effect=outage), \
                 patch.object(issue_claiming, "revert_issue_claim") as revert_issue_claim, \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
             issue_claiming.revert_issue_claim_if_still_owned_by_user("item-1", 1412, "automation-user", "test")
+            # The next cycle reads the owner again first (§FS-forge-stranded-claims.4.4).
+            self.assertTrue(pending_releases.is_release_pending(1412))
 
         revert_issue_claim.assert_not_called()
         self.assertIn("Issue #1412 release is unconfirmed", stderr.getvalue())

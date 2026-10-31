@@ -28,6 +28,8 @@ from pathlib import Path
 
 from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from git_scripts.common_git import run_git_transport
+from utility_scripts.docker_image_gate import (blamed_images, concurrent_pull_warning, docker_images, issue_list,
+                                              other_live_runs)
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.host_graalvm_checks import graalvm_home_variable
 from utility_scripts.metadata_index import resolve_test_version
@@ -49,7 +51,6 @@ NO_SUDO_FAILURE_MESSAGE = "ERROR: Local CI verification runs must not invoke sud
 UNEXPECTED_DOCKER_IMAGE_FAILURE_MESSAGE = (
     "ERROR: Local CI verification detected Docker images created during the no-network-equivalent test gate."
 )
-DOCKER_IMAGE_LIST_COMMAND = ["docker", "image", "ls", "--format", "{{.Repository}}:{{.Tag}} {{.ID}}"]
 CONSECUTIVE_TESTS_GATE = "run-consecutive-tests"
 # `run-consecutive-tests.sh` prints `FAILED[<stage>][<version>][<command>]` for the stage that failed.
 FAILED_STAGE = re.compile(r"^FAILED\[[^\]]*\]\[[^\]]*\]\[(?P<command>.*)\]\s*$", re.MULTILINE)
@@ -155,6 +156,7 @@ def run_local_ci_verification(
         max_fixup_attempts: int = MAX_FIXUP_ATTEMPTS,
         reproduce_full_ci: bool = False,
         test_lanes: list[dict] | None = None,
+        issue_number: int | None = None,
 ) -> LocalCIVerificationResult:
     """Run local verification, fixing and retrying when possible.
 
@@ -163,14 +165,15 @@ def run_local_ci_verification(
     test matrix and the Spring AOT smoke tests — instead of leaving those to
     repository CI (§FS-local-ci-equivalent-verification.2). `test_lanes` are a
     caller's own matrix entries, run after the cross-cutting checks
-    (§FS-local-ci-equivalent-verification.2.1).
+    (§FS-local-ci-equivalent-verification.2.1). `issue_number` is the run's own issue, whose launcher lock
+    marks no other run (§FS-local-ci-equivalent-verification.2.2).
     """
     result = LocalCIVerificationResult(status="running", base_commit=base_commit)
     _log_local_ci(f"Starting local CI verification for {coordinates}")
     for attempt in range(max_fixup_attempts + 1):
         _log_local_ci(f"Verification attempt {attempt + 1}/{max_fixup_attempts + 1}", indent_level=1)
         failed_command = _run_verification_once(repo_path, base_commit, result, reproduce_full_ci=reproduce_full_ci,
-                                                test_lanes=test_lanes)
+                                                test_lanes=test_lanes, issue_number=issue_number)
         if failed_command is None:
             result.status = "success"
             result.final_commit = _git_stdout(repo_path, ["rev-parse", "HEAD"])
@@ -295,6 +298,7 @@ def _run_verification_once(
         result: LocalCIVerificationResult,
         reproduce_full_ci: bool = False,
         test_lanes: list[dict] | None = None,
+        issue_number: int | None = None,
 ) -> CommandRecord | None:
     # Pre-publication gate (§FS-local-ci-equivalent-verification.2): run only the
     # cross-cutting checks a single-library generation cannot settle on its own —
@@ -324,12 +328,12 @@ def _run_verification_once(
     # leaves to repository CI (§FS-local-ci-equivalent-verification.2): the whole
     # changed-metadata native test matrix and the Spring AOT smoke tests.
     if reproduce_full_ci:
-        failed = _run_full_ci_reproduction(repo_path, base_commit, changed_files, result)
+        failed = _run_full_ci_reproduction(repo_path, base_commit, changed_files, result, issue_number)
         if failed is not None:
             return failed
 
     if test_lanes:
-        return _run_test_matrix_entries(repo_path, test_lanes, result)
+        return _run_test_matrix_entries(repo_path, test_lanes, result, issue_number)
     return None
 
 
@@ -338,6 +342,7 @@ def _run_full_ci_reproduction(
         base_commit: str,
         changed_files: list[str],
         result: LocalCIVerificationResult,
+        issue_number: int | None = None,
 ) -> CommandRecord | None:
     """Reproduce the expensive per-PR CI surface locally: native matrix + Spring AOT."""
     _log_local_ci("Full CI reproduction: changed-metadata native test matrix and Spring AOT", indent_level=1)
@@ -354,7 +359,7 @@ def _run_full_ci_reproduction(
 
     test_entries = _matrix_entries(changed_metadata_matrix)
     _log_local_ci(f"Changed-metadata test matrix entries: {len(test_entries)}", indent_level=1)
-    failed = _run_test_matrix_entries(repo_path, test_entries, result)
+    failed = _run_test_matrix_entries(repo_path, test_entries, result, issue_number)
     if failed is not None:
         return failed
 
@@ -484,6 +489,18 @@ def _run_recorded_command(
         env: dict[str, str] | None = None,
         failure_output_pattern: str | None = None,
 ) -> CommandRecord | None:
+    return _run_command_with_output(repo_path, gate, command, result, env, failure_output_pattern)[0]
+
+
+def _run_command_with_output(
+        repo_path: str,
+        gate: str,
+        command: list[str],
+        result: LocalCIVerificationResult,
+        env: dict[str, str] | None = None,
+        failure_output_pattern: str | None = None,
+) -> tuple[CommandRecord | None, str]:
+    """Run and record one gate command: its failure record, `None` on a pass, and its whole output."""
     command_env = dict(os.environ)
     display_env = dict(env or {})
     command_env.update(display_env)
@@ -506,7 +523,7 @@ def _run_recorded_command(
         )
         result.commands.append(record)
         _log_local_ci(f"Gate {gate} failed before execution: sudo is not allowed", indent_level=1)
-        return record
+        return record, output
 
     with open(log_path, "w+", encoding="utf-8") as log_file:
         completed = subprocess.run(
@@ -542,9 +559,9 @@ def _run_recorded_command(
             f"Gate {gate} failed with exit code {returncode}; log: {displayed_log_path}",
             indent_level=1,
         )
-        return record
+        return record, output
     _log_local_ci(f"Gate {gate} passed; log: {displayed_log_path}", indent_level=1)
-    return None
+    return None, output
 
 
 def _remove_gradle_java_home_overrides(command_env: dict[str, str]) -> None:
@@ -786,6 +803,7 @@ def _run_test_matrix_entries(
         repo_path: str,
         entries: list[dict],
         result: LocalCIVerificationResult,
+        issue_number: int | None = None,
 ) -> CommandRecord | None:
     if not entries:
         _log_local_ci("Full metadata test matrix is empty", indent_level=1)
@@ -849,6 +867,7 @@ def _run_test_matrix_entries(
                 result,
                 env=env,
                 failure_output_pattern=r"^FAILED",
+                issue_number=issue_number,
             )
         if failed is not None:
             return failed
@@ -1054,66 +1073,47 @@ def _run_recorded_command_without_new_docker_images(
         result: LocalCIVerificationResult,
         env: dict[str, str] | None = None,
         failure_output_pattern: str | None = None,
+        issue_number: int | None = None,
 ) -> CommandRecord | None:
+    """Run a test command and fail it on a Docker image it pulled; while another Forge run is live, only an
+    image its own output names is its pull (§FS-local-ci-equivalent-verification.2.2)."""
     try:
-        before_images = _docker_image_ids(repo_path)
+        before_images = docker_images(repo_path)
     except RuntimeError as exc:
         output = f"ERROR: Cannot run local CI no-network-equivalent Docker validation. {exc}\n"
         return _record_synthetic_failure(repo_path, "docker-image-baseline", command, result, env, output)
+    other_runs: set[int] = other_live_runs(issue_number)
 
-    failed = _run_recorded_command(
-        repo_path,
-        gate,
-        command,
-        result,
-        env=env,
-        failure_output_pattern=failure_output_pattern,
-    )
+    failed, test_output = _run_command_with_output(repo_path, gate, command, result, env, failure_output_pattern)
     if failed is not None:
         return failed
 
     try:
-        after_images = _docker_image_ids(repo_path)
+        after_images = docker_images(repo_path)
     except RuntimeError as exc:
         output = f"ERROR: Cannot complete local CI no-network-equivalent Docker validation. {exc}\n"
         return _record_synthetic_failure(repo_path, "docker-image-after-test", command, result, env, output)
+    # A run live at either reading was live during the test run.
+    other_runs |= other_live_runs(issue_number)
 
     new_images = sorted(after_images - before_images)
-    if not new_images:
+    blamed = blamed_images(new_images, test_output, other_runs)
+    for image in new_images:
+        if image not in blamed:
+            _log_local_ci(concurrent_pull_warning(image, other_runs), indent_level=1)
+    if not blamed:
         return None
 
     output = "\n".join([
         UNEXPECTED_DOCKER_IMAGE_FAILURE_MESSAGE,
         "CI disables Docker networking after `pullAllowedDockerImages`; local verification must not pass by pulling images on demand.",
         "New Docker images:",
-        *[f"- {image}" for image in new_images],
+        *[f"- {image}" for image in blamed],
+        *([f"Other Forge runs were live ({issue_list(other_runs)}), but the test output names each image above."]
+          if other_runs else []),
         "",
     ])
     return _record_synthetic_failure(repo_path, "unexpected-docker-image-pull", command, result, env, output)
-
-
-def _docker_image_ids(repo_path: str) -> set[str]:
-    try:
-        completed = subprocess.run(
-            DOCKER_IMAGE_LIST_COMMAND,
-            cwd=repo_path,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            check=False,
-        )
-    except OSError as exc:
-        raise RuntimeError(str(exc)) from exc
-    if completed.returncode != 0:
-        output = (completed.stdout or "").strip()
-        details = f" Output: {output}" if output else ""
-        raise RuntimeError(f"Cannot list Docker images for local CI no-network-equivalent verification.{details}")
-    images: set[str] = set()
-    for line in completed.stdout.splitlines():
-        stripped = line.strip()
-        if stripped and not stripped.startswith("<none>:<none>"):
-            images.add(stripped)
-    return images
 
 
 def _record_synthetic_failure(

@@ -8,7 +8,7 @@
 One query per label and priority tier, `high-priority` first, then `priority`,
 then the rest, oldest first, unassigned, and never `not-for-native-image`,
 `graalvm-bug`, `human-intervention`, or, unless blocked issues are taken,
-blocked (§AR-forge-workflow-pipeline.1, §FS-forge-scope,
+blocked (§AR-forge-launcher.1, §FS-forge-scope,
 §FS-forge-run-requirements.2.1). A fixture file of issue payloads can stand in
 for GitHub.
 """
@@ -57,7 +57,7 @@ def fetch_command(
         take_blocked: bool = False,
 ) -> list[str]:
     """The one `gh issue list` of a label and tier."""
-    # A held or blocked issue takes a place the claim cannot use (§AR-forge-workflow-pipeline.1).
+    # A held or blocked issue takes a place the claim cannot use (§AR-forge-launcher.1).
     search: list[str] = ["no:assignee"]
     search += [f"-label:{name}" for name in (*ALWAYS_EXCLUDED_ISSUE_LABELS, LABEL_HUMAN_INTERVENTION)]
     if not take_blocked:
@@ -81,7 +81,10 @@ def _run(command: list[str]) -> list[dict[str, Any]]:
         command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
     )
     if completed.returncode != 0:
-        raise RuntimeError(f"cannot list issues with {' '.join(command)}: {completed.stderr.strip()}")
+        # gh's output rides as the cause, so an outage is told from a crash (§AR-forge-launcher.2).
+        failure: subprocess.CalledProcessError = subprocess.CalledProcessError(
+            completed.returncode, command, completed.stdout, completed.stderr)
+        raise RuntimeError(f"cannot list issues with {' '.join(command)}: {completed.stderr.strip()}") from failure
     return json.loads(completed.stdout)
 
 
