@@ -25,7 +25,7 @@ public class KotlinClassGeneratingEntityInstantiatorInnerDefaultingKotlinConstru
 
     @Test
     @SuppressWarnings("rawtypes")
-    void instantiatesKotlinEntityUsingItsNamedConstructorParameters() {
+    void instantiatesKotlinEntityUsingItsConstructorParameters() {
         BasicPersistentEntity<Pair, TestProperty> entity = new BasicPersistentEntity<>(
                 ClassTypeInformation.from(Pair.class));
         ParameterValueProvider<TestProperty> values = new ParameterValueProvider<>() {
@@ -33,7 +33,8 @@ public class KotlinClassGeneratingEntityInstantiatorInnerDefaultingKotlinConstru
             @Override
             @SuppressWarnings("unchecked")
             public <T> T getParameterValue(Parameter<T, TestProperty> parameter) {
-                return (T) ("first".equals(parameter.getName()) ? "Ada" : Integer.valueOf(7));
+                return (T) (parameter == entity.getInstanceCreatorMetadata().getParameters().get(0)
+                        ? "Ada" : Integer.valueOf(7));
             }
         };
 
