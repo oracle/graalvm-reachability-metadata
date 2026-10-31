@@ -7,10 +7,25 @@
 package org_springframework_data.spring_data_relational;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.data.relational.core.mapping.NamingStrategy;
+import org.springframework.data.relational.core.mapping.RelationalMappingContext;
 
-class Spring_data_relationalTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class Spring_data_relationalTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void derivesTableNamesFromDomainTypes() {
+        RelationalMappingContext context = new RelationalMappingContext();
+        NamingStrategy namingStrategy = context.getNamingStrategy();
+
+        assertEquals("purchase_order", namingStrategy.getTableName(PurchaseOrder.class));
+        assertEquals("customer_account", namingStrategy.getTableName(CustomerAccount.class));
+        assertEquals("purchase_order", namingStrategy.getTableName(PurchaseOrder.class));
+    }
+
+    static class PurchaseOrder {
+    }
+
+    static class CustomerAccount {
     }
 }
