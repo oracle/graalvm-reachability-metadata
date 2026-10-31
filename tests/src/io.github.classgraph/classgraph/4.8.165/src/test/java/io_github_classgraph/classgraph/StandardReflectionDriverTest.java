@@ -11,12 +11,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StandardReflectionDriverTest {
     @TempDir
     Path directory;
+
+    @Test
+    void readsEnumConstantObjectsInDeclarationOrder() throws Exception {
+        try (ScanResult scan = ScanSupport.graph(ScanSupport.archive(directory)).scan(2)) {
+            assertEquals(List.of("FAST", "SAFE"), scan.getClassInfo(ScanFixtures.Mode.class.getName())
+                    .getEnumConstants().getNames());
+            assertEquals(List.of(ScanFixtures.Mode.FAST, ScanFixtures.Mode.SAFE),
+                    scan.getClassInfo(ScanFixtures.Mode.class.getName()).getEnumConstantObjects());
+        }
+    }
 
     @Test
     void comparesAnnotationInstancesThroughTheirPublicContract() throws Exception {
