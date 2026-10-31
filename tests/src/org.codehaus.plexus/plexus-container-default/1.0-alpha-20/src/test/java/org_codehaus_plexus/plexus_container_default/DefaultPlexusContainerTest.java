@@ -11,6 +11,8 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.lifecycle.AbstractLifecycleHandler;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultPlexusContainerTest {
@@ -52,6 +54,40 @@ public class DefaultPlexusContainerTest {
             assertThat(((SimpleAutowirableComponent) component).isConstructed()).isTrue();
         } finally {
             container.dispose();
+        }
+    }
+
+    @Test
+    void resourceConstructorLoadsAndConfiguresComponent() throws Exception {
+        DefaultPlexusContainer container = new DefaultPlexusContainer(
+            "resource-container",
+            Map.of("service.message", "ready from resource"),
+            "/org_codehaus_plexus/plexus_container_default/resource-container-plexus.xml"
+        );
+
+        try {
+            ResourceConfiguredComponent component = (ResourceConfiguredComponent) container.lookup(
+                "resource-configured-service"
+            );
+
+            assertThat(component.getMessage()).isEqualTo("ready from resource");
+            assertThat(container.lookup("resource-configured-service")).isSameAs(component);
+            container.release(component);
+            container.release(component);
+        } finally {
+            container.dispose();
+        }
+    }
+
+    public static final class ResourceConfiguredComponent {
+        private String message;
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
         }
     }
 
