@@ -6,12 +6,22 @@
  */
 package org_apache_groovy.groovy;
 
+import org.codehaus.groovy.reflection.ParameterTypes;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParameterTypesTest {
+    @Test
+    void resolvesNamedParameterTypesAndValidatesArguments() {
+        ParameterTypes signature = new ParameterTypes(new String[]{String.class.getName(), Integer.class.getName()});
+        assertArrayEquals(new Class<?>[]{String.class, Integer.class}, signature.getNativeParameterTypes());
+        assertTrue(signature.isValidMethod(new Object[]{"label", 3}));
+    }
+
     @Test
     void packsOmittedSingleAndMultipleVarargs() {
         Joiner joiner = new Joiner();

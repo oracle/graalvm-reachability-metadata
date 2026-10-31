@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashSet;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,6 +25,12 @@ public class DefaultGroovyMethodsTest {
         assertEquals("weight:12", DefaultGroovyMethods.sprintf(this, "weight:%d", (Object) 12));
         assertArrayEquals(new String[]{"one", "two"},
                 DefaultGroovyMethods.asType(List.of("one", "two"), String[].class));
+    }
+
+    @Test
+    void coercesAnObjectTypedCollectionIntoAnArray() {
+        Object values = new LinkedHashSet<>(List.of("red", "blue"));
+        assertArrayEquals(new String[]{"red", "blue"}, DefaultGroovyMethods.asType(values, String[].class));
     }
 
     @Test

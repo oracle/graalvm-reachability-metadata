@@ -17,6 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommandLineTest {
     @Test
+    void executesACommandDiscoveredByItsMethodName() {
+        CommandLine command = new CommandLine(CommandLine.getCommandMethods(Commands.class, "square").get(0));
+        assertEquals(36, command.execute("--value", "6"));
+        assertEquals(Integer.valueOf(36), command.getExecutionResult());
+    }
+
+    @Test
     void invokesAnnotatedInstanceAndStaticCommands() {
         Commands instance = new Commands();
         CommandLine root = new CommandLine(instance);

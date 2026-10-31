@@ -1,0 +1,1 @@
+class Inventory { String reference }

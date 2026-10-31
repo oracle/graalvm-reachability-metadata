@@ -12,9 +12,22 @@ import groovyjarjarpicocli.CommandLine.Help.Ansi;
 import groovyjarjarpicocli.CommandLine.Option;
 import org.junit.jupiter.api.Test;
 
+import java.util.ResourceBundle;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommandLineInnerModelInnerMessagesTest {
+    @Test
+    void extractsTheNameOfASuppliedResourceBundle() {
+        String bundleName = "org_apache_groovy.groovy.messages";
+        CommandLine.Model.Messages messages = new CommandLine.Model.Messages(
+                CommandLine.Model.CommandSpec.create(), ResourceBundle.getBundle(bundleName));
+        assertEquals(bundleName, messages.resourceBundleBaseName());
+        assertEquals("Number of entries", messages.getString("count", "missing"));
+    }
+
     @Test
     void localizesAnnotatedOptionDescriptions() {
         CommandLine command = new CommandLine(new Inventory());
