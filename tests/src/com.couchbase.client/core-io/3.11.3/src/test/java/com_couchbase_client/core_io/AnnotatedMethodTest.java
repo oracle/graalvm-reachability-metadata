@@ -11,9 +11,11 @@ import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonCreat
 import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonIgnore;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonValue;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.BeanDescription;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.InjectableValues;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectReader;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -51,6 +53,16 @@ public class AnnotatedMethodTest {
         ObjectReader restored = SerializationSupport.roundTrip(reader);
         Token token = restored.readValue("\"restored\"");
         assertEquals("restored", token.value());
+    }
+
+    @Test
+    void invokesJsonValueAccessorDiscoveredByMapper() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        BeanDescription description = mapper.getSerializationConfig()
+                .introspect(mapper.constructType(Token.class));
+        AnnotatedMethod accessor = (AnnotatedMethod) description.findJsonValueAccessor();
+        assertEquals("inspected", accessor.callOn(Token.from("inspected")));
+        assertEquals("value", accessor.getName());
     }
 
     public enum Choice {
