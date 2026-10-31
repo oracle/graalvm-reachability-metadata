@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.naming.CompositeName;
 import javax.naming.Context;
-import java.util.Hashtable;
+import java.util.Properties;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,8 +25,8 @@ public class JndiRefDataSourceBaseTest {
         original.setIdentityToken(UUID.randomUUID().toString());
         original.setJndiName(new CompositeName("jdbc/reporting"));
         original.setJndiLookupCaching(false);
-        Hashtable<String, String> environment = new Hashtable<>();
-        environment.put(Context.SECURITY_PRINCIPAL, "report-reader");
+        Properties environment = new Properties();
+        environment.setProperty(Context.SECURITY_PRINCIPAL, "report-reader");
         original.setJndiEnv(environment);
         JndiRefConnectionPoolDataSource restored = C3p0Support.roundTrip(original, JndiRefConnectionPoolDataSource.class);
         assertNotSame(original, restored);
