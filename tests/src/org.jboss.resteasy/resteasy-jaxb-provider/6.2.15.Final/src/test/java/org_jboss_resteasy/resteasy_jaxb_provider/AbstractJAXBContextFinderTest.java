@@ -14,21 +14,27 @@ import java.lang.annotation.Annotation;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Unmarshaller;
 
+import org.jboss.resteasy.plugins.providers.jaxb.SecureUnmarshaller;
 import org.jboss.resteasy.plugins.providers.jaxb.XmlJAXBContextFinder;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.InputSource;
 import org_jboss_resteasy.resteasy_jaxb_provider.model.Item;
-import org_jboss_resteasy.resteasy_jaxb_provider.model.ObjectFactory;
 
 public class AbstractJAXBContextFinderTest {
     @Test
     void createsContextWithTheDiscoveredElementDeclarations() throws Exception {
         XmlJAXBContextFinder finder = new XmlJAXBContextFinder();
         JAXBContext context = finder.createContext(new Annotation[0], Item.class);
+        Unmarshaller unmarshaller = new SecureUnmarshaller(context.createUnmarshaller(), true, true, true);
+        Object original = unmarshaller.unmarshal(new InputSource(new StringReader("""
+                <inv:item xmlns:inv="urn:inventory"><name>sextant</name></inv:item>
+                """)));
         StringWriter output = new StringWriter();
 
-        context.createMarshaller().marshal(new ObjectFactory().createItem(new Item("sextant")), output);
-        Object result = context.createUnmarshaller().unmarshal(new StringReader(output.toString()));
+        context.createMarshaller().marshal(original, output);
+        Object result = unmarshaller.unmarshal(new InputSource(new StringReader(output.toString())));
 
         assertThat(result).isInstanceOf(JAXBElement.class);
         JAXBElement<?> element = (JAXBElement<?>) result;
