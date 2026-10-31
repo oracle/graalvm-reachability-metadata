@@ -6,11 +6,15 @@
  */
 package org_glassfish_jersey_ext.jersey_entity_filtering;
 
+import org.glassfish.jersey.message.filtering.internal.LocalizationMessages;
 import org.junit.jupiter.api.Test;
 
-class Jersey_entity_filteringTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class Jersey_entity_filteringTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void localizesFilteringScopeDiagnostic() {
+        assertEquals("The entity-filtering scope property does not contain an instance of Annotation or Annotation[] (scope-name).",
+                LocalizationMessages.ENTITY_FILTERING_SCOPE_NOT_ANNOTATIONS("scope-name"));
     }
 }
