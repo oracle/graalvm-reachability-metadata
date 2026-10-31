@@ -2,6 +2,32 @@
   "reflection": [
     {
       "condition": {
+        "typeReached": "io.netty.buffer.AbstractByteBufAllocator"
+      },
+      "type": "io.netty.buffer.AbstractByteBufAllocator",
+      "methods": [
+        {
+          "name": "toLeakAwareBuffer",
+          "parameterTypes": [
+            "io.netty.buffer.ByteBuf"
+          ]
+        },
+        {
+          "name": "toLeakAwareBuffer",
+          "parameterTypes": [
+            "io.netty.buffer.CompositeByteBuf"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "io.netty.handler.codec.dns.AbstractDnsMessage"
+      },
+      "type": "io.netty.util.ResourceLeakDetector$DefaultResourceLeak"
+    },
+    {
+      "condition": {
         "typeReached": "io.netty.handler.codec.dns.TcpDnsResponseEncoder"
       },
       "type": "io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerIndexField",
@@ -35,21 +61,13 @@
     },
     {
       "condition": {
-        "typeReached": "io.netty.buffer.AbstractByteBufAllocator"
+        "typeReached": "io.netty.handler.codec.dns.AbstractDnsRecord"
       },
-      "type": "io.netty.buffer.AbstractByteBufAllocator",
+      "type": "java.lang.Thread",
       "methods": [
         {
-          "name": "toLeakAwareBuffer",
-          "parameterTypes": [
-            "io.netty.buffer.ByteBuf"
-          ]
-        },
-        {
-          "name": "toLeakAwareBuffer",
-          "parameterTypes": [
-            "io.netty.buffer.CompositeByteBuf"
-          ]
+          "name": "isVirtual",
+          "parameterTypes": []
         }
       ]
     },
@@ -98,7 +116,15 @@
       "condition": {
         "typeReached": "io.netty.handler.codec.dns.AbstractDnsRecord"
       },
-      "type": "java.nio.ByteBuffer"
+      "type": "java.nio.ByteBuffer",
+      "methods": [
+        {
+          "name": "alignedSlice",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
     },
     {
       "condition": {
