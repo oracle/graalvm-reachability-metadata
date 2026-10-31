@@ -29,6 +29,7 @@ public class ScalaWriterTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void copiesAnnotationMembers() throws IOException {
         StringWriter output = new StringWriter();
         ScalaWriter writer = new ScalaWriter(output);
@@ -41,6 +42,7 @@ public class ScalaWriterTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void omitsDefaultAnnotationMembers() throws IOException {
         StringWriter output = new StringWriter();
         ScalaWriter writer = new ScalaWriter(output);

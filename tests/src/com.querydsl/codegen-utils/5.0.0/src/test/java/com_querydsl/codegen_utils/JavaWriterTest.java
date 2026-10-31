@@ -29,6 +29,7 @@ public class JavaWriterTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void copiesAnnotationMembers() throws IOException {
         StringWriter output = new StringWriter();
         JavaWriter writer = new JavaWriter(output);
@@ -41,6 +42,7 @@ public class JavaWriterTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void omitsDefaultAnnotationMembers() throws IOException {
         StringWriter output = new StringWriter();
         JavaWriter writer = new JavaWriter(output);
