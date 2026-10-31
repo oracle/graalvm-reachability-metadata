@@ -8,15 +8,19 @@ package io_github_classgraph.classgraph;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassGraph.CircumventEncapsulationMethod;
+import io.github.classgraph.ModulePathInfo;
 import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,13 +31,18 @@ public class NarcissusReflectionDriverTest {
     Path directory;
 
     @Test
-    void discoversClasspathAndReadsEnumsAndAnnotationsUsingNarcissus() throws Exception {
+    void discoversClasspathAndReadsModuleDirectivesEnumsAndAnnotationsUsingNarcissus() throws Exception {
         CircumventEncapsulationMethod previous = ClassGraph.CIRCUMVENT_ENCAPSULATION;
         PrintStream previousError = System.err;
         ByteArrayOutputStream diagnostics = new ByteArrayOutputStream();
         try (PrintStream error = new PrintStream(diagnostics, true, StandardCharsets.UTF_8)) {
             System.setErr(error);
             ClassGraph.CIRCUMVENT_ENCAPSULATION = CircumventEncapsulationMethod.NARCISSUS;
+            ModulePathInfo modules = new ClassGraph().getModulePathInfo();
+            assertEquals(runtimeDirectives("--add-opens="), modules.addOpens);
+            assertEquals(runtimeDirectives("--add-exports="), modules.addExports);
+            assertEquals(runtimeDirectives("--add-reads="), modules.addReads);
+            assertEquals(runtimeDirectives("--patch-module="), modules.patchModules);
             try (ScanResult scan = ScanSupport.discover(ScanSupport.archive(directory))) {
                 assertTrue(scan.getClassesImplementing(Runnable.class.getName()).getNames()
                         .contains(ScanFixtures.Subject.class.getName()));
@@ -55,5 +64,12 @@ public class NarcissusReflectionDriverTest {
         }
         String output = diagnostics.toString(StandardCharsets.UTF_8);
         assertFalse(output.contains("Could not load Narcissus reflection driver"), output);
+    }
+
+    private static Set<String> runtimeDirectives(String option) {
+        return ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+                .filter(argument -> argument.startsWith(option))
+                .map(argument -> argument.substring(option.length()))
+                .collect(Collectors.toSet());
     }
 }

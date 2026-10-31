@@ -22,7 +22,10 @@ project=tests/src/io.github.classgraph/classgraph/4.8.165
 `NarcissusReflectionDriverTest` selects the optional Narcissus backend through
 `ClassGraph.CIRCUMVENT_ENCAPSULATION`, using the real backend dependency. It
 checks classpath discovery, resources, enum values, and annotation equality,
-and rejects diagnostics indicating fallback to standard reflection. The global
+and rejects diagnostics indicating fallback to standard reflection. It also
+compares module access and patch directives from `ClassGraph.getModulePathInfo()`
+with the runtime management bean, exercising the backend's static invocation.
+The global
 configuration and error stream are restored after the test.
 
 The optional JVM-Driver backend is not exercised: the test dependencies do not
