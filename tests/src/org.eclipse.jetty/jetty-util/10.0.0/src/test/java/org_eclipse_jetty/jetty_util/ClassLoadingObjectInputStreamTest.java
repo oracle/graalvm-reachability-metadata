@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.function.IntFunction;
 
 import org.eclipse.jetty.util.ClassLoadingObjectInputStream;
 import org.junit.jupiter.api.Test;
@@ -44,12 +45,12 @@ public class ClassLoadingObjectInputStreamTest {
 
     @Test
     void restoresSerializableProxyBehavior() throws Exception {
-        Greeting greeting = (Greeting) Proxy.newProxyInstance(getClass().getClassLoader(),
-                new Class<?>[]{Greeting.class}, new GreetingHandler());
+        IntFunction<?> greeting = (IntFunction<?>) Proxy.newProxyInstance(getClass().getClassLoader(),
+                new Class<?>[]{IntFunction.class}, new GreetingHandler());
         byte[] bytes = serialize(greeting);
         try (ClassLoadingObjectInputStream input = new ClassLoadingObjectInputStream(new ByteArrayInputStream(bytes))) {
-            Greeting restored = (Greeting) input.readObject(getClass().getClassLoader());
-            assertEquals("Hello, Jetty", restored.greet("Jetty"));
+            IntFunction<?> restored = (IntFunction<?>) input.readObject(getClass().getClassLoader());
+            assertEquals("Hello, 42", restored.apply(42));
         }
     }
 
@@ -72,10 +73,6 @@ public class ClassLoadingObjectInputStreamTest {
             this.host = host;
             this.port = port;
         }
-    }
-
-    public interface Greeting extends Serializable {
-        String greet(String name);
     }
 
     public static class GreetingHandler implements InvocationHandler, Serializable {
