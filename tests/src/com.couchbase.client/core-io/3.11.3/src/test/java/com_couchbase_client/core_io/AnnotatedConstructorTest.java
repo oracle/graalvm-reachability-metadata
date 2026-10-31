@@ -9,6 +9,7 @@ package com_couchbase_client.core_io;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonCreator;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonProperty;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectReader;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,6 +25,16 @@ public class AnnotatedConstructorTest {
         assertEquals(4, value.count);
         Label label = mapper.readValue("\"parcel\"", Label.class);
         assertEquals("parcel", label.text);
+    }
+
+    @Test
+    void restoresConfiguredReaderWithDelegatingConstructor() throws Exception {
+        ObjectReader reader = new ObjectMapper().readerFor(Label.class);
+        Label before = reader.readValue("\"book\"");
+        ObjectReader restored = SerializationSupport.roundTrip(reader);
+        Label after = restored.readValue("\"pencil\"");
+        assertEquals("book", before.text);
+        assertEquals("pencil", after.text);
     }
 
     public static class Item {
