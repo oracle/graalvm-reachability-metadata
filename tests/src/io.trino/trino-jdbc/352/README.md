@@ -13,7 +13,10 @@ exception.
 Dedicated tests exercise the public APIs of the bundled Jackson, Guava, and
 Joda-Time components. Reflection appears only where it is the API's input or
 output: Guava's `Invokable`, `Enums`, and generic type resolution. No test calls
-private library code or uses Java object serialization to manufacture coverage.
+private library code. `SerializationTest` exercises the supported `Serializable`
+contract of the bundled Guava collections through object-stream round trips,
+checking bidirectional mappings, ordered multimap values, multiset counts, and
+independent mutation after deserialization.
 
 Additional Jackson scenarios exercise no-argument creator factories, field and
 method injection, field-backed builders, property-based identity binding and
@@ -22,10 +25,10 @@ and canonical type resolution without a thread context classloader.
 
 Some reported accesses have no suitable path in this suite:
 
-- Guava collection serialization hooks, `Serialization` and its `FieldSetter`,
-  Joda-Time property serialization hooks, `ISOChronology.Stub`, and
-  `ByteString.readObject` require direct Java object-stream round trips. JDBC
-  does not expose that behavior.
+- Joda-Time property serialization hooks, `ISOChronology.Stub`, and
+  `ByteString.readObject` require Java object-stream round trips outside the
+  collection serialization scenarios covered here. JDBC does not expose that
+  behavior.
 - Android platform, certificate cleaner, trust-root, and close-guard paths need
   Android runtime classes. Jetty boot ALPN paths require an older JVM with the
   boot-classpath ALPN extension. The tests use the configured modern JVM and
@@ -56,5 +59,5 @@ only the second lookup succeed. These paths are not forced through reflection
 or custom classloaders.
 
 Partially reached classes may retain serialization, legacy-runtime, or
-classloader-recovery call sites. Tests do not force those paths through direct
-reflection, object streams, or Native Image exceptions.
+classloader-recovery call sites. Tests do not force private hooks through direct
+reflection or tolerate Native Image exceptions.
