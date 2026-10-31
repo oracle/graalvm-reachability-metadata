@@ -9,14 +9,18 @@ package org_apache_logging_log4j.log4j_slf4j2_impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.slf4j.Log4jLogger;
+import org.apache.logging.slf4j.Log4jMarkerFactory;
 import org.apache.logging.slf4j.SLF4JServiceProvider;
-import org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.ILoggerFactory;
@@ -225,26 +229,33 @@ public class Log4j_slf4j2_implTest {
     }
 
     @Test
-    void throwableConsumingMessageFactoryPreservesSlf4jThrowableSemantics() {
-        ThrowableConsumingMessageFactory messageFactory = new ThrowableConsumingMessageFactory();
-        Throwable failure = new IllegalArgumentException("expected factory exception");
+    void loggerPreservesParameterizedMessagesAndSlf4jThrowableSemantics() {
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        Throwable failure = new IllegalArgumentException("expected logging exception");
 
-        Message simpleMessage = messageFactory.newMessage("plain message");
-        Message charSequenceMessage = messageFactory.newMessage(new StringBuilder("chars message"));
-        Message objectMessage = messageFactory.newMessage(Integer.valueOf(42));
-        Message parameterizedMessage = messageFactory.newMessage("Hello, {}", "GraalVM");
-        Message parameterizedWithThrowable = messageFactory.newMessage(
-                "{} failed at {}", "operation", "startup", failure);
-        Message varargsWithThrowable = messageFactory.newMessage("values {} {}", new Object[] {"one", "two", failure});
+        try (PrintStream output = new PrintStream(capturedOutput, true, StandardCharsets.UTF_8)) {
+            SimpleLogger delegate = new SimpleLogger(
+                    LOGGER_NAME, null, output, LogManager.getRootLogger().getLevel(), null, false);
+            Logger logger = new Log4jLogger(new Log4jMarkerFactory(), delegate, LOGGER_NAME);
 
-        assertThat(simpleMessage.getFormattedMessage()).isEqualTo("plain message");
-        assertThat(charSequenceMessage.getFormattedMessage()).isEqualTo("chars message");
-        assertThat(objectMessage.getFormattedMessage()).isEqualTo("42");
-        assertThat(parameterizedMessage.getFormattedMessage()).isEqualTo("Hello, GraalVM");
-        assertThat(parameterizedMessage.getThrowable()).isNull();
-        assertThat(parameterizedWithThrowable.getFormattedMessage()).isEqualTo("operation failed at startup");
-        assertThat(parameterizedWithThrowable.getThrowable()).isSameAs(failure);
-        assertThat(varargsWithThrowable.getFormattedMessage()).isEqualTo("values one two");
-        assertThat(varargsWithThrowable.getThrowable()).isSameAs(failure);
+            assertThat(logger.isErrorEnabled()).isTrue();
+            logger.error("plain message");
+            logger.error("{}", new StringBuilder("chars message"));
+            logger.error("{}", Integer.valueOf(42));
+            logger.error("Hello, {}", "GraalVM");
+            assertThat(capturedOutput.toString(StandardCharsets.UTF_8))
+                    .contains("plain message", "chars message", "42", "Hello, GraalVM")
+                    .doesNotContain("Exception");
+
+            capturedOutput.reset();
+            logger.error("{} failed at {}", "operation", "startup", failure);
+            assertThat(capturedOutput.toString(StandardCharsets.UTF_8))
+                    .contains("operation failed at startup", "IllegalArgumentException: expected logging exception");
+
+            capturedOutput.reset();
+            logger.error("values {} {}", new Object[] {"one", "two", failure});
+            assertThat(capturedOutput.toString(StandardCharsets.UTF_8))
+                    .contains("values one two", "IllegalArgumentException: expected logging exception");
+        }
     }
 }
