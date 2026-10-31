@@ -35,6 +35,12 @@ public class MetaClassRegistryInnerMetaClassCreationHandleTest {
     @Test
     void discoversACustomMetaclassUsingItsRegistryAndClassConstructor() {
         Receipt receipt = new Receipt();
+        MetaClassCreationHandle normalHandle = new MetaClassCreationHandle();
+        normalHandle.setDisableCustomMetaClassLookup(true);
+        MetaClass normalMetaClass = normalHandle.create(Receipt.class, GroovySystem.getMetaClassRegistry());
+        normalMetaClass.initialize();
+        assertEquals("receipt-35", normalMetaClass.invokeMethod(receipt, "reference", new Object[]{35}));
+
         MetaClass metaClass = new MetaClassCreationHandle().create(Receipt.class, GroovySystem.getMetaClassRegistry());
         metaClass.initialize();
         assertEquals("archived:receipt-36", metaClass.invokeMethod(receipt, "archiveReference", new Object[]{36}));

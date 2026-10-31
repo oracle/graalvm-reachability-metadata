@@ -53,7 +53,7 @@ public class PlainObjectMetaMethodSiteTest {
             return prefix + ":" + String.join(",", tags);
         }
 
-        public String label(int number) {
+        public String label(long number) {
             if (number < 0) {
                 throw new IllegalArgumentException("number must be nonnegative");
             }

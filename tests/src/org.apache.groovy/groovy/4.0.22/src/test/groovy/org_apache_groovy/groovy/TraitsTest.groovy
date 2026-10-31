@@ -30,6 +30,7 @@ public class TraitsTest {
         assertEquals(TraitsMessage.name + '$Trait$StaticFieldHelper', Traits.findStaticFieldHelper(trait).name)
 
         TraitsMessageConsumer consumer = new TraitsMessageConsumer()
+        consumer.prefix = 'Hello '
         assertEquals('Hello Ada!', consumer.render('Ada'))
         consumer.prefix = 'Welcome '
         assertEquals('Welcome Grace!', consumer.render('Grace'))
@@ -47,17 +48,19 @@ public class TraitsTest {
         assertEquals(String, target.returnType)
         assertEquals([String], target.parameterTypes.toList())
         assertTrue(Traits.hasDefaultImplementation(target))
-        assertEquals('Hello Lin!', new TraitsMessageConsumer().render('Lin'))
+        TraitsMessageConsumer consumer = new TraitsMessageConsumer()
+        consumer.prefix = 'Hello '
+        assertEquals('Hello Lin!', consumer.render('Lin'))
     }
 }
 
 @CompileStatic
 trait TraitsMessage {
-    String prefix = 'Hello '
-    private static String suffix = '!'
+    String prefix
+    private static String suffix
 
     String render(String name) {
-        return prefix + name + suffix
+        return prefix + name + '!'
     }
 }
 
