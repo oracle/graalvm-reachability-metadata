@@ -13,6 +13,8 @@ import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.codehaus.groovy.runtime.MethodClosure;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.concurrent.atomic.AtomicReference;
@@ -22,6 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MetaClassImplTest {
+    public static Lookup $getLookup() {
+        return MethodHandles.lookup();
+    }
+
     @Test
     void adaptsAClosureToAJavaBeanEventListener() {
         Publisher publisher = new Publisher();
@@ -36,6 +42,36 @@ public class MetaClassImplTest {
         InvokerHelper.setProperty(publisher, "published", listener);
         publisher.publish("order-17");
         assertEquals("order-17", received.get());
+    }
+
+    @Test
+    void invokesAnInheritedPrivateMethodOnAGroovyObject() {
+        PrivateChild target = new PrivateChild();
+        MetaClassImpl metaClass = new MetaClassImpl(PrivateChild.class);
+        metaClass.initialize();
+        assertEquals("parent:delivery", metaClass.invokeMethod(PrivateChild.class, target,
+                "reference", new Object[]{"delivery"}, false, true));
+    }
+
+    @Test
+    void invokesAnInheritedPrivateMethodThroughSuperDispatch() {
+        PrivateChild target = new PrivateChild();
+        MetaClassImpl metaClass = new MetaClassImpl(PrivateChild.class);
+        metaClass.initialize();
+        assertEquals("parent:shipment", metaClass.invokeMethod(PrivateChild.class, target,
+                "reference", new Object[]{"shipment"}, true, true));
+    }
+
+    public static class PrivateParent extends GroovyObjectSupport {
+        private String reference(String value) {
+            return "parent:" + value;
+        }
+    }
+
+    public static class PrivateChild extends PrivateParent {
+        public static Lookup $getLookup() {
+            return MethodHandles.lookup();
+        }
     }
 
     public interface PublicationListener extends EventListener {

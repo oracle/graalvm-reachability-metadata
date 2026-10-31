@@ -9,6 +9,7 @@ package org_apache_groovy.groovy;
 import org.codehaus.groovy.ast.ClassHelper;
 import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.ast.expr.VariableExpression;
+import org.codehaus.groovy.control.MultipleCompilationErrorsException;
 import org.codehaus.groovy.transform.stc.StaticTypeCheckingVisitor;
 import org.codehaus.groovy.transform.stc.TypeCheckingExtension;
 import org.codehaus.groovy.transform.stc.GroovyTypeCheckingExtensionSupport.TypeCheckingDSL;
@@ -18,6 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GroovyTypeCheckingExtensionSupportTest {
     @Test
@@ -42,6 +45,17 @@ public class GroovyTypeCheckingExtensionSupportTest {
                 """.formatted(CompiledDsl.class.getName()));
         assertFalse(model.getMethods("count").isEmpty());
         assertEquals(1, CompiledDsl.initializations.get());
+    }
+
+    @Test
+    void reportsAnExtensionResourceMissingFromTheClasspath() {
+        MultipleCompilationErrorsException failure = assertThrows(MultipleCompilationErrorsException.class,
+                () -> AstCompilationSupport.canonicalize("MissingExtensionModel", """
+                        @groovy.transform.TypeChecked(extensions='checks/unavailable-extension.groovy')
+                        class MissingExtensionModel { int count() { 7 } }
+                        """));
+        assertTrue(failure.getMessage().contains("checks/unavailable-extension.groovy"));
+        assertTrue(failure.getMessage().contains("was not found on the classpath"));
     }
 
     public static class CompiledDsl extends TypeCheckingDSL {
