@@ -13,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import oracle.jdbc.internal.OracleConnection;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -20,6 +22,40 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(OracleDatabase.class)
 public class DirectPathBufferMarshalerTest {
+    @Test
+    @Timeout(120)
+    void loadsAWideRowAcrossMultipleRowPieces() throws Exception {
+        String[] columns = IntStream.range(0, 300).mapToObj(index -> "C" + index).toArray(String[]::new);
+        String definitions = IntStream.range(0, columns.length)
+                .mapToObj(index -> columns[index] + " varchar2(10)").collect(Collectors.joining(", "));
+        try (Connection connection = OracleDatabase.openConnection();
+                Statement setup = connection.createStatement()) {
+            setup.execute("create table forge_wide_load (" + definitions + ")");
+            try {
+                connection.setAutoCommit(false);
+                OracleConnection oracle = connection.unwrap(OracleConnection.class);
+                try (PreparedStatement load = oracle.prepareDirectPath(
+                        OracleDatabase.USER.toUpperCase(Locale.ROOT), "FORGE_WIDE_LOAD", columns)) {
+                    for (int column = 0; column < columns.length; column++) {
+                        load.setString(column + 1, "value-" + column);
+                    }
+                    load.addBatch();
+                    load.executeBatch();
+                    connection.commit();
+                }
+                try (ResultSet rows = setup.executeQuery("select * from forge_wide_load")) {
+                    assertThat(rows.next()).isTrue();
+                    for (int column = 0; column < columns.length; column++) {
+                        assertThat(rows.getString(column + 1)).isEqualTo("value-" + column);
+                    }
+                    assertThat(rows.next()).isFalse();
+                }
+            } finally {
+                setup.execute("drop table forge_wide_load purge");
+            }
+        }
+    }
+
     @Test
     @Timeout(120)
     void loadsABatchLargerThanTheInitialMarshallingBuffers() throws Exception {
