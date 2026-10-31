@@ -12,7 +12,12 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.apache.hadoop:hadoop-hdfs-client:$libraryVersion"
-    testImplementation "org.apache.hadoop:hadoop-common:$libraryVersion"
+    // UserGroupInformation needs Subject.current() on the TCK's JDK.
+    testImplementation 'org.apache.hadoop:hadoop-common:3.4.3'
+    // Legacy HDFS dependencies are no longer supplied by Hadoop Common.
+    testImplementation 'com.google.protobuf:protobuf-java:2.5.0'
+    testImplementation 'commons-collections:commons-collections:3.2.2'
+    testImplementation 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
