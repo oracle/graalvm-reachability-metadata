@@ -6,7 +6,11 @@
  */
 package commons_beanutils.commons_beanutils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.beanutils.WrapDynaBean;
 import org.apache.commons.beanutils.WrapDynaClass;
 import org.junit.jupiter.api.Test;
@@ -33,5 +37,38 @@ public class WrapDynaClassTest {
         assertEquals(String.class, schema.getDynaProperty("name").getType());
         assertNotSame(((WrapDynaBean) first).getInstance(), ((WrapDynaBean) second).getInstance());
         assertSame(schema, WrapDynaClass.createDynaClass(SampleBean.class));
+    }
+
+    @Test
+    void describesAndCreatesBeansWithDiscoveredMappedProperties() throws Exception {
+        PreferencesBean bean = new PreferencesBean();
+        PropertyUtils.setMappedProperty(bean, "preference", "theme", "dark");
+
+        WrapDynaClass schema = WrapDynaClass.createDynaClass(PreferencesBean.class);
+        assertEquals(Map.class, schema.getDynaProperty("preference").getType());
+        assertEquals("preference", schema.getDynaProperty("preference").getName());
+
+        DynaBean wrapper = new WrapDynaBean(bean);
+        assertSame(schema, wrapper.getDynaClass());
+        assertEquals("dark", wrapper.get("preference", "theme"));
+        wrapper.set("preference", "theme", "light");
+        assertEquals("light", bean.getPreference("theme"));
+
+        DynaBean created = schema.newInstance();
+        created.set("preference", "theme", "system");
+        assertEquals("system", created.get("preference", "theme"));
+        assertEquals("light", bean.getPreference("theme"));
+    }
+
+    public static class PreferencesBean {
+        private final Map<String, String> preferences = new HashMap<>();
+
+        public String getPreference(String key) {
+            return preferences.get(key);
+        }
+
+        public void setPreference(String key, String value) {
+            preferences.put(key, value);
+        }
     }
 }
