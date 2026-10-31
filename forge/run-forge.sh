@@ -14,7 +14,7 @@ readonly DEFAULT_WORKER_AGENT="pi[high]:openai-codex/gpt-5.6-luna"
 readonly DEFAULT_REVIEW_AGENT="claude-code[high]:opus"
 
 # Claim and run Forge issues until stopped, reviewing the open Forge pull requests.
-# §FS-forge-issue-resolution-goal §AR-forge-workflow-pipeline.1 §FS-published-pr-review.1
+# §FS-forge-issue-resolution-goal §AR-forge-launcher.1 §FS-published-pr-review.1
 
 usage() {
     cat <<USAGE
@@ -24,9 +24,10 @@ Usage: $0 [--setup-agent TARGET] [--worker-agent TARGET] [--review-agent TARGET]
 Purpose:
   Check the host, then until stopped: claim the most urgent eligible Forge
   issue and run its forge-metadata Rhei workspace with the browser dashboard.
-  Every third run, and when no issue can be claimed, review up to three open
-  Forge pull requests, oldest first, whose checks have finished: approve and
-  arm auto-merge on a green one, or rerun, push a fix, or file an issue.
+  After every run, once the host check first passes, and when no issue can be
+  claimed, review up to three open Forge pull requests, oldest first, whose
+  checks have finished: approve and arm auto-merge on a green one, or rerun,
+  push a fix, or file an issue.
 
 Options:
   -h, --help
@@ -60,7 +61,7 @@ setup_agent="$DEFAULT_SETUP_AGENT"
 worker_agent="$DEFAULT_WORKER_AGENT"
 review_agent="$DEFAULT_REVIEW_AGENT"
 claim_arguments=()
-# The --label rotation: each queue label and its turns in a row (§AR-forge-workflow-pipeline.1).
+# The --label rotation: each queue label and its turns in a row (§AR-forge-launcher.1).
 labels=()
 counts=()
 add_label() {
@@ -159,12 +160,15 @@ review() {
         || printf 'WARNING: The review failed; the next review reads the queue again.\n' >&2
 }
 
+# forge_metadata.py's status when nothing could be claimed, one no crash exits with: a crash is a
+# failed cycle (§AR-forge-launcher.2).
+readonly NOTHING_CLAIMED=4
 # The rotation's current label and the turns it has had in a row.
 turn=0
 taken=0
 # Run one cycle on the queue whose turn it is; a queue with nothing to claim passes the turn, and
-# the rest of its turns, to the next. Returns 1 only when no queue claimed anything, leaving the
-# rotation where it stood (§AR-forge-workflow-pipeline.1).
+# the rest of its turns, to the next. Returns NOTHING_CLAIMED only when no queue claimed anything,
+# leaving the rotation where it stood (§AR-forge-launcher.1).
 claim_next() {
     local attempt index status
     if (( ${#labels[@]} == 0 )); then
@@ -176,7 +180,7 @@ claim_next() {
         status=0
         forge_metadata --label "${labels[index]}" "${claim_arguments[@]}" \
             -- "${rhei_arguments[@]}" || status=$?
-        (( status != 1 )) || continue
+        (( status != NOTHING_CLAIMED )) || continue
         (( attempt == 0 )) || { turn=$index; taken=0; }
         taken=$((taken + 1))
         if (( taken == counts[index] )); then
@@ -185,19 +189,17 @@ claim_next() {
         fi
         return "$status"
     done
-    return 1
+    return "$NOTHING_CLAIMED"
 }
 
-# §FS-published-pr-review.1: review every third run and whenever nothing can be claimed.
+# §FS-published-pr-review.1: review after every run, at start-up, and whenever nothing is claimed.
 readonly IDLE_SECONDS=600
-readonly REVIEW_EVERY=3
 # §FS-forge-host-requirements.1: the gate's status when every failure is transient, and the
 # backoff of the waits it and a failed cycle cause.
 readonly HOST_TRANSIENT_STATUS=75
 readonly BACKOFF_FIRST_SECONDS=60
 readonly BACKOFF_MAX_SECONDS=900
 cd "$SCRIPT_DIR"
-runs=0
 host_passed=0
 backoff=$BACKOFF_FIRST_SECONDS
 # Sleep the current backoff, then double it up to its cap.
@@ -222,17 +224,18 @@ while true; do
         printf 'ERROR: The host check failed before it ever passed; fix the host, or start Forge again once it clears.\n' >&2
     fi
     (( status == 0 )) || exit "$status"
+    # A restart must not cost the review: the first pass comes before the first claim.
+    (( host_passed )) || review
     host_passed=1
     claim_next || status=$?
-    if (( status == 1 )); then
+    if (( status == NOTHING_CLAIMED )); then
         backoff=$BACKOFF_FIRST_SECONDS
         review
         printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
         sleep "$IDLE_SECONDS"
         continue
     fi
-    runs=$((runs + 1))
-    (( runs % REVIEW_EVERY != 0 )) || review
+    review
     if (( status != 0 )); then
         printf 'ERROR: The cycle failed with status %s; checking the host again in %s seconds.\n' "$status" "$backoff" >&2
         back_off

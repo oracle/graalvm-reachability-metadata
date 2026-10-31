@@ -47,6 +47,16 @@ final class TestResourceClassifier {
         return packages.stream().anyMatch(packageName -> referencesPackage(value, packageName));
     }
 
+    /// Whether the type name `typeName` belongs to one of the test `packages`: it is in one, or it
+    /// embeds one as `.<package>.` after a prefix of its own, as Groovy's custom-metaclass lookup
+    /// `groovy.runtime.metaclass.<test class>MetaClass` does (§FS-repository-functional-spec.5.1).
+    /// Only a package of at least two segments is matched embedded: a single segment such as `h2`
+    /// sits inside library names like `org.h2.Driver`.
+    static boolean typeNameReferencesAnyPackage(String typeName, Collection<String> packages) {
+        return packages.stream().anyMatch(packageName -> referencesPackage(typeName, packageName)
+                || embedsPackage(typeName, packageName));
+    }
+
     /// Whether the `resources` entry is a glob or a bundle that the test project provides.
     boolean isTestResource(JsonNode entry) {
         return globIsTestResource(entry) || bundleIsTestResource(entry);
@@ -159,6 +169,10 @@ final class TestResourceClassifier {
 
     private static boolean referencesPackage(String value, String packageName) {
         return value.equals(packageName) || value.startsWith(packageName + ".");
+    }
+
+    private static boolean embedsPackage(String typeName, String packageName) {
+        return packageName.indexOf('.') >= 0 && typeName.contains("." + packageName + ".");
     }
 
     private static Set<String> discoverTestResources(Path testsDirectory) throws IOException {

@@ -6,18 +6,26 @@
 """A fake `gh` and a fake review agent for the review tests (§FS-published-pr-review).
 
 The fake `gh` keeps GitHub in a JSON file and reads the head of a pull request
-from a real bare remote; the fake agent runs the `gh` and `git` commands its
-plan names, commits the files it names, and writes the answer it is told to.
+from a real bare remote; comments carry REST ids and times, so the claims on the
+`in-review` lock order as GitHub orders them. A test injects a failure as a
+`faults` entry, a command fragment and the error `gh` prints, and changes a pull
+request as a claim lands through `on_claim`. The fake agent runs the `gh` and
+`git` commands its plan names, commits the files it names, and writes the answer
+it is told to.
 """
 from __future__ import annotations
 
 FAKE_GH: str = r'''#!/usr/bin/env python3
-import json, os, subprocess, sys
+import datetime, json, os, subprocess, sys
 path = os.environ["FAKE_GH_STATE"]
 state = json.load(open(path))
 args = sys.argv[1:]
 with open(path + ".calls", "a") as log:
     log.write(json.dumps(args) + "\n")
+for fragment, error in state.get("faults", []):
+    if fragment in " ".join(args):
+        print(error, file=sys.stderr)
+        sys.exit(1)
 def value(flag, default=None):
     return args[args.index(flag) + 1] if flag in args else default
 def save():
@@ -69,8 +77,29 @@ if args[:2] == ["issue", "create"]:
     save(); done(f"https://github.com/{value('--repo')}/issues/{number}")
 if args[:2] == ["issue", "view"]:
     done(json.dumps({"state": next(i for i in state["issues"] if str(i["number"]) == args[2])["state"]}))
+def comment(number, body):
+    state["next_comment"] = state.get("next_comment", 1000) + 1
+    created = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    posted = {"id": state["next_comment"], "created_at": created, "author": {"login": state["login"]}, "body": body}
+    state["prs"][number]["comments"].append(posted)
+    save()
+    return posted
+def rest(posted):
+    return json.dumps({"id": posted.get("id", 1), "created_at": posted.get("created_at", "2026-01-01T00:00:00Z"),
+                       "user": posted["author"], "body": posted["body"]})
 if args[:2] == ["issue", "comment"]:
-    state["prs"][args[2]]["comments"].append({"author": {"login": state["login"]}, "body": value("--body")})
+    comment(args[2], value("--body")); done()
+if args[0] == "api" and "POST" in args and args[args.index("POST") + 1].endswith("/comments"):
+    number = args[args.index("POST") + 1].split("/")[-2]
+    state["prs"][number].update(state.pop("on_claim", {}))
+    done(rest(comment(number, args[-1].split("=", 1)[1])))
+if args[0] == "api" and any("/comments?" in a for a in args):
+    number = [a for a in args if "/comments?" in a][0].split("/")[-2]
+    done("\n".join(rest(posted) for posted in state["prs"][number]["comments"]))
+if args[0] == "api" and "DELETE" in args and "/issues/comments/" in args[args.index("DELETE") + 1]:
+    gone = int(args[args.index("DELETE") + 1].split("/")[-1])
+    for pull in state["prs"].values():
+        pull["comments"] = [posted for posted in pull["comments"] if posted.get("id") != gone]
     save(); done()
 if args[0] == "api" and args[-1].startswith("labels[]="):
     number = args[args.index("POST") + 1].split("/")[-2]

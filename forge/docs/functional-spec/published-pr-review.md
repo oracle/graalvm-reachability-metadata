@@ -12,13 +12,20 @@ armed, a fix pushed, jobs rerun, or an issue — never to silence
 
 ## 1. Cadence and queue
 
-The launcher reviews every third run, and whenever nothing can be claimed. The
-queue is read from GitHub on every pass: the open Forge pull requests, oldest
-first, of which at most three get an agent per pass. A pull request is Forge's
-when its head repository is `oracle/graalvm-reachability-metadata`, its head
-branch is an upstream `ai/**` branch, and it carries a Forge route label
-(§FS-forge-functional-spec). No local state carries over between passes, so a
-pass on another host reaches the same decisions.
+The launcher reviews after every run, once when it starts, and whenever nothing
+can be claimed. Review throughput must exceed publication throughput: a run
+publishes up to one pull request, and other launchers add theirs to the same
+queue, so a pass every few runs at best keeps pace, and a backlog a disruption
+built up never drains. A restart must not cost the review either: a launcher
+restarted for an outage or an update may never reach a later run, so its first
+pass comes once its host gate first passes, before its first claim. A pass with
+nothing to review costs only the queue reads. The queue is read from GitHub on
+every pass: the open Forge pull requests, oldest first, of which at most three
+get an agent per pass. A pull request is Forge's when its head repository is
+`oracle/graalvm-reachability-metadata`, its head branch is an upstream `ai/**`
+branch, and it carries a Forge route label (§FS-forge-functional-spec). No local
+state carries over between passes, so a pass on another host reaches the same
+decisions.
 
 ## 2. Skipped before any agent
 
@@ -45,11 +52,23 @@ swap (§root/FS-graalvm-blocked-work.3).
 
 ## 3. The in-review lock
 
-Before its agent runs, the review labels the pull request `in-review`, and it
-removes the label once the outcome is recorded, so concurrent launchers do not
-review the same head twice. Removal is a plain step, not a guaranteed cleanup:
-a killed review leaves its label behind, and a label older than three hours is
-stale and taken over by the next pass.
+Before its agent runs, the review takes the pull request's `in-review` lock, so
+concurrent launchers do not review the same head twice. Every launcher reviews
+as the same account, and adding a label that is already there leaves no trace,
+so the label alone cannot tell two holders apart. The review therefore labels
+the pull request `in-review`, posts a claim comment that carries the head and a
+token of its own, and reads the claims back. The earliest claim holds the lock;
+a review whose claim is not the earliest withdraws it and skips the pull request
+as held by another review. The holder then reads the pull request once more,
+and skips it when it ended (§FS-published-pr-review.2) or its head moved.
+
+The review releases the lock — it deletes its claim and removes the label — on
+every exit of a launcher that is still running: once the outcome is recorded,
+when the pull request is skipped, and when the review fails. A GitHub rate
+limit is such a failure, and it also ends the pass, because every later read
+would meet the same limit (§FS-human-intervention-policy). Only a killed review
+leaves its label and its claim behind: a label or a claim older than three
+hours is stale, and the next pass takes it over.
 
 ## 4. The reviewer
 
@@ -72,7 +91,9 @@ The agent approves, arms auto-merge, reruns jobs, and pushes with `gh` and `git`
 itself. It does not label, comment, or open issues: it reports its outcome and,
 for an issue, the issue's title, body, and signature, and the program confirms
 the outcome, files the issue, and sets the labels and markers. The agent takes
-the first case below that applies.
+the first case below that applies, in this order: all green, then a failure the
+merge base caused (§FS-published-pr-review.4.7), then the cases from
+§FS-published-pr-review.4.2 on.
 
 ### 4.1 All green
 
@@ -85,13 +106,16 @@ offered only when the program read every check as passed.
 
 ### 4.2 Infrastructure failure
 
-Every failing job died of something the change cannot have caused: the network,
-the runner, Gradle plugin resolution, a Docker pull, or a cancellation. The
-agent reruns the failed jobs of each such run: `gh run rerun <run-id> --failed`.
-This case is checked before every other failure, Spring AOT included. A
-connection error is transient only when nothing in its stack points at Native
-Image: a channel that cannot be created reflectively, or a class initializer that
-fails, is a metadata miss that looks like the network.
+Every failing job died of something a fresh run of the same merge commit could
+pass: the network, the runner, Gradle plugin resolution, a Docker pull, or a
+cancellation. The agent reruns the failed jobs of each such run:
+`gh run rerun <run-id> --failed`. A failure the merge commit itself carries is
+not one of these, even when the change cannot have caused it: a rerun replays
+that commit, so a failure `master` caused there is §FS-published-pr-review.4.7.
+This case is checked right after that one and before every other failure,
+Spring AOT included. A connection error is transient only when nothing in its
+stack points at Native Image: a channel that cannot be created reflectively, or
+a class initializer that fails, is a metadata miss that looks like the network.
 
 ### 4.3 A library test lane failed
 
@@ -147,6 +171,27 @@ a GraalVM defect, the issue names the signal it saw: the review cannot file the
 files them from before declaring the pull request
 (§root/FS-graalvm-blocked-work.1).
 
+### 4.7 A failure the merge base caused
+
+CI tests a pull request on GitHub's merge commit of its head into `master` as
+`master` stood when the run's event fired. This case applies when every failing
+job fails because of that `master`, and current `origin/master` no longer has
+the failure: the failing job's test passes on current `origin/master`, or the
+failing check's cause is absent from it. It is checked right after all green,
+before §FS-published-pr-review.4.2. The agent merges `origin/master` into the
+head and pushes the merge: a new head gets a new merge commit, so its checks run
+on the `master` that no longer fails.
+
+The outcome is never a rerun: GitHub reruns a `pull_request` workflow on the
+original event's merge commit, so a rerun replays the old `master` and cannot
+pass, and it still spends a CI round, a review pass, and the head's one rerun.
+It is never an issue either: the change is sound, an issue would hold it as
+`human-intervention` for a break `master` has already fixed, and an issue that
+tracks that break holds every later pull request it is reused for, long after
+the fix. The merge is one of the pull request's two fix pushes
+(§FS-published-pr-review.5), so past that bound the outcome is an issue, as in
+every other case.
+
 ## 5. Outcomes, labels, and bounds
 
 The program confirms each outcome against GitHub before it records it, and only
@@ -156,8 +201,9 @@ the program writes labels and markers:
    request labeled `human-intervention`. Either adds `reviewed`, so the pull
    request is never reviewed again until a maintainer reopens it
    (§FS-published-pr-review.2); an issue also removes `human-intervention-fixed`.
-2. **Not terminal.** A pushed fix or a rerun removes only `in-review` and leaves
-   a comment by the Forge account that marks the head and the action. The next
+2. **Not terminal.** A pushed fix or a rerun adds no label: the review releases
+   its lock (§FS-published-pr-review.3) and leaves a comment by the Forge account
+   that marks the head and the action. The next
    pass reviews the new head, or the rerun head, once its checks have finished.
 
 The markers bound the loop: a head is rerun at most once, and a pull request

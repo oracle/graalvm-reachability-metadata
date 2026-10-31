@@ -48,13 +48,14 @@ REAL_USE_STATS_SCHEMA_PATH = (
 REAL_USE_STATS_PATH_PATTERN = re.compile(
     r"real-use-tests/stats/([^/]+)/([^/]+)/([^/]+)/stats\.json"
 )
+# Every route carries `GenAI`, which the drain queue selects by (§forge/AR-issue-linking).
 ROUTE_LABELS = {
     "library-new-request": ["GenAI", "library-new-request"],
     "library-update-request": ["GenAI", "library-update-request"],
     "fixes-javac-fail": ["GenAI", "fixes-javac-fail"],
     "fixes-java-run-fail": ["GenAI", "fixes-java-run-fail"],
     "fixes-native-image-build-fail": ["GenAI", "fixes-native-image-build-fail"],
-    "fixes-native-image-run-fail": ["fixes-native-image-run-fail"],
+    "fixes-native-image-run-fail": ["GenAI", "fixes-native-image-run-fail"],
     "not-for-native-image": ["GenAI", "library-new-request", "not-for-native-image"],
     "code-coverage-benchmark-result": ["GenAI", "code-coverage-improvement", "rhei"],
     "code-coverage-improvement": ["GenAI", "code-coverage-improvement", "rhei"],
@@ -816,6 +817,12 @@ Summary:
     return title, body
 
 
+def _repair_title(descriptor: dict[str, Any]) -> str:
+    """The one title of every repair route, run fix included (§forge/AR-pr-body.3)."""
+    coordinates = descriptor["library"]["coordinates"]
+    return f"[GenAI] Test fix for {coordinates} using {_model_display_name(descriptor)}"
+
+
 def _render_repair_fix(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
@@ -827,7 +834,7 @@ def _render_repair_fix(
     previous = descriptor.get("previous_library") or {}
     previous_coordinates = previous.get("coordinates")
     metrics = _summary_metrics(descriptor)
-    title = f"[GenAI] Test fix for {coordinates} using {_model_display_name(descriptor)}"
+    title = _repair_title(descriptor)
 
     coverage_deferred = any(
         follow_up["type"] == "deferred_dynamic_access_coverage"
@@ -900,10 +907,11 @@ def _render_native_image_run_fix(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
 ) -> tuple[str, str]:
+    """The metadata-first run-fix body; a deferred repair adds its trailer (§forge/AR-pr-body.3)."""
     coordinates = descriptor["library"]["coordinates"]
     previous_coordinates = (descriptor.get("previous_library") or {}).get("coordinates")
     render = descriptor["render"]
-    title = f"[Automation] Generated metadata for {coordinates}"
+    title = _repair_title(descriptor)
 
     previous_entries = int(render.get("baseline_metadata_entries") or 0)
     current_entries = int(render.get("current_metadata_entries") or 0)
@@ -938,7 +946,8 @@ def _render_native_image_run_fix(
         "addressing Native Image run failures caused by changes in the updated library version."
         f"{metrics_section}"
         f"{_format_forge_metrics_summary_section(descriptor)}"
-        f"\n\n{_format_forge_revision_section(descriptor)}"
+        f"\n\n{_format_deferred_dynamic_access_section(descriptor)}"
+        f"{_format_forge_revision_section(descriptor)}"
         f"{_format_stats_diff(validated, previous_coordinates, coordinates)}"
         f"{_format_bounded_test_diff_section(validated)}"
     )

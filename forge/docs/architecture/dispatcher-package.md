@@ -8,7 +8,7 @@ and a consumer lifecycle that reviews the pull requests those runs produce
 (§FS-published-pr-review). Its implementation is therefore a package,
 `dispatcher/`, whose module boundaries follow those lifecycles rather than
 call-graph proximity; `forge_metadata.py` stays the single CLI entry point that
-parses arguments and wires them together (§AR-forge-workflow-pipeline.1).
+parses arguments and wires them together (§AR-forge-launcher.1).
 
 The producer side decomposes along the fetch-to-run path: the per-label,
 per-tier issue fetch, claim preflight against live GitHub state, the optimistic
@@ -32,8 +32,9 @@ patchable in isolation by the tests.
 are one module: the open `ai/**` pull requests, a pull request as it is now, the
 check runs and commit statuses of a head commit read through the commits API, so
 an earlier head can be replayed, the tail of each failed job's log, the
-`in-review` timeline event, and the head markers. The pass module owns every
-decision and write: the skips, the lock, the agent, the confirmation, the
+`in-review` timeline event, the claims on that lock, and the head markers. The
+lock module takes and releases the `in-review` lock, and the pass module owns
+every other decision and write: the skips, the agent, the confirmation, the
 labels, the markers, and the issue.
 
 The ledger is the pull request's own comments: a rerun or a pushed fix leaves
@@ -43,6 +44,17 @@ one comment by the Forge account that ends with
 `rerun` marker on the head leaves no rerun, and two `push` markers spend the
 fix pushes — so a pass on another host reaches the same decisions. A terminal
 outcome is the `reviewed` label instead.
+
+A claim on the lock is a comment of the same account that ends with
+`<!-- forge-review-claim:<head SHA>:<token> -->`, the token drawn once per pass
+(§FS-published-pr-review.3). The claims are read through the REST issue-comments
+API, whose numeric comment ids order them as GitHub took them, and the lowest id
+among the claims at most three hours older than the pass's own holds the lock.
+The review holds what it took in one record — whether the label is its to remove
+and which claim comments it posted — and the pass's `finally` gives back exactly
+that, on a skip, a failure, and a rate limit alike. A rate limit then propagates out of
+the pass, and the entry point ends it as the transient halt any GitHub outage
+is, one line and the status 75 (§AR-forge-launcher.2).
 
 The agent runs in a detached worktree of the head. Its instruction is the
 template `prompt_templates/pr_review/review.md`, with the `Metadata` and

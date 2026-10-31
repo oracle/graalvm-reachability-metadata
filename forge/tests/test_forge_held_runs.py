@@ -7,7 +7,7 @@
 
 A held run keeps its work at a ref of its own that no later run moves
 (§FS-human-intervention-policy); an attempt whose launcher died, or that Rhei
-ran no state of, keeps its worktree and is resumed (§AR-forge-workflow-pipeline.1).
+ran no state of, keeps its worktree and is resumed (§AR-forge-launcher.1).
 """
 from __future__ import annotations
 
@@ -155,7 +155,7 @@ class HeldRunTest(RunWorktreeCase):
 
 
 class RanNoStateTest(RunWorktreeCase):
-    """A `rhei run` that ran no state finished nothing (§AR-forge-workflow-pipeline.1)."""
+    """A `rhei run` that ran no state finished nothing (§AR-forge-launcher.1)."""
 
     def claimed(self) -> run_launch.Claim:
         return run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
@@ -275,6 +275,7 @@ class RanNoStateTest(RunWorktreeCase):
     def test_the_launcher_backs_off_after_the_first_halt_and_holds_the_issue_after_the_second(self) -> None:
         codes: list[int] = []
         with patch.object(forge_metadata, "REPO_DIR", self.repo), \
+                patch.object(forge_metadata, "FORGE_DIR", os.path.join(self.root, "forge")), \
                 patch.object(forge_metadata, "fetch_candidates", return_value=[("library-new-request", issue(7))]), \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(forge_metadata, "claim", return_value=self.claimed()), \
@@ -295,6 +296,7 @@ class RanNoStateTest(RunWorktreeCase):
     def test_the_launcher_backs_off_a_budget_halt_as_a_transient_failure(self) -> None:
         budget = run_launch.Started(workspace=self.workspace, advanced=False, halt="budget halt", budget=True)
         with patch.object(forge_metadata, "REPO_DIR", self.repo), \
+                patch.object(forge_metadata, "FORGE_DIR", os.path.join(self.root, "forge")), \
                 patch.object(forge_metadata, "fetch_candidates", return_value=[("library-new-request", issue(7))]), \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(forge_metadata, "claim", return_value=self.claimed()), \
