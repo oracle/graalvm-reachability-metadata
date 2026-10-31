@@ -30,6 +30,15 @@ public class LogManagerTest {
     }
 
     @Test
+    void createsFormatterLoggerWithPrintfMessageSemantics() {
+        Logger logger = LogManager.getFormatterLogger("formatter-orders");
+
+        assertThat(logger.getMessageFactory().newMessage("Order %s contains %d items", "o-61", 5)
+                .getFormattedMessage()).isEqualTo("Order o-61 contains 5 items");
+        assertThat(LogManager.getLogger("formatter-orders", logger.getMessageFactory())).isSameAs(logger);
+    }
+
+    @Test
     void createsSimpleLoggersWithDefaultMessageFactory() {
         Logger logger = LogManager.getLogger(LogManagerTest.class);
 
