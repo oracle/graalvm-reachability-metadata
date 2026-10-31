@@ -30,7 +30,7 @@ public class AnnotatedFieldTest {
     @Test
     void restoresConfiguredReaderWithFieldProperties() throws Exception {
         ObjectReader reader = new ObjectMapper().readerFor(Document.class);
-        ObjectReader restored = SerializationSupport.roundTrip(reader);
+        ObjectReader restored = (ObjectReader) NettySerializationSupport.throughStreams(reader);
         Document document = restored.readValue("""
                 {"title":"Guide","pages":17}
                 """);

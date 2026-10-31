@@ -31,7 +31,7 @@ public class AnnotatedConstructorTest {
     void restoresConfiguredReaderWithDelegatingConstructor() throws Exception {
         ObjectReader reader = new ObjectMapper().readerFor(Label.class);
         Label before = reader.readValue("\"book\"");
-        ObjectReader restored = SerializationSupport.roundTrip(reader);
+        ObjectReader restored = (ObjectReader) NettySerializationSupport.throughStreams(reader);
         Label after = restored.readValue("\"pencil\"");
         assertEquals("book", before.text);
         assertEquals("pencil", after.text);

@@ -42,7 +42,7 @@ public class NioDomainSocketUtilTest {
             assertTrue(server.close().await(10, TimeUnit.SECONDS));
             assertFalse(Files.exists(socket));
         } finally {
-            if (server != null) {
+            if (server != null && server.isOpen()) {
                 assertTrue(server.close().await(10, TimeUnit.SECONDS));
             }
             assertTrue(group.shutdownGracefully(0, 10, TimeUnit.SECONDS).await(10, TimeUnit.SECONDS));

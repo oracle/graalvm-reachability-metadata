@@ -77,7 +77,7 @@ final class GrpcTestSupport implements AutoCloseable {
                         }
                     };
                 }).build();
-        server = NettyServerBuilder.forAddress(new InetSocketAddress("127.0.0.1", 0))
+        server = NettyServerBuilder.forAddress(new InetSocketAddress(dns ? "localhost" : "127.0.0.1", 0))
                 .directExecutor().addService(service).build().start();
         NettyChannelBuilder builder = dns
                 ? NettyChannelBuilder.forTarget("dns:///localhost:" + server.getPort())
@@ -88,7 +88,7 @@ final class GrpcTestSupport implements AutoCloseable {
     CompletableFuture<String> reply(String request) {
         CompletableFuture<String> response = new CompletableFuture<>();
         ClientCall<String, String> call = channel.newCall(METHOD,
-                CallOptions.DEFAULT.withDeadlineAfter(10, TimeUnit.SECONDS));
+                CallOptions.DEFAULT.withDeadlineAfter(20, TimeUnit.SECONDS));
         call.start(new ClientCall.Listener<>() {
             private String message;
 

@@ -50,7 +50,7 @@ public class AnnotatedMethodTest {
     @Test
     void restoresReaderWithFactoryMethod() throws Exception {
         ObjectReader reader = new ObjectMapper().readerFor(Token.class);
-        ObjectReader restored = SerializationSupport.roundTrip(reader);
+        ObjectReader restored = (ObjectReader) NettySerializationSupport.throughStreams(reader);
         Token token = restored.readValue("\"restored\"");
         assertEquals("restored", token.value());
     }
