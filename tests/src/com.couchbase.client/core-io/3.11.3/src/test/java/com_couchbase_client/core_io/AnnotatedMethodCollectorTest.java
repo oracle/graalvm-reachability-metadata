@@ -24,6 +24,21 @@ public class AnnotatedMethodCollectorTest {
         assertEquals("Ada", mapper.readTree(mapper.writeValueAsString(profile)).get("display_name").asText());
     }
 
+    @Test
+    void exposesInheritedObjectMethodThroughMixin() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.addMixIn(Object.class, ObjectMixin.class);
+        Profile profile = new Profile();
+        profile.setName("Lin");
+        assertEquals(profile.hashCode(), mapper.readTree(mapper.writeValueAsString(profile))
+                .get("identity").intValue());
+    }
+
+    public abstract static class ObjectMixin {
+        @JsonProperty("identity")
+        public abstract int hashCode();
+    }
+
     public static class Profile {
         private String name;
 

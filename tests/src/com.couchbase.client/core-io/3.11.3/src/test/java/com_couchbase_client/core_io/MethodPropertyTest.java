@@ -6,10 +6,13 @@
  */
 package com_couchbase_client.core_io;
 
+import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class MethodPropertyTest {
     @Test
@@ -23,6 +26,32 @@ public class MethodPropertyTest {
                 {"balance":81}
                 """);
         assertEquals(81, value.getBalance());
+    }
+
+    @Test
+    void assignsIdentityThroughFluentSetterAndResolvesReference() throws Exception {
+        IdentifiedAccount account = new ObjectMapper().readValue("""
+                {"id":7,"balance":25,"linked":7}
+                """, IdentifiedAccount.class);
+        assertEquals(7, account.getId());
+        assertEquals(25, account.balance);
+        assertSame(account, account.linked);
+    }
+
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    public static class IdentifiedAccount {
+        private int id;
+        public int balance;
+        public IdentifiedAccount linked;
+
+        public int getId() {
+            return id;
+        }
+
+        public IdentifiedAccount setId(int id) {
+            this.id = id;
+            return this;
+        }
     }
 
     public static class Account {

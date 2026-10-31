@@ -13,6 +13,7 @@ import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.Deserializa
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import java.io.IOException;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,14 @@ public class ClassUtilTest {
         assertEquals("AB-12", result.value);
         mapper.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
         assertEquals(State.OTHER, mapper.readValue("\"unrecognized\"", State.class));
+    }
+
+    @Test
+    @SuppressWarnings({"deprecation", "unchecked"})
+    void discoversDefaultEnumValueThroughAnnotationIntrospection() {
+        JacksonAnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
+        Class<Enum<?>> enumType = (Class<Enum<?>>) (Class<?>) State.class;
+        assertEquals(State.OTHER, introspector.findDefaultEnumValue(enumType));
     }
 
     @JsonDeserialize(using = CodeDeserializer.class)
