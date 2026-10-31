@@ -6,11 +6,25 @@
  */
 package io_github_classgraph.classgraph;
 
+import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-class ClassgraphTest {
+import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class ClassgraphTest {
+    @TempDir
+    Path directory;
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void scansApplicationClassesAndResources() throws Exception {
+        try (ScanResult scan = ScanSupport.graph(ScanSupport.archive(directory)).scan(2)) {
+            assertTrue(scan.getAllClasses().getNames().contains(ScanFixtures.Subject.class.getName()));
+            assertTrue(ScanSupport.subject(scan).implementsInterface(Runnable.class.getName()));
+            assertEquals(ScanSupport.CONTENT, scan.getResourcesWithPath(ScanSupport.PAYLOAD).get(0).getContentAsString());
+        }
     }
 }
