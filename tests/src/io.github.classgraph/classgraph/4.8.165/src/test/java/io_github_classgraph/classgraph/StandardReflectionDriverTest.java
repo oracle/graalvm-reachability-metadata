@@ -6,10 +6,12 @@
  */
 package io_github_classgraph.classgraph;
 
+import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -18,6 +20,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class StandardReflectionDriverTest {
     @TempDir
     Path directory;
+
+    @Test
+    void discoversResourceRootFromPrivateClasspathField() throws Exception {
+        Path catalog = Files.createDirectory(directory.resolve("catalog"));
+        Files.writeString(catalog.resolve("settings.txt"), "mode=safe\n");
+        ClassLoader loader = new ResourceRootClassLoader(directory);
+        try (ScanResult scan = new ClassGraph().overrideClassLoaders(loader)
+                .ignoreParentClassLoaders().disableModuleScanning().acceptPaths("catalog").scan(2)) {
+            assertEquals(List.of(directory.toFile()), scan.getClasspathFiles());
+            assertEquals(1, scan.getResourcesWithPath("catalog/settings.txt").size());
+            assertEquals("mode=safe\n",
+                    scan.getResourcesWithPath("catalog/settings.txt").get(0).getContentAsString());
+        }
+    }
+
+    // All class loading delegates to the application; this root contains resources only.
+    private static final class ResourceRootClassLoader extends ClassLoader {
+        private final String classpath;
+
+        private ResourceRootClassLoader(Path root) {
+            super(StandardReflectionDriverTest.class.getClassLoader());
+            classpath = root.toString();
+        }
+    }
 
     @Test
     void readsEnumConstantObjectsInDeclarationOrder() throws Exception {

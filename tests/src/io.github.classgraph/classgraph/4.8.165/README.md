@@ -38,7 +38,12 @@ cannot be selected portably on the test JVM. Tests use only
 
 `StandardReflectionDriverTest` also reads enum constant objects through
 `ClassInfo.getEnumConstantObjects()`, exercising the standard driver's static
-field reads without test-side reflection.
+field reads without test-side reflection. It also discovers a temporary
+resource-only directory from a delegating loader's private `classpath` field
+through `ClassGraph.overrideClassLoaders()`. The discovered path and resource
+contents must match, exercising the driver's instance-field read and successful
+accessibility path. The loader defines no classes; all class loading delegates
+to the application's existing loader.
 
 The remaining reported sites are not forced through internal APIs:
 
