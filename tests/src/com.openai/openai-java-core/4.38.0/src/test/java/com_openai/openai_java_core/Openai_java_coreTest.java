@@ -6,11 +6,20 @@
  */
 package com_openai.openai_java_core;
 
+import com.openai.core.ObjectMappers;
 import org.junit.jupiter.api.Test;
 
-class Openai_java_coreTest {
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class Openai_java_coreTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void serializesInputStreamAsBase64Json() throws Exception {
+        try (ByteArrayInputStream input = new ByteArrayInputStream(
+                "hello".getBytes(StandardCharsets.UTF_8))) {
+            assertEquals("\"aGVsbG8=\"", ObjectMappers.jsonMapper().writeValueAsString(input));
+        }
     }
 }
