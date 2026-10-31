@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MetaClassImplTest {
     public static Lookup $getLookup() {
@@ -113,6 +114,13 @@ public class MetaClassImplTest {
         assertNotNull(model);
         assertEquals(AstViewModel.class.getName(), model.getName());
         assertEquals("java.lang.String", model.getProperty("reference").getType().getName());
+    }
+
+    @Test
+    void returnsNoSourceAstWhenAGroovyObjectsSourceIsNotOnTheClasspath() {
+        MetaClassImpl metaClass = new MetaClassImpl(PrivateChild.class);
+        metaClass.initialize();
+        assertNull(metaClass.getClassNode());
     }
 
     @Test
