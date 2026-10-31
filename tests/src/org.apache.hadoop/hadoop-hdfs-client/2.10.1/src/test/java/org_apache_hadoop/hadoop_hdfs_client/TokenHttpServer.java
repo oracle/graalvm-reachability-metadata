@@ -36,7 +36,7 @@ final class TokenHttpServer implements AutoCloseable {
         status = responseStatus;
         body = responseBody;
         listener = new ServerSocket(0, 8, InetAddress.getByName("127.0.0.1"));
-        listener.setSoTimeout(30000);
+        listener.setSoTimeout(120000);
         serving = executor.submit(this::serve);
     }
 
