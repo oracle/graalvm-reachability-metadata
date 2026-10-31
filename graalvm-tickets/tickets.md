@@ -131,3 +131,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14812
+
+## GR-81042: \[Native Image\] FromReflectedMethod and FromReflectedField return a null ID without reporting a missing JNI registration
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14852
