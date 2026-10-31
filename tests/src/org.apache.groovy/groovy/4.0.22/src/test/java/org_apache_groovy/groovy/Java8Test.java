@@ -34,9 +34,21 @@ public class Java8Test {
         assertEquals("parent", plugin.invokeHandle(handle, new Object[0]));
     }
 
+    @Test
+    void invokesAPrivateSuperclassImplementationFromAChildReceiver() throws Throwable {
+        Java8 plugin = new Java9();
+        Method method = Parent.class.getDeclaredMethod("internalGreeting");
+        Object handle = plugin.getInvokeSpecialHandle(method, new Child());
+        assertEquals("private parent", plugin.invokeHandle(handle, new Object[0]));
+    }
+
     public static class Parent {
         public String greeting() {
             return "parent";
+        }
+
+        private String internalGreeting() {
+            return "private parent";
         }
     }
 
