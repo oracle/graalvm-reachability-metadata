@@ -7,7 +7,6 @@
 package tomcat;
 
 import java.io.File;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.catalina.core.DefaultInstanceManager;
@@ -28,7 +27,7 @@ public class DefaultInstanceManagerTest {
             application.context.addPostConstructMethod(Component.class.getName(), "initialize");
             application.context.addPreDestroyMethod(Component.class.getName(), "release");
             application.start();
-            NamingContext naming = new NamingContext(new Hashtable<>(), "components");
+            NamingContext naming = new NamingContext(null, "components");
             try {
                 naming.bind("fieldValue", "catalog");
                 naming.bind("setterValue", "orders");

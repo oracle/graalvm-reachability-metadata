@@ -6,8 +6,6 @@
  */
 package tomcat;
 
-import java.util.Hashtable;
-
 import javax.naming.StringRefAddr;
 
 import org.apache.naming.NamingContext;
@@ -21,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 public class NamingContextTest {
     @Test
     void resolvesSingletonResourceReferenceDuringLookup() throws Exception {
-        NamingContext context = new NamingContext(new Hashtable<>(), "application");
+        NamingContext context = new NamingContext(null, "application");
         try {
             ResourceRef reference = new ResourceRef(BeanFactoryTest.Service.class.getName(), null, null, null,
                     true, BeanFactory.class.getName(), null);
