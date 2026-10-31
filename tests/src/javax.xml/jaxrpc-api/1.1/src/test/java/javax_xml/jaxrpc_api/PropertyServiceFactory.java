@@ -6,11 +6,7 @@
  */
 package javax_xml.jaxrpc_api;
 
-import org.junit.jupiter.api.Test;
-
-class Jaxrpc_apiTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+public class PropertyServiceFactory extends ServiceFileServiceFactory {
+    public PropertyServiceFactory() {
     }
 }
