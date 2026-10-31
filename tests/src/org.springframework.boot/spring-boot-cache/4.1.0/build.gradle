@@ -11,8 +11,13 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
+    // Companion versions come from the Spring Boot BOM, which tracks the tested release.
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
     testImplementation "org.springframework.boot:spring-boot-cache:$libraryVersion"
-    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+    testImplementation 'org.springframework:spring-context'
+    testImplementation 'com.github.ben-manes.caffeine:caffeine'
+    testImplementation 'org.assertj:assertj-core'
 }
 
 graalvmNative {
