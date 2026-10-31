@@ -6,6 +6,7 @@
  */
 package com_couchbase_client.core_io;
 
+import com.couchbase.client.core.deps.com.google.common.base.Supplier;
 import com.couchbase.client.core.deps.com.google.common.reflect.Reflection;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +18,8 @@ public class ReflectionTest {
     void exercisesPublicApi() throws Exception {
         Reflection.initialize(Initialized.class);
         assertTrue(initialized);
-        Greeting greeting = Reflection.newProxy(Greeting.class, (proxy, method, arguments) -> "Hello " + arguments[0]);
-        assertEquals("Hello Ada", greeting.hello("Ada"));
+        Supplier<?> greeting = Reflection.newProxy(Supplier.class, (proxy, method, arguments) -> "Hello Ada");
+        assertEquals("Hello Ada", greeting.get());
     }
 
     private static boolean initialized;
@@ -29,7 +30,4 @@ public class ReflectionTest {
         }
     }
 
-    public interface Greeting {
-        String hello(String name);
-    }
 }
