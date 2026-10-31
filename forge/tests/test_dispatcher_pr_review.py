@@ -371,6 +371,48 @@ class ReviewTest(unittest.TestCase):
                                  f"HEAD:refs/pull/{NUMBER}/head"]]})
         self.assertIn("fix: pushed", self.run_pass())
 
+    def move_master(self, text: str, push: bool = True) -> str:
+        """Commit `text` to `README.md` on `master`, pushed unless `push` is false; return the commit."""
+        self.write("README.md", text)
+        _git("commit", "-q", "-am", "master moves", cwd=self.repo)
+        if push:
+            _git("push", "-q", "origin", "master", cwd=self.repo)
+        return _git("rev-parse", "HEAD", cwd=self.repo)
+
+    def repair(self, *commands: list[str], files: dict[str, str] | None = None) -> None:
+        """A `fix` answer whose agent commits `files`, runs `commands`, and pushes to the head."""
+        push: list[str] = ["git", "push", "-q", "origin", "HEAD:refs/heads/{branch}", f"HEAD:refs/pull/{NUMBER}/head"]
+        self.plan({"answer": self.answer("fix"), "files": files or {}, "commands": [*commands, push]})
+
+    @staticmethod
+    def agent_git(*arguments: str) -> list[str]:
+        return ["git", "-c", "user.name=A", "-c", "user.email=a@example.com", *arguments]
+
+    def test_a_master_merge_stands_when_master_moves_on_during_the_review(self) -> None:
+        """Another fetch moves the shared `origin/master` past the merged commit, on the file it brought."""
+        self.move_master("moved on\n")
+        later: str = self.move_master("moved again\n", push=False)
+        self.repair(self.agent_git("merge", "-q", "--no-edit", "origin/master"),
+                    ["git", "push", "-q", "origin", f"{later}:refs/heads/master"],
+                    ["git", "fetch", "-q", "origin", "+refs/heads/master:refs/remotes/origin/master"],
+                    files={TEST: "class LibTest { }\n"})
+        self.assertIn("fix: pushed", self.run_pass())
+        self.assertEqual([], self.state()["issues"])
+
+    def test_a_path_the_repair_changes_again_after_a_master_merge_is_its_own(self) -> None:
+        self.move_master("moved on\n")
+        self.repair(self.agent_git("merge", "-q", "--no-edit", "origin/master"),
+                    ["sh", "-c", "printf 'foreign\\n' > README.md"],
+                    self.agent_git("commit", "-q", "-am", "Edit"))
+        self.run_pass()
+        self.assertIn("changes README.md.", self.state()["issues"][0]["body"])
+
+    def test_a_merge_of_a_branch_off_master_brings_nothing_in(self) -> None:
+        self.repair(["git", "branch", "side"], ["git", "checkout", "-q", "--detach", self.head],
+                    self.agent_git("merge", "-q", "--no-ff", "--no-edit", "side"), files={"README.md": "foreign\n"})
+        self.run_pass()
+        self.assertIn("changes README.md.", self.state()["issues"][0]["body"])
+
     def test_an_issue_reuses_its_signature_and_ends_the_review(self) -> None:
         state: dict[str, Any] = self.state()
         state["issues"].append({"number": 42, "state": "OPEN", "title": "NI 25.0 bug",

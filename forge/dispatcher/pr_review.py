@@ -241,17 +241,36 @@ def open_issue(title: str, body: str) -> int:
     return int(url.rstrip("/").rsplit("/", 1)[1])
 
 
+def merged_master(path: str, head: str, commit: str) -> list[str]:
+    """The `master` commits that the merges of the repair from `head` to `commit` brought in.
+
+    A parent of a merge counts only when it is on `master`, so merging any other branch brings
+    nothing in. `origin/master` only moves forward, so it still holds every commit it once had.
+    """
+    parents: list[str] = [parent for line in git("log", "--merges", "--format=%P", f"{head}..{commit}",
+                                                 cwd=path).splitlines() for parent in line.split()]
+    return [parent for parent in dict.fromkeys(parents)
+            if subprocess.run(["git", "merge-base", "--is-ancestor", parent, "origin/master"],
+                              cwd=path).returncode == 0]
+
+
 def foreign_paths(path: str, head: str, commit: str, coordinate: str) -> list[str]:
     """The paths the repair from `head` to `commit` changed outside the contribution's file set.
 
     Only the repair is checked: what the head already changed is the contribution under review,
-    and a path the repair left as `origin/master` has it came in with a merge of `master`.
+    and a path the repair leaves exactly as a `master` commit it merged has it came in with that
+    merge. That commit is read from the repair itself, never from `origin/master`: other fetches
+    into the shared repository move that ref during the review, and a path `master` changed again
+    since would read as the repair's own.
 
     §FS-published-pr-review.4
     """
     changed: list[str] = git("diff", "--name-only", head, commit, cwd=path).splitlines()
-    unlike_master: set[str] = set(git("diff", "--name-only", "origin/master", commit, cwd=path).splitlines())
-    return stray_paths(path, coordinate, head, [name for name in changed if name in unlike_master], head=commit)
+    brought: set[str] = set()
+    for merged in merged_master(path, head, commit):
+        unlike: set[str] = set(git("diff", "--name-only", merged, commit, cwd=path).splitlines())
+        brought.update(name for name in changed if name not in unlike)
+    return stray_paths(path, coordinate, head, [name for name in changed if name not in brought], head=commit)
 
 
 class Review:
