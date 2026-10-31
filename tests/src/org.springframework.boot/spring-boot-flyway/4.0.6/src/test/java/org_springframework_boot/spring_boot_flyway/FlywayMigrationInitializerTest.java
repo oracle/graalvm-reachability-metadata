@@ -38,7 +38,7 @@ public class FlywayMigrationInitializerTest {
                 """);
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:mem:initializer_" + UUID.randomUUID()
-                + ";DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=10000");
+                + ";DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=10000;OLD_INFORMATION_SCHEMA=TRUE;NON_KEYWORDS=VALUE");
         dataSource.setUser("sa");
         dataSource.setLoginTimeout(10);
 
