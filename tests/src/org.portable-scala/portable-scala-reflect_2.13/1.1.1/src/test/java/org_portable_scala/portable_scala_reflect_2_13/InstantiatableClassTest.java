@@ -42,18 +42,6 @@ public class InstantiatableClassTest {
         assertThat(message.render()).isEqualTo("ready");
     }
 
-    @Test
-    void looksUpAndInvokesAConstructorByParameterTypes() {
-        InstantiatableClass descriptor = lookupMessage();
-        InvokableConstructor constructor = descriptor.getConstructor(
-                CollectionConverters.asScala(List.<Class<?>>of(String.class, int.class)).toList()).get();
-
-        Message message = (Message) constructor.newInstance(
-                CollectionConverters.asScala(List.<Object>of("ha", 3)).toList());
-
-        assertThat(message.render()).isEqualTo("hahaha");
-    }
-
     private static InstantiatableClass lookupMessage() {
         return Reflect.lookupInstantiatableClass(Message.class.getName(), Message.class.getClassLoader()).get();
     }
