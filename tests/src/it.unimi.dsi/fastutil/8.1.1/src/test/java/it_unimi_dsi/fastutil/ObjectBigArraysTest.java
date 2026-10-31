@@ -6,6 +6,7 @@
  */
 package it_unimi_dsi.fastutil;
 
+import it.unimi.dsi.fastutil.BigArrays;
 import it.unimi.dsi.fastutil.objects.ObjectBigArrays;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +36,81 @@ public class ObjectBigArraysTest {
         assertEquals("north", ObjectBigArrays.get(partial, 0));
         assertNull(ObjectBigArrays.get(partial, 1));
         assertArrayEquals(new String[]{"north", "east", "south"}, values);
+    }
+
+    @Test
+    void allocatesACompleteTypedSegment() {
+        String[][] allocated = ObjectBigArrays.newBigArray(new String[0][], BigArrays.SEGMENT_SIZE);
+
+        assertEquals(String[][].class, allocated.getClass());
+        assertEquals(1, allocated.length);
+        assertEquals(String[].class, allocated[0].getClass());
+        assertEquals(BigArrays.SEGMENT_SIZE, allocated[0].length);
+        assertEquals((long) BigArrays.SEGMENT_SIZE, ObjectBigArrays.length(allocated));
+        assertNull(ObjectBigArrays.get(allocated, 0));
+        assertNull(ObjectBigArrays.get(allocated, BigArrays.SEGMENT_SIZE - 1L));
+        ObjectBigArrays.set(allocated, BigArrays.SEGMENT_SIZE - 1L, "segment end");
+        assertEquals("segment end", ObjectBigArrays.get(allocated, BigArrays.SEGMENT_SIZE - 1L));
+    }
+
+    @Test
+    void allocatesTypedSegmentsAcrossABoundary() {
+        long length = BigArrays.SEGMENT_SIZE + 2L;
+        String[][] allocated = ObjectBigArrays.newBigArray(new String[0][], length);
+
+        assertEquals(String[][].class, allocated.getClass());
+        assertEquals(2, allocated.length);
+        assertEquals(String[].class, allocated[0].getClass());
+        assertEquals(BigArrays.SEGMENT_SIZE, allocated[0].length);
+        assertEquals(2, allocated[1].length);
+        assertEquals(length, ObjectBigArrays.length(allocated));
+        assertNull(ObjectBigArrays.get(allocated, BigArrays.SEGMENT_SIZE - 1L));
+        assertNull(ObjectBigArrays.get(allocated, BigArrays.SEGMENT_SIZE));
+        ObjectBigArrays.set(allocated, BigArrays.SEGMENT_SIZE - 1L, "before");
+        ObjectBigArrays.set(allocated, BigArrays.SEGMENT_SIZE, "after");
+        assertEquals("before", allocated[0][BigArrays.SEGMENT_SIZE - 1]);
+        assertEquals("after", allocated[1][0]);
+        assertNull(ObjectBigArrays.get(allocated, length - 1));
+    }
+
+    @Test
+    void expandsTypedArrayToACompleteSegment() {
+        String[][] original = {{"first", "second"}};
+        String[][] expanded = ObjectBigArrays.ensureCapacity(original, BigArrays.SEGMENT_SIZE);
+
+        assertEquals(String[][].class, expanded.getClass());
+        assertEquals(1, expanded.length);
+        assertEquals(String[].class, expanded[0].getClass());
+        assertEquals(BigArrays.SEGMENT_SIZE, expanded[0].length);
+        assertEquals((long) BigArrays.SEGMENT_SIZE, ObjectBigArrays.length(expanded));
+        assertEquals("first", ObjectBigArrays.get(expanded, 0));
+        assertEquals("second", ObjectBigArrays.get(expanded, 1));
+        assertNull(ObjectBigArrays.get(expanded, BigArrays.SEGMENT_SIZE - 1L));
+        ObjectBigArrays.set(expanded, BigArrays.SEGMENT_SIZE - 1L, "last");
+        assertEquals("last", ObjectBigArrays.get(expanded, BigArrays.SEGMENT_SIZE - 1L));
+        assertArrayEquals(new String[]{"first", "second"}, original[0]);
+    }
+
+    @Test
+    void expandsTypedArrayAcrossASegmentBoundary() {
+        String[][] original = {{"retained", "discarded"}};
+        long length = BigArrays.SEGMENT_SIZE + 2L;
+        String[][] expanded = ObjectBigArrays.ensureCapacity(original, length, 1);
+
+        assertEquals(String[][].class, expanded.getClass());
+        assertEquals(2, expanded.length);
+        assertEquals(String[].class, expanded[0].getClass());
+        assertEquals(BigArrays.SEGMENT_SIZE, expanded[0].length);
+        assertEquals(2, expanded[1].length);
+        assertEquals(length, ObjectBigArrays.length(expanded));
+        assertEquals("retained", ObjectBigArrays.get(expanded, 0));
+        assertNull(ObjectBigArrays.get(expanded, 1));
+        ObjectBigArrays.set(expanded, BigArrays.SEGMENT_SIZE - 1L, "before");
+        ObjectBigArrays.set(expanded, BigArrays.SEGMENT_SIZE, "after");
+        assertEquals("before", expanded[0][BigArrays.SEGMENT_SIZE - 1]);
+        assertEquals("after", expanded[1][0]);
+        assertNull(ObjectBigArrays.get(expanded, length - 1));
+        assertArrayEquals(new String[]{"retained", "discarded"}, original[0]);
     }
 
     @Test
