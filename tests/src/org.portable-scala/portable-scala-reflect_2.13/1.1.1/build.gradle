@@ -6,13 +6,16 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
+    id "scala"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String scala2Version = tck.scala2Version.get()
 
 dependencies {
     testImplementation "org.portable-scala:portable-scala-reflect_2.13:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "org.scala-lang:scala-library:$scala2Version"
 }
 
 graalvmNative {
