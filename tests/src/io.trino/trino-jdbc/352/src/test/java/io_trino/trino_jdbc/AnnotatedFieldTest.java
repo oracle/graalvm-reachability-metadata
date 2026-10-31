@@ -10,6 +10,7 @@ import io.trino.jdbc.$internal.jackson.annotation.JacksonInject;
 import io.trino.jdbc.$internal.jackson.annotation.JsonMerge;
 import io.trino.jdbc.$internal.jackson.databind.InjectableValues;
 import io.trino.jdbc.$internal.jackson.databind.ObjectMapper;
+import io.trino.jdbc.$internal.jackson.databind.introspect.AnnotatedField;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,24 @@ public class AnnotatedFieldTest {
         Shipment shipment = mapper.readValue("{\"item\":\"book\"}", Shipment.class);
         assertEquals("north", shipment.warehouse);
         assertEquals("book", shipment.item);
+    }
+
+    @Test
+    void restoresIntrospectedFieldAndReadsAndWritesBeanValues() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        AnnotatedField field = mapper.getDeserializationConfig()
+                .introspect(mapper.constructType(Shipment.class)).findProperties().stream()
+                .filter(property -> property.getName().equals("item"))
+                .findFirst().orElseThrow().getField();
+        AnnotatedField restored = SerializationRoundTrip.copy(field);
+        Shipment shipment = new Shipment();
+        shipment.item = "book";
+
+        assertEquals("item", restored.getName());
+        assertEquals(Shipment.class, restored.getDeclaringClass());
+        assertEquals("book", restored.getValue(shipment));
+        restored.setValue(shipment, "map");
+        assertEquals("map", shipment.item);
     }
 
     public static class Shipment {

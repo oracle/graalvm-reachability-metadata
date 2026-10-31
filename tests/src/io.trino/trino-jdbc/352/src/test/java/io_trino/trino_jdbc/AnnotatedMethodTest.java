@@ -12,6 +12,7 @@ import io.trino.jdbc.$internal.jackson.annotation.JsonProperty;
 import io.trino.jdbc.$internal.jackson.annotation.JsonValue;
 import io.trino.jdbc.$internal.jackson.databind.InjectableValues;
 import io.trino.jdbc.$internal.jackson.databind.ObjectMapper;
+import io.trino.jdbc.$internal.jackson.databind.introspect.AnnotatedMethod;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +36,20 @@ public class AnnotatedMethodTest {
         Deployment deployment = mapper.readValue("{}", Deployment.class);
         assertEquals("factory", deployment.origin);
         assertEquals("west", deployment.region);
+    }
+
+    @Test
+    void restoresIntrospectedAccessorForCallingOnDifferentBeans() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        AnnotatedMethod accessor = mapper.getSerializationConfig()
+                .introspect(mapper.constructType(Label.class))
+                .findMethod("value", new Class<?>[0]);
+        AnnotatedMethod restored = SerializationRoundTrip.copy(accessor);
+
+        assertEquals("value", restored.getName());
+        assertEquals(Label.class, restored.getDeclaringClass());
+        assertEquals("NORTH", restored.callOn(Label.of("north")));
+        assertEquals("SOUTH", restored.callOn(Label.of("south")));
     }
 
     public static class Deployment {
