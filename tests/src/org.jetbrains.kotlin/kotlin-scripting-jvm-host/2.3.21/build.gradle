@@ -1,0 +1,48 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-jvm-host:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-common:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-jvm:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+}
+
+processTestResources {
+    from(tasks.named("compileTestJava")) {
+        include "org_jetbrains_kotlin/kotlin_scripting_jvm_host/ScriptFixtures.class"
+        rename "ScriptFixtures.class", "ScriptFixtures.bytecode"
+    }
+}
+
+graalvmNative {
+    binaries {
+        test {
+            // The compiler JAR omits the configuration resources these JLine directives reference.
+            buildArgs(
+                    "--exclude-config",
+                    ".*kotlin-compiler-embeddable-[^/]+\\.jar",
+                    "META-INF/native-image/org\\.jline/jline-terminal(-jansi|-jna|-jni)?/native-image\\.properties")
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
