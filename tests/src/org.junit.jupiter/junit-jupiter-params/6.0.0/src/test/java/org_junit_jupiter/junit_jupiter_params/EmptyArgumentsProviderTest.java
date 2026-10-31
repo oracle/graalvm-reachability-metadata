@@ -41,6 +41,6 @@ public class EmptyArgumentsProviderTest {
     void providesUsableEmptyConcreteMap(LinkedHashMap<String, Integer> values) {
         assertThat(values).isEmpty();
         values.put("entry", 7);
-        assertThat(values).containsOnlyKeys("entry").containsEntry("entry", 7);
+        assertThat(values).hasSize(1).containsEntry("entry", 7);
     }
 }
