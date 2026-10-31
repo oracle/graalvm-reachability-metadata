@@ -81,10 +81,14 @@ public class CachingFilterTest {
         }
 
         @Override
-        protected String getCacheName() { return "pages"; }
+        protected String getCacheName() {
+            return "pages";
+        }
 
         @Override
-        protected CacheManager getCacheManager() { return manager; }
+        protected CacheManager getCacheManager() {
+            return manager;
+        }
 
         @Override
         protected String calculateKey(HttpServletRequest request) {

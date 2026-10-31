@@ -44,7 +44,9 @@ public class FilterTest {
         List<LogRecord> records = new ArrayList<>();
         Handler handler = new Handler() {
             @Override
-            public void publish(LogRecord record) { records.add(record); }
+            public void publish(LogRecord record) {
+                records.add(record);
+            }
             @Override
             public void flush() { }
             @Override

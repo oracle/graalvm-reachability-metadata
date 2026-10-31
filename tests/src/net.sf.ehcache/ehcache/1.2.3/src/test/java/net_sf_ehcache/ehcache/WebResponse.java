@@ -29,33 +29,59 @@ final class WebResponse implements HttpServletResponse {
     private final PrintWriter writer = new PrintWriter(body, false, StandardCharsets.UTF_8);
     private final ServletOutputStream output = new ServletOutputStream() {
         @Override
-        public void write(int value) { body.write(value); }
+        public void write(int value) {
+            body.write(value);
+        }
     };
 
     @Override
-    public void addCookie(Cookie cookie) { cookies.add(cookie); }
+    public void addCookie(Cookie cookie) {
+        cookies.add(cookie);
+    }
     @Override
-    public boolean containsHeader(String name) { return headers.containsKey(name); }
+    public boolean containsHeader(String name) {
+        return headers.containsKey(name);
+    }
     @Override
-    public void setHeader(String name, String value) { headers.put(name, new ArrayList<>(List.of(value))); }
+    public void setHeader(String name, String value) {
+        headers.put(name, new ArrayList<>(List.of(value)));
+    }
     @Override
-    public void addHeader(String name, String value) { headers.computeIfAbsent(name, key -> new ArrayList<>()).add(value); }
+    public void addHeader(String name, String value) {
+        headers.computeIfAbsent(name, key -> new ArrayList<>()).add(value);
+    }
     @Override
-    public void setStatus(int code) { status = code; }
+    public void setStatus(int code) {
+        status = code;
+    }
     @Override
-    public void setStatus(int code, String message) { setStatus(code); }
+    public void setStatus(int code, String message) {
+        setStatus(code);
+    }
     @Override
-    public String getCharacterEncoding() { return StandardCharsets.UTF_8.name(); }
+    public String getCharacterEncoding() {
+        return StandardCharsets.UTF_8.name();
+    }
     @Override
-    public String getContentType() { return contentType; }
+    public String getContentType() {
+        return contentType;
+    }
     @Override
-    public ServletOutputStream getOutputStream() { return output; }
+    public ServletOutputStream getOutputStream() {
+        return output;
+    }
     @Override
-    public PrintWriter getWriter() { return writer; }
+    public PrintWriter getWriter() {
+        return writer;
+    }
     @Override
-    public void setContentLength(int length) { contentLength = length; }
+    public void setContentLength(int length) {
+        contentLength = length;
+    }
     @Override
-    public void setContentType(String type) { contentType = type; }
+    public void setContentType(String type) {
+        contentType = type;
+    }
     @Override
     public void flushBuffer() {
         writer.flush();
@@ -69,7 +95,9 @@ final class WebResponse implements HttpServletResponse {
         body.reset();
     }
     @Override
-    public boolean isCommitted() { return committed; }
+    public boolean isCommitted() {
+        return committed;
+    }
     @Override
     public void reset() {
         resetBuffer();
@@ -80,35 +108,67 @@ final class WebResponse implements HttpServletResponse {
         contentType = null;
     }
     @Override
-    public String encodeURL(String url) { return url; }
+    public String encodeURL(String url) {
+        return url;
+    }
     @Override
-    public String encodeRedirectURL(String url) { return url; }
+    public String encodeRedirectURL(String url) {
+        return url;
+    }
     @Override
-    public String encodeUrl(String url) { return encodeURL(url); }
+    public String encodeUrl(String url) {
+        return encodeURL(url);
+    }
     @Override
-    public String encodeRedirectUrl(String url) { return encodeRedirectURL(url); }
+    public String encodeRedirectUrl(String url) {
+        return encodeRedirectURL(url);
+    }
     @Override
-    public void sendError(int code, String message) { throw new UnsupportedOperationException(); }
+    public void sendError(int code, String message) {
+        throw new UnsupportedOperationException();
+    }
     @Override
-    public void sendError(int code) { throw new UnsupportedOperationException(); }
+    public void sendError(int code) {
+        throw new UnsupportedOperationException();
+    }
     @Override
-    public void sendRedirect(String location) { throw new UnsupportedOperationException(); }
+    public void sendRedirect(String location) {
+        throw new UnsupportedOperationException();
+    }
     @Override
-    public void setDateHeader(String name, long date) { throw new UnsupportedOperationException(); }
+    public void setDateHeader(String name, long date) {
+        throw new UnsupportedOperationException();
+    }
     @Override
-    public void addDateHeader(String name, long date) { throw new UnsupportedOperationException(); }
+    public void addDateHeader(String name, long date) {
+        throw new UnsupportedOperationException();
+    }
     @Override
-    public void setIntHeader(String name, int value) { setHeader(name, Integer.toString(value)); }
+    public void setIntHeader(String name, int value) {
+        setHeader(name, Integer.toString(value));
+    }
     @Override
-    public void addIntHeader(String name, int value) { addHeader(name, Integer.toString(value)); }
+    public void addIntHeader(String name, int value) {
+        addHeader(name, Integer.toString(value));
+    }
     @Override
-    public void setCharacterEncoding(String encoding) { throw new UnsupportedOperationException(); }
+    public void setCharacterEncoding(String encoding) {
+        throw new UnsupportedOperationException();
+    }
     @Override
-    public void setBufferSize(int size) { throw new UnsupportedOperationException(); }
+    public void setBufferSize(int size) {
+        throw new UnsupportedOperationException();
+    }
     @Override
-    public int getBufferSize() { throw new UnsupportedOperationException(); }
+    public int getBufferSize() {
+        throw new UnsupportedOperationException();
+    }
     @Override
-    public void setLocale(Locale locale) { throw new UnsupportedOperationException(); }
+    public void setLocale(Locale locale) {
+        throw new UnsupportedOperationException();
+    }
     @Override
-    public Locale getLocale() { throw new UnsupportedOperationException(); }
+    public Locale getLocale() {
+        throw new UnsupportedOperationException();
+    }
 }
