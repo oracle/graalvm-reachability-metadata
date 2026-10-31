@@ -6,6 +6,7 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
+    id "groovy"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
@@ -16,6 +17,11 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-api:2.0.17'
     testImplementation 'org.antlr:ST4:4.3.4'
     testImplementation 'junit:junit:4.13.2'
+}
+
+tasks.withType(GroovyCompile).configureEach {
+    groovyOptions.optimizationOptions.asmResolving = false
+    groovyOptions.optimizationOptions.indy = false
 }
 
 graalvmNative {
