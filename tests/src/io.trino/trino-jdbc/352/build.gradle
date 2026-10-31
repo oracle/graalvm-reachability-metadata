@@ -15,6 +15,11 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    // Jackson reads empty enum collection types from private java.util fields.
+    jvmArgs '--add-opens=java.base/java.util=ALL-UNNAMED'
+}
+
 graalvmNative {
     binaries {
         test {
