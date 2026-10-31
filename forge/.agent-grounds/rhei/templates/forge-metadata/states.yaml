@@ -299,10 +299,13 @@ states:
       - Never skip or tolerate a Native Image failure (§root/FS-test-contract.4.1,
         §root/FS-test-contract.4.2); the only exception is open-ended dynamic
         class loading (§root/FS-test-contract.4.3).
-      - Reshape or delete a test that needs runtime class definition or
-        relinks a call site at run time (`MutableCallSite.setTarget`); cover a
-        dynamic language such as Groovy through its statically compiled path
-        (§root/FS-test-contract.4.5).
+      - Reshape or delete a test that targets a behavior Native Image cannot
+        support: runtime bytecode generation or class definition and loading,
+        agents, instrumentation, native-image substitutions, URL, plugin or
+        OSGi class loader paths, inline, static, construction or concrete-class
+        mocking, or relinking a call site at run time
+        (`MutableCallSite.setTarget`). Cover a dynamic language such as Groovy
+        through its statically compiled path (§root/FS-test-contract.4.5).
       - Drop a scenario that needs JDK behavior Native Image does not implement,
         as its sources or a GraalVM issue show, and keep the rest of the test;
         link that issue at the spot (§root/FS-native-image-gaps).
