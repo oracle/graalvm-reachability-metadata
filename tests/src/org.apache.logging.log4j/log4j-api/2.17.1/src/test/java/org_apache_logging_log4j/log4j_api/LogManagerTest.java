@@ -9,10 +9,11 @@ package org_apache_logging_log4j.log4j_api;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,8 @@ public class LogManagerTest {
 
         assertThat(logger).isInstanceOf(SimpleLogger.class);
         assertThat(logger.getName()).isEqualTo(LogManagerTest.class.getName());
-        assertThat(logger.getMessageFactory()).isInstanceOf(ParameterizedMessageFactory.class);
+        MessageFactory messageFactory = logger.getMessageFactory();
+        assertThat(messageFactory).isInstanceOf(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS);
         assertThat(logger.isEnabled(Level.ERROR)).isTrue();
         assertThat(logger.isEnabled(Level.DEBUG)).isFalse();
         assertThat(LogManager.getLogger(LogManagerTest.class)).isSameAs(logger);

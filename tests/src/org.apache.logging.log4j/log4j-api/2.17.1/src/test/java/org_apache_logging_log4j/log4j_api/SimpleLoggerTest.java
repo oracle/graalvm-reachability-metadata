@@ -13,8 +13,9 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
+import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
+import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,8 @@ public class SimpleLoggerTest {
         logger.debug("Order {} shipped to {}", 17, "Berlin");
         logger.trace("not printed");
 
-        assertThat(logger.getMessageFactory()).isInstanceOf(ParameterizedMessageFactory.class);
+        MessageFactory messageFactory = logger.getMessageFactory();
+        assertThat(messageFactory).isInstanceOf(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS);
         assertThat(output.toString(StandardCharsets.UTF_8).trim())
                 .isEqualTo("DEBUG orders Order 17 shipped to Berlin {user=ada}");
     }
@@ -55,7 +57,8 @@ public class SimpleLoggerTest {
         logger.error("Charge {} failed", "c-1", new IllegalStateException("card declined"));
 
         String text = output.toString(StandardCharsets.UTF_8);
-        assertThat(text).startsWith("ERROR payments Charge c-1 failed java.lang.IllegalStateException: card declined");
+        assertThat(text).startsWith("ERROR payments Charge c-1 failed" + System.lineSeparator()
+                + " java.lang.IllegalStateException: card declined");
         assertThat(text).doesNotContain("ignored");
     }
 }

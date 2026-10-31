@@ -20,6 +20,6 @@ public class ThreadDumpMessageTest {
         assertThat(message.getFormat()).isEqualTo("Snapshot");
         assertThat(message.getFormattedMessage()).startsWith("Snapshot\n");
         assertThat(message.getParameters()).isNull();
-        assertThat(message).hasToString("ThreadDumpMessage[Title=\"Snapshot\"]");
+        assertThat(message).hasToString(message.getFormattedMessage());
     }
 }
