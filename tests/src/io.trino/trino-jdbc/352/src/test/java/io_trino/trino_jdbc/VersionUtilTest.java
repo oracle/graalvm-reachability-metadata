@@ -6,6 +6,7 @@
  */
 package io_trino.trino_jdbc;
 
+import io.trino.jdbc.TrinoDriver;
 import io.trino.jdbc.$internal.jackson.core.Version;
 import io.trino.jdbc.$internal.jackson.core.util.VersionUtil;
 import io.trino.jdbc.$internal.jackson.databind.ObjectMapper;
@@ -14,8 +15,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VersionUtilTest {
+    @Test
+    void returnsUnknownWhenDriverHasNoMavenVersionResource() {
+        Version version = VersionUtil.mavenVersionFor(TrinoDriver.class.getClassLoader(), "io.trino", "trino-jdbc");
+        assertTrue(version.isUnknownVersion());
+    }
+
     @Test
     void locatesDatabindPackageVersion() {
         Version version = VersionUtil.versionFor(MapperConfig.class);

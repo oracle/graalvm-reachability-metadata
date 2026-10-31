@@ -11,11 +11,19 @@ import io.trino.jdbc.$internal.jackson.annotation.JsonEnumDefaultValue;
 import io.trino.jdbc.$internal.jackson.annotation.JsonProperty;
 import io.trino.jdbc.$internal.jackson.databind.DeserializationFeature;
 import io.trino.jdbc.$internal.jackson.databind.ObjectMapper;
+import io.trino.jdbc.$internal.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JacksonAnnotationIntrospectorTest {
+    @Test
+    void resolvesIndividualEnumNamesThroughAnnotationIntrospector() {
+        JacksonAnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
+        assertEquals("ready", introspector.findEnumValue(State.READY));
+        assertEquals("UNKNOWN", introspector.findEnumValue(State.UNKNOWN));
+    }
+
     @Test
     void honorsEnumNamesAliasesAndDefault() throws Exception {
         ObjectMapper mapper = new ObjectMapper();

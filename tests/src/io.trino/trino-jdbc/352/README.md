@@ -40,13 +40,20 @@ Some reported accesses have no suitable path in this suite:
   OkHttp `Platform`'s socket-factory introspection inspect private JDK fields.
   The suite does not open JDK modules merely to enter these fallback paths.
 
+`JacksonAnnotationIntrospectorTest` also exercises the public single-enum-name
+introspection API, checking both annotation-selected names and the default name.
+`VersionUtilTest` checks the documented unknown-version result when Maven
+`pom.properties` information is absent from the shaded driver, using the actual
+driver classloader without fabricated resources or a pinned version.
+
 The remaining Jackson accesses include object-stream `readResolve` hooks,
 unused deprecated reflection wrappers in `ClassUtil`, its missing-class
 classloader recovery branch, and `AnnotatedMethod.callOn`, which has no caller
-in the bundled Jackson code. The deprecated single-enum-name introspector is
-also unused by the mapper. `VersionUtil.mavenVersionFor` expects Maven
-`pom.properties` resources; the shaded driver does not ship them. These paths
-are not forced with low-level helper calls or fabricated library resources.
+in the bundled Jackson code. The second lookup loop in
+`GuavaMultimapDeserializer.findTransformer` repeats the first loop with the
+same class, method names, and parameter type; no supported mapper input makes
+only the second lookup succeed. These paths are not forced through reflection
+or custom classloaders.
 
 Partially reached classes may retain serialization, legacy-runtime, or
 classloader-recovery call sites. Tests do not force those paths through direct
