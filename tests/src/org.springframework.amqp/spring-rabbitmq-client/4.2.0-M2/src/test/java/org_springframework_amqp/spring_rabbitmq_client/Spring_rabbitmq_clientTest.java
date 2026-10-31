@@ -9,6 +9,7 @@ package org_springframework_amqp.spring_rabbitmq_client;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -113,7 +114,7 @@ public class Spring_rabbitmq_clientTest {
         assertThat(amqpMessage.correlationIdAsString()).isEqualTo("correlation-1");
         assertThat(amqpMessage.priority()).isEqualTo((byte) 4);
         assertThat(new String(amqpMessage.userId(), StandardCharsets.UTF_8)).isEqualTo("guest");
-        assertThat(amqpMessage.to()).isEqualTo("reply.queue");
+        assertThat(amqpMessage.replyTo()).isEqualTo("reply.queue");
         assertThat(amqpMessage.creationTime()).isEqualTo(1_000L);
         assertThat(amqpMessage.absoluteExpiryTime()).isEqualTo(6_000L);
         assertThat(amqpMessage.properties).containsEntry("string", "value")
@@ -1269,6 +1270,31 @@ public class Spring_rabbitmq_clientTest {
         @Override
         public void requeue(Map<String, Object> annotations) {
             this.requeue();
+        }
+
+        @Override
+        public void requeue(Map<String, Object> annotations, boolean failed) {
+            throw new UnsupportedOperationException("Failed requeue is not used by these tests");
+        }
+
+        @Override
+        public void delayedRetry(Duration delay) {
+            throw new UnsupportedOperationException("Delayed retry is not used by these tests");
+        }
+
+        @Override
+        public void delayedRetry(Duration delay, boolean failed) {
+            throw new UnsupportedOperationException("Delayed retry is not used by these tests");
+        }
+
+        @Override
+        public void delayedRetry(Instant time) {
+            throw new UnsupportedOperationException("Delayed retry is not used by these tests");
+        }
+
+        @Override
+        public void delayedRetry(Instant time, boolean failed) {
+            throw new UnsupportedOperationException("Delayed retry is not used by these tests");
         }
 
         @Override
