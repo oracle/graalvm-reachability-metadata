@@ -11,9 +11,13 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.springframework.boot:spring-boot-flyway:$libraryVersion"
+    testImplementation("org.springframework.boot:spring-boot-flyway:$libraryVersion") {
+        exclude group: 'org.flywaydb', module: 'flyway-core'
+    }
     testImplementation "org.springframework.boot:spring-boot-jdbc:$libraryVersion"
-    testImplementation "com.h2database:h2:2.4.240"
+    // Exercise the initializer's pre-7 migration compatibility path with a compatible database.
+    testImplementation 'org.flywaydb:flyway-core:6.5.7'
+    testImplementation 'com.h2database:h2:1.4.200'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
