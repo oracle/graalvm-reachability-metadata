@@ -21,7 +21,7 @@ public class SecureReflectionsAnonymous13Test {
         String result = SecureReflections.invoke(instance, greeting, "Ada");
         assertThat(result).isEqualTo("Hello Ada");
         assertThat(instance.label).isEqualTo(result);
-        Method secret = SecureReflections.getDeclaredMethod(ReflectionFixture.class, "secret");
+        Method secret = ReflectionFixture.class.getDeclaredMethod("secret");
         String hidden = SecureReflections.invoke(instance, secret);
         assertThat(hidden).isEqualTo("initial");
     }
