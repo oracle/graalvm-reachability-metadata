@@ -19,11 +19,17 @@ project=tests/src/io.github.classgraph/classgraph/4.8.165
   -C "$project/src/test/resources" catalog/payload.txt
 ```
 
-The optional JVM-Driver and Narcissus reflection backends are not exercised:
-the test dependencies do not include those backends, and requesting them without
-the actual implementations would only test fallback to standard reflection.
-Their legacy JVM-specific class-finding branches cannot be selected portably on
-the test JVM. All other tests use only `io.github.classgraph` public APIs.
+`NarcissusReflectionDriverTest` selects the optional Narcissus backend through
+`ClassGraph.CIRCUMVENT_ENCAPSULATION`, using the real backend dependency. It
+checks classpath discovery, resources, enum values, and annotation equality,
+and rejects diagnostics indicating fallback to standard reflection. The global
+configuration and error stream are restored after the test.
+
+The optional JVM-Driver backend is not exercised: the test dependencies do not
+include it, and requesting it without the implementation would only test
+fallback to standard reflection. Its legacy JVM-specific class-finding branches
+cannot be selected portably on the test JVM. Tests use only
+`io.github.classgraph` public APIs.
 
 ## Remaining dynamic-access limits
 
@@ -33,10 +39,12 @@ field reads without test-side reflection.
 
 The remaining reported sites are not forced through internal APIs:
 
-- `JVMDriverReflectionDriver`, its four anonymous class finders, and
-  `NarcissusReflectionDriver` require their actual optional backend libraries.
-  The first three JVM-Driver finders additionally depend on JVM-specific private
-  `Class` methods; the fourth is selected only if those methods are unavailable.
+- `JVMDriverReflectionDriver` and its four anonymous class finders require
+  the actual optional backend library. The first three JVM-Driver finders
+  additionally depend on JVM-specific private `Class` methods; the fourth is
+  selected only if those methods are unavailable. Narcissus field setters and
+  constructor enumeration have no consumer-facing path: reflection utilities
+  expose no setters, and constructor enumeration initializes the other backend.
 - `CallStackReader`'s security-manager route is selected only below JDK 9.
   Its stack-trace class-loading fallback is used only when the normal stack
   walker fails. `SimpleThreadFactory`'s remaining calls require a non-null
