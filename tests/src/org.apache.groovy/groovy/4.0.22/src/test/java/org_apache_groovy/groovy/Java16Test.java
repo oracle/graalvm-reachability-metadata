@@ -12,10 +12,31 @@ import org.codehaus.groovy.vmplugin.VMPluginFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Java16Test {
+    @Test
+    void invokesTheSuperclassImplementationThroughTheVmPlugin() throws Throwable {
+        Method method = Parent.class.getMethod("greeting");
+        Object handle = VMPluginFactory.getPlugin().getInvokeSpecialHandle(method, new Child());
+        assertEquals("parent", VMPluginFactory.getPlugin().invokeHandle(handle, new Object[]{}));
+    }
+
+    public static class Parent {
+        public String greeting() {
+            return "parent";
+        }
+    }
+
+    public static class Child extends Parent {
+        @Override
+        public String greeting() {
+            return "child";
+        }
+    }
+
     @Test
     void exposesRecordComponentNamesAndTypes() {
         assertEquals(List.of("name", "quantity"), VMPluginFactory.getPlugin().getRecordComponentNames(Line.class));

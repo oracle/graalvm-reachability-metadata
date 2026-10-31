@@ -17,6 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DefaultTypeTransformationTest {
     @Test
+    void convertsTrailingArgumentsToTheDeclaredVarargsType() {
+        assertArrayEquals(new String[0], (String[]) DefaultTypeTransformation.castToVargsArray(
+                new Object[]{"prefix"}, 1, String[].class));
+        assertArrayEquals(new int[]{3, 5}, (int[]) DefaultTypeTransformation.castToVargsArray(
+                new Object[]{"prefix", 3, 5}, 1, int[].class));
+    }
+
+    @Test
     void convertsPrimitiveArraysAndCreatesConcreteCollections() {
         assertArrayEquals(new Integer[]{3, 5}, DefaultTypeTransformation.primitiveArrayBox(new int[]{3, 5}));
         assertArrayEquals(new String[]{"red", "blue"},

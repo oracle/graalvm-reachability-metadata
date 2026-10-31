@@ -24,6 +24,18 @@ public class CommandLineInnerInterpreterTest {
         assertEquals(Optional.of(true), options.enabled);
     }
 
+    @Test
+    void enablesAnInitializedOptionalBoolean() {
+        Toggle options = new Toggle();
+        new CommandLine(options).parseArgs("--active");
+        assertEquals(Optional.of(true), options.active);
+    }
+
+    public static class Toggle {
+        @Option(names = "--active")
+        public Optional<Boolean> active = Optional.of(false);
+    }
+
     public static class Options {
         @Option(names = "--numbers", split = ",")
         public Integer[] numbers;
