@@ -1,0 +1,38 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.hadoop:hadoop-hdfs-client:$libraryVersion"
+    // UserGroupInformation needs Subject.current() on the TCK's JDK.
+    testImplementation 'org.apache.hadoop:hadoop-common:3.4.3'
+    // Legacy HDFS dependencies are no longer supplied by Hadoop Common.
+    testImplementation 'com.google.protobuf:protobuf-java:2.5.0'
+    testImplementation 'commons-collections:commons-collections:3.2.2'
+    testImplementation 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('--enable-url-protocols=http')
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
