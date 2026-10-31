@@ -7,6 +7,7 @@
 package org_springframework_boot.spring_boot_actuator;
 
 import java.net.URI;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -22,15 +23,16 @@ import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.AuditEventsEndpoint;
 import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
 import org.springframework.boot.actuate.beans.BeansEndpoint;
-import org.springframework.boot.actuate.beans.BeansEndpoint.ApplicationBeans;
 import org.springframework.boot.actuate.beans.BeansEndpoint.BeanDescriptor;
-import org.springframework.boot.actuate.beans.BeansEndpoint.ContextBeans;
+import org.springframework.boot.actuate.beans.BeansEndpoint.BeansDescriptor;
+import org.springframework.boot.actuate.beans.BeansEndpoint.ContextBeansDescriptor;
 import org.springframework.boot.actuate.endpoint.EndpointId;
 import org.springframework.boot.actuate.endpoint.InvocationContext;
 import org.springframework.boot.actuate.endpoint.OperationType;
 import org.springframework.boot.actuate.endpoint.SanitizableData;
 import org.springframework.boot.actuate.endpoint.Sanitizer;
 import org.springframework.boot.actuate.endpoint.SecurityContext;
+import org.springframework.boot.actuate.endpoint.Show;
 import org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver;
 import org.springframework.boot.actuate.endpoint.web.EndpointMapping;
 import org.springframework.boot.actuate.endpoint.web.ExposableWebEndpoint;
@@ -62,9 +64,9 @@ import org.springframework.boot.actuate.health.StatusAggregator;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.actuate.info.InfoEndpoint;
-import org.springframework.boot.actuate.trace.http.HttpTrace;
-import org.springframework.boot.actuate.trace.http.HttpTraceEndpoint;
-import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
+import org.springframework.boot.actuate.web.exchanges.HttpExchange;
+import org.springframework.boot.actuate.web.exchanges.HttpExchangesEndpoint;
+import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
@@ -107,7 +109,7 @@ public class Spring_boot_actuatorTest {
         rootContributors.put("nested", nested);
         DefaultHealthContributorRegistry registry = new DefaultHealthContributorRegistry(rootContributors);
         HealthEndpointGroups groups = HealthEndpointGroups.of(new VisibleHealthEndpointGroup(), Map.of());
-        HealthEndpoint endpoint = new HealthEndpoint(registry, groups);
+        HealthEndpoint endpoint = new HealthEndpoint(registry, groups, Duration.ofSeconds(10));
 
         assertThat(nested).extracting(NamedContributor::getName).containsExactly("cache", "queue");
 
@@ -196,7 +198,9 @@ public class Spring_boot_actuatorTest {
                 "app.name", "actuator-tests",
                 "app.secret", "top-secret",
                 "management.endpoint.health.show-details", "always")));
-        EnvironmentEndpoint endpoint = new EnvironmentEndpoint(environment);
+        EnvironmentEndpoint endpoint = new EnvironmentEndpoint(environment,
+                List.of(data -> data.getKey().endsWith("secret")
+                        ? data.withValue(SanitizableData.SANITIZED_VALUE) : data), Show.ALWAYS);
 
         EnvironmentEntryDescriptor secret = endpoint.environmentEntry("app.secret");
         EnvironmentEntryDescriptor appName = endpoint.environmentEntry("app.name");
@@ -210,31 +214,31 @@ public class Spring_boot_actuatorTest {
     }
 
     @Test
-    void httpTraceRepositoryAndEndpointExposeRecentRequestResponseDetails() {
-        InMemoryHttpTraceRepository repository = new InMemoryHttpTraceRepository();
+    void httpExchangeRepositoryAndEndpointExposeRecentRequestResponseDetails() {
+        InMemoryHttpExchangeRepository repository = new InMemoryHttpExchangeRepository();
         repository.setCapacity(2);
-        HttpTrace firstTrace = httpTrace("GET", "/actuator/health", 200, "alice", "session-1", 8L);
-        HttpTrace secondTrace = httpTrace("POST", "/actuator/loggers", 204, "bob", "session-2", 12L);
-        HttpTrace thirdTrace = httpTrace("GET", "/actuator/info", 200, "carol", "session-3", 5L);
-        repository.add(firstTrace);
-        repository.add(secondTrace);
-        repository.add(thirdTrace);
-        HttpTraceEndpoint endpoint = new HttpTraceEndpoint(repository);
+        HttpExchange firstExchange = httpExchange("GET", "/actuator/health", 200, "alice", "session-1", 8L);
+        HttpExchange secondExchange = httpExchange("POST", "/actuator/loggers", 204, "bob", "session-2", 12L);
+        HttpExchange thirdExchange = httpExchange("GET", "/actuator/info", 200, "carol", "session-3", 5L);
+        repository.add(firstExchange);
+        repository.add(secondExchange);
+        repository.add(thirdExchange);
+        HttpExchangesEndpoint endpoint = new HttpExchangesEndpoint(repository);
 
-        List<HttpTrace> traces = endpoint.traces().getTraces();
-        HttpTrace latestTrace = traces.get(0);
+        List<HttpExchange> exchanges = endpoint.httpExchanges().getExchanges();
+        HttpExchange latestExchange = exchanges.get(0);
 
-        assertThat(traces).containsExactly(thirdTrace, secondTrace);
-        assertThat(latestTrace.getTimestamp()).isEqualTo(Instant.parse("2026-06-28T10:00:00Z"));
-        assertThat(latestTrace.getRequest().getMethod()).isEqualTo("GET");
-        assertThat(latestTrace.getRequest().getUri()).isEqualTo(URI.create("https://example.test/actuator/info"));
-        assertThat(latestTrace.getRequest().getHeaders()).containsEntry("Accept", List.of("application/json"));
-        assertThat(latestTrace.getRequest().getRemoteAddress()).isEqualTo("192.0.2.10");
-        assertThat(latestTrace.getResponse().getStatus()).isEqualTo(200);
-        assertThat(latestTrace.getResponse().getHeaders()).containsEntry("Content-Type", List.of("application/json"));
-        assertThat(latestTrace.getPrincipal().getName()).isEqualTo("carol");
-        assertThat(latestTrace.getSession().getId()).isEqualTo("session-3");
-        assertThat(latestTrace.getTimeTaken()).isEqualTo(5L);
+        assertThat(exchanges).containsExactly(thirdExchange, secondExchange);
+        assertThat(latestExchange.getTimestamp()).isEqualTo(Instant.parse("2026-06-28T10:00:00Z"));
+        assertThat(latestExchange.getRequest().getMethod()).isEqualTo("GET");
+        assertThat(latestExchange.getRequest().getUri()).isEqualTo(URI.create("https://example.test/actuator/info"));
+        assertThat(latestExchange.getRequest().getHeaders()).containsEntry("Accept", List.of("application/json"));
+        assertThat(latestExchange.getRequest().getRemoteAddress()).isEqualTo("192.0.2.10");
+        assertThat(latestExchange.getResponse().getStatus()).isEqualTo(200);
+        assertThat(latestExchange.getResponse().getHeaders()).containsEntry("Content-Type", List.of("application/json"));
+        assertThat(latestExchange.getPrincipal().getName()).isEqualTo("carol");
+        assertThat(latestExchange.getSession().getId()).isEqualTo("session-3");
+        assertThat(latestExchange.getTimeTaken()).isEqualTo(Duration.ofMillis(5));
     }
 
     @Test
@@ -255,14 +259,14 @@ public class Spring_boot_actuatorTest {
                         beanDefinition -> beanDefinition.setDependsOn("repository"));
                 context.refresh();
 
-                ApplicationBeans applicationBeans = new BeansEndpoint(context).beans();
+                BeansDescriptor applicationBeans = new BeansEndpoint(context).beans();
 
                 assertThat(applicationBeans.getContexts()).containsKeys("child-context", "parent-context");
 
-                ContextBeans childContext = applicationBeans.getContexts().get("child-context");
+                ContextBeansDescriptor childContext = applicationBeans.getContexts().get("child-context");
                 BeanDescriptor repository = childContext.getBeans().get("repository");
                 BeanDescriptor service = childContext.getBeans().get("sampleService");
-                ContextBeans parentContext = applicationBeans.getContexts().get("parent-context");
+                ContextBeansDescriptor parentContext = applicationBeans.getContexts().get("parent-context");
 
                 assertThat(childContext.getParentId()).isEqualTo("parent-context");
                 assertThat(repository.getAliases()).containsExactly("repoAlias");
@@ -280,7 +284,9 @@ public class Spring_boot_actuatorTest {
 
     @Test
     void sanitizerEndpointMappingLinksAndWebResponsesUsePublicEndpointContracts() {
-        Sanitizer sanitizer = new Sanitizer("token", "credential");
+        Sanitizer sanitizer = new Sanitizer(List.of(data ->
+                data.getKey().endsWith("token") || data.getKey().endsWith("credential")
+                        ? data.withValue(SanitizableData.SANITIZED_VALUE) : data));
         EndpointMapping mapping = new EndpointMapping("/actuator");
         EndpointLinksResolver linksResolver = new EndpointLinksResolver(List.of(
                 new SimpleWebEndpoint("health", "health"),
@@ -289,8 +295,10 @@ public class Spring_boot_actuatorTest {
         WebEndpointResponse<Map<String, String>> response = new WebEndpointResponse<>(
                 Map.of("status", "UP"), WebEndpointResponse.STATUS_OK, MimeTypeUtils.APPLICATION_JSON);
 
-        assertThat(sanitizer.sanitize("api.token", "abc123")).isEqualTo(SanitizableData.SANITIZED_VALUE);
-        assertThat(sanitizer.sanitize("display.name", "Actuator")).isEqualTo("Actuator");
+        assertThat(sanitizer.sanitize(new SanitizableData(null, "api.token", "abc123"), true))
+                .isEqualTo(SanitizableData.SANITIZED_VALUE);
+        assertThat(sanitizer.sanitize(new SanitizableData(null, "display.name", "Actuator"), true))
+                .isEqualTo("Actuator");
         assertThat(mapping.createSubPath("health")).isEqualTo("/actuator/health");
         assertThat(links).containsKeys("health", "custom");
         assertThat(links.get("health").getHref()).isEqualTo("https://example.test/actuator/health");
@@ -300,14 +308,14 @@ public class Spring_boot_actuatorTest {
         assertThat(response.getContentType()).isEqualTo(MimeTypeUtils.APPLICATION_JSON);
     }
 
-    private static HttpTrace httpTrace(String method, String path, int status, String principal, String sessionId,
+    private static HttpExchange httpExchange(String method, String path, int status, String principal, String sessionId,
             long timeTaken) {
-        HttpTrace.Request request = new HttpTrace.Request(method, URI.create("https://example.test" + path),
-                Map.of("Accept", List.of("application/json")), "192.0.2.10");
-        HttpTrace.Response response = new HttpTrace.Response(status,
+        HttpExchange.Request request = new HttpExchange.Request(URI.create("https://example.test" + path),
+                "192.0.2.10", method, Map.of("Accept", List.of("application/json")));
+        HttpExchange.Response response = new HttpExchange.Response(status,
                 Map.of("Content-Type", List.of("application/json")));
-        return new HttpTrace(request, response, Instant.parse("2026-06-28T10:00:00Z"),
-                new HttpTrace.Principal(principal), new HttpTrace.Session(sessionId), timeTaken);
+        return new HttpExchange(Instant.parse("2026-06-28T10:00:00Z"), request, response,
+                new HttpExchange.Principal(principal), new HttpExchange.Session(sessionId), Duration.ofMillis(timeTaken));
     }
 
     private static final class SampleRepository {
