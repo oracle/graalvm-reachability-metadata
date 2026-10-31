@@ -1,8 +1,13 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
 package tomcat;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.catalina.core.DefaultInstanceManager;
@@ -27,7 +32,7 @@ public class DefaultInstanceManagerTest {
                 Files.createDirectory(directory.resolve("webapp")).toString());
         context.addPostConstructMethod(ApplicationComponent.class.getName(), "initialize");
         context.addPreDestroyMethod(ApplicationComponent.class.getName(), "close");
-        NamingContext naming = new NamingContext(new Hashtable<>(), "components");
+        NamingContext naming = new NamingContext(null, "components");
         naming.bind("fieldResource", "field-value");
         naming.bind("setterResource", "setter-value");
         try {
