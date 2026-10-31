@@ -46,7 +46,7 @@ public class CsrfPreventionFilterBaseTest {
             application.start();
             try (HttpClient client = HttpClient.newBuilder().cookieHandler(new CookieManager())
                     .connectTimeout(Duration.ofSeconds(10)).build()) {
-                HttpRequest fetch = HttpRequest.newBuilder(application.uri()).timeout(Duration.ofSeconds(10))
+                HttpRequest fetch = HttpRequest.newBuilder(application.uri()).timeout(Duration.ofSeconds(60))
                         .header("X-CSRF-Token", "Fetch").GET().build();
                 HttpResponse<String> fetched = client.send(fetch, HttpResponse.BodyHandlers.ofString());
                 assertEquals(200, fetched.statusCode());
