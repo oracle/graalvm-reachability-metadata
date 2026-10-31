@@ -24,6 +24,8 @@ graalvmNative {
     binaries {
         test {
             buildArgs.add('-H:+AddAllCharsets')
+            // Jackson reads empty enum types from private JDK fields. §FS-test-contract.2.7.1
+            buildArgs.add('--add-opens=java.base/java.util=ALL-UNNAMED')
         }
     }
     agent {

@@ -56,9 +56,14 @@ Some reported accesses have no suitable path in this suite:
 - `Finalizer` clears the private inherited-thread-local field only when its
   five-argument `Thread` constructor is unavailable. The configured JVM provides
   that constructor; existing reference-cleanup tests exercise that supported path.
-- `ClassUtil.EnumTypeLocator`'s empty enum-container introspection and the base
-  OkHttp `Platform`'s socket-factory introspection inspect private JDK fields.
-  The suite does not open JDK modules merely to enter these fallback paths.
+- The base OkHttp `Platform`'s socket-factory introspection inspects private
+  JDK fields. The suite uses the modern JVM platform path instead.
+
+`ClassUtilInnerEnumTypeLocatorTest` round-trips empty enum sets and maps through
+Jackson's polymorphic JSON API, preserving their enum types and independent
+mutation after restoration. Jackson must read private `java.util` fields to
+identify the enum type of an empty container, so both JVM tests and Native Image
+use `--add-opens=java.base/java.util=ALL-UNNAMED` (§FS-test-contract.2.7.1).
 
 `JacksonAnnotationIntrospectorTest` also exercises the public single-enum-name
 introspection API, checking both annotation-selected names and the default name.
