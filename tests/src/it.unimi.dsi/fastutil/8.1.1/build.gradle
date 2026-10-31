@@ -15,6 +15,11 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    // A complete big-array segment contains over 134 million object references.
+    maxHeapSize = "2g"
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
