@@ -20,7 +20,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
 /// Exposes classpath message properties through the Bundle resource API without an OSGi class loader.
-final class MessageResourceBundle implements Bundle {
+class MessageResourceBundle implements Bundle {
     private final boolean entriesOnly;
     private int resourceRequests;
     private int entryRequests;
