@@ -6,7 +6,9 @@
  */
 package org_apache_aries.org_apache_aries_util;
 
-import java.util.ListResourceBundle;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.aries.util.nls.MessageUtil;
@@ -36,13 +38,19 @@ public class MessageUtilAnonymous2Test {
         assertEquals("unknown.message", messages.getMessage("unknown.message"));
     }
 
-    public static class ClassMessages extends ListResourceBundle {
+    public static class ClassMessages extends ResourceBundle {
         @Override
-        protected Object[][] getContents() {
-            return new Object[][] {
-                    {"started", "Started {0} for {1}"},
-                    {"ready", "Ready"}
+        protected Object handleGetObject(String key) {
+            return switch (key) {
+                case "started" -> "Started {0} for {1}";
+                case "ready" -> "Ready";
+                default -> null;
             };
+        }
+
+        @Override
+        public Enumeration<String> getKeys() {
+            return Collections.enumeration(List.of("started", "ready"));
         }
     }
 }
