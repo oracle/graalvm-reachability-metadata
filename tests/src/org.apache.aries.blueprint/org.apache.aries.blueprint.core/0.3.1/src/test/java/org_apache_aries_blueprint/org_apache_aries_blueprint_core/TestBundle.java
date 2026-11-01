@@ -19,8 +19,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
-/// An active host bundle for registry-only tests; installation and class loading are not supported.
-final class TestBundle implements Bundle {
+/// An active host bundle; installation and class loading are not supported.
+class TestBundle implements Bundle {
     private final BundleContext context;
 
     TestBundle(BundleContext context) {

@@ -32,7 +32,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 /// A single-bundle service registry used without installing bundles or creating class loaders.
-final class TestBundleContext implements BundleContext {
+class TestBundleContext implements BundleContext {
     private final Bundle bundle = new TestBundle(this);
     private final Map<ServiceListener, Filter> listeners = new LinkedHashMap<>();
     private final List<Registration> registrations = new ArrayList<>();
