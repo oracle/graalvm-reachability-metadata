@@ -8,6 +8,7 @@ import io
 import os
 import tempfile
 import unittest
+from dataclasses import dataclass
 from unittest.mock import patch
 
 from utility_scripts.gradle_daemons import (
@@ -31,8 +32,20 @@ A problem occurred configuring root project 'graalvm-reachability-metadata'.
 """
 
 
+GATE = "./gradlew checkMetadataFiles -Pcoordinates=org.example:demo:1.0.0"
+
+
 def _result(command: list[str], returncode: int, stdout: str = "") -> LoggedCommandResult:
     return LoggedCommandResult(command, returncode, stdout, "/tmp/gate.log", False, 0.5)
+
+
+@dataclass
+class _GateRun:
+    """One Gradle gate run, as the retry reads it."""
+
+    command: str
+    ok: bool
+    output: str
 
 
 class GradleDaemonRecyclingTests(unittest.TestCase):
@@ -81,11 +94,10 @@ class GradleDaemonRecyclingTests(unittest.TestCase):
         self.assertFalse(is_stale_daemon_failure(""))
 
     def test_stale_daemon_failure_stops_daemons_and_reruns_exactly_once(self) -> None:
-        command = ["./gradlew", "checkMetadataFiles", "-Pcoordinates=org.example:demo:1.0.0"]
-        attempts = [_result(command, 1, STALE_DAEMON_OUTPUT), _result(command, 0, "BUILD SUCCESSFUL")]
+        attempts = [_GateRun(GATE, False, STALE_DAEMON_OUTPUT), _GateRun(GATE, True, "BUILD SUCCESSFUL")]
         events: list[str] = []
 
-        def run() -> LoggedCommandResult:
+        def run() -> _GateRun:
             events.append("run")
             return attempts[len([event for event in events if event == "run"]) - 1]
 
@@ -96,35 +108,33 @@ class GradleDaemonRecyclingTests(unittest.TestCase):
         ) as stop_daemons, contextlib.redirect_stdout(terminal):
             result = run_with_stale_daemon_retry("/repo", "org.example:demo:1.0.0", run)
 
-        self.assertEqual(result.returncode, 0)
+        self.assertIs(result, attempts[1])
         self.assertEqual(events, ["run", "stop", "run"])
         stop_daemons.assert_called_once_with("/repo", "org.example:demo:1.0.0", "stale daemon failure")
         self.assertIn("stale Gradle daemon", terminal.getvalue())
 
     def test_second_stale_daemon_failure_is_returned_as_the_real_failure(self) -> None:
-        command = ["./gradlew", "checkMetadataFiles", "-Pcoordinates=org.example:demo:1.0.0"]
-        runs: list[int] = []
+        runs: list[_GateRun] = []
 
-        def run() -> LoggedCommandResult:
-            runs.append(1)
-            return _result(command, 1, STALE_DAEMON_OUTPUT)
+        def run() -> _GateRun:
+            runs.append(_GateRun(GATE, False, STALE_DAEMON_OUTPUT))
+            return runs[-1]
 
         with patch("utility_scripts.gradle_daemons.stop_gradle_daemons", return_value=True) as stop_daemons, \
                 contextlib.redirect_stdout(io.StringIO()):
             result = run_with_stale_daemon_retry("/repo", None, run)
 
-        self.assertEqual(result.returncode, 1)
         self.assertEqual(len(runs), 2)
+        self.assertIs(result, runs[1])
         stop_daemons.assert_called_once()
 
     def test_other_failures_and_successes_do_not_touch_the_daemons(self) -> None:
-        command = ["./gradlew", "checkMetadataFiles", "-Pcoordinates=org.example:demo:1.0.0"]
         with patch("utility_scripts.gradle_daemons.stop_gradle_daemons") as stop_daemons:
-            failed = run_with_stale_daemon_retry("/repo", None, lambda: _result(command, 1, "TypeReached: a.B"))
-            passed = run_with_stale_daemon_retry("/repo", None, lambda: _result(command, 0, STALE_DAEMON_OUTPUT))
+            failed = run_with_stale_daemon_retry("/repo", None, lambda: _GateRun(GATE, False, "TypeReached: a.B"))
+            passed = run_with_stale_daemon_retry("/repo", None, lambda: _GateRun(GATE, True, STALE_DAEMON_OUTPUT))
 
-        self.assertEqual(failed.returncode, 1)
-        self.assertEqual(passed.returncode, 0)
+        self.assertFalse(failed.ok)
+        self.assertTrue(passed.ok)
         stop_daemons.assert_not_called()
 
 if __name__ == "__main__":
