@@ -11,7 +11,6 @@ import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +54,7 @@ final class TestBundle implements Bundle {
 
     @Override
     public Dictionary<String, String> getHeaders() {
-        return new Hashtable<>();
+        return new MapDictionary<>();
     }
 
     @Override

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -183,7 +182,7 @@ final class TestBundleContext implements BundleContext {
         private final Object service;
         private final long id;
         private final Reference reference = new Reference();
-        private final Hashtable<String, Object> properties = new Hashtable<>();
+        private final Map<String, Object> properties = new LinkedHashMap<>();
 
         private Registration(String[] classes, Object service, Dictionary properties, long id) {
             this.classes = new LinkedHashSet<>(Arrays.asList(classes));
