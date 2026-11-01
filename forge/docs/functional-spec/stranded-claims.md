@@ -21,8 +21,10 @@ A claim is stranded when all of these hold:
    status `In Progress`, and carries none of the labels the fetch leaves out:
    `human-intervention`, `graalvm-bug` (§FS-forge-run-requirements.2.1) and
    `not-for-native-image`;
-2. the issue's latest attempt workspace on this host records no outcome; and
-3. no live launcher works on that attempt (see 2).
+2. the issue's latest attempt workspace on this host records no outcome;
+3. that attempt made the claim: it records when its claim was made, and GitHub
+   shows no assignment of the issue to the user after that time; and
+4. no live launcher works on that attempt (see 2).
 
 Each condition is read again when the launcher acts, the GitHub ones against
 live state, as a claim reads them. An attempt that records an outcome has
@@ -32,15 +34,29 @@ user's launcher on another host, which this host cannot see die, so it is left
 alone. The search starts from the host's own workspaces, so a host with no
 unfinished attempt reads nothing from GitHub to find out.
 
+An unfinished attempt does not mean the claim is still its own. The claim may
+have been released since, by a maintainer or by a halt that keeps the attempt
+for a later claim to resume, and the issue claimed again by a launcher of the
+same user in another checkout or on another host. That launcher sees neither
+this attempt nor the mark of 2, but the fetch takes only unassigned issues, so
+it assigned the issue anew, after the attempt's claim, and its claim is left
+alone however old this host's attempt is. An attempt that records no claim
+time cannot show that the claim is its own, so it is not resumed, and its
+issue is reported for a maintainer: a claim left for a maintainer costs one
+hand release, while two launchers on one issue can publish it twice or close
+it out under the live run.
+
 ## 2. A live launcher is never displaced
 
-Several launchers share one checkout and its runs, so each marks the issue it
+Launchers that share one checkout share its runs, so each marks the issue it
 works on for as long as it works on it: from before the claim, so that no
 moment exists in which a fresh claim looks stranded, until its close-out ends.
 The process's death clears the mark however the process dies, `SIGKILL`
 included, so a dead launcher's attempt is never taken for a live one's, nor a
 live one's for a dead one's. A `rhei run` that outlives its launcher still
-works on the attempt, so its attempt is live as well.
+works on the attempt, so its attempt is live as well. A launcher in another
+checkout or on another host never sees the mark, so its claim is told from the
+attempt's own by the time it was made (see 1).
 
 ## 3. Resumed in place
 
