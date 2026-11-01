@@ -16,6 +16,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // HtmlUnit's TextDecoder eagerly resolves extended charsets, including Big5.
+            buildArgs.add('-H:+AddAllCharsets')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
