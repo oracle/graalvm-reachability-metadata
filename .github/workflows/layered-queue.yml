@@ -1,0 +1,78 @@
+# Serialize durable admission, not the native tests. §FS-tests.3.6, §AR-layered-tests
+name: Layered queue dispatcher
+on:
+  workflow_call:
+    inputs:
+      sweep-run-id:
+        type: string
+        required: true
+      completed-run-id:
+        type: string
+        default: ''
+      initialize:
+        type: boolean
+        default: false
+      cancel-sweep:
+        type: boolean
+        default: false
+      coordinate-matrix:
+        type: string
+        default: ''
+      ref:
+        type: string
+        default: ''
+      native-image-mode:
+        type: string
+        default: ''
+      graalvm-artifact:
+        type: string
+        default: ''
+      base-artifact:
+        type: string
+        default: ''
+permissions:
+  contents: read
+  actions: write
+  checks: write
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: layered-admission-${{ inputs.sweep-run-id }}
+      cancel-in-progress: false
+      queue: max
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SWEEP_RUN_ID: ${{ inputs.sweep-run-id }}
+      PYTHONPATH: .github/scripts
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      - name: Initialize durable sweep state
+        if: inputs.initialize
+        env:
+          COORDINATE_MATRIX: ${{ inputs.coordinate-matrix }}
+          TEST_REVISION: ${{ inputs.ref }}
+          NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode }}
+          GRAALVM_ARTIFACT: ${{ inputs.graalvm-artifact }}
+          BASE_ARTIFACT: ${{ inputs.base-artifact }}
+        run: python3 -m layered_queue.cli initialize
+
+      - name: Register sweep for recovery
+        if: inputs.initialize
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: layered-queue
+          path: ${{ runner.temp }}/layered-queue.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 14
+
+      - name: Record outcomes and release pending shards
+        env:
+          CANCEL_SWEEP: ${{ inputs.cancel-sweep }}
+          COMPLETED_RUN_ID: ${{ inputs.completed-run-id }}
+        run: python3 -m layered_queue.cli reconcile

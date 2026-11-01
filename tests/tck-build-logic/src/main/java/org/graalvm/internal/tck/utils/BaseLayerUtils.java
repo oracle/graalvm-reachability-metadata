@@ -9,14 +9,22 @@ package org.graalvm.internal.tck.utils;
 import org.gradle.api.Project;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Resolves and identifies Native Image base layers. §AR-test-harness.3
@@ -28,6 +36,7 @@ public final class BaseLayerUtils {
     private static final String DEDICATED_LAYER_ROOT_PROPERTY = "tck.dedicatedLayerRoot";
     private static final String DEDICATED_LAYER_ROOT_ENVIRONMENT_VARIABLE =
             "GVM_TCK_DEDICATED_LAYER_ROOT";
+    private static final List<String> DYNAMIC_LIBRARY_SUFFIXES = List.of(".so", ".dylib", ".dll");
     private static final List<String> JUNIT_RUNTIME_ARTIFACT_GROUPS = List.of(
             "junit",
             "org.apiguardian",
@@ -88,6 +97,13 @@ public final class BaseLayerUtils {
         return new File(new File(root, sha256(coordinates)), "libDedicated.nil");
     }
 
+    /// Coordinate-local build output, deliberately outside the common base cache. §FS-tests.3.3
+    public static File resolveCustomSharedLayerFile(Project project, String coordinates) {
+        return project.getLayout().getBuildDirectory()
+                .file("native/customSharedLayer/" + sha256(coordinates) + "/base-layer.nil")
+                .get().getAsFile();
+    }
+
     public static String layerCreateArgument(File baseLayerFile) {
         String modules = String.join(",", BASE_LAYER_MODULES.stream()
                 .map(module -> "module=" + module)
@@ -97,6 +113,53 @@ public final class BaseLayerUtils {
 
     public static List<String> layerModules() {
         return BASE_LAYER_MODULES;
+    }
+
+    /// Retains mandatory and nonoverlapping modules without changing dependency JARs.
+    /// Inspect the native builder's JDK rather than the Gradle JVM. §FS-tests.3.4
+    public static List<String> dedicatedLayerModules(List<Path> classpathJars, Path javaHome) throws IOException {
+        Set<String> classNames = JarUtils.loadClassNames(classpathJars);
+        if (classNames.isEmpty()) {
+            return BASE_LAYER_MODULES;
+        }
+        List<String> modules = new ArrayList<>();
+        for (String module : BASE_LAYER_MODULES) {
+            if (module.equals("java.base")) {
+                modules.add(module);
+                continue;
+            }
+            Path archive = javaHome.resolve("jmods").resolve(module + ".jmod");
+            try (ZipFile jmod = new ZipFile(archive.toFile())) {
+                boolean overlaps = jmod.stream().map(ZipEntry::getName)
+                        .filter(name -> name.startsWith("classes/") && name.endsWith(".class"))
+                        .map(name -> name.substring("classes/".length(), name.length() - ".class".length())
+                                .replace('/', '.'))
+                        .anyMatch(classNames::contains);
+                if (!overlaps) {
+                    modules.add(module);
+                }
+            }
+        }
+        return List.copyOf(modules);
+    }
+
+    /// Stages base libraries beside the executable, preserving application-produced files.
+    /// Matches the layered JCK runner's runtime packaging. §FS-tests.3.5
+    public static void copyDynamicLibraries(File baseLayerFile, File outputDirectory) throws IOException {
+        Path baseDirectory = baseLayerFile.toPath().toAbsolutePath().getParent();
+        Path output = outputDirectory.toPath();
+        Files.createDirectories(output);
+        try (Stream<Path> entries = Files.list(baseDirectory)) {
+            List<Path> libraries = entries.filter(Files::isRegularFile)
+                    .filter(path -> DYNAMIC_LIBRARY_SUFFIXES.stream().anyMatch(path.getFileName().toString()::endsWith))
+                    .sorted().toList();
+            for (Path library : libraries) {
+                Path target = output.resolve(library.getFileName());
+                if (!Files.exists(target)) {
+                    Files.copy(library, target);
+                }
+            }
+        }
     }
 
     public static boolean isJUnitRuntimeArtifact(String group, String artifact) {

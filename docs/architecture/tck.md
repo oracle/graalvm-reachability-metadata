@@ -78,57 +78,10 @@ data.
 | `test` / `tckTest` | The full lane: validation, JVM tests, then native-image tests. |
 | `clean` / `tckClean` | Clear a coordinate's build outputs. |
 
-Layered test tasks use `-Ptck.baseLayerDir=<dir>` or `GVM_TCK_BASE_LAYER_DIR`
-when supplied; otherwise they default to `build/native-base-layer`. The base
-layer directory contains `base-layer.nil` plus a manifest keyed by the exact
-`native-image --version`, OS/architecture, native-image mode,
-base-layer module set (`java.base`, `java.management`, `java.naming`, `java.sql`,
-`jdk.unsupported`, `java.desktop`, `java.scripting`, `jdk.httpserver`,
-`java.net.http`, `java.sql.rowset`, `jdk.jfr`, `java.smartcardio`,
-`java.transaction.xa`, `java.security.sasl`, `java.xml`, `jdk.dynalink`,
-`jdk.jsobject`, `jdk.localedata`, and `jdk.xml.dom`), and build arguments,
-so a stale or mismatched layer is rejected before any per-coordinate native
-image is built.
-
-The dedicated-layer lane keeps the shared-layer lane intact but moves layer
-creation into each coordinate build. Each layer includes the same JDK modules
-as the shared layer plus every class and resource in the resolved tested-library
-JARs and the resolved JUnit runtime JARs, including JUnit's support artifacts
-and the Native Build Tools `junit-platform-native` artifact that supplies
-`JUnitPlatformFeature`. The base analysis classpath contains resolved dependency
-JARs but excludes the coordinate's compiled test classes, test resources, and
-test JAR. Both layer builds activate `JUnitPlatformFeature`. The base invocation
-uses infrastructure-generated selectors for the JUnit engine roots, establishing
-JUnit's initialization and reachability policy without trying to resolve absent
-test classes. The application invocation uses the coordinate's real unique-ID
-files to discover and register those classes. The written test code therefore
-remains exclusively in the final application layer.
-The base build uses the same resolved Native Image configuration directories as
-the final test image. For both builds, it stages test-scoped
-`reachability-metadata.json` without conditions because LayerCreate does not
-preserve runtime `typeReached` tracking for selected JAR types. The normal test
-lane still validates the original conditions; the dedicated lane applies the
-same metadata unconditionally in both analyses to keep class-initialization
-policy stable without including test classes or unrelated test resources in the
-base layer.
-Gradle rebuilds the layer when its coordinate, Native Image settings,
-configuration, or base-analysis classpath changes. The final test image retains
-the complete standalone test runtime classpath while using the
-coordinate-specific layer.
-CI supplies `-Ptck.layered.deleteDedicatedLayerAfterTest=true` to delete each
-large coordinate layer after its test; local runs retain layers for reuse unless
-they explicitly request the same cleanup behavior.
-
-`testSharedLayer` can run a coordinate batch in collecting mode with
-`-Ptck.layered.continueOnCoordinateFailure=true`; when combined with
-`-Ptck.layered.coordinateFailureReport=<file>`, it writes one failed coordinate
-per line before failing the task at the end of the batch.
-
-The manual layered workflow supplies `-Ptck.excludedCoordinatesFile` with the
-shared-layer residual-failure list to the shared lane and the dedicated-layer
-residual-failure list to the dedicated lane. This keeps known failures from
-hiding new failures while allowing each lane's failures to be triaged
-independently. Other workflows do not supply an exclusion file.
+Layer construction and validation are detailed in §AR-native-test-layers.
+Shared bases reuse common policy or build a coordinate-specific base; dedicated
+bases include the library and JUnit while keeping the test classes in the final
+application. Both paths preserve the library's configured build policy.
 
 ### 3.1 Running the JVM lane on a different JDK
 

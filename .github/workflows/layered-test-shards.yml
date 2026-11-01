@@ -1,0 +1,105 @@
+# Prepares one toolchain and common base for all dispatched shards. §AR-layered-tests.
+name: "Prepare layered sweep"
+
+on:
+  workflow_call:
+    inputs:
+      prepare-shared-base:
+        description: "Whether the matrix includes shared-layer tests"
+        required: true
+        type: boolean
+      ref:
+        description: "Branch, tag, or SHA to test"
+        required: true
+        type: string
+      java-version:
+        description: "GraalVM Java version"
+        required: true
+        type: string
+      native-image-mode:
+        description: "Native Image mode from ci.json"
+        required: true
+        type: string
+    outputs:
+      graalvm-artifact:
+        value: ${{ jobs.prepare.outputs.graalvm-artifact }}
+      base-artifact:
+        value: ${{ jobs.prepare.outputs.artifact-name }}
+
+permissions:
+  contents: read
+
+jobs:
+  # Resolve GraalVM once; only shared shards need the common base. §FS-tests.3.6
+  prepare:
+    name: "Prepare GraalVM and common shared base"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 90
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode }}
+    outputs:
+      graalvm-artifact: ${{ steps.publish-graalvm.outcome == 'success' && format('graalvm-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      artifact-name: ${{ steps.publish-base.outcome == 'success' && steps.archive.outputs.artifact-name || '' }}
+    steps:
+      - name: "Checkout workflow code"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      - name: "Keep the archive helper for testing older revisions"
+        run: cp .github/scripts/prepared_base_layer.py "${RUNNER_TEMP}/prepared_base_layer.py"
+
+      - name: "Checkout test ref"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: "Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "Download GraalVM for base preparation"
+        uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
+        with:
+          distribution: "graalvm"
+          java-version: ${{ inputs.java-version }}
+          set-java-home: "true"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Archive resolved GraalVM"
+        run: tar -czf "${RUNNER_TEMP}/graalvm.tar.gz" -C "${JAVA_HOME}" .
+
+      - name: "Publish resolved GraalVM"
+        id: publish-graalvm
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: graalvm-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/graalvm.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+
+      - name: "Restore or build common base"
+        if: inputs.prepare-shared-base
+        id: base
+        uses: ./.github/actions/setup-native-image-base-layer
+
+      - name: "Archive complete base directory"
+        if: inputs.prepare-shared-base
+        id: archive
+        env:
+          BASE_LAYER_DIR: ${{ steps.base.outputs.base-layer-dir }}
+        run: |
+          python3 "${RUNNER_TEMP}/prepared_base_layer.py" pack \
+            --base-layer-dir "${BASE_LAYER_DIR}" --archive "${RUNNER_TEMP}/shared-base.tar"
+          echo "artifact-name=shared-base-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "${GITHUB_OUTPUT}"
+
+      - name: "Publish prepared base"
+        id: publish-base
+        if: inputs.prepare-shared-base
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ steps.archive.outputs.artifact-name }}
+          path: ${{ runner.temp }}/shared-base.tar
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14

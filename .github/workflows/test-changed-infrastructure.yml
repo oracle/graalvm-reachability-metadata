@@ -30,6 +30,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: "Test layered archive transfer and queue recovery"
+        run: python3 -m unittest discover -s .github/scripts/tests -p 'test_*.py'
+
       - name: "🔎 Detect relevant file changes"
         id: filter
         uses: ./.github/actions/detect-file-changes
