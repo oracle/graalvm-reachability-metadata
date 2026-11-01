@@ -16,6 +16,14 @@ dependencies {
 }
 
 graalvmNative {
+    binaries.all {
+        // JAXB's static dummy locator must not enter the image heap.
+        buildArgs.add('--initialize-at-run-time=com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext')
+        // XSOM also retains a static locator for annotations without a source location.
+        buildArgs.add('--initialize-at-run-time=com.sun.xml.xsom.impl.AnnotationImpl')
+        // Defer the optional optimized-accessor injector's reflective class-loader access.
+        buildArgs.add('--initialize-at-run-time=com.sun.xml.bind.v2.runtime.reflect.opt.Injector')
+    }
     agent {
         defaultMode = "conditional"
         modes {
