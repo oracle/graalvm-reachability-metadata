@@ -11,7 +11,7 @@ import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ResourceBundleMessageSourceTest {
     @Test

@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.aop.ThrowsAdvice;
 import org.springframework.aop.framework.ProxyFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ThrowsAdviceInterceptorTest {
     public interface Work {

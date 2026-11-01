@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.propertyeditors.ResourceBundleEditor;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ResourceBundleEditorTest {
     @Test

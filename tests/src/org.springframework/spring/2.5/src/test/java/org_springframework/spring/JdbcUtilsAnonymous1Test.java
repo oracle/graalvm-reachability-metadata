@@ -9,7 +9,7 @@ package org_springframework.spring;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.support.JdbcUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JdbcUtilsAnonymous1Test {
     @Test

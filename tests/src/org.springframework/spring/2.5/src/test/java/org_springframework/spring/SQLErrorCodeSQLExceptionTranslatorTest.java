@@ -14,7 +14,9 @@ import org.springframework.jdbc.support.CustomSQLErrorCodesTranslation;
 import org.springframework.jdbc.support.SQLErrorCodes;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SQLErrorCodeSQLExceptionTranslatorTest {
     public static class MessageException extends DataAccessException {

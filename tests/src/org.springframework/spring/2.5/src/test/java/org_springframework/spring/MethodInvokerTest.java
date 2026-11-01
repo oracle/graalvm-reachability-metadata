@@ -9,7 +9,7 @@ package org_springframework.spring;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.MethodInvoker;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MethodInvokerTest {
     public static class Counter {

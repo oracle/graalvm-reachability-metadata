@@ -11,7 +11,7 @@ import java.util.Properties;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PropertiesLoaderUtilsTest {
     @Test

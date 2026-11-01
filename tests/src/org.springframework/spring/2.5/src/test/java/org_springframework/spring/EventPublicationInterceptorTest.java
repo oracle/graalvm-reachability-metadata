@@ -14,7 +14,9 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventPublicationInterceptor;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class EventPublicationInterceptorTest {
     public static class GreetingEvent extends ApplicationEvent {

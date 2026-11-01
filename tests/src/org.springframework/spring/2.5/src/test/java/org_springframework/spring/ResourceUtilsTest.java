@@ -13,7 +13,7 @@ import java.util.Properties;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.ResourceUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ResourceUtilsTest {
     @Test

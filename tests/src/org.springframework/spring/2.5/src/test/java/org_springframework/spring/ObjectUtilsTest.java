@@ -9,7 +9,8 @@ package org_springframework.spring;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.ObjectUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class ObjectUtilsTest {
     @Test

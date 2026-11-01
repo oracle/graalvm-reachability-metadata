@@ -11,7 +11,7 @@ import java.sql.Connection;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LazyConnectionDataSourceProxyTest {
     @Test

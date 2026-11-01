@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.Constants;
 import org.springframework.transaction.TransactionDefinition;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConstantsTest {
     @Test

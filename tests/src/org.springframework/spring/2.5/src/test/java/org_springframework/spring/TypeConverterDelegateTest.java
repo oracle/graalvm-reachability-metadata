@@ -11,7 +11,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.SimpleTypeConverter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class TypeConverterDelegateTest {
     public enum Priority { LOW, HIGH }

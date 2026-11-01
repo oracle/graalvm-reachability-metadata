@@ -12,7 +12,8 @@ import java.util.TreeMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.propertyeditors.CustomMapEditor;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class CustomMapEditorTest {
     @Test

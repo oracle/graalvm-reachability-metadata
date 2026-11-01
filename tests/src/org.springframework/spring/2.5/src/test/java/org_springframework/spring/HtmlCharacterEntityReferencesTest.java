@@ -9,7 +9,7 @@ package org_springframework.spring;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.util.HtmlUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HtmlCharacterEntityReferencesTest {
     @Test

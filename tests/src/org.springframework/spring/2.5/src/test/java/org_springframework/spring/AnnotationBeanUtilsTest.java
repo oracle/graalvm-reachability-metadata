@@ -11,8 +11,9 @@ import java.lang.annotation.RetentionPolicy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.annotation.AnnotationBeanUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AnnotationBeanUtilsTest {
     @Retention(RetentionPolicy.RUNTIME)
@@ -28,7 +29,7 @@ public class AnnotationBeanUtilsTest {
     @Test
     void copiesAnnotationAttributesToBeanExceptExcludedProperties() {
         TestBeans.Person person = new TestBeans.Person();
-        AnnotationBeanUtils.copyPropertiesToBean(Configuration.class.getAnnotation(Profile.class), person, "age");
+        AnnotationBeanUtils.copyPropertiesToBean(AnnotationUtils.findAnnotation(Configuration.class, Profile.class), person, "age");
         assertEquals("annotated", person.getName());
         assertEquals(0, person.getAge());
     }

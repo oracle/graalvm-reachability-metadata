@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.beans.factory.support.StaticListableBeanFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServiceLocatorFactoryBeanInnerServiceLocatorInvocationHandlerTest {
     public interface Locator {

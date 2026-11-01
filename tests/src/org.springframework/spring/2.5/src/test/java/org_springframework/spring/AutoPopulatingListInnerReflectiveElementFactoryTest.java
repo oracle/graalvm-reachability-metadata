@@ -9,7 +9,9 @@ package org_springframework.spring;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.AutoPopulatingList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class AutoPopulatingListInnerReflectiveElementFactoryTest {
     @Test

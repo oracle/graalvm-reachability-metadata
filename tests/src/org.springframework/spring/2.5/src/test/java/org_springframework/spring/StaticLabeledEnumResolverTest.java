@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.enums.StaticLabeledEnum;
 import org.springframework.core.enums.StaticLabeledEnumResolver;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class StaticLabeledEnumResolverTest {
     public static class Status extends StaticLabeledEnum {

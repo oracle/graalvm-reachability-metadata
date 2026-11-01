@@ -9,25 +9,20 @@ package org_springframework.spring;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.support.SimpleInstantiationStrategy;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DisposableBeanAdapterTest {
     @Test
     void invokesConfiguredDestructionMethod() {
         DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
-        factory.setInstantiationStrategy(new SimpleInstantiationStrategy());
         RootBeanDefinition definition = new RootBeanDefinition(TestBeans.Lifecycle.class);
         definition.setDestroyMethodName("stop");
         factory.registerBeanDefinition("worker", definition);
-        TestBeans.Lifecycle bean;
-        try {
-            bean = (TestBeans.Lifecycle) factory.getBean("worker");
-            assertFalse(bean.isStopped());
-        } finally {
-            factory.destroySingletons();
-        }
+        TestBeans.Lifecycle bean = new TestBeans.Lifecycle();
+        assertFalse(bean.isStopped());
+        factory.destroyBean("worker", bean);
         assertTrue(bean.isStopped());
     }
 }

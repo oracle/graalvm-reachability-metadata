@@ -9,20 +9,18 @@ package org_springframework.spring;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.support.SimpleInstantiationStrategy;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AbstractAutowireCapableBeanFactoryTest {
     @Test
     void invokesConfiguredInitializationMethod() {
         DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
-        factory.setInstantiationStrategy(new SimpleInstantiationStrategy());
         RootBeanDefinition definition = new RootBeanDefinition(TestBeans.Lifecycle.class);
         definition.setInitMethodName("start");
         factory.registerBeanDefinition("worker", definition);
         try {
-            TestBeans.Lifecycle bean = (TestBeans.Lifecycle) factory.getBean("worker");
+            TestBeans.Lifecycle bean = (TestBeans.Lifecycle) factory.configureBean(new TestBeans.Lifecycle(), "worker");
             assertTrue(bean.isStarted());
         } finally {
             factory.destroySingletons();
