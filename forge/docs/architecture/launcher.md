@@ -115,14 +115,26 @@ lock existed. The pre-publication gate reads the same locks, its own issue's
 aside, before and after each test run, to tell whether another run could have
 pulled a Docker image it finds (§FS-local-ci-equivalent-verification.2.2).
 
+A claim takes its time once it has confirmed its assignment, after its 5-10 s
+wait, and the launcher writes that time to the attempt's
+`runtime/forge/claim.json` before each `rhei run`, so a later claim that
+resumes the unfinished attempt replaces it (§FS-forge-stranded-claims.1). The
+time is the host's clock and an assignment's is GitHub's; the wait puts the
+launcher's own assignment seconds before its record, and a host clock further
+behind takes its own claim for a later one, which leaves the claim rather than
+run it twice.
+
 After the fetch, the launcher lists the issues whose latest attempt has no
 `runtime/forge/outcome.json`, oldest issue first, from the runs directory
 alone. For each, it takes the issue's lock, reads the latest attempt again
 under it, and skips an attempt a `rhei run` holds. Only then does it read the
-issue and its project item, two GitHub reads; a read GitHub refuses skips the
-issue for this cycle instead of stopping the launcher. The first stranded claim
-found is run, its lock held, through the same resume and close-out as a claimed
-issue, so the cycle exits with the same statuses.
+issue and its project item; when both show the claim, it reads every page of
+the issue's events for its latest `assigned` event to the user, and skips the
+issue when that event is later than the attempt's `claim.json`. An attempt with
+no `claim.json` is skipped before that read and named for a maintainer. A read
+GitHub refuses skips the issue for this cycle instead of stopping the launcher.
+The first stranded claim found is run, its lock held, through the same resume
+and close-out as a claimed issue, so the cycle exits with the same statuses.
 
 ### 1.2 Board writes and pending releases
 

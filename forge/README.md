@@ -86,15 +86,19 @@ start a fresh attempt from a new base, leaves it alone. List the held refs with
 
 An attempt whose launcher died keeps its worktree and its claim: the issue stays
 assigned and `In Progress`, which no fetch or claim takes, so the next cycle of
-any launcher on the same host resumes it before claiming anything new. A
+any launcher in the same checkout resumes it before claiming anything new. A
 launcher holds `runs/locks/forge-<issue>.lock` while it works on an issue, and
 only an attempt that neither a launcher nor a `rhei run` holds is resumed; an
-issue with no workspace on this host is left to the host that has one. The log
-of a state the launcher was killed in is moved to the workspace's
-`runtime/forge/interrupted/` first, because Rhei refuses to spawn over it. A
-resume that runs no state is retried once, by a later claim; a second in a row
-ends the attempt in `human-intervention`, with Rhei's halt message in the
-comment and its work kept at its held ref.
+issue with no workspace on this host is left to the host that has one. The
+attempt records when its claim was made in `runtime/forge/claim.json`, and an
+issue GitHub shows assigned after that was claimed again by a launcher in
+another checkout or on another host, so it is left to that launcher. An attempt
+with no record is not resumed; the launcher names its issue, to be released by
+hand if no launcher works on it. The log of a state the launcher was killed in
+is moved to the workspace's `runtime/forge/interrupted/` first, because Rhei
+refuses to spawn over it. A resume that runs no state is retried once, by a
+later claim; a second in a row ends the attempt in `human-intervention`, with
+Rhei's halt message in the comment and its work kept at its held ref.
 §FS-forge-stranded-claims, §AR-forge-launcher.1.1
 
 ## Setup

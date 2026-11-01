@@ -24,7 +24,7 @@ from unittest.mock import patch
 
 import forge_metadata
 from dispatcher import rhei_workspace, run_launch
-from tests.test_forge_launcher import issue
+from tests.test_forge_launcher import issue, new_claim
 from tests.test_gradle_environment import _init_git_repo_with_worktree
 from utility_scripts.gradle_environment import FORGE_GRADLE_USER_HOME_ENV, gradle_command_environment
 
@@ -158,7 +158,7 @@ class RanNoStateTest(RunWorktreeCase):
     """A `rhei run` that ran no state finished nothing (§AR-forge-launcher.1)."""
 
     def claimed(self) -> run_launch.Claim:
-        return run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        return new_claim(7)
 
     def record(self, name: str, attempt: int) -> str:
         path: str = os.path.join(self.workspace, "runtime", "spawns", f"{name}.json")

@@ -5,7 +5,7 @@
 
 """Each launcher's lock on the issue it works on, and the Forge runs those locks show live on this host.
 
-Several launchers share one checkout and its runs, so each holds its issue's
+Launchers that share one checkout share its runs, so each holds its issue's
 lock from before the claim until the close-out (§FS-forge-stranded-claims.2).
 The launcher reads the locks to find a dead launcher's claim
 (§FS-forge-stranded-claims.1); the pre-publication gate reads them to tell
