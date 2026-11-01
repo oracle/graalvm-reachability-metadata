@@ -25,6 +25,7 @@ import handoff  # noqa: E402
 from exit_codes import (  # noqa: E402
     CANNOT_FIX,
     INFRASTRUCTURE,
+    RETURN_ANALYZE,
     RETURN_AUDIT,
     RETURN_FINALIZE,
     RETURN_JVM,
@@ -45,13 +46,19 @@ class RouteTest(unittest.TestCase):
 
     def test_fixed_returns_to_the_sender(self) -> None:
         for sender, code in (("jvm", RETURN_JVM), ("native-repair", RETURN_NATIVE_REPAIR),
-                             ("measure", RETURN_MEASURE), ("native", RETURN_NATIVE), ("finalize", RETURN_FINALIZE)):
+                             ("measure", RETURN_MEASURE), ("native", RETURN_NATIVE), ("finalize", RETURN_FINALIZE),
+                             ("analyze", RETURN_ANALYZE)):
             state = run_state(ROUTE_REPAIR, pending_request=sender)
             self.assertEqual(code, fix_route.route(state, {"result": "fixed"}))
 
     def test_cannot_fix_stops_the_run(self) -> None:
         state = run_state(ROUTE_REPAIR, pending_request="native-repair")
         self.assertEqual(CANNOT_FIX, fix_route.route(state, {"result": "cannot-fix", "summary": "shared harness bug"}))
+
+    def test_cannot_fix_a_listing_build_stops_the_run(self) -> None:
+        """A GraalVM defect in the listing build reaches a human (§AR-forge-workflow-pipeline.7)."""
+        state = run_state(ROUTE_REPAIR, pending_request="analyze")
+        self.assertEqual(CANNOT_FIX, fix_route.route(state, {"result": "cannot-fix", "summary": "VMError"}))
 
     def test_cannot_fix_returns_to_native_whose_budget_decides(self) -> None:
         state = run_state(ROUTE_REPAIR, pending_request="native")

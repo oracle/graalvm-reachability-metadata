@@ -42,9 +42,9 @@ from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
     CANNOT_FIX,
+    FIX_REQUESTED,
     INFRASTRUCTURE,
     ISSUE_CLOSED,
-    JVM_TESTS_FAIL,
     NOTHING_TO_DO,
     NOT_FOR_NATIVE_IMAGE_RECORDED,
     SKIP_RECORDED,
@@ -71,7 +71,7 @@ STEPS: dict[str, Callable[[str], int]] = {
 OUTCOME: str = "outcome.json"
 # Every other exit a program takes is a declared route to a non-final state.
 KNOWN_ROUTES: frozenset[int] = frozenset(
-    {OK, AGENT_WORK, JVM_TESTS_FAIL, STILL_FAILING, NOTHING_TO_DO, SKIP_RECORDED, NOT_FOR_NATIVE_IMAGE_RECORDED, CANNOT_FIX,
+    {OK, AGENT_WORK, FIX_REQUESTED, STILL_FAILING, NOTHING_TO_DO, SKIP_RECORDED, NOT_FOR_NATIVE_IMAGE_RECORDED, CANNOT_FIX,
      *RETURN_CODES.values()})
 # What the close-out quotes of one command's output (§AR-forge-launcher.1).
 EXCERPT_LINES: int = 30
@@ -89,15 +89,17 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def outcome(step: str, code: int, bad_input: BadInput | None = None) -> dict[str, str] | None:
+def outcome(step: str, code: int, bad_input: BadInput | None = None,
+            pending_request: str | None = None) -> dict[str, str] | None:
     """The final state an exit leads to, for the launcher's close-out, or `None` to go on.
 
+    `pending_request` is the sender of the open fix request, the run state's.
     §FS-forge-run-status
     """
     if step == "audit" and code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": "the audit's edit fails the checks it reran"}
-    if step == "analyze" and code == STILL_FAILING:
-        # No fix can follow it (§AR-forge-workflow-pipeline.4.5).
+    if step == "analyze" and code == STILL_FAILING and pending_request != step:
+        # No fix can follow it (§AR-forge-workflow-pipeline.4.5); a listing's follows its fix.
         return {"outcome": "human-intervention", "reason": "the first coverage report fails before any cover pass"}
     if code == STILL_FAILING:
         return {"outcome": "human-intervention", "reason": f"{step} still fails after its fix"}
@@ -147,7 +149,8 @@ def diagnostics(workspace: str, step: str) -> dict[str, Any]:
 
 
 def _write_result(workspace: str, step: str, code: int, bad_input: BadInput | None = None) -> None:
-    result: dict[str, Any] | None = outcome(step, code, bad_input)
+    pending: str | None = load(workspace).pending_request if step == "analyze" else None
+    result: dict[str, Any] | None = outcome(step, code, bad_input, pending)
     if result is not None:
         if result["outcome"] == "human-intervention":
             result = {**result, **diagnostics(workspace, step)}

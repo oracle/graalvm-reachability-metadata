@@ -3,17 +3,19 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The JVM suites the coverage report runs, and a first report that fails.
+"""The JVM suites the coverage report runs, and an `analyze` that fails.
 
-§AR-forge-workflow-pipeline.4.5
+§AR-forge-workflow-pipeline.4.5, §AR-forge-workflow-pipeline.7
 
-`jvm` judges the extension suite before `analyze` runs it, a basic pass over an
-unlisted library is measured by every suite, and a failed first report stops the
-run instead of releasing the claim for a retry that fails the same way.
+`jvm` judges the extension suite before `analyze` runs it, a cover pass that
+breaks a suite asks for a fix, a failed listing build is a fix request after
+which `analyze` lists again, and a failed first report stops the run instead of
+releasing the claim for a retry that fails the same way.
 """
 from __future__ import annotations
 
 import os
+import subprocess
 import unittest
 from typing import Any
 
@@ -26,9 +28,11 @@ import forge_run  # noqa: E402
 from build_tools import EXTENSION_SUITE  # noqa: E402
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
+    FIX_REQUESTED,
     INFRASTRUCTURE,
-    JVM_TESTS_FAIL,
+    NOTHING_TO_DO,
     OK,
+    RETURN_ANALYZE,
     RETURN_JVM,
     RETURN_MEASURE,
     STILL_FAILING,
@@ -72,23 +76,23 @@ class FailedReportTest(FinalizedRun):
             tasks: list[str] = [line.split()[0] for line in handle]
         self.assertEqual(["javaTest", "codeCoverageTest", "generateMetadata"], tasks[-3:])
 
-    def test_a_basic_pass_that_breaks_the_extension_suite_asks_for_a_fix(self) -> None:
+    def test_a_cover_pass_that_breaks_the_extension_suite_asks_for_a_fix(self) -> None:
         self.updated()
         self.assertEqual(OK, self.step("jvm"))
         self.assertEqual(OK, self.step("native-repair"))
-        self.fake.control({"listFails": True})
+        self.fake.control({"classes": {"org.example.lib.Codec": 6}})
         self.assertEqual(AGENT_WORK, self.step("analyze"))
-        self.assertFalse(self.state.explore.listed)
 
         broken: str = self.extension_test("CodecBrokenTest", "public class CodecBrokenTest { int a; int a; }")
         self.fake.control({"extensionFails": True})
-        self.assertEqual(JVM_TESTS_FAIL, self.step("measure"))
+        self.assertEqual(FIX_REQUESTED, self.step("measure"))
         self.assertEqual([EXTENSION_TEST], self.failing_commands())
         play_fix(self.fake.workspace)
         self.assertEqual(RETURN_MEASURE, self.step("fix-route"))
         # The guard's exception: the pass that could not be fixed is reset, and the run goes on.
-        self.assertEqual(OK, self.step("measure"))
+        self.assertEqual(AGENT_WORK, self.step("measure"))
         self.assertFalse(os.path.exists(broken))
+        self.assertIn("CodecBrokenTest.java", self.read("cover-prompt.md"))
 
     def test_a_first_report_that_fails_needs_a_human(self) -> None:
         """The report fails over passing suites, as `No main JAR found` does on every retry."""
@@ -109,6 +113,57 @@ class FailedReportTest(FinalizedRun):
         self.assertEqual("human-intervention", next(edge["to"] for edge in edges if edge["exit_code"] == 12))
         self.assertLess(next(i for i, edge in enumerate(edges) if edge["exit_code"] == 12),
                         next(i for i, edge in enumerate(edges) if edge["exit_code"] == "nonzero"))
+
+    def test_a_failed_listing_asks_for_a_fix_and_lists_again(self) -> None:
+        """A listing build that fails says nothing about the calls."""
+        self.fake.control({"classes": {"org.example.lib.Codec": 1}, "listFails": True})
+        self.assertEqual(NOTHING_TO_DO, self.set_up())
+        self.assertEqual(FIX_REQUESTED, self.step("analyze"))
+        request: str = self.read("fix-request.md")
+        self.assertIn("Return: 36", request)
+        self.assertEqual([f"./gradlew generateDynamicAccessReport -Pcoordinates={COORDINATE}"],
+                         self.failing_commands())
+        self.assertIn("Unresolved type found: org.example.missing.Location", request)
+
+        self.fake.control({"listFails": False})
+        build: str = os.path.join(self.state.test_dir, "build.gradle")
+        with open(self.state.path(build), "a", encoding="utf-8") as handle:
+            handle.write("// the dependency the tracked build needs\n")
+        play_fix(self.fake.workspace, changed=(build,))
+        self.assertEqual(RETURN_ANALYZE, self.step("fix-route"))
+        self.assertEqual(AGENT_WORK, self.step("analyze"))
+        self.assertEqual(("class", "org.example.lib.Codec", None),
+                         (self.state.explore.mode, self.state.explore.class_name, self.state.pending_request))
+        # The fix is committed, so no reset of a later pass undoes it.
+        self.assertIn(build, subprocess.run(["git", "show", "--name-only", "--format=", "HEAD"],
+                                            cwd=self.state.worktree, check=True, stdout=subprocess.PIPE,
+                                            text=True).stdout)
+        self.assertEqual(self.state.checkpoint, self.state.explore.checkpoint)
+
+    def test_a_listing_that_still_fails_after_its_fix_needs_a_human(self) -> None:
+        self.fake.control({"listFails": True})
+        self.assertEqual(NOTHING_TO_DO, self.set_up())
+        self.assertEqual(FIX_REQUESTED, self.step("analyze"))
+        play_fix(self.fake.workspace)
+        self.assertEqual(RETURN_ANALYZE, self.step("fix-route"))
+        self.assertEqual(STILL_FAILING, self.step("analyze"))
+        outcome: dict[str, Any] = self.recorded_outcome()
+        self.assertEqual(("human-intervention", "analyze still fails after its fix", "analyze"),
+                         (outcome["outcome"], outcome["reason"], outcome["sender"]))
+        self.assertIn("Unresolved type found", outcome["failures"][0]["output"])
+
+    def test_a_first_report_that_fails_after_a_listing_fix_names_the_report(self) -> None:
+        """The listing's fix is closed once it lists, so the report's own reason stands."""
+        self.updated()
+        self.assertEqual(OK, self.step("jvm"))
+        self.assertEqual(OK, self.step("native-repair"))
+        self.fake.control({"listFails": True})
+        self.assertEqual(FIX_REQUESTED, self.step("analyze"))
+        play_fix(self.fake.workspace)
+        self.assertEqual(RETURN_ANALYZE, self.step("fix-route"))
+        self.fake.control({"listFails": False, "coverageFails": True})
+        self.assertEqual(STILL_FAILING, self.step("analyze"))
+        self.assertEqual("the first coverage report fails before any cover pass", self.recorded_outcome()["reason"])
 
     def test_a_first_report_that_cannot_reach_a_repository_is_retried(self) -> None:
         # A later cycle retries it (§AR-forge-workflow-pipeline.4.1).
