@@ -7,10 +7,15 @@
 package org_scalactic.scalactic_2_13;
 
 import org.junit.jupiter.api.Test;
+import org.scalactic.Snapshot;
 
-class Scalactic_2_13Test {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class Scalactic_2_13Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void formatsBooleanSnapshotValues() {
+        Snapshot snapshot = new Snapshot("inStock", true);
+
+        assertEquals("inStock was true", snapshot.toString());
     }
 }
