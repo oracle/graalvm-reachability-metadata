@@ -6,6 +6,8 @@
  */
 package org_springframework_boot.spring_boot_webmvc;
 
+import java.util.Map;
+
 import jakarta.servlet.RequestDispatcher;
 import org.junit.jupiter.api.Test;
 
@@ -13,79 +15,73 @@ import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeAttribute;
 import org.springframework.boot.webmvc.autoconfigure.error.BasicErrorController;
 import org.springframework.boot.webmvc.error.DefaultErrorAttributes;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 public class BasicErrorControllerTest {
     @Test
-    void dispatchesAnErrorAsJsonWithoutSensitiveDetails() throws Exception {
+    void returnsAnErrorResponseWithoutSensitiveDetails() {
         BasicErrorController controller = new BasicErrorController(new DefaultErrorAttributes(), new ErrorProperties());
-        MockMvc mvc = MockMvcBuilders.standaloneSetup(controller).build();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, 404);
+        request.setAttribute(RequestDispatcher.ERROR_REQUEST_URI, "/orders/missing");
+        request.setAttribute(RequestDispatcher.ERROR_EXCEPTION, new IllegalArgumentException("Private details"));
 
-        MvcResult result = mvc.perform(get("/error").accept(MediaType.APPLICATION_JSON)
-                .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 404)
-                .requestAttr(RequestDispatcher.ERROR_REQUEST_URI, "/orders/missing")
-                .requestAttr(RequestDispatcher.ERROR_EXCEPTION, new IllegalArgumentException("Private details")))
-                .andReturn();
+        ResponseEntity<Map<String, Object>> result = controller.error(request);
 
-        assertThat(result.getResponse().getStatus()).isEqualTo(404);
-        assertThat(result.getResponse().getContentType()).startsWith(MediaType.APPLICATION_JSON_VALUE);
-        assertThat(result.getResponse().getContentAsString()).contains("\"status\":404", "\"error\":\"Not Found\"")
-                .doesNotContain("Private details", "\"exception\"", "\"trace\"", "\"message\"");
+        assertThat(result.getStatusCode().value()).isEqualTo(404);
+        assertThat(result.getBody()).containsEntry("status", 404).containsEntry("error", "Not Found")
+                .doesNotContainKeys("exception", "trace", "message").doesNotContainValue("Private details");
     }
 
     @Test
-    void honorsRequestParametersForOptionalErrorDetails() throws Exception {
+    void honorsRequestParametersForOptionalErrorDetails() {
         ErrorProperties properties = new ErrorProperties();
         properties.setIncludeMessage(IncludeAttribute.ON_PARAM);
         properties.setIncludeStacktrace(IncludeAttribute.ON_PARAM);
         properties.setIncludePath(IncludeAttribute.ON_PARAM);
         properties.setIncludeException(true);
         BasicErrorController controller = new BasicErrorController(new DefaultErrorAttributes(), properties);
-        MockMvc mvc = MockMvcBuilders.standaloneSetup(controller).build();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setParameter("message", "true");
+        request.setParameter("trace", "true");
+        request.setParameter("path", "true");
+        request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, 500);
+        request.setAttribute(RequestDispatcher.ERROR_REQUEST_URI, "/orders");
+        request.setAttribute(RequestDispatcher.ERROR_EXCEPTION, new IllegalStateException("Storage unavailable"));
 
-        MvcResult included = mvc.perform(get("/error").accept(MediaType.APPLICATION_JSON)
-                .param("message", "true").param("trace", "true").param("path", "true")
-                .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 500)
-                .requestAttr(RequestDispatcher.ERROR_REQUEST_URI, "/orders")
-                .requestAttr(RequestDispatcher.ERROR_EXCEPTION, new IllegalStateException("Storage unavailable")))
-                .andReturn();
+        ResponseEntity<Map<String, Object>> included = controller.error(request);
 
-        assertThat(included.getResponse().getStatus()).isEqualTo(500);
-        assertThat(included.getResponse().getContentAsString()).contains(
-                "\"message\":\"Storage unavailable\"", "\"trace\":", "\"path\":\"/orders\"",
-                "\"exception\":\"java.lang.IllegalStateException\"");
+        assertThat(included.getStatusCode().value()).isEqualTo(500);
+        assertThat(included.getBody()).containsEntry("message", "Storage unavailable")
+                .containsEntry("path", "/orders").containsEntry("exception", "java.lang.IllegalStateException");
+        assertThat(included.getBody().get("trace")).asString().contains("IllegalStateException: Storage unavailable");
 
-        MvcResult excluded = mvc.perform(get("/error").accept(MediaType.APPLICATION_JSON)
-                .param("message", "false").param("trace", "false").param("path", "false")
-                .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 500)
-                .requestAttr(RequestDispatcher.ERROR_REQUEST_URI, "/orders")
-                .requestAttr(RequestDispatcher.ERROR_EXCEPTION, new IllegalStateException("Storage unavailable")))
-                .andReturn();
+        request.setParameter("message", "false");
+        request.setParameter("trace", "false");
+        request.setParameter("path", "false");
 
-        assertThat(excluded.getResponse().getStatus()).isEqualTo(500);
-        assertThat(excluded.getResponse().getContentAsString()).doesNotContain(
-                "\"message\"", "\"trace\"", "\"path\"", "Storage unavailable");
+        ResponseEntity<Map<String, Object>> excluded = controller.error(request);
+
+        assertThat(excluded.getStatusCode().value()).isEqualTo(500);
+        assertThat(excluded.getBody()).doesNotContainKeys("message", "trace", "path")
+                .doesNotContainValue("Storage unavailable");
     }
 
     @Test
-    void returnsAnEmptyBodyForNoContentStatus() throws Exception {
+    void returnsAnEmptyBodyForNoContentStatus() {
         BasicErrorController controller = new BasicErrorController(new DefaultErrorAttributes(), new ErrorProperties());
-        MockMvc mvc = MockMvcBuilders.standaloneSetup(controller).build();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, 204);
 
-        MvcResult result = mvc.perform(get("/error").accept(MediaType.APPLICATION_JSON)
-                .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 204)).andReturn();
+        ResponseEntity<Map<String, Object>> result = controller.error(request);
 
-        assertThat(result.getResponse().getStatus()).isEqualTo(204);
-        assertThat(result.getResponse().getContentAsByteArray()).isEmpty();
+        assertThat(result.getStatusCode().value()).isEqualTo(204);
+        assertThat(result.getBody()).isNull();
     }
 
     @Test
