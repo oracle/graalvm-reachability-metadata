@@ -8,6 +8,7 @@ package org.graalvm.internal.tck.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.classfile.ClassFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -35,6 +36,7 @@ public abstract class JarUtils {
     private static final String MODULE_INFO = "module-info.class";
     private static final String META_INF_VERSIONS = "META-INF/versions/";
     private static final Pattern VERSIONED_ENTRY = Pattern.compile("META-INF/versions/([1-9][0-9]{0,8})/(.+)");
+    private static final ClassFile CLASS_FILE = ClassFile.of();
 
     /**
      * Returns whether a resolved artifact is the main JAR eligible for the coverage
@@ -55,6 +57,11 @@ public abstract class JarUtils {
     /// file per class: the base classes, then each `META-INF/versions/<v>/` overlay with
     /// `v <= runtimeMajor` in ascending order and its prefix stripped, so the newest one wins.
     ///
+    /// A class loader finds a class only at its binary name, so an entry whose path, after any
+    /// overlay prefix, is not the name its class file declares is skipped. Such a copy under a
+    /// foreign prefix, like `jaxb-xjc`'s `1.0/com/sun/tools/xjc/ErrorReceiver.class`, would hand
+    /// JaCoCo two different classes of one name.
+    ///
     /// Entries are read with `java.util.zip` and their timestamps are ignored, so a JAR stamped
     /// before 1970, which Gradle's `zipTree` copy rejects, extracts like any other.
     /// §AR-test-harness.8
@@ -72,7 +79,9 @@ public abstract class JarUtils {
                     continue;
                 }
                 if (!name.startsWith(META_INF_VERSIONS)) {
-                    baseClasses.put(name, entry);
+                    if (!isMisplaced(zipFile, entry, name)) {
+                        baseClasses.put(name, entry);
+                    }
                     continue;
                 }
                 Matcher versioned = VERSIONED_ENTRY.matcher(name);
@@ -80,8 +89,9 @@ public abstract class JarUtils {
                     continue;
                 }
                 int version = Integer.parseInt(versioned.group(1));
-                if (version <= runtimeMajor) {
-                    overlays.computeIfAbsent(version, v -> new TreeMap<>()).put(versioned.group(2), entry);
+                String path = versioned.group(2);
+                if (version <= runtimeMajor && !isMisplaced(zipFile, entry, path)) {
+                    overlays.computeIfAbsent(version, v -> new TreeMap<>()).put(path, entry);
                 }
             }
 
@@ -99,6 +109,23 @@ public abstract class JarUtils {
                 }
             }
         }
+    }
+
+    /// Returns whether the class file of `entry` declares a binary name other than the one `path`
+    /// names. One the JDK cannot parse is not known to be misplaced, so it is extracted as before
+    /// and left for JaCoCo to judge, rather than silently dropped from the denominator.
+    private static boolean isMisplaced(ZipFile zipFile, ZipEntry entry, String path) throws IOException {
+        byte[] classFile;
+        try (InputStream input = zipFile.getInputStream(entry)) {
+            classFile = input.readAllBytes();
+        }
+        String binaryName;
+        try {
+            binaryName = CLASS_FILE.parse(classFile).thisClass().asInternalName();
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        return !path.equals(binaryName + CLASS_SUFFIX);
     }
 
     /**
