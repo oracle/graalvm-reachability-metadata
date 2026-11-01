@@ -7,10 +7,25 @@
 package org_springframework.spring;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.support.GenericApplicationContext;
 
-class SpringTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SpringTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void managesConfiguredApplicationBean() {
+        GenericApplicationContext context = new GenericApplicationContext();
+        RootBeanDefinition definition = new RootBeanDefinition(TestBeans.Person.class);
+        definition.getPropertyValues().addPropertyValue("name", "application");
+        context.registerBeanDefinition("person", definition);
+        try {
+            context.refresh();
+            TestBeans.Person person = (TestBeans.Person) context.getBean("person");
+            assertEquals("application", person.getName());
+            assertSame(person, context.getBean("person"));
+        } finally {
+            context.close();
+        }
     }
 }
