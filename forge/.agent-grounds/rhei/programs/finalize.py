@@ -5,8 +5,9 @@
 
 """The `finalize` program: the metadata check, style, stats, the reviewer and pre-publication gates.
 
-Each runs once. `splitTestOnlyMetadata` and `routeForeignMetadata` run first,
-after the last regeneration, then `checkMetadataFiles` judges what they leave
+Each runs once, and a Gradle step a stale daemon fails reruns once (`run_lane`).
+`splitTestOnlyMetadata` and `routeForeignMetadata` run first, after the last
+regeneration, then `checkMetadataFiles` judges what they leave
 (§AR-forge-workflow-pipeline.5); then `spotlessApply`, `spotlessCheck`,
 `checkstyle`, and `generateLibraryStats` over the coordinate, the reviewer gates
 (§FS-local-ci-equivalent-verification.1.1), and, on the run rebased onto
@@ -20,8 +21,10 @@ command (§AR-forge-workflow-pipeline.4.4), up to `finalize_fixes` requests
 from __future__ import annotations
 
 import json
+from functools import partial
 from typing import Any
 
+from utility_scripts.gradle_daemons import run_with_stale_daemon_retry
 from utility_scripts.local_ci_verification import (
     CommandRecord,
     LocalCIVerificationError,
@@ -72,10 +75,16 @@ def native_lanes(state: RunState) -> list[dict[str, Any]]:
 
 
 def run_lane(workspace: str, state: RunState, prefix: str) -> list[handoff.Failure]:
-    """Run each step once, stopping at the first that fails; a pass checkpoints and records the gate."""
+    """Run each step, stopping at the first that fails; a pass checkpoints and records the gate.
+
+    A step a stale daemon fails before Gradle creates its task reruns once after
+    the daemons of the worktree's Gradle home stop, and only the rerun's result
+    counts (§FS-local-ci-equivalent-verification.1).
+    """
     for step in STEPS:
-        result: TaskResult = run_gradle(state.worktree, step_arguments(step, state),
-                                        runtime_path(workspace, "logs", f"{prefix}-{step[0]}.log"))
+        result: TaskResult = run_with_stale_daemon_retry(state.worktree, state.coordinate, partial(
+            run_gradle, state.worktree, step_arguments(step, state),
+            runtime_path(workspace, "logs", f"{prefix}-{step[0]}.log")))
         if not result.ok:
             return [handoff.Failure(result.command, result.tail)]
     breached: list[handoff.Failure] = gates.failures(workspace, state)

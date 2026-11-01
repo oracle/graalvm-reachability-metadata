@@ -13,11 +13,11 @@ gates, which rerun once after recycling it.
 
 from __future__ import annotations
 
-import shlex
 from collections.abc import Callable
+from typing import Protocol, TypeVar
 
 from utility_scripts.gradle_environment import gradle_command_environment, gradle_user_home_for_repo
-from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.task_logs import display_log_path
 
@@ -27,6 +27,17 @@ STALE_DAEMON_FAILURE_MARKERS = (
     "NoClassDefFoundError",
 )
 _STAGE = "gradle-daemons"
+
+
+class GradleRun(Protocol):
+    """What the stale-daemon retry reads of one Gradle run: its command, verdict, and full output."""
+
+    command: str
+    ok: bool
+    output: str
+
+
+GradleRunT = TypeVar("GradleRunT", bound=GradleRun)
 
 
 def stop_gradle_daemons(repo_path: str, subject: str | None, reason: str) -> bool:
@@ -83,18 +94,20 @@ def is_stale_daemon_failure(output: str) -> bool:
 def run_with_stale_daemon_retry(
         repo_path: str,
         subject: str | None,
-        run: Callable[[], LoggedCommandResult],
-) -> LoggedCommandResult:
+        run: Callable[[], GradleRunT],
+) -> GradleRunT:
     """Run one Gradle gate, recycling the daemons and rerunning once on a stale-daemon failure.
 
+    The daemons stopped are those of the Gradle user home a build under
+    `repo_path` uses, a worktree's own, and only the rerun's result is returned.
     §FS-local-ci-equivalent-verification.1
     """
     result = run()
-    if result.returncode == 0 or not is_stale_daemon_failure(result.stdout):
+    if result.ok or not is_stale_daemon_failure(result.output):
         return result
     log_stage(
         _STAGE,
-        f"{shlex.join(result.args)} failed before its task could be created (stale Gradle daemon); "
+        f"{result.command} failed before its task could be created (stale Gradle daemon); "
         "stopping the daemons and rerunning once",
     )
     stop_gradle_daemons(repo_path, subject, "stale daemon failure")

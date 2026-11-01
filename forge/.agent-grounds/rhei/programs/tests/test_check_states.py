@@ -12,6 +12,8 @@
 splits and routes before its check and may ask `finalize_fixes` times; `native` may
 ask `native_fixes` times, and its `cannot-fix` spends the next request. An audit
 edit reruns `test` and the lane, never regenerating (§AR-forge-workflow-pipeline.4.3).
+A `finalize` step a stale daemon fails reruns once after the daemons of the
+worktree's Gradle home stop (§FS-local-ci-equivalent-verification.1).
 """
 from __future__ import annotations
 
@@ -30,6 +32,7 @@ from test_prepare import prepare_arguments
 
 import forge_run  # noqa: E402
 import index_record  # noqa: E402
+from utility_scripts.gradle_environment import gradle_user_home_for_repo  # noqa: E402
 from utility_scripts.local_ci_verification import LocalCIVerificationError, LocalCIVerificationResult  # noqa: E402
 from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa: E402
 from exit_codes import (  # noqa: E402
@@ -52,11 +55,18 @@ METADATA_STEPS: list[str] = ["splitTestOnlyMetadata", "routeForeignMetadata", "c
 
 class CheckStateTest(FinalizedRun):
 
-    def tasks(self, since: int = 0) -> list[str]:
-        """The tasks run outside a native lane, in order, from call `since` on."""
+    def tasks(self, since: int = 0, stops: bool = False) -> list[str]:
+        """The tasks run outside a native lane, in order, from call `since` on; with `stops`, daemon stops too."""
         with open(self.state.path("gradle-calls.log"), encoding="utf-8") as handle:
-            calls: list[str] = [line.split()[0] for line in handle if "[" not in line and line.strip() != "--stop"]
+            calls: list[str] = [line.split()[0] for line in handle
+                                if "[" not in line and (stops or line.strip() != "--stop")]
         return calls[since:]
+
+    def stale_daemon(self, task: str) -> None:
+        """Leave a daemon with stale build logic in the worktree's Gradle home; it fails `task` until stopped."""
+        with open(os.path.join(gradle_user_home_for_repo(self.state.worktree), "stale-daemon"), "w",
+                  encoding="utf-8") as handle:
+            handle.write(task)
 
     def fixed(self) -> int:
         """Play `fix` for the open request and route back."""
@@ -204,6 +214,35 @@ class CheckStateTest(FinalizedRun):
         self.assertEqual(OK, self.step("finalize"))
         self.assertEqual([*METADATA_STEPS, "spotlessApply"], self.tasks(before)[:4])
         self.assertEqual(1, self.gradle_calls("checkMetadataFiles"))
+
+    def test_a_stale_daemon_is_stopped_and_its_step_rerun_once(self) -> None:
+        self.repaired()
+        self.stale_daemon("splitTestOnlyMetadata")
+        before: int = len(self.tasks(stops=True))
+        self.assertEqual(OK, self.step("finalize"))
+        # The rerun passes only because the stop reached the home the step builds in.
+        self.assertEqual(["splitTestOnlyMetadata", "--stop", *METADATA_STEPS, "spotlessApply"],
+                         self.tasks(before, stops=True)[:6])
+        self.assertEqual(0, self.state.finalize_requests)
+
+    def test_only_the_rerun_of_a_stale_daemon_step_reaches_the_fix_request(self) -> None:
+        self.repaired()
+        self.stale_daemon("checkMetadataFiles")
+        self.fake.control({"checkFails": True})
+        before: int = len(self.tasks(stops=True))
+        self.assertEqual(AGENT_WORK, self.step("finalize"))
+        self.assertEqual([*METADATA_STEPS, "--stop", "checkMetadataFiles"], self.tasks(before, stops=True))
+        output: str = self.read("fix-request.md").split("## Output", 1)[1]
+        self.assertIn("TypeReached: org.other.Type", output)
+        self.assertNotIn("Could not generate a decorated class", output)
+        self.assertEqual(1, self.state.finalize_requests)
+
+    def test_a_step_that_fails_after_its_task_exists_is_not_rerun(self) -> None:
+        self.repaired()
+        self.fake.control({"checkFails": True})
+        before: int = len(self.tasks(stops=True))
+        self.assertEqual(AGENT_WORK, self.step("finalize"))
+        self.assertEqual(METADATA_STEPS, self.tasks(before, stops=True))
 
     def test_a_fix_that_exposes_the_next_step_gets_another_request(self) -> None:
         self.repaired()
