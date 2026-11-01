@@ -18,6 +18,7 @@ import os
 import subprocess
 import tempfile
 import unittest
+from datetime import datetime, timezone
 from unittest.mock import ANY, Mock, patch
 
 import forge_metadata
@@ -26,11 +27,17 @@ from tests.test_gradle_environment import _init_git_repo_with_worktree
 from utility_scripts.gradle_environment import FORGE_GRADLE_USER_HOME_ENV, gradle_command_environment
 
 FORGE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# When a test claim was made: after the assignment GitHub records for it.
+CLAIMED_AT: datetime = datetime(2026, 10, 31, 9, 4, 40, tzinfo=timezone.utc)
 
 
 def issue(number: int, *labels: str) -> dict:
     return {"number": number, "title": f"Support org.example:lib{number}:1.0.0",
             "labels": [{"name": name} for name in labels], "assignees": []}
+
+
+def new_claim(number: int, label: str = "library-new-request", item_id: str = "item") -> run_launch.Claim:
+    return run_launch.Claim(issue=issue(number, label), label=label, item_id=item_id, claimed_at=CLAIMED_AT)
 
 
 class FetchTest(unittest.TestCase):
@@ -162,13 +169,12 @@ class TargetTest(unittest.TestCase):
 class CloseOutTest(unittest.TestCase):
 
     def close_out(self, outcome: dict) -> tuple[list, list, list]:
-        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         with patch.object(run_launch, "add_issue_label") as label, \
                 patch.object(run_launch, "post_issue_comment") as comment, \
                 patch.object(run_launch, "revert_issue_claim") as revert, \
                 patch.object(run_launch, "release_closed_issue_claim") as self.released, \
                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-            run_launch.close_out(claimed, outcome)
+            run_launch.close_out(new_claim(7), outcome)
         return label.call_args_list, comment.call_args_list, revert.call_args_list
 
     def test_completed_run_keeps_the_claim_for_the_pull_request(self) -> None:
@@ -255,7 +261,6 @@ class CloseOutTest(unittest.TestCase):
 
     def test_an_unreachable_github_at_close_out_does_not_stop_the_launcher(self) -> None:
         # The release's own reads fail on the outage that ended the run (#9622).
-        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
         with tempfile.TemporaryDirectory() as releases, patch.object(pending_releases, "RELEASES", releases), \
                 patch.object(issue_claiming, "set_item_status", side_effect=outage), \
@@ -264,31 +269,29 @@ class CloseOutTest(unittest.TestCase):
                 patch.object(issue_claiming, "get_issue_assignees", side_effect=outage), \
                 patch.object(issue_claiming.time, "sleep"), \
                 contextlib.redirect_stderr(io.StringIO()) as stderr:
-            run_launch.close_out(claimed, {"outcome": "failed", "kind": "infrastructure", "reason": "x"})
+            run_launch.close_out(new_claim(7), {"outcome": "failed", "kind": "infrastructure", "reason": "x"})
             self.assertTrue(pending_releases.is_release_pending(7))  # §FS-forge-stranded-claims.4.2
         self.assertIn("Issue #7: failed (x); claim release unconfirmed.", stderr.getvalue())
 
     def test_a_label_github_refuses_keeps_the_claim_that_holds_the_issue(self) -> None:
         # Released unlabeled, the issue would be claimed again and fail the same way.
-        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
         with patch.object(run_launch, "add_issue_label", side_effect=outage), \
                 patch.object(run_launch, "post_issue_comment") as comment, \
                 patch.object(run_launch, "revert_issue_claim") as revert, \
                 contextlib.redirect_stderr(io.StringIO()) as stderr:
-            run_launch.close_out(claimed, {"outcome": "human-intervention", "reason": "native still fails"})
+            run_launch.close_out(new_claim(7), {"outcome": "human-intervention", "reason": "native still fails"})
         comment.assert_not_called()
         revert.assert_not_called()
         self.assertIn("could not be labeled human-intervention; the claim is kept", stderr.getvalue())
 
     def test_a_comment_github_refuses_still_releases_the_labeled_issue(self) -> None:
-        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         outage = subprocess.CalledProcessError(1, ["gh"], output="", stderr="error connecting to api.github.com")
         with patch.object(run_launch, "add_issue_label"), \
                 patch.object(run_launch, "post_issue_comment", side_effect=outage), \
                 patch.object(run_launch, "revert_issue_claim", return_value=True) as revert, \
                 contextlib.redirect_stderr(io.StringIO()) as stderr:
-            run_launch.close_out(claimed, {"outcome": "human-intervention", "reason": "native still fails"})
+            run_launch.close_out(new_claim(7), {"outcome": "human-intervention", "reason": "native still fails"})
         revert.assert_called_once_with("item", 7, "native still fails")
         self.assertIn("Issue #7 intervention comment could not be posted", stderr.getvalue())
         self.assertIn("claim released.", stderr.getvalue())
@@ -388,16 +391,15 @@ class ReleaseTest(unittest.TestCase):
         self.assertFalse(self.has_branch())
 
     def test_an_attempt_whose_launcher_died_is_resumed_in_its_worktree(self) -> None:
-        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
         forge: str = os.path.dirname(os.path.dirname(self.workspace))
         with patch.object(run_launch.subprocess, "run") as run:
-            started = run_launch.start_run(forge, claimed, "claude-code:sonnet", "pi:x/y", [])
+            started = run_launch.start_run(forge, new_claim(7), "claude-code:sonnet", "pi:x/y", [])
         self.assertEqual(self.workspace, started.workspace)
         self.assertEqual([["rhei", "run", self.workspace, "--dashboard"]], [call.args[0] for call in run.call_args_list])
         self.assertTrue(os.path.isdir(self.worktree))
 
     def test_the_launcher_releases_a_returned_run_before_its_close_out(self) -> None:
-        claimed = run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        claimed = new_claim(7)
         steps = Mock()
         steps.finish_run.return_value = {"outcome": "completed"}
         started = run_launch.Started(workspace=self.workspace, advanced=True)
