@@ -9,13 +9,8 @@ package org_jboss_resteasy.resteasy_multipart_provider;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
+import java.util.Optional;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
@@ -25,11 +20,16 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.EntityPart;
 import jakarta.ws.rs.core.MediaType;
 
-import io.undertow.Undertow;
-
+import org.jboss.resteasy.core.ResteasyContext;
+import org.jboss.resteasy.mock.MockDispatcherFactory;
+import org.jboss.resteasy.mock.MockHttpRequest;
+import org.jboss.resteasy.mock.MockHttpResponse;
+import org.jboss.resteasy.plugins.providers.StringTextStar;
 import org.jboss.resteasy.plugins.providers.multipart.EntityPartFilter;
-import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
+import org.jboss.resteasy.spi.Dispatcher;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.resteasy.spi.multipart.MultipartContent;
+import org.jboss.resteasy.util.DelegatingHttpRequest;
 import org.junit.jupiter.api.Test;
 
 public class EntityPartFilterTest {
@@ -49,33 +49,30 @@ public class EntityPartFilterTest {
                 --upload-boundary--
                 """;
         ResteasyProviderFactory previous = ResteasyProviderFactory.peekInstance();
-        UploadServer server = new UploadServer();
-        server.getDeployment().getResources().add(new UploadResource());
-        server.getDeployment().getProviderClasses().add(EntityPartFilter.class.getName());
-        try {
-            server.start(Undertow.builder()
-                    .addHttpListener(0, "127.0.0.1")
-                    .setIoThreads(1)
-                    .setWorkerThreads(2));
-            server.deploy();
-            try (HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(20)).build()) {
-                HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + server.boundPort() + "/upload"))
-                        .timeout(Duration.ofSeconds(20))
-                        .header("Content-Type", "multipart/form-data; boundary=upload-boundary")
-                        .POST(HttpRequest.BodyPublishers.ofString(body.replace("\n", "\r\n"), StandardCharsets.UTF_8))
-                        .build();
+        try (ResteasyContext.CloseableContext context = ResteasyContext.addCloseableContextDataLevel()) {
+            Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
+            dispatcher.getProviderFactory().registerProvider(StringTextStar.class);
+            dispatcher.getProviderFactory().registerProvider(EntityPartFilter.class);
+            dispatcher.getRegistry().addSingletonResource(new UploadResource());
+            MockHttpRequest request = MockHttpRequest.post("/upload")
+                    .contentType("multipart/form-data; boundary=upload-boundary")
+                    .content(body.replace("\n", "\r\n").getBytes(StandardCharsets.UTF_8));
+            MockHttpResponse response = new MockHttpResponse();
 
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            // MockHttpRequest lacks the servlet transport's multipart-context lookup.
+            dispatcher.invoke(new DelegatingHttpRequest(request) {
+                @Override
+                public Optional<EntityPart> getFormEntityPart(String name) {
+                    MultipartContent content = ResteasyContext.getContextData(MultipartContent.class);
+                    assertThat(content).isNotNull();
+                    return content.entityPart(name);
+                }
+            }, response);
 
-                assertThat(response.statusCode()).isEqualTo(200);
-                assertThat(response.body()).isEqualTo("attachment|report.txt|text/plain|Analytical engine report");
-            }
+            assertThat(response.getStatus()).isEqualTo(200);
+            assertThat(response.getContentAsString()).isEqualTo("attachment|report.txt|text/plain|Analytical engine report");
         } finally {
-            try {
-                server.stop();
-            } finally {
-                ResteasyProviderFactory.setInstance(previous);
-            }
+            ResteasyProviderFactory.setInstance(previous);
         }
     }
 
@@ -93,13 +90,6 @@ public class EntityPartFilterTest {
             MediaType mediaType = attachment.getMediaType();
             return attachment.getName() + "|" + attachment.getFileName().orElseThrow() + "|"
                     + mediaType.getType() + "/" + mediaType.getSubtype() + "|" + attachment.getContent(String.class);
-        }
-    }
-
-    private static class UploadServer extends UndertowJaxrsServer {
-        int boundPort() {
-            InetSocketAddress address = (InetSocketAddress) server.getListenerInfo().get(0).getAddress();
-            return address.getPort();
         }
     }
 }
