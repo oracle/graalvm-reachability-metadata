@@ -45,6 +45,12 @@ it, so a host that broke during the loop cannot claim and fail its way through
 the queue. Every third run, and whenever no issue can be claimed, it reviews
 the open real-use pull requests (§FS-real-use-test-generation.4).
 
+Every run and review sees the environment CI runs the suite in: the `C.UTF-8`
+locale and the `UTC` time zone, whatever the host's own. A scenario that holds
+only under the host's default locale or time zone is not reproducible
+(§root/FS-repository-functional-spec.6), and on the host it fails while an
+agent of the run can still fix it, instead of in CI after publication.
+
 ## 2. Phases
 
 ### 2.1 Prepare
