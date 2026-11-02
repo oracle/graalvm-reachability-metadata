@@ -97,6 +97,9 @@ agent_model="${BASH_REMATCH[5]}"
 agent_executable="pi"
 [[ "$agent_family" == "pi" ]] || agent_executable="claude"
 
+# Runs see CI's locale and time zone, the GitHub runners' defaults (§FS-real-use-test-generation.1).
+export LC_ALL=C.UTF-8 TZ=UTC
+
 # Gradle and the native-image agent run on JAVA_HOME, so both name the checked GraalVM.
 export GRAALVM_HOME="${GRAALVM_HOME:-${JAVA_HOME:-}}"
 export JAVA_HOME="${JAVA_HOME:-$GRAALVM_HOME}"

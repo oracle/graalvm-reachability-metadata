@@ -20,7 +20,10 @@ Its `--scenario-passes` option, by default the template's 15, is every run's
 integer, as the template does, and passes it to `rhei instantiate`.
 Before that gate the launcher fills whichever of `JAVA_HOME` and
 `GRAALVM_HOME` is unset from the other and rejects two different
-installations.
+installations. It also exports `LC_ALL=C.UTF-8` and `TZ=UTC`, the GitHub
+runners' defaults, so Rhei, the agents, Gradle, and every JVM and native test
+binary they start see CI's default locale and time zone
+(§FS-real-use-test-generation.1).
 
 It then runs the `claim` program with Forge's interpreter and Forge on the
 path. The program lists the candidates with `gh issue list`, orders them as
