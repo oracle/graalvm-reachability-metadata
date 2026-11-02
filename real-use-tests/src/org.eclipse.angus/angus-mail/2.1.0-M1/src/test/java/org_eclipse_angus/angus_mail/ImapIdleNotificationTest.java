@@ -116,6 +116,11 @@ class ImapIdleNotificationTest {
                 });
                 idleManager.watch(inbox);
                 assertTrue(idleTaskStarted.await(10, TimeUnit.SECONDS));
+                long idleDeadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
+                while (!idleManager.isRunning() && System.nanoTime() < idleDeadline) {
+                    Thread.yield();
+                }
+                assertTrue(idleManager.isRunning());
 
                 sendMessage("Build completed while watched",
                         "The idle mail worker noticed this delivery.");
