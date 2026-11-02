@@ -46,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ColdChainTelemetryReconnectTest {
 
-    private static final String NATS_IMAGE = "nats:2.15.1";
+    private static final String NATS_IMAGE = "nats:2.15.2";
 
     private static final String SUBJECTS = "telemetry.truck-7.>";
 
