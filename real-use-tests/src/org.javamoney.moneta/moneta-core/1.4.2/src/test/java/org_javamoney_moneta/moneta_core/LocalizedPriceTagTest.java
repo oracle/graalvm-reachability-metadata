@@ -26,18 +26,24 @@ public class LocalizedPriceTagTest {
     @Test
     @Timeout(60)
     public void formatsAndParsesCatalogPriceForStoreLocale() {
-        CurrencyUnit usd = Monetary.getCurrency("USD");
-        Money catalogPrice = Money.of(new BigDecimal("12345.67"), usd);
-        MonetaryAmountFormat priceFormat = MonetaryAmountDecimalFormatBuilder
-                .of("$#,##0.00", Locale.US)
-                .withCurrencyUnit(usd)
-                .build();
+        Locale previousLocale = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+        try {
+            CurrencyUnit usd = Monetary.getCurrency("USD");
+            Money catalogPrice = Money.of(new BigDecimal("12345.67"), usd);
+            MonetaryAmountFormat priceFormat = MonetaryAmountDecimalFormatBuilder
+                    .of("$#,##0.00", Locale.US)
+                    .withCurrencyUnit(usd)
+                    .build();
 
-        String priceTag = priceFormat.format(catalogPrice);
-        Money parsedPrice = Money.from(priceFormat.parse(priceTag));
+            String priceTag = priceFormat.format(catalogPrice);
+            Money parsedPrice = Money.from(priceFormat.parse(priceTag));
 
-        assertThat(priceTag).isEqualTo("$12,345.67");
-        assertThat(parsedPrice).isEqualTo(catalogPrice);
-        assertThat(parsedPrice.getCurrency()).isEqualTo(usd);
+            assertThat(priceTag).isEqualTo("$12,345.67");
+            assertThat(parsedPrice).isEqualTo(catalogPrice);
+            assertThat(parsedPrice.getCurrency()).isEqualTo(usd);
+        } finally {
+            Locale.setDefault(previousLocale);
+        }
     }
 }
