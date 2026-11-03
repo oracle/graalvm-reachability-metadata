@@ -12,6 +12,17 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.apache.tika:tika-core:$libraryVersion"
+
+    // Applications commonly persist extracted metadata as JSON.
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.18.3"
+    // Tika's charset detection can use ICU's broader charset catalog.
+    testImplementation "com.ibm.icu:icu4j-charset:77.1"
+    // Application file pipelines commonly compose Tika with Commons IO.
+    testImplementation "commons-io:commons-io:2.22.0"
+    // Tika emits application diagnostics through SLF4J.
+    testImplementation "org.slf4j:slf4j-simple:2.0.18"
+    // XML-oriented Tika consumers may select Xerces as their SAX provider.
+    testImplementation "xerces:xercesImpl:2.12.2"
 }
 
 graalvmNative {
