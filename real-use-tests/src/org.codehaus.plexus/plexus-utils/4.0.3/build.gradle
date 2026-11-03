@@ -1,0 +1,36 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.codehaus.plexus:plexus-utils:$libraryVersion"
+    // Parse and emit application XML configuration alongside Plexus utility I/O.
+    testImplementation "org.codehaus.plexus:plexus-xml:3.0.1"
+}
+
+graalvmNative {
+    binaries {
+        test {
+            runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+        }
+    }
+    tasks.named("nativeTest") {
+        runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
