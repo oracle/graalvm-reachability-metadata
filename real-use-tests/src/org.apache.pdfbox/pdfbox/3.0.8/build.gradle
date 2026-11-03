@@ -1,0 +1,33 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.pdfbox:pdfbox:$libraryVersion"
+    // PDF signing and public-key encryption use PDFBox's documented Bouncy Castle integration.
+    testImplementation "org.bouncycastle:bcprov-jdk18on:1.84"
+    testImplementation "org.bouncycastle:bcpkix-jdk18on:1.84"
+    // Applications processing scanned PDFs may need ImageIO providers for embedded image formats.
+    testImplementation "org.apache.pdfbox:jbig2-imageio:3.0.5"
+    testImplementation "com.github.jai-imageio:jai-imageio-core:1.4.0"
+    testImplementation "com.github.jai-imageio:jai-imageio-jpeg2000:1.4.0"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
