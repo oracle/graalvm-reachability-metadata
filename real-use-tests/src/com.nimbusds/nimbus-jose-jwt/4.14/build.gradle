@@ -11,7 +11,12 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "com.nimbusds:nimbus-jose-jwt:$libraryVersion"
+    testImplementation("com.nimbusds:nimbus-jose-jwt:$libraryVersion") {
+        exclude group: 'commons-io', module: 'commons-io'
+    }
+    testImplementation 'commons-io:commons-io:2.11.0'
+    // Nimbus exposes Bouncy Castle-backed algorithms as an optional integration.
+    testImplementation "org.bouncycastle:bcprov-jdk15on:1.70"
 }
 
 graalvmNative {
