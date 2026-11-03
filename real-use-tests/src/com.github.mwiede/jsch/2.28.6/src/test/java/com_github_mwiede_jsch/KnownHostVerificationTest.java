@@ -1,0 +1,210 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package com_github_mwiede_jsch;
+
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.HostKey;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+/**
+ * Known-host verification lets an application pin an SSH server key before running a maintenance
+ * command on a newly discovered endpoint.
+ */
+public class KnownHostVerificationTest {
+    private static final String HOST = "127.0.0.1";
+    private static final String USER = "reporting";
+    private static final String PASSWORD = "reporting-secret";
+    private static final String IMAGE = "atmoz/sftp:alpine";
+    private static final int OPERATION_TIMEOUT_MILLIS = 20_000;
+
+    private static SshServer server;
+
+    @BeforeAll
+    static void startSshServer() throws Exception {
+        server = SshServer.start();
+    }
+
+    @AfterAll
+    static void stopSshServer() throws Exception {
+        if (server != null) {
+            server.close();
+        }
+    }
+
+    @Test
+    @Timeout(180)
+    void verifiesThePinnedHostKeyBeforeRunningACommand() throws Exception {
+        JSch discoveryClient = new JSch();
+        Session discoverySession = discoveryClient.getSession(USER, HOST, server.port());
+        discoverySession.setPassword(PASSWORD);
+        discoverySession.setConfig("StrictHostKeyChecking", "no");
+        discoverySession.connect(OPERATION_TIMEOUT_MILLIS);
+        HostKey discoveredKey;
+        try {
+            discoveredKey = discoverySession.getHostKey();
+            assertNotNull(discoveredKey);
+        } finally {
+            discoverySession.disconnect();
+        }
+
+        String knownHost = discoveredKey.getHost() + " " + discoveredKey.getType() + " "
+                + discoveredKey.getKey() + "\n";
+        JSch verifiedClient = new JSch();
+        verifiedClient.setKnownHosts(new ByteArrayInputStream(
+                knownHost.getBytes(StandardCharsets.US_ASCII)));
+        Session verifiedSession = verifiedClient.getSession(USER, HOST, server.port());
+        verifiedSession.setPassword(PASSWORD);
+        verifiedSession.setConfig("StrictHostKeyChecking", "yes");
+        verifiedSession.setTimeout(OPERATION_TIMEOUT_MILLIS);
+        verifiedSession.connect(OPERATION_TIMEOUT_MILLIS);
+
+        ChannelExec command = (ChannelExec) verifiedSession.openChannel("exec");
+        try {
+            command.setCommand("printf 'trusted-host\\n'; exit 0");
+            InputStream output = command.getInputStream();
+            command.connect(OPERATION_TIMEOUT_MILLIS);
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            output.transferTo(result);
+            awaitClosed(command);
+            assertEquals("trusted-host\n", result.toString(StandardCharsets.UTF_8));
+            assertEquals(0, command.getExitStatus());
+        } finally {
+            command.disconnect();
+            verifiedSession.disconnect();
+        }
+    }
+
+    private static void awaitClosed(ChannelExec command) {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
+        while (!command.isClosed() && System.nanoTime() < deadline) {
+            Thread.yield();
+        }
+        if (!command.isClosed()) {
+            throw new IllegalStateException("SSH command did not close before the deadline");
+        }
+    }
+
+    /** Starts the real OpenSSH server used by the application scenario. */
+    private static final class SshServer implements AutoCloseable {
+        private final String containerName;
+        private final int port;
+        private final Process container;
+
+        private SshServer(String containerName, int port, Process container) {
+            this.containerName = containerName;
+            this.port = port;
+            this.container = container;
+        }
+
+        static SshServer start() throws Exception {
+            int port = findAvailablePort();
+            String name = "jsch-real-use-" + UUID.randomUUID();
+            Process container = new ProcessBuilder(
+                    "docker", "run", "--rm", "--name", name,
+                    "-p", HOST + ":" + port + ":22",
+                    "-e", "SFTP_USERS=" + USER + ":" + PASSWORD + ":::upload", IMAGE,
+                    "/bin/sh", "-c", "sed -i -e '/^ForceCommand internal-sftp$/d' "
+                            + "-e '/^ChrootDirectory %h$/d' /etc/ssh/sshd_config"
+                            + " && exec /usr/sbin/sshd -D -e -o AllowTcpForwarding=yes")
+                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                    .redirectError(ProcessBuilder.Redirect.DISCARD)
+                    .start();
+            SshServer server = new SshServer(name, port, container);
+            try {
+                server.awaitSshBanner();
+                return server;
+            } catch (Exception exception) {
+                server.close();
+                throw exception;
+            }
+        }
+
+        int port() {
+            return port;
+        }
+
+        private void awaitSshBanner() throws Exception {
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(90);
+            IOException lastFailure = null;
+            while (System.nanoTime() < deadline) {
+                if (!container.isAlive()) {
+                    throw new IllegalStateException("SFTP container exited with code "
+                            + container.exitValue());
+                }
+                try (Socket socket = new Socket()) {
+                    socket.connect(new InetSocketAddress(HOST, port), 1_000);
+                    socket.setSoTimeout(1_000);
+                    String banner = readLine(socket);
+                    if (banner.startsWith("SSH-2.0-")) {
+                        return;
+                    }
+                } catch (IOException exception) {
+                    lastFailure = exception;
+                }
+            }
+            throw new IllegalStateException("SSH server did not become ready on " + HOST + ":" + port,
+                    lastFailure);
+        }
+
+        private static String readLine(Socket socket) throws IOException {
+            StringBuilder line = new StringBuilder();
+            int next;
+            while (line.length() < 256 && (next = socket.getInputStream().read()) >= 0) {
+                line.append((char) next);
+                if (next == '\n') {
+                    break;
+                }
+            }
+            return line.toString();
+        }
+
+        private static int findAvailablePort() throws IOException {
+            try (ServerSocket socket = new ServerSocket(0)) {
+                return socket.getLocalPort();
+            }
+        }
+
+        @Override
+        public void close() throws Exception {
+            Process remove = new ProcessBuilder("docker", "rm", "-f", containerName)
+                    .redirectErrorStream(true)
+                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                    .start();
+            if (!remove.waitFor(30, TimeUnit.SECONDS)) {
+                throw new IllegalStateException("docker rm timed out");
+            }
+            if (remove.exitValue() != 0) {
+                throw new IllegalStateException("docker rm failed with code " + remove.exitValue());
+            }
+            if (!container.waitFor(30, TimeUnit.SECONDS)) {
+                container.destroyForcibly();
+                if (!container.waitFor(10, TimeUnit.SECONDS)) {
+                    throw new IllegalStateException("SFTP container did not stop");
+                }
+            }
+        }
+    }
+}
