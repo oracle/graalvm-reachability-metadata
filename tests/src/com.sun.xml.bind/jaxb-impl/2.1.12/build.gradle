@@ -1,0 +1,39 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "com.sun.xml.bind:jaxb-impl:$libraryVersion"
+    testImplementation 'javax.xml.bind:jaxb-api:2.3.1'
+    testImplementation 'javax.activation:javax.activation-api:1.2.0'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    binaries {
+        test {
+            // Native Image initializes the com.sun.xml prefix at build time (GR-81039, oracle/graal#14848).
+            // Injector's initializer opens ClassLoader.defineClass, and the unmarshallers keep SAX
+            // helpers in static fields. Drop this once the fix reaches CI's GraalVM.
+            buildArgs.add('--initialize-at-run-time=com.sun.xml.bind.v2.runtime.reflect.opt.Injector,'
+                    + 'com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl,'
+                    + 'com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext')
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

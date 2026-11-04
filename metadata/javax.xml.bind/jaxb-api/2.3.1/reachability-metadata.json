@@ -17,6 +17,67 @@
         "typeReached" : "javax.xml.bind.util.Messages"
       },
       "bundle" : "javax.xml.bind.util.Messages"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.ContextFinder"
+      },
+      "glob" : "META-INF/services/javax.xml.bind.JAXBContext"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.ServiceLoaderUtil"
+      },
+      "glob" : "META-INF/services/javax.xml.bind.JAXBContextFactory"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.helpers.AbstractUnmarshallerImpl"
+      },
+      "glob" : "META-INF/services/javax.xml.parsers.SAXParserFactory"
+    }
+  ],
+  "reflection" : [
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.helpers.AbstractUnmarshallerImpl"
+      },
+      "type" : "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.ContextFinder"
+      },
+      "type" : "com.sun.xml.bind.v2.ContextFactory",
+      "methods" : [
+        {
+          "name" : "createContext",
+          "parameterTypes" : [
+            "java.lang.String",
+            "java.lang.ClassLoader",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name" : "createContext",
+          "parameterTypes" : [
+            "java.lang.Class[]",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.ServiceLoaderUtil"
+      },
+      "type" : "com.sun.xml.bind.v2.ContextFactory"
     }
   ]
 }

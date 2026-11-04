@@ -131,3 +131,10 @@ fetching it again rather than editing it by hand.
 - Resolution: Unresolved
 - Fix versions: none
 - Public links: https://github.com/oracle/graal/issues/14812
+
+## GR-81039: \[Native Image\] JDKInitializationFeature initializes every com.sun.xml class at build time, including non-JDK libraries such as jaxb-impl
+
+- Status: Open
+- Resolution: Unresolved
+- Fix versions: none
+- Public links: https://github.com/oracle/graal/issues/14848
