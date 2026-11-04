@@ -106,7 +106,7 @@ public class KeyboardInteractiveAuthenticationTest {
 
     /** Supplies the credential in response to the server's real login prompt. */
     private static final class LoginPrompts implements UserInfo, UIKeyboardInteractive {
-        private boolean answered;
+        private volatile boolean answered;
 
         boolean wasAnswered() {
             return answered;
