@@ -12,6 +12,21 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.dom4j:dom4j:$libraryVersion"
+
+    // XPath evaluation through dom4j's Jaxen integration.
+    testImplementation "jaxen:jaxen:1.1.6"
+
+    // XML Schema datatype validation through dom4j's datatype package.
+    testImplementation "net.java.dev.msv:xsdlib:2022.7"
+
+    // JAXB-backed application objects through dom4j's JAXB integration.
+    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:4.0.2"
+    testImplementation "org.glassfish.jaxb:jaxb-runtime:4.0.5"
+
+    // Alternative pull and streaming parsers supported by dom4j's IO adapters.
+    testImplementation "pull-parser:pull-parser:2.1.10"
+    testImplementation "xpp3:xpp3:1.1.4c"
+    testImplementation "com.fasterxml.woodstox:woodstox-core:7.1.0"
 }
 
 graalvmNative {
