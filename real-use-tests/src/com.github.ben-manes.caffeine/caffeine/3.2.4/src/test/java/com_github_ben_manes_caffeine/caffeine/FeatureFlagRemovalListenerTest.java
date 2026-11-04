@@ -32,6 +32,7 @@ public class FeatureFlagRemovalListenerTest {
                 auditTrail.add(new RemovalEvent(key, value, cause));
         Cache<String, FeatureFlag> flags = Caffeine.newBuilder()
                 .maximumSize(100)
+                .executor(Runnable::run)
                 .removalListener(listener)
                 .build();
         FeatureFlag checkout = new FeatureFlag("checkout", true);
