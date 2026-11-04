@@ -1,0 +1,329 @@
+{
+  "base_commit": "a92e752e8d8cf42f2befe06fa255918e24b3c61a",
+  "branch": "ai/kimeta/library-update-request-org.testcontainers-testcontainers-1.19.8-forge-8924-202610301757200000-21176803a3e9",
+  "follow_ups": [],
+  "forge": {
+    "branch": "mm/forge-lane-java-run",
+    "commit": "95114291698b93eaa6c3ebbebe29259250e92ad2",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 8924,
+  "library": {
+    "artifact": "testcontainers",
+    "coordinates": "org.testcontainers:testcontainers:1.19.8",
+    "group": "org.testcontainers",
+    "version": "1.19.8"
+  },
+  "local_ci_verification": {
+    "base_commit": "a92e752e8d8cf42f2befe06fa255918e24b3c61a",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "pullAllowedDockerImages",
+          "-Pcoordinates=org.testcontainers:testcontainers:1.19.8"
+        ],
+        "env": {},
+        "gate": "pull-allowed-docker-images",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests\n> Task :tck-build-logic:generatePluginAdapters\n> Task :tck-build-logic:compileJava\n\n> Task :tck-build-logic:compileGroovy\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\n\n> Task :tck-build-logic:compileGroovyPlugins\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes\n> Task :tck-build-logic:jar\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :pullAllowedDockerImages\nPulling docker image nginx:1-alpine-slim\n1-alpine-slim: Pulling from library/nginx\nDigest: sha256:f45171d36c76a8b2f5ef97108a3a8a2294248a6578a0a180edc2d78f7d2edc26\nStatus: Image is up to date for nginx:1-alpine-slim\ndocker.io/library/nginx:1-alpine-slim\nPulling docker image testcontainers/ryuk:0.14.0\n0.14.0: Pulling from testcontainers/ryuk\nDigest: sha256:7c1a8a9a47c780ed0f983770a662f80deb115d95cce3e2daa3d12115b8cd28f0\nStatus: Image is up to date for testcontainers/ryuk:0.14.0\ndocker.io/testcontainers/ryuk:0.14.0\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 20s\n9 actionable tasks: 7 executed, 2 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=org.testcontainers:testcontainers:1.19.8"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal"
+        },
+        "gate": "check-metadata-files",
+        "output_excerpt": "Starting a Gradle Daemon, 2 incompatible and 6 stopped Daemons could not be reused, use --status for details\n> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkMetadataFiles\nMetadata files check passed for org.testcontainers:testcontainers:1.19.8\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 13s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "bash",
+          "./.github/workflows/scripts/run-consecutive-tests.sh",
+          "org.testcontainers:testcontainers:1.19.8",
+          "[\"1.19.8\"]"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal"
+        },
+        "gate": "run-consecutive-tests",
+        "output_excerpt": ".8/build/test-results/test/testlist] and its subfolders.\n[2/8] Performing analysis...  [*****]                                                                   (58.4s @ 1.80GB)\n   14,720 types,  20,735 fields, and  69,700 methods found reachable\n    5,196 types,   2,490 fields, and  10,465 methods registered for reflection\n       98 types,     104 fields, and     103 methods registered for JNI access\n        0 downcalls and 0 upcalls registered for foreign access\n        4 native libraries: dl, pthread, rt, z\n[3/8] Building universe...                                                                               (9.2s @ 1.86GB)\n[4/8] Parsing methods...      [***]                                                                      (5.6s @ 1.42GB)\n[5/8] Inlining methods...     [***]                                                                      (2.1s @ 1.40GB)\n[6/8] Compiling methods...    [*****]                                                                   (24.9s @ 1.47GB)\n[7/8] Laying out methods...   [***]                                                                     (10.6s @ 1.82GB)\n[8/8] Creating image...       [****]                                                                    (13.3s @ 2.10GB)\n  21.39MB (39.99%) for code area:    44,471 compilation units\n  25.36MB (47.42%) for image heap:  357,921 objects and 169 resources\n   6.73MB (12.59%) for other data\n  53.48MB in total image size, 49.68MB in total file size\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   8.89MB java.base                                            6.47MB byte[] for code metadata\n   3.80MB svm.jar (Native Image)                               4.57MB byte[] for java.lang.String\n   2.63MB testcontainers-1.19.8.jar                            2.36MB java.lang.String\n 897.77kB java.net.http                                        1.94MB byte[] for general heap data\n 614.29kB assertj-core-3.22.0.jar                              1.90MB java.lang.Class\n 483.75kB java.xml                                             1.53MB com.oracle.svm.core.hub.DynamicHubCompanion\n 467.19kB docker-java-transport-zerodep-3.3.6.jar            922.89kB byte[] for reflection metadata\n 342.68kB docker-java-api-3.3.6.jar                          496.67kB java.util.concurrent.ConcurrentHashMap$Node\n 333.75kB jna-5.13.0.jar                                     452.80kB heap alignment\n 236.07kB java.rmi                                           433.66kB c.o.svm.core.hub.DynamicHub$ReflectionMetadata\n   2.00MB for 56 more packages                                 4.30MB for 3239 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 36 component(s) is embedded in binary (1.85kB). 32 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n FUTR: Use '--future-defaults=all' to prepare for future releases.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                       13.0s (8.4% of total time) in 208 GCs | Peak RSS: 3.36GB | CPU load: 5.48\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libawt.so (jdk_library)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libawt_headless.so (jdk_library)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libawt_xawt.so (jdk_library)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libjava.so (jdk_library_shim)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libjvm.so (jdk_library_shim)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libmanagement_ext.so (jdk_library)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/org.testcontainers.testcontainers_tests-tests (executable)\n========================================================================================================================\nFinished generating 'org.testcontainers.testcontainers_tests-tests' in 2m 30s.\n[native-image-plugin] Native Image written to: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile\n\n> Task :nativeTest\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\n[junit-timeout-thread-22] WARN org.testcontainers.utility.ConfigurationFileImageNameSubstitutor - Image name testcontainers/ryuk:0.7.0 was substituted by configuration to testcontainers/ryuk:0.14.0. This approach is deprecated and will be removed in the future\norg_testcontainers.testcontainers.ArrayUtilsTest > growsTypedArraysAndInsertsElements() SUCCESSFUL\n\norg_testcontainers.testcontainers.ArrayUtilsTest > removesElementsAndSlicesWithoutChangingTheSource() SUCCESSFUL\n\norg_testcontainers.testcontainers.ClassUtilsTest > resolvesMethodsThroughPublicInterfaces() SUCCESSFUL\n\norg_testcontainers.testcontainers.ClassUtilsTest > resolvesClassNamesIncludingArraysAndPrimitives() SUCCESSFUL\n\norg_testcontainers.testcontainers.CompareToBuilderTest > ordersObjectsByTheirFieldsAndSupportsExclusions() SUCCESSFUL\n\norg_testcontainers.testcontainers.ConstructorUtilsTest > constructsWithExactAndAssignableParameterTypes() SUCCESSFUL\n\norg_testcontainers.testcontainers.EqualsBuilderTest > comparesPrivateFieldsWithOptionalFieldExclusions() SUCCESSFUL\n\norg_testcontainers.testcontainers.FieldUtilsTest > readsAndWritesInheritedAndPrivateState() SUCCESSFUL\n\norg_testcontainers.testcontainers.HashCodeBuilderTest > hashesPrivateFieldsAndHonorsExcludedFields() SUCCESSFUL\n\norg_testcontainers.testcontainers.LangStreamsInnerArrayCollectorTest > collectsAParallelStreamIntoATypedArrayInEncounterOrder() SUCCESSFUL\n\norg_testcontainers.testcontainers.MethodUtilsTest > invokesExactAssignableAndVariableArgumentMethods() SUCCESSFUL\n\norg_testcontainers.testcontainers.MethodUtilsTest > resolvesPublicInterfaceAndSuperclassMethodsOnHiddenImplementations() SUCCESSFUL\n\norg_testcontainers.testcontainers.MethodUtilsTest > findsAnnotatedPublicAndPrivateMethods() SUCCESSFUL\n\norg_testcontainers.testcontainers.ObjectUtilsTest > copiesPrimitiveArraysAndCloneableObjectsIndependently() SUCCESSFUL\n\norg_testcontainers.testcontainers.ReflectionToStringBuilderTest > describesPrivateFieldsWithoutDisclosingExcludedSecrets() SUCCESSFUL\n\norg_testcontainers.testcontainers.ResourcesTest > readsLinesFromAPackageRelativeResource() SUCCESSFUL\n\norg_testcontainers.testcontainers.ResourcesTest > readsAnAbsoluteClasspathResource() SUCCESSFUL\n\norg_testcontainers.testcontainers.SerializationUtilsInnerClassLoaderAwareObjectInputStreamTest > deepClonesApplicationObjectsAndTheirMutableState() SUCCESSFUL\n\norg_testcontainers.testcontainers.SerializationUtilsTest > serializesAndDeserializesAnIndependentMutableCollection() SUCCESSFUL\n\norg_testcontainers.testcontainers.StreamsInnerArrayCollectorTest > collectsAParallelStreamIntoATypedArrayInEncounterOrder() SUCCESSFUL\n\norg_testcontainers.testcontainers.TestcontainersTest > test() SUCCESSFUL\n\n\nTest run finished after 2786 ms\n[        18 containers found      ]\n[         0 containers skipped    ]\n[        18 containers started    ]\n[         0 containers aborted    ]\n[        18 containers successful ]\n[         0 containers failed     ]\n[        21 tests found           ]\n[         0 tests skipped         ]\n[        21 tests started         ]\n[         0 tests aborted         ]\n[        21 tests successful      ]\n[         0 tests failed          ]\n\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2m 56s\n21 actionable tasks: 10 executed, 11 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n-------\nTest for org.testcontainers:testcontainers:1.19.8 passed.\n====================\n\n> Task :test\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3m 13s\n11 actionable tasks: 3 executed, 8 up-to-date\nFinished stage 'native-image run' for 1.19.8 at 2026-10-30T18:43:00Z with exit code 0 after 194s\nPASSED:1.19.8\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=org.testcontainers:testcontainers:1.19.8"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "check-metadata-files",
+        "output_excerpt": "Starting a Gradle Daemon, 3 incompatible and 7 stopped Daemons could not be reused, use --status for details\n> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkMetadataFiles\nMetadata files check passed for org.testcontainers:testcontainers:1.19.8\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 27s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "bash",
+          "./.github/workflows/scripts/run-consecutive-tests.sh",
+          "org.testcontainers:testcontainers:1.19.8",
+          "[\"1.19.8\"]"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "run-consecutive-tests",
+        "output_excerpt": "/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/test-results/test/testlist] and its subfolders.\n[2/8] Performing analysis...  [*****]                                                                  (63.9s @ 1.38GiB)\n   14,838 types,  20,850 fields, and  70,303 methods found reachable\n      977 types,   1,362 fields, and   2,323 methods registered for reflection\n       98 types,     104 fields, and     104 methods registered for JNI access\n      169 resource accesses registered with 1.04MiB total size\n        5 native libraries: dl, m, pthread, rt, z\n[3/8] Building universe...                                                                             (14.5s @ 1.65GiB)\n[4/8] Parsing methods...      [***]                                                                     (5.7s @ 2.16GiB)\n[5/8] Inlining methods...     [***]                                                                     (2.2s @ 1.86GiB)\n[6/8] Compiling methods...    [*****]                                                                  (30.6s @ 1.39GiB)\n[7/8] Laying out methods...   [****]                                                                   (12.0s @ 1.67GiB)\n[8/8] Creating image...       [***]                                                                     (7.7s @ 1.52GiB)\n  18.15MiB (39.90%) for code area:    44,802 compilation units\n  22.94MiB (50.42%) for image heap:  327,402 objects and 37 resources\n   4.40MiB ( 9.68%) for other data\n  45.50MiB in total image size, 41.81MiB in total file size\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   1.91MiB o.g.n.runtime/com.oracle.svm.core.code              5.40MiB byte[] for code metadata\n 907.38KiB java.base/sun.security.ssl                          4.44MiB byte[] for string data\n 802.32KiB java.base/java.util                                 2.30MiB java.base/java.lang.String\n 525.13KiB java.net.http/jdk.internal.net.http                 1.82MiB java.base/java.lang.Class\n 470.49KiB java.base/com.sun.crypto.provider                   1.58MiB o.g.n.runtime/c.o.s.core.hub.DynamicHubCompanion\n 410.80KiB java.base/java.lang                                 1.20MiB byte[] for general heap data\n 405.82KiB java.base/jdk.internal.classfile.impl               1.06MiB byte[] for reflection metadata\n 361.68KiB java.base/java.lang.invoke                          1.04MiB byte[] for embedded resources\n 338.17KiB java.base/java.util.concurrent                    460.16KiB java.base/java.lang.Object[]\n 274.87KiB java.base/sun.security.provider                   334.75KiB java.base/java.lang.String[]\n  11.85MiB for 572 more packages                               3.31MiB for 3284 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 34 component(s) is embedded in binary (1.87KiB). 32 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n FUTR: Use '--future-defaults=all' to prepare for future releases.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                       15.6s (9.2% of total time) in 135 GCs | Peak RSS: 3.43GiB | CPU load: 5.01\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libawt.so (jdk_library, 902.46KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libawt_headless.so (jdk_library, 41.65KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libawt_xawt.so (jdk_library, 508.23KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libjava.so (jdk_library_shim, 9.02KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libjvm.so (jdk_library_shim, 9.02KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/org.testcontainers.testcontainers_tests-tests (executable, 41.81MiB)\n========================================================================================================================\nFinished generating 'org.testcontainers.testcontainers_tests-tests' in 2m 47s.\n\nThe build process encountered 4 warnings.\n\n[native-image-plugin] Native Image written to: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile\n[junit-timeout-thread-22] WARN org.testcontainers.utility.ConfigurationFileImageNameSubstitutor - Image name testcontainers/ryuk:0.7.0 was substituted by configuration to testcontainers/ryuk:0.14.0. This approach is deprecated and will be removed in the future\n\n> Task :nativeTest\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\norg_testcontainers.testcontainers.ArrayUtilsTest > growsTypedArraysAndInsertsElements() SUCCESSFUL\n\norg_testcontainers.testcontainers.ArrayUtilsTest > removesElementsAndSlicesWithoutChangingTheSource() SUCCESSFUL\n\norg_testcontainers.testcontainers.ClassUtilsTest > resolvesMethodsThroughPublicInterfaces() SUCCESSFUL\n\norg_testcontainers.testcontainers.ClassUtilsTest > resolvesClassNamesIncludingArraysAndPrimitives() SUCCESSFUL\n\norg_testcontainers.testcontainers.CompareToBuilderTest > ordersObjectsByTheirFieldsAndSupportsExclusions() SUCCESSFUL\n\norg_testcontainers.testcontainers.ConstructorUtilsTest > constructsWithExactAndAssignableParameterTypes() SUCCESSFUL\n\norg_testcontainers.testcontainers.EqualsBuilderTest > comparesPrivateFieldsWithOptionalFieldExclusions() SUCCESSFUL\n\norg_testcontainers.testcontainers.FieldUtilsTest > readsAndWritesInheritedAndPrivateState() SUCCESSFUL\n\norg_testcontainers.testcontainers.HashCodeBuilderTest > hashesPrivateFieldsAndHonorsExcludedFields() SUCCESSFUL\n\norg_testcontainers.testcontainers.LangStreamsInnerArrayCollectorTest > collectsAParallelStreamIntoATypedArrayInEncounterOrder() SUCCESSFUL\n\norg_testcontainers.testcontainers.MethodUtilsTest > invokesExactAssignableAndVariableArgumentMethods() SUCCESSFUL\n\norg_testcontainers.testcontainers.MethodUtilsTest > resolvesPublicInterfaceAndSuperclassMethodsOnHiddenImplementations() SUCCESSFUL\n\norg_testcontainers.testcontainers.MethodUtilsTest > findsAnnotatedPublicAndPrivateMethods() SUCCESSFUL\n\norg_testcontainers.testcontainers.ObjectUtilsTest > copiesPrimitiveArraysAndCloneableObjectsIndependently() SUCCESSFUL\n\norg_testcontainers.testcontainers.ReflectionToStringBuilderTest > describesPrivateFieldsWithoutDisclosingExcludedSecrets() SUCCESSFUL\n\norg_testcontainers.testcontainers.ResourcesTest > readsLinesFromAPackageRelativeResource() SUCCESSFUL\n\norg_testcontainers.testcontainers.ResourcesTest > readsAnAbsoluteClasspathResource() SUCCESSFUL\n\norg_testcontainers.testcontainers.SerializationUtilsInnerClassLoaderAwareObjectInputStreamTest > deepClonesApplicationObjectsAndTheirMutableState() SUCCESSFUL\n\norg_testcontainers.testcontainers.SerializationUtilsTest > serializesAndDeserializesAnIndependentMutableCollection() SUCCESSFUL\n\norg_testcontainers.testcontainers.StreamsInnerArrayCollectorTest > collectsAParallelStreamIntoATypedArrayInEncounterOrder() SUCCESSFUL\n\norg_testcontainers.testcontainers.TestcontainersTest > test() SUCCESSFUL\n\n\nTest run finished after 2163 ms\n[        18 containers found      ]\n[         0 containers skipped    ]\n[        18 containers started    ]\n[         0 containers aborted    ]\n[        18 containers successful ]\n[         0 containers failed     ]\n[        21 tests found           ]\n[         0 tests skipped         ]\n[        21 tests started         ]\n[         0 tests aborted         ]\n[        21 tests successful      ]\n[         0 tests failed          ]\n\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3m 15s\n21 actionable tasks: 10 executed, 11 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n-------\nTest for org.testcontainers:testcontainers:1.19.8 passed.\n====================\n\n> Task :test\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3m 48s\n11 actionable tasks: 3 executed, 8 up-to-date\nFinished stage 'native-image run' for 1.19.8 at 2026-10-30T18:47:17Z with exit code 0 after 228s\nPASSED:1.19.8\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=org.testcontainers:testcontainers:1.19.8"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "future-defaults-all",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "check-metadata-files",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkMetadataFiles\nMetadata files check passed for org.testcontainers:testcontainers:1.19.8\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "bash",
+          "./.github/workflows/scripts/run-consecutive-tests.sh",
+          "org.testcontainers:testcontainers:1.19.8",
+          "[\"1.19.8\"]"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "future-defaults-all",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "run-consecutive-tests",
+        "output_excerpt": "ue-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/test-results/test/testlist] and its subfolders.\n[2/8] Performing analysis...  [******]                                                                 (52.6s @ 1.50GiB)\n   15,059 types,  21,231 fields, and  71,625 methods found reachable\n      995 types,   1,362 fields, and   2,349 methods registered for reflection\n       99 types,     106 fields, and     104 methods registered for JNI access\n      184 resource accesses registered with 1.04MiB total size\n        5 native libraries: dl, m, pthread, rt, z\n[3/8] Building universe...                                                                             (10.7s @ 1.45GiB)\n[4/8] Parsing methods...      [***]                                                                     (5.1s @ 1.79GiB)\n[5/8] Inlining methods...     [***]                                                                     (2.3s @ 1.91GiB)\n[6/8] Compiling methods...    [*****]                                                                  (23.0s @ 1.35GiB)\n[7/8] Laying out methods...   [****]                                                                   (18.3s @ 1.51GiB)\n[8/8] Creating image...       [****]                                                                   (15.9s @ 1.89GiB)\n  18.55MiB (39.73%) for code area:    45,816 compilation units\n  23.63MiB (50.58%) for image heap:  331,662 objects and 39 resources\n   4.52MiB ( 9.69%) for other data\n  46.70MiB in total image size, 42.94MiB in total file size\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   1.95MiB o.g.n.runtime/com.oracle.svm.core.code              5.53MiB byte[] for code metadata\n 921.72KiB java.base/sun.security.ssl                          4.52MiB byte[] for string data\n 805.14KiB java.base/java.util                                 2.32MiB java.base/java.lang.String\n 525.13KiB java.net.http/jdk.internal.net.http                 1.85MiB java.base/java.lang.Class\n 469.86KiB java.base/com.sun.crypto.provider                   1.61MiB o.g.n.runtime/c.o.s.core.hub.DynamicHubCompanion\n 418.57KiB java.base/java.lang                                 1.20MiB byte[] for general heap data\n 405.82KiB java.base/jdk.internal.classfile.impl               1.08MiB byte[] for reflection metadata\n 361.68KiB java.base/java.lang.invoke                          1.04MiB byte[] for embedded resources\n 339.93KiB java.base/java.util.concurrent                    584.06KiB heap alignment\n 277.56KiB java.base/java.io                                 454.25KiB java.base/java.lang.Object[]\n  12.19MiB for 578 more packages                               3.47MiB for 3330 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 34 component(s) is embedded in binary (1.88KiB). 32 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                       14.3s (9.0% of total time) in 178 GCs | Peak RSS: 3.07GiB | CPU load: 5.34\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libawt.so (jdk_library, 902.46KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libawt_headless.so (jdk_library, 41.65KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libawt_xawt.so (jdk_library, 508.23KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libjava.so (jdk_library_shim, 9.02KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/libjvm.so (jdk_library_shim, 9.02KiB)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile/org.testcontainers.testcontainers_tests-tests (executable, 42.94MiB)\n========================================================================================================================\nFinished generating 'org.testcontainers.testcontainers_tests-tests' in 2m 36s.\n\nThe build process encountered 4 warnings.\n\n[native-image-plugin] Native Image written to: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/native/nativeTestCompile\n\n> Task :nativeTest\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [[junit-timeout-thread-22] WARN org.testcontainers.utility.ConfigurationFileImageNameSubstitutor - Image name testcontainers/ryuk:0.7.0 was substituted by configuration to testcontainers/ryuk:0.14.0. This approach is deprecated and will be removed in the future\njunit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\norg_testcontainers.testcontainers.ArrayUtilsTest > growsTypedArraysAndInsertsElements() SUCCESSFUL\n\norg_testcontainers.testcontainers.ArrayUtilsTest > removesElementsAndSlicesWithoutChangingTheSource() SUCCESSFUL\n\norg_testcontainers.testcontainers.ClassUtilsTest > resolvesMethodsThroughPublicInterfaces() SUCCESSFUL\n\norg_testcontainers.testcontainers.ClassUtilsTest > resolvesClassNamesIncludingArraysAndPrimitives() SUCCESSFUL\n\norg_testcontainers.testcontainers.CompareToBuilderTest > ordersObjectsByTheirFieldsAndSupportsExclusions() SUCCESSFUL\n\norg_testcontainers.testcontainers.ConstructorUtilsTest > constructsWithExactAndAssignableParameterTypes() SUCCESSFUL\n\norg_testcontainers.testcontainers.EqualsBuilderTest > comparesPrivateFieldsWithOptionalFieldExclusions() SUCCESSFUL\n\norg_testcontainers.testcontainers.FieldUtilsTest > readsAndWritesInheritedAndPrivateState() SUCCESSFUL\n\norg_testcontainers.testcontainers.HashCodeBuilderTest > hashesPrivateFieldsAndHonorsExcludedFields() SUCCESSFUL\n\norg_testcontainers.testcontainers.LangStreamsInnerArrayCollectorTest > collectsAParallelStreamIntoATypedArrayInEncounterOrder() SUCCESSFUL\n\norg_testcontainers.testcontainers.MethodUtilsTest > invokesExactAssignableAndVariableArgumentMethods() SUCCESSFUL\n\norg_testcontainers.testcontainers.MethodUtilsTest > resolvesPublicInterfaceAndSuperclassMethodsOnHiddenImplementations() SUCCESSFUL\n\norg_testcontainers.testcontainers.MethodUtilsTest > findsAnnotatedPublicAndPrivateMethods() SUCCESSFUL\n\norg_testcontainers.testcontainers.ObjectUtilsTest > copiesPrimitiveArraysAndCloneableObjectsIndependently() SUCCESSFUL\n\norg_testcontainers.testcontainers.ReflectionToStringBuilderTest > describesPrivateFieldsWithoutDisclosingExcludedSecrets() SUCCESSFUL\n\norg_testcontainers.testcontainers.ResourcesTest > readsLinesFromAPackageRelativeResource() SUCCESSFUL\n\norg_testcontainers.testcontainers.ResourcesTest > readsAnAbsoluteClasspathResource() SUCCESSFUL\n\norg_testcontainers.testcontainers.SerializationUtilsInnerClassLoaderAwareObjectInputStreamTest > deepClonesApplicationObjectsAndTheirMutableState() SUCCESSFUL\n\norg_testcontainers.testcontainers.SerializationUtilsTest > serializesAndDeserializesAnIndependentMutableCollection() SUCCESSFUL\n\norg_testcontainers.testcontainers.StreamsInnerArrayCollectorTest > collectsAParallelStreamIntoATypedArrayInEncounterOrder() SUCCESSFUL\n\norg_testcontainers.testcontainers.TestcontainersTest > test() SUCCESSFUL\n\n\nTest run finished after 2458 ms\n[        18 containers found      ]\n[         0 containers skipped    ]\n[        18 containers started    ]\n[         0 containers aborted    ]\n[        18 containers successful ]\n[         0 containers failed     ]\n[        21 tests found           ]\n[         0 tests skipped         ]\n[        21 tests started         ]\n[         0 tests aborted         ]\n[        21 tests successful      ]\n[         0 tests failed          ]\n\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/tests/src/org.testcontainers/testcontainers/1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2m 53s\n21 actionable tasks: 10 executed, 11 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n-------\nTest for org.testcontainers:testcontainers:1.19.8 passed.\n====================\n\n> Task :test\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-org.testcontainers-testcontainers-1.19.8/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2m 59s\n11 actionable tasks: 3 executed, 8 up-to-date\nFinished stage 'native-image run' for 1.19.8 at 2026-10-30T18:50:22Z with exit code 0 after 180s\nPASSED:1.19.8\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "309df583be7a4392892e6c798c72f263d3d2d7f9",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "openai-codex/gpt-6.1-sol",
+    "path": "stats/org.testcontainers/testcontainers/1.19.8/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 3034804,
+      "code_coverage_percent": 7.3,
+      "cost_usd": 10.1248,
+      "generated_loc": 510,
+      "input_tokens_used": 273892,
+      "iterations": 2,
+      "metadata_entries": 1219,
+      "output_tokens_used": 16554,
+      "previous_library_coverage_percent": 10.68,
+      "previous_library_metadata_entries": 895,
+      "previous_library_test_only_metadata_entries": 1,
+      "test_only_metadata_entries": 40,
+      "tested_library_loc": 13034
+    },
+    "timestamp": "2026-10-30T17:57:20+00:00"
+  },
+  "modifiers": {
+    "chunk_final": false,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "testcontainers",
+    "coordinates": "org.testcontainers:testcontainers:1.17.6",
+    "group": "org.testcontainers",
+    "version": "1.17.6"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8924-202610301757200000-21176803a3e9",
+  "render": {
+    "baseline_metadata_entries": 928,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.037453,
+            "coveredCalls": 20,
+            "totalCalls": 534
+          },
+          "resources": {
+            "coverageRatio": 0.071429,
+            "coveredCalls": 1,
+            "totalCalls": 14
+          }
+        },
+        "coverageRatio": 0.038321,
+        "coveredCalls": 21,
+        "totalCalls": 548
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 52347,
+          "missed": 1763421,
+          "ratio": 0.028829,
+          "total": 1815768
+        },
+        "line": {
+          "covered": 12250,
+          "missed": 166267,
+          "ratio": 0.068621,
+          "total": 178517
+        },
+        "method": {
+          "covered": 2989,
+          "missed": 62239,
+          "ratio": 0.045824,
+          "total": 65228
+        }
+      },
+      "version": "1.19.8"
+    },
+    "baseline_test_only_entries": 1,
+    "current_metadata_entries": 1219,
+    "current_test_only_entries": 40,
+    "dynamic_access": {
+      "classThreshold": 15,
+      "completedClasses": [
+        "org.testcontainers.shaded.org.apache.commons.lang3.ArrayUtils",
+        "org.testcontainers.shaded.org.apache.commons.lang3.reflect.FieldUtils",
+        "org.testcontainers.shaded.org.apache.commons.lang3.ClassUtils",
+        "org.testcontainers.shaded.org.apache.commons.lang3.ObjectUtils",
+        "org.testcontainers.shaded.org.apache.commons.lang3.SerializationUtils",
+        "org.testcontainers.shaded.com.google.common.io.Resources",
+        "org.testcontainers.shaded.org.apache.commons.lang3.SerializationUtils$ClassLoaderAwareObjectInputStream",
+        "org.testcontainers.shaded.org.apache.commons.lang3.builder.CompareToBuilder",
+        "org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder",
+        "org.testcontainers.shaded.org.apache.commons.lang3.builder.HashCodeBuilder",
+        "org.testcontainers.shaded.org.apache.commons.lang3.builder.ReflectionToStringBuilder",
+        "org.testcontainers.shaded.org.apache.commons.lang3.Streams$ArrayCollector",
+        "org.testcontainers.shaded.org.apache.commons.lang3.stream.Streams$ArrayCollector"
+      ],
+      "coordinate": "org.testcontainers:testcontainers:1.19.8",
+      "currentChunkClassCount": 15,
+      "exhaustedClasses": [],
+      "failedClasses": [],
+      "issueNumber": 8924,
+      "latestChunkBranch": null,
+      "latestChunkCommit": null,
+      "latestChunkPublicationId": null,
+      "latestChunkPullRequest": null,
+      "skippedClasses": []
+    },
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.testcontainers.shaded.com.github.dockerjava.core.DefaultInvocationBuilder` is reached, make `com.github.dockerjava.api.command.AsyncDockerCmd` available for reflection",
+        "when `org.testcontainers.DockerClientFactory` is reached, make `com.github.dockerjava.api.command.CreateConfigResponse` available for reflection",
+        "when `org.testcontainers.DockerClientFactory` is reached, make `com.github.dockerjava.api.command.CreateContainerResponse` available for reflection",
+        "when `org.testcontainers.containers.GenericContainer` is reached, make `com.github.dockerjava.api.command.CreateContainerResponse` available for reflection",
+        "when `org.testcontainers.shaded.com.github.dockerjava.core.command.CreateContainerCmdImpl` is reached, make `com.github.dockerjava.api.command.CreateContainerResponse` available for reflection",
+        "when `org.testcontainers.shaded.com.github.dockerjava.core.exec.CreateContainerCmdExec` is reached, make `com.github.dockerjava.api.command.CreateContainerResponse.<init>()` available for reflection",
+        "when `org.testcontainers.shaded.com.github.dockerjava.core.exec.CreateContainerCmdExec` is reached, make `com.github.dockerjava.api.command.CreateContainerResponse.setId(java.lang.String)` available for reflection",
+        "when `org.testcontainers.shaded.com.github.dockerjava.core.exec.CreateContainerCmdExec` is reached, make `com.github.dockerjava.api.command.CreateContainerResponse.setWarnings(java.lang.String[])` available for reflection",
+        "... and 502 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.144195,
+            "coveredCalls": 77,
+            "totalCalls": 534
+          },
+          "resources": {
+            "coverageRatio": 0.214286,
+            "coveredCalls": 3,
+            "totalCalls": 14
+          }
+        },
+        "coverageRatio": 0.145985,
+        "coveredCalls": 80,
+        "totalCalls": 548
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 54717,
+          "missed": 1761051,
+          "ratio": 0.030134,
+          "total": 1815768
+        },
+        "line": {
+          "covered": 13034,
+          "missed": 165483,
+          "ratio": 0.073013,
+          "total": 178517
+        },
+        "method": {
+          "covered": 3207,
+          "missed": 62021,
+          "ratio": 0.049166,
+          "total": 65228
+        }
+      },
+      "version": "1.19.8"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "1.19.8",
+      "matched_test_version": "1.19.8",
+      "requested_coordinate": "org.testcontainers:testcontainers:1.19.8",
+      "resolved_metadata_version": "1.19.8",
+      "resolved_test_version": "1.19.8"
+    },
+    "token_usage": [
+      {
+        "cached": 175412,
+        "input": 33756,
+        "output": 2426,
+        "phase": "setup"
+      },
+      {
+        "cached": 1924736,
+        "input": 135762,
+        "output": 11190,
+        "phase": "cover"
+      },
+      {
+        "cached": 934656,
+        "input": 104374,
+        "output": 2938,
+        "phase": "fix"
+      }
+    ],
+    "worker_model": "openai-codex/gpt-6.1-sol"
+  },
+  "schema_version": 1,
+  "strategy_name": "forge-metadata:library-update-request",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-10-30T17:57:20+00:00"
+}
