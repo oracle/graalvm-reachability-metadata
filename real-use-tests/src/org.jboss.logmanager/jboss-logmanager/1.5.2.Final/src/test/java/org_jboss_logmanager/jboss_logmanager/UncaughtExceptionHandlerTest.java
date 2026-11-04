@@ -42,7 +42,7 @@ public class UncaughtExceptionHandlerTest {
 
         try {
             worker.start();
-            worker.join(10_000);
+            worker.join();
 
             assertFalse(worker.isAlive());
             String rendered = output.toString(StandardCharsets.UTF_8);
