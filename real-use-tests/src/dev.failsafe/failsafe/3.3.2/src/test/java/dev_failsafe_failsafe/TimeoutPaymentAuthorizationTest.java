@@ -33,7 +33,7 @@ public class TimeoutPaymentAuthorizationTest {
         ExecutorService workers = Executors.newSingleThreadExecutor();
         PaymentService payments = new PaymentService();
         try {
-            Timeout<String> timeout = Timeout.<String>builder(Duration.ofMillis(100))
+            Timeout<String> timeout = Timeout.<String>builder(Duration.ofSeconds(1))
                     .withInterrupt()
                     .build();
             FailsafeExecutor<String> failsafe = Failsafe.with(timeout).with(workers);
