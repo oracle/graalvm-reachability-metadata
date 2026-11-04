@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,7 +49,7 @@ public class ReloadingServiceConfigurationTest {
             Files.writeString(propertiesFile, "service.timeout-seconds=45\nservice.endpoints=orders-a,orders-b,orders-c\n");
             Files.setLastModifiedTime(
                     propertiesFile,
-                    FileTime.from(Instant.parse("2030-01-01T00:00:00Z")));
+                    FileTime.fromMillis(Files.getLastModifiedTime(propertiesFile).toMillis() + 1_000));
 
             ReloadingController controller = builder.getReloadingController();
             assertTrue(controller.checkForReloading(null));
