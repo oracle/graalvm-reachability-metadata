@@ -79,6 +79,7 @@ class AsyncApplicationLoggingTest {
         assertThat(asyncAppender.isStarted()).isTrue();
         assertThat(recordingAppender.isStarted()).isTrue();
         new CheckoutService(logger).complete("order-42");
+        asyncAppender.stop();
 
         assertThat(recordingAppender.received.await(10, TimeUnit.SECONDS)).isTrue();
         assertThat(recordingAppender.event.getLevel()).isEqualTo(Level.INFO);
