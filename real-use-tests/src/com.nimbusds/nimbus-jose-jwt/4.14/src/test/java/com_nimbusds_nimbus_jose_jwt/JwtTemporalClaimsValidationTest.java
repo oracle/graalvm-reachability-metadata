@@ -29,7 +29,7 @@ public class JwtTemporalClaimsValidationTest {
         JWTClaimsSet currentToken = new JWTClaimsSet.Builder()
                 .issuer("https://accounts.example.invalid")
                 .subject("customer-42")
-                .notBeforeTime(new Date(now - 1_000))
+                .notBeforeTime(new Date(now - 60_000))
                 .expirationTime(new Date(now + 60_000))
                 .build();
 
