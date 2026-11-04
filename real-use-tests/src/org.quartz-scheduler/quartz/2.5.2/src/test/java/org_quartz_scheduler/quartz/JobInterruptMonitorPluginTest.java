@@ -46,7 +46,7 @@ public class JobInterruptMonitorPluginTest {
             scheduler.scheduleJob(JobBuilder.newJob(InterruptibleReportJob.class)
                     .withIdentity(jobKey)
                     .usingJobData(JobInterruptMonitorPlugin.AUTO_INTERRUPTIBLE, true)
-                    .usingJobData(JobInterruptMonitorPlugin.MAX_RUN_TIME, 100L)
+                    .usingJobData(JobInterruptMonitorPlugin.MAX_RUN_TIME, 1_000L)
                     .build(),
                     TriggerBuilder.newTrigger()
                             .withIdentity("slow-report-trigger", "reports")
