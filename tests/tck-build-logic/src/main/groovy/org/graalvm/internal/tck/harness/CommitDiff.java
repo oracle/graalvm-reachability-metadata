@@ -102,12 +102,13 @@ final class CommitDiff {
     }
 
     /**
-     * Returns the sorted coordinates of the real-use projects changed between baseCommit and newCommit
-     * that still exist at newCommit's checkout (§real-use-tests/AR-real-use-test-harness.4).
+     * Returns the sorted coordinates of the real-use projects newCommit changes since it forked from
+     * baseCommit that still exist at newCommit's checkout (§real-use-tests/AR-real-use-test-harness.4).
      */
     public List<String> diffRealUseCoordinates(String baseCommit, String newCommit) {
         Path realUseRoot = tck.repoRoot().resolve("real-use-tests").resolve("src");
-        return diffFiles(baseCommit, newCommit, "ACMRTD").stream()
+        // From the merge base: a project baseCommit gained after the fork is not newCommit's change.
+        return diffRevisions(List.of(baseCommit + "..." + newCommit), "ACMRTD").stream()
                 .filter(path -> path.startsWith(realUseRoot) && realUseRoot.relativize(path).getNameCount() > 3)
                 .map(path -> realUseRoot.relativize(path))
                 .map(relative -> relative.getName(0) + ":" + relative.getName(1) + ":" + relative.getName(2))
@@ -118,10 +119,16 @@ final class CommitDiff {
     }
 
     private List<Path> diffFiles(String baseCommit, String newCommit, String diffFilter) {
+        return diffRevisions(List.of(baseCommit, newCommit), diffFilter);
+    }
+
+    private List<Path> diffRevisions(List<String> revisions, String diffFilter) {
+        List<String> command = new ArrayList<>(List.of("git", "diff", "--name-only", "--diff-filter=" + diffFilter));
+        command.addAll(revisions);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         tck.getExecOperations().exec(spec -> {
             spec.setStandardOutput(baos);
-            spec.commandLine("git", "diff", "--name-only", "--diff-filter=" + diffFilter, baseCommit, newCommit);
+            spec.commandLine(command);
         });
 
         return Arrays.stream(baos.toString(StandardCharsets.UTF_8).split("\\r?\\n"))
