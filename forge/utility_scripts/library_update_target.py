@@ -16,8 +16,10 @@ import copy
 import os
 import re
 import shutil
+from collections.abc import Callable, Iterable
 from typing import Any
 
+from utility_scripts.dynamic_access_exhaust_report import EXHAUST_REPORT_FILENAME
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.library_update_alias_split import LATEST_ONLY_FIELDS, write_index_entries
@@ -62,12 +64,13 @@ def _entry_test_version(entry: dict[str, Any]) -> str:
     return str(entry.get("test-version") or entry.get("metadata-version"))
 
 
-def _copytree_replace(destination: str, source: str) -> None:
+def _copytree_replace(destination: str, source: str,
+                      ignore: Callable[[str, list[str]], Iterable[str]] | None = None) -> None:
     if os.path.abspath(destination) == os.path.abspath(source):
         return
     if os.path.exists(destination):
         shutil.rmtree(destination)
-    shutil.copytree(source, destination)
+    shutil.copytree(source, destination, ignore=ignore)
 
 
 def _safe_version_pattern(version: str) -> re.Pattern:
@@ -236,7 +239,8 @@ def clone_library_update_support(
     baseline_metadata_dir = os.path.join(repo_path, "metadata", group, artifact, baseline_metadata_version)
     baseline_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, baseline_test_version)
     _copytree_replace(target_metadata_dir, baseline_metadata_dir)
-    _copytree_replace(target_test_dir, baseline_test_dir)
+    # Leave out the baseline's exhaust report (§FS-library-update-tested-version-split.3).
+    _copytree_replace(target_test_dir, baseline_test_dir, shutil.ignore_patterns(EXHAUST_REPORT_FILENAME))
 
     baseline_stats_dir = os.path.join(stats_artifact_dir(repo_path, group, artifact), baseline_metadata_version)
     target_stats_dir = os.path.join(stats_artifact_dir(repo_path, group, artifact), requested_version)

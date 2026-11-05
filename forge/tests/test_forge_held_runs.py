@@ -24,7 +24,7 @@ from unittest.mock import patch
 
 import forge_metadata
 from dispatcher import rhei_workspace, run_launch
-from tests.test_forge_launcher import issue
+from tests.test_forge_launcher import issue, new_claim
 from tests.test_gradle_environment import _init_git_repo_with_worktree
 from utility_scripts.gradle_environment import FORGE_GRADLE_USER_HOME_ENV, gradle_command_environment
 
@@ -158,7 +158,7 @@ class RanNoStateTest(RunWorktreeCase):
     """A `rhei run` that ran no state finished nothing (§AR-forge-launcher.1)."""
 
     def claimed(self) -> run_launch.Claim:
-        return run_launch.Claim(issue=issue(7, "library-new-request"), label="library-new-request", item_id="item")
+        return new_claim(7)
 
     def record(self, name: str, attempt: int) -> str:
         path: str = os.path.join(self.workspace, "runtime", "spawns", f"{name}.json")
@@ -275,6 +275,7 @@ class RanNoStateTest(RunWorktreeCase):
     def test_the_launcher_backs_off_after_the_first_halt_and_holds_the_issue_after_the_second(self) -> None:
         codes: list[int] = []
         with patch.object(forge_metadata, "REPO_DIR", self.repo), \
+                patch.object(forge_metadata, "FORGE_DIR", os.path.join(self.root, "forge")), \
                 patch.object(forge_metadata, "fetch_candidates", return_value=[("library-new-request", issue(7))]), \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(forge_metadata, "claim", return_value=self.claimed()), \
@@ -295,6 +296,7 @@ class RanNoStateTest(RunWorktreeCase):
     def test_the_launcher_backs_off_a_budget_halt_as_a_transient_failure(self) -> None:
         budget = run_launch.Started(workspace=self.workspace, advanced=False, halt="budget halt", budget=True)
         with patch.object(forge_metadata, "REPO_DIR", self.repo), \
+                patch.object(forge_metadata, "FORGE_DIR", os.path.join(self.root, "forge")), \
                 patch.object(forge_metadata, "fetch_candidates", return_value=[("library-new-request", issue(7))]), \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(forge_metadata, "claim", return_value=self.claimed()), \

@@ -10,7 +10,8 @@ maps the target onto Forge's host gate. A fake host gate records its arguments
 and fails, so those tests never reach the claim. The review tests run a copy of
 the launcher in a temporary tree with no Forge interpreter, so every program it
 starts is the fake `python3` and nothing reaches GitHub
-(§FS-real-use-test-generation.4).
+(§FS-real-use-test-generation.4); its fake `rhei` records the locale and time
+zone a run inherits (§FS-real-use-test-generation.1).
 """
 from __future__ import annotations
 
@@ -132,7 +133,7 @@ class LauncherTest(unittest.TestCase):
         fakes: dict[str, str] = {
             "gh": "#!/usr/bin/env bash\nprintf 'gh version 2.39.0 (fake)\\n'\n",
             "python3": FAKE_PROGRAMS,
-            "rhei": "#!/usr/bin/env bash\nexit 0\n",
+            "rhei": "#!/usr/bin/env bash\nprintf '%s %s\\n' \"$LC_ALL\" \"$TZ\" >> \"$STATE/rhei-environment\"\n",
             "sleep": "#!/usr/bin/env bash\nexit 7\n",
         }
         for name, source in fakes.items():
@@ -148,6 +149,8 @@ class LauncherTest(unittest.TestCase):
             "STATE": state,
             "HOST_PASSES": str(host_passes),
             "CLAIMS": "yes" if claims else "",
+            "LC_ALL": "en_US.UTF-8",
+            "TZ": "Europe/Belgrade",
         })
         result: subprocess.CompletedProcess[str] = subprocess.run(
             [os.path.join(root, "real-use-tests", "run-real-use-tests.sh"), "--worker-agent", "claude-code:opus"],
@@ -176,6 +179,13 @@ class LauncherTest(unittest.TestCase):
         self.assertEqual(1, result.returncode, result.stderr)
         self.assertEqual(4, result.stdout.count("Claimed real-use-test issue #7."))
         self.assertEqual([["--repo", root, "--worker-agent", "claude-code:opus"]], self._reviews(state))
+
+    def test_a_run_sees_the_ci_locale_and_time_zone_instead_of_the_hosts(self) -> None:
+        result, state, _root = self._launch_copy(host_passes=1, claims=True)
+
+        self.assertEqual(1, result.returncode, result.stderr)
+        with open(os.path.join(state, "rhei-environment"), encoding="utf-8") as handle:
+            self.assertEqual(["C.UTF-8 UTC", "C.UTF-8 UTC"], handle.read().splitlines())
 
 
 if __name__ == "__main__":

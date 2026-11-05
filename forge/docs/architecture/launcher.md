@@ -27,7 +27,8 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    (§FS-forge-scope). A fixture file can stand in for GitHub.
 2. **Claim.** The live claimability check and the optimistic claim are the
    dispatcher's (§FS-forge-run-requirements.2): assign, wait, verify, move the
-   board item to `In Progress`, release on any failure.
+   board item to `In Progress`, release on any failure. A GitHub outage there
+   ends the cycle with `75` (§AR-forge-launcher.1.2).
 3. **Issue form.** The five form rules decide against the pinned base's
    `index.json`; a malformed issue gets the predefined comment and is closed
    (§FS-forge-run-requirements.3).
@@ -35,9 +36,10 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    agent targets (§FS-forge-agent-runtime-selection), then `rhei run` with the
    dashboard. A workspace that cannot be created releases the claim. Each
    attempt at an issue has its own workspace, `runs/forge-<issue>-<attempt>`:
-   an attempt whose launcher died is resumed, the log of the state it was
-   killed in moved to `runtime/forge/interrupted/` first, since no spawn record
-   accounts for it and Rhei refuses to spawn over it. One that `rhei run`
+   an attempt whose launcher died is resumed by the next cycle on its host
+   (§AR-forge-launcher.1.1), the log of the state it was killed in moved to
+   `runtime/forge/interrupted/` first, since no spawn record accounts for it
+   and Rhei refuses to spawn over it. One that `rhei run`
    returned from is finished if Rhei ran a state of it, and a halted one gets
    the infrastructure outcome recorded, since Rhei never re-runs a state whose
    attempts are spent. A run Rhei ran no state of, once those logs are moved,
@@ -75,11 +77,12 @@ about the issue is made by `prepare` (§FS-forge-run-requirements). One cycle:
    released.
 
 `run-forge.sh` loops cycles until stopped, checks the host before each claim
-(§FS-forge-host-requirements), and every third run, and whenever nothing can be
-claimed, reviews the open Forge pull requests with the `review_agent`
-(§FS-published-pr-review, §AR-forge-dispatcher-decomposition.1). Once the gate
-has passed, a transient gate failure or a failed cycle makes the loop back off
-and wait for the gate to pass again (§FS-forge-host-requirements.1).
+(§FS-forge-host-requirements), and reviews the open Forge pull requests with the
+`review_agent` after every run, once the gate first passes, before the first
+claim, and whenever nothing can be claimed (§FS-published-pr-review.1,
+§AR-forge-dispatcher-decomposition.1). Once the gate has passed, a transient
+gate failure or a failed cycle makes the loop back off and wait for the gate to
+pass again (§FS-forge-host-requirements.1).
 
 Without `--label`, every cycle fetches every queue in the claim order above.
 Each `--label LABEL[:COUNT]` instead gives its queue COUNT turns in a row, one
@@ -92,6 +95,73 @@ queue. A queue with nothing to claim passes the turn, and the rest of its turns
 in this rotation, to the next queue in the same loop iteration, so nothing can
 be claimed only when no queue in the rotation can; the idle review and wait
 follow, and the rotation resumes at the turn it stood at.
+
+### 1.1 Stranded claims
+
+A cycle resumes its host's stranded claim before it claims anything new
+(§FS-forge-stranded-claims). A launcher marks the issue it works on with an
+exclusive `flock` on `runs/locks/forge-<issue>.lock`, taken without waiting
+before the claim and held until the close-out returns. The file names the
+holder's pid for a reader, but only the lock decides. The kernel drops a
+`flock` with its holder's last descriptor, so `SIGKILL` releases it, and the
+descriptor is not inherited, so neither `rhei run` nor a Gradle daemon an agent
+leaves behind can hold it. The lock belongs to the issue rather than to one
+attempt because a new attempt's workspace exists only once `rhei instantiate`
+has created it, after the claim, and only an issue's latest attempt can be
+live. A `rhei run` holds an exclusive `flock` on its workspace's
+`.rhei/run.lock` while it lives, so a shared lock that cannot be taken there
+marks a run that outlived its launcher, or one a launcher started before this
+lock existed. The pre-publication gate reads the same locks, its own issue's
+aside, before and after each test run, to tell whether another run could have
+pulled a Docker image it finds (§FS-local-ci-equivalent-verification.2.2).
+
+A claim takes its time once it has confirmed its assignment, after its 5-10 s
+wait, and the launcher writes that time to the attempt's
+`runtime/forge/claim.json` before each `rhei run`, so a later claim that
+resumes the unfinished attempt replaces it (§FS-forge-stranded-claims.1). The
+time is the host's clock and an assignment's is GitHub's; the wait puts the
+launcher's own assignment seconds before its record, and a host clock further
+behind takes its own claim for a later one, which leaves the claim rather than
+run it twice.
+
+After the fetch, the launcher lists the issues whose latest attempt has no
+`runtime/forge/outcome.json`, oldest issue first, from the runs directory
+alone. For each, it takes the issue's lock, reads the latest attempt again
+under it, and skips an attempt a `rhei run` holds. Only then does it read the
+issue and its project item; when both show the claim, it reads every page of
+the issue's events for its latest `assigned` event to the user, and skips the
+issue when that event is later than the attempt's `claim.json`. An attempt with
+no `claim.json` is skipped before that read and named for a maintainer. A read
+GitHub refuses skips the issue for this cycle instead of stopping the launcher.
+The first stranded claim found is run, its lock held, through the same resume
+and close-out as a claimed issue, so the cycle exits with the same statuses.
+
+### 1.2 Board writes and pending releases
+
+The claim's and the release's GitHub calls are the project status edit
+(`gh project item-edit` and the field lookup it needs), the assignee `PATCH`,
+and the reads that verify them. They go through the shared retrying runners
+with rate limits retried too: up to five attempts, two seconds apart and
+doubling, on a server error, an endpoint that does not connect or answer, or a
+rate limit (§FS-forge-stranded-claims.4.1). GraphQL's `Something went wrong
+while executing your query` is a server error. Every other GitHub call still
+raises on a rate limit at once, so a run stops for the reset. A release
+repeats its round, a minute apart, only while a call fails transiently.
+
+A release that still fails transiently writes `runs/releases/forge-<issue>.json`
+with the project item, the reason and the time; one GitHub confirms or refuses
+removes it (§FS-forge-stranded-claims.4.2). Before the stranded-claim scan a
+cycle lists these records, oldest issue first, and for each takes the issue's
+lock, skipping an issue a live launcher holds, reads the record again under it,
+since another launcher on the host may have retried it, then reads the issue
+over REST.
+A record whose issue is closed, assigned to anyone but the user, or updated
+after the record was written is removed, and the issue named for a
+maintainer. Any other is released again through the same release. A release
+GitHub still refuses, or an issue it cannot read, ends the cycle with `75`
+before the scan, so the loop backs off (§FS-forge-stranded-claims.4.3). A claim
+whose GitHub calls still fail is released the same way, and the cycle ends
+with `75` too (§FS-forge-stranded-claims.4.4).
 
 ## 2. Exit codes
 
@@ -112,3 +182,12 @@ follow, and the rotation resumes at the turn it stood at.
 Every program also routes any other non-zero exit to `failed`, and every exit
 writes Rhei's result file, which an edge into a final state requires; a crash,
 a `SystemExit` from a shared helper included, is an infrastructure exit.
+
+`forge_metadata.py`'s own statuses are read by `run-forge.sh` alone: `0` an
+issue ran, `4` nothing could be claimed, `3` the run halted without advancing,
+`75` a transient halt, and `2` bad arguments. Nothing claimed has a status no
+crash produces, because an uncaught exception exits `1`: the loop idles only on
+`4`, and backs off on every status but `0` and `4`, a crash included
+(§AR-forge-launcher.1). A crash caused by a GitHub rate limit or an unreachable
+GitHub, the failure carried as the exception or its cause, is a transient halt:
+it exits `75` with one line instead of a traceback.

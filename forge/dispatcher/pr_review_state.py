@@ -7,8 +7,9 @@
 
 Every read is fresh, so a pass on another host reaches the same decisions: the
 open Forge pull requests, one pull request as it is now, the checks of a head
-commit with the tail of each failed log, when `in-review` was added, and the
-head markers the Forge account left (§AR-forge-dispatcher-decomposition.1).
+commit with the tail of each failed log, when `in-review` was added, the claims
+on that lock, and the head markers the Forge account left
+(§AR-forge-dispatcher-decomposition.1).
 """
 from __future__ import annotations
 
@@ -35,6 +36,7 @@ ROUTE_LABELS: tuple[str, ...] = (
 FIELDS: str = ("number,state,createdAt,title,body,headRefName,headRefOid,headRepository,reviewDecision,labels,"
                "files,autoMergeRequest")
 MARKER: re.Pattern[str] = re.compile(r"<!-- forge-review:([0-9a-f]{40}):(rerun|push|issue) -->")
+CLAIM: re.Pattern[str] = re.compile(r"<!-- forge-review-claim:([0-9a-f]{40}):([0-9a-f]+) -->")
 DESCRIPTOR: re.Pattern[str] = re.compile(r"^stats/([^/]+)/([^/]+)/([^/]+)/forge-publication\.json$")
 JOB_URL: re.Pattern[str] = re.compile(r"/actions/runs/(\d+)/job/(\d+)")
 FAILED: frozenset[str] = frozenset({"failure", "cancelled", "timed_out", "action_required", "startup_failure",
@@ -54,6 +56,18 @@ class Check:
     url: str
     run: str | None = None
     job: str | None = None
+
+
+@dataclass
+class Claim:
+    """A claim comment on the `in-review` lock: GitHub's comment id orders the claims.
+
+    §FS-published-pr-review.3
+    """
+
+    id: int
+    token: str
+    created: datetime
 
 
 def parse_time(text: str) -> datetime:
@@ -102,6 +116,24 @@ def label_added_at(number: int) -> datetime:
 
 def _json_lines(text: str) -> list[dict[str, Any]]:
     return [json.loads(line) for line in text.splitlines() if line.strip()]
+
+
+def claim_of(comment: dict[str, Any]) -> Claim | None:
+    """The claim a REST issue comment carries, or `None`."""
+    matched: re.Match[str] | None = CLAIM.search(str(comment.get("body", "")))
+    if matched is None:
+        return None
+    return Claim(int(comment["id"]), matched.group(2), parse_time(str(comment["created_at"])))
+
+
+def claims(number: int, login: str) -> list[Claim]:
+    """The claims `login` posted on pull request `number`, in the order GitHub took them."""
+    comments: list[dict[str, Any]] = _json_lines(gh("api", "--paginate",
+                                                    f"repos/{REPO}/issues/{number}/comments?per_page=100",
+                                                    "--jq", ".[]").stdout)
+    found: list[Claim] = [claim for comment in comments if (comment.get("user") or {}).get("login") == login
+                          for claim in (claim_of(comment),) if claim is not None]
+    return sorted(found, key=lambda claim: claim.id)
 
 
 def head_checks(sha: str) -> list[Check]:

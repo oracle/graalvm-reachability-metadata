@@ -1,0 +1,41 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+// LogManager and ThreadContext read their implementation class names once, in static initializers.
+Map<String, String> log4jProperties = [
+        'log4j2.loggerContextFactory': 'org.apache.logging.log4j.simple.SimpleLoggerContextFactory',
+        'log4j2.threadContextMap'    : 'org_apache_logging_log4j.log4j_api.RecordingThreadContextMap'
+]
+
+tasks.withType(Test).configureEach {
+    systemProperties log4jProperties
+}
+
+tasks.named("nativeTest") {
+    log4jProperties.each { String name, String value -> runtimeArgs.add("-D${name}=${value}") }
+}
+
+dependencies {
+    testImplementation "org.apache.logging.log4j:log4j-api:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

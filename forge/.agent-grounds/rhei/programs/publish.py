@@ -22,8 +22,10 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import time
 from typing import Any
 
+from git_scripts.common_git import GitTransportError, run_git_transport
 from git_scripts.github_cli import get_authenticated_login
 from git_scripts.publication_descriptor import (
     PublicationDescriptorInput,
@@ -34,6 +36,7 @@ from git_scripts.publication_descriptor import (
 from git_scripts.publication_evidence import load_dynamic_access_metadata_evidence
 from utility_scripts.contribution_paths import stray_paths
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport, dynamic_access_exhaust_report_path
+from utility_scripts.host_probes import is_git_transient_failure_text
 from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_measurements import (
     collect_version_coverage_metrics,
@@ -62,6 +65,9 @@ from run_state import ROUTE_NEW, ROUTE_UPDATE, RunState, load, runtime_path, sav
 STATUS_SUCCESS: str = "success"
 STATUS_CHUNK_READY: str = "chunk_ready"
 MAX_SUBJECT: int = 60
+# A transient push failure is retried after 15, 30, then 60 seconds (§FS-human-intervention-policy).
+PUSH_ATTEMPTS: int = 4
+PUSH_RETRY_SECONDS: float = 15.0
 
 
 def _subject(text: str) -> str:
@@ -296,6 +302,30 @@ def label_chunked(state: RunState) -> None:
                     "--add-label", issue.CHUNKED_LABEL], check=True, capture_output=True, text=True)
 
 
+def push(worktree: str, remote: str, branch: str) -> None:
+    """Push HEAD to the publication branch, and push again while the failure is transient.
+
+    The push comes after every state, so a failure released for a later retry reruns
+    the whole run. A push the remote refuses for a reason fails at once, and the last
+    failure surfaces as the external `GitTransportError` it is
+    (§FS-human-intervention-policy, §FS-forge-host-requirements.1).
+    """
+    for attempt in range(1, PUSH_ATTEMPTS + 1):
+        try:
+            run_git_transport(["push", "--quiet", "--force", remote, f"HEAD:refs/heads/{branch}"], cwd=worktree)
+            return
+        except GitTransportError as failure:
+            output: str = failure.output or ""
+            if attempt == PUSH_ATTEMPTS or not is_git_transient_failure_text(output):
+                raise
+            delay: float = PUSH_RETRY_SECONDS * 2 ** (attempt - 1)
+            lines: list[str] = [line.strip() for line in output.splitlines() if line.strip()]
+            reason: str = next((line for line in lines if is_git_transient_failure_text(line)), lines[0] if lines else "")
+            print(f"[publish] the push of {branch} failed transiently: {reason}; pushing again in {delay:.0f}s "
+                  f"(attempt {attempt + 1}/{PUSH_ATTEMPTS})", file=sys.stderr)
+            time.sleep(delay)
+
+
 def publish(workspace: str) -> int:
     state: RunState = load(workspace)
     outside: list[str] = stray(state)
@@ -349,7 +379,7 @@ def publish(workspace: str) -> int:
     )
     commit_contribution(state, "Add Forge publication descriptor")
     remote: str = upstream_remote(state.worktree)
-    git(state.worktree, "push", "--quiet", "--force", remote, f"HEAD:refs/heads/{branch}")
+    push(state.worktree, remote, branch)
     if not final:
         label_chunked(state)
     state.checkpoint = head(state.worktree)

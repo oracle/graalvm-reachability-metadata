@@ -1,0 +1,36 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "com.networknt:json-schema-validator:$libraryVersion"
+    // Jackson is the application-facing tree and POJO representation validated by the target.
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.18.3"
+    // YAML-backed schemas and configuration are supported by the target's documented integrations.
+    testImplementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.3"
+    // Application DTOs may contain Java time values before becoming JSON documents.
+    testImplementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.3"
+    // The target uses this implementation for RFC 3339 date and date-time formats.
+    testImplementation "com.ethlo.time:itu:1.14.0"
+    // This optional engine provides ECMA 262 regular-expression validation.
+    testImplementation "org.jruby.joni:joni:2.2.6"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

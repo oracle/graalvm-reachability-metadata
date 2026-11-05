@@ -1,0 +1,29 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "ch.qos.logback:logback-classic:$libraryVersion"
+    testImplementation "org.slf4j:slf4j-api:2.0.18"
+    testImplementation "org.slf4j:jul-to-slf4j:2.0.18"
+    testImplementation "org.slf4j:log4j-over-slf4j:2.0.18"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

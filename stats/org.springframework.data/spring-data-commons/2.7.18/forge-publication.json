@@ -1,0 +1,271 @@
+{
+  "base_commit": "e162f705b75eafb562bbc38c7ecba3f3b2bb5a4f",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.data-spring-data-commons-2.7.18-forge-2813-202610311740140000-f03d34e3da4a",
+  "follow_ups": [],
+  "forge": {
+    "branch": "mm/forge-runner-2",
+    "commit": "95114291698b93eaa6c3ebbebe29259250e92ad2",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 2813,
+  "library": {
+    "artifact": "spring-data-commons",
+    "coordinates": "org.springframework.data:spring-data-commons:2.7.18",
+    "group": "org.springframework.data",
+    "version": "2.7.18"
+  },
+  "local_ci_verification": {
+    "base_commit": "e162f705b75eafb562bbc38c7ecba3f3b2bb5a4f",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=org.springframework.data:spring-data-commons:2.7.18"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal"
+        },
+        "gate": "check-metadata-files",
+        "output_excerpt": "Starting a Gradle Daemon, 3 incompatible and 20 stopped Daemons could not be reused, use --status for details\n> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkMetadataFiles\nMetadata files check passed for org.springframework.data:spring-data-commons:2.7.18\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 12s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "bash",
+          "./.github/workflows/scripts/run-consecutive-tests.sh",
+          "org.springframework.data:spring-data-commons:2.7.18",
+          "[\"2.7.18\"]"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal"
+        },
+        "gate": "run-consecutive-tests",
+        "output_excerpt": "ns/2.7.18/build/test-results/test/testlist] and its subfolders.\n[2/8] Performing analysis...  [******]                                                                  (32.6s @ 1.57GB)\n   15,528 types,  20,130 fields, and  73,344 methods found reachable\n    5,786 types,   2,223 fields, and  10,459 methods registered for reflection\n       60 types,      68 fields, and      52 methods registered for JNI access\n        0 downcalls and 0 upcalls registered for foreign access\n        4 native libraries: dl, pthread, rt, z\n[3/8] Building universe...                                                                               (8.1s @ 1.69GB)\n[4/8] Parsing methods...      [**]                                                                       (3.8s @ 1.83GB)\n[5/8] Inlining methods...     [***]                                                                      (1.6s @ 1.92GB)\n[6/8] Compiling methods...    [****]                                                                    (15.7s @ 1.34GB)\n[7/8] Laying out methods...   [***]                                                                      (7.1s @ 1.63GB)\n[8/8] Creating image...       [***]                                                                      (7.0s @ 1.88GB)\n  22.29MB (40.16%) for code area:    46,632 compilation units\n  26.21MB (47.24%) for image heap:  367,338 objects and 182 resources\n   6.99MB (12.60%) for other data\n  55.50MB in total image size, 51.45MB in total file size\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   6.12MB java.base                                            6.73MB byte[] for code metadata\n   3.84MB svm.jar (Native Image)                               5.28MB byte[] for java.lang.String\n   2.69MB kotlin-reflect-1.6.21.jar                            2.49MB java.lang.String\n   2.66MB java.xml                                             2.12MB java.lang.Class\n 861.89kB jackson-databind-2.13.5.jar                          1.61MB com.oracle.svm.core.hub.DynamicHubCompanion\n 811.59kB spring-core-5.3.31.jar                               1.25MB byte[] for general heap data\n 593.71kB assertj-core-3.22.0.jar                              1.05MB byte[] for reflection metadata\n 519.45kB spring-data-commons-2.7.18.jar                     477.60kB java.util.concurrent.ConcurrentHashMap$Node\n 382.76kB spring-expression-5.3.31.jar                       448.93kB c.o.svm.core.hub.DynamicHub$ReflectionMetadata\n 220.14kB asm-9.1.jar                                        384.16kB java.util.HashMap$Node\n   2.86MB for 51 more packages                                 4.37MB for 3263 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 44 component(s) is embedded in binary (2.15kB). 49 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n FUTR: Use '--future-defaults=all' to prepare for future releases.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                        6.7s (6.6% of total time) in 319 GCs | Peak RSS: 3.12GB | CPU load: 8.06\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/native/nativeTestCompile/libmanagement_ext.so (jdk_library)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/native/nativeTestCompile/org.springframework.data.spring-data-commons_tests-tests (executable)\n========================================================================================================================\nFinished generating 'org.springframework.data.spring-data-commons_tests-tests' in 1m 39s.\n[native-image-plugin] Native Image written to: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/native/nativeTestCompile\n\n> Task :nativeTest\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\nSLF4J: Failed to load class \"org.slf4j.impl.StaticLoggerBinder\".\nSLF4J: Defaulting to no-operation (NOP) logger implementation\nSLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.\norg_springframework_data.spring_data_commons.ClassGeneratingEntityInstantiatorTest > defaultInstantiatorCreatesIndependentEntityInstances() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.DefaultMethodInvokingMethodInterceptorInnerMethodHandleLookupTest > projectionInvokesInterfaceDefaultMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.DefaultRepositoryInformationTest > discoversQueryMethodsDeclaredOnRepositoryInterface() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.DefaultRepositoryInformationTest > detectsCustomMethodsBackedByRepositoryFragments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.EvaluationContextExtensionInformationTest > discoversStaticExtensionFieldsForQueryExpressions() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.FunctionTest > invokesInstanceMethodWithExpandedVarargs() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.FunctionTest > invokesStaticMethodWithExactArguments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.GenericArrayTypeInformationTest > resolvesGenericArrayPropertyAgainstConcreteComponentType() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.JsonProjectingMethodInterceptorFactoryTest > annotatedMapProjectionReadsNestedAndFallbackJsonPaths() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.KotlinClassGeneratingEntityInstantiatorInnerDefaultingKotlinConstructorResolverTest > instantiatesKotlinEntityUsingItsConstructorParameters() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.KotlinCopyMethodTest > accessorUpdatesImmutableKotlinDataClassPropertyWithCopyMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.MethodInvocationRecorderInnerRecordingMethodInterceptorTest > objectMethodDoesNotReplaceRecordedPropertyPath() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.MethodInvocationRecorderInnerUnrecordedTest > recordsPrimitivePropertiesUsingTheirBoxedDefaultValues() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ProjectingMethodInterceptorTest > projectsEmptyCollectionIntoEmptyTypedArray() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ProjectingMethodInterceptorTest > projectsCollectionElementsIntoTypedInterfaceArray() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ReflectionUtilsTest > findsRequiredMethodDeclaredOnInterface() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ReflectionUtilsTest > findsDeclaredFieldOnSpringDataType() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ReflectionUtilsTest > findsConstructorMatchingRuntimeArguments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest > adaptsSuspendingRepositoryMethodToReactiveFragmentMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest > invokesPlainRepositoryFragmentMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.SimpleEntityPathResolverTest > resolvesQuerydslMetamodelSingletonForDomainClass() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.SpelEvaluatingMethodInterceptorTest > evaluatesInheritedExpressionUsingTargetAndMethodArguments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.TypeFilterParserInnerFilterTypeAnonymous1Test > parsesAnnotationIncludeFilter() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.TypeFilterParserInnerFilterTypeAnonymous2Test > assignableFilterMatchesImplementationsButNotUnrelatedTypes() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.TypeFilterParserInnerFilterTypeAnonymous5Test > customFilterIsLoadedAndAppliesItsMatchingRule() SUCCESSFUL\n\n\nTest run finished after 49 ms\n[        21 containers found      ]\n[         0 containers skipped    ]\n[        21 containers started    ]\n[         0 containers aborted    ]\n[        21 containers successful ]\n[         0 containers failed     ]\n[        25 tests found           ]\n[         0 tests skipped         ]\n[        25 tests started         ]\n[         0 tests aborted         ]\n[        25 tests successful      ]\n[         0 tests failed          ]\n\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2m\n19 actionable tasks: 8 executed, 11 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n-------\nTest for org.springframework.data:spring-data-commons:2.7.18 passed.\n====================\n\n> Task :test\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2m 23s\n11 actionable tasks: 3 executed, 8 up-to-date\nFinished stage 'native-image run' for 2.7.18 at 2026-10-31T18:25:18Z with exit code 0 after 143s\nPASSED:2.7.18\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=org.springframework.data:spring-data-commons:2.7.18"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "check-metadata-files",
+        "output_excerpt": "Starting a Gradle Daemon, 3 incompatible and 22 stopped Daemons could not be reused, use --status for details\n> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkMetadataFiles\nMetadata files check passed for org.springframework.data:spring-data-commons:2.7.18\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 10s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "bash",
+          "./.github/workflows/scripts/run-consecutive-tests.sh",
+          "org.springframework.data:spring-data-commons:2.7.18",
+          "[\"2.7.18\"]"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "run-consecutive-tests",
+        "output_excerpt": "] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/test-results/test/testlist] and its subfolders.\n[2/8] Performing analysis...  [*****]                                                                  (25.6s @ 1.40GiB)\n   15,503 types,  20,221 fields, and  73,717 methods found reachable\n      807 types,     281 fields, and   1,907 methods registered for reflection\n       60 types,      68 fields, and      52 methods registered for JNI access\n      182 resource accesses registered with 408.92KiB total size\n        5 native libraries: dl, m, pthread, rt, z\n[3/8] Building universe...                                                                              (5.9s @ 1.52GiB)\n[4/8] Parsing methods...      [**]                                                                      (2.8s @ 1.55GiB)\n[5/8] Inlining methods...     [***]                                                                     (1.3s @ 1.70GiB)\n[6/8] Compiling methods...    [****]                                                                   (14.0s @ 1.34GiB)\n[7/8] Laying out methods...   [***]                                                                     (7.5s @ 1.68GiB)\n[8/8] Creating image...       [***]                                                                     (5.5s @ 1.96GiB)\n  19.01MiB (39.86%) for code area:    46,802 compilation units\n  24.19MiB (50.71%) for image heap:  337,387 objects and 44 resources\n   4.50MiB ( 9.43%) for other data\n  47.70MiB in total image size, 43.81MiB in total file size\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   2.02MiB o.g.n.runtime/com.oracle.svm.core.code              5.67MiB byte[] for code metadata\n 784.02KiB java.base/java.util                                 5.14MiB byte[] for string data\n 405.95KiB java.base/jdk.internal.classfile.impl               2.42MiB java.base/java.lang.String\n 369.81KiB java.base/java.lang                                 2.02MiB java.base/java.lang.Class\n 341.60KiB kotlin.reflect.jvm.internal.impl.metadata           1.66MiB o.g.n.runtime/c.o.s.core.hub.DynamicHubCompanion\n 306.20KiB java.xml/com.sun.org.apache.xerces.internal.impl    1.18MiB byte[] for general heap data\n 285.33KiB java.xml/c.s.o.a.x.internal.impl.xs.traversers      1.07MiB byte[] for reflection metadata\n 271.38KiB java.base/java.util.concurrent                    615.14KiB heap alignment\n 267.52KiB java.base/java.text                               432.02KiB java.base/java.lang.Object[]\n 237.80KiB java.base/com.sun.crypto.provider                 409.80KiB byte[] for embedded resources\n  13.81MiB for 563 more packages                               3.60MiB for 3262 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 43 component(s) is embedded in binary (2.32KiB). 49 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n FUTR: Use '--future-defaults=all' to prepare for future releases.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                       6.4s (8.4% of total time) in 365 GCs | Peak RSS: 3.15GiB | CPU load: 10.41\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/native/nativeTestCompile/org.springframework.data.spring-data-commons_tests-tests (executable, 43.81MiB)\n========================================================================================================================\nFinished generating 'org.springframework.data.spring-data-commons_tests-tests' in 1m 14s.\n\nThe build process encountered 2 warnings.\n\n[native-image-plugin] Native Image written to: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/native/nativeTestCompile\n\nSLF4J: Failed to load class \"org.slf4j.impl.StaticLoggerBinder\".\n> Task :nativeTest\nSLF4J: Defaulting to no-operation (NOP) logger implementation\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/test-results/test/testlist] and its subfolders.\nSLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.\nJUnit Platform on Native Image - report\n----------------------------------------\n\norg_springframework_data.spring_data_commons.ClassGeneratingEntityInstantiatorTest > defaultInstantiatorCreatesIndependentEntityInstances() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.DefaultMethodInvokingMethodInterceptorInnerMethodHandleLookupTest > projectionInvokesInterfaceDefaultMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.DefaultRepositoryInformationTest > discoversQueryMethodsDeclaredOnRepositoryInterface() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.DefaultRepositoryInformationTest > detectsCustomMethodsBackedByRepositoryFragments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.EvaluationContextExtensionInformationTest > discoversStaticExtensionFieldsForQueryExpressions() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.FunctionTest > invokesInstanceMethodWithExpandedVarargs() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.FunctionTest > invokesStaticMethodWithExactArguments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.GenericArrayTypeInformationTest > resolvesGenericArrayPropertyAgainstConcreteComponentType() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.JsonProjectingMethodInterceptorFactoryTest > annotatedMapProjectionReadsNestedAndFallbackJsonPaths() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.KotlinClassGeneratingEntityInstantiatorInnerDefaultingKotlinConstructorResolverTest > instantiatesKotlinEntityUsingItsConstructorParameters() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.KotlinCopyMethodTest > accessorUpdatesImmutableKotlinDataClassPropertyWithCopyMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.MethodInvocationRecorderInnerRecordingMethodInterceptorTest > objectMethodDoesNotReplaceRecordedPropertyPath() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.MethodInvocationRecorderInnerUnrecordedTest > recordsPrimitivePropertiesUsingTheirBoxedDefaultValues() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ProjectingMethodInterceptorTest > projectsEmptyCollectionIntoEmptyTypedArray() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ProjectingMethodInterceptorTest > projectsCollectionElementsIntoTypedInterfaceArray() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ReflectionUtilsTest > findsRequiredMethodDeclaredOnInterface() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ReflectionUtilsTest > findsDeclaredFieldOnSpringDataType() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ReflectionUtilsTest > findsConstructorMatchingRuntimeArguments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest > adaptsSuspendingRepositoryMethodToReactiveFragmentMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest > invokesPlainRepositoryFragmentMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.SimpleEntityPathResolverTest > resolvesQuerydslMetamodelSingletonForDomainClass() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.SpelEvaluatingMethodInterceptorTest > evaluatesInheritedExpressionUsingTargetAndMethodArguments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.TypeFilterParserInnerFilterTypeAnonymous1Test > parsesAnnotationIncludeFilter() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.TypeFilterParserInnerFilterTypeAnonymous2Test > assignableFilterMatchesImplementationsButNotUnrelatedTypes() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.TypeFilterParserInnerFilterTypeAnonymous5Test > customFilterIsLoadedAndAppliesItsMatchingRule() SUCCESSFUL\n\n\nTest run finished after 54 ms\n[        21 containers found      ]\n[         0 containers skipped    ]\n[        21 containers started    ]\n[         0 containers aborted    ]\n[        21 containers successful ]\n[         0 containers failed     ]\n[        25 tests found           ]\n[         0 tests skipped         ]\n[        25 tests started         ]\n[         0 tests aborted         ]\n[        25 tests successful      ]\n[         0 tests failed          ]\n\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 26s\n19 actionable tasks: 8 executed, 11 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n-------\nTest for org.springframework.data:spring-data-commons:2.7.18 passed.\n====================\n\n> Task :test\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 38s\n11 actionable tasks: 3 executed, 8 up-to-date\nFinished stage 'native-image run' for 2.7.18 at 2026-10-31T18:27:08Z with exit code 0 after 99s\nPASSED:2.7.18\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=org.springframework.data:spring-data-commons:2.7.18"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "future-defaults-all",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "check-metadata-files",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkMetadataFiles\nMetadata files check passed for org.springframework.data:spring-data-commons:2.7.18\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "bash",
+          "./.github/workflows/scripts/run-consecutive-tests.sh",
+          "org.springframework.data:spring-data-commons:2.7.18",
+          "[\"2.7.18\"]"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "future-defaults-all",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "run-consecutive-tests",
+        "output_excerpt": "tener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/test-results/test/testlist] and its subfolders.\n[2/8] Performing analysis...  [******]                                                                 (25.8s @ 1.50GiB)\n   15,709 types,  20,538 fields, and  74,977 methods found reachable\n      825 types,     281 fields, and   1,930 methods registered for reflection\n       61 types,      70 fields, and      52 methods registered for JNI access\n      196 resource accesses registered with 409.02KiB total size\n        5 native libraries: dl, m, pthread, rt, z\n[3/8] Building universe...                                                                              (7.1s @ 1.52GiB)\n[4/8] Parsing methods...      [**]                                                                      (3.3s @ 1.62GiB)\n[5/8] Inlining methods...     [***]                                                                     (1.4s @ 1.68GiB)\n[6/8] Compiling methods...    [****]                                                                   (18.1s @ 1.37GiB)\n[7/8] Laying out methods...   [***]                                                                     (7.3s @ 1.70GiB)\n[8/8] Creating image...       [***]                                                                     (7.0s @ 1.39GiB)\n  19.40MiB (40.13%) for code area:    47,768 compilation units\n  24.31MiB (50.29%) for image heap:  338,629 objects and 45 resources\n   4.63MiB ( 9.58%) for other data\n  48.34MiB in total image size, 44.38MiB in total file size\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   2.05MiB o.g.n.runtime/com.oracle.svm.core.code              5.80MiB byte[] for code metadata\n 786.47KiB java.base/java.util                                 5.18MiB byte[] for string data\n 405.95KiB java.base/jdk.internal.classfile.impl               2.43MiB java.base/java.lang.String\n 376.14KiB java.base/java.lang                                 2.05MiB java.base/java.lang.Class\n 341.60KiB kotlin.reflect.jvm.internal.impl.metadata           1.68MiB o.g.n.runtime/c.o.s.core.hub.DynamicHubCompanion\n 306.20KiB java.xml/com.sun.org.apache.xerces.internal.impl    1.18MiB byte[] for general heap data\n 285.33KiB java.xml/c.s.o.a.x.internal.impl.xs.traversers      1.08MiB byte[] for reflection metadata\n 272.24KiB java.base/java.util.concurrent                    502.85KiB heap alignment\n 270.37KiB java.base/java.text                               425.60KiB java.base/java.lang.Object[]\n 237.79KiB java.base/com.sun.crypto.provider                 409.92KiB byte[] for embedded resources\n  14.14MiB for 569 more packages                               3.60MiB for 3311 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 43 component(s) is embedded in binary (2.32KiB). 49 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                       7.8s (9.4% of total time) in 369 GCs | Peak RSS: 3.04GiB | CPU load: 9.96\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/native/nativeTestCompile/org.springframework.data.spring-data-commons_tests-tests (executable, 44.38MiB)\n========================================================================================================================\nFinished generating 'org.springframework.data.spring-data-commons_tests-tests' in 1m 21s.\n\nThe build process encountered 2 warnings.\n\n[native-image-plugin] Native Image written to: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/native/nativeTestCompile\n\n> Task :nativeTest\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\nSLF4J: Failed to load class \"org.slf4j.impl.StaticLoggerBinder\".\norg_springframework_data.spring_data_commons.ClassGeneratingEntityInstantiatorTest > defaultInstantiatorCreatesIndependentEntityInstances() SUCCESSFUL\n\nSLF4J: Defaulting to no-operation (NOP) logger implementation\norg_springframework_data.spring_data_commons.DefaultMethodInvokingMethodInterceptorInnerMethodHandleLookupTest > projectionInvokesInterfaceDefaultMethod() SUCCESSFUL\nSLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.\n\norg_springframework_data.spring_data_commons.DefaultRepositoryInformationTest > discoversQueryMethodsDeclaredOnRepositoryInterface() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.DefaultRepositoryInformationTest > detectsCustomMethodsBackedByRepositoryFragments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.EvaluationContextExtensionInformationTest > discoversStaticExtensionFieldsForQueryExpressions() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.FunctionTest > invokesInstanceMethodWithExpandedVarargs() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.FunctionTest > invokesStaticMethodWithExactArguments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.GenericArrayTypeInformationTest > resolvesGenericArrayPropertyAgainstConcreteComponentType() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.JsonProjectingMethodInterceptorFactoryTest > annotatedMapProjectionReadsNestedAndFallbackJsonPaths() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.KotlinClassGeneratingEntityInstantiatorInnerDefaultingKotlinConstructorResolverTest > instantiatesKotlinEntityUsingItsConstructorParameters() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.KotlinCopyMethodTest > accessorUpdatesImmutableKotlinDataClassPropertyWithCopyMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.MethodInvocationRecorderInnerRecordingMethodInterceptorTest > objectMethodDoesNotReplaceRecordedPropertyPath() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.MethodInvocationRecorderInnerUnrecordedTest > recordsPrimitivePropertiesUsingTheirBoxedDefaultValues() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ProjectingMethodInterceptorTest > projectsEmptyCollectionIntoEmptyTypedArray() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ProjectingMethodInterceptorTest > projectsCollectionElementsIntoTypedInterfaceArray() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ReflectionUtilsTest > findsRequiredMethodDeclaredOnInterface() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ReflectionUtilsTest > findsDeclaredFieldOnSpringDataType() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.ReflectionUtilsTest > findsConstructorMatchingRuntimeArguments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest > adaptsSuspendingRepositoryMethodToReactiveFragmentMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest > invokesPlainRepositoryFragmentMethod() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.SimpleEntityPathResolverTest > resolvesQuerydslMetamodelSingletonForDomainClass() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.SpelEvaluatingMethodInterceptorTest > evaluatesInheritedExpressionUsingTargetAndMethodArguments() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.TypeFilterParserInnerFilterTypeAnonymous1Test > parsesAnnotationIncludeFilter() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.TypeFilterParserInnerFilterTypeAnonymous2Test > assignableFilterMatchesImplementationsButNotUnrelatedTypes() SUCCESSFUL\n\norg_springframework_data.spring_data_commons.TypeFilterParserInnerFilterTypeAnonymous5Test > customFilterIsLoadedAndAppliesItsMatchingRule() SUCCESSFUL\n\n\nTest run finished after 57 ms\n[        21 containers found      ]\n[         0 containers skipped    ]\n[        21 containers started    ]\n[         0 containers aborted    ]\n[        21 containers successful ]\n[         0 containers failed     ]\n[        25 tests found           ]\n[         0 tests skipped         ]\n[        25 tests started         ]\n[         0 tests aborted         ]\n[        25 tests successful      ]\n[         0 tests failed          ]\n\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/tests/src/org.springframework.data/spring-data-commons/2.7.18/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 31s\n19 actionable tasks: 8 executed, 11 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n-------\nTest for org.springframework.data:spring-data-commons:2.7.18 passed.\n====================\n\n> Task :test\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-runner-2/forge/runs/worktrees/forge-org.springframework.data-spring-data-commons-2.7.18/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 34s\n11 actionable tasks: 3 executed, 8 up-to-date\nFinished stage 'native-image run' for 2.7.18 at 2026-10-31T18:28:44Z with exit code 0 after 94s\nPASSED:2.7.18\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "ed13d708bc76a9bf637933c550d9f435656f2d4a",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "openai-codex/gpt-6.1-sol",
+    "path": "stats/org.springframework.data/spring-data-commons/2.7.18/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4461455,
+      "code_coverage_percent": 19.78,
+      "cost_usd": 15.3516,
+      "generated_loc": 833,
+      "input_tokens_used": 537368,
+      "iterations": 7,
+      "metadata_entries": 202,
+      "output_tokens_used": 29591,
+      "test_only_metadata_entries": 92,
+      "tested_library_loc": 2754
+    },
+    "timestamp": "2026-10-31T17:40:14+00:00"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-2813-202610311740140000-f03d34e3da4a",
+  "render": {
+    "current_metadata_entries": 202,
+    "current_test_only_entries": 92,
+    "dynamic_access": {
+      "classThreshold": 15,
+      "completedClasses": [
+        "org.springframework.data.spel.spi.Function",
+        "org.springframework.data.util.ReflectionUtils",
+        "org.springframework.data.mapping.model.InstanceCreatorMetadataDiscoverer",
+        "org.springframework.data.mapping.model.PreferredConstructorDiscoverer$Discoverers$1",
+        "org.springframework.data.mapping.model.ClassGeneratingPropertyAccessorFactory",
+        "org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor$MethodHandleLookup$1",
+        "org.springframework.data.repository.core.support.RepositoryFragment",
+        "org.springframework.data.repository.util.ReactiveWrappers",
+        "org.springframework.data.repository.core.support.DefaultRepositoryInformation",
+        "org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker",
+        "org.springframework.data.mapping.model.PreferredConstructorDiscoverer$Discoverers$2",
+        "org.springframework.data.mapping.model.KotlinCopyMethod",
+        "org.springframework.data.config.TypeFilterParser$FilterType$1",
+        "org.springframework.data.config.TypeFilterParser$FilterType$2",
+        "org.springframework.data.config.TypeFilterParser$FilterType$5",
+        "org.springframework.data.mapping.model.ClassGeneratingEntityInstantiator",
+        "org.springframework.data.mapping.model.KotlinClassGeneratingEntityInstantiator$DefaultingKotlinConstructorResolver",
+        "org.springframework.data.projection.ProjectingMethodInterceptor",
+        "org.springframework.data.projection.SpelEvaluatingMethodInterceptor",
+        "org.springframework.data.querydsl.SimpleEntityPathResolver",
+        "org.springframework.data.spel.EvaluationContextExtensionInformation",
+        "org.springframework.data.util.GenericArrayTypeInformation",
+        "org.springframework.data.util.MethodInvocationRecorder$RecordingMethodInterceptor",
+        "org.springframework.data.util.MethodInvocationRecorder$Unrecorded",
+        "org.springframework.data.web.JsonProjectingMethodInterceptorFactory"
+      ],
+      "coordinate": "org.springframework.data:spring-data-commons:2.7.18",
+      "currentChunkClassCount": 15,
+      "exhaustedClasses": [
+        "org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor$MethodHandleLookup",
+        "org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor$MethodHandleLookup$2",
+        "org.springframework.data.mapping.model.ReflectionEntityInstantiator"
+      ],
+      "failedClasses": [],
+      "issueNumber": 2813,
+      "latestChunkBranch": null,
+      "latestChunkCommit": "c0ceeb74005d424f412404d7dac8370147effcc8",
+      "latestChunkPublicationId": null,
+      "latestChunkPullRequest": 8830,
+      "skippedClasses": []
+    },
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.springframework.data.util.NullableWrapperConverters` is reached, make `com.google.common.base$Optional` available for reflection",
+        "when `org.springframework.data.util.NullableWrapperConverters` is reached, make `com.google.common.base.Optional` available for reflection",
+        "when `org.springframework.data.repository.util.ReactiveWrapperConverters$RegistryHolder` is reached, make `io.reactivex$Flowable` available for reflection",
+        "when `org.springframework.data.repository.util.ReactiveWrappers` is reached, make `io.reactivex$Flowable` available for reflection",
+        "when `org.springframework.data.repository.util.ReactiveWrapperConverters$RegistryHolder` is reached, make `io.reactivex.Flowable` available for reflection",
+        "when `org.springframework.data.repository.util.ReactiveWrappers` is reached, make `io.reactivex.Flowable` available for reflection",
+        "when `org.springframework.data.repository.util.ReactiveWrapperConverters$RegistryHolder` is reached, make `io.reactivex.rxjava3.core$Flowable` available for reflection",
+        "when `org.springframework.data.repository.util.ReactiveWrappers` is reached, make `io.reactivex.rxjava3.core$Flowable` available for reflection",
+        "... and 160 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.897436,
+            "coveredCalls": 35,
+            "totalCalls": 39
+          }
+        },
+        "coverageRatio": 0.897436,
+        "coveredCalls": 35,
+        "totalCalls": 39
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12648,
+          "missed": 53685,
+          "ratio": 0.190674,
+          "total": 66333
+        },
+        "line": {
+          "covered": 2754,
+          "missed": 11167,
+          "ratio": 0.197831,
+          "total": 13921
+        },
+        "method": {
+          "covered": 811,
+          "missed": 3650,
+          "ratio": 0.181798,
+          "total": 4461
+        }
+      },
+      "version": "2.7.18"
+    },
+    "library_update_target": null,
+    "token_usage": [
+      {
+        "cached": 597391,
+        "input": 50685,
+        "output": 6569,
+        "phase": "setup"
+      },
+      {
+        "cached": 2681344,
+        "input": 319729,
+        "output": 17971,
+        "phase": "cover"
+      },
+      {
+        "cached": 1182720,
+        "input": 166954,
+        "output": 5051,
+        "phase": "fix"
+      }
+    ],
+    "worker_model": "openai-codex/gpt-6.1-sol"
+  },
+  "schema_version": 1,
+  "strategy_name": "forge-metadata:library-new-request",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-31T17:40:14+00:00"
+}

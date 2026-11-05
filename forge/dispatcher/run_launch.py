@@ -20,6 +20,7 @@ import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any, Iterator
 
 from git_scripts.common_git import stage_and_commit
@@ -39,6 +40,8 @@ from dispatcher.worktrees import fetch_issue_base_commit, remove_worktree
 
 TEMPLATE: str = "forge-metadata"
 OUTCOME: str = os.path.join("runtime", "forge", "outcome.json")
+# When the attempt made its claim, told on resume from a later one (§FS-forge-stranded-claims.1).
+CLAIM_RECORD: str = os.path.join("runtime", "forge", "claim.json")
 # <agent>[<mode>]:<model> with agent pi or claude-code (§FS-forge-agent-runtime-selection).
 TARGET: re.Pattern[str] = re.compile(r"^(pi|claude-code)(\[[A-Za-z0-9_-]+\])?:.+$")
 # Agent text the comment quotes is bounded, and neither cites nor mentions anyone
@@ -59,6 +62,8 @@ class Claim:
     issue: dict[str, Any]
     label: str
     item_id: str
+    # When the claim was made, taken once it is confirmed, so GitHub never shows its assignment later.
+    claimed_at: datetime
 
 
 @dataclass(frozen=True)
@@ -113,6 +118,7 @@ def claim(issue: dict[str, Any], label: str, user: str, repo: str, take_blocked:
     item_id: str | None = try_claim_issue(issue, user, label, take_blocked)
     if item_id is None:
         return None
+    claimed_at: datetime = datetime.now(timezone.utc)
     try:
         with pinned_index(repo, str(issue.get("title") or "")) as base:
             verdict = check_issue_form(issue, label, base)
@@ -126,7 +132,7 @@ def claim(issue: dict[str, Any], label: str, user: str, repo: str, take_blocked:
     if not verdict.accepted:
         revert_issue_claim(item_id, issue["number"], "issue-form check was undecided")
         return None
-    return Claim(issue=issue, label=label, item_id=item_id)
+    return Claim(issue=issue, label=label, item_id=item_id, claimed_at=claimed_at)
 
 
 def attempts(forge_dir: str, issue_number: int) -> list[str]:
@@ -149,6 +155,25 @@ def workspace_path(forge_dir: str, issue_number: int) -> str:
         return found[-1]
     number: int = int(found[-1].rsplit("-", 1)[1]) + 1 if found else 1
     return os.path.join(forge_dir, "runs", f"forge-{issue_number}-{number}")
+
+
+def record_claim(workspace: str, claimed_at: datetime) -> None:
+    """Record when the attempt's claim was made; a re-claim that resumes the attempt replaces it."""
+    path: str = os.path.join(workspace, CLAIM_RECORD)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    temporary: str = path + ".tmp"
+    with open(temporary, "w", encoding="utf-8") as handle:
+        json.dump({"claimed_at": claimed_at.isoformat()}, handle)
+    os.replace(temporary, path)
+
+
+def recorded_claim(workspace: str) -> datetime | None:
+    """When the attempt's claim was made, or `None` when it records no readable time."""
+    try:
+        with open(os.path.join(workspace, CLAIM_RECORD), encoding="utf-8") as handle:
+            return datetime.fromisoformat(json.load(handle)["claimed_at"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
 
 
 def instantiate_command(issue_number: int, setup_agent: str, worker_agent: str, workspace: str) -> list[str]:
@@ -232,7 +257,11 @@ def agent_environment(repo: str, workspace: str, issue: dict[str, Any]) -> dict[
 
 def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: str,
               rhei_args: list[str]) -> Started | None:
-    """Instantiate or resume the issue's attempt and run it; `None` when its workspace could not be created."""
+    """Instantiate or resume the issue's attempt and run it; `None` when its workspace could not be created.
+
+    The attempt records its claim's time before Rhei runs it, so a launcher that
+    dies in the run leaves a claim a resume can tell is its own (§FS-forge-stranded-claims.1).
+    """
     number: int = claimed.issue["number"]
     workspace: str = workspace_path(forge_dir, number)
     if not os.path.isdir(workspace):
@@ -244,6 +273,7 @@ def start_run(forge_dir: str, claimed: Claim, setup_agent: str, worker_agent: st
     else:
         for moved in set_aside_interrupted_logs(workspace):
             print(f"[resume] moved the log of the interrupted state to {moved}", file=sys.stderr)
+    record_claim(workspace, claimed.claimed_at)
     before: dict[str, int] = spawn_records(workspace)
     events: tuple[int, int, int] | None = file_stamp(os.path.join(workspace, EVENTS))
     subprocess.run(["rhei", "run", workspace, "--dashboard", *rhei_args], cwd=forge_dir,

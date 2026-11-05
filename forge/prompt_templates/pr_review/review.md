@@ -14,7 +14,8 @@ checkout of its head `{head}`, and `origin/master` is fetched. Read these first:
 Left on this pull request: {reruns_left} rerun of this head and {pushes_left} fix
 pushes. When the action a case calls for has none left, the outcome is an issue.
 {dry_run}
-Take the first case below that applies (§FS-published-pr-review.4).
+Take the first case below that applies, in this order: case 1, then case 7,
+then case 2 on (§FS-published-pr-review.4).
 
 ## 1. All green
 
@@ -22,13 +23,17 @@ Take the first case below that applies (§FS-published-pr-review.4).
 
 ## 2. Infrastructure failure
 
-Every failing job died of something the change cannot have caused: the network,
-the runner, Gradle plugin resolution, a Docker pull, or a cancelled job. Rerun the
-failed jobs of each such run with `gh run rerun <run-id> --repo {repo} --failed`
-(§FS-published-pr-review.4.2). Check this case first for every failure, Spring
-AOT included. A connection error is transient only when nothing in its stack
-points at Native Image: `Unable to create Channel from class ...EpollSocketChannel`
-or an `ExceptionInInitializerError` is a metadata miss that looks like the network.
+Every failing job died of something a fresh run of the same merge commit could
+pass: the network, the runner, Gradle plugin resolution, a Docker pull, or a
+cancelled job. Rerun the failed jobs of each such run with
+`gh run rerun <run-id> --repo {repo} --failed` (§FS-published-pr-review.4.2). A
+failure the merge commit itself carries is not this case, even when this pull
+request cannot have caused it: a rerun replays that commit, so a failure `master`
+caused there is case 7. Check this case right after case 7, before every other
+failure, Spring AOT included. A connection error is transient only when nothing
+in its stack points at Native Image: `Unable to create Channel from class
+...EpollSocketChannel` or an `ExceptionInInitializerError` is a metadata miss
+that looks like the network.
 
 ## 3. A library test lane failed
 
@@ -58,7 +63,8 @@ for this library or a dependent one. Find the cause (§FS-published-pr-review.4.
 ## 4. A Spring AOT smoke test failed
 
 A job named `<project> @ spring-aot:<branch> (GraalVM JDK <jdk>)` failed, and
-case 2 does not apply (§FS-published-pr-review.4.4). There are two outcomes:
+neither case 7 nor case 2 applies (§FS-published-pr-review.4.4). There are two
+outcomes:
 
 - **A metadata miss of `{coordinate}`**: fix it under the metadata rules below.
   Reproduce and verify with the job's own script: check out
@@ -118,6 +124,35 @@ them describes gets a new signature, such as
 never the library, project, or lane that met it, so the next pull request it
 breaks derives the same one.
 
+## 7. A failure the merge base caused
+
+CI ran on GitHub's merge commit of `{head}` into `master` as `master` stood when
+the run started. A failed job's full log, `gh run view --repo {repo} --job
+<job-id> --log`, names it at checkout: `HEAD is now at <merge> Merge {head} into
+<base>`. This case applies when every failing job fails because of `master` at
+`<base>`, and current `origin/master` no longer has the failure
+(§FS-published-pr-review.4.7). Show both:
+
+- **The failure is `master`'s.** It fails in code this pull request does not
+  change, and it is not the network or the runner: `master` at `<base>` fails
+  the same way, as its own runs of that workflow or a local run show.
+- **Current `origin/master` no longer has it.** The failing job's test passes on
+  `origin/master`, run locally in a worktree of it or read from `master`'s latest
+  run of the same workflow (`gh run list --repo {repo} --branch master --workflow
+  <workflow>`), or the failing check's cause is absent from it: the line or test
+  the check named is gone or fixed in `git log <base>..origin/master`.
+
+Then merge `origin/master` into this checkout with `git merge --no-edit
+origin/master`, resolve any conflict inside the contribution's file set, and push
+with `git push origin HEAD:refs/heads/{branch}`. The outcome is `fix`, case 7: a
+new head gets a new merge commit, so its checks run on the `master` that no
+longer fails. Never rerun: GitHub reruns a `pull_request` workflow on the
+original merge commit, so a rerun replays the old `master` and cannot pass.
+While a fix push is left, never answer `issue` either, even when an open issue
+above tracks that break of `master`: the change is sound, and the issue would
+hold it for a break `master` has already fixed. When current `origin/master` still has the
+failure, this case does not apply.
+
 ## Metadata rules
 
 These are the rules of the run's `fix` state, and they bind your repair:
@@ -141,7 +176,8 @@ Before your final message, write `{outcome}` as JSON:
 - `outcome`: `approve`, `rerun`, `fix`, or `issue` — what you did{did_suffix}.
 - `case`: the number of the case above that applied.
 - `cause`: one line naming the cause, such as `metadata miss`,
-  `Native Image 25.0 bug`, `Spring AOT smoke test`, or `Gradle plugin resolution`.
+  `Native Image 25.0 bug`, `Spring AOT smoke test`, `master at the merge base`,
+  or `Gradle plugin resolution`.
 - `summary`: the evidence in a few sentences, naming the failing job.
 - For `issue` only, `issue`: an object with `title`, `body`, and `signature`.
 

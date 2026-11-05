@@ -28,10 +28,16 @@ from __future__ import annotations
 # stats (the dynamicAccess generateLibraryStats writes; else the coverage report's),
 # matrixFails (the native-image mode whose `test` fails, as a missing registration),
 # and unreachableIn (the task, in any lane, that fails on Maven Central answering 502).
+# Beside them, a `stale-daemon` file in the Gradle user home names the task a daemon
+# of that home, holding stale build logic, fails before Gradle creates it, until a
+# `--stop` against that home ends the daemon.
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
 import glob, json, os, sys
 args = sys.argv[1:]
-if args == ["--stop"]:
+stale = os.path.join(os.environ.get("GRADLE_USER_HOME", "/nonexistent"), "stale-daemon")
+if "--stop" in args:
+    if os.path.exists(stale):
+        os.remove(stale)
     open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "gradle-calls.log"), "a").write("--stop\n")
     sys.exit(0)
 task = next(arg for arg in args if not arg.startswith("-") and arg != "clean")
@@ -98,6 +104,12 @@ mode = os.environ.get("GVM_TCK_NATIVE_IMAGE_MODE")
 lane = " [%s %s %s]" % (os.environ.get("GVM_TCK_LV"), mode, os.environ.get("JAVA_HOME")) if mode else ""
 with open(os.path.join(root, "gradle-calls.log"), "a") as log:
     log.write(" ".join(args) + lane + "\n")
+if os.path.exists(stale) and open(stale).read() == task:
+    print("FAILURE: Build failed with an exception.\n* What went wrong:")
+    print("A problem occurred configuring root project 'reachability-metadata'.\n> Could not create task ':%s'.\n"
+          "   > Could not generate a decorated class for type %sTask.\n"
+          "      > com/fasterxml/jackson/databind/JsonNode" % (task, task[0].upper() + task[1:]))
+    sys.exit(1)
 if control.get("unreachableIn") == task:
     fail_unreachable("testRuntimeClasspath")
 if task == "scaffold":

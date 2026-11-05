@@ -181,6 +181,46 @@
           "org_javassist.javassist.TestSupport$Label"
         ]
       }
+    },
+    {
+      "condition" : {
+        "typeReached" : "javassist.tools.rmi.AppletServer"
+      },
+      "type" : "org_javassist.javassist.RmiCatalog",
+      "methods" : [
+        {
+          "name" : "echo",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name" : "sameCatalog",
+          "parameterTypes" : [
+            "org_javassist.javassist.RmiCatalog"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javassist.tools.rmi.StubGenerator"
+      },
+      "type" : "org_javassist.javassist.RmiCatalog"
+    }
+  ],
+  "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "javassist.CtClassType"
+      },
+      "glob" : "org_javassist/javassist/RmiCatalog.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javassist.tools.rmi.StubGenerator"
+      },
+      "glob" : "org_javassist/javassist/RmiCatalog.class"
     }
   ]
 }

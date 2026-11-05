@@ -1,0 +1,33 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation("org.springframework.boot:spring-boot-flyway:$libraryVersion") {
+        exclude group: 'org.flywaydb', module: 'flyway-core'
+    }
+    testImplementation "org.springframework.boot:spring-boot-jdbc:$libraryVersion"
+    // Exercise the initializer's pre-7 migration compatibility path with a compatible database.
+    testImplementation 'org.flywaydb:flyway-core:6.5.7'
+    testImplementation 'com.h2database:h2:2.1.210'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

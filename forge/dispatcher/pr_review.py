@@ -8,9 +8,9 @@
 Merged pull requests first release their issues; then the open Forge pull
 requests, oldest first, are read again one by one, and up to `REVIEW_LIMIT` of
 them that no skip applies to get one review agent each, in a throwaway checkout
-of the head, under the `in-review` lock. The agent acts with `gh` and `git` and
-answers with its outcome; this module confirms the outcome and writes every
-label, marker, and issue (§AR-forge-dispatcher-decomposition.1).
+of the head, under the `in-review` lock of `pr_review_lock`. The agent acts with
+`gh` and `git` and answers with its outcome; this module confirms the outcome and
+writes every other label, marker, and issue (§AR-forge-dispatcher-decomposition.1).
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ import sys
 import tempfile
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import Any, Iterator
 
 import yaml
@@ -42,11 +42,12 @@ from dispatcher.issue_admin import (
     remove_pull_request_label,
 )
 from dispatcher.pr_merge import mark_pull_request_merge_follow_up_pending, reconcile_auto_merged_pull_request_follow_ups
+from dispatcher.pr_review_lock import STALE_AFTER, Lock, Locks
+from git_scripts.github_cli import GitHubRateLimitExceeded
 from utility_scripts.contribution_paths import stray_paths
 
 REVIEW_LIMIT: int = 3
 FIX_PUSH_LIMIT: int = 2
-STALE_AFTER: timedelta = timedelta(hours=3)
 # Shorter than the lock's staleness, so no pass takes over a review that is still running.
 AGENT_TIMEOUT_SECONDS: int = 2 * 60 * 60
 CLAUDE_TARGET: re.Pattern[str] = re.compile(r"^claude-code(?:\[([A-Za-z0-9_-]+)\])?:([^/]+)$")
@@ -78,7 +79,6 @@ checkout — and answer with the outcome you would have taken. Reproduce locally
 where the classification depends on it.
 """
 LABEL_DESCRIPTIONS: dict[str, tuple[str, str]] = {
-    state.IN_REVIEW: ("fbca04", "A review agent is reviewing this pull request"),
     state.REVIEWED: ("0e8a16", "Forge's review reached a terminal outcome for this pull request"),
 }
 
@@ -241,17 +241,36 @@ def open_issue(title: str, body: str) -> int:
     return int(url.rstrip("/").rsplit("/", 1)[1])
 
 
+def merged_master(path: str, head: str, commit: str) -> list[str]:
+    """The `master` commits that the merges of the repair from `head` to `commit` brought in.
+
+    A parent of a merge counts only when it is on `master`, so merging any other branch brings
+    nothing in. `origin/master` only moves forward, so it still holds every commit it once had.
+    """
+    parents: list[str] = [parent for line in git("log", "--merges", "--format=%P", f"{head}..{commit}",
+                                                 cwd=path).splitlines() for parent in line.split()]
+    return [parent for parent in dict.fromkeys(parents)
+            if subprocess.run(["git", "merge-base", "--is-ancestor", parent, "origin/master"],
+                              cwd=path).returncode == 0]
+
+
 def foreign_paths(path: str, head: str, commit: str, coordinate: str) -> list[str]:
     """The paths the repair from `head` to `commit` changed outside the contribution's file set.
 
     Only the repair is checked: what the head already changed is the contribution under review,
-    and a path the repair left as `origin/master` has it came in with a merge of `master`.
+    and a path the repair leaves exactly as a `master` commit it merged has it came in with that
+    merge. That commit is read from the repair itself, never from `origin/master`: other fetches
+    into the shared repository move that ref during the review, and a path `master` changed again
+    since would read as the repair's own.
 
     §FS-published-pr-review.4
     """
     changed: list[str] = git("diff", "--name-only", head, commit, cwd=path).splitlines()
-    unlike_master: set[str] = set(git("diff", "--name-only", "origin/master", commit, cwd=path).splitlines())
-    return stray_paths(path, coordinate, head, [name for name in changed if name in unlike_master], head=commit)
+    brought: set[str] = set()
+    for merged in merged_master(path, head, commit):
+        unlike: set[str] = set(git("diff", "--name-only", merged, commit, cwd=path).splitlines())
+        brought.update(name for name in changed if name not in unlike)
+    return stray_paths(path, coordinate, head, [name for name in changed if name not in brought], head=commit)
 
 
 class Review:
@@ -262,8 +281,33 @@ class Review:
         self.target: str = target
         self.login: str = login
         self.dry_run: bool = dry_run
+        self.locks: Locks = Locks(login, dry_run)
 
-    def review(self, pull: dict[str, Any], checks: list[state.Check]) -> Outcome:
+    def review(self, pull: dict[str, Any], checks: list[state.Check]) -> Outcome | str:
+        """Review one pull request under its lock: the confirmed outcome, or why it is skipped after all.
+
+        The lock is released on every exit of a live pass, a failure included; only a killed pass
+        leaves it to go stale (§FS-published-pr-review.3).
+        """
+        lock: Lock = Lock(pull["number"])
+        try:
+            return self.locks.claim(pull, lock) or self.ended_since(pull) or self.judge(pull, checks)
+        finally:
+            self.locks.release(lock)
+
+    def ended_since(self, pull: dict[str, Any]) -> str | None:
+        """Why `pull`, read once more under the lock, needs no review after all (§FS-published-pr-review.3).
+
+        A review that held the lock may have just ended this head.
+        """
+        if self.dry_run:
+            return None
+        current: dict[str, Any] = state.pull_request(pull["number"])
+        if current["headRefOid"] != pull["headRefOid"]:
+            return f"at a new head {current['headRefOid'][:12]}"
+        return ended(current)
+
+    def judge(self, pull: dict[str, Any], checks: list[state.Check]) -> Outcome:
         """Run the agent on one pull request's head and record its confirmed outcome."""
         number: int = pull["number"]
         head: str = pull["headRefOid"]
@@ -279,14 +323,9 @@ class Review:
         if not self.dry_run:
             # Labeled before the agent may arm auto-merge (§FS-published-pr-review.7).
             mark_pull_request_merge_follow_up_pending(pull)
-        self.lock(number, True)
         with checkout(self.repo, number, head) as (parent, path):
             answer: dict[str, Any] | None = self.run_agent(pull, found, green, reruns_left, pushes_left, parent, path)
-            outcome: Outcome = self.act(pull, found, answer, green, reruns_left, pushes_left, path)
-        # A plain step, not a `finally`: a killed review leaves a lock that goes stale
-        # (§FS-published-pr-review.3).
-        self.lock(number, False)
-        return outcome
+            return self.act(pull, found, answer, green, reruns_left, pushes_left, path)
 
     def run_agent(self, pull: dict[str, Any], found: str, green: bool, reruns_left: int, pushes_left: int,
                   parent: str, path: str) -> dict[str, Any] | None:
@@ -441,23 +480,14 @@ class Review:
         else:
             remove_pull_request_label(number, name)
 
-    def lock(self, number: int, held: bool) -> None:
-        """Add or remove the `in-review` lock; a dry run only prints it.
-
-        §FS-published-pr-review.3
-        """
-        if self.dry_run:
-            print(f"[review] #{number}: would {'add' if held else 'remove'} {state.IN_REVIEW}", file=sys.stderr)
-            return
-        self.label(number, state.IN_REVIEW, held)
-
 
 def review_pass(repo: str, target: str, login: str, dry_run: bool = False, numbers: list[int] | None = None,
                 head: str | None = None, now: datetime | None = None) -> int:
     """Reconcile merged pull requests, then review up to `REVIEW_LIMIT`; return how many.
 
     Named pull requests in a dry run are replays: their lifecycle skips are printed, not applied
-    (§FS-published-pr-review.6).
+    (§FS-published-pr-review.6). A GitHub rate limit propagates and ends the pass, once the
+    lock it met is released.
     """
     if not dry_run:
         reconcile_auto_merged_pull_request_follow_ups()
@@ -482,10 +512,16 @@ def review_pass(repo: str, target: str, login: str, dry_run: bool = False, numbe
             print(f"[review] #{number} is {reason}; skipping", file=sys.stderr)
             continue
         try:
-            outcome: Outcome = reviewer.review(pull, checks)
+            outcome: Outcome | str = reviewer.review(pull, checks)
+        except GitHubRateLimitExceeded:
+            # Every later read meets the same limit, so the pass ends (§FS-published-pr-review.3).
+            raise
         except (RuntimeError, subprocess.CalledProcessError) as error:
             # Nothing is recorded, so the next pass reviews this head again.
             print(f"[review] #{number}: {error}", file=sys.stderr)
+            continue
+        if isinstance(outcome, str):
+            print(f"[review] #{number} is {outcome}; skipping", file=sys.stderr)
             continue
         print(f"[review] #{number}: {outcome.action}{' (terminal)' if outcome.terminal else ''}: {outcome.detail}")
         reviewed += 1

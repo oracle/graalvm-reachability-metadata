@@ -229,7 +229,7 @@ are never suppressed.
 # FS-forge-run-status: Run status semantics
 
 Every `forge-metadata` run ends in one final state, and the launcher acts on it
-(§AR-forge-workflow-pipeline.1):
+(§AR-forge-launcher.1):
 
 | Final state | Meaning |
 | --- | --- |

@@ -113,6 +113,43 @@ class SplitTestOnlyMetadataTaskTests extends MetadataTaskTestSupport {
                 .containsExactly("io_grpc.grpc_auth.GrpcAuthTest$Fixture");
     }
 
+    /// Groovy looks up `groovy.runtime.metaclass.<class>MetaClass` for every class it meets; the
+    /// lookup for a test class is test-only, the one for a JDK class is library metadata.
+    @Test
+    void movesTypeNameDerivedFromTestClass() throws IOException {
+        writeLibTestProject();
+        writeJson(
+                LIB_SHIPPED_METADATA,
+                """
+                {
+                  "reflection": [
+                    {
+                      "condition": {
+                        "typeReached": "com.example.Library"
+                      },
+                      "type": "groovy.runtime.metaclass.com_example.lib.LibTest$CallbackMetaClass"
+                    },
+                    {
+                      "condition": {
+                        "typeReached": "com.example.Library"
+                      },
+                      "type": "groovy.runtime.metaclass.java.lang.StringMetaClass"
+                    }
+                  ]
+                }
+                """
+        );
+
+        runSplitTask("com.example:lib:1.0.0");
+
+        assertThat(readJson(LIB_SHIPPED_METADATA).get("reflection"))
+                .extracting(entry -> entry.get("type").asText())
+                .containsExactly("groovy.runtime.metaclass.java.lang.StringMetaClass");
+        assertThat(readJson(LIB_TEST_METADATA).get("reflection"))
+                .extracting(entry -> entry.get("type").asText())
+                .containsExactly("groovy.runtime.metaclass.com_example.lib.LibTest$CallbackMetaClass");
+    }
+
     @Test
     void movesLambdaDeclaredInTestClass() throws IOException {
         JsonNode lambdaEntry = splitLambdaMetadata("com_example.lib.LibTest", List.of("com.example.Loader"));

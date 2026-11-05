@@ -10,12 +10,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.lang.classfile.ClassFile;
+import java.lang.classfile.attribute.ModuleAttribute;
+import java.lang.constant.ClassDesc;
+import java.lang.constant.ConstantDescs;
+import java.lang.constant.ModuleDesc;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -66,6 +74,36 @@ class JarUtilsTests {
     }
 
     @Test
+    void extractEffectiveClassesSkipsClassesStoredUnderAForeignPrefix() throws IOException {
+        byte[] base = classNamed("com/example/Foo", "base");
+        byte[] overlay = classNamed("com/example/Foo", "java11");
+        Map<String, byte[]> entries = new LinkedHashMap<>();
+        entries.put("module-info.class",
+                ClassFile.of().buildModule(ModuleAttribute.of(ModuleDesc.of("com.example"), module -> { })));
+        entries.put("com/example/package-info.class", classNamed("com/example/package-info", "info"));
+        entries.put("com/example/Foo.class", base);
+        entries.put("1.0/com/example/Foo.class", classNamed("com/example/Foo", "legacy"));
+        entries.put("META-INF/versions/11/com/example/Foo.class", overlay);
+        entries.put("META-INF/versions/11/1.0/com/example/Foo.class", classNamed("com/example/Foo", "legacy11"));
+        entries.put("com/example/Unparseable.class", new byte[]{0});
+        Path jar = createJar(tempDir.resolve("library.jar"), entries);
+        Path outputDir = tempDir.resolve("effective");
+
+        JarUtils.extractEffectiveClasses(jar, 25, outputDir);
+
+        try (Stream<Path> files = Files.walk(outputDir)) {
+            assertThat(files.filter(Files::isRegularFile).map(file -> outputDir.relativize(file).toString()))
+                    .containsExactlyInAnyOrder(
+                            "module-info.class",
+                            "com/example/package-info.class",
+                            "com/example/Foo.class",
+                            "com/example/Unparseable.class"
+                    );
+        }
+        assertThat(outputDir.resolve("com/example/Foo.class")).hasBinaryContent(overlay);
+    }
+
+    @Test
     void extractPackagesSkipsDefaultPackage() {
         assertThat(JarUtils.extractPackages(Set.of(
                 "PlainClass",
@@ -91,13 +129,25 @@ class JarUtilsTests {
     }
 
     private Path createLibraryJar(Path jarPath, List<String> entries) throws IOException {
+        Map<String, byte[]> contents = new LinkedHashMap<>();
+        entries.forEach(entry -> contents.put(entry, new byte[]{0}));
+        return createJar(jarPath, contents);
+    }
+
+    private Path createJar(Path jarPath, Map<String, byte[]> entries) throws IOException {
         try (JarOutputStream jarOutputStream = new JarOutputStream(Files.newOutputStream(jarPath))) {
-            for (String entry : entries) {
-                jarOutputStream.putNextEntry(new JarEntry(entry));
-                jarOutputStream.write(new byte[]{0});
+            for (Map.Entry<String, byte[]> entry : entries.entrySet()) {
+                jarOutputStream.putNextEntry(new JarEntry(entry.getKey()));
+                jarOutputStream.write(entry.getValue());
                 jarOutputStream.closeEntry();
             }
         }
         return jarPath;
+    }
+
+    /// Returns a class file declaring `internalName`, made distinct from its namesakes by `field`.
+    private static byte[] classNamed(String internalName, String field) {
+        return ClassFile.of().build(ClassDesc.ofInternalName(internalName),
+                builder -> builder.withField(field, ConstantDescs.CD_int, ClassFile.ACC_PUBLIC));
     }
 }

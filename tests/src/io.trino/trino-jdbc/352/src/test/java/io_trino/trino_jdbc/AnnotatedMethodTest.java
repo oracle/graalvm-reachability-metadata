@@ -1,0 +1,104 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package io_trino.trino_jdbc;
+
+import io.trino.jdbc.$internal.jackson.annotation.JacksonInject;
+import io.trino.jdbc.$internal.jackson.annotation.JsonCreator;
+import io.trino.jdbc.$internal.jackson.annotation.JsonProperty;
+import io.trino.jdbc.$internal.jackson.annotation.JsonValue;
+import io.trino.jdbc.$internal.jackson.databind.InjectableValues;
+import io.trino.jdbc.$internal.jackson.databind.ObjectMapper;
+import io.trino.jdbc.$internal.jackson.databind.introspect.AnnotatedMethod;
+import java.util.Locale;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class AnnotatedMethodTest {
+    @Test
+    void invokesFactoriesAndJsonValueAccessor() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        Label label = mapper.readValue("\"north\"", Label.class);
+        assertEquals("NORTH", label.value());
+        assertEquals("\"NORTH\"", mapper.writeValueAsString(label));
+        Pair pair = mapper.readValue("{\"left\":\"a\",\"right\":\"b\"}", Pair.class);
+        assertEquals("a:b", pair.joined);
+    }
+
+    @Test
+    void createsWithNoArgumentFactoryAndInjectsThroughMethod() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setInjectableValues(new InjectableValues.Std().addValue("region", "west"));
+        Deployment deployment = mapper.readValue("{}", Deployment.class);
+        assertEquals("factory", deployment.origin);
+        assertEquals("west", deployment.region);
+    }
+
+    @Test
+    void restoresIntrospectedAccessorForCallingOnDifferentBeans() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        AnnotatedMethod accessor = mapper.getSerializationConfig()
+                .introspect(mapper.constructType(Label.class))
+                .findMethod("value", new Class<?>[0]);
+        AnnotatedMethod restored = SerializationRoundTrip.copy(accessor);
+
+        assertEquals("value", restored.getName());
+        assertEquals(Label.class, restored.getDeclaringClass());
+        assertEquals("NORTH", restored.callOn(Label.of("north")));
+        assertEquals("SOUTH", restored.callOn(Label.of("south")));
+    }
+
+    public static class Deployment {
+        public final String origin;
+        private String region;
+
+        private Deployment(String origin) {
+            this.origin = origin;
+        }
+
+        @JsonCreator
+        public static Deployment create() {
+            return new Deployment("factory");
+        }
+
+        @JacksonInject("region")
+        public void setRegion(String region) {
+            this.region = region;
+        }
+    }
+
+    public static class Label {
+        private final String text;
+
+        private Label(String text) {
+            this.text = text;
+        }
+
+        @JsonCreator
+        public static Label of(String text) {
+            return new Label(text.toUpperCase(Locale.ROOT));
+        }
+
+        @JsonValue
+        public String value() {
+            return text;
+        }
+    }
+
+    public static class Pair {
+        public final String joined;
+
+        private Pair(String joined) {
+            this.joined = joined;
+        }
+
+        @JsonCreator
+        public static Pair of(@JsonProperty("left") String left, @JsonProperty("right") String right) {
+            return new Pair(left + ":" + right);
+        }
+    }
+}

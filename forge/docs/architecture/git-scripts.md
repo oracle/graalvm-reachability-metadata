@@ -296,12 +296,19 @@ previous and repaired version; coverage trade-offs are settled in review
 
 ### 3. Native-image run-fix
 
-The trusted `fixes-native-image-run-fail` template represents a workflow that
-workflow is metadata-first and does not produce agent token metrics, so its body
-omits them. It reports the previous and new library-coverage percentages, a
+The trusted `fixes-native-image-run-fail` template keeps a body of its own,
+because its repair is metadata-first, but takes the title of the other repairs,
+`[GenAI] Test fix for <coordinate> using <model>`, with the prefix the label
+contract gives generated work (§root/FS-repository-functional-spec.4.6.1).
+It reports the previous and new metadata-entry counts and library-coverage
+percentages, the run's strategy, agent, model, token, and iteration summary, a
 stats diff between the previous and new coordinate, a severe-metadata-drop note
 when the new version's metadata shrank suspiciously, and the local
-CI-equivalent verification section (§AR-forge-workflow-pipeline.5).
+CI-equivalent verification section (§AR-forge-workflow-pipeline.5). The repair
+runs on the shared repair route (§FS-forge-workflow-spec-catalog), so a
+deferred exploration adds the deferred-exploration section of §AR-pr-body.2,
+with its `Refs:` line and `Forge-Unblocks-Issue:` trailer. The rest of the body
+stays, since the severe-drop note compares the entry counts.
 
 ### 4. Not-for-native-image
 
@@ -364,7 +371,10 @@ publication source of truth. Both paths render the pull request that
 Publication owns user-visible GitHub linkage: PR labels, `Fixes:` issue
 references, review text, metrics summaries, and human-intervention visibility.
 It must apply the PR label that corresponds to the successful workflow result,
-not the issue queue label when those differ. A single-PR workflow links the PR
+not the issue queue label when those differ. Every route also applies `GenAI`:
+each publishes generated work (§root/FS-repository-functional-spec.4.6.1), and
+the maintainer drain queue takes a held pull request only by that label
+(§root/FS-maintainer-agent-queues.3). A single-PR workflow links the PR
 to its claimed issue with `Fixes: #<issue>`, so merging the PR closes the issue.
 When a library-update publication splits tested versions or test-version
 consumers according to §FS-library-update-tested-version-split, the PR body

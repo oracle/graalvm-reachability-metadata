@@ -33,6 +33,12 @@ GITHUB_RATE_LIMIT_FIX: str = (
     "Wait for the active gh account's rate limit to reset (`gh api rate_limit` shows when); "
     "the Forge launcher checks again on its own."
 )
+# A ref the remote rejected, with the reason git prints after it, and a status git or curl names.
+GIT_REJECTED_REF: re.Pattern[str] = re.compile(r"\[remote rejected\].*\(([^()\n]*)\)[ \t]*$", re.MULTILINE)
+GIT_HTTP_STATUS: re.Pattern[str] = re.compile(r"\b(?:HTTP|returned error:) (\d{3})\b", re.IGNORECASE)
+# git's and curl's words for a remote that dropped the connection or never answered.
+GIT_OUTAGE: re.Pattern[str] = re.compile(
+    r"the remote end hung up|could not resolve host|failed to connect to|timed out", re.IGNORECASE)
 
 
 class ProbeResult(NamedTuple):
@@ -161,6 +167,29 @@ def is_github_transient(result: subprocess.CompletedProcess[str]) -> bool:
         or is_command_timeout(result)
         or is_github_transient_failure_text(output)
         or is_github_transient_errors(graphql_errors(result.stdout))
+    )
+
+
+def is_git_transient_failure_text(text: str) -> bool:
+    """Return whether a failed remote git command met an outage rather than a refusal.
+
+    An outage is a GitHub failure or rate limit by the `gh` rule, or git's own words for
+    one: a ref update rejected only as `failed`, a dropped connection, a host that does
+    not resolve, connect, or answer in time, or a server-error or rate-limit status. A
+    remote that refuses for a reason, a ref rejected with any other reason or any other
+    4xx, would refuse again, whatever else the output says (§FS-forge-host-requirements.1).
+    """
+    reasons: list[str] = GIT_REJECTED_REF.findall(text)
+    statuses: list[int] = [int(status) for status in GIT_HTTP_STATUS.findall(text)]
+    if any(reason != "failed" for reason in reasons) or any(
+            400 <= status < 500 and not is_transient_http_status(status) for status in statuses):
+        return False
+    return (
+        bool(reasons)
+        or any(is_transient_http_status(status) for status in statuses)
+        or GIT_OUTAGE.search(text) is not None
+        or is_github_transient_failure_text(text)
+        or is_github_rate_limit_text(text)
     )
 
 

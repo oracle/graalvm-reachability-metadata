@@ -53,6 +53,7 @@ from exit_codes import (  # noqa: E402
     STILL_FAILING,
     BadInput,
 )
+from git_scripts.common_git import GitTransportError  # noqa: E402
 from run_state import load, runtime_path, write_json  # noqa: E402
 
 STEPS: dict[str, Callable[[str], int]] = {
@@ -168,7 +169,7 @@ def main(argv: list[str] | None = None) -> int:
     except BadInput as raised:
         print(f"ERROR: {raised}", file=sys.stderr)
         bad_input, code = raised, BAD_INPUT
-    except RepositoryUnreachable as outage:
+    except (RepositoryUnreachable, GitTransportError) as outage:
         # External: no fix request and no issue action, so a later cycle retries
         # (§FS-human-intervention-policy).
         print(f"ERROR: {outage}", file=sys.stderr)

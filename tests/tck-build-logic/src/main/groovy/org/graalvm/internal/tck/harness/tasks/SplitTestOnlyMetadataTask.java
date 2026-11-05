@@ -27,7 +27,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
-import static org.graalvm.internal.tck.harness.tasks.TestResourceClassifier.referencesAnyPackage;
+import static org.graalvm.internal.tck.harness.tasks.TestResourceClassifier.typeNameReferencesAnyPackage;
 
 /**
  * Splits test-only entries out of library reachability metadata into a separate
@@ -200,7 +200,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         if (condition != null && condition.isObject()) {
             JsonNode typeReached = condition.get("typeReached");
             if (typeReached != null && typeReached.isTextual()
-                    && referencesAnyPackage(typeReached.asText(), testPackages)) {
+                    && typeNameReferencesAnyPackage(typeReached.asText(), testPackages)) {
                 return true;
             }
         }
@@ -212,7 +212,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
             return false;
         }
         if (typeNode.isTextual()) {
-            return referencesAnyPackage(typeNode.asText(), testPackages);
+            return typeNameReferencesAnyPackage(typeNode.asText(), testPackages);
         }
         if (typeNode.isObject()) {
             JsonNode lambdaNode = typeNode.get("lambda");
@@ -228,7 +228,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
                 if (!proxyType.isTextual()) {
                     return false;
                 }
-                if (referencesAnyPackage(proxyType.asText(), testPackages)) {
+                if (typeNameReferencesAnyPackage(proxyType.asText(), testPackages)) {
                     any = true;
                 }
             }
@@ -245,11 +245,11 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
                 || !(lambdaNode.get("interfaces") instanceof ArrayNode interfaces)) {
             throw new IllegalArgumentException("Lambda type needs a declaringClass and interfaces: " + lambdaNode);
         }
-        if (referencesAnyPackage(declaringClass.asText(), testPackages)) {
+        if (typeNameReferencesAnyPackage(declaringClass.asText(), testPackages)) {
             return true;
         }
         for (JsonNode lambdaInterface : interfaces) {
-            if (referencesAnyPackage(lambdaInterface.asText(), testPackages)) {
+            if (typeNameReferencesAnyPackage(lambdaInterface.asText(), testPackages)) {
                 return true;
             }
         }
