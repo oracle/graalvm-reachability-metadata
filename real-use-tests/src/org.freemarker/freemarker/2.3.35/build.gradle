@@ -21,6 +21,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("--add-exports=java.xml/com.sun.org.apache.xml.internal.utils=ALL-UNNAMED")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
