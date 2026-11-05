@@ -10,8 +10,16 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+// These are application-side inputs used by the JDBC, JSON, and CSV scenarios.
+String h2Version = "2.2.224"
+String jacksonVersion = "2.15.0"
+String commonsCsvVersion = "1.10.0"
+
 dependencies {
     testImplementation "org.apache.calcite:calcite-core:$libraryVersion"
+    testImplementation "com.h2database:h2:$h2Version"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    testImplementation "org.apache.commons:commons-csv:$commonsCsvVersion"
 }
 
 graalvmNative {
