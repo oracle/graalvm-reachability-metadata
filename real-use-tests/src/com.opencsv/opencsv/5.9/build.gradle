@@ -24,6 +24,13 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-H:IncludeResourceBundles=sun.text.resources.cldr.ext.FormatData")
+            buildArgs.add("-H:-LocalizationSubstituteLoadLookup")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
