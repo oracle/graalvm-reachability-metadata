@@ -63,8 +63,6 @@ class Explore:
     feedback: str = ""
     # Set when `analyze` defers exploration of a `fails-*` issue.
     deferred_classes: int | None = None
-    # False when the call sites could not be listed: basic mode, measured by `javaTest` alone.
-    listed: bool = True
 
 
 @dataclass
@@ -199,6 +197,8 @@ def save(workspace: str, state: RunState) -> None:
 def load(workspace: str) -> RunState:
     raw: dict[str, Any] = read_json(runtime_path(workspace, "state.json"))
     raw["budgets"] = Budgets(**raw["budgets"])
+    # A state written before the unlisted basic mode was removed still names it.
+    raw["explore"].pop("listed", None)
     raw["explore"] = Explore(**raw["explore"])
     raw["chunk"] = Chunk(**raw["chunk"])
     raw["fix_rounds"] = [FixRound(**fix) for fix in raw.get("fix_rounds", [])]

@@ -54,6 +54,7 @@ stateDiagram-v2
     nrepair --> fix: 10
     analyze --> cover: 10
     analyze --> native: 20
+    analyze --> fix: 11
     cover --> measure
     measure --> cover: 10
     measure --> fix: 11
@@ -71,6 +72,7 @@ stateDiagram-v2
     route --> finalize: 33
     route --> audit: 34
     route --> nrepair: 35
+    route --> analyze: 36
     route --> human: 40
     jvm --> human: 12
     nrepair --> human: 12
@@ -90,8 +92,8 @@ stateDiagram-v2
 A cover pass costs two transitions and a fix three. In the worst case
 `native` sends `native_fixes` fixes, `finalize` sends `finalize_fixes`, and
 every other sender, each cover pass, and the audit one, so a run takes
-`18 + 3 × (native_fixes + finalize_fixes) + 5 × explore_passes` transitions:
-142 at the default 3, 5, and 20, inside the template's `transition_limit`.
+`21 + 3 × (native_fixes + finalize_fixes) + 5 × explore_passes` transitions:
+145 at the default 3, 5, and 20, inside the template's `transition_limit`.
 
 ## 4. Programs
 
@@ -101,7 +103,7 @@ every other sender, each cover pass, and the audit one, so a run takes
 | `setup-check` | Once, right after `setup`: the setup tail (§AR-forge-workflow-pipeline.4.1); a recorded skip exits `21`, a new library, which has no version to repair, exits `20` to `analyze`, and every other route exits `0` to `jvm` |
 | `jvm` | Only for a version that already has tests: runs the version check, then `javaTest`, `codeCoverageTest` when the version has the extension suite (§AR-forge-workflow-pipeline.4.5), and `generateMetadata` (§AR-forge-workflow-pipeline.5); the first failure is one fix request for that command alone, except that a dependency no repository has, or a repository that failed, ends the run as in the setup tail (§AR-forge-workflow-pipeline.4.1) |
 | `native-repair` | Right after `jvm`: runs only `test` (§AR-forge-workflow-pipeline.5); a failure is one fix request |
-| `analyze` | Once: builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt; a listing that cannot be produced takes the basic mode instead, and a first report that fails stops the run (§AR-forge-workflow-pipeline.4.5) |
+| `analyze` | Builds the native test image and lists the dynamic-access call sites, runs the JVM tests with JaCoCo and correlates, picks the explore mode (§AR-forge-workflow-pipeline.7), and writes the first cover prompt; a failed listing build is one fix request, after which `analyze` lists again, and a first report that fails stops the run (§AR-forge-workflow-pipeline.4.5) |
 | `measure` | Reruns the JVM tests with JaCoCo and correlates against the stored call sites, with no native build; a failed report reruns each JVM suite to find the one that broke (§AR-forge-workflow-pipeline.4.5); keeps a pass that gained and resets one that did not; advances the mode and writes the next cover prompt |
 | `native` | The native check over the tests exploration added: `generateMetadata`, then `test` |
 | `finalize` | `splitTestOnlyMetadata`, `routeForeignMetadata`, and `checkMetadataFiles` (§AR-forge-workflow-pipeline.5), then `spotlessApply`, `spotlessCheck`, `checkstyle`, `generateLibraryStats`, the reviewer gates (§FS-local-ci-equivalent-verification.1.1), and the pre-publication gate with the coordinate's three native lanes (§AR-forge-workflow-pipeline.4.4), each once; the first failure becomes the fix request, at most `finalize_fixes` times (§AR-forge-workflow-pipeline.6) |
@@ -229,8 +231,7 @@ A version that already has tests is checked in two states with a request each,
 naming only what failed: `jvm` runs every JVM suite, then `generateMetadata`,
 stopping at the first failure, and `native-repair` runs only `test`, so a fix's
 metadata is tested as the fix left it. `native` runs `generateMetadata`, then
-`test`, after exploration; it is the first native build that must pass when
-`analyze` could not list the call sites. Its failed `generateMetadata` names
+`test`, after exploration. Its failed `generateMetadata` names
 `test` as a command `fix` must also pass, because `test` would judge stale
 metadata and the guard (§AR-forge-workflow-pipeline.6) gives no second request
 for a failure no agent was shown.
@@ -261,13 +262,20 @@ turn is bounded by its agent timeout and the run by Rhei's transition limit.
 
 ## 7. The explore decision
 
-`analyze` decides once whether and how to explore; `uncovered` counts the
-classes with uncovered dynamic-access calls, less those an earlier chunk
-processed.
+`analyze` decides once, over a listing, whether and how to explore. The call
+sites depend only on the library JARs, so a listing build that fails says
+nothing about them: a stale test, a test dependency the tracked build needs, or
+a GraalVM defect can break it. `analyze` then exits `11` with one fix request
+for `generateDynamicAccessReport` and its output, and `fix-route` returns to
+`analyze`, which lists again; a listing that still fails after its fix exits
+`12` (§AR-forge-workflow-pipeline.6). A listing build that succeeds and writes
+no call sites lists no calls (§AR-forge-workflow-pipeline.4.2).
+
+`uncovered` counts the classes with uncovered dynamic-access calls, less those
+an earlier chunk processed.
 
 | Condition | Mode | Exit |
 | --- | --- | --- |
-| the listing fails, because the native test image does not build yet | basic, measured by every JVM suite of the version (§AR-forge-workflow-pipeline.4.5); the cause is printed as an unavailable listing, never as a library without dynamic access, whose listing succeeds and writes no call sites | `10` |
 | no dynamic-access calls, new library | basic: tests of the main public API | `10` |
 | no dynamic-access calls, or `uncovered` is 0, or the previous version's coverage is already met | skip, unless the reporter requested metadata, which gets one basic pass | `20` |
 | `fails-*` label and `uncovered` above `defer_classes` | defer: `publish` opens the follow-up library-update issue | `20` |

@@ -169,14 +169,14 @@ with `75` too (§FS-forge-stranded-claims.4.4).
 | --- | --- |
 | `0` | proceed |
 | `10` | work for an agent: a cover prompt or a fix request is written |
-| `11` | `measure` only: the JVM tests fail and a fix request is written |
-| `12` | the check still fails right after its own fix, after `native`'s or `finalize`'s last fix, or after the audit's edit; for `analyze`, its first coverage report fails (§AR-forge-workflow-pipeline.4.5) |
+| `11` | `analyze` and `measure` only, whose `10` is a cover prompt: a fix request is written, for `analyze` when the listing build fails, for `measure` when the JVM tests fail |
+| `12` | the check still fails right after its own fix, after `native`'s or `finalize`'s last fix, or after the audit's edit; for `analyze`, also its first coverage report fails (§AR-forge-workflow-pipeline.4.5) |
 | `20` | nothing to do: a new library has no version to repair, no target, exploration deferred, explore budget spent, or nothing to publish |
 | `21` | `setup-check` only: the setup verdict is recorded as a skip; go straight to `publish` |
 | `22` | `prepare` only: the artifact is recorded as not for Native Image; go straight to `publish` |
 | `23` | `prepare` only: the issue closed after the claim; the run ends in `failed` with no issue action (§FS-forge-run-requirements.2) |
 | `2` / `3` | bad input / infrastructure or crash |
-| `30`–`35` | `fix-route` only: return to `jvm`, `measure`, `native`, `finalize`, `audit`, `native-repair` |
+| `30`–`36` | `fix-route` only: return to `jvm`, `measure`, `native`, `finalize`, `audit`, `native-repair`, `analyze` |
 | `40` | `fix-route` only: the fix reported that it could not help, except for `native` |
 
 Every program also routes any other non-zero exit to `failed`, and every exit
