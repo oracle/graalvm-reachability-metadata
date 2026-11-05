@@ -12,6 +12,15 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "com.opencsv:opencsv:$libraryVersion"
+
+    // Read and write CSV data at an application's JDBC persistence boundary.
+    testImplementation "com.h2database:h2:2.2.224"
+    // Group parsed rows and build indexed views for application workflows.
+    testImplementation "org.apache.commons:commons-collections4:4.4"
+    // Normalize and validate imported CSV fields before mapping them to beans.
+    testImplementation "org.apache.commons:commons-lang3:3.13.0"
+    // Escape and substitute parsed values when producing text reports.
+    testImplementation "org.apache.commons:commons-text:1.11.0"
 }
 
 graalvmNative {
