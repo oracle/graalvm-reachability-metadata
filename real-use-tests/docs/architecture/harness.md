@@ -84,7 +84,10 @@ A pull-request workflow runs the real-use projects the pull request changes
   detect-file-changes action (§root/AR-detect-file-changes), and
   `generateChangedRealUseMatrix` maps the changed paths to the coordinates of
   the real-use projects that still exist, failing for a project whose
-  coordinate the repository does not support (§FS-real-use-tests.1);
+  coordinate the repository does not support (§FS-real-use-tests.1). The
+  changed paths are the diff from the merge base of the pull request's base
+  and head: a project that reached the base branch after the pull request
+  forked is not one it changes, though the merge checkout still holds it;
 - it runs `realUseJavaTest`, then `realUseNativeTest`, for those coordinates
   on the `generateChangedRealUseMatrix` section of `ci.json`, which names only
   `latest-ea` and only the `current-defaults` native-image mode
