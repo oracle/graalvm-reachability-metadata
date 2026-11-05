@@ -6,7 +6,6 @@
  */
 package org.graalvm.internal.tck.harness;
 
-import groovy.json.JsonSlurper;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
@@ -18,14 +17,10 @@ import org.gradle.process.ExecOperations;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,19 +74,19 @@ public abstract class TckExtension {
         return provider.get().getAsFile().toPath();
     }
 
-    private Path repoRoot() {
+    Path repoRoot() {
         return toPath(getRepoRoot());
     }
 
-    private Path metadataRoot() {
+    Path metadataRoot() {
         return toPath(getMetadataRoot());
     }
 
-    private Path tckRoot() {
+    Path tckRoot() {
         return toPath(getTckRoot());
     }
 
-    private Path testRoot() {
+    Path testRoot() {
         return toPath(getTestRoot());
     }
 
@@ -190,220 +185,22 @@ public abstract class TckExtension {
         return CoordinateUtils.computeBatchedCoordinates(withProject, fraction[0], fraction[1]);
     }
 
-    /**
-     * Returns a list of coordinates that match changed files between baseCommit and newCommit.
-     *
-     * @return List of coordinates
-     */
+    /// The changes between two commits, answered by [CommitDiff].
     @SuppressWarnings("unused")
     List<String> diffCoordinates(String baseCommit, String newCommit) {
-        Path workflowsRoot = repoRoot().resolve(".github").resolve("workflows");
-        Map<String, List<Path>> changed = diffFiles(baseCommit, newCommit, "ACMRTD").stream()
-                .collect(Collectors.groupingBy((Path path) -> {
-                    if (path.startsWith(tckRoot()) || path.startsWith(workflowsRoot)) {
-                        return "logic";
-                    } else if (path.startsWith(testRoot())) {
-                        return "test";
-                    } else if (path.startsWith(metadataRoot())) {
-                        return "metadata";
-                    } else {
-                        return "other";
-                    }
-                }));
-
-        List<Path> changedMetadataFiles = changed.getOrDefault("metadata", Collections.emptyList());
-        List<Path> changedTestFiles = changed.getOrDefault("test", Collections.emptyList());
-        List<Path> changedLogicFiles = changed.getOrDefault("logic", Collections.emptyList());
-
-        // if we didn't change any of metadata, tests or logic we don't need to test anything
-        if (changedMetadataFiles.isEmpty() && changedTestFiles.isEmpty() && changedLogicFiles.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        List<String> changedCoordinates = getMatchingCoordinatesStrict("").stream().filter(c -> {
-            Path metadataDir = getMetadataDir(c);
-            if (changedMetadataFiles.stream().anyMatch(f -> f.startsWith(metadataDir))) {
-                return true;
-            }
-            Path testDir = getTestDir(c);
-            return changedTestFiles.stream().anyMatch(f -> f.startsWith(testDir));
-        }).distinct().collect(Collectors.toCollection(ArrayList::new));
-
-        return changedCoordinates;
+        return new CommitDiff(this).diffCoordinates(baseCommit, newCommit);
     }
 
-    /**
-     * Returns a list of changed artifact coordinates based on artifact-level index.json files modified between baseCommit and newCommit.
-     *
-     * @return List of coordinates (e.g., "org.flywaydb:flyway-core" or "org.example:library")
-     */
     public List<String> diffIndexCoordinates(String baseCommit, String newCommit) {
-        return diffFiles(baseCommit, newCommit, "ACMRT").stream()
-                .map(path -> repoRoot().relativize(path).toString().replace('\\', '/'))
-                .map(this::indexPathToCoordinate)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
+        return new CommitDiff(this).diffIndexCoordinates(baseCommit, newCommit);
     }
 
-    /**
-     * Returns changed artifact coordinates paired with only newly added tested-versions from artifact-level index.json diffs.
-     */
-    @SuppressWarnings("unchecked")
     public List<Map<String, Object>> diffIndexTestedVersions(String baseCommit, String newCommit) {
-        return diffFiles(baseCommit, newCommit, "ACMRT").stream()
-                .map(path -> repoRoot().relativize(path).toString().replace('\\', '/'))
-                .map(relativePath -> diffIndexTestedVersionsEntry(baseCommit, newCommit, relativePath))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return new CommitDiff(this).diffIndexTestedVersions(baseCommit, newCommit);
     }
 
-    /**
-     * Returns the sorted coordinates of the real-use projects changed between baseCommit and newCommit
-     * that still exist at newCommit's checkout (§real-use-tests/AR-real-use-test-harness.4).
-     */
     public List<String> diffRealUseCoordinates(String baseCommit, String newCommit) {
-        Path realUseRoot = repoRoot().resolve("real-use-tests").resolve("src");
-        return diffFiles(baseCommit, newCommit, "ACMRTD").stream()
-                .filter(path -> path.startsWith(realUseRoot) && realUseRoot.relativize(path).getNameCount() > 3)
-                .map(path -> realUseRoot.relativize(path))
-                .map(relative -> relative.getName(0) + ":" + relative.getName(1) + ":" + relative.getName(2))
-                .distinct()
-                .filter(coordinates -> getRealUseTestDir(coordinates).isPresent())
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
-    private List<Path> diffFiles(String baseCommit, String newCommit, String diffFilter) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        getExecOperations().exec(spec -> {
-            spec.setStandardOutput(baos);
-            spec.commandLine("git", "diff", "--name-only", "--diff-filter=" + diffFilter, baseCommit, newCommit);
-        });
-
-        return Arrays.stream(baos.toString(StandardCharsets.UTF_8).split("\\r?\\n"))
-                .filter(line -> !line.isBlank())
-                .map(line -> repoRoot().resolve(line))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Maps an artifact-level metadata index.json file path to its corresponding coordinate string.
-     *
-     * @return the coordinate string (G:A), or null if not a match
-     */
-    private String indexPathToCoordinate(String path) {
-        Pattern pattern = Pattern.compile("(?:metadata|tests/src)/([^/]+)/([^/]+)(?:/([^/]+))?/index\\.json");
-        Matcher matcher = pattern.matcher(path);
-
-        if (matcher.matches()) {
-            String group = matcher.group(1);
-            String artifact = matcher.group(2);
-            String version = matcher.group(3);
-
-            return (version != null)
-                    ? String.format("%s:%s:%s", group, artifact, version)
-                    : String.format("%s:%s", group, artifact);
-        }
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> diffIndexTestedVersionsEntry(String baseCommit, String newCommit, String relativePath) {
-        String coordinates = indexPathToCoordinate(relativePath);
-        if (coordinates == null) {
-            return null;
-        }
-
-        List<Map<String, ?>> baseEntries = readJsonListFromCommit(baseCommit, relativePath);
-        List<Map<String, ?>> headEntries = readJsonListFromCommit(newCommit, relativePath);
-
-        Map<String, Set<String>> baseByMetadataVersion = testedVersionsByMetadataVersion(baseEntries);
-        Map<String, Set<String>> headByMetadataVersion = testedVersionsByMetadataVersion(headEntries);
-
-        List<Map<String, Object>> changedMetadataVersions = new ArrayList<>();
-        for (Map.Entry<String, Set<String>> headEntry : headByMetadataVersion.entrySet()) {
-            String metadataVersion = headEntry.getKey();
-            Set<String> baseVersions = baseByMetadataVersion.getOrDefault(metadataVersion, Collections.emptySet());
-            List<String> addedVersions = headEntry.getValue().stream()
-                    .filter(testedVersion -> !baseVersions.contains(testedVersion))
-                    .toList();
-            if (!addedVersions.isEmpty()) {
-                changedMetadataVersions.add(Map.of(
-                        "coordinates", coordinates + ":" + metadataVersion,
-                        "versions", addedVersions
-                ));
-            }
-        }
-
-        if (changedMetadataVersions.isEmpty()) {
-            return null;
-        }
-
-        if (changedMetadataVersions.size() == 1) {
-            return changedMetadataVersions.get(0);
-        }
-
-        return Map.of(
-                "entries", changedMetadataVersions
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<Map<String, ?>> readJsonListFromCommit(String commit, String relativePath) {
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-        var result = getExecOperations().exec(spec -> {
-            spec.setIgnoreExitValue(true);
-            spec.setStandardOutput(stdout);
-            spec.setErrorOutput(stderr);
-            spec.commandLine("git", "show", commit + ":" + relativePath);
-        });
-        if (result.getExitValue() != 0) {
-            return Collections.emptyList();
-        }
-        String json = stdout.toString(StandardCharsets.UTF_8);
-        if (json == null || json.isBlank()) {
-            return Collections.emptyList();
-        }
-        Object parsed = parseTextJson(json);
-        if (parsed instanceof List<?> list) {
-            return list.stream()
-                    .filter(Map.class::isInstance)
-                    .map(entry -> (Map<String, ?>) entry)
-                    .collect(Collectors.toList());
-        }
-        return Collections.emptyList();
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Set<String>> testedVersionsByMetadataVersion(List<Map<String, ?>> entries) {
-        Map<String, Set<String>> testedVersions = new LinkedHashMap<>();
-        for (Map<String, ?> entry : entries) {
-            if (entry == null) {
-                continue;
-            }
-            Object metadataVersion = entry.get("metadata-version");
-            Object testedVersionsRaw = entry.get("tested-versions");
-            if (!(metadataVersion instanceof String metadataVersionString) || !(testedVersionsRaw instanceof List<?> versions)) {
-                continue;
-            }
-            testedVersions.put(
-                    metadataVersionString,
-                    versions.stream()
-                            .map(Object::toString)
-                            .collect(Collectors.toCollection(LinkedHashSet::new))
-            );
-        }
-        return testedVersions;
-    }
-
-    private Object parseTextJson(String json) {
-        try {
-            return new JsonSlurper().parseText(json);
-        } catch (Exception ex) {
-            return Collections.emptyList();
-        }
+        return new CommitDiff(this).diffRealUseCoordinates(baseCommit, newCommit);
     }
 
     /**
