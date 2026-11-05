@@ -175,6 +175,7 @@ public class OrderTrackingServerSentEventsTest {
         assertTrue(feed.awaitEnd(), "the event stream ends after shutdown");
         assertTrue(tracker.closed.await(WAIT.toSeconds(), TimeUnit.SECONDS));
         assertEquals(List.of("42"), List.copyOf(tracker.closedOrders));
+        assertTrue(tracker.awaitConnections("42", 0), "the closed stream is removed");
         assertEquals(0, tracker.openConnections("42"));
     }
 
