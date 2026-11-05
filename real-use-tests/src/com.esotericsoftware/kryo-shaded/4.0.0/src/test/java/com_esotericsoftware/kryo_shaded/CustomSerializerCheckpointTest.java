@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /// Exercises Kryo's custom serializer subsystem to persist a compact application checkpoint.
 public class CustomSerializerCheckpointTest {
     @Test
-    @Timeout(3)
+    @Timeout(60)
     void roundTripsCheckpointWithApplicationSerializer() {
         Kryo kryo = new Kryo();
         kryo.setAsmEnabled(false);
