@@ -11,7 +11,15 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
     testImplementation "org.springframework.boot:spring-boot-ldap:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-health:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-docker-compose:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-testcontainers:$libraryVersion"
+    testImplementation 'com.unboundid:unboundid-ldapsdk'
+    testImplementation 'org.testcontainers:testcontainers-ldap'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
