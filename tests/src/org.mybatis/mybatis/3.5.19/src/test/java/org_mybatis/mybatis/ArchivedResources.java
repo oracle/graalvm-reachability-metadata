@@ -17,10 +17,14 @@ import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
+import org.apache.ibatis.io.DefaultVFS;
+import org.apache.ibatis.io.VFS;
+
 public final class ArchivedResources implements AutoCloseable {
     private final ClassLoader originalLoader;
 
     public ArchivedResources(Path archive, String packagePath, String... resources) throws IOException {
+        VFS.addImplClass(DefaultVFS.class);
         originalLoader = Thread.currentThread().getContextClassLoader();
         try (JarOutputStream output = new JarOutputStream(Files.newOutputStream(archive))) {
             output.putNextEntry(new JarEntry(packagePath + "/"));
