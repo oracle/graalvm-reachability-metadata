@@ -23,6 +23,12 @@ tasks.withType(Test).configureEach {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            // Util.getAddressFromDirectByteBuffer reflectively reads java.nio.Buffer.address.
+            buildArgs.add('--add-opens=java.base/java.nio=ALL-UNNAMED')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
