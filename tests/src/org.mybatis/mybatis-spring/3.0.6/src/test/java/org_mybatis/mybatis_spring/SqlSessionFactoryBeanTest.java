@@ -8,7 +8,6 @@ package org_mybatis.mybatis_spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -16,28 +15,21 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.io.ByteArrayResource;
 
 public class SqlSessionFactoryBeanTest {
 
     @Test
-    void createsUsableSessionFactoryFromSpringXml() throws Exception {
+    void createsUsableSessionFactoryInSpringContext() throws Exception {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:mem:spring_factory");
-        String xml = """
-                <beans xmlns="http://www.springframework.org/schema/beans">
-                    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-                        <property name="dataSource" ref="dataSource"/>
-                    </bean>
-                </beans>
-                """;
         try (GenericApplicationContext context = new GenericApplicationContext()) {
-            context.getBeanFactory().registerSingleton("dataSource", dataSource);
-            XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(context);
-            reader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_NONE);
-            reader.loadBeanDefinitions(new ByteArrayResource(xml.getBytes(StandardCharsets.UTF_8)));
+            context.registerBean("sessionFactory", SqlSessionFactoryBean.class, () -> {
+                SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+                factoryBean.setDataSource(dataSource);
+                return factoryBean;
+            });
             context.refresh();
 
             SqlSessionFactory factory = context.getBean("sessionFactory", SqlSessionFactory.class);

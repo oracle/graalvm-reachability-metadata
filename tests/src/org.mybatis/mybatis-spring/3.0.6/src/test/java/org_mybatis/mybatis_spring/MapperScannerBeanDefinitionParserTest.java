@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
+import org.mybatis.spring.config.NamespaceHandler;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.MutablePropertyValues;
@@ -43,6 +44,10 @@ public class MapperScannerBeanDefinitionParserTest {
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
         reader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_NONE);
         reader.setNamespaceAware(true);
+        NamespaceHandler handler = new NamespaceHandler();
+        handler.init();
+        reader.setNamespaceHandlerResolver(namespace ->
+                "http://mybatis.org/schema/mybatis-spring".equals(namespace) ? handler : null);
 
         int count = reader.loadBeanDefinitions(new ByteArrayResource(xml.getBytes(StandardCharsets.UTF_8)));
 

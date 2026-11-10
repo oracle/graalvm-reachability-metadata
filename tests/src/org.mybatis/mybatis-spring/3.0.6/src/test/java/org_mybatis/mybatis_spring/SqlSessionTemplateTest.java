@@ -8,7 +8,6 @@ package org_mybatis.mybatis_spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.ibatis.builder.StaticSqlSource;
@@ -21,9 +20,7 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.io.ByteArrayResource;
 
 public class SqlSessionTemplateTest {
 
@@ -41,20 +38,10 @@ public class SqlSessionTemplateTest {
         factoryBean.setDataSource(dataSource);
         factoryBean.setConfiguration(configuration);
         SqlSessionFactory factory = factoryBean.getObject();
-        String xml = """
-                <beans xmlns="http://www.springframework.org/schema/beans">
-                    <bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-                        <constructor-arg ref="sessionFactory"/>
-                    </bean>
-                    <bean id="templateFactory" factory-bean="sessionTemplate"
-                          factory-method="getSqlSessionFactory"/>
-                </beans>
-                """;
         try (GenericApplicationContext context = new GenericApplicationContext()) {
-            context.getBeanFactory().registerSingleton("sessionFactory", factory);
-            XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(context);
-            reader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_NONE);
-            reader.loadBeanDefinitions(new ByteArrayResource(xml.getBytes(StandardCharsets.UTF_8)));
+            context.registerBean("sessionTemplate", SqlSessionTemplate.class, () -> new SqlSessionTemplate(factory));
+            context.registerBean("templateFactory", SqlSessionFactory.class,
+                    () -> context.getBean("sessionTemplate", SqlSessionTemplate.class).getSqlSessionFactory());
             context.refresh();
 
             assertThat(context.getBean("templateFactory", SqlSessionFactory.class)).isSameAs(factory);

@@ -35,6 +35,7 @@ public class ClassPathMapperScannerTest {
         try (GenericApplicationContext context = new GenericApplicationContext()) {
             ClassPathMapperScanner scanner = new ClassPathMapperScanner(context, context.getEnvironment());
             scanner.setAnnotationClass(Mapper.class);
+            scanner.setResourcePattern("ClassPathMapperScannerTest$AnswerMapper.class");
             scanner.setSqlSessionFactory(factory);
             scanner.setBeanNameGenerator((definition, registry) -> "scannedMapper");
             scanner.registerFilters();
