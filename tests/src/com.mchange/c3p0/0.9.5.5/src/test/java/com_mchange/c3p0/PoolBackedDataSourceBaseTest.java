@@ -20,6 +20,28 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 public class PoolBackedDataSourceBaseTest {
     @Test
+    void serializedPoolResolvesAReferenceOnlyConnectionFactory() throws Exception {
+        PoolBackedDataSource original = new PoolBackedDataSource(false);
+        original.setIdentityToken(UUID.randomUUID().toString());
+        original.setDataSourceName("reference-backed-pool");
+        original.setConnectionPoolDataSource(new ReferenceOnlyDataSource());
+        try {
+            PoolBackedDataSource restored = C3p0Support.roundTrip(original, PoolBackedDataSource.class);
+            try {
+                assertNotSame(original.getConnectionPoolDataSource(), restored.getConnectionPoolDataSource());
+                assertEquals("reference-backed-pool", restored.getDataSourceName());
+                try (Connection connection = restored.getConnection()) {
+                    C3p0Support.assertQuery(connection, 71);
+                }
+            } finally {
+                restored.close();
+            }
+        } finally {
+            original.close();
+        }
+    }
+
+    @Test
     void serializedPoolReopensConnectionsWithItsConfiguration() throws Exception {
         PoolBackedDataSource original = new PoolBackedDataSource(false);
         original.setIdentityToken(UUID.randomUUID().toString());

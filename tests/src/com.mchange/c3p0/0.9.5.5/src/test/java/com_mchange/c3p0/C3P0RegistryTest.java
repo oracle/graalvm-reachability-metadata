@@ -13,14 +13,39 @@ import com.mchange.v2.c3p0.ConnectionTester;
 import com.mchange.v2.c3p0.example.IsValidOnlyConnectionTester30;
 import org.junit.jupiter.api.Test;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class C3P0RegistryTest {
+    @Test
+    void configuredManagementCoordinatorRegistersAndUnregistersPools() throws Exception {
+        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        ComboPooledDataSource source = C3p0Support.pool();
+        ObjectName poolName = new ObjectName("com.mchange.v2.c3p0:type=PooledDataSource,identityToken="
+                        + source.getIdentityToken() + ",name=" + source.getDataSourceName());
+        try {
+            assertTrue(server.isRegistered(poolName));
+            assertEquals(1, server.getAttribute(poolName, "maxPoolSize"));
+            assertTrue(C3P0Registry.getPooledDataSources().contains(source));
+            try (Connection connection = source.getConnection()) {
+                C3p0Support.assertQuery(connection, 73);
+                assertEquals(1, server.getAttribute(poolName, "numBusyConnectionsDefaultUser"));
+            }
+        } finally {
+            source.close();
+        }
+        assertFalse(server.isRegistered(poolName));
+        assertFalse(C3P0Registry.getPooledDataSources().contains(source));
+    }
+
     @Test
     void registryCachesConfiguredExtensionsAndRefreshesDefaultTester() throws Exception {
         ConnectionTester tester = C3P0Registry.getConnectionTester(IsValidOnlyConnectionTester30.class.getName());

@@ -17,6 +17,22 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 public class WrapperConnectionPoolDataSourceBaseTest {
     @Test
+    void serializedWrapperResolvesAReferenceOnlyNestedSource() throws Exception {
+        WrapperConnectionPoolDataSource original = C3p0Support.wrapper(false);
+        original.setNestedDataSource(new ReferenceOnlyDataSource());
+        WrapperConnectionPoolDataSource restored = C3p0Support.roundTrip(original, WrapperConnectionPoolDataSource.class);
+        assertNotSame(original.getNestedDataSource(), restored.getNestedDataSource());
+        PooledConnection pooled = restored.getPooledConnection();
+        try {
+            try (Connection connection = pooled.getConnection()) {
+                C3p0Support.assertQuery(connection, 72);
+            }
+        } finally {
+            pooled.close();
+        }
+    }
+
+    @Test
     void serializedWrapperPreservesItsNestedSourceAndPoolSettings() throws Exception {
         WrapperConnectionPoolDataSource original = C3p0Support.wrapper(false);
         original.setMaxPoolSize(4);
