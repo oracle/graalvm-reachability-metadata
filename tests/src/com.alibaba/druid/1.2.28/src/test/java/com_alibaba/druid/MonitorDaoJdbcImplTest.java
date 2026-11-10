@@ -22,12 +22,58 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Timeout(120)
 public class MonitorDaoJdbcImplTest {
+    @Test
+    @Timeout(170)
+    void loadsAggregatedSqlCountersAndResolvesHashedSqlText() throws Exception {
+        try (DatabaseContainer database = DatabaseContainer.mysql();
+             DruidDataSource store = new DruidDataSource()) {
+            store.setUrl("jdbc:mysql://" + database.address() + "/druid");
+            store.setUsername("druid");
+            store.setPassword(DatabaseContainer.PASSWORD);
+            store.setMaxWait(10000);
+            store.setConnectTimeout(10000);
+            store.setSocketTimeout(30000);
+            store.setConnectionProperties("allowPublicKeyRetrieval=true;useSSL=false;"
+                    + "connectionTimeZone=UTC;forceConnectionTimeZoneToSession=true");
+            store.setConnectionInitSqls(List.of("SET SESSION sql_mode = ''"));
+            for (String resource : List.of("sql.sql", "const.sql")) {
+                String ddl = Utils.readFromResource("/support/monitor/mysql/" + resource);
+                for (String statement : ddl.split(";")) {
+                    if (!statement.isBlank()) {
+                        JdbcUtils.execute(store, statement);
+                    }
+                }
+            }
+            String text = "SELECT id FROM deliveries";
+            long hash = Utils.fnv_64(text);
+            JdbcUtils.execute(store, "INSERT INTO druid_const (domain, app, type, hash, value) "
+                    + "VALUES ('default', 'default', 'sql', " + hash + ", '" + text + "')");
+            for (int count : new int[]{2, 3}) {
+                JdbcUtils.execute(store, "INSERT INTO druid_sql "
+                        + "(domain, app, cluster, pid, collectTime, sqlHash, execSuccessCount, fetchRowCount) "
+                        + "VALUES ('default', 'default', 'default', 100, NOW(), " + hash + ", " + count + ", 4)");
+            }
+            MonitorDaoJdbcImpl dao = new MonitorDaoJdbcImpl();
+            dao.setDataSource(store);
+            Map<String, Object> filters = Map.of("endTime", System.currentTimeMillis() + 60000);
+            List<JdbcSqlStatValue> values = dao.loadSqlList(filters);
+            assertEquals(1, values.size());
+            assertEquals(hash, values.get(0).getSqlHash());
+            assertEquals(text, values.get(0).getSql());
+            assertEquals(5, values.get(0).getExecuteSuccessCount());
+            assertEquals(8, values.get(0).getFetchRowCount());
+            dao.cachePut("sql", hash, text);
+            assertEquals(text, dao.loadSqlList(filters).get(0).getSql());
+        }
+    }
+
     @Test
     void persistsPoolAndSqlSnapshotsWithHashedSqlText() throws Exception {
         try (DruidDataSource store = TestDataSources.create("monitor_store")) {

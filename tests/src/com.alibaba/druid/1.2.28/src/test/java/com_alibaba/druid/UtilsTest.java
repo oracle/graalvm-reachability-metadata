@@ -18,10 +18,24 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Timeout(120)
 public class UtilsTest {
+    @Test
+    void returnsNoClassForAnUnavailableOptionalExtension() {
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+        try {
+            assertNotNull(previous);
+            assertNull(Utils.loadClass("application.optional.UnavailableConnectionChecker"));
+            Thread.currentThread().setContextClassLoader(null);
+            assertNull(Utils.loadClass("application.optional.UnavailableConnectionChecker"));
+        } finally {
+            Thread.currentThread().setContextClassLoader(previous);
+        }
+    }
+
     @Test
     void readsPackagedConfigurationThroughEachResourceApi() throws Exception {
         String resource = "META-INF/druid-filter.properties";

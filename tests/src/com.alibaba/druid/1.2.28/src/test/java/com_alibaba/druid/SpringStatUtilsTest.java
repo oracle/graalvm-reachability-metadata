@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Timeout(120)
@@ -36,6 +37,13 @@ public class SpringStatUtilsTest {
         List<Map<String, Object>> data = SpringStatUtils.getMethodStatDataList(stats);
         assertEquals(1, data.size());
         assertEquals(1L, data.get(0).get("ExecuteCount"));
+        Map<String, Object> selected = SpringStatUtils.getMethodStatData(stats,
+                methodInfo.getClassName(), methodInfo.getSignature());
+        assertNotNull(selected);
+        assertEquals(1L, selected.get("ExecuteCount"));
+        assertEquals(methodInfo.getClassName(), selected.get("Class"));
+        assertEquals(methodInfo.getSignature(), selected.get("Method"));
+        assertEquals(data.get(0).get("ExecuteTimeMillis"), selected.get("ExecuteTimeMillis"));
         SpringStatUtils.reset(stats);
         assertTrue(SpringStatUtils.getMethodStatDataList(stats).isEmpty());
         assertEquals(0, method.getExecuteCount());
