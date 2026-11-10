@@ -13,13 +13,21 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.ognl.OgnlRuntime;
 import org.apache.ibatis.scripting.xmltags.OgnlCache;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class OgnlRuntimeTest {
+    @Test
+    void resolvesNamedWritersAndReportsUnknownProperties() {
+        assertEquals("rename", OgnlRuntime.getWriteMethod(ObjectPropertyAccessorTest.Bean.class, "rename").getName());
+        assertNull(OgnlRuntime.getWriteMethod(ObjectPropertyAccessorTest.Bean.class, "unknownProperty"));
+    }
+
     @Test
     void deletesEntitiesUsingMetaObjectInForeach() throws Exception {
         try (SqlSession session = TestSupport.factory(DeleteMapper.class).openSession()) {
