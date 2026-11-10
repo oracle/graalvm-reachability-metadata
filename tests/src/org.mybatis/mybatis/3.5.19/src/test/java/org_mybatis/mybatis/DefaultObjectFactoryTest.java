@@ -7,6 +7,9 @@
 package org_mybatis.mybatis;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,24 @@ public class DefaultObjectFactoryTest {
         assertEquals("default", factory.create(PrivateBean.class).value);
         assertEquals("private", factory.create(PrivateBean.class, List.of(String.class), List.of("private")).value);
         assertEquals(6, factory.create(PublicBean.class, List.of(int.class), List.of(6)).value);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void createsMutableImplementationsOfCollectionInterfaces() {
+        DefaultObjectFactory factory = new DefaultObjectFactory();
+        Map<String, Integer> counts = factory.create(Map.class);
+        counts.put("Ada", 2);
+        assertEquals(Map.of("Ada", 2), counts);
+
+        Set<String> names = factory.create(Set.class);
+        names.add("Ada");
+        names.add("Ada");
+        assertEquals(Set.of("Ada"), names);
+
+        SortedSet<String> ordered = factory.create(SortedSet.class);
+        ordered.addAll(List.of("Grace", "Ada"));
+        assertEquals(List.of("Ada", "Grace"), List.copyOf(ordered));
     }
 
     public static class PrivateBean {

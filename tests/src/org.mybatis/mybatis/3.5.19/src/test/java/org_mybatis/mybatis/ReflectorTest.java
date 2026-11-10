@@ -22,6 +22,25 @@ public class ReflectorTest {
         assertEquals(List[].class, reflector.getSetterType("groups"));
     }
 
+    @Test
+    void resolvesParameterizedComponentTypesOfArrayMethods() {
+        Reflector reflector = new Reflector(ArrayMethods.class);
+        assertEquals(List[].class, reflector.getGetterType("batches"));
+        assertEquals(List[].class, reflector.getSetterType("batches"));
+    }
+
+    public static class ArrayMethods {
+        private List<String>[] batches;
+
+        public List<String>[] getBatches() {
+            return batches;
+        }
+
+        public void setBatches(List<String>[] batches) {
+            this.batches = batches;
+        }
+    }
+
     public static class ArraysBean<T> {
         public T[] values;
         public List<String>[] groups;

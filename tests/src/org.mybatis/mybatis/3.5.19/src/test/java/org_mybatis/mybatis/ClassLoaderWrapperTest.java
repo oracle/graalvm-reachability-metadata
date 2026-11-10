@@ -17,6 +17,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClassLoaderWrapperTest {
     @Test
+    void resolvesResourcesFromLoadersRequiringALeadingSlash() throws Exception {
+        ClassLoader loader = new ClassLoader(getClass().getClassLoader()) {
+            @Override
+            public URL getResource(String name) {
+                return name.startsWith("/") ? super.getResource(name.substring(1)) : null;
+            }
+        };
+        URL url = Resources.getResourceURL(loader, "org/apache/ibatis/builder/xml/mybatis-3-config.dtd");
+        try (InputStream stream = url.openStream()) {
+            assertTrue(new String(stream.readAllBytes(), StandardCharsets.UTF_8).contains("<!ELEMENT configuration"));
+        }
+    }
+
+    @Test
     void resolvesBundledMapperDtdAsUrl() throws Exception {
         URL url = Resources.getResourceURL("org/apache/ibatis/builder/xml/mybatis-3-mapper.dtd");
         try (InputStream stream = url.openStream()) {
