@@ -12,8 +12,16 @@ import org.apache.ibatis.javassist.Loader;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LoaderTest {
+    @Test
+    void reportsAnUnavailableApplicationClass() {
+        Loader loader = new Loader(getClass().getClassLoader(), null);
+        assertThrows(ClassNotFoundException.class,
+                () -> loader.loadClass("org_mybatis.mybatis.UnavailableApplication"));
+    }
+
     @Test
     void invokesAParentDelegatedApplicationEntryPoint() throws Throwable {
         Loader loader = new Loader(getClass().getClassLoader(), null);

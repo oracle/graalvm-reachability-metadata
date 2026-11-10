@@ -841,6 +841,20 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.tools.rmi.AppletServer"
+      },
+      "type" : "org.apache.ibatis.javassist.tools.rmi.RemoteRef",
+      "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.tools.rmi.ObjectImporter"
+      },
+      "type" : "org.apache.ibatis.javassist.tools.rmi.RemoteRef",
+      "serializable" : true
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.ibatis.javassist.tools.web.Viewer"
       },
       "type" : "org.apache.ibatis.javassist.tools.web.Viewer"
@@ -1195,9 +1209,41 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.ibatis.io.JBoss6VFS$VFS"
+      },
+      "type" : "org.jboss.vfs.VFS",
+      "methods" : [
+        {
+          "name" : "getChild",
+          "parameterTypes" : [
+            "java.net.URL"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.ibatis.io.VFS"
       },
       "type" : "org.jboss.vfs.VFS"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.io.JBoss6VFS$VirtualFile"
+      },
+      "type" : "org.jboss.vfs.VirtualFile",
+      "methods" : [
+        {
+          "name" : "getChildrenRecursively",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "getPathNameRelativeTo",
+          "parameterTypes" : [
+            "org.jboss.vfs.VirtualFile"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1345,6 +1391,24 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.ClassPool"
+      },
+      "glob" : "java/io/Serializable.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.CtClassType"
+      },
+      "glob" : "java/lang/Object.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.tools.rmi.StubGenerator"
+      },
+      "glob" : "java/lang/String.class"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.ibatis.io.Resources"
       },
       "glob" : "org/apache/ibatis/builder/xml/mybatis-3-config.dtd"
@@ -1360,6 +1424,36 @@
         "typeReached" : "org.apache.ibatis.io.Resources"
       },
       "glob" : "org/apache/ibatis/builder/xml/mybatis-3-mapper.dtd"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.ClassPool"
+      },
+      "glob" : "org/apache/ibatis/javassist/tools/rmi/ObjectImporter.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.ClassPool"
+      },
+      "glob" : "org/apache/ibatis/javassist/tools/rmi/Proxy.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.tools.rmi.StubGenerator"
+      },
+      "glob" : "org/apache/ibatis/javassist/tools/rmi/RemoteException.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.CtClassType"
+      },
+      "glob" : "org/apache/ibatis/javassist/tools/rmi/Sample.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.tools.rmi.StubGenerator"
+      },
+      "glob" : "org/apache/ibatis/javassist/tools/rmi/Sample.class"
     },
     {
       "condition" : {
@@ -1387,6 +1481,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.CtClassType"
+      },
+      "glob" : "org/apache/ibatis/session/RowBounds.class"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.ibatis.javassist.scopedpool.ScopedClassPool"
       },
       "glob" : "org/apache/ibatis/session/RowBounds.class"
@@ -1408,6 +1508,27 @@
         "typeReached" : "org.apache.ibatis.logging.slf4j.Slf4jImpl"
       },
       "glob" : "org/slf4j/impl/StaticLoggerBinder.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.ClassPool"
+      },
+      "module" : "java.base",
+      "glob" : "java/io/Serializable.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.CtClassType"
+      },
+      "module" : "java.base",
+      "glob" : "java/lang/Object.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.ibatis.javassist.tools.rmi.StubGenerator"
+      },
+      "module" : "java.base",
+      "glob" : "java/lang/String.class"
     }
   ]
 }
