@@ -68,6 +68,7 @@ public class ProxyObjectOutputStreamTest {
 
     public static class MessageProxy extends Message implements MessageView, ProxyObject {
         private static final long serialVersionUID = 1L;
+        @SuppressWarnings("checkstyle:StaticVariableName") // Javassist reads this field by name.
         public static byte[] _filter_signature = new byte[]{0, 0};
         private MethodHandler handler;
 
