@@ -13,6 +13,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,17 +23,22 @@ public class YAMLFactoryTest {
 
     @Test
     void serviceDiscoveredFactoryWritesAndReadsYaml() throws Exception {
+        JsonNode configuration = new YAMLMapper().readTree("""
+                format: YAML
+                service: catalog
+                replicas: 3
+                """);
         JsonFactory factory = ServiceLoader.load(JsonFactory.class).stream()
                 .map(ServiceLoader.Provider::get)
-                .filter(candidate -> "YAML".equals(candidate.getFormatName()))
+                .filter(candidate -> configuration.path("format").asText().equals(candidate.getFormatName()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No YAML factory provider found"));
 
         StringWriter output = new StringWriter();
         try (JsonGenerator generator = factory.createGenerator(output)) {
             generator.writeStartObject();
-            generator.writeStringField("service", "catalog");
-            generator.writeNumberField("replicas", 3);
+            generator.writeStringField("service", configuration.path("service").asText());
+            generator.writeNumberField("replicas", configuration.path("replicas").asInt());
             generator.writeEndObject();
         }
 
