@@ -23,6 +23,29 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 @Timeout(120)
 public class FilterManagerTest {
     @Test
+    void installsApplicationFilterWithALongQualifiedName() throws Exception {
+        List<Filter> filters = new ArrayList<>();
+        String name = ApplicationSpecificConnectionPoolStatisticsFilterForTheOrderFulfillmentAndShipmentTrackingSubsystem.class.getName();
+        FilterManager.loadFilter(filters, name);
+        FilterManager.loadFilter(filters, name);
+        assertEquals(1, filters.size());
+        assertInstanceOf(ApplicationSpecificConnectionPoolStatisticsFilterForTheOrderFulfillmentAndShipmentTrackingSubsystem.class,
+                filters.get(0));
+        try (DruidDataSource dataSource = TestDataSources.create("long_filter_name")) {
+            dataSource.setProxyFilters(filters);
+            try (Connection connection = dataSource.getConnection()) {
+                assertEquals(79, TestDataSources.queryInt(connection, "SELECT 79"));
+            }
+            assertEquals(1, dataSource.getSqlStatMap().size());
+            assertEquals(1, dataSource.getSqlStatMap().values().iterator().next().getExecuteCount());
+        }
+    }
+
+    public static class ApplicationSpecificConnectionPoolStatisticsFilterForTheOrderFulfillmentAndShipmentTrackingSubsystem
+            extends StatFilter {
+    }
+
+    @Test
     void resolvesAliasAndInstallsStatisticsFilter() throws Exception {
         List<Filter> filters = new ArrayList<>();
         FilterManager.loadFilter(filters, "stat");

@@ -9,10 +9,12 @@ package com_alibaba.druid;
 import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import oracle.jdbc.OracleDriver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import java.sql.Connection;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -20,6 +22,40 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Timeout(120)
 public class DruidConnectionHolderTest {
+    @Test
+    @Timeout(170)
+    void discardsAndReplacesAnOraclePhysicalConnection() throws Exception {
+        try (DatabaseContainer database = DatabaseContainer.oracle();
+             DruidDataSource dataSource = new DruidDataSource()) {
+            dataSource.setDriver(new OracleDriver());
+            dataSource.setUrl("jdbc:oracle:thin:@//" + database.address() + "/FREEPDB1");
+            dataSource.setUsername("druid");
+            dataSource.setPassword(DatabaseContainer.PASSWORD);
+            dataSource.setMaxActive(1);
+            dataSource.setMaxWait(10000);
+            dataSource.setConnectTimeout(10000);
+            dataSource.setSocketTimeout(30000);
+            dataSource.setValidationQuery("SELECT 1 FROM dual");
+            Properties properties = new Properties();
+            properties.setProperty("user", "druid");
+            properties.setProperty("password", DatabaseContainer.PASSWORD);
+            properties.setProperty("oracle.net.CONNECT_TIMEOUT", "10000");
+            properties.setProperty("oracle.jdbc.ReadTimeout", "30000");
+            try (Connection physical = dataSource.getDriver().connect(dataSource.getUrl(), properties)) {
+                DruidConnectionHolder holder = new DruidConnectionHolder(dataSource, physical, 0);
+                assertSame(dataSource, holder.getDataSource());
+                assertEquals("oracle.jdbc.driver.T4CConnection", physical.getClass().getName());
+                assertEquals(89, TestDataSources.queryInt(holder.getConnection(), "SELECT 89 FROM dual"));
+                dataSource.discardConnection(holder);
+                assertTrue(physical.isClosed());
+                assertEquals(1, dataSource.getDiscardCount());
+            }
+            try (Connection replacement = dataSource.getConnection()) {
+                assertEquals(97, TestDataSources.queryInt(replacement, "SELECT 97 FROM dual"));
+            }
+        }
+    }
+
     @Test
     void restoresConnectionStateWhenReturningToThePool() throws Exception {
         try (DruidDataSource dataSource = TestDataSources.create("holder")) {
