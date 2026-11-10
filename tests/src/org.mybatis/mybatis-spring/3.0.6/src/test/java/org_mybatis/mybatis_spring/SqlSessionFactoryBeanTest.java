@@ -16,6 +16,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.support.GenericApplicationContext;
 
 public class SqlSessionFactoryBeanTest {
@@ -25,11 +26,9 @@ public class SqlSessionFactoryBeanTest {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:mem:spring_factory");
         try (GenericApplicationContext context = new GenericApplicationContext()) {
-            context.registerBean("sessionFactory", SqlSessionFactoryBean.class, () -> {
-                SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-                factoryBean.setDataSource(dataSource);
-                return factoryBean;
-            });
+            context.registerBeanDefinition("sessionFactory",
+                    BeanDefinitionBuilder.genericBeanDefinition(SqlSessionFactoryBean.class)
+                            .addPropertyValue("dataSource", dataSource).getBeanDefinition());
             context.refresh();
 
             SqlSessionFactory factory = context.getBean("sessionFactory", SqlSessionFactory.class);

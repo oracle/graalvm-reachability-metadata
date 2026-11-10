@@ -20,6 +20,7 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.support.GenericApplicationContext;
 
 public class SqlSessionTemplateTest {
@@ -40,8 +41,9 @@ public class SqlSessionTemplateTest {
         SqlSessionFactory factory = factoryBean.getObject();
         try (GenericApplicationContext context = new GenericApplicationContext()) {
             context.registerBean("sessionTemplate", SqlSessionTemplate.class, () -> new SqlSessionTemplate(factory));
-            context.registerBean("templateFactory", SqlSessionFactory.class,
-                    () -> context.getBean("sessionTemplate", SqlSessionTemplate.class).getSqlSessionFactory());
+            context.registerBeanDefinition("templateFactory",
+                    BeanDefinitionBuilder.genericBeanDefinition(SqlSessionFactory.class)
+                            .setFactoryMethodOnBean("getSqlSessionFactory", "sessionTemplate").getBeanDefinition());
             context.refresh();
 
             assertThat(context.getBean("templateFactory", SqlSessionFactory.class)).isSameAs(factory);
