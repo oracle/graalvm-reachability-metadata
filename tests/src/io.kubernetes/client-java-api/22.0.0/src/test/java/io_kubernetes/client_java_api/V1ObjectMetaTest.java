@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class V1ObjectMetaTest {
     @Test
+    // Kubernetes annotations are resource metadata, not Java reflection annotations.
+    @SuppressWarnings("checkstyle:annotationAccess")
     void readsAndWritesResourceIdentityAndLifecycleMetadata() throws Exception {
         V1ObjectMeta metadata = V1ObjectMeta.fromJson(ModelJson.OBJECT_META);
         assertThat(metadata.getAnnotations()).containsEntry("sync.example.test/enabled", "true");
