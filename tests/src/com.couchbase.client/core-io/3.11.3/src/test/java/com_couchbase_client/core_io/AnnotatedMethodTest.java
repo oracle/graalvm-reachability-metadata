@@ -8,9 +8,16 @@ package com_couchbase_client.core_io;
 
 import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JacksonInject;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonCreator;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonIgnore;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.annotation.JsonValue;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.BeanDescription;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.InjectableValues;
 import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectMapper;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ObjectReader;
+import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,6 +34,65 @@ public class AnnotatedMethodTest {
                 {}
                 """, Receiver.class);
         assertEquals("-checked", receiver.suffix);
+    }
+
+    @Test
+    void usesZeroArgumentFactoryAndAnySetter() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        Properties properties = mapper.readValue("""
+                {"region":"west","tier":"gold"}
+                """, Properties.class);
+        assertEquals("created", properties.origin);
+        assertEquals(Map.of("region", "west", "tier", "gold"), properties.values);
+        assertEquals(Choice.READY, mapper.readValue("{}", Choice.class));
+    }
+
+    @Test
+    void restoresReaderWithFactoryMethod() throws Exception {
+        ObjectReader reader = new ObjectMapper().readerFor(Token.class);
+        ObjectReader restored = (ObjectReader) NettySerializationSupport.throughStreams(reader);
+        Token token = restored.readValue("\"restored\"");
+        assertEquals("restored", token.value());
+    }
+
+    @Test
+    void invokesJsonValueAccessorDiscoveredByMapper() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        BeanDescription description = mapper.getSerializationConfig()
+                .introspect(mapper.constructType(Token.class));
+        AnnotatedMethod accessor = (AnnotatedMethod) description.findJsonValueAccessor();
+        assertEquals("inspected", accessor.callOn(Token.from("inspected")));
+        assertEquals("value", accessor.getName());
+    }
+
+    public enum Choice {
+        READY;
+
+        @JsonCreator
+        public static Choice create() {
+            return READY;
+        }
+    }
+
+    public static class Properties {
+        @JsonIgnore
+        public final String origin;
+        @JsonIgnore
+        public final Map<String, String> values = new LinkedHashMap<>();
+
+        private Properties(String origin) {
+            this.origin = origin;
+        }
+
+        @JsonCreator
+        public static Properties create() {
+            return new Properties("created");
+        }
+
+        @JsonAnySetter
+        public void put(String key, String value) {
+            values.put(key, value);
+        }
     }
 
     public static class Token {

@@ -25,6 +25,28 @@ public class StdKeyDeserializerInnerStringFactoryKeyDeserializerTest {
         assertEquals(42, result.values().iterator().next());
     }
 
+    @Test
+    void createsMapKeysUsingStringFactoryWithoutStringConstructor() throws Exception {
+        Map<InvoiceKey, String> invoices = new ObjectMapper().readValue("""
+                {"invoice-42":"paid"}
+                """, new TypeReference<Map<InvoiceKey, String>>() { });
+        assertEquals(1, invoices.size());
+        assertEquals(42, invoices.keySet().iterator().next().number);
+        assertEquals("paid", invoices.values().iterator().next());
+    }
+
+    public static class InvoiceKey {
+        public final int number;
+
+        private InvoiceKey(int number) {
+            this.number = number;
+        }
+
+        public static InvoiceKey valueOf(String text) {
+            return new InvoiceKey(Integer.parseInt(text.substring("invoice-".length())));
+        }
+    }
+
     public static class Key {
         private final String value;
 

@@ -23,4 +23,17 @@ public class VersionUtilTest {
         assertEquals("jackson-databind", version.getArtifactId());
         assertEquals(new ObjectMapper().version(), version);
     }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    void readsApplicationMavenVersionDescriptor() {
+        Version version = VersionUtil.mavenVersionFor(getClass().getClassLoader(),
+                "test.application", "metadata-consumer");
+        assertFalse(version.isUnknownVersion());
+        assertEquals("test.application", version.getGroupId());
+        assertEquals("metadata-consumer", version.getArtifactId());
+        assertEquals(2, version.getMajorVersion());
+        assertEquals(7, version.getMinorVersion());
+        assertEquals(4, version.getPatchLevel());
+    }
 }
