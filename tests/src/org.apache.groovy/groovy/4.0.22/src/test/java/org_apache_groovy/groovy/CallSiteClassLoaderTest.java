@@ -6,6 +6,7 @@
  */
 package org_apache_groovy.groovy;
 
+import groovy.lang.GroovySystem;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteClassLoader;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class CallSiteClassLoaderTest {
+    @Test
+    void fallsBackToTheGroovyLoaderForAnApplicationOwnedRuntimeClass() throws Exception {
+        CallSiteClassLoader loader = new CallSiteClassLoader(String.class);
+        assertSame(GroovySystem.class, loader.loadClass(GroovySystem.class.getName()));
+        assertSame(String.class, loader.loadClass(String.class.getName()));
+    }
+
     @Test
     void resolvesRuntimeAndApplicationClassesWithoutIntroducingNewClasses() throws Exception {
         CallSiteClassLoader loader = new CallSiteClassLoader(CallSiteClassLoaderTest.class);
