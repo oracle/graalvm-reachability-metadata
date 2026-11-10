@@ -6,6 +6,7 @@
  */
 package org_springframework_boot.spring_boot;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -42,6 +43,38 @@ public class SpringApplicationAotProcessorTest {
         try (GenericApplicationContext context = processor.prepare()) {
             context.refresh();
             assertThat(context.getBean("consumerMarker")).isEqualTo("prepared");
+        }
+    }
+
+    @Test
+    void processesApplicationFromCommandLineArguments() throws Exception {
+        Path sources = this.directory.resolve("cli-sources");
+        Path resources = this.directory.resolve("cli-resources");
+        Path classes = this.directory.resolve("cli-classes");
+
+        SpringApplicationAotProcessor.main(new String[] { CommandLineApplication.class.getName(),
+                sources.toString(), resources.toString(), classes.toString(), "consumer", "cli",
+                "--consumer.mode=batch" });
+
+        Path initializer = sources.resolve("org_springframework_boot/spring_boot/"
+                + "SpringApplicationAotProcessorTest_CommandLineApplication__ApplicationContextInitializer.java");
+        assertThat(initializer).isRegularFile();
+        assertThat(Files.readString(initializer)).contains("ApplicationContextInitializer", "registerBeanDefinitions");
+        Path registrations = sources.resolve("org_springframework_boot/spring_boot/"
+                + "SpringApplicationAotProcessorTest_CommandLineApplication__BeanFactoryRegistrations.java");
+        assertThat(Files.readString(registrations)).contains("PrimarySource", "registerBeanDefinition");
+    }
+
+    public static class CommandLineApplication {
+        public static void main(String[] args) {
+            SpringApplication application = new SpringApplication(PrimarySource.class);
+            application.setWebApplicationType(WebApplicationType.NONE);
+            application.setApplicationContextFactory(ApplicationContextFactory.of(GenericApplicationContext::new));
+            application.setBannerMode(Banner.Mode.OFF);
+            application.setLogStartupInfo(false);
+            application.setRegisterShutdownHook(false);
+            application.setListeners(List.of());
+            application.run(args);
         }
     }
 

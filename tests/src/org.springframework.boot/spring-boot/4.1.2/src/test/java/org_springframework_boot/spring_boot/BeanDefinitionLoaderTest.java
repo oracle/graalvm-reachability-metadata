@@ -25,6 +25,18 @@ public class BeanDefinitionLoaderTest {
         }
     }
 
+    @Test
+    void discoversBeansFromAPackageNameSource() {
+        SourceApplication application = new SourceApplication();
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            application.registerSources(context, "org_springframework_boot.spring_boot.scanned");
+            context.refresh();
+
+            assertThat(context.containsBean("scannedInventory")).isTrue();
+            assertThat(context.getBean("scannedInventory").toString()).isEqualTo("scanned inventory");
+        }
+    }
+
     public static class SourceApplication extends SpringApplication {
         public SourceApplication() {
             super(Inventory.class);
