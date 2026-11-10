@@ -26,6 +26,18 @@ public class LoaderTest {
         }
     }
 
+    @Test
+    void invokesASystemApplicationWithoutAParentLoader() throws Throwable {
+        Loader loader = new Loader(null, null);
+        loader.delegateLoadingOf(Application.class.getName());
+        try {
+            loader.run(Application.class.getName(), new String[]{"Lin", "Margaret"});
+            assertEquals(List.of("Lin", "Margaret"), Application.names);
+        } finally {
+            Application.names = List.of();
+        }
+    }
+
     public static class Application {
         private static List<String> names = List.of();
 

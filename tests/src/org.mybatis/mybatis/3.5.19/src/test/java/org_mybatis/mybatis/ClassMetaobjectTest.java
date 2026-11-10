@@ -11,6 +11,7 @@ import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.javassist.tools.reflect.ClassMetaobject;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,6 +47,25 @@ public class ClassMetaobjectTest {
         } finally {
             ClassMetaobject.useContextClassLoader = previous;
         }
+    }
+
+    @Test
+    void dispatchesStaticMethodsAndInstancesWithoutAMetaobject() throws Throwable {
+        ReflectivePerson person = new ReflectivePerson("Ada");
+        ClassMetaobject metaobject = person._getClass();
+        int instanceMethod = metaobject.getMethodIndex("label", new Class<?>[]{String.class});
+        int staticMethod = metaobject.getMethodIndex("category", new Class<?>[]{String.class});
+        assertEquals(0, instanceMethod);
+        assertEquals(1, staticMethod);
+        assertEquals("category", metaobject.getMethodName(staticMethod));
+        assertArrayEquals(new Class<?>[]{String.class}, metaobject.getParameterTypes(staticMethod));
+        assertEquals(String.class, metaobject.getReturnType(staticMethod));
+        assertEquals("kind: person", ReflectivePerson.category("kind: "));
+
+        person._setMetaobject(null);
+        assertEquals("hello Ada", person.label("hello "));
+        person.name = "Grace";
+        assertEquals("hello Grace", person.label("hello "));
     }
 
     public static class Value {
