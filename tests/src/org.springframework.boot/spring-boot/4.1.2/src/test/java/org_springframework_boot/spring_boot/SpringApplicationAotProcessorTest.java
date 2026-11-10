@@ -52,9 +52,9 @@ public class SpringApplicationAotProcessorTest {
         Path resources = this.directory.resolve("cli-resources");
         Path classes = this.directory.resolve("cli-classes");
 
-        SpringApplicationAotProcessor.main(new String[] { CommandLineApplication.class.getName(),
+        SpringApplicationAotProcessor.main(new String[] {CommandLineApplication.class.getName(),
                 sources.toString(), resources.toString(), classes.toString(), "consumer", "cli",
-                "--consumer.mode=batch" });
+                "--consumer.mode=batch"});
 
         Path initializer = sources.resolve("org_springframework_boot/spring_boot/"
                 + "SpringApplicationAotProcessorTest_CommandLineApplication__ApplicationContextInitializer.java");
@@ -74,6 +74,8 @@ public class SpringApplicationAotProcessorTest {
             application.setLogStartupInfo(false);
             application.setRegisterShutdownHook(false);
             application.setListeners(List.of());
+            application.addInitializers((AotApplicationContextInitializer<GenericApplicationContext>) context ->
+                    context.registerBean(PrimarySource.class));
             application.run(args);
         }
     }

@@ -6,45 +6,55 @@
  */
 package org_springframework_boot.spring_boot;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.ApplicationContextFactory;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.diagnostics.FailureAnalysis;
-import org.springframework.boot.diagnostics.FailureAnalyzer;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.StandardEnvironment;
-import org.springframework.core.io.support.SpringFactoriesLoader;
-import org.springframework.core.io.support.SpringFactoriesLoader.ArgumentResolver;
-import org.springframework.core.io.support.SpringFactoriesLoader.FailureHandler;
+import org.springframework.context.aot.AotApplicationContextInitializer;
+import org.springframework.context.support.GenericApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class NoSuchMethodFailureAnalyzerTest {
     @Test
     void identifiesIncompatibleCallerAndCalleeInMissingMethodDiagnostics() {
-        ArgumentResolver arguments = ArgumentResolver.of(BeanFactory.class, new DefaultListableBeanFactory())
-                .and(Environment.class, new StandardEnvironment());
-        List<FailureAnalyzer> analyzers = SpringFactoriesLoader.forDefaultResourceLocation(getClass().getClassLoader())
-                .load(FailureAnalyzer.class, arguments, FailureHandler.logging(LogFactory.getLog(getClass())));
         NoSuchMethodError failure = new NoSuchMethodError("'void " + Binder.class.getName() + ".configureEndpoint()'");
         failure.setStackTrace(new StackTraceElement[] {
                 new StackTraceElement(SpringApplication.class.getName(), "run", "SpringApplication.java", 1)
         });
+        SpringApplication application = new SpringApplication(NoSuchMethodFailureAnalyzerTest.class);
+        application.setWebApplicationType(WebApplicationType.NONE);
+        application.setApplicationContextFactory(ApplicationContextFactory.of(GenericApplicationContext::new));
+        application.setBannerMode(Banner.Mode.OFF);
+        application.setLogStartupInfo(false);
+        application.setRegisterShutdownHook(false);
+        application.setListeners(List.of());
+        application.setInitializers(List.of((AotApplicationContextInitializer<GenericApplicationContext>) context -> {
+            throw failure;
+        }));
 
-        List<FailureAnalysis> analyses = analyzers.stream().map(analyzer -> analyzer.analyze(failure))
-                .filter(analysis -> analysis != null).toList();
+        PrintStream originalOut = System.out;
+        PrintStream originalErr = System.err;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (PrintStream captured = new PrintStream(output, true, StandardCharsets.UTF_8)) {
+            System.setOut(captured);
+            System.setErr(captured);
+            assertThatThrownBy(application::run).isInstanceOf(IllegalStateException.class).hasCause(failure);
+        } finally {
+            System.setOut(originalOut);
+            System.setErr(originalErr);
+        }
 
-        assertThat(analyses).singleElement().satisfies(analysis -> {
-            assertThat(analysis.getCause()).isSameAs(failure);
-            assertThat(analysis.getDescription()).contains("configureEndpoint()", SpringApplication.class.getName(),
-                    Binder.class.getName(), "available from the following locations:");
-            assertThat(analysis.getAction()).contains("compatible versions", SpringApplication.class.getName(),
-                    Binder.class.getName());
-        });
+        assertThat(output.toString(StandardCharsets.UTF_8)).contains("configureEndpoint()",
+                SpringApplication.class.getName(), Binder.class.getName(),
+                "available from the following locations:", "compatible versions");
     }
 }
