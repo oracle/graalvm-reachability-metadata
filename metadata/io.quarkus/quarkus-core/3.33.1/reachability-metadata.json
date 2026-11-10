@@ -1,0 +1,30 @@
+{
+  "reflection" : [
+    {
+      "condition" : {
+        "typeReached" : "io.quarkus.bootstrap.logging.InitialConfigurator"
+      },
+      "type" : "org.jboss.logmanager.ExtHandler"
+    }
+  ],
+  "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "io.quarkus.runtime.logging.LogFilterFactory"
+      },
+      "glob" : "META-INF/services/io.quarkus.runtime.logging.LogFilterFactory"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.quarkus.bootstrap.logging.QuarkusDelayedHandler"
+      },
+      "glob" : "META-INF/services/org.jboss.logmanager.MDCProvider"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.quarkus.runtime.TemplateHtmlBuilder"
+      },
+      "glob" : "META-INF/template-html-builder.css"
+    }
+  ]
+}
