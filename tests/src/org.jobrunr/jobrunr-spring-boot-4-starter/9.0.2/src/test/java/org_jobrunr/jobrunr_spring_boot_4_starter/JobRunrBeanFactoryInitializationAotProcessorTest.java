@@ -16,8 +16,8 @@ import org.springframework.aot.generate.GenerationContext;
 import org.springframework.aot.generate.InMemoryGeneratedFiles;
 import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.RuntimeHints;
+import org.springframework.beans.factory.aot.BeanFactoryInitializationAotContribution;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.aot.ApplicationContextAotGenerator;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.javapoet.ClassName;
 
@@ -34,7 +34,12 @@ public class JobRunrBeanFactoryInitializationAotProcessorTest {
 
         try (GenericApplicationContext context = new GenericApplicationContext()) {
             context.registerBean("notificationHandler", NotificationHandler.class);
-            new ApplicationContextAotGenerator().processAheadOfTime(context, generationContext);
+            JobRunrBeanFactoryInitializationAotProcessor processor =
+                    new JobRunrBeanFactoryInitializationAotProcessor();
+            BeanFactoryInitializationAotContribution contribution =
+                    processor.processAheadOfTime(context.getDefaultListableBeanFactory());
+            assertThat(contribution).isNotNull();
+            contribution.applyTo(generationContext, null);
         }
 
         assertThat(hints.reflection().getTypeHint(NotificationHandler.class)).isNotNull()
