@@ -9,6 +9,7 @@ package org_springframework_boot.spring_boot;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.bind.BindConstructorProvider;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
@@ -36,6 +37,12 @@ public class DefaultBindConstructorProviderInnerConstructorsTest {
         assertThat(bound).isSameAs(limits);
         assertThat(bound.getCapacity()).isEqualTo(12);
         assertThat(bound.getOwner()).isSameAs(this);
+    }
+
+    @Test
+    void excludesEnclosingInstanceConstructorsFromConstructorBinding() {
+        assertThat(BindConstructorProvider.DEFAULT.getBindConstructor(Bindable.of(Limits.class), false)).isNull();
+        assertThat(BindConstructorProvider.DEFAULT.getBindConstructor(Limits.class, true)).isNull();
     }
 
     public record Endpoint(String host, int port) {
