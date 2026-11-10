@@ -1,0 +1,31 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_bouncycastle.bcprov_jdk18on;
+
+import java.security.AlgorithmParameters;
+
+import javax.crypto.spec.GCMParameterSpec;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class GcmSpecUtilAnonymous4Test {
+    @Test
+    void roundTripsGCMParametersWith112BitTag() throws Exception {
+        byte[] nonce = new byte[12];
+        nonce[0] = 42;
+        AlgorithmParameters parameters = AlgorithmParameters.getInstance("GCM", KeyPairFixtures.BC);
+        parameters.init(new GCMParameterSpec(112, nonce));
+        AlgorithmParameters decoded = AlgorithmParameters.getInstance("GCM", KeyPairFixtures.BC);
+        decoded.init(parameters.getEncoded());
+        GCMParameterSpec restored = decoded.getParameterSpec(GCMParameterSpec.class);
+        assertEquals(112, restored.getTLen());
+        assertArrayEquals(nonce, restored.getIV());
+    }
+}
