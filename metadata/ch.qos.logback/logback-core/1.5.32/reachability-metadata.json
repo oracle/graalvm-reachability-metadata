@@ -36,6 +36,34 @@
       "condition" : {
         "typeReached" : "ch.qos.logback.core.joran.util.PropertySetter"
       },
+      "type" : "ch.qos.logback.core.FileAppender",
+      "methods" : [
+        {
+          "name" : "setAppend",
+          "parameterTypes" : [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.joran.util.PropertySetter"
+      },
+      "type" : "ch.qos.logback.core.OutputStreamAppender",
+      "methods" : [
+        {
+          "name" : "setEncoder",
+          "parameterTypes" : [
+            "ch.qos.logback.core.encoder.Encoder"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.model.processor.DefaultProcessor"
+      },
       "type" : "ch.qos.logback.core.OutputStreamAppender",
       "methods" : [
         {
@@ -66,10 +94,94 @@
     },
     {
       "condition" : {
+        "typeReached" : "ch.qos.logback.core.model.processor.DefaultProcessor"
+      },
+      "type" : "ch.qos.logback.core.encoder.Encoder"
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.joran.util.PropertySetter"
+      },
+      "type" : "ch.qos.logback.core.encoder.LayoutWrappingEncoder",
+      "methods" : [
+        {
+          "name" : "setCharset",
+          "parameterTypes" : [
+            "java.nio.charset.Charset"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "ch.qos.logback.core.model.processor.SerializeModelModelHandler"
       },
       "type" : "ch.qos.logback.core.model.Model",
       "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.joran.util.PropertySetter"
+      },
+      "type" : "ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy",
+      "methods" : [
+        {
+          "name" : "setMaxFileSize",
+          "parameterTypes" : [
+            "ch.qos.logback.core.util.FileSize"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.util.OptionHelper"
+      },
+      "type" : "ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.joran.util.PropertySetter"
+      },
+      "type" : "ch.qos.logback.core.rolling.TimeBasedRollingPolicy",
+      "methods" : [
+        {
+          "name" : "setCleanHistoryOnStart",
+          "parameterTypes" : [
+            "boolean"
+          ]
+        },
+        {
+          "name" : "setMaxHistory",
+          "parameterTypes" : [
+            "int"
+          ]
+        },
+        {
+          "name" : "setTotalSizeCap",
+          "parameterTypes" : [
+            "ch.qos.logback.core.util.FileSize"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.model.processor.StatusListenerModelHandler"
+      },
+      "type" : "ch.qos.logback.core.status.NopStatusListener",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -185,6 +297,12 @@
   "resources" : [
     {
       "condition" : {
+        "typeReached" : "ch.qos.logback.core.rolling.TimeBasedFileNamingAndTriggeringPolicyBase"
+      },
+      "glob" : "META-INF/services/java.time.zone.ZoneRulesProvider"
+    },
+    {
+      "condition" : {
         "typeReached" : "ch.qos.logback.core.joran.event.SaxEventRecorder"
       },
       "glob" : "META-INF/services/javax.xml.parsers.SAXParserFactory"
@@ -194,12 +312,6 @@
         "typeReached" : "ch.qos.logback.core.util.CoreVersionUtil"
       },
       "glob" : "ch/qos/logback/core/logback-core-version.properties"
-    },
-    {
-      "condition" : {
-        "typeReached" : "ch.qos.logback.core.util.Loader"
-      },
-      "glob" : "ch_qos_logback/logback_core/LoaderTest.class"
     }
   ]
 }

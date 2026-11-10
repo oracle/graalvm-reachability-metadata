@@ -118,7 +118,7 @@ public class ConsoleAppenderTest {
         return appender;
     }
 
-    private static final class CoreAppenderConfigurator extends JoranConfiguratorBase<String> {
+    static final class CoreAppenderConfigurator extends JoranConfiguratorBase<String> {
         @Override
         protected void addElementSelectorAndActionAssociations(RuleStore ruleStore) {
             super.addElementSelectorAndActionAssociations(ruleStore);
@@ -180,7 +180,7 @@ public class ConsoleAppenderTest {
         }
     }
 
-    private static final class AttachableContext extends ContextBase implements AppenderAttachable<String> {
+    static final class AttachableContext extends ContextBase implements AppenderAttachable<String> {
         private final AppenderAttachableImpl<String> appenderAttachable = new AppenderAttachableImpl<>();
 
         @Override

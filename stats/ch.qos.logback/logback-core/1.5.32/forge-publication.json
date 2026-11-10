@@ -1,0 +1,302 @@
+{
+  "base_commit": "8e0d62e1cfa13c053aefd2a830fd32ca3a49d58f",
+  "branch": "ai/kimeta/library-update-request-ch.qos.logback-logback-core-1.5.32-forge-12067-202611101610240000-a2b2f2ce9e99",
+  "follow_ups": [],
+  "forge": {
+    "branch": "mm/forge-lane-java-run",
+    "commit": "be69e4aa39890ddab4caa9a5c5ebf90b3d2e803a",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 12067,
+  "library": {
+    "artifact": "logback-core",
+    "coordinates": "ch.qos.logback:logback-core:1.5.32",
+    "group": "ch.qos.logback",
+    "version": "1.5.32"
+  },
+  "local_ci_verification": {
+    "base_commit": "8e0d62e1cfa13c053aefd2a830fd32ca3a49d58f",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=ch.qos.logback:logback-core:1.5.32"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal"
+        },
+        "gate": "check-metadata-files",
+        "output_excerpt": "Starting a Gradle Daemon, 3 incompatible and 8 stopped Daemons could not be reused, use --status for details\n> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkMetadataFiles\nMetadata files check passed for ch.qos.logback:logback-core:1.5.32\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 8s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "bash",
+          "./.github/workflows/scripts/run-consecutive-tests.sh",
+          "ch.qos.logback:logback-core:1.5.32",
+          "[\"1.5.32\"]"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25.0.4-graal"
+        },
+        "gate": "run-consecutive-tests",
+        "output_excerpt": " - org.graalvm.junit.platform.JUnitPlatformFeature\n------------------------------------------------------------------------------------------------------------------------\nBuild resources:\n - 28.45GB of memory (42.6% of system memory, using available memory)\n - 16 thread(s) (100.0% of 16 available processor(s), determined at start)\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/test-results/test/testlist] and its subfolders.\n[2/8] Performing analysis...  [*****]                                                                   (30.8s @ 1.04GB)\n    9,948 types,  12,485 fields, and  45,881 methods found reachable\n    3,488 types,     869 fields, and   4,908 methods registered for reflection\n       63 types,      71 fields, and      55 methods registered for JNI access\n        0 downcalls and 0 upcalls registered for foreign access\n        4 native libraries: dl, pthread, rt, z\n[3/8] Building universe...                                                                               (5.5s @ 1.09GB)\n[4/8] Parsing methods...      [**]                                                                       (4.9s @ 1.20GB)\n[5/8] Inlining methods...     [***]                                                                      (1.6s @ 1.29GB)\n[6/8] Compiling methods...    [*****]                                                                   (22.5s @ 1.08GB)\n[7/8] Laying out methods...   [***]                                                                      (7.4s @ 1.11GB)\n[8/8] Creating image...       [***]                                                                      (7.6s @ 1.26GB)\n  14.04MB (38.48%) for code area:    29,462 compilation units\n  17.69MB (48.52%) for image heap:  274,592 objects and 165 resources\n   4.74MB (13.00%) for other data\n  36.47MB in total image size, 33.88MB in total file size\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   5.98MB java.base                                            4.09MB byte[] for code metadata\n   2.70MB svm.jar (Native Image)                               3.23MB byte[] for java.lang.String\n   2.48MB java.xml                                             1.72MB java.lang.String\n 594.98kB assertj-core-3.22.0.jar                              1.27MB java.lang.Class\n 340.22kB logback-core-1.5.32.jar                              1.09MB byte[] for general heap data\n 216.77kB junit-jupiter-engine-5.9.2.jar                       1.03MB com.oracle.svm.core.hub.DynamicHubCompanion\n 146.02kB java.desktop                                       472.03kB java.util.concurrent.ConcurrentHashMap$Node\n 123.58kB junit-platform-launcher-1.9.2.jar                  454.27kB byte[] for reflection metadata\n 104.68kB java.logging                                       360.24kB java.lang.Object[]\n 102.13kB junit-4.13.2.jar                                   324.93kB java.util.HashMap$Node\n 781.55kB for 30 more packages                                 3.65MB for 2421 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 20 component(s) is embedded in binary (1.07kB). 40 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n FUTR: Use '--future-defaults=all' to prepare for future releases.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                        7.3s (7.8% of total time) in 294 GCs | Peak RSS: 2.40GB | CPU load: 8.84\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/native/nativeTestCompile/ch.qos.logback.logback-core_tests-tests (executable)\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/native/nativeTestCompile/libmanagement_ext.so (jdk_library)\n========================================================================================================================\nFinished generating 'ch.qos.logback.logback-core_tests-tests' in 1m 32s.\n[native-image-plugin] Native Image written to: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/native/nativeTestCompile\n\n> Task :nativeTest\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\nLOGBACK: No context given for ch.qos.logback.core.joran.util.PropertySetter@3ce398de\nch_qos_logback.logback_core.AggregationAssessorTest > infersDefaultComponentClassFromInstantiableConcreteSetterType() SUCCESSFUL\n\nch_qos_logback.logback_core.AutoFlushingObjectWriterTest > writeSerializesObjectThroughObjectOutputStream() SUCCESSFUL\n\nch_qos_logback.logback_core.ConsoleAppenderTest > joranConfigurationSetsConsoleAppenderTarget() SUCCESSFUL\n\nch_qos_logback.logback_core.ConsoleAppenderTest > withJansiUsesAnsiConsoleOutMethodForSystemOut() SUCCESSFUL\n\nch_qos_logback.logback_core.ConsoleAppenderTest > withJansiFallsBackToWrapSystemErrWhenErrMethodIsUnavailable() SUCCESSFUL\n\nch_qos_logback.logback_core.CoreVersionUtilTest > readsSelfDeclaredCoreVersionFromPackagedProperties() SUCCESSFUL\n\nch_qos_logback.logback_core.EnvUtilTest > detectsJaninoScriptEvaluatorThroughLogbackClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.EnvUtilTest > detectsAvailableAndUnavailableClassesThroughCallerClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.FileAppenderTest > xmlAppendOptionTruncatesExistingFileAndKeepsNewEvents() SUCCESSFUL\n\nch_qos_logback.logback_core.FileUtilTest > readsResourceFromProvidedClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.HardenedObjectInputStreamTest > readsWhitelistedSerializableObject() SUCCESSFUL\n\nch_qos_logback.logback_core.HardenedObjectInputStreamTest > rejectsNonWhitelistedSerializableObject() SUCCESSFUL\n\nch_qos_logback.logback_core.LayoutWrappingEncoderTest > xmlCharsetControlsBytesWrittenByLayoutWrappingEncoder() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > fallsBackToClassForNameWhenThreadContextClassLoaderCannotLoadTheClass() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > canIgnoreThreadContextClassLoaderWhenConfiguredBeforeLoaderInitialization() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > loadsClassThroughThreadContextClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > loadsResourcesAndClassesFromProvidedClassLoaders() SUCCESSFUL\n\nch_qos_logback.logback_core.NopStatusListenerTest > xmlInstallsNoOpListenerThatAcceptsContextStatusEvents() SUCCESSFUL\n\nch_qos_logback.logback_core.OptionHelperTest > instantiateByClassNameUsesPublicParameterizedConstructor() SUCCESSFUL\n\nch_qos_logback.logback_core.OptionHelperTest > instantiateClassWithSuperclassRestrictionUsesPublicNoArgConstructor() SUCCESSFUL\n\nch_qos_logback.logback_core.OptionHelperTest > instantiateByClassNameUsesClassLoaderAndPublicNoArgConstructor() SUCCESSFUL\n\nch_qos_logback.logback_core.PropertySetterTest > setsSimplePropertyAndAddsBasicCollectionValue() SUCCESSFUL\n\nch_qos_logback.logback_core.RemoteReceiverStreamClientTest > writesSerializedEventToConnectedReceiver() SUCCESSFUL\n\nch_qos_logback.logback_core.SerializeModelModelHandlerTest > handleSerializesTopModelToConfiguredFile() SUCCESSFUL\n\nch_qos_logback.logback_core.SizeAndTimeBasedRollingPolicyTest > xmlCreatesSizeAndTimePolicyAndRollsAtConfiguredMaximumFileSize() SUCCESSFUL\n\nch_qos_logback.logback_core.StringToObjectConverterTest > convertsTypeThatFollowsPublicStaticValueOfConvention() SUCCESSFUL\n\nch_qos_logback.logback_core.TimeBasedRollingPolicyTest > xmlRetentionOptionsCleanHistoryAndEnforceTotalSizeCapOnStartup() SUCCESSFUL\n\nch_qos_logback.logback_core.VersionUtilTest > reportsWarningWhenDependencyVersionDoesNotMatch() SUCCESSFUL\n\nch_qos_logback.logback_core.VersionUtilTest > comparesExpectedDependencyVersionFromClassLoaderProperties() SUCCESSFUL\n\n\nTest run finished after 52 ms\n[        21 containers found      ]\n[         0 containers skipped    ]\n[        21 containers started    ]\n[         0 containers aborted    ]\n[        21 containers successful ]\n[         0 containers failed     ]\n[        29 tests found           ]\n[         0 tests skipped         ]\n[        29 tests started         ]\n[         0 tests aborted         ]\n[        29 tests successful      ]\n[         0 tests failed          ]\n\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 41s\n19 actionable tasks: 8 executed, 11 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n-------\nTest for ch.qos.logback:logback-core:1.5.32 passed.\n====================\n\n> Task :test\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 52s\n11 actionable tasks: 3 executed, 8 up-to-date\nFinished stage 'native-image run' for 1.5.32 at 2026-11-10T16:48:06Z with exit code 0 after 113s\nPASSED:1.5.32\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=ch.qos.logback:logback-core:1.5.32"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "check-metadata-files",
+        "output_excerpt": "Starting a Gradle Daemon, 3 incompatible and 10 stopped Daemons could not be reused, use --status for details\n> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkMetadataFiles\nMetadata files check passed for ch.qos.logback:logback-core:1.5.32\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 26s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "bash",
+          "./.github/workflows/scripts/run-consecutive-tests.sh",
+          "ch.qos.logback:logback-core:1.5.32",
+          "[\"1.5.32\"]"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "current-defaults",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "run-consecutive-tests",
+        "output_excerpt": "eature(s):\n   - org.graalvm.junit.platform.JUnitPlatformFeature\n Image configuration:\n - Garbage collector: Serial GC (max heap size: 80% of RAM)\n - Assertions: disabled (class-specific config may apply), system assertions: disabled\n------------------------------------------------------------------------------------------------------------------------\nBuild resources:\n - 30.00GiB of memory (48.2% of system memory, capped at 30GiB)\n - 16 thread(s) (100.0% of 16 available processor(s), determined at start)\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/test-results/test/testlist] and its subfolders.\n[2/8] Performing analysis...  [******]                                                                 (27.1s @ 0.98GiB)\n   10,016 types,  12,546 fields, and  46,347 methods found reachable\n      541 types,     200 fields, and   1,563 methods registered for reflection\n       63 types,      71 fields, and      55 methods registered for JNI access\n      165 resource accesses registered with 271.87KiB total size\n        5 native libraries: dl, m, pthread, rt, z\n[3/8] Building universe...                                                                              (4.6s @ 1.03GiB)\n[4/8] Parsing methods...      [**]                                                                      (3.0s @ 1.14GiB)\n[5/8] Inlining methods...     [***]                                                                     (1.0s @ 1.19GiB)\n[6/8] Compiling methods...    [****]                                                                   (14.8s @ 0.89GiB)\n[7/8] Laying out methods...   [**]                                                                      (3.7s @ 1.11GiB)\n[8/8] Creating image...       [**]                                                                      (3.0s @ 1.28GiB)\n  11.96MiB (38.75%) for code area:    29,674 compilation units\n  15.81MiB (51.22%) for image heap:  246,214 objects and 27 resources\n   3.10MiB (10.03%) for other data\n  30.87MiB in total image size, 28.38MiB in total file size\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   1.24MiB o.g.n.runtime/com.oracle.svm.core.code              3.41MiB byte[] for code metadata\n 730.44KiB java.base/java.util                                 3.13MiB byte[] for string data\n 405.55KiB java.base/jdk.internal.classfile.impl               1.68MiB java.base/java.lang.String\n 377.71KiB java.base/java.lang                                 1.22MiB java.base/java.lang.Class\n 306.08KiB java.xml/com.sun.org.apache.xerces.internal.impl    1.07MiB o.g.n.runtime/c.o.s.core.hub.DynamicHubCompanion\n 284.94KiB java.xml/c.s.o.a.x.internal.impl.xs.traversers      0.98MiB byte[] for general heap data\n 256.12KiB java.base/java.util.concurrent                    475.16KiB byte[] for reflection metadata\n 245.39KiB java.base/java.io                                 389.37KiB java.base/java.lang.Object[]\n 237.77KiB java.base/com.sun.crypto.provider                 272.39KiB byte[] for embedded resources\n 224.00KiB java.xml/c.s.org.apache.xerces.internal.impl.xs   257.00KiB java.base/int[][]\n   7.73MiB for 381 more packages                               2.96MiB for 2458 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 19 component(s) is embedded in binary (1.06KiB). 40 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n FUTR: Use '--future-defaults=all' to prepare for future releases.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                       5.3s (7.5% of total time) in 360 GCs | Peak RSS: 2.23GiB | CPU load: 10.84\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/native/nativeTestCompile/ch.qos.logback.logback-core_tests-tests (executable, 28.38MiB)\n========================================================================================================================\nFinished generating 'ch.qos.logback.logback-core_tests-tests' in 1m 8s.\n\nThe build process encountered 2 warnings.\n\n[native-image-plugin] Native Image written to: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/native/nativeTestCompile\n\n> Task :nativeTest\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\nLOGBACK: No context given for ch.qos.logback.core.joran.util.PropertySetter@65a307e7\nch_qos_logback.logback_core.AggregationAssessorTest > infersDefaultComponentClassFromInstantiableConcreteSetterType() SUCCESSFUL\n\nch_qos_logback.logback_core.AutoFlushingObjectWriterTest > writeSerializesObjectThroughObjectOutputStream() SUCCESSFUL\n\nch_qos_logback.logback_core.ConsoleAppenderTest > joranConfigurationSetsConsoleAppenderTarget() SUCCESSFUL\n\nch_qos_logback.logback_core.ConsoleAppenderTest > withJansiUsesAnsiConsoleOutMethodForSystemOut() SUCCESSFUL\n\nch_qos_logback.logback_core.ConsoleAppenderTest > withJansiFallsBackToWrapSystemErrWhenErrMethodIsUnavailable() SUCCESSFUL\n\nch_qos_logback.logback_core.CoreVersionUtilTest > readsSelfDeclaredCoreVersionFromPackagedProperties() SUCCESSFUL\n\nch_qos_logback.logback_core.EnvUtilTest > detectsJaninoScriptEvaluatorThroughLogbackClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.EnvUtilTest > detectsAvailableAndUnavailableClassesThroughCallerClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.FileAppenderTest > xmlAppendOptionTruncatesExistingFileAndKeepsNewEvents() SUCCESSFUL\n\nch_qos_logback.logback_core.FileUtilTest > readsResourceFromProvidedClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.HardenedObjectInputStreamTest > readsWhitelistedSerializableObject() SUCCESSFUL\n\nch_qos_logback.logback_core.HardenedObjectInputStreamTest > rejectsNonWhitelistedSerializableObject() SUCCESSFUL\n\nch_qos_logback.logback_core.LayoutWrappingEncoderTest > xmlCharsetControlsBytesWrittenByLayoutWrappingEncoder() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > fallsBackToClassForNameWhenThreadContextClassLoaderCannotLoadTheClass() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > canIgnoreThreadContextClassLoaderWhenConfiguredBeforeLoaderInitialization() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > loadsClassThroughThreadContextClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > loadsResourcesAndClassesFromProvidedClassLoaders() SUCCESSFUL\n\nch_qos_logback.logback_core.NopStatusListenerTest > xmlInstallsNoOpListenerThatAcceptsContextStatusEvents() SUCCESSFUL\n\nch_qos_logback.logback_core.OptionHelperTest > instantiateByClassNameUsesPublicParameterizedConstructor() SUCCESSFUL\n\nch_qos_logback.logback_core.OptionHelperTest > instantiateClassWithSuperclassRestrictionUsesPublicNoArgConstructor() SUCCESSFUL\n\nch_qos_logback.logback_core.OptionHelperTest > instantiateByClassNameUsesClassLoaderAndPublicNoArgConstructor() SUCCESSFUL\n\nch_qos_logback.logback_core.PropertySetterTest > setsSimplePropertyAndAddsBasicCollectionValue() SUCCESSFUL\n\nch_qos_logback.logback_core.RemoteReceiverStreamClientTest > writesSerializedEventToConnectedReceiver() SUCCESSFUL\n\nch_qos_logback.logback_core.SerializeModelModelHandlerTest > handleSerializesTopModelToConfiguredFile() SUCCESSFUL\n\nch_qos_logback.logback_core.SizeAndTimeBasedRollingPolicyTest > xmlCreatesSizeAndTimePolicyAndRollsAtConfiguredMaximumFileSize() SUCCESSFUL\n\nch_qos_logback.logback_core.StringToObjectConverterTest > convertsTypeThatFollowsPublicStaticValueOfConvention() SUCCESSFUL\n\nch_qos_logback.logback_core.TimeBasedRollingPolicyTest > xmlRetentionOptionsCleanHistoryAndEnforceTotalSizeCapOnStartup() SUCCESSFUL\n\nch_qos_logback.logback_core.VersionUtilTest > reportsWarningWhenDependencyVersionDoesNotMatch() SUCCESSFUL\n\nch_qos_logback.logback_core.VersionUtilTest > comparesExpectedDependencyVersionFromClassLoaderProperties() SUCCESSFUL\n\n\nTest run finished after 42 ms\n[        21 containers found      ]\n[         0 containers skipped    ]\n[        21 containers started    ]\n[         0 containers aborted    ]\n[        21 containers successful ]\n[         0 containers failed     ]\n[        29 tests found           ]\n[         0 tests skipped         ]\n[        29 tests started         ]\n[         0 tests aborted         ]\n[        29 tests successful      ]\n[         0 tests failed          ]\n\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 26s\n19 actionable tasks: 8 executed, 11 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n-------\nTest for ch.qos.logback:logback-core:1.5.32 passed.\n====================\n\n> Task :test\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2m 1s\n11 actionable tasks: 3 executed, 8 up-to-date\nFinished stage 'native-image run' for 1.5.32 at 2026-11-10T16:50:35Z with exit code 0 after 122s\nPASSED:1.5.32\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=ch.qos.logback:logback-core:1.5.32"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "future-defaults-all",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "check-metadata-files",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkMetadataFiles\nMetadata files check passed for ch.qos.logback:logback-core:1.5.32\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "bash",
+          "./.github/workflows/scripts/run-consecutive-tests.sh",
+          "ch.qos.logback:logback-core:1.5.32",
+          "[\"1.5.32\"]"
+        ],
+        "env": {
+          "GRAALVM_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal",
+          "GVM_TCK_NATIVE_IMAGE_MODE": "future-defaults-all",
+          "JAVA_HOME": "/home/mihailo/.sdkman/candidates/java/25i6-25.0.4.1.1-ea.01-graal"
+        },
+        "gate": "run-consecutive-tests",
+        "output_excerpt": "ssertions: disabled, system assertions: disabled\n - 1 user-specific feature(s):\n   - org.graalvm.junit.platform.JUnitPlatformFeature\n Image configuration:\n - Garbage collector: Serial GC (max heap size: 80% of RAM)\n - Assertions: disabled (class-specific config may apply), system assertions: disabled\n------------------------------------------------------------------------------------------------------------------------\nBuild resources:\n - 30.00GiB of memory (48.2% of system memory, capped at 30GiB)\n - 16 thread(s) (100.0% of 16 available processor(s), determined at start)\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/test-results/test/testlist] and its subfolders.\n[2/8] Performing analysis...  [*****]                                                                  (34.4s @ 1.01GiB)\n   10,219 types,  12,851 fields, and  47,532 methods found reachable\n      559 types,     200 fields, and   1,585 methods registered for reflection\n       64 types,      73 fields, and      55 methods registered for JNI access\n      179 resource accesses registered with 271.98KiB total size\n        5 native libraries: dl, m, pthread, rt, z\n[3/8] Building universe...                                                                              (5.9s @ 1.08GiB)\n[4/8] Parsing methods...      [**]                                                                      (3.1s @ 1.15GiB)\n[5/8] Inlining methods...     [***]                                                                     (1.6s @ 0.84GiB)\n[6/8] Compiling methods...    [*****]                                                                  (22.4s @ 0.96GiB)\n[7/8] Laying out methods...   [**]                                                                      (4.4s @ 1.12GiB)\n[8/8] Creating image...       [***]                                                                     (5.3s @ 1.29GiB)\n  12.32MiB (38.63%) for code area:    30,576 compilation units\n  16.38MiB (51.36%) for image heap:  247,208 objects and 28 resources\n   3.19MiB (10.01%) for other data\n  31.88MiB in total image size, 29.31MiB in total file size\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   1.27MiB o.g.n.runtime/com.oracle.svm.core.code              3.52MiB byte[] for code metadata\n 733.47KiB java.base/java.util                                 3.18MiB byte[] for string data\n 405.55KiB java.base/jdk.internal.classfile.impl               1.69MiB java.base/java.lang.String\n 383.21KiB java.base/java.lang                                 1.25MiB java.base/java.lang.Class\n 306.12KiB java.xml/com.sun.org.apache.xerces.internal.impl    1.09MiB o.g.n.runtime/c.o.s.core.hub.DynamicHubCompanion\n 284.94KiB java.xml/c.s.o.a.x.internal.impl.xs.traversers      0.99MiB byte[] for general heap data\n 258.63KiB java.base/java.io                                 591.84KiB heap alignment\n 257.33KiB java.base/java.util.concurrent                    493.97KiB byte[] for reflection metadata\n 237.76KiB java.base/com.sun.crypto.provider                 383.21KiB java.base/java.lang.Object[]\n 224.00KiB java.xml/c.s.org.apache.xerces.internal.impl.xs   272.52KiB byte[] for embedded resources\n   8.02MiB for 387 more packages                               2.96MiB for 2507 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 19 component(s) is embedded in binary (1.06KiB). 40 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                       6.5s (7.3% of total time) in 339 GCs | Peak RSS: 2.32GiB | CPU load: 9.25\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/native/nativeTestCompile/ch.qos.logback.logback-core_tests-tests (executable, 29.31MiB)\n========================================================================================================================\nFinished generating 'ch.qos.logback.logback-core_tests-tests' in 1m 27s.\n\nThe build process encountered 2 warnings.\n\n[native-image-plugin] Native Image written to: /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/native/nativeTestCompile\n\n> Task :nativeTest\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\nLOGBACK: No context given for ch.qos.logback.core.joran.util.PropertySetter@67bcfaf1\nch_qos_logback.logback_core.AggregationAssessorTest > infersDefaultComponentClassFromInstantiableConcreteSetterType() SUCCESSFUL\n\nch_qos_logback.logback_core.AutoFlushingObjectWriterTest > writeSerializesObjectThroughObjectOutputStream() SUCCESSFUL\n\nch_qos_logback.logback_core.ConsoleAppenderTest > joranConfigurationSetsConsoleAppenderTarget() SUCCESSFUL\n\nch_qos_logback.logback_core.ConsoleAppenderTest > withJansiUsesAnsiConsoleOutMethodForSystemOut() SUCCESSFUL\n\nch_qos_logback.logback_core.ConsoleAppenderTest > withJansiFallsBackToWrapSystemErrWhenErrMethodIsUnavailable() SUCCESSFUL\n\nch_qos_logback.logback_core.CoreVersionUtilTest > readsSelfDeclaredCoreVersionFromPackagedProperties() SUCCESSFUL\n\nch_qos_logback.logback_core.EnvUtilTest > detectsJaninoScriptEvaluatorThroughLogbackClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.EnvUtilTest > detectsAvailableAndUnavailableClassesThroughCallerClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.FileAppenderTest > xmlAppendOptionTruncatesExistingFileAndKeepsNewEvents() SUCCESSFUL\n\nch_qos_logback.logback_core.FileUtilTest > readsResourceFromProvidedClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.HardenedObjectInputStreamTest > readsWhitelistedSerializableObject() SUCCESSFUL\n\nch_qos_logback.logback_core.HardenedObjectInputStreamTest > rejectsNonWhitelistedSerializableObject() SUCCESSFUL\n\nch_qos_logback.logback_core.LayoutWrappingEncoderTest > xmlCharsetControlsBytesWrittenByLayoutWrappingEncoder() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > fallsBackToClassForNameWhenThreadContextClassLoaderCannotLoadTheClass() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > canIgnoreThreadContextClassLoaderWhenConfiguredBeforeLoaderInitialization() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > loadsClassThroughThreadContextClassLoader() SUCCESSFUL\n\nch_qos_logback.logback_core.LoaderTest > loadsResourcesAndClassesFromProvidedClassLoaders() SUCCESSFUL\n\nch_qos_logback.logback_core.NopStatusListenerTest > xmlInstallsNoOpListenerThatAcceptsContextStatusEvents() SUCCESSFUL\n\nch_qos_logback.logback_core.OptionHelperTest > instantiateByClassNameUsesPublicParameterizedConstructor() SUCCESSFUL\n\nch_qos_logback.logback_core.OptionHelperTest > instantiateClassWithSuperclassRestrictionUsesPublicNoArgConstructor() SUCCESSFUL\n\nch_qos_logback.logback_core.OptionHelperTest > instantiateByClassNameUsesClassLoaderAndPublicNoArgConstructor() SUCCESSFUL\n\nch_qos_logback.logback_core.PropertySetterTest > setsSimplePropertyAndAddsBasicCollectionValue() SUCCESSFUL\n\nch_qos_logback.logback_core.RemoteReceiverStreamClientTest > writesSerializedEventToConnectedReceiver() SUCCESSFUL\n\nch_qos_logback.logback_core.SerializeModelModelHandlerTest > handleSerializesTopModelToConfiguredFile() SUCCESSFUL\n\nch_qos_logback.logback_core.SizeAndTimeBasedRollingPolicyTest > xmlCreatesSizeAndTimePolicyAndRollsAtConfiguredMaximumFileSize() SUCCESSFUL\n\nch_qos_logback.logback_core.StringToObjectConverterTest > convertsTypeThatFollowsPublicStaticValueOfConvention() SUCCESSFUL\n\nch_qos_logback.logback_core.TimeBasedRollingPolicyTest > xmlRetentionOptionsCleanHistoryAndEnforceTotalSizeCapOnStartup() SUCCESSFUL\n\nch_qos_logback.logback_core.VersionUtilTest > reportsWarningWhenDependencyVersionDoesNotMatch() SUCCESSFUL\n\nch_qos_logback.logback_core.VersionUtilTest > comparesExpectedDependencyVersionFromClassLoaderProperties() SUCCESSFUL\n\n\nTest run finished after 75 ms\n[        21 containers found      ]\n[         0 containers skipped    ]\n[        21 containers started    ]\n[         0 containers aborted    ]\n[        21 containers successful ]\n[         0 containers failed     ]\n[        29 tests found           ]\n[         0 tests skipped         ]\n[        29 tests started         ]\n[         0 tests aborted         ]\n[        29 tests successful      ]\n[         0 tests failed          ]\n\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/tests/src/ch.qos.logback/logback-core/1.5.32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 38s\n19 actionable tasks: 8 executed, 11 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n-------\nTest for ch.qos.logback:logback-core:1.5.32 passed.\n====================\n\n> Task :test\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/worktrees/forge-ch.qos.logback-logback-core-1.5.32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 41s\n11 actionable tasks: 3 executed, 8 up-to-date\nFinished stage 'native-image run' for 1.5.32 at 2026-11-10T16:52:19Z with exit code 0 after 102s\nPASSED:1.5.32\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "d87d89a6b67a8cf7f2592a090f9cfe5aece64f75",
+    "fixups": [
+      {
+        "changed_paths": [
+          "metadata/ch.qos.logback/logback-core/1.5.32/reachability-metadata.json"
+        ],
+        "command": [
+          "python3 /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/.agent-grounds/rhei/programs/gates.py /home/mihailo/git/graalvm-reachability-metadata/.claude/worktrees/forge-lane-java-run/forge/runs/forge-12067-1"
+        ],
+        "commit": null,
+        "gate": "finalize"
+      }
+    ],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "openai-codex/gpt-6.1-sol",
+    "path": "stats/ch.qos.logback/logback-core/1.5.32/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2167206,
+      "code_coverage_percent": 30.47,
+      "cost_usd": 7.4575,
+      "generated_loc": 1214,
+      "input_tokens_used": 255091,
+      "iterations": 3,
+      "metadata_entries": 52,
+      "output_tokens_used": 15867,
+      "previous_library_coverage_percent": 9.11,
+      "previous_library_metadata_entries": 19,
+      "previous_library_test_only_metadata_entries": 14,
+      "test_only_metadata_entries": 105,
+      "tested_library_loc": 3233
+    },
+    "timestamp": "2026-11-10T16:10:24+00:00"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "logback-core",
+    "coordinates": "ch.qos.logback:logback-core:1.5.31",
+    "group": "ch.qos.logback",
+    "version": "1.5.31"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-12067-202611101610240000-a2b2f2ce9e99",
+  "render": {
+    "baseline_metadata_entries": 35,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 35,
+        "totalCalls": 35
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7358,
+          "missed": 30850,
+          "ratio": 0.192577,
+          "total": 38208
+        },
+        "line": {
+          "covered": 2020,
+          "missed": 8589,
+          "ratio": 0.190404,
+          "total": 10609
+        },
+        "method": {
+          "covered": 530,
+          "missed": 2103,
+          "ratio": 0.201291,
+          "total": 2633
+        }
+      },
+      "version": "1.5.32"
+    },
+    "baseline_test_only_entries": 44,
+    "current_metadata_entries": 52,
+    "current_test_only_entries": 105,
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `ch.qos.logback.core.model.processor.ImplicitModelHandler` is reached, make `ch.qos.logback.core.ConsoleAppender.setTarget(java.lang.String)` available for reflection",
+        "when `ch.qos.logback.core.util.OptionHelper` is reached, make `ch.qos.logback.core.ConsoleAppender.<init>()` available for reflection",
+        "when `ch.qos.logback.core.util.Loader` is reached, make `ch.qos.logback.core.ContextBase` available for reflection",
+        "when `ch.qos.logback.core.joran.util.PropertySetter` is reached, make `ch.qos.logback.core.FileAppender.setAppend(boolean)` available for reflection",
+        "when `ch.qos.logback.core.joran.util.PropertySetter` is reached, make `ch.qos.logback.core.OutputStreamAppender.setEncoder(ch.qos.logback.core.encoder.Encoder)` available for reflection",
+        "when `ch.qos.logback.core.model.processor.DefaultProcessor` is reached, make `ch.qos.logback.core.OutputStreamAppender.setEncoder(ch.qos.logback.core.encoder.Encoder)` available for reflection",
+        "when `ch.qos.logback.core.model.processor.ImplicitModelHandler` is reached, make `ch.qos.logback.core.encoder.EchoEncoder.<init>()` available for reflection",
+        "when `ch.qos.logback.core.joran.util.PropertySetter` is reached, make `ch.qos.logback.core.encoder.Encoder` available for reflection",
+        "... and 25 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 35,
+        "totalCalls": 35
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 11704,
+          "missed": 26504,
+          "ratio": 0.306323,
+          "total": 38208
+        },
+        "line": {
+          "covered": 3233,
+          "missed": 7376,
+          "ratio": 0.304741,
+          "total": 10609
+        },
+        "method": {
+          "covered": 832,
+          "missed": 1801,
+          "ratio": 0.315989,
+          "total": 2633
+        }
+      },
+      "version": "1.5.32"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "1.5.32",
+      "matched_test_version": "1.5.32",
+      "requested_coordinate": "ch.qos.logback:logback-core:1.5.32",
+      "resolved_metadata_version": "1.5.32",
+      "resolved_test_version": "1.5.32"
+    },
+    "token_usage": [
+      {
+        "cached": 194470,
+        "input": 37753,
+        "output": 2413,
+        "phase": "setup"
+      },
+      {
+        "cached": 1038720,
+        "input": 79423,
+        "output": 8771,
+        "phase": "cover"
+      },
+      {
+        "cached": 934016,
+        "input": 137915,
+        "output": 4683,
+        "phase": "fix"
+      }
+    ],
+    "worker_model": "openai-codex/gpt-6.1-sol"
+  },
+  "schema_version": 1,
+  "strategy_name": "forge-metadata:library-update-request",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-11-10T16:10:24+00:00"
+}
