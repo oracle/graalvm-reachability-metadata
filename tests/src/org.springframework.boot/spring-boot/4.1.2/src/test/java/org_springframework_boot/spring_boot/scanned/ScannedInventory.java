@@ -1,0 +1,17 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_springframework_boot.spring_boot.scanned;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class ScannedInventory {
+    @Override
+    public String toString() {
+        return "scanned inventory";
+    }
+}
