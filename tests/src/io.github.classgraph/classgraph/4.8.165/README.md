@@ -19,8 +19,113 @@ project=tests/src/io.github.classgraph/classgraph/4.8.165
   -C "$project/src/test/resources" catalog/payload.txt
 ```
 
-The optional JVM-Driver and Narcissus reflection backends are not exercised:
-the test dependencies do not include those backends, and requesting them without
-the actual implementations would only test fallback to standard reflection.
-Their legacy JVM-specific class-finding branches cannot be selected portably on
-the test JVM. All other tests use only `io.github.classgraph` public APIs.
+The optional Narcissus backend is not exercised. Narcissus is a separate JNI
+artifact (`io.github.toolfactory:narcissus:1.0.7`) with no supported metadata
+coordinate here. Its own accesses belong to its metadata, not ClassGraph's
+(FS-metadata.2.2 and FS-repository-functional-spec.5.1).
+
+Diagnosis on Oracle GraalVM 25.0.4 identified two missing JNI method registrations:
+`com.oracle.svm.core.jdk.management.SubstrateRuntimeMXBean.getInputArguments()`
+(the native counterpart of the JVM's `sun.management.RuntimeImpl`), then, after
+temporarily registering that method, the generated annotation proxy's `value()`.
+ClassGraph chooses both calls: `ModulePathInfo.getRuntimeInfo()` reads runtime
+arguments, and `AnnotationInfo` compares annotation parameter values. The proxy
+implements this suite's `ScanFixtures.Tag`, so its registration is test-only.
+The enum fields `ScanFixtures.Mode.FAST` and `SAFE` are test-only too.
+
+A missing JNI registration reached through `FromReflectedMethod` crashes the
+image without a missing-registration diagnostic (GR-81042,
+https://github.com/oracle/graal/issues/14852). Temporary driver logging identified
+the calls immediately before each crash; registering `getInputArguments()` let
+the scenario proceed through classpath and enum access to annotation comparison.
+No tracing flags, patched libraries, or diagnostic registrations are retained.
+
+The held agent metadata also registered Narcissus's caller-independent helpers:
+all boxed primitive `TYPE` fields and unboxing methods; `Class.isArray()` and
+`getComponentType()`; `Method.getDeclaringClass()`, `getModifiers()`,
+`getParameterTypes()`, `getReturnType()`, and `isVarArgs()`;
+`Field.getDeclaringClass()`, `getModifiers()`, and `getType()`; and the private
+`Class.getDeclaredMethods0(boolean)`, `getDeclaredFields0(boolean)`, and
+`getDeclaredConstructors0(boolean)` methods. Narcissus 1.0.7's
+[JNI_OnLoad](https://github.com/toolfactory/narcissus/blob/733648599054d7e4a5032e6a82766f0c7ecf1d6d/src/main/c/narcissus.c#L91-L187)
+and [Java initializer](https://github.com/toolfactory/narcissus/blob/733648599054d7e4a5032e6a82766f0c7ecf1d6d/src/main/java/io/github/toolfactory/narcissus/Narcissus.java#L96-L157)
+choose these accesses, regardless of the caller. These helpers and Narcissus's
+native library resource cannot be shipped under a ClassGraph condition or
+hidden in this suite's test-only metadata. The Narcissus scenario and dependency
+are therefore deferred together, rather than weakening its assertions or
+claiming backend coverage.
+
+ClassGraph-selected accesses remain in shipped metadata: its reflective
+Narcissus API lookup, `ManagementFactory.getRuntimeMXBean()`,
+`RuntimeImpl.getInputArguments()`, `BuiltinClassLoader.ucp`, and the
+`AccessController`/`PrivilegedAction` class lookups in `ReflectionUtils`.
+The last two now use the reached `NarcissusReflectionDriver`, not the removed
+test, as their condition. Handler method lookups use the registry entry class
+that performs them. Fixture types, annotation proxies, loader fields, and test
+resources are isolated in test-only metadata. This preserves valid library
+registrations without treating Narcissus's internal implementation as
+ClassGraph-owned behavior (FS-test-contract.3.5).
+
+The optional JVM-Driver backend is not exercised: the test dependencies do not
+include it, and requesting it without the implementation would only test
+fallback to standard reflection. Its legacy JVM-specific class-finding branches
+cannot be selected portably on the test JVM. Tests use only
+`io.github.classgraph` public APIs.
+
+## Remaining dynamic-access limits
+
+`StandardReflectionDriverTest` also reads enum constant objects through
+`ClassInfo.getEnumConstantObjects()`, exercising the standard driver's static
+field reads without test-side reflection. It also discovers a temporary
+resource-only directory from a delegating loader's private `classpath` field
+through `ClassGraph.overrideClassLoaders()`. The discovered path and resource
+contents must match, exercising the driver's instance-field read and successful
+accessibility path. The loader defines no classes; all class loading delegates
+to the application's existing loader.
+
+The remaining reported sites are not forced through internal APIs:
+
+- `JVMDriverReflectionDriver` and its four anonymous class finders require
+  the actual optional backend library. The first three JVM-Driver finders
+  additionally depend on JVM-specific private `Class` methods; the fourth is
+  selected only if those methods are unavailable. Narcissus field setters and
+  constructor enumeration have no consumer-facing path: reflection utilities
+  expose no setters, and constructor enumeration initializes the other backend.
+- `CallStackReader`'s security-manager route is selected only below JDK 9.
+  Its stack-trace class-loading fallback is used only when the normal stack
+  walker fails. `SimpleThreadFactory`'s remaining calls require a non-null
+  security manager. Tests do not alter JVM version detection or install one.
+- `FileUtils`'s remaining cleaner calls belong to its pre-JDK-9 branch. The
+  existing memory-mapped archive test exercises the current-JDK cleaner route.
+- `StandardReflectionDriver`'s remaining accessibility call is the fallback
+  after `trySetAccessible`; `ReflectionDriver`'s is the legacy fallback after
+  `canAccess`. Normal successful access does not select either fallback.
+  Driver field setters have no consumer-facing setter API, and constructor
+  enumeration is used to initialize the optional JVM-Driver backend.
+- `ClassGraphClassLoaderTest` exercises an added application loader after an
+  override platform loader cannot load the scanned fixture classes. It also
+  checks the documented exception for an absent class after searching the
+  environment and classpath loaders. Neither test introduces new classes.
+  The nested-ClassGraph-loader route has no public loader accessor; obtaining
+  such a loader through a newly defined class would require runtime class
+  definition, excluded by FS-test-contract.4.5. The per-class loader fallback
+  is reached only after earlier delegation fails; ordinary fixture loading
+  succeeds in that earlier delegation. Resource methods dereference a null
+  environment set when loaders or classpath are overridden, or a null loader
+  entry otherwise. Tests do not assert those failures as supported behavior
+  (FS-test-contract.2.6).
+- `ScanResultObject` and `ArrayTypeSignature`'s remaining class-loading calls
+  are fallbacks for objects with no associated scan result. Public scanning
+  and scan-result restoration attach that result to the returned objects.
+- `FieldTypeInfo` and `JSONUtils`'s remaining numeric field accesses require
+  primitive numeric fields in the serialized object graph. Scan-result state
+  uses boxed annotation numbers, not those primitive fields. Their other
+  remaining calls concern explicit null/class-reference fields and an
+  accessibility fallback, respectively.
+- `JSONDeserializer`'s remaining class-reference and multidimensional-array
+  branches, and `TypeResolutions`' generic-array branches, require object
+  shapes not exposed by scan-result serialization. Tests do not invoke the
+  `nonapi` object serializer/deserializer directly with arbitrary test beans.
+- `NestedJarHandler.runFinalizationMethod()` looks up the unqualified class
+  name `System`, so ordinary scans cannot reach the method invocation. Tests
+  do not supply a shadow `System` class or inject the cached method.

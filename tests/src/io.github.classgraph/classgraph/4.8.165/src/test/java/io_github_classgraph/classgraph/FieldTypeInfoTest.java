@@ -13,11 +13,32 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FieldTypeInfoTest {
     @TempDir
     Path directory;
+
+    @Test
+    void restoresScanWithExplicitlyAbsentSourceFile() throws Exception {
+        try (ScanResult scan = ScanSupport.graph(ScanSupport.archive(directory)).scan(2)) {
+            assertEquals("ScanFixtures.java", ScanSupport.subject(scan).getSourceFile());
+            String json = scan.toJSON(2);
+            String sourceFileEntry = "\"sourceFile\": \"ScanFixtures.java\"";
+            assertTrue(json.contains(sourceFileEntry));
+            String withoutSourceFiles = json.replace(sourceFileEntry, "\"sourceFile\": null");
+            try (ScanResult restored = ScanResult.fromJSON(withoutSourceFiles)) {
+                assertNull(ScanSupport.subject(restored).getSourceFile());
+                assertEquals(scan.getAllClasses().getNames(), restored.getAllClasses().getNames());
+                assertEquals("java.lang.String", ScanSupport.subject(restored)
+                        .getFieldInfo("name").getTypeDescriptor().toString());
+                assertEquals("catalog", ScanSupport.subject(restored)
+                        .getAnnotationInfo(ScanFixtures.Tag.class.getName())
+                        .getParameterValues().getValue("value"));
+            }
+        }
+    }
 
     @Test
     void restoresBooleanAndIntegerScanOptions() throws Exception {
