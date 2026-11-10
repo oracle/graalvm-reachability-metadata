@@ -30,8 +30,8 @@ from utility_scripts.native_image_artifact import NativeImageEligibility  # noqa
 from exit_codes import (  # noqa: E402
     AGENT_WORK,
     BAD_INPUT,
+    FIX_REQUESTED,
     INFRASTRUCTURE,
-    JVM_TESTS_FAIL,
     NOTHING_TO_DO,
     NOT_FOR_NATIVE_IMAGE_RECORDED,
     OK,
@@ -295,7 +295,7 @@ class WorkflowTest(unittest.TestCase):
 
         self.cover("CodecTestBroken")
         self.fake.control({"javaFails": True})
-        self.assertEqual(JVM_TESTS_FAIL, self.step("measure"))
+        self.assertEqual(FIX_REQUESTED, self.step("measure"))
         self.assertIn("Return: 31", self.read("fix-request.md"))
         self.fix("fixed")
         self.assertEqual(RETURN_MEASURE, self.step("fix-route"))
@@ -321,7 +321,7 @@ class WorkflowTest(unittest.TestCase):
         with open(broken, "w", encoding="utf-8") as handle:
             handle.write("package org_example;\npublic class CodecCoverageTest { int a; int a; }\n")
         self.fake.control({"classes": {"org.example.lib.Codec": 6}, "extensionFails": True})
-        self.assertEqual(JVM_TESTS_FAIL, self.step("measure"))
+        self.assertEqual(FIX_REQUESTED, self.step("measure"))
         # `javaTest` passes, so the request names only the suite that broke.
         failing: str = self.read("fix-request.md").split("## Failing commands", 1)[1].split("\n## ", 1)[0]
         self.assertEqual([f"- ./gradlew codeCoverageTest -Pcoordinates={COORDINATE}"],
@@ -360,25 +360,6 @@ class WorkflowTest(unittest.TestCase):
         self.cover("CodecSecondTest")
         self.assertEqual(NOTHING_TO_DO, self.step("analyze"))
 
-    def test_a_library_whose_image_does_not_build_yet_takes_one_basic_pass(self) -> None:
-        self.fake.issue("library-new-request")
-        self.fake.control({"classes": {"org.example.lib.Codec": 1}, "listFails": True, "nativeFails": True})
-        self.assertEqual(OK, self.step(*prepare_arguments()))
-        self.setup_agent()
-        self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
-
-        self.assertEqual(AGENT_WORK, self.step("analyze"))
-        self.assertEqual(("basic", False), (self.state.explore.mode, self.state.explore.listed))
-        self.assertIn("could not be listed", self.read("cover-prompt.md"))
-
-        self.cover("ApiTest")
-        self.assertEqual(OK, self.step("measure"))
-        self.assertIn("ApiTest.java", subprocess.run(
-            ["git", "show", "--name-only", "--format=", "HEAD"], cwd=self.state.worktree, check=True,
-            stdout=subprocess.PIPE, text=True).stdout)
-        self.assertEqual(AGENT_WORK, self.step("native"))
-        self.assertIn("Return: 32", self.read("fix-request.md"))
-
     def test_a_new_library_without_calls_takes_one_measured_basic_pass(self) -> None:
         self.fake.issue("library-new-request")
         self.fake.control({"listsNoCalls": True})
@@ -387,7 +368,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
 
         self.assertEqual(AGENT_WORK, self.step("analyze"))
-        self.assertEqual(("basic", True), (self.state.explore.mode, self.state.explore.listed))
+        self.assertEqual("basic", self.state.explore.mode)
         self.assertIn("No dynamic-access call site is left", self.read("cover-prompt.md"))
 
         self.cover("ApiTest")
@@ -406,12 +387,11 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step("jvm"))
         self.assertEqual(OK, self.step("native-repair"))
         self.assertEqual(NOTHING_TO_DO, self.step("analyze"))
-        self.assertEqual((explore.MODE_SKIP, True, 0), (self.state.explore.mode, self.state.explore.listed,
-                                                         self.state.explore.total_calls))
+        self.assertEqual((explore.MODE_SKIP, 0), (self.state.explore.mode, self.state.explore.total_calls))
 
     def test_a_failed_metadata_generation_names_the_checks_it_kept_from_running(self) -> None:
         self.fake.issue("library-new-request")
-        self.fake.control({"listFails": True})
+        self.fake.control({"listsNoCalls": True})
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.setup_agent()
         self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
@@ -429,14 +409,14 @@ class WorkflowTest(unittest.TestCase):
 
     def test_a_basic_pass_that_breaks_the_tests_asks_for_a_fix(self) -> None:
         self.fake.issue("library-new-request")
-        self.fake.control({"listFails": True})
+        self.fake.control({"listsNoCalls": True})
         self.assertEqual(OK, self.step(*prepare_arguments()))
         self.setup_agent()
         self.assertEqual(NOTHING_TO_DO, self.step("setup-check"))
         self.assertEqual(AGENT_WORK, self.step("analyze"))
         self.cover("BrokenTest")
-        self.fake.control({"listFails": True, "javaFails": True})
-        self.assertEqual(JVM_TESTS_FAIL, self.step("measure"))
+        self.fake.control({"javaFails": True})
+        self.assertEqual(FIX_REQUESTED, self.step("measure"))
         self.fix("fixed")
         self.assertEqual(RETURN_MEASURE, self.step("fix-route"))
         self.assertEqual(OK, self.step("measure"))

@@ -14,7 +14,8 @@ OK: int = 0
 BAD_INPUT: int = 2
 INFRASTRUCTURE: int = 3
 AGENT_WORK: int = 10
-JVM_TESTS_FAIL: int = 11
+# `analyze` and `measure` only, whose `10` is a cover prompt: a fix request is written.
+FIX_REQUESTED: int = 11
 STILL_FAILING: int = 12
 NOTHING_TO_DO: int = 20
 # `setup-check` only: the setup verdict is a skip record (§FS-unsupportable-version-diagnosis.3).
@@ -32,6 +33,7 @@ RETURN_NATIVE: int = 32
 RETURN_FINALIZE: int = 33
 RETURN_AUDIT: int = 34
 RETURN_NATIVE_REPAIR: int = 35
+RETURN_ANALYZE: int = 36
 RETURN_CODES: dict[str, int] = {
     "jvm": RETURN_JVM,
     "measure": RETURN_MEASURE,
@@ -39,6 +41,7 @@ RETURN_CODES: dict[str, int] = {
     "finalize": RETURN_FINALIZE,
     "audit": RETURN_AUDIT,
     "native-repair": RETURN_NATIVE_REPAIR,
+    "analyze": RETURN_ANALYZE,
 }
 
 
