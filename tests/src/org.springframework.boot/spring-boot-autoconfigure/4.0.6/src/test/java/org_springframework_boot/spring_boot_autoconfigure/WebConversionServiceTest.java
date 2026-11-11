@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.ConversionService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class WebConversionServiceTest {
     @Test
     void injectedWebConversionServiceParsesAndFormatsConfiguredDateAndTimePatterns() {
-        new ApplicationContextRunner().withUserConfiguration(WebFormatting.class)
+        new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(WebConversionService.class))
                 .withBean(DateTimeFormatters.class, () -> new DateTimeFormatters()
                         .dateFormat("dd/MM/yyyy").timeFormat("HH:mm").dateTimeFormat("yyyy-MM-dd HH:mm"))
                 .run(context -> {
@@ -34,10 +33,5 @@ public class WebConversionServiceTest {
                     assertEquals(LocalDateTime.of(2026, 5, 12, 14, 35),
                             conversion.convert("2026-05-12 14:35", LocalDateTime.class));
                 });
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    @Import(WebConversionService.class)
-    public static class WebFormatting {
     }
 }
