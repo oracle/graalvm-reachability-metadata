@@ -15,9 +15,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.boot.servlet.filter.OrderedCharacterEncodingFilter;
-import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -26,20 +25,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderedCharacterEncodingFilterTest {
 
     @Test
-    void springConfiguredFilterForcesEncodingBeforeTheApplicationHandlesTheRequest()
+    void servletConfiguredFilterForcesEncodingBeforeTheApplicationHandlesTheRequest()
             throws ServletException, IOException {
-        try (GenericApplicationContext context = new GenericApplicationContext()) {
-            context.registerBeanDefinition("encodingFilter", BeanDefinitionBuilder
-                    .genericBeanDefinition("org.springframework.boot.servlet.filter.OrderedCharacterEncodingFilter")
-                    .addPropertyValue("encoding", StandardCharsets.UTF_8.name())
-                    .addPropertyValue("forceRequestEncoding", true)
-                    .addPropertyValue("forceResponseEncoding", true)
-                    .addPropertyValue("order", 17)
-                    .getBeanDefinition());
-            context.refresh();
-
-            OrderedCharacterEncodingFilter filter = context.getBean("encodingFilter",
-                    OrderedCharacterEncodingFilter.class);
+        OrderedCharacterEncodingFilter filter = new OrderedCharacterEncodingFilter();
+        MockFilterConfig config = new MockFilterConfig();
+        config.addInitParameter("encoding", StandardCharsets.UTF_8.name());
+        config.addInitParameter("forceRequestEncoding", "true");
+        config.addInitParameter("forceResponseEncoding", "true");
+        config.addInitParameter("order", "17");
+        filter.init(config);
+        try {
             MockHttpServletRequest request = new MockHttpServletRequest("POST", "/messages");
             request.setCharacterEncoding(StandardCharsets.ISO_8859_1.name());
             MockHttpServletResponse response = new MockHttpServletResponse();
@@ -57,6 +52,8 @@ public class OrderedCharacterEncodingFilterTest {
             assertThat(observedEncodings).containsExactly(StandardCharsets.UTF_8.name(), StandardCharsets.UTF_8.name());
             assertThat(response.getContentAsByteArray()).containsExactly("caf\u00e9".getBytes(StandardCharsets.UTF_8));
             assertThat(response.getContentAsString()).isEqualTo("caf\u00e9");
+        } finally {
+            filter.destroy();
         }
     }
 
