@@ -46,6 +46,23 @@ public class ConditionalOnSqlInitializationTest {
         }
     }
 
+    @Test
+    void enablesAnEntireConditionalConfigurationByDefault() {
+        try (AnnotationConfigApplicationContext context = context(Map.of(), ConditionalConfiguration.class)) {
+            assertEquals("conditional configuration", context.getBean("configurationMarker", String.class));
+            assertEquals(1, context.getBeansOfType(ConditionalConfiguration.class).size());
+        }
+    }
+
+    @Test
+    void neverModeExcludesAnEntireConditionalConfiguration() {
+        try (AnnotationConfigApplicationContext context = context(Map.of("spring.sql.init.mode", "never"),
+                ConditionalConfiguration.class)) {
+            assertFalse(context.containsBean("configurationMarker"));
+            assertEquals(0, context.getBeansOfType(ConditionalConfiguration.class).size());
+        }
+    }
+
     private static void assertEnabled(Map<String, Object> properties) {
         try (AnnotationConfigApplicationContext context = context(properties)) {
             assertEquals("initialization enabled", context.getBean("initializationMarker", String.class));
@@ -53,11 +70,24 @@ public class ConditionalOnSqlInitializationTest {
     }
 
     private static AnnotationConfigApplicationContext context(Map<String, Object> properties) {
+        return context(properties, InitializationConfiguration.class);
+    }
+
+    private static AnnotationConfigApplicationContext context(Map<String, Object> properties, Class<?> configuration) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test", properties));
-        context.register(InitializationConfiguration.class);
+        context.register(configuration);
         context.refresh();
         return context;
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnSqlInitialization
+    public static class ConditionalConfiguration {
+        @Bean
+        public String configurationMarker() {
+            return "conditional configuration";
+        }
     }
 
     @Configuration(proxyBeanMethods = false)

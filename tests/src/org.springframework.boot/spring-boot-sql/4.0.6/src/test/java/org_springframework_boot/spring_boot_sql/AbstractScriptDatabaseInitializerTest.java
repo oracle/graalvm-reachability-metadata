@@ -14,6 +14,7 @@ import org.springframework.boot.sql.autoconfigure.init.SqlInitializationProperti
 import org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer;
 import org.springframework.boot.sql.init.DatabaseInitializationMode;
 import org.springframework.boot.sql.init.DatabaseInitializationSettings;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
@@ -54,6 +55,24 @@ public class AbstractScriptDatabaseInitializerTest {
             initializer.afterPropertiesSet();
 
             assertEquals("initialized", query(connection, "SELECT body FROM messages"));
+            assertEquals(2, initializer.executedBatches);
+        }
+    }
+
+    @Test
+    void applicationContextInitializesDatabaseBeforeReturningTheBean() throws Exception {
+        DatabaseInitializationSettings settings = new DatabaseInitializationSettings();
+        settings.setSchemaLocations(List.of(script("schema.sql", "CREATE TABLE messages (body VARCHAR(100));")));
+        settings.setDataLocations(List.of(script("data.sql", "INSERT INTO messages VALUES ('context initialized');")));
+
+        try (Connection connection = openDatabase();
+                AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.registerBean("databaseInitializer", JdbcInitializer.class,
+                    () -> new JdbcInitializer(connection, settings));
+            context.refresh();
+
+            JdbcInitializer initializer = context.getBean("databaseInitializer", JdbcInitializer.class);
+            assertEquals("context initialized", query(connection, "SELECT body FROM messages"));
             assertEquals(2, initializer.executedBatches);
         }
     }
