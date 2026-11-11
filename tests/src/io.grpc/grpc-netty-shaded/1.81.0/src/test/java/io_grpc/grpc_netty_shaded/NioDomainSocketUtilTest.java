@@ -38,9 +38,9 @@ public class NioDomainSocketUtilTest {
                     .channel(NioServerDomainSocketChannel.class)
                     .childHandler(new ChannelInboundHandlerAdapter())
                     .bind(UnixDomainSocketAddress.of(socket));
-            server = bound.channel();
             assertTrue(bound.await(30, TimeUnit.SECONDS));
-            assertTrue(bound.isSuccess(), () -> String.valueOf(bound.cause()));
+            bound.sync();
+            server = bound.channel();
             assertTrue(Files.exists(socket));
             ChannelFuture closed = server.close();
             assertTrue(closed.await(30, TimeUnit.SECONDS));
