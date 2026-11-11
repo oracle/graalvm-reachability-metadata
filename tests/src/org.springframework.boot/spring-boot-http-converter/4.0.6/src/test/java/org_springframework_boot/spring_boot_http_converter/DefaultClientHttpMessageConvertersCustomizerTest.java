@@ -11,11 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.http.converter.autoconfigure.ClientHttpMessageConvertersCustomizer;
 import org.springframework.boot.http.converter.autoconfigure.HttpMessageConverters;
-import org.springframework.boot.http.converter.autoconfigure.HttpMessageConvertersAutoConfiguration;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverters.ClientBuilder;
@@ -31,44 +29,40 @@ import static org.springframework.http.converter.HttpMessageConverters.forClient
 @SuppressWarnings("deprecation")
 public class DefaultClientHttpMessageConvertersCustomizerTest {
     @Test
-    void autoConfiguredCustomizerRegistersDefaultsAndUserConverter() {
+    void customizerRegistersDefaultsAndUserConverter() {
         StringHttpMessageConverter custom = new StringHttpMessageConverter(StandardCharsets.UTF_16LE);
-        new ApplicationContextRunner()
-                .withConfiguration(AutoConfigurations.of(HttpMessageConvertersAutoConfiguration.class))
-                .withBean(StringHttpMessageConverter.class, () -> custom)
-                .run(context -> {
-                    ClientHttpMessageConvertersCustomizer customizer = context.getBean(
-                            "clientConvertersCustomizer", ClientHttpMessageConvertersCustomizer.class);
-                    ClientBuilder builder = forClient();
-                    customizer.customize(builder);
-                    List<HttpMessageConverter<?>> converters = new ArrayList<>();
-                    builder.build().forEach(converters::add);
+        try (GenericApplicationContext context = ConverterCustomizerContext.create(
+                "clientConvertersCustomizer", ClientHttpMessageConvertersCustomizer.class, null, custom)) {
+            ClientHttpMessageConvertersCustomizer customizer = context.getBean(
+                    "clientConvertersCustomizer", ClientHttpMessageConvertersCustomizer.class);
+            ClientBuilder builder = forClient();
+            customizer.customize(builder);
+            List<HttpMessageConverter<?>> converters = new ArrayList<>();
+            builder.build().forEach(converters::add);
 
-                    assertTrue(converters.contains(custom));
-                    assertTrue(converters.stream()
-                            .anyMatch(converter -> converter instanceof ByteArrayHttpMessageConverter));
-                    assertEquals(StandardCharsets.UTF_16LE, custom.getDefaultCharset());
-                });
+            assertTrue(converters.contains(custom));
+            assertTrue(converters.stream()
+                    .anyMatch(converter -> converter instanceof ByteArrayHttpMessageConverter));
+            assertEquals(StandardCharsets.UTF_16LE, custom.getDefaultCharset());
+        }
     }
 
     @Test
-    void autoConfiguredCustomizerUsesLegacyConverterSet() {
+    void customizerUsesLegacyConverterSet() {
         StringHttpMessageConverter custom = new StringHttpMessageConverter(StandardCharsets.UTF_8);
         HttpMessageConverters legacy = new HttpMessageConverters(false, List.of(custom));
-        new ApplicationContextRunner()
-                .withConfiguration(AutoConfigurations.of(HttpMessageConvertersAutoConfiguration.class))
-                .withBean(HttpMessageConverters.class, () -> legacy)
-                .run(context -> {
-                    ClientHttpMessageConvertersCustomizer customizer = context.getBean(
-                            "clientConvertersCustomizer", ClientHttpMessageConvertersCustomizer.class);
-                    ClientBuilder builder = forClient();
-                    customizer.customize(builder);
-                    List<HttpMessageConverter<?>> converters = new ArrayList<>();
-                    builder.build().forEach(converters::add);
+        try (GenericApplicationContext context = ConverterCustomizerContext.create(
+                "clientConvertersCustomizer", ClientHttpMessageConvertersCustomizer.class, legacy)) {
+            ClientHttpMessageConvertersCustomizer customizer = context.getBean(
+                    "clientConvertersCustomizer", ClientHttpMessageConvertersCustomizer.class);
+            ClientBuilder builder = forClient();
+            customizer.customize(builder);
+            List<HttpMessageConverter<?>> converters = new ArrayList<>();
+            builder.build().forEach(converters::add);
 
-                    assertEquals(2, converters.size());
-                    assertSame(custom, converters.getFirst());
-                    assertInstanceOf(AllEncompassingFormHttpMessageConverter.class, converters.getLast());
-                });
+            assertEquals(2, converters.size());
+            assertSame(custom, converters.getFirst());
+            assertInstanceOf(AllEncompassingFormHttpMessageConverter.class, converters.getLast());
+        }
     }
 }
