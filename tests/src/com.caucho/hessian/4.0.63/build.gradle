@@ -25,6 +25,8 @@ graalvmNative {
     binaries {
         test {
             buildArgs.add('--enable-url-protocols=http')
+            // Fault readers access Throwable.detailMessage reflectively.
+            buildArgs.add('--add-opens=java.base/java.lang=ALL-UNNAMED')
         }
     }
     agent {
