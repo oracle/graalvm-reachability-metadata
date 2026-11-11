@@ -6,11 +6,15 @@
  */
 package ch_qos_logback.logback_classic;
 
+import ch.qos.logback.classic.util.ClassicVersionUtil;
 import org.junit.jupiter.api.Test;
 
-class Logback_classicTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class ClassicVersionUtilTest {
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void readsTheBundledVersionProperties() {
+        assertThat(ClassicVersionUtil.getVersionBySelfDeclaredProperties()).isNotBlank();
     }
 }
