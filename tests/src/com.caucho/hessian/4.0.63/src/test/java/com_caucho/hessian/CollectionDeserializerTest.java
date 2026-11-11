@@ -18,9 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 public class CollectionDeserializerTest {
     @Test
     void restoresConcreteCollection() throws Exception {
-        LinkedList<String> values = new LinkedList<>(List.of("leader", "follower"));
+        Values values = new Values();
+        values.addAll(List.of("leader", "follower"));
         Object restored = SerializationSupport.roundTrip(values);
-        assertInstanceOf(LinkedList.class, restored);
+        assertInstanceOf(Values.class, restored);
         assertEquals(values, restored);
+    }
+
+    public static class Values extends LinkedList<String> {
     }
 }

@@ -6,8 +6,8 @@
  */
 package com_caucho.hessian;
 
-import java.util.LinkedHashMap;
 import com.caucho.hessian.io.SerializerFactory;
+import java.util.LinkedHashMap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -18,13 +18,16 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 public class MapDeserializerTest {
     @Test
     void restoresConcreteMap() throws Exception {
-        LinkedHashMap<String, Integer> values = new LinkedHashMap<>();
+        Entries values = new Entries();
         values.put("term", 17);
         values.put("index", 123);
         for (boolean hessian2 : new boolean[] {false, true}) {
             Object restored = SerializationSupport.roundTrip(values, new SerializerFactory(), hessian2);
-            assertInstanceOf(LinkedHashMap.class, restored);
+            assertInstanceOf(Entries.class, restored);
             assertEquals(values, restored);
         }
+    }
+
+    public static class Entries extends LinkedHashMap<String, Integer> {
     }
 }

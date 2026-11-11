@@ -18,13 +18,9 @@ public class RemoteSerializerTest {
     @Test
     void encodesRemoteReferenceTypeAndUrl() throws Exception {
         String url = "http://localhost/snapshots";
-        Object proxy = new HessianProxyFactory().create(Snapshots.class, url);
+        Object proxy = new HessianProxyFactory().create(RpcSupport.Echo.class, url);
         HessianRemote restored = (HessianRemote) SerializationSupport.roundTrip(proxy);
-        assertEquals(Snapshots.class.getName(), restored.getType());
+        assertEquals(RpcSupport.Echo.class.getName(), restored.getType());
         assertEquals(url, restored.getURL());
-    }
-
-    public interface Snapshots {
-        String latest();
     }
 }
