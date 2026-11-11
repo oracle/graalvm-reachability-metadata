@@ -6,9 +6,6 @@
  */
 package ch_qos_logback.logback_classic;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -17,7 +14,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.Appender;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
@@ -27,18 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ContextInitializerTest {
 
     @Test
-    void automaticallyLoadsXmlConfigurator(@TempDir Path directory) throws Exception {
-        Path configuration = directory.resolve("logging.xml");
-        Files.writeString(configuration, """
-                <configuration>
-                    <contextName>configured-context</contextName>
-                    <root level="ERROR"/>
-                </configuration>
-                """);
+    void automaticallyLoadsXmlConfigurator() throws Exception {
         String previous = System.getProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
         LoggerContext context = new LoggerContext();
         try {
-            System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, configuration.toUri().toString());
+            System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, "logging.xml");
             new ContextInitializer(context).autoConfig();
 
             assertThat(context.getName()).isEqualTo("configured-context");
