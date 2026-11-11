@@ -15,6 +15,11 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+// SunJvmResolverConfigProvider invokes the public JDK resolver methods in this internal package.
+tasks.withType(Test).configureEach {
+    jvmArgs '--add-exports=java.base/sun.net.dns=ALL-UNNAMED'
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
