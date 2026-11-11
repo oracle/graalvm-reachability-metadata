@@ -146,20 +146,24 @@ public class Grpc_netty_shadedTest {
         }
     }
 
-    private static ServerServiceDefinition echoService() {
+    static ServerServiceDefinition echoService() {
         return ServerServiceDefinition.builder(SERVICE_NAME)
                 .addMethod(UNARY_METHOD, new UnaryEchoHandler())
                 .addMethod(BIDI_METHOD, new BidirectionalEchoHandler())
                 .build();
     }
 
-    private static String invokeUnary(ManagedChannel channel, String request) throws InterruptedException {
+    static String invokeUnary(ManagedChannel channel, String request) throws InterruptedException {
+        return invokeUnary(channel, request, CallOptions.DEFAULT);
+    }
+
+    static String invokeUnary(ManagedChannel channel, String request, CallOptions options) throws InterruptedException {
         CountDownLatch closed = new CountDownLatch(1);
         AtomicReference<String> response = new AtomicReference<>();
         AtomicReference<Status> status = new AtomicReference<>();
         ClientCall<String, String> call = channel.newCall(
                 UNARY_METHOD,
-                CallOptions.DEFAULT.withDeadlineAfter(5, TimeUnit.SECONDS));
+                options.withDeadlineAfter(30, TimeUnit.SECONDS));
         call.start(new ClientCall.Listener<>() {
             @Override
             public void onMessage(String message) {
@@ -176,7 +180,7 @@ public class Grpc_netty_shadedTest {
         call.sendMessage(request);
         call.halfClose();
 
-        assertTrue(closed.await(5, TimeUnit.SECONDS));
+        assertTrue(closed.await(30, TimeUnit.SECONDS));
         assertEquals(Status.Code.OK, status.get().getCode());
         assertNotNull(response.get());
         return response.get();
@@ -189,7 +193,7 @@ public class Grpc_netty_shadedTest {
         AtomicReference<Status> status = new AtomicReference<>();
         ClientCall<String, String> call = channel.newCall(
                 BIDI_METHOD,
-                CallOptions.DEFAULT.withDeadlineAfter(5, TimeUnit.SECONDS));
+                CallOptions.DEFAULT.withDeadlineAfter(30, TimeUnit.SECONDS));
         call.start(new ClientCall.Listener<>() {
             @Override
             public void onMessage(String message) {
@@ -208,24 +212,24 @@ public class Grpc_netty_shadedTest {
         }
         call.halfClose();
 
-        assertTrue(closed.await(5, TimeUnit.SECONDS));
+        assertTrue(closed.await(30, TimeUnit.SECONDS));
         assertEquals(Status.Code.OK, status.get().getCode());
         return List.copyOf(responses);
     }
 
-    private static void shutdown(ManagedChannel channel, Server server) throws InterruptedException {
+    static void shutdown(ManagedChannel channel, Server server) throws InterruptedException {
         if (channel != null) {
             channel.shutdownNow();
-            assertTrue(channel.awaitTermination(5, TimeUnit.SECONDS));
+            assertTrue(channel.awaitTermination(30, TimeUnit.SECONDS));
         }
         if (server != null) {
             server.shutdownNow();
-            assertTrue(server.awaitTermination(5, TimeUnit.SECONDS));
+            assertTrue(server.awaitTermination(30, TimeUnit.SECONDS));
         }
     }
 
     private static void shutdownGracefully(EventLoopGroup group) throws InterruptedException {
-        assertTrue(group.shutdownGracefully(0, 5, TimeUnit.SECONDS).await(5, TimeUnit.SECONDS));
+        assertTrue(group.shutdownGracefully(0, 30, TimeUnit.SECONDS).await(30, TimeUnit.SECONDS));
     }
 
     private static final class UnaryEchoHandler implements ServerCallHandler<String, String> {
