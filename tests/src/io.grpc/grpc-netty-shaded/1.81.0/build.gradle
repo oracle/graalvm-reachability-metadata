@@ -23,6 +23,8 @@ String customLeakDetector = "io_grpc.grpc_netty_shaded.ConfiguredLeakDetector"
 
 tasks.withType(Test).configureEach {
     systemProperty leakDetectorProperty, customLeakDetector
+    // Netty's optimized byte-array allocator reflectively calls jdk.internal.misc.Unsafe.
+    jvmArgs '--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED'
 }
 
 tasks.named("nativeTest") {
