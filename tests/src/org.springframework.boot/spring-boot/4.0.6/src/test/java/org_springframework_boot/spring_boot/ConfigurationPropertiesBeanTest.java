@@ -27,6 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigurationPropertiesBeanTest {
     @Test
+    // getAnnotation() is Spring Boot's bean accessor, not AnnotatedElement reflection.
+    @SuppressWarnings("checkstyle:annotationAccess")
     void bindsAndDescribesAComposedConfigurationPropertiesBean() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("deployment", Map.of(
