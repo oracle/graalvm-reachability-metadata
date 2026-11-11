@@ -8,7 +8,8 @@ package org_springframework_boot.spring_boot_jackson;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.boot.jackson.autoconfigure.JacksonProperties;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -20,9 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class JacksonAutoConfigurationInnerAbstractMapperBuilderCustomizerTest {
-    @Test
-    void appliesConfiguredNamingStrategyConstantToJsonProperties() {
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void appliesConfiguredNamingStrategyConstantToJsonProperties(boolean lazyInitialization) {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.addBeanFactoryPostProcessor(beanFactory -> {
+                for (String beanName : beanFactory.getBeanDefinitionNames()) {
+                    beanFactory.getBeanDefinition(beanName).setLazyInit(lazyInitialization);
+                }
+            });
             context.getEnvironment().getPropertySources().addFirst(new MapPropertySource(
                     "jacksonNaming", Map.of("spring.jackson.property-naming-strategy", "SNAKE_CASE")));
             context.register(JacksonAutoConfiguration.class);
