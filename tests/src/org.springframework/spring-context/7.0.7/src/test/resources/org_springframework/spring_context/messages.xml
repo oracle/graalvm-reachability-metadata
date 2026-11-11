@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="conversionService" class="org.springframework.format.support.DefaultFormattingConversionService"/>
+    <bean id="parentMessages" class="org.springframework.context.support.StaticMessageSource">
+        <property name="commonMessages">
+            <props><prop key="parent">parent message</prop></props>
+        </property>
+    </bean>
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="org_springframework.spring_context.messages"/>
+        <property name="fallbackToSystemLocale" value="false"/>
+        <property name="parentMessageSource" ref="parentMessages"/>
+    </bean>
+    <bean id="greeting" class="org_springframework.spring_context.ResourceBundleMessageSourceTest$Greeting"/>
+</beans>
