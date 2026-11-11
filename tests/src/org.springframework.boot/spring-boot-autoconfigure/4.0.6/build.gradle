@@ -11,8 +11,24 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
     testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
-    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "org.springframework.boot:spring-boot:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
+    // Spring Boot 4 keeps AOP and repository-type conditions in this artifact; versions come from the BOM.
+    testImplementation 'org.aspectj:aspectjweaver'
+    testImplementation 'org.springframework.data:spring-data-commons'
+    // Servlet web-application and filter-bean conditions need a servlet context and the Filter type.
+    testImplementation 'org.springframework:spring-web'
+    testImplementation 'jakarta.servlet:jakarta.servlet-api'
+    testImplementation 'org.assertj:assertj-core'
+    // Boot 4 moves the inherited tests' APIs into feature modules. See FS-test-contract.1.4.
+    testImplementation "org.springframework.boot:spring-boot-http-converter:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-flyway:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-jackson:$libraryVersion"
+    testImplementation 'org.springframework.hateoas:spring-hateoas'
+    testImplementation 'com.google.code.gson:gson'
+    testImplementation 'com.h2database:h2'
 }
 
 graalvmNative {
