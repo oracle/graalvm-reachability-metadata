@@ -8,6 +8,7 @@ package dnsjava.dnsjava;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.xbill.DNS.SimpleResolver;
 import org.xbill.DNS.spi.DnsjavaInetAddressResolverProvider;
 
 import java.net.InetAddress;
@@ -18,6 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Timeout(30)
 public class DnsjavaInetAddressResolverProviderTest {
+    @Test
+    void resolvesLocalhostForDnsServerAddress() throws Exception {
+        SimpleResolver resolver = new SimpleResolver("localhost");
+        assertThat(resolver.getAddress().isUnresolved()).isFalse();
+        assertThat(resolver.getAddress().getAddress().isLoopbackAddress()).isTrue();
+        assertThat(resolver.getPort()).isEqualTo(SimpleResolver.DEFAULT_PORT);
+    }
+
     @Test
     void discoversDnsjavaProviderForHostResolution() throws Exception {
         String previous = System.getProperty(DnsjavaInetAddressResolverProvider.ENABLE_SPI);
