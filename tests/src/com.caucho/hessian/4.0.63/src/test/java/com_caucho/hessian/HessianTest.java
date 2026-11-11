@@ -7,10 +7,14 @@
 package com_caucho.hessian;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-class HessianTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@Timeout(120)
+public class HessianTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void roundTripsText() throws Exception {
+        assertEquals("consistency snapshot", SerializationSupport.roundTrip("consistency snapshot"));
     }
 }
