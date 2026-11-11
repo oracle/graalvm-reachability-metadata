@@ -6,6 +6,8 @@
  */
 package org_springframework_boot.spring_boot;
 
+import java.util.function.Supplier;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.support.GenericApplicationContext;
@@ -22,6 +24,18 @@ public class BeanDefinitionLoaderTest {
 
             assertThat(context.getBean(Inventory.class).label()).isEqualTo("inventory");
             assertThat(context.getBeansOfType(Inventory.class)).hasSize(1);
+        }
+    }
+
+    @Test
+    void loadsAComponentFromAPackageNameSource() {
+        SourceApplication application = new SourceApplication();
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            application.registerSources(context, "org_springframework_boot.spring_boot.packagesource");
+            context.refresh();
+
+            assertThat(context.getBean("packageInventory", Supplier.class).get()).isEqualTo("package inventory");
+            assertThat(context.getBeanNamesForType(Supplier.class)).containsExactly("packageInventory");
         }
     }
 

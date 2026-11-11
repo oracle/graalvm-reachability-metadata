@@ -6,6 +6,8 @@
  */
 package org_springframework_boot.spring_boot;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.convert.ApplicationConversionService;
 
@@ -19,5 +21,8 @@ public class DelimitedStringToArrayConverterTest {
         assertThat(service.convert("12, 24,36", Integer[].class)).containsExactly(12, 24, 36);
         assertThat(service.convert(" north, south ", String[].class)).containsExactly("north", "south");
         assertThat(service.convert("", Integer[].class)).isEmpty();
+        assertThat(service.convert(" 10ms, 2s, 1m ", Duration[].class))
+                .containsExactly(Duration.ofMillis(10), Duration.ofSeconds(2), Duration.ofMinutes(1));
+        assertThat(service.convert("", Duration[].class)).isEmpty();
     }
 }

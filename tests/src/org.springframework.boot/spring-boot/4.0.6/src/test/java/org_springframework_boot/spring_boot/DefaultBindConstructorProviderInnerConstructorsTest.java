@@ -9,7 +9,9 @@ package org_springframework_boot.spring_boot;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,8 +25,35 @@ public class DefaultBindConstructorProviderInnerConstructorsTest {
 
         assertThat(endpoint.host()).isEqualTo("localhost");
         assertThat(endpoint.port()).isEqualTo(8443);
+        assertThat(endpoint.protocol()).isEqualTo("https");
     }
 
-    public record Endpoint(String host, int port) {
+    @Test
+    void bindsAnExistingInnerBeanWithoutTreatingItsOuterInstanceAsAConstructorArgument() {
+        InnerOptions options = new InnerOptions();
+        Binder binder = new Binder(new MapConfigurationPropertySource(Map.of("options.host", "orders")));
+
+        assertThat(binder.bind("options", Bindable.ofInstance(options)).get()).isSameAs(options);
+        assertThat(options.getHost()).isEqualTo("orders");
+        assertThat(options.owner()).isSameAs(this);
+    }
+
+    public record Endpoint(String host, int port, @DefaultValue("https") String protocol) {
+    }
+
+    public class InnerOptions {
+        private String host;
+
+        public String getHost() {
+            return this.host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public DefaultBindConstructorProviderInnerConstructorsTest owner() {
+            return DefaultBindConstructorProviderInnerConstructorsTest.this;
+        }
     }
 }

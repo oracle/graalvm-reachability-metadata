@@ -19,11 +19,13 @@ public class BindableTest {
     @Test
     void boxesPrimitiveBindingTypesAndBindsValues() {
         Bindable<Integer> target = Bindable.of(int.class);
-        Binder binder = new Binder(new MapConfigurationPropertySource(Map.of("workers", "6")));
+        Binder binder = new Binder(new MapConfigurationPropertySource(Map.of(
+                "workers", "6", "ports[0]", "8080", "ports[1]", "8443")));
 
         assertThat(target.getType().resolve()).isEqualTo(int.class);
         assertThat(target.getBoxedType().resolve()).isEqualTo(Integer.class);
         assertThat(binder.bind("workers", target).get()).isEqualTo(6);
+        assertThat(binder.bind("ports", Bindable.of(int[].class)).get()).containsExactly(8080, 8443);
         assertThat(Bindable.of(int[][].class).getBoxedType().resolve()).isEqualTo(Integer[][].class);
     }
 }
