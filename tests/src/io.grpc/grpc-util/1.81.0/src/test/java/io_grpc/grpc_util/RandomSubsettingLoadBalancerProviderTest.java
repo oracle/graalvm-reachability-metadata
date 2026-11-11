@@ -13,13 +13,12 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import io.grpc.LoadBalancerProvider;
-import io.grpc.LoadBalancerRegistry;
 import io.grpc.ManagedChannel;
 import io.grpc.NameResolver.ConfigOrError;
 import io.grpc.Status;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import io.grpc.util.GracefulSwitchLoadBalancer;
 
 public class RandomSubsettingLoadBalancerProviderTest {
     private static final String POLICY = "random_subsetting_experimental";
@@ -27,10 +26,9 @@ public class RandomSubsettingLoadBalancerProviderTest {
 
     @Test
     void serviceConfigRoutesRequestsToOneStableSubsetMember() throws Exception {
-        LoadBalancerProvider provider = LoadBalancerRegistry.getDefaultRegistry().getProvider(POLICY);
-        assertThat(provider).isNotNull();
         Map<String, ?> policyConfig = Map.of("subsetSize", 1.0, "childPolicy", CHILD_POLICY);
-        ConfigOrError parsed = provider.parseLoadBalancingPolicyConfig(policyConfig);
+        ConfigOrError parsed = GracefulSwitchLoadBalancer.parseLoadBalancingPolicyConfig(
+                List.of(Map.of(POLICY, policyConfig)));
         assertThat(parsed.getError()).isNull();
         assertThat(parsed.getConfig()).isNotNull();
 
@@ -56,15 +54,14 @@ public class RandomSubsettingLoadBalancerProviderTest {
 
     @Test
     void rejectsMissingOrNonPositiveSubsetSizesAndUnavailableChildPolicies() {
-        LoadBalancerProvider provider = LoadBalancerRegistry.getDefaultRegistry().getProvider(POLICY);
-        assertThat(provider).isNotNull();
         List<Map<String, ?>> invalidConfigs = List.of(
                 Map.of("childPolicy", CHILD_POLICY),
                 Map.of("subsetSize", 0.0, "childPolicy", CHILD_POLICY),
                 Map.of("subsetSize", -1.0, "childPolicy", CHILD_POLICY),
                 Map.of("subsetSize", 1.0, "childPolicy", List.of(Map.of("unknown_test_policy", Map.of()))));
         for (Map<String, ?> config : invalidConfigs) {
-            ConfigOrError parsed = provider.parseLoadBalancingPolicyConfig(config);
+            ConfigOrError parsed = GracefulSwitchLoadBalancer.parseLoadBalancingPolicyConfig(
+                    List.of(Map.of(POLICY, config)));
             assertThat(parsed.getConfig()).isNull();
             assertThat(parsed.getError()).isNotNull();
             assertThat(parsed.getError().getCode()).isEqualTo(Status.Code.UNAVAILABLE);
