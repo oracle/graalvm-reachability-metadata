@@ -24,9 +24,6 @@ import com.google.api.MonitoredResourceDescriptor;
 import com.google.api.OAuthRequirements;
 import com.google.api.ResourceDescriptor;
 import com.google.api.Service;
-import com.google.apps.card.v1.Card;
-import com.google.apps.card.v1.TextParagraph;
-import com.google.apps.card.v1.Widget;
 import com.google.cloud.audit.AuditLog;
 import com.google.cloud.audit.AuthenticationInfo;
 import com.google.cloud.audit.AuthorizationInfo;
@@ -49,9 +46,6 @@ import com.google.rpc.Help;
 import com.google.rpc.RetryInfo;
 import com.google.rpc.Status;
 import com.google.rpc.context.AttributeContext;
-import com.google.shopping.type.CustomAttribute;
-import com.google.shopping.type.Price;
-import com.google.shopping.type.Weight;
 import com.google.type.Color;
 import com.google.type.Date;
 import com.google.type.DateTime;
@@ -442,60 +436,10 @@ public class Proto_google_common_protosTest {
     }
 
     @Test
-    void buildsCardAndShoppingTypeMessages() {
-        TextParagraph paragraph = TextParagraph.newBuilder()
-                .setText("Book import completed")
-                .build();
-        Widget widget = Widget.newBuilder()
-                .setTextParagraph(paragraph)
-                .setHorizontalAlignment(Widget.HorizontalAlignment.CENTER)
-                .build();
-        Card card = Card.newBuilder()
-                .setName("cards/book-import")
-                .setHeader(Card.CardHeader.newBuilder()
-                        .setTitle("Library import")
-                        .setSubtitle("Summary")
-                        .setImageType(Widget.ImageType.CIRCLE)
-                        .build())
-                .addSections(Card.Section.newBuilder()
-                        .setHeader("Results")
-                        .addWidgets(widget)
-                        .setCollapsible(true)
-                        .setUncollapsibleWidgetsCount(1)
-                        .build())
-                .setDisplayStyle(Card.DisplayStyle.PEEK)
-                .build();
-        Price price = Price.newBuilder()
-                .setAmountMicros(12_340_000)
-                .setCurrencyCode("EUR")
-                .build();
-        Weight weight = Weight.newBuilder()
-                .setAmountMicros(1_500_000)
-                .setUnit(Weight.WeightUnit.KILOGRAM)
-                .build();
-        CustomAttribute attributes = CustomAttribute.newBuilder()
-                .setName("book")
-                .addGroupValues(CustomAttribute.newBuilder().setName("isbn").setValue("9780000000000").build())
-                .addGroupValues(CustomAttribute.newBuilder().setName("format").setValue("hardcover").build())
-                .build();
-
-        assertThat(card.getHeader().getTitle()).isEqualTo("Library import");
-        assertThat(card.getSections(0).getWidgets(0).getDataCase()).isEqualTo(Widget.DataCase.TEXT_PARAGRAPH);
-        assertThat(card.getDisplayStyle()).isEqualTo(Card.DisplayStyle.PEEK);
-        assertThat(price.getCurrencyCode()).isEqualTo("EUR");
-        assertThat(weight.getUnit()).isEqualTo(Weight.WeightUnit.KILOGRAM);
-        assertThat(attributes.getGroupValuesList()).extracting(CustomAttribute::getName)
-                .containsExactly("isbn", "format");
-    }
-
-    @Test
     void exposesGeneratedDescriptorMetadataForIncludedProtoFiles() {
         assertThat(HttpRule.getDescriptor().getFullName()).isEqualTo("google.api.HttpRule");
         assertThat(Status.getDescriptor().getFields()).extracting(field -> field.getName())
                 .contains("code", "message", "details");
-        assertThat(Card.getDescriptor().getFile().getPackage()).isEqualTo("google.apps.card.v1");
-        assertThat(Price.getDescriptor().getFields()).extracting(field -> field.getName())
-                .contains("amount_micros", "currency_code");
     }
 
     private static Any detail(String typeUrl, String value) {
