@@ -27,6 +27,22 @@ public class BurlapServletTest {
         servlet.destroy();
     }
 
+    @Test
+    void loadsServiceAndApiWithoutContextClassLoader() throws Exception {
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+        BurlapServlet servlet = new BurlapServlet();
+        ServiceImpl.last = null;
+        try {
+            Thread.currentThread().setContextClassLoader(null);
+            servlet.init(new ServletSupport(Map.of("service-class", ServiceImpl.class.getName(),
+                    "api-class", RpcSupport.Echo.class.getName(), "prefix", "fallback:")));
+            assertEquals("fallback:snapshot", ServiceImpl.last.echo("snapshot"));
+        } finally {
+            Thread.currentThread().setContextClassLoader(previous);
+            servlet.destroy();
+        }
+    }
+
     public static class ServiceImpl implements RpcSupport.Echo, Service {
         private static ServiceImpl last;
         private String prefix;

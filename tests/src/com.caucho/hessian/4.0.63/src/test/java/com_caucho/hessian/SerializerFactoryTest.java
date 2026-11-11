@@ -6,6 +6,7 @@
  */
 package com_caucho.hessian;
 
+import com.caucho.hessian.io.SerializerFactory;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -21,7 +22,9 @@ public class SerializerFactoryTest {
     void discoversBundledCodecsForStandardValues() throws Exception {
         for (Object value : new Object[] {new BigDecimal("12345.6700"), new File("snapshot.bin"),
                 new ObjectName("consistency:type=Snapshot,name=primary"), Locale.CANADA_FRENCH}) {
-            assertEquals(value, SerializationSupport.roundTrip(value));
+            for (boolean hessian2 : new boolean[] {false, true}) {
+                assertEquals(value, SerializationSupport.roundTrip(value, new SerializerFactory(), hessian2));
+            }
         }
     }
 }

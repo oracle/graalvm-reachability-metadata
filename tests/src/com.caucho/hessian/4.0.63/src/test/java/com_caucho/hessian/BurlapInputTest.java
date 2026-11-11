@@ -38,4 +38,25 @@ public class BurlapInputTest {
             output.close();
         }
     }
+
+    @Test
+    void usesFaultEnvelopeMessageForTypedException() throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        BurlapOutput output = new BurlapOutput(bytes);
+        output.startReply();
+        output.writeFault("ServiceException", "snapshot unavailable",
+                new FaultSupport.SnapshotException("internal detail", 23));
+        output.completeReply();
+        output.flush();
+        BurlapInput input = new BurlapInput(new ByteArrayInputStream(bytes.toByteArray()));
+        try {
+            FaultSupport.SnapshotException exception = assertThrows(FaultSupport.SnapshotException.class,
+                    () -> input.readReply(String.class));
+            assertEquals("snapshot unavailable", exception.getMessage());
+            assertEquals(23, exception.getTerm());
+        } finally {
+            input.close();
+            output.close();
+        }
+    }
 }

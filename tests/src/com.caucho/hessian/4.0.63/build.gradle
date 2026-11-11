@@ -16,6 +16,11 @@ dependencies {
     testImplementation 'javax.servlet:servlet-api:2.5'
 }
 
+tasks.withType(Test).configureEach {
+    // Fault readers replace Throwable.detailMessage with the RPC envelope message.
+    jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
+}
+
 graalvmNative {
     binaries {
         test {
