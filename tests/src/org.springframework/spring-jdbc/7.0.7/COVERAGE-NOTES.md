@@ -3,11 +3,12 @@
 `OracleTableMetaDataProviderTest` uses the real Oracle JDBC API and an H2
 connection to exercise Oracle connection class loading and the documented
 standard-JDBC fallback when the connection cannot unwrap to an Oracle
-connection. It checks column names, SQL types, nullability, and continued use
-of the caller-owned connection. The synonym flag lookups and invocations
-remain untested: they need a real Oracle database connection, and this test
-project has no approved Oracle database image. No fake vendor types or
-connections replace it.
+connection. A second test starts the approved, pre-pulled Oracle Free image,
+creates a table and a private synonym, and discovers the synonym's columns
+through `OracleTableMetaDataProvider`. It checks column names, SQL types,
+nullability, and restoration of both initial values of the connection's
+include-synonyms setting. An insert through the synonym verifies continued use
+of the caller-owned connection. No fake vendor types or connections replace it.
 
 # Reporter-requested infrastructure
 
