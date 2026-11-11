@@ -9,6 +9,7 @@ package org_springframework_boot.spring_boot;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 
@@ -25,6 +26,32 @@ public class DefaultBindConstructorProviderInnerConstructorsTest {
         assertThat(endpoint.port()).isEqualTo(8443);
     }
 
+    @Test
+    void bindsAnExistingInnerBeanWithoutTreatingItsOuterInstanceAsAConstructorArgument() {
+        InnerOptions options = new InnerOptions();
+        Binder binder = new Binder(new MapConfigurationPropertySource(Map.of("options.host", "orders")));
+
+        assertThat(binder.bind("options", Bindable.ofInstance(options)).get()).isSameAs(options);
+        assertThat(options.getHost()).isEqualTo("orders");
+        assertThat(options.owner()).isSameAs(this);
+    }
+
     public record Endpoint(String host, int port) {
+    }
+
+    public class InnerOptions {
+        private String host;
+
+        public String getHost() {
+            return this.host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public DefaultBindConstructorProviderInnerConstructorsTest owner() {
+            return DefaultBindConstructorProviderInnerConstructorsTest.this;
+        }
     }
 }
