@@ -1,0 +1,38 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
+    testImplementation "org.springframework.boot:spring-boot-tomcat:$libraryVersion"
+    // Auto-configuration, actuator management context, and context runners; versions come from the BOM.
+    testImplementation 'org.springframework.boot:spring-boot-autoconfigure'
+    testImplementation 'org.springframework.boot:spring-boot-actuator-autoconfigure'
+    testImplementation 'org.springframework.boot:spring-boot-test'
+    // Optional integrations: Tomcat metrics binder, reactive adapter, and WebSocket customizer.
+    testImplementation 'io.micrometer:micrometer-core'
+    testImplementation 'io.projectreactor:reactor-core'
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-websocket'
+    // JSP support activates the factory's Jasper servlet-container initializer.
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
