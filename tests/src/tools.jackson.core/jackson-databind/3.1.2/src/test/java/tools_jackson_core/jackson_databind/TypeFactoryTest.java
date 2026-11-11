@@ -8,6 +8,8 @@ package tools_jackson_core.jackson_databind;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.OptBoolean;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.InjectableValues;
 import tools.jackson.databind.JacksonModule;
 import tools.jackson.databind.JsonNode;
@@ -34,11 +37,24 @@ public class TypeFactoryTest {
                 .setMixInAnnotation(Payload.class, PayloadMixin.class);
         SimpleModule domainModule = new SimpleModule("trace-values")
                 .setMixInAnnotation(TraceId.class, TraceIdMixin.class);
-        InjectableValues services = new InjectableValues.Std()
-                .addValue(ObjectMapper.class, payloadReader)
-                .addValue(MapperBuilder.class, outputBuilder)
-                .addValue(JacksonModule.class, commonModule)
-                .addValue(SimpleModule.class, domainModule);
+        Map<Class<?>, String> serviceBindings = payloadReader.readValue(
+                """
+                {
+                  "tools.jackson.databind.ObjectMapper": "reader",
+                  "tools.jackson.databind.cfg.MapperBuilder": "builder",
+                  "tools.jackson.databind.JacksonModule": "common",
+                  "tools.jackson.databind.module.SimpleModule": "domain"
+                }
+                """,
+                new TypeReference<Map<Class<?>, String>>() {
+                });
+        Map<String, Object> serviceInstances = Map.of(
+                "reader", payloadReader,
+                "builder", outputBuilder,
+                "common", commonModule,
+                "domain", domainModule);
+        InjectableValues.Std services = new InjectableValues.Std();
+        serviceBindings.forEach((type, name) -> services.addValue(type, serviceInstances.get(name)));
         ObjectMapper jobReader = JsonMapper.builder()
                 .injectableValues(services)
                 .build();
