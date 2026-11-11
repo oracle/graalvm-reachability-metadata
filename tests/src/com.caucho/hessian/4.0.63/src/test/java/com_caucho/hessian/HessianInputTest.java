@@ -36,4 +36,23 @@ public class HessianInputTest {
             output.close();
         }
     }
+
+    @Test
+    void usesFaultEnvelopeMessageForTypedException() throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        HessianOutput output = new HessianOutput(bytes);
+        output.writeFault("ServiceException", "snapshot unavailable",
+                new FaultSupport.SnapshotException("internal detail", 23));
+        output.flush();
+        HessianInput input = new HessianInput(new ByteArrayInputStream(bytes.toByteArray()));
+        try {
+            FaultSupport.SnapshotException exception = assertThrows(FaultSupport.SnapshotException.class,
+                    () -> input.readReply(String.class));
+            assertEquals("snapshot unavailable", exception.getMessage());
+            assertEquals(23, exception.getTerm());
+        } finally {
+            input.close();
+            output.close();
+        }
+    }
 }

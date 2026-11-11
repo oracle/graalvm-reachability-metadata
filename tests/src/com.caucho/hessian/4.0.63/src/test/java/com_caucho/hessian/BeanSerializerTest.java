@@ -6,6 +6,7 @@
  */
 package com_caucho.hessian;
 
+import com.caucho.hessian.io.BeanSerializer;
 import com.caucho.hessian.io.BeanSerializerFactory;
 import com.caucho.hessian.io.ExtSerializerFactory;
 import com.caucho.hessian.io.FieldDeserializer2Factory;
@@ -32,6 +33,51 @@ public class BeanSerializerTest {
             Bean restored = (Bean) SerializationSupport.roundTrip(original, factory, hessian2);
             assertEquals("leader", restored.getName());
             assertEquals(17, restored.getCount());
+        }
+    }
+
+    @Test
+    void serializesPublicWriteReplacement() throws Exception {
+        ExtSerializerFactory serializers = new ExtSerializerFactory();
+        serializers.addSerializer(ReplacedBean.class,
+                new BeanSerializer(ReplacedBean.class, ReplacedBean.class.getClassLoader()));
+        BeanSerializerFactory factory = new BeanSerializerFactory();
+        factory.addFactory(serializers);
+        for (boolean hessian2 : new boolean[] {false, true}) {
+            assertEquals("bean:snapshot", SerializationSupport.roundTrip(new ReplacedBean(), factory, hessian2));
+        }
+    }
+
+    @Test
+    void discoversConventionNamedReplacementFactory() throws Exception {
+        ExtSerializerFactory serializers = new ExtSerializerFactory();
+        serializers.addSerializer(ExternalBean.class,
+                new BeanSerializer(ExternalBean.class, ExternalBean.class.getClassLoader()));
+        BeanSerializerFactory factory = new BeanSerializerFactory();
+        factory.addFactory(serializers);
+        for (boolean hessian2 : new boolean[] {false, true}) {
+            assertEquals("external:snapshot", SerializationSupport.roundTrip(new ExternalBean("snapshot"),
+                    factory, hessian2));
+        }
+    }
+
+    public static class ReplacedBean {
+        public Object writeReplace() {
+            return "bean:snapshot";
+        }
+    }
+
+    public static class ExternalBean {
+        private final String text;
+
+        public ExternalBean(String text) {
+            this.text = text;
+        }
+    }
+
+    public static class ExternalBeanHessianSerializer {
+        public Object writeReplace(ExternalBean bean) {
+            return "external:" + bean.text;
         }
     }
 

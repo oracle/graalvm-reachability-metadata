@@ -28,12 +28,34 @@ public class HessianServletTest {
         servlet.destroy();
     }
 
+    @Test
+    void loadsHomeAndObjectServicesWithoutContextClassLoader() throws Exception {
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+        HessianServlet servlet = new HessianServlet();
+        int before = ServiceImpl.constructions;
+        try {
+            Thread.currentThread().setContextClassLoader(null);
+            servlet.init(new ServletSupport(Map.of("home-class", ServiceImpl.class.getName(),
+                    "home-api", RpcSupport.Echo.class.getName(),
+                    "object-class", ServiceImpl.class.getName(),
+                    "object-api", RpcSupport.Echo.class.getName(), "prefix", "object:")));
+            assertEquals(before + 2, ServiceImpl.constructions);
+            assertEquals("object:snapshot", ServiceImpl.last.echo("snapshot"));
+            assertEquals(RpcSupport.Echo.class, servlet.getAPIClass());
+        } finally {
+            Thread.currentThread().setContextClassLoader(previous);
+            servlet.destroy();
+        }
+    }
+
     public static class ServiceImpl implements RpcSupport.Echo, Service {
         private static ServiceImpl last;
+        private static int constructions;
         private String prefix;
 
         public ServiceImpl() {
             last = this;
+            constructions++;
         }
 
         @Override
