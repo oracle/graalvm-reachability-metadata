@@ -13,12 +13,14 @@ import java.security.KeyStore;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
+import java.util.function.BiConsumer;
 
 import javax.net.ssl.KeyManagerFactory;
 
 import io.grpc.netty.shaded.io.netty.buffer.ByteBuf;
 import io.grpc.netty.shaded.io.netty.buffer.ByteBufAllocator;
 import io.grpc.netty.shaded.io.netty.buffer.Unpooled;
+import io.grpc.netty.shaded.io.netty.channel.ChannelHandler;
 import io.grpc.netty.shaded.io.netty.channel.embedded.EmbeddedChannel;
 import io.grpc.netty.shaded.io.netty.handler.ssl.ApplicationProtocolConfig;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
@@ -67,6 +69,11 @@ final class TlsTestSupport {
     }
 
     static void exchange(SslProvider implementation, Provider provider) throws Exception {
+        exchange(implementation, provider, null, null);
+    }
+
+    static void exchange(SslProvider implementation, Provider provider, ChannelHandler serverObserver,
+                         BiConsumer<EmbeddedChannel, EmbeddedChannel> afterExchange) throws Exception {
         SslContext serverContext = context(true, implementation, provider);
         SslContext clientContext = null;
         EmbeddedChannel server = null;
@@ -77,7 +84,8 @@ final class TlsTestSupport {
             SslHandler clientTls = clientContext.newHandler(ByteBufAllocator.DEFAULT, "localhost", 443);
             serverTls.setHandshakeTimeoutMillis(30000);
             clientTls.setHandshakeTimeoutMillis(30000);
-            server = new EmbeddedChannel(serverTls);
+            server = serverObserver == null ? new EmbeddedChannel(serverTls)
+                    : new EmbeddedChannel(serverTls, serverObserver);
             client = new EmbeddedChannel(clientTls);
             for (int i = 0; i < 1000 && (!serverTls.handshakeFuture().isDone()
                     || !clientTls.handshakeFuture().isDone()); i++) {
@@ -106,6 +114,9 @@ final class TlsTestSupport {
             } finally {
                 reply.release();
             }
+            if (afterExchange != null) {
+                afterExchange.accept(server, client);
+            }
         } finally {
             if (client != null) {
                 client.finishAndReleaseAll();
@@ -118,7 +129,7 @@ final class TlsTestSupport {
         }
     }
 
-    private static void transfer(EmbeddedChannel source, EmbeddedChannel destination) {
+    static void transfer(EmbeddedChannel source, EmbeddedChannel destination) {
         ByteBuf packet;
         while ((packet = source.readOutbound()) != null) {
             destination.writeInbound(packet);
