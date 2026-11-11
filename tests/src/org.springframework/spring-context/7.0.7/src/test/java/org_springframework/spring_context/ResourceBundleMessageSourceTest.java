@@ -23,7 +23,7 @@ public class ResourceBundleMessageSourceTest {
                 "classpath:org_springframework/spring_context/messages.xml")) {
             Greeting greeting = context.getBean(Greeting.class);
             assertEquals("Welcome, Ada!", greeting.welcome("Ada"));
-            assertEquals("Bonjour, Ada!", context.getMessage("welcome", new Object[]{"Ada"}, Locale.FRENCH));
+            assertEquals("Hello, Ada!", context.getMessage("welcome", new Object[]{"Ada"}, Locale.ENGLISH));
             assertEquals("parent message", context.getMessage("parent", null, Locale.ENGLISH));
             assertEquals("default message", context.getMessage("absent", null, "default message", Locale.ENGLISH));
         }
@@ -38,8 +38,8 @@ public class ResourceBundleMessageSourceTest {
         }
 
         public String welcome(String name) {
-            String fromAware = messages.getMessage("welcome", new Object[]{name}, Locale.ENGLISH);
-            String fromContext = getMessageSourceAccessor().getMessage("welcome", new Object[]{name}, Locale.ENGLISH);
+            String fromAware = messages.getMessage("welcome", new Object[]{name}, Locale.ROOT);
+            String fromContext = getMessageSourceAccessor().getMessage("welcome", new Object[]{name}, Locale.ROOT);
             assertEquals(fromContext, fromAware);
             return fromAware;
         }

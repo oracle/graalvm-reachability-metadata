@@ -6,13 +6,15 @@
  */
 package org_springframework.spring_context.components;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class CatalogController {
-    private final CatalogService service;
+    private CatalogService service;
 
-    public CatalogController(CatalogService service) {
+    @Autowired
+    public void setService(CatalogService service) {
         this.service = service;
     }
 

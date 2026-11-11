@@ -6,14 +6,16 @@
  */
 package org_springframework.spring_context.components;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CatalogService {
-    private final CatalogRepository repository;
-    private final CatalogSettings settings;
+    private CatalogRepository repository;
+    private CatalogSettings settings;
 
-    public CatalogService(CatalogRepository repository, CatalogSettings settings) {
+    @Autowired
+    public void configure(CatalogRepository repository, CatalogSettings settings) {
         this.repository = repository;
         this.settings = settings;
     }
