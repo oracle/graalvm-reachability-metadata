@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class BeanUtilsTest {
     @Test
@@ -43,10 +43,13 @@ public class BeanUtilsTest {
         DefaultBean target = new DefaultBean();
         BeanUtils.copyProperties(source, target);
         assertEquals("copied", target.getName());
+        LabelEditor explicitEditor = BeanUtils.instantiateClass(LabelEditor.class);
+        explicitEditor.setAsText("priority");
+        assertEquals(new Label("priority"), explicitEditor.getValue());
         PropertyEditor editor = BeanUtils.findEditorByConvention(Label.class);
-        assertNotNull(editor);
+        assertInstanceOf(LabelEditor.class, editor);
         editor.setAsText("priority");
-        assertEquals(new Label("priority"), editor.getValue());
+        assertEquals(explicitEditor.getValue(), editor.getValue());
     }
 
     public static class DefaultBean {
