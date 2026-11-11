@@ -11,6 +11,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +25,7 @@ public class DefaultBindConstructorProviderInnerConstructorsTest {
 
         assertThat(endpoint.host()).isEqualTo("localhost");
         assertThat(endpoint.port()).isEqualTo(8443);
+        assertThat(endpoint.protocol()).isEqualTo("https");
     }
 
     @Test
@@ -36,7 +38,7 @@ public class DefaultBindConstructorProviderInnerConstructorsTest {
         assertThat(options.owner()).isSameAs(this);
     }
 
-    public record Endpoint(String host, int port) {
+    public record Endpoint(String host, int port, @DefaultValue("https") String protocol) {
     }
 
     public class InnerOptions {
