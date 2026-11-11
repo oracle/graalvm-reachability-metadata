@@ -32,7 +32,8 @@ public class TomcatWebServerFactoryTest {
     void springConfiguresInheritedFactoryPropertiesAndServesRequests() throws Exception {
         try (GenericApplicationContext context = new GenericApplicationContext()) {
             context.registerBeanDefinition("tomcatFactory", BeanDefinitionBuilder
-                    .genericBeanDefinition(TomcatServletWebServerFactory.class)
+                    .genericBeanDefinition(TomcatServletWebServerFactory.class,
+                            TomcatServletWebServerFactory::new)
                     .addPropertyValue("port", 0)
                     .addPropertyValue("serverHeader", "metadata-tomcat")
                     .getBeanDefinition());
