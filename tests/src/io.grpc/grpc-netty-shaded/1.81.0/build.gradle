@@ -18,6 +18,17 @@ dependencies {
     testImplementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
 }
 
+String leakDetectorProperty = "io.grpc.netty.shaded.io.netty.customResourceLeakDetector"
+String customLeakDetector = "io_grpc.grpc_netty_shaded.ConfiguredLeakDetector"
+
+tasks.withType(Test).configureEach {
+    systemProperty leakDetectorProperty, customLeakDetector
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-D${leakDetectorProperty}=${customLeakDetector}")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
