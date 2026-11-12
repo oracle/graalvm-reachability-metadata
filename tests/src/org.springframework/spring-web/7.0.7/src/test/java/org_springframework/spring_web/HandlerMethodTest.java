@@ -13,9 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -60,6 +63,9 @@ public class HandlerMethodTest {
             assertThat(mapping).isNotNull();
             assertThat(mapping.path()).containsExactly("/items/{id}");
             assertThat(mapping.method()).containsExactly(verbs[i]);
+            Annotation rootMapping = MergedAnnotations.from(handler.getMethod()).get(Mapping.class)
+                    .getRoot().synthesize();
+            assertThat((String[]) AnnotationUtils.getValue(rootMapping)).containsExactly("/items/{id}");
         }
         HandlerMethod create = new HandlerMethod(endpoint, "create", String.class, String.class, String.class);
         assertThat(create.getMethodAnnotation(PostMapping.class).path()).containsExactly("/items/{id}");
