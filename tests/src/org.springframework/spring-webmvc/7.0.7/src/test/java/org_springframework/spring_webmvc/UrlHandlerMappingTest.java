@@ -33,7 +33,7 @@ public class UrlHandlerMappingTest {
             Controller controller = (request, response) -> new ModelAndView("status", "state", "ready");
             context.registerBean("/status", Controller.class, () -> controller);
             context.registerAlias("/status", "/health");
-            context.registerBean(BeanNameUrlHandlerMapping.class);
+            context.registerBean(BeanNameUrlHandlerMapping.class, BeanNameUrlHandlerMapping::new);
             context.refresh();
 
             BeanNameUrlHandlerMapping mapping = context.getBean(BeanNameUrlHandlerMapping.class);
@@ -57,8 +57,8 @@ public class UrlHandlerMappingTest {
         try (GenericWebApplicationContext context = new GenericWebApplicationContext(new MockServletContext())) {
             Controller controller = (request, response) -> new ModelAndView("assets", "path", request.getRequestURI());
             context.registerBean("assetController", Controller.class, () -> controller);
-            context.registerBean("routes", SimpleUrlHandlerMapping.class, definition ->
-                    definition.getPropertyValues().add("urlMap", Map.of("/assets/**", "assetController")));
+            context.registerBean("routes", SimpleUrlHandlerMapping.class,
+                    () -> new SimpleUrlHandlerMapping(Map.of("/assets/**", "assetController"), 0));
             context.refresh();
 
             SimpleUrlHandlerMapping mapping = context.getBean(SimpleUrlHandlerMapping.class);

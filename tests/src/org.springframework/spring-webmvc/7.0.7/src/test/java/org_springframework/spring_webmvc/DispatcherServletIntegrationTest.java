@@ -11,6 +11,7 @@ import java.util.Locale;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.format.support.FormattingConversionService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
@@ -25,12 +26,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.accept.ContentNegotiationManager;
+import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.FlashMapManager;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.RequestToViewNameTranslator;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.resource.ResourceUrlProvider;
 import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
@@ -39,15 +49,33 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DispatcherServletIntegrationTest {
-    private AnnotationConfigWebApplicationContext context;
+    private GenericWebApplicationContext context;
     private DispatcherServlet servlet;
 
     @BeforeEach
     void startServlet() throws Exception {
         MockServletContext servletContext = new MockServletContext();
-        context = new AnnotationConfigWebApplicationContext();
-        context.setServletContext(servletContext);
-        context.register(MvcConfiguration.class, CatalogController.class);
+        context = new GenericWebApplicationContext(servletContext);
+        MvcConfiguration mvc = new MvcConfiguration();
+        mvc.setApplicationContext(context);
+        mvc.setServletContext(servletContext);
+        ContentNegotiationManager negotiation = mvc.mvcContentNegotiationManager();
+        FormattingConversionService conversion = mvc.mvcConversionService();
+        ResourceUrlProvider resources = mvc.mvcResourceUrlProvider();
+        context.registerBean(CatalogController.class, CatalogController::new);
+        context.registerBean("mvcConversionService", FormattingConversionService.class, () -> conversion);
+        context.registerBean("mvcResourceUrlProvider", ResourceUrlProvider.class, () -> resources);
+        context.registerBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class,
+                () -> mvc.requestMappingHandlerMapping(negotiation, mvc.mvcApiVersionStrategy(), conversion, resources));
+        context.registerBean("requestMappingHandlerAdapter", RequestMappingHandlerAdapter.class,
+                () -> mvc.requestMappingHandlerAdapter(negotiation, conversion, mvc.mvcValidator()));
+        context.registerBean("httpRequestHandlerAdapter", HttpRequestHandlerAdapter.class, mvc::httpRequestHandlerAdapter);
+        context.registerBean("handlerExceptionResolver", HandlerExceptionResolver.class,
+                () -> mvc.handlerExceptionResolver(negotiation));
+        context.registerBean("mvcViewResolver", ViewResolver.class, () -> mvc.mvcViewResolver(negotiation));
+        context.registerBean("localeResolver", LocaleResolver.class, mvc::localeResolver);
+        context.registerBean("flashMapManager", FlashMapManager.class, mvc::flashMapManager);
+        context.registerBean("viewNameTranslator", RequestToViewNameTranslator.class, mvc::viewNameTranslator);
         context.refresh();
         servlet = new DispatcherServlet(context);
         MockServletConfig config = new MockServletConfig(servletContext, "catalog");

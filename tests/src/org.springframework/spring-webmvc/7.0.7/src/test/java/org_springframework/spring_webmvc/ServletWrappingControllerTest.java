@@ -45,8 +45,7 @@ public class ServletWrappingControllerTest {
             assertEquals("text/plain", response.getContentType());
             assertEquals("Welcome Ada from greetingController", response.getContentAsString());
             assertNull(servletContext.getAttribute("destroyedServlet"));
-        }
-        finally {
+        } finally {
             controller.destroy();
         }
         assertEquals("greetingController", servletContext.getAttribute("destroyedServlet"));
