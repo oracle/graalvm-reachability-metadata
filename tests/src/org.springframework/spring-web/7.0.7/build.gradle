@@ -52,6 +52,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            // Open Liberty's WebContainer initializes a logger with this resource bundle.
+            buildArgs.add('-H:IncludeResourceBundles=com.ibm.ws.webcontainer.resources.Messages')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
