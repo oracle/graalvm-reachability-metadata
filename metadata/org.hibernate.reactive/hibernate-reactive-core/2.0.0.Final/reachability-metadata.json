@@ -68,6 +68,22 @@
     },
     {
       "condition": {
+        "typeReached": "org.hibernate.reactive.provider.impl.ReactiveEntityManagerFactoryBuilder"
+      },
+      "type": "org.hibernate.reactive.persister.collection.impl.ReactiveOneToManyPersister",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.hibernate.mapping.Collection",
+            "org.hibernate.cache.spi.access.CollectionDataAccess",
+            "org.hibernate.metamodel.spi.RuntimeModelCreationContext"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "org.hibernate.reactive.session.impl.ReactiveSessionFactoryImpl"
       },
       "type": "org.hibernate.reactive.persister.collection.impl.ReactiveOneToManyPersister",
@@ -101,7 +117,25 @@
     },
     {
       "condition": {
+        "typeReached": "org.hibernate.reactive.pool.impl.ReactiveConnectionPoolInitiator"
+      },
+      "type": "org.hibernate.reactive.pool.impl.DefaultSqlClientPool",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "org.hibernate.reactive.provider.service.NoJdbcEnvironmentInitiator$DialectBuilder"
+      },
+      "type": "org.hibernate.reactive.pool.impl.DefaultSqlClientPool"
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.reactive.provider.service.ReactiveGenerationTarget"
       },
       "type": "org.hibernate.reactive.pool.impl.DefaultSqlClientPool"
     },
@@ -110,6 +144,24 @@
         "typeReached": "org.hibernate.reactive.pool.impl.DefaultSqlClientPool"
       },
       "type": "org.hibernate.reactive.pool.impl.DefaultSqlClientPoolConfiguration"
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.reactive.pool.impl.SqlClientPoolConfigurationInitiator"
+      },
+      "type": "org.hibernate.reactive.pool.impl.DefaultSqlClientPoolConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.reactive.provider.ReactiveServiceRegistryBuilder"
+      },
+      "type": "org.hibernate.reactive.provider.impl.ReactiveIntegrator"
     },
     {
       "condition": {
@@ -211,6 +263,12 @@
     },
     {
       "condition": {
+        "typeReached": "org.hibernate.reactive.provider.impl.ReactiveEntityManagerFactoryBuilder"
+      },
+      "glob": "META-INF/services/jakarta.validation.spi.ValidationProvider"
+    },
+    {
+      "condition": {
         "typeReached": "org.hibernate.reactive.session.impl.ReactiveSessionFactoryImpl"
       },
       "glob": "META-INF/services/jakarta.validation.spi.ValidationProvider"
@@ -247,9 +305,21 @@
     },
     {
       "condition": {
+        "typeReached": "org.hibernate.reactive.provider.ReactiveServiceRegistryBuilder"
+      },
+      "glob": "META-INF/services/org.hibernate.boot.registry.selector.StrategyRegistrationProvider"
+    },
+    {
+      "condition": {
         "typeReached": "org.hibernate.reactive.provider.impl.ReactiveEntityManagerFactoryBuilder"
       },
       "glob": "META-INF/services/org.hibernate.boot.registry.selector.StrategyRegistrationProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.reactive.provider.ReactiveServiceRegistryBuilder"
+      },
+      "glob": "META-INF/services/org.hibernate.boot.registry.selector.spi.DialectSelector"
     },
     {
       "condition": {
@@ -316,6 +386,12 @@
         "typeReached": "org.hibernate.reactive.id.impl.ReactiveIdentifierGeneratorFactory"
       },
       "glob": "META-INF/services/org.hibernate.id.factory.spi.GenerationTypeStrategyRegistration"
+    },
+    {
+      "condition": {
+        "typeReached": "org.hibernate.reactive.provider.ReactiveServiceRegistryBuilder"
+      },
+      "glob": "META-INF/services/org.hibernate.integrator.spi.Integrator"
     },
     {
       "condition": {

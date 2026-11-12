@@ -6,10 +6,16 @@
  */
 package org_hibernate_reactive.hibernate_reactive_core;
 
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Proxy;
 import org.junit.jupiter.api.Test;
-import org_hibernate_reactive.hibernate_reactive_core.entity.BatchRecord;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +44,28 @@ public class ReactiveCollectionBatchLoaderArrayParamTest {
                             assertTrue(records.get(1).tags.containsAll(second.tags));
                         });
                     })));
+        }
+    }
+
+    @Entity(name = "BatchRecord")
+    @Proxy(lazy = false)
+    public static class BatchRecord {
+        @Id
+        public Long id;
+
+        public String label;
+
+        @ElementCollection
+        @BatchSize(size = 4)
+        public List<String> tags = new ArrayList<>();
+
+        public BatchRecord() {
+        }
+
+        public BatchRecord(long id, String label, String... tags) {
+            this.id = id;
+            this.label = label;
+            this.tags.addAll(List.of(tags));
         }
     }
 }

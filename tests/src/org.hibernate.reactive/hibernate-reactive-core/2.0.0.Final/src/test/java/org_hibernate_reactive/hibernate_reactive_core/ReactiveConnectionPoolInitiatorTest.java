@@ -9,7 +9,7 @@ package org_hibernate_reactive.hibernate_reactive_core;
 import org.hibernate.reactive.pool.impl.DefaultSqlClientPool;
 import org.hibernate.reactive.provider.Settings;
 import org.junit.jupiter.api.Test;
-import org_hibernate_reactive.hibernate_reactive_core.entity.BatchRecord;
+import org_hibernate_reactive.hibernate_reactive_core.ReactiveCollectionBatchLoaderArrayParamTest.BatchRecord;
 
 import java.util.Map;
 
