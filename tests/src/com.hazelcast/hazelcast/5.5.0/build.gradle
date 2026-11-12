@@ -20,6 +20,8 @@ dependencies {
 graalvmNative {
     binaries {
         test {
+            // The YAML reader initializes UTF-32 charsets even for UTF-8 input.
+            buildArgs.add('-H:+AddAllCharsets')
             // We have to manually add the metadata because the org.graalvm.internal.tck gradle plugin does not automatically import
             configurationFileDirectories.from(tck.metadataRoot.dir('javax.cache/cache-api/1.1.1'))
         }
