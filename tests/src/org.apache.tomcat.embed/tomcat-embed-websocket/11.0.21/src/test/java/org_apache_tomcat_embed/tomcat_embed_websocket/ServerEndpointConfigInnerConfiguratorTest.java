@@ -1,0 +1,59 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_apache_tomcat_embed.tomcat_embed_websocket;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import jakarta.websocket.server.ServerEndpointConfig;
+
+import org_apache_tomcat_embed.tomcat_embed_websocket.DefaultServerEndpointConfiguratorTest.GreetingEndpoint;
+
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+// Exercise default discovery before another test populates the process-wide configurator cache.
+@Order(1)
+@TestMethodOrder(OrderAnnotation.class)
+public class ServerEndpointConfigInnerConfiguratorTest {
+    @Test
+    @Order(1)
+    void buildsUsableDefaultConfigurationWithoutApplicationServicesInContextClassLoader() throws Exception {
+        Thread thread = Thread.currentThread();
+        ClassLoader previous = thread.getContextClassLoader();
+        ServerEndpointConfig config;
+        thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
+        try {
+            config = ServerEndpointConfig.Builder.create(GreetingEndpoint.class, "/default")
+                    .subprotocols(List.of("events", "chat")).build();
+        } finally {
+            thread.setContextClassLoader(previous);
+        }
+        ServerEndpointConfig.Configurator configurator = config.getConfigurator();
+        assertThat(configurator).isNotNull();
+        assertThat(configurator.getNegotiatedSubprotocol(config.getSubprotocols(), List.of("unknown", "events")))
+                .isEqualTo("events");
+        GreetingEndpoint first = configurator.getEndpointInstance(GreetingEndpoint.class);
+        GreetingEndpoint second = configurator.getEndpointInstance(GreetingEndpoint.class);
+        assertThat(first).isNotSameAs(second);
+        assertThat(first.greet("default endpoint")).isEqualTo("1: Hello default endpoint");
+    }
+
+    @Test
+    void delegatesProtocolAndOriginNegotiationToContainerDefault() {
+        ServerEndpointConfig.Configurator configurator = new ServerEndpointConfig.Configurator();
+        assertThat(configurator.getContainerDefaultConfigurator()).isNotNull();
+        assertThat(configurator.getNegotiatedSubprotocol(List.of("events", "chat"), List.of("unknown", "chat")))
+                .isEqualTo("chat");
+        assertThat(configurator.getNegotiatedSubprotocol(List.of("events"), List.of("other"))).isEmpty();
+        assertThat(configurator.checkOrigin("https://client.example")).isTrue();
+        assertThat(configurator.getNegotiatedExtensions(List.of(), List.of())).isEmpty();
+    }
+}
