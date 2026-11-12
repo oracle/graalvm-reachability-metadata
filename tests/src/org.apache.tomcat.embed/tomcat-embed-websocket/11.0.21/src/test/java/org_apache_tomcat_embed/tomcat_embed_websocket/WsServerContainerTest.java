@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.servlet.ServletContainerInitializer;
 import jakarta.websocket.ClientEndpointConfig;
 import jakarta.websocket.DeploymentException;
 import jakarta.websocket.Encoder;
@@ -22,6 +23,8 @@ import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 import jakarta.websocket.server.ServerEndpointConfig;
 
+import org.apache.tomcat.InstanceManager;
+import org.apache.tomcat.websocket.server.WsSci;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.io.TempDir;
@@ -47,6 +50,37 @@ public class WsServerContainerTest {
             assertThat(EmbeddedWebSocketServer.receive(endpoint.messages)).isEqualTo("server:hello");
             assertThat(ENCODERS.get()).isGreaterThanOrEqualTo(1);
             assertThat(CONFIGURATORS.get()).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void validatesEncodersWithoutContainerInstanceManager() throws Exception {
+        ENCODERS.set(0);
+        ServletContainerInitializer initializer = (classes, context) -> {
+            String attribute = InstanceManager.class.getName();
+            Object instanceManager = context.getAttribute(attribute);
+            Thread thread = Thread.currentThread();
+            ClassLoader previous = thread.getContextClassLoader();
+            context.removeAttribute(attribute);
+            thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
+            try {
+                new WsSci().onStartup(classes, context);
+            } finally {
+                thread.setContextClassLoader(previous);
+                if (instanceManager != null) {
+                    context.setAttribute(attribute, instanceManager);
+                }
+            }
+        };
+        try (EmbeddedWebSocketServer server = new EmbeddedWebSocketServer(directory,
+                Set.of(ConfiguredEcho.class), initializer)) {
+            assertThat(ENCODERS.get()).isEqualTo(1);
+            EmbeddedWebSocketServer.TextReceiver endpoint = new EmbeddedWebSocketServer.TextReceiver();
+            Session session = server.track(server.client.connectToServer(endpoint,
+                    ClientEndpointConfig.Builder.create().build(), server.uri("/configured")));
+            session.getBasicRemote().sendText("standalone encoder");
+            assertThat(EmbeddedWebSocketServer.receive(endpoint.messages)).isEqualTo("server:standalone encoder");
+            assertThat(ENCODERS.get()).isGreaterThanOrEqualTo(2);
         }
     }
 

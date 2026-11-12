@@ -18,6 +18,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.servlet.ServletContainerInitializer;
 import jakarta.websocket.ClientEndpointConfig;
 import jakarta.websocket.Endpoint;
 import jakarta.websocket.EndpointConfig;
@@ -43,6 +44,11 @@ final class EmbeddedWebSocketServer implements AutoCloseable {
     }
 
     EmbeddedWebSocketServer(Path directory, Set<Class<?>> discovered) throws Exception {
+        this(directory, discovered, new WsSci());
+    }
+
+    EmbeddedWebSocketServer(Path directory, Set<Class<?>> discovered, ServletContainerInitializer initializer)
+            throws Exception {
         tomcat.setBaseDir(directory.toString());
         tomcat.setPort(0);
         tomcat.getConnector().setProperty("address", "127.0.0.1");
@@ -52,7 +58,7 @@ final class EmbeddedWebSocketServer implements AutoCloseable {
         context.setParentClassLoader(EmbeddedWebSocketServer.class.getClassLoader());
         Tomcat.addServlet(context, "default", new DefaultServlet());
         context.addServletMappingDecoded("/", "default");
-        context.addServletContainerInitializer(new WsSci(), discovered);
+        context.addServletContainerInitializer(initializer, discovered);
         client.setDefaultMaxSessionIdleTimeout(30000);
         client.setAsyncSendTimeout(20000);
         try {

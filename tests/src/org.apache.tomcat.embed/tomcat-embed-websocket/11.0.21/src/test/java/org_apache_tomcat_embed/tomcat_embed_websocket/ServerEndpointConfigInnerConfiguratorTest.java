@@ -16,6 +16,28 @@ import org.junit.jupiter.api.Test;
 
 public class ServerEndpointConfigInnerConfiguratorTest {
     @Test
+    void buildsUsableDefaultConfigurationWithoutApplicationServicesInContextClassLoader() throws Exception {
+        Thread thread = Thread.currentThread();
+        ClassLoader previous = thread.getContextClassLoader();
+        ServerEndpointConfig config;
+        thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
+        try {
+            config = ServerEndpointConfig.Builder.create(EmbeddedWebSocketServer.Echo.class, "/default")
+                    .subprotocols(List.of("events", "chat")).build();
+        } finally {
+            thread.setContextClassLoader(previous);
+        }
+        ServerEndpointConfig.Configurator configurator = config.getConfigurator();
+        assertThat(configurator).isNotNull();
+        assertThat(configurator.getNegotiatedSubprotocol(config.getSubprotocols(), List.of("unknown", "events")))
+                .isEqualTo("events");
+        EmbeddedWebSocketServer.Echo first = configurator.getEndpointInstance(EmbeddedWebSocketServer.Echo.class);
+        EmbeddedWebSocketServer.Echo second = configurator.getEndpointInstance(EmbeddedWebSocketServer.Echo.class);
+        assertThat(first).isNotSameAs(second);
+        assertThat(first.text("default endpoint")).isEqualTo("default endpoint");
+    }
+
+    @Test
     void delegatesProtocolAndOriginNegotiationToContainerDefault() {
         ServerEndpointConfig.Configurator configurator = new ServerEndpointConfig.Configurator();
         assertThat(configurator.getContainerDefaultConfigurator()).isNotNull();

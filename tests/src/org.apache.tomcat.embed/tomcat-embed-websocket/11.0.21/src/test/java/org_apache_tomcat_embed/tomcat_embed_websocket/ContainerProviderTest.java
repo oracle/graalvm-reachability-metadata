@@ -26,6 +26,32 @@ public class ContainerProviderTest {
     Path directory;
 
     @Test
+    void createsContainerWithoutApplicationServicesInContextClassLoader() throws Exception {
+        Thread thread = Thread.currentThread();
+        ClassLoader previous = thread.getContextClassLoader();
+        WebSocketContainer container;
+        thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
+        try {
+            container = ContainerProvider.getWebSocketContainer();
+        } finally {
+            thread.setContextClassLoader(previous);
+        }
+        assertThat(container).isInstanceOf(WsWebSocketContainer.class);
+        try (EmbeddedWebSocketServer server = new EmbeddedWebSocketServer(directory)) {
+            EmbeddedWebSocketServer.TextReceiver endpoint = new EmbeddedWebSocketServer.TextReceiver();
+            container.setDefaultMaxSessionIdleTimeout(30000);
+            try (Session session = container.connectToServer(endpoint,
+                    ClientEndpointConfig.Builder.create().build(), server.uri("/echo"))) {
+                session.getBasicRemote().sendText("context independent container");
+                assertThat(EmbeddedWebSocketServer.receive(endpoint.messages))
+                        .isEqualTo("context independent container");
+            }
+        } finally {
+            ((WsWebSocketContainer) container).destroy();
+        }
+    }
+
+    @Test
     void discoversContainerAndExchangesMessages() throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         assertThat(container).isInstanceOf(WsWebSocketContainer.class);
