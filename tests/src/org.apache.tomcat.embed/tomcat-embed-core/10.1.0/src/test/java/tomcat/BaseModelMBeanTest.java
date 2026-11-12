@@ -9,12 +9,32 @@ package tomcat;
 import javax.management.Attribute;
 import javax.management.DynamicMBean;
 
+import org.apache.tomcat.util.descriptor.web.ContextEnvironment;
 import org.apache.tomcat.util.modeler.ManagedBean;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseModelMBeanTest {
+    @Test
+    void managesContextEnvironmentProperties() throws Exception {
+        ManagedBean descriptor = new ManagedBean();
+        descriptor.setName("catalog");
+        descriptor.addAttribute(ModelerSupport.attribute("name"));
+        descriptor.addOperation(ModelerSupport.operation("getProperty", Object.class));
+        ContextEnvironment resource = new ContextEnvironment();
+        resource.setName("catalog");
+        resource.setProperty("theme", "dark");
+        DynamicMBean mbean = descriptor.createMBean(resource);
+        assertThat(mbean.getAttribute("name")).isEqualTo("catalog");
+        mbean.setAttribute(new Attribute("name", "shop"));
+        assertThat(resource.getName()).isEqualTo("shop");
+        assertThat(mbean.getAttribute("name")).isEqualTo("shop");
+        assertThat(mbean.invoke("getProperty", new Object[] {"theme"},
+                new String[] {String.class.getName()})).isEqualTo("dark");
+        assertThat(mbean.getAttribute("modelerType")).isEqualTo(ContextEnvironment.class.getName());
+    }
+
     @Test
     void readsWritesAndInvokesManagedResource() throws Exception {
         ModelerSupport.Resource resource = new ModelerSupport.Resource();

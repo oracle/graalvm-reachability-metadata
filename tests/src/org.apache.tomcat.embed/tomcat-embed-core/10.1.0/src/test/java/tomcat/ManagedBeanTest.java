@@ -21,6 +21,7 @@ public class ManagedBeanTest {
         ManagedBean descriptor = ModelerSupport.descriptor();
         descriptor.setClassName(ModelerSupport.CustomMBean.class.getName());
         DynamicMBean mbean = descriptor.createMBean(null);
+        assertThat(mbean.getMBeanInfo().getClassName()).isEqualTo(ModelerSupport.CustomMBean.class.getName());
         assertThat(mbean.getMBeanInfo().getAttributes()).extracting(MBeanAttributeInfo::getName).contains("label");
         mbean.setAttribute(new Attribute("label", "managed"));
         assertThat(mbean.getAttribute("label")).isEqualTo("managed");

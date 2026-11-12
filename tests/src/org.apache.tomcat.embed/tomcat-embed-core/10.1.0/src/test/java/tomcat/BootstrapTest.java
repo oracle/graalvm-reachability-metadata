@@ -6,8 +6,6 @@
  */
 package tomcat;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,29 +13,18 @@ import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.startup.Bootstrap;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BootstrapTest {
-    @TempDir
-    Path directory;
-
     @Test
     void startsAndStopsConfiguredDaemonWithoutAwaitingShutdownSocket() throws Exception {
-        Path configuration = directory.resolve("server.xml");
-        Files.writeString(configuration, """
-                <Server port="-1">
-                  <Listener className="%s"/>
-                  <Service name="bootstrap-test"/>
-                </Server>
-                """.formatted(Events.class.getName()));
         Events.types.clear();
         ClassLoader previous = Thread.currentThread().getContextClassLoader();
         Bootstrap bootstrap = new Bootstrap();
         boolean initialized = false;
         try {
-            bootstrap.init(new String[] {"-config", configuration.toString()});
+            bootstrap.init(new String[] {"-config", "conf/server.xml"});
             initialized = true;
             bootstrap.setAwait(false);
             bootstrap.start();

@@ -43,11 +43,14 @@ public class StandardContextTest {
         assertThat(wrapper).isInstanceOf(CustomWrapper.class);
         WrapperLifecycle lifecycle = (WrapperLifecycle) wrapper.findLifecycleListeners()[0];
         WrapperEvents events = (WrapperEvents) wrapper.findContainerListeners()[0];
+        wrapper.addInitParameter("theme", "dark");
+        assertThat(wrapper.findInitParameter("theme")).isEqualTo("dark");
+        assertThat(events.types).contains("addInitParameter");
         wrapper.fireContainerEvent("configured", "payload");
         assertThat(events.data).isEqualTo("payload");
         wrapper.init();
         try {
-            assertThat(lifecycle.events).contains("after_init");
+            assertThat(lifecycle.events).contains("before_init", "after_init");
         } finally {
             wrapper.destroy();
         }
@@ -66,10 +69,12 @@ public class StandardContextTest {
     }
 
     public static class WrapperEvents implements ContainerListener {
+        private final List<String> types = new ArrayList<>();
         private Object data;
 
         @Override
         public void containerEvent(ContainerEvent event) {
+            types.add(event.getType());
             data = event.getData();
         }
     }

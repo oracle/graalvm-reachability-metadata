@@ -34,6 +34,7 @@ public class StandardSessionTest {
         session.setId("session-one");
         session.setMaxInactiveInterval(600);
         session.setAttribute("cart", List.of("book", "pen"));
+        session.setAttribute("quantity", 3);
         session.setAuthType("FORM");
         session.setPrincipal(new GenericPrincipal("reader", List.of("customer")));
         session.setNote(Constants.SESSION_ID_NOTE, "expected-session");
@@ -50,10 +51,14 @@ public class StandardSessionTest {
             restored.readObjectData(input);
         }
         assertThat(restored.getId()).isEqualTo("session-one");
+        assertThat(restored.getCreationTime()).isEqualTo(session.getCreationTime());
+        assertThat(restored.isValid()).isTrue();
+        assertThat(restored.getAttribute("quantity")).isEqualTo(3);
         assertThat(restored.getMaxInactiveInterval()).isEqualTo(600);
         assertThat(restored.getAttribute("cart")).isEqualTo(List.of("book", "pen"));
         assertThat(restored.getAuthType()).isEqualTo("FORM");
         assertThat(restored.getPrincipal().getName()).isEqualTo("reader");
+        assertThat(((GenericPrincipal) restored.getPrincipal()).hasRole("customer")).isTrue();
         assertThat(restored.getNote(Constants.SESSION_ID_NOTE)).isEqualTo("expected-session");
         assertThat(((SavedRequest) restored.getNote(Constants.FORM_REQUEST_NOTE)).getRequestURI())
                 .isEqualTo("/checkout");

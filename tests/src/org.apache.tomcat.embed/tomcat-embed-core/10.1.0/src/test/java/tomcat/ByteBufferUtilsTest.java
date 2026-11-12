@@ -23,8 +23,11 @@ public class ByteBufferUtilsTest {
             assertThat(expanded.isDirect()).isTrue();
             assertThat(expanded.capacity()).isEqualTo(32);
             assertThat(expanded.position()).isEqualTo(4);
+            expanded.putInt(789);
             expanded.flip();
             assertThat(expanded.getInt()).isEqualTo(12345);
+            assertThat(expanded.getInt()).isEqualTo(789);
+            assertThat(ByteBufferUtils.expand(expanded, 8)).isSameAs(expanded);
         } finally {
             ByteBufferUtils.cleanDirectBuffer(expanded);
         }

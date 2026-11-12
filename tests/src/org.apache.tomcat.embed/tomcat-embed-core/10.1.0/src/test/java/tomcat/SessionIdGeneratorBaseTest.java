@@ -19,8 +19,9 @@ public class SessionIdGeneratorBaseTest {
         StandardSessionIdGenerator generator = new StandardSessionIdGenerator();
         generator.setSecureRandomClass(SecureRandom.class.getName());
         generator.setSessionIdLength(24);
-        String first = generator.generateSessionId("worker");
+        generator.setJvmRoute("worker");
+        String first = generator.generateSessionId();
         assertThat(first).matches("[0-9A-F]{48}\\.worker");
-        assertThat(generator.generateSessionId("worker")).isNotEqualTo(first);
+        assertThat(generator.generateSessionId()).matches("[0-9A-F]{48}\\.worker").isNotEqualTo(first);
     }
 }

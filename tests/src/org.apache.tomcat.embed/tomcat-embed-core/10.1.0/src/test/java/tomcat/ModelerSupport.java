@@ -34,6 +34,24 @@ public final class ModelerSupport {
         return bean;
     }
 
+    public static AttributeInfo attribute(String name) {
+        AttributeInfo attribute = new AttributeInfo();
+        attribute.setName(name);
+        attribute.setType(String.class.getName());
+        return attribute;
+    }
+
+    public static OperationInfo operation(String name, Class<?> returnType) {
+        OperationInfo operation = new OperationInfo();
+        operation.setName(name);
+        operation.setReturnType(returnType.getName());
+        ParameterInfo parameter = new ParameterInfo();
+        parameter.setName("value");
+        parameter.setType(String.class.getName());
+        operation.addParameter(parameter);
+        return operation;
+    }
+
     public static class Resource {
         private String label = "initial";
 

@@ -6,9 +6,12 @@
  */
 package tomcat;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.security.Principal;
+import java.util.HexFormat;
 import java.util.Map;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.NameCallback;
@@ -27,10 +30,12 @@ public class JAASMemoryLoginModuleTest {
 
     @Test
     void authenticatesConfiguredUsersWithNamedCredentialHandler() throws Exception {
+        String digest = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
+                .digest("secret".getBytes(StandardCharsets.UTF_8)));
         Path users = directory.resolve("users.xml");
         Files.writeString(users, """
-                <tomcat-users><user username="reader" password="secret" roles="customer"/></tomcat-users>
-                """);
+                <tomcat-users><user username="reader" password="%s" roles="customer"/></tomcat-users>
+                """.formatted(digest));
         Subject subject = new Subject();
         JAASMemoryLoginModule module = new JAASMemoryLoginModule();
         module.initialize(subject, callbacks -> {
@@ -42,10 +47,11 @@ public class JAASMemoryLoginModuleTest {
                 }
             }
         }, Map.of(), Map.of("pathname", users.toString(), "credentialHandlerClassName",
-                MessageDigestCredentialHandler.class.getName()));
+                MessageDigestCredentialHandler.class.getName(), "algorithm", "SHA-256"));
         assertThat(module.login()).isTrue();
         assertThat(module.commit()).isTrue();
         assertThat(subject.getPrincipals()).extracting(Principal::getName).contains("reader", "customer");
         assertThat(module.logout()).isTrue();
+        assertThat(subject.getPrincipals()).noneMatch(principal -> principal.getName().equals("reader"));
     }
 }

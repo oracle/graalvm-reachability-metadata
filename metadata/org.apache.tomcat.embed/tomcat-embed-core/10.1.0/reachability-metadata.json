@@ -383,7 +383,19 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.core.ApplicationFilterConfig"
+      },
+      "type" : "java.lang.Object"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.core.DefaultInstanceManager"
+      },
+      "type" : "java.lang.Object"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.core.StandardWrapper"
       },
       "type" : "java.lang.Object"
     },
@@ -1217,9 +1229,41 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.core.ApplicationFilterConfig"
+      },
+      "type" : "org.apache.catalina.filters.AddDefaultCharsetFilter",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.filters.FilterBase"
+      },
+      "type" : "org.apache.catalina.filters.AddDefaultCharsetFilter",
+      "methods" : [
+        {
+          "name" : "setEncoding",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.core.DefaultInstanceManager"
       },
       "type" : "org.apache.catalina.filters.CsrfPreventionFilterBase"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.core.ApplicationFilterConfig"
+      },
+      "type" : "org.apache.catalina.filters.FilterBase"
     },
     {
       "condition" : {
@@ -1412,6 +1456,12 @@
         {
           "name" : "<init>",
           "parameterTypes" : [ ]
+        },
+        {
+          "name" : "setAlgorithm",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -1670,6 +1720,18 @@
           "parameterTypes" : [
             "java.lang.String"
           ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.core.ApplicationContext"
+      },
+      "type" : "org.apache.coyote.http11.AbstractHttp11Protocol",
+      "methods" : [
+        {
+          "name" : "isSSLEnabled",
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2583,6 +2645,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.startup.Tomcat"
+      },
+      "glob" : "META-INF/services/java.util.spi.ResourceBundleControlProvider"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.util.LifecycleBase"
       },
       "glob" : "META-INF/services/java.util.spi.ResourceBundleControlProvider"
@@ -2634,6 +2702,24 @@
         "typeReached" : "org.apache.tomcat.util.file.ConfigurationSource"
       },
       "glob" : "conf/web.xml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.filters.AddDefaultCharsetFilter"
+      },
+      "glob" : "jakarta/servlet/LocalStrings.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.filters.AddDefaultCharsetFilter"
+      },
+      "glob" : "jakarta/servlet/LocalStrings_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.filters.AddDefaultCharsetFilter"
+      },
+      "glob" : "jakarta/servlet/LocalStrings_en_US.properties"
     },
     {
       "condition" : {
@@ -3021,6 +3107,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.core.StandardServer"
+      },
+      "glob" : "org/apache/catalina/core/LocalStrings.properties"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.core.DefaultInstanceManager"
       },
       "glob" : "org/apache/catalina/core/RestrictedFilters.properties"
@@ -3167,6 +3259,12 @@
       "condition" : {
         "typeReached" : "org.apache.catalina.startup.Tomcat"
       },
+      "glob" : "org/apache/catalina/startup/LocalStrings.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.startup.Tomcat"
+      },
       "glob" : "org/apache/catalina/startup/MimeTypeMappings.properties"
     },
     {
@@ -3226,6 +3324,12 @@
     {
       "condition" : {
         "typeReached" : "org.apache.catalina.webresources.ClasspathURLStreamHandler"
+      },
+      "glob" : "org/apache/catalina/webresources/LocalStrings.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.webresources.StandardRoot"
       },
       "glob" : "org/apache/catalina/webresources/LocalStrings.properties"
     },
@@ -3342,6 +3446,12 @@
         "typeReached" : "org.apache.tomcat.util.descriptor.DigesterFactory"
       },
       "glob" : "org/apache/tomcat/util/descriptor/LocalStrings.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.descriptor.web.FilterDef"
+      },
+      "glob" : "org/apache/tomcat/util/descriptor/web/LocalStrings.properties"
     },
     {
       "condition" : {
@@ -3867,6 +3977,36 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.tomcat.util.scan.JarFileUrlJar"
+      },
+      "glob" : "org/h2/util/data.zip"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.scan.JarFileUrlJar"
+      },
+      "glob" : "org/junit/platform/commons/annotation"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.scan.JarFileUrlJar"
+      },
+      "glob" : "org/junit/platform/commons/function"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.scan.JarFileUrlJar"
+      },
+      "glob" : "org/junit/platform/commons/logging"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.scan.JarFileUrlJar"
+      },
+      "glob" : "org/junit/platform/commons/support"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.startup.Catalina"
       },
       "glob" : "org/mbeans-descriptors.xml"
@@ -3934,9 +4074,21 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.filters.AddDefaultCharsetFilter"
+      },
+      "bundle" : "jakarta.servlet.LocalStrings"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor"
       },
       "bundle" : "jakarta.servlet.LocalStrings"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.core.ApplicationSessionCookieConfig"
+      },
+      "bundle" : "jakarta.servlet.http.LocalStrings"
     },
     {
       "condition" : {
@@ -3977,6 +4129,12 @@
     {
       "condition" : {
         "typeReached" : "org.apache.catalina.core.ContainerBase"
+      },
+      "bundle" : "org.apache.catalina.core.LocalStrings"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.core.StandardServer"
       },
       "bundle" : "org.apache.catalina.core.LocalStrings"
     },
@@ -4042,6 +4200,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.startup.Tomcat"
+      },
+      "bundle" : "org.apache.catalina.startup.LocalStrings"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.util.LifecycleBase"
       },
       "bundle" : "org.apache.catalina.util.LocalStrings"
@@ -4061,6 +4225,12 @@
     {
       "condition" : {
         "typeReached" : "org.apache.catalina.webresources.ClasspathURLStreamHandler"
+      },
+      "bundle" : "org.apache.catalina.webresources.LocalStrings"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.webresources.StandardRoot"
       },
       "bundle" : "org.apache.catalina.webresources.LocalStrings"
     },
@@ -4105,6 +4275,12 @@
         "typeReached" : "org.apache.tomcat.util.descriptor.DigesterFactory"
       },
       "bundle" : "org.apache.tomcat.util.descriptor.LocalStrings"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.descriptor.web.FilterDef"
+      },
+      "bundle" : "org.apache.tomcat.util.descriptor.web.LocalStrings"
     },
     {
       "condition" : {

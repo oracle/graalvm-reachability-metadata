@@ -28,11 +28,17 @@ public class StandardManagerTest {
         Path store = directory.resolve("sessions.ser");
         manager.setPathname(store.toString());
         Session session = manager.createSession("persisted-session");
+        session.setMaxInactiveInterval(600);
+        session.getSession().setAttribute("cart", "notebook");
         session.getSession().setAttribute("answer", Integer.valueOf(42));
         manager.unload();
         assertThat(Files.size(store)).isPositive();
         assertThat(manager.getActiveSessions()).isZero();
         manager.load();
+        assertThat(manager.getActiveSessions()).isEqualTo(1);
+        Session restored = manager.findSession("persisted-session");
+        assertThat(restored.getSession().getAttribute("cart")).isEqualTo("notebook");
+        assertThat(restored.getMaxInactiveInterval()).isEqualTo(600);
         assertThat(manager.findSession("persisted-session").getSession().getAttribute("answer"))
                 .isEqualTo(42);
         assertThat(Files.exists(store)).isFalse();

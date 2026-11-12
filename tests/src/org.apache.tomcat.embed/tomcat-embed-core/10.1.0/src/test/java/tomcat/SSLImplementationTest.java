@@ -12,6 +12,7 @@ import org.apache.tomcat.util.net.SSLHostConfigCertificate.Type;
 import org.apache.tomcat.util.net.SSLImplementation;
 import org.apache.tomcat.util.net.SSLUtil;
 import org.apache.tomcat.util.net.jsse.JSSEImplementation;
+import org.apache.tomcat.util.net.jsse.JSSEUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +24,7 @@ public class SSLImplementationTest {
         SSLHostConfig config = new SSLHostConfig();
         SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(config, Type.RSA);
         SSLUtil utility = implementation.getSSLUtil(certificate);
+        assertThat(utility).isInstanceOf(JSSEUtil.class);
         assertThat(utility.getEnabledProtocols()).contains("TLSv1.2");
         assertThat(utility.getEnabledCiphers()).isNotEmpty();
     }

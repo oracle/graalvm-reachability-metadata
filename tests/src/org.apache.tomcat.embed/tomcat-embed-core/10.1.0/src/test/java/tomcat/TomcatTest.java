@@ -31,6 +31,9 @@ public class TomcatTest {
         Path webapp = Files.createDirectories(directory.resolve("app"));
         Context context = tomcat.addWebapp(host, "/catalog", webapp.toString());
         try {
+            Context plain = tomcat.addContext(host, "/plain", webapp.toString());
+            assertThat(plain).isInstanceOf(ApplicationContext.class);
+            assertThat(host.findChild("/plain")).isSameAs(plain);
             assertThat(context).isInstanceOf(ApplicationContext.class);
             assertThat(context.getPath()).isEqualTo("/catalog");
             assertThat(context.findLifecycleListeners()).anyMatch(listener ->
