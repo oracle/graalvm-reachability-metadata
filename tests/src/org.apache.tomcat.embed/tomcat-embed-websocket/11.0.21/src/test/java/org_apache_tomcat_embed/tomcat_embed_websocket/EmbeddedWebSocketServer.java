@@ -7,6 +7,7 @@
 package org_apache_tomcat_embed.tomcat_embed_websocket;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -30,6 +31,7 @@ import jakarta.websocket.server.ServerEndpoint;
 import org.apache.catalina.Context;
 import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.tomcat.websocket.WsWebSocketContainer;
 import org.apache.tomcat.websocket.server.WsSci;
 
@@ -51,8 +53,9 @@ final class EmbeddedWebSocketServer implements AutoCloseable {
             throws Exception {
         tomcat.setBaseDir(directory.toString());
         tomcat.setPort(0);
-        tomcat.getConnector().setProperty("address", "127.0.0.1");
-        tomcat.getConnector().setProperty("connectionTimeout", "20000");
+        Http11NioProtocol protocol = (Http11NioProtocol) tomcat.getConnector().getProtocolHandler();
+        protocol.setAddress(InetAddress.getByName("127.0.0.1"));
+        protocol.setConnectionTimeout(20000);
         Path docBase = Files.createDirectories(directory.resolve("webapp"));
         context = tomcat.addContext("", docBase.toString());
         context.setParentClassLoader(EmbeddedWebSocketServer.class.getClassLoader());

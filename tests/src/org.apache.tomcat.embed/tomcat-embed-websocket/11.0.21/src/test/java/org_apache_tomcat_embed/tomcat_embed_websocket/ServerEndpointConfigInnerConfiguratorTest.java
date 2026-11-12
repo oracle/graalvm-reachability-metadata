@@ -12,6 +12,8 @@ import java.util.List;
 
 import jakarta.websocket.server.ServerEndpointConfig;
 
+import org_apache_tomcat_embed.tomcat_embed_websocket.DefaultServerEndpointConfiguratorTest.GreetingEndpoint;
+
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,7 @@ public class ServerEndpointConfigInnerConfiguratorTest {
         ServerEndpointConfig config;
         thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
         try {
-            config = ServerEndpointConfig.Builder.create(EmbeddedWebSocketServer.Echo.class, "/default")
+            config = ServerEndpointConfig.Builder.create(GreetingEndpoint.class, "/default")
                     .subprotocols(List.of("events", "chat")).build();
         } finally {
             thread.setContextClassLoader(previous);
@@ -38,10 +40,10 @@ public class ServerEndpointConfigInnerConfiguratorTest {
         assertThat(configurator).isNotNull();
         assertThat(configurator.getNegotiatedSubprotocol(config.getSubprotocols(), List.of("unknown", "events")))
                 .isEqualTo("events");
-        EmbeddedWebSocketServer.Echo first = configurator.getEndpointInstance(EmbeddedWebSocketServer.Echo.class);
-        EmbeddedWebSocketServer.Echo second = configurator.getEndpointInstance(EmbeddedWebSocketServer.Echo.class);
+        GreetingEndpoint first = configurator.getEndpointInstance(GreetingEndpoint.class);
+        GreetingEndpoint second = configurator.getEndpointInstance(GreetingEndpoint.class);
         assertThat(first).isNotSameAs(second);
-        assertThat(first.text("default endpoint")).isEqualTo("default endpoint");
+        assertThat(first.greet("default endpoint")).isEqualTo("1: Hello default endpoint");
     }
 
     @Test
