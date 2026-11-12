@@ -12,10 +12,17 @@ import java.util.List;
 
 import jakarta.websocket.server.ServerEndpointConfig;
 
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+// Exercise default discovery before another test populates the process-wide configurator cache.
+@Order(1)
+@TestMethodOrder(OrderAnnotation.class)
 public class ServerEndpointConfigInnerConfiguratorTest {
     @Test
+    @Order(1)
     void buildsUsableDefaultConfigurationWithoutApplicationServicesInContextClassLoader() throws Exception {
         Thread thread = Thread.currentThread();
         ClassLoader previous = thread.getContextClassLoader();
