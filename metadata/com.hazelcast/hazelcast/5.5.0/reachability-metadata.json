@@ -152,6 +152,31 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.diagnostics.HealthMonitor$HealthMetrics"
+      },
+      "type": "com.hazelcast.client.impl.ClientEndpointManagerImpl",
+      "fields": [
+        {
+          "name": "endpoints"
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.client.impl.ClientEndpointManagerImpl",
+      "fields": [
+        {
+          "name": "endpoints"
+        },
+        {
+          "name": "totalRegistrations"
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
       },
       "type": "com.hazelcast.client.impl.clientside.DefaultClientExtension",
@@ -472,6 +497,17 @@
         {
           "name": "startedInvocations",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+      },
+      "type": "com.hazelcast.client.impl.spi.impl.ClientInvocationServiceImpl",
+      "fields": [
+        {
+          "name": "invocations"
         }
       ]
     },
@@ -869,6 +905,49 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.util.ExceptionUtil$ConstructorMethod$1"
+      },
+      "type": "com.hazelcast.core.HazelcastInstanceNotActiveException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.ExceptionUtil$ConstructorMethod$2"
+      },
+      "type": "com.hazelcast.core.HazelcastInstanceNotActiveException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.ExceptionUtil$ConstructorMethod$3"
+      },
+      "type": "com.hazelcast.core.HazelcastInstanceNotActiveException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "com.hazelcast.executor.LocalExecutorStats",
@@ -946,6 +1025,12 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.instance.BuildInfoProvider"
+      },
+      "type": "com.hazelcast.instance.GeneratedEnterpriseBuildProperties"
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.collection.impl.list.ListService"
       },
       "type": "com.hazelcast.instance.LocalInstanceStats",
@@ -985,12 +1070,6 @@
       },
       "type": "com.hazelcast.instance.LocalInstanceStats",
       "allDeclaredFields": true
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.instance.LocalInstanceStats"
     },
     {
       "condition": {
@@ -1106,10 +1185,32 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.internal.cluster.impl.ClusterClockImpl",
+      "fields": [
+        {
+          "name": "maxClusterTimeDiff"
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.cluster.impl.ClusterServiceImpl"
       },
       "type": "com.hazelcast.internal.cluster.impl.ClusterHeartbeatManager",
       "allDeclaredFields": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.internal.cluster.impl.ClusterHeartbeatManager",
+      "fields": [
+        {
+          "name": "lastHeartbeat"
+        }
+      ]
     },
     {
       "condition": {
@@ -1437,6 +1538,58 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.diagnostics.HealthMonitor$HealthMetrics"
+      },
+      "type": "com.hazelcast.internal.metrics.metricsets.GarbageCollectionMetricSet$GcStats",
+      "fields": [
+        {
+          "name": "majorCount"
+        },
+        {
+          "name": "majorTime"
+        },
+        {
+          "name": "minorCount"
+        },
+        {
+          "name": "minorTime"
+        },
+        {
+          "name": "unknownCount"
+        },
+        {
+          "name": "unknownTime"
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsCollectionCycle"
+      },
+      "type": "com.hazelcast.internal.metrics.metricsets.GarbageCollectionMetricSet$GcStats",
+      "fields": [
+        {
+          "name": "majorCount"
+        },
+        {
+          "name": "majorTime"
+        },
+        {
+          "name": "minorCount"
+        },
+        {
+          "name": "minorTime"
+        },
+        {
+          "name": "unknownCount"
+        },
+        {
+          "name": "unknownTime"
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.metricsets.GarbageCollectionMetricSet"
       },
       "type": "com.hazelcast.internal.metrics.metricsets.GarbageCollectionMetricSet$GcStats",
@@ -1505,6 +1658,35 @@
         },
         {
           "name": "queryCount"
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.durableexecutor.impl.DistributedDurableExecutorService"
+      },
+      "type": "com.hazelcast.internal.monitor.impl.LocalExecutorStatsImpl",
+      "fields": [
+        {
+          "name": "cancelled"
+        },
+        {
+          "name": "completed"
+        },
+        {
+          "name": "creationTime"
+        },
+        {
+          "name": "pending"
+        },
+        {
+          "name": "started"
+        },
+        {
+          "name": "totalExecutionTime"
+        },
+        {
+          "name": "totalStartLatency"
         }
       ]
     },
@@ -2024,6 +2206,23 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.topic.impl.TopicService"
+      },
+      "type": "com.hazelcast.internal.monitor.impl.LocalTopicStatsImpl",
+      "fields": [
+        {
+          "name": "creationTime"
+        },
+        {
+          "name": "totalPublishes"
+        },
+        {
+          "name": "totalReceivedMessages"
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.topic.impl.reliable.ReliableTopicService"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalTopicStatsImpl",
@@ -2044,7 +2243,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+        "typeReached": "com.hazelcast.internal.networking.nio.NioNetworking"
       },
       "type": "com.hazelcast.internal.networking.InboundPipeline"
     },
@@ -2094,7 +2293,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+        "typeReached": "com.hazelcast.internal.networking.nio.NioNetworking"
       },
       "type": "com.hazelcast.internal.networking.OutboundPipeline"
     },
@@ -2124,7 +2323,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+        "typeReached": "com.hazelcast.internal.networking.nio.NioNetworking"
       },
       "type": "com.hazelcast.internal.networking.nio.MigratablePipeline"
     },
@@ -2143,9 +2342,15 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+        "typeReached": "com.hazelcast.internal.networking.nio.NioNetworking"
       },
-      "type": "com.hazelcast.internal.networking.nio.NioInboundPipeline"
+      "type": "com.hazelcast.internal.networking.nio.NioInboundPipeline",
+      "methods": [
+        {
+          "name": "idleTimeMillis",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "condition": {
@@ -2205,9 +2410,32 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+        "typeReached": "com.hazelcast.internal.networking.nio.NioNetworking"
       },
-      "type": "com.hazelcast.internal.networking.nio.NioOutboundPipeline"
+      "type": "com.hazelcast.internal.networking.nio.NioOutboundPipeline",
+      "fields": [
+        {
+          "name": "writeQueue"
+        }
+      ],
+      "methods": [
+        {
+          "name": "bytesPending",
+          "parameterTypes": []
+        },
+        {
+          "name": "idleTimeMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "priorityBytesPending",
+          "parameterTypes": []
+        },
+        {
+          "name": "scheduled",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "condition": {
@@ -2228,9 +2456,19 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+        "typeReached": "com.hazelcast.internal.networking.nio.NioNetworking"
       },
-      "type": "com.hazelcast.internal.networking.nio.NioPipeline"
+      "type": "com.hazelcast.internal.networking.nio.NioPipeline",
+      "methods": [
+        {
+          "name": "opsInterested",
+          "parameterTypes": []
+        },
+        {
+          "name": "opsReady",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "condition": {
@@ -2324,6 +2562,12 @@
       },
       "type": "com.hazelcast.internal.nio.Connection",
       "allDeclaredFields": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.server.tcp.TcpServerConnectionManager"
+      },
+      "type": "com.hazelcast.internal.nio.Connection"
     },
     {
       "condition": {
@@ -2425,6 +2669,26 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.internal.partition.impl.MigrationStats",
+      "fields": [
+        {
+          "name": "completedMigrations"
+        },
+        {
+          "name": "lastRepartitionTime"
+        },
+        {
+          "name": "plannedMigrations"
+        },
+        {
+          "name": "totalCompletedMigrations"
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.partition.impl.MigrationManagerImpl"
       },
       "type": "com.hazelcast.internal.partition.impl.MigrationStats",
@@ -2458,6 +2722,20 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.internal.partition.impl.PartitionReplicaManager",
+      "fields": [
+        {
+          "name": "replicaSyncRequestsCounter"
+        },
+        {
+          "name": "replicaSyncSemaphore"
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.partition.impl.InternalPartitionServiceImpl"
       },
       "type": "com.hazelcast.internal.partition.impl.PartitionReplicaManager",
@@ -2469,6 +2747,23 @@
       },
       "type": "com.hazelcast.internal.partition.impl.PartitionStateManager",
       "allDeclaredFields": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.internal.partition.impl.PartitionStateManagerImpl",
+      "fields": [
+        {
+          "name": "memberGroupsSize"
+        },
+        {
+          "name": "partitionCount"
+        },
+        {
+          "name": "stateStamp"
+        }
+      ]
     },
     {
       "condition": {
@@ -2486,6 +2781,12 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.server.tcp.TcpServerConnectionManager"
+      },
+      "type": "com.hazelcast.internal.server.ServerConnection"
     },
     {
       "condition": {
@@ -2540,6 +2841,18 @@
       "methods": [
         {
           "name": "idleTimeMillis",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.server.tcp.TcpServerConnectionManager"
+      },
+      "type": "com.hazelcast.internal.server.tcp.TcpServerConnection",
+      "methods": [
+        {
+          "name": "getType",
           "parameterTypes": []
         }
       ]
@@ -3185,6 +3498,20 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.tpcengine.nio.SelectorOptimizer"
+      },
+      "type": "com.hazelcast.logging.Logger",
+      "methods": [
+        {
+          "name": "getLogger",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "com.hazelcast.map.LocalMapStats"
@@ -3356,6 +3683,29 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.spi.impl.eventservice.impl.EventServiceImpl",
+      "fields": [
+        {
+          "name": "eventQueueCapacity"
+        },
+        {
+          "name": "eventThreadCount"
+        },
+        {
+          "name": "rejectedCount"
+        },
+        {
+          "name": "syncDeliveryFailureCount"
+        },
+        {
+          "name": "totalFailures"
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.spi.impl.eventservice.impl.EventServiceImpl"
       },
       "type": "com.hazelcast.spi.impl.eventservice.impl.EventServiceImpl",
@@ -3377,6 +3727,20 @@
       },
       "type": "com.hazelcast.spi.impl.eventservice.impl.EventServiceSegment",
       "allDeclaredFields": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.spi.impl.eventservice.impl.EventServiceSegment",
+      "fields": [
+        {
+          "name": "registrationIdMap"
+        },
+        {
+          "name": "totalPublishes"
+        }
+      ]
     },
     {
       "condition": {
@@ -3507,6 +3871,35 @@
         {
           "name": "getRunningPartitionOperationCount",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.spi.impl.operationexecutor.impl.OperationThread",
+      "fields": [
+        {
+          "name": "completedOperationBatchCount"
+        },
+        {
+          "name": "completedOperationCount"
+        },
+        {
+          "name": "completedPacketCount"
+        },
+        {
+          "name": "completedPartitionSpecificRunnableCount"
+        },
+        {
+          "name": "completedRunnableCount"
+        },
+        {
+          "name": "completedTotalCount"
+        },
+        {
+          "name": "errorCount"
         }
       ]
     },
@@ -3654,10 +4047,56 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.spi.impl.operationservice.impl.InvocationMonitor",
+      "fields": [
+        {
+          "name": "backupTimeoutMillis"
+        },
+        {
+          "name": "backupTimeoutsCount"
+        },
+        {
+          "name": "delayedExecutionCount"
+        },
+        {
+          "name": "heartbeatBroadcastPeriodMillis"
+        },
+        {
+          "name": "heartbeatPacketsReceived"
+        },
+        {
+          "name": "heartbeatPacketsSent"
+        },
+        {
+          "name": "invocationScanPeriodMillis"
+        },
+        {
+          "name": "invocationTimeoutMillis"
+        },
+        {
+          "name": "normalTimeoutsCount"
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.spi.impl.operationservice.impl.InvocationMonitor"
       },
       "type": "com.hazelcast.spi.impl.operationservice.impl.InvocationMonitor",
       "allDeclaredFields": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.diagnostics.HealthMonitor$HealthMetrics"
+      },
+      "type": "com.hazelcast.spi.impl.operationservice.impl.InvocationRegistry",
+      "fields": [
+        {
+          "name": "invocations"
+        }
+      ]
     },
     {
       "condition": {
@@ -3668,6 +4107,17 @@
         {
           "name": "invocationsUsedPercentage",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.spi.impl.operationservice.impl.InvocationRegistry",
+      "fields": [
+        {
+          "name": "invocations"
         }
       ]
     },
@@ -3693,6 +4143,29 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.spi.impl.operationservice.impl.OperationServiceImpl",
+      "fields": [
+        {
+          "name": "asyncOperations"
+        },
+        {
+          "name": "callTimeoutCount"
+        },
+        {
+          "name": "failedBackupsCount"
+        },
+        {
+          "name": "operationTimeoutCount"
+        },
+        {
+          "name": "retryCount"
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.spi.impl.operationservice.impl.OperationServiceImpl"
       },
       "type": "com.hazelcast.spi.impl.operationservice.impl.OperationServiceImpl",
@@ -3711,6 +4184,20 @@
       },
       "type": "com.hazelcast.spi.impl.proxyservice.ProxyService",
       "allDeclaredFields": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.spi.impl.proxyservice.impl.ProxyServiceImpl",
+      "fields": [
+        {
+          "name": "createdCounter"
+        },
+        {
+          "name": "destroyedCounter"
+        }
+      ]
     },
     {
       "condition": {
@@ -3745,6 +4232,23 @@
       },
       "type": "com.hazelcast.transaction.TransactionManagerService",
       "allDeclaredFields": true
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.hazelcast.transaction.impl.TransactionManagerServiceImpl",
+      "fields": [
+        {
+          "name": "commitCount"
+        },
+        {
+          "name": "rollbackCount"
+        },
+        {
+          "name": "startCount"
+        }
+      ]
     },
     {
       "condition": {
@@ -3841,7 +4345,69 @@
       "condition": {
         "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
       },
+      "type": "com.sun.crypto.provider.HKDFKeyDerivation$HKDFSHA384",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.crypto.KDFParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
       "type": "com.sun.crypto.provider.HmacCore$HmacSHA384",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "type": "com.sun.crypto.provider.ML_KEM_Impls$K",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "type": "com.sun.crypto.provider.ML_KEM_Impls$KF3",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "type": "com.sun.crypto.provider.ML_KEM_Impls$KF5",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "type": "com.sun.crypto.provider.ML_KEM_Impls$KPG3",
       "methods": [
         {
           "name": "<init>",
@@ -4058,6 +4624,16 @@
             "boolean",
             "java.util.List"
           ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "java.util.List"
+          ]
         }
       ]
     },
@@ -4092,6 +4668,12 @@
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "com.sun.management.internal.GarbageCollectorExtImpl"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.sun.management.internal.HotSpotAOTCacheImpl"
     },
     {
       "condition": {
@@ -4167,9 +4749,22 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "com.sun.management.internal.VirtualThreadSchedulerImpls$VirtualThreadSchedulerImpl"
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.nio.IOUtil$ClassLoaderAwareObjectInputStream"
       },
       "type": "com_hazelcast.hazelcast.callable.EchoCallable"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.serialization.impl.defaultserializers.JavaDefaultSerializers$JavaSerializer"
+      },
+      "type": "com_hazelcast.hazelcast.callable.EchoCallable",
+      "serializable": true
     },
     {
       "condition": {
@@ -4188,6 +4783,12 @@
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "int[]"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.spi.impl.executionservice.impl.ExecutionServiceImpl$MetricsProvider"
+      },
+      "type": "java.lang.AutoCloseable"
     },
     {
       "condition": {
@@ -4315,6 +4916,13 @@
         {
           "name": "getName",
           "parameterTypes": []
+        },
+        {
+          "name": "isExported",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Module"
+          ]
         },
         {
           "name": "isOpen",
@@ -4732,6 +5340,13 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.serialization.impl.defaultserializers.JavaDefaultSerializers$JavaSerializer"
+      },
+      "type": "java.lang.String",
+      "serializable": true
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
       },
       "type": "java.lang.String"
@@ -5136,7 +5751,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+        "typeReached": "com.hazelcast.internal.networking.nio.NioNetworking"
       },
       "type": "java.util.function.Supplier"
     },
@@ -5307,6 +5922,18 @@
           ]
         }
       ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "jdk.management.HotSpotAOTCacheMXBean"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "type": "jdk.management.VirtualThreadSchedulerMXBean"
     },
     {
       "condition": {
@@ -5527,12 +6154,64 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "type": "sun.net.www.content.text.plain",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.MetricsProvider"
+      },
+      "type": "sun.net.www.protocol.http.Handler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "type": "sun.net.www.protocol.https.Handler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.tpcengine.nio.SelectorOptimizer"
       },
       "type": "sun.nio.ch.SelectorImpl",
       "fields": [
         {
           "name": "selectedKeys"
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.JVMUtil"
+      },
+      "type": "sun.reflect.misc.Trampoline",
+      "methods": [
+        {
+          "name": "invoke",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
+            "java.lang.Object",
+            "java.lang.Object[]"
+          ]
         }
       ]
     },
@@ -5672,6 +6351,30 @@
       "condition": {
         "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
       },
+      "type": "sun.security.provider.SHA3$SHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "type": "sun.security.provider.SHA3$SHA512",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
       "type": "sun.security.provider.SHA5$SHA384",
       "methods": [
         {
@@ -5769,6 +6472,18 @@
         "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
       },
       "type": "sun.security.rsa.RSASignature$SHA256withRSA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "type": "sun.security.ssl.DHasKEM",
       "methods": [
         {
           "name": "<init>",
@@ -6050,6 +6765,12 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.client.impl.spi.ProxyManager"
+      },
+      "glob": "META-INF/services/com.hazelcast.client.impl.spi.ClientProxyDescriptorProvider"
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.dataconnection.impl.DataConnectionServiceImpl"
       },
       "glob": "META-INF/services/com.hazelcast.dataconnection.DataConnectionRegistration"
@@ -6086,6 +6807,36 @@
     },
     {
       "condition": {
+        "typeReached": "com.hazelcast.internal.util.ServiceLoader"
+      },
+      "glob": "META-INF/services/com.hazelcast.spi.tenantcontrol.TenantControlFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "glob": "META-INF/services/java.net.ContentHandlerFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.MetricsProvider"
+      },
+      "glob": "META-INF/services/java.net.spi.URLStreamHandlerProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "glob": "META-INF/services/java.net.spi.URLStreamHandlerProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.logging.StandardLoggerFactory$StandardLogger"
+      },
+      "glob": "META-INF/services/java.time.zone.ZoneRulesProvider"
+    },
+    {
+      "condition": {
         "typeReached": "com.hazelcast.internal.util.phonehome.BuildInfoProvider"
       },
       "glob": "hazelcast-download.properties"
@@ -6116,7 +6867,48 @@
         "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
       },
       "module": "java.base",
+      "glob": "jdk/internal/icu/impl/data/icudt76b/nfkc.nrm"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "module": "java.base",
+      "glob": "jdk/internal/icu/impl/data/icudt76b/uprops.icu"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+      },
+      "module": "java.base",
       "glob": "sun/net/idn/uidna.spp"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.logging.StandardLoggerFactory$StandardLogger"
+      },
+      "module": "java.logging",
+      "glob": "sun/util/logging/resources/logging_en.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.logging.StandardLoggerFactory$StandardLogger"
+      },
+      "module": "java.logging",
+      "glob": "sun/util/logging/resources/logging_en_US.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+      },
+      "module": "jdk.jfr",
+      "glob": "jdk/jfr/internal/query/view.ini"
+    },
+    {
+      "condition": {
+        "typeReached": "com.hazelcast.logging.StandardLoggerFactory$StandardLogger"
+      },
+      "bundle": "sun.util.logging.resources.logging"
     }
   ]
 }
