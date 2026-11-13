@@ -11,17 +11,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import oracle.jdbc.OracleDriver;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class TcpFastOpenLibraryInstallerTest {
     @TempDir
     Path installationDirectory;
 
-    @Test
-    void installsThePackagedTcpFastOpenLibrary() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"x86_64", "aarch64"})
+    void installsThePackagedTcpFastOpenLibrary(String architecture) throws Exception {
         String previousOsName = System.setProperty("os.name", "Linux");
-        String previousOsArchitecture = System.setProperty("os.arch", "x86_64");
+        String previousOsArchitecture = System.setProperty("os.arch", architecture);
         try {
             OracleDriver.main(new String[] {"install-tfo", "--path", installationDirectory.toString()});
         } finally {
