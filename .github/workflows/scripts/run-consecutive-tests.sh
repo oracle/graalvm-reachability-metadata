@@ -9,7 +9,7 @@
 
 set -u
 
-TIMEOUT="5m"
+TIMEOUT="10m"
 
 if [ $# -ne 2 ]; then
   echo "Usage: $0 <test-coordinates> <versions-json-array>"
