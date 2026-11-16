@@ -1,0 +1,44 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    // Companion versions come from the Spring Boot BOM, which tracks the tested release.
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
+    testImplementation "org.springframework.boot:spring-boot-http-converter:$libraryVersion"
+    // Runs HttpMessageConvertersAutoConfiguration and its conditions.
+    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+    // ApplicationContextRunner and FilteredClassLoader drive the conditional configurations.
+    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
+    // HttpMessageConverters probes WebMvcConfigurationSupport for the default converters.
+    testImplementation 'org.springframework:spring-webmvc'
+    testImplementation 'jakarta.servlet:jakarta.servlet-api'
+    // Exercises the optional non-replacing converter lookup and merge behavior.
+    testImplementation 'org.springframework.hateoas:spring-hateoas'
+    // Optional JSON and XML mappers that select the converter configurations.
+    testImplementation 'tools.jackson.core:jackson-databind'
+    testImplementation 'tools.jackson.dataformat:jackson-dataformat-xml'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'com.google.code.gson:gson'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-serialization-json'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
