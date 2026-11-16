@@ -19,6 +19,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaBeanBinderInnerBeanPropertyTest {
     @Test
+    void updatesAnExistingNestedBeanThroughItsGetterAndSetter() {
+        Client client = new Client();
+        Connection original = client.getConnection();
+        Binder binder = new Binder(new MapConfigurationPropertySource(Map.of(
+                "client.connection.host", "database.example", "client.connection.port", "5432")));
+
+        Client result = binder.bind("client", Bindable.ofInstance(client)).get();
+
+        assertThat(result).isSameAs(client);
+        assertThat(result.getConnection()).isSameAs(original);
+        assertThat(original.getHost()).isEqualTo("database.example");
+        assertThat(original.getPort()).isEqualTo(5432);
+    }
+
+    @Test
     void readsExistingCollectionAndInvokesScalarSetter() {
         Client client = new Client();
         Binder binder = new Binder(new MapConfigurationPropertySource(Map.of(
@@ -33,6 +48,11 @@ public class JavaBeanBinderInnerBeanPropertyTest {
     public static class Client {
         private String name;
         private final List<String> tags = new ArrayList<>();
+        private final Connection connection = new Connection();
+
+        public Connection getConnection() {
+            return this.connection;
+        }
 
         public String getName() {
             return this.name;
@@ -44,6 +64,27 @@ public class JavaBeanBinderInnerBeanPropertyTest {
 
         public List<String> getTags() {
             return this.tags;
+        }
+    }
+
+    public static class Connection {
+        private String host = "localhost";
+        private int port;
+
+        public String getHost() {
+            return this.host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public int getPort() {
+            return this.port;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
         }
     }
 }

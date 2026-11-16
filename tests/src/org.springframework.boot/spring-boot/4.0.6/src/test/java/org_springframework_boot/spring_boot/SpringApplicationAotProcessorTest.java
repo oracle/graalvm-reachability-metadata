@@ -6,6 +6,7 @@
  */
 package org_springframework_boot.spring_boot;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -42,6 +43,30 @@ public class SpringApplicationAotProcessorTest {
         try (GenericApplicationContext context = processor.prepare()) {
             context.refresh();
             assertThat(context.getBean("consumerMarker")).isEqualTo("prepared");
+        }
+    }
+
+    @Test
+    void processesAnApplicationThroughTheCommandLineEntryPoint() throws Exception {
+        Path sources = this.directory.resolve("cli-sources");
+        Path resources = this.directory.resolve("cli-resources");
+        Path classes = this.directory.resolve("cli-classes");
+
+        SpringApplicationAotProcessor.main(new String[] {CliApplication.class.getName(),
+                sources.toString(), resources.toString(), classes.toString(), "consumer", "application",
+                "--consumer.mode=batch"});
+
+        try (var generatedSources = Files.walk(sources)) {
+            List<Path> javaSources = generatedSources.filter(path -> path.toString().endsWith(".java")).toList();
+            assertThat(javaSources).isNotEmpty();
+            StringBuilder content = new StringBuilder();
+            for (Path source : javaSources) {
+                content.append(Files.readString(source));
+            }
+            assertThat(content.toString()).contains("CliInventory", "inventory");
+        }
+        try (var generatedResources = Files.walk(resources)) {
+            assertThat(generatedResources.filter(Files::isRegularFile).toList()).isNotEmpty();
         }
     }
 
@@ -82,6 +107,27 @@ public class SpringApplicationAotProcessorTest {
         application.addInitializers((AotApplicationContextInitializer<GenericApplicationContext>) context ->
                 context.registerBean("consumerMarker", String.class, () -> "prepared"));
         application.run(args);
+    }
+
+    public static class CliApplication {
+        public static void main(String[] args) {
+            SpringApplication application = new SpringApplication(PrimarySource.class);
+            application.setWebApplicationType(WebApplicationType.NONE);
+            application.setApplicationContextFactory(ApplicationContextFactory.of(GenericApplicationContext::new));
+            application.setBannerMode(Banner.Mode.OFF);
+            application.setLogStartupInfo(false);
+            application.setRegisterShutdownHook(false);
+            application.setListeners(List.of());
+            application.addInitializers((AotApplicationContextInitializer<GenericApplicationContext>) context ->
+                    context.registerBean("inventory", CliInventory.class));
+            application.run(args);
+        }
+    }
+
+    public static class CliInventory {
+        public String label() {
+            return "inventory";
+        }
     }
 
     public static class PrimarySource {
