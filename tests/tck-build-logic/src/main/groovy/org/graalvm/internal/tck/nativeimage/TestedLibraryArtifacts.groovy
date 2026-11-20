@@ -8,7 +8,12 @@ package org.graalvm.internal.tck.nativeimage
 
 import org.gradle.api.Project
 import org.gradle.api.GradleException
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ResolvedArtifact
+import org.gradle.api.artifacts.component.ComponentIdentifier
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.FileCollection
 import org.graalvm.internal.tck.utils.BaseLayerUtils
 import org.graalvm.internal.tck.utils.JarUtils
 
@@ -72,14 +77,12 @@ class TestedLibraryArtifacts {
     }
 
     List<File> resolveJUnitRuntimeJars() {
-        Set<File> matched = new LinkedHashSet<>(
-                project.configurations.nativeImageTestClasspath.resolvedConfiguration.resolvedArtifacts.findAll { artifact ->
-                    BaseLayerUtils.isJUnitRuntimeArtifact(
-                            artifact.moduleVersion.id.group,
-                            artifact.moduleVersion.id.name)
-                }.collect { artifact ->
-                    artifact.file
-                })
+        Set<File> matched = project.configurations.nativeImageTestClasspath.incoming.artifactView { view ->
+            view.componentFilter { ComponentIdentifier component ->
+                component instanceof ModuleComponentIdentifier &&
+                        BaseLayerUtils.isJUnitRuntimeArtifact(component.group, component.module)
+            }
+        }.files.files
         if (matched.isEmpty()) {
             throw new GradleException("No JUnit runtime artifacts found on the test runtime classpath.")
         }
@@ -92,11 +95,20 @@ class TestedLibraryArtifacts {
         return includedJars.toList().sort { File file -> file.absolutePath }
     }
     /// Keep dependency precedence identical to the native test binary. §FS-tests.3.7
-    List<File> resolveDedicatedLayerClasspath(Collection<File> nativeTestClasspath) {
-        Set<File> dependencies = new LinkedHashSet<>(project.configurations.testRuntimeClasspath
-                .resolvedConfiguration.resolvedArtifacts.collect { artifact -> artifact.file })
-        dependencies.addAll(project.configurations.nativeImageTestClasspath
-                .resolvedConfiguration.resolvedArtifacts.collect { artifact -> artifact.file })
-        return nativeTestClasspath.findAll { File file -> dependencies.contains(file) && file.isFile() }.toList()
+    FileCollection resolveDedicatedLayerClasspath(ConfigurableFileCollection nativeTestClasspath) {
+        Set<File> dependencies = new LinkedHashSet<>(dependencyArtifacts(project.configurations.testRuntimeClasspath).files)
+        dependencies.addAll(dependencyArtifacts(project.configurations.nativeImageTestClasspath).files)
+        FileCollection candidates = project.files(nativeTestClasspath.from.collect { Object source ->
+            source instanceof Configuration ? dependencyArtifacts(source) : source
+        })
+        return candidates.filter { File file -> dependencies.contains(file) && file.isFile() }
+    }
+
+    /// Exclude the application before artifact transforms read its unbuilt JAR. §FS-tests.3.7
+    private static FileCollection dependencyArtifacts(Configuration configuration) {
+        ComponentIdentifier application = configuration.incoming.resolutionResult.rootComponent.get().id
+        return configuration.incoming.artifactView { view ->
+            view.componentFilter { ComponentIdentifier component -> component != application }
+        }.files
     }
 }
