@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /// including a firmware image large enough to need WebSocket's 64-bit frame length.
 public class WebSocketTransportTest {
 
-    private static final String IMAGE = "eclipse-mosquitto:2.0.22";
+    private static final String IMAGE = "eclipse-mosquitto:2.0.23";
 
     private static final String BROKER_CONFIG = """
             listener 1883

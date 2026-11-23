@@ -58,7 +58,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /// fire-and-forget pings still go out.
 public class ApplicationStorePersistenceRecoveryTest {
 
-    private static final String IMAGE = "eclipse-mosquitto:2.0.22";
+    private static final String IMAGE = "eclipse-mosquitto:2.0.23";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 

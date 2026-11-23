@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /// marked as a duplicate on the next connection, and a clean connection drops the session.
 public class DurableSessionManualAckTest {
 
-    private static final String IMAGE = "eclipse-mosquitto:2.0.22";
+    private static final String IMAGE = "eclipse-mosquitto:2.0.23";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 

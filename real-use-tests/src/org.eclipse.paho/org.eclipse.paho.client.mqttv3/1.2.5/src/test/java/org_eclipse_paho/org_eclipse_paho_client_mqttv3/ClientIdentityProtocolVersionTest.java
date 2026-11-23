@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /// and throwaway diagnostic probes connect with an empty client ID.
 public class ClientIdentityProtocolVersionTest {
 
-    private static final String IMAGE = "eclipse-mosquitto:2.0.22";
+    private static final String IMAGE = "eclipse-mosquitto:2.0.23";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 

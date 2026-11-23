@@ -46,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /// control room sent while it was away.
 public class AutomaticReconnectOfflineBufferTest {
 
-    private static final String IMAGE = "eclipse-mosquitto:2.0.22";
+    private static final String IMAGE = "eclipse-mosquitto:2.0.23";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 
