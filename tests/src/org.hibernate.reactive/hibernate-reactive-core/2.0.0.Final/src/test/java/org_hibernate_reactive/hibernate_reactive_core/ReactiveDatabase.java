@@ -27,7 +27,7 @@ final class ReactiveDatabase implements AutoCloseable {
         try {
             docker("run", "--detach", "--rm", "--name", container,
                     "--publish", "127.0.0.1::5432", "--env", "POSTGRES_PASSWORD=secret",
-                    "--env", "POSTGRES_DB=coverage", "postgres:18-alpine");
+                    "--env", "POSTGRES_DB=coverage", "postgres:19-alpine");
             waitForDatabase();
             String address = docker("port", container, "5432/tcp").trim();
             String port = address.substring(address.lastIndexOf(':') + 1);

@@ -78,7 +78,7 @@ class LoyaltyMemberTypedExtractTest {
                 "run", "--rm", "-d", "--name", containerName,
                 "-e", "POSTGRES_PASSWORD=$PASSWORD",
                 "-p", "127.0.0.1:$port:5432",
-                "postgres:18-alpine",
+                "postgres:19-alpine",
             )
             awaitConnection(TimeUnit.SECONDS.toMillis(120))
         }
