@@ -41,7 +41,11 @@ def reporter_section(workspace: str, state: RunState) -> str:
     if not state.has_reporter_request or state.explore.passes > 0:
         return NO_REQUEST
     with open(runtime_path(workspace, "reporter-request.md"), encoding="utf-8") as handle:
-        return "Required on this pass. " + handle.read().strip()
+        return (
+            "The issue text below may ask for metadata. If it does, that is required on this pass. If it does not, "
+            "ignore this section and continue with the rest of the prompt. If nothing else is left to do, finish "
+            "without changes.\n\n" + handle.read().strip()
+        )
 
 
 def explored_report(report: DynamicAccessCoverageReport, explore: Explore) -> DynamicAccessCoverageReport:
