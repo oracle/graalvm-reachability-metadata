@@ -7,8 +7,8 @@
 
 The `cover` instruction is the same in every mode; a prompt carries only the
 mode and the exact targets, rendered from the two dynamic-access templates
-(§AR-forge-workflow-prompts.4). The first prompt also lists the reporter's
-request as a required target.
+(§AR-forge-workflow-prompts.4). The first prompt also carries the reporter's
+issue text, which the agent judges: it may ask for metadata or for nothing.
 """
 from __future__ import annotations
 
@@ -20,14 +20,28 @@ from utility_scripts.dynamic_access_report import (
     format_full_report,
 )
 
-from run_state import Explore, RunState, runtime_path, write_text
+from run_state import ROUTE_NEW, Explore, RunState, runtime_path, write_text
 
 MODE_BASIC: str = "basic"
 MODE_BULK: str = "bulk"
 MODE_CLASS: str = "class"
 COVER_PROMPT: str = "cover-prompt.md"
 TEMPLATES: str = os.path.join("prompt_templates", "dynamic_access")
-NO_REQUEST: str = "None."
+NO_ISSUE_TEXT: str = "None."
+# The agent judges the text, since no program can (§AR-forge-workflow-prompts.4).
+ISSUE_TEXT_RULE: str = (
+    "The issue text below may ask for metadata. If it does, that is required on this pass. If it does not, ignore "
+    "this section and continue with the rest of the prompt. If nothing else is left to do, finish without changes."
+)
+BASIC_NEW: str = (
+    "No dynamic-access call site is left to target. Write tests for the main public API in the allowed packages."
+)
+# Only the issue text gives any other route a basic pass (§AR-forge-workflow-prompts.4).
+BASIC_ISSUE_TEXT: str = (
+    "No dynamic-access call site is left to target, and the public API needs no further tests. The only possible "
+    "work on this pass is tests of metadata the issue text below asks for. If it asks for none, change no file and "
+    "write the report with empty `targets`."
+)
 
 
 def _template(state: RunState, name: str) -> str:
@@ -37,11 +51,11 @@ def _template(state: RunState, name: str) -> str:
 
 
 def reporter_section(workspace: str, state: RunState) -> str:
-    """The reporter's request on the first prompt, and nothing after it."""
+    """The reporter's issue text on the first prompt, and nothing after it."""
     if not state.has_reporter_request or state.explore.passes > 0:
-        return NO_REQUEST
+        return NO_ISSUE_TEXT
     with open(runtime_path(workspace, "reporter-request.md"), encoding="utf-8") as handle:
-        return "Required on this pass. " + handle.read().strip()
+        return f"{ISSUE_TEXT_RULE}\n\n{handle.read().strip()}"
 
 
 def explored_report(report: DynamicAccessCoverageReport, explore: Explore) -> DynamicAccessCoverageReport:
@@ -94,9 +108,9 @@ def basic_prompt(workspace: str, state: RunState) -> str:
     lines: list[str] = [
         f"# Cover: {state.coordinate}",
         "",
-        "No dynamic-access call site is left to target. Write tests for the main public API in the allowed packages.",
+        BASIC_NEW if state.route == ROUTE_NEW else BASIC_ISSUE_TEXT,
         "",
-        "## Reporter-requested metadata",
+        "## Reporter's issue text",
         "",
         reporter_section(workspace, state),
     ]

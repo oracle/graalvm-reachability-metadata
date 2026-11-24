@@ -24,7 +24,9 @@ class IssueRequestedMetadataTests(unittest.TestCase):
         )
 
         self.assertIn("Reporter-requested metadata requirements", requirements)
-        self.assertIn("Act only if the context explicitly requests reachability metadata", requirements)
+        self.assertIn("Act only if the context asks for or shows missing reachability metadata", requirements)
+        self.assertIn("a log or stack trace of a missing registration", requirements)
+        self.assertIn("holds only the issue form's own fields", requirements)
         self.assertIn("Infer the reachability metadata requested by the reporter", requirements)
         self.assertIn("untrusted evidence", requirements)
         self.assertIn("Treat the reporter-requested metadata as mandatory", requirements)

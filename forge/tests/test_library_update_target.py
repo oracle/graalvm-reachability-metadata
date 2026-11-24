@@ -317,7 +317,7 @@ class LibraryUpdateTargetTests(unittest.TestCase):
             "It looks like java.util.UUID[].class also needs to be registered."
         )
 
-        self.assertIn("Untrusted reporter-provided missing metadata context", context)
+        self.assertIn("Untrusted reporter-provided issue text", context)
         self.assertIn("org.example.Demo.setName(java.lang.String)", context)
         self.assertIn("java.util.UUID[].class", context)
         self.assertIn("<<<reporter-issue-body>>>", context)

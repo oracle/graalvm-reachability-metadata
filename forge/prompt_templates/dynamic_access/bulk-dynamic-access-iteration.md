@@ -6,6 +6,6 @@ Every class with uncovered dynamic-access call sites (§AR-forge-workflow-prompt
 
 {dynamic_access_full_report}
 
-## Reporter-requested metadata
+## Reporter's issue text
 
 {issue_requested_metadata_context}
