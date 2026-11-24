@@ -35,9 +35,8 @@ cheating patterns of §root/FS-contribution-contract.4, each at the bar it sets:
   because it looks thin;
 - Native Image dodging: native skips, early returns, a bare `catch (Error)`, or
   `isUnsupportedFeatureError` outside open-ended dynamic class loading;
-- fake requested coverage: any metadata the issue text in `reporter-request.md` asks for must be
-  reached through the library's public API, not by direct reflection, class literals, or
-  `getResource`; a text that asks for none, or no such file, requires no coverage;
+- fake requested coverage: the metadata in `reporter-request.md` must be reached through the
+  library's public API, not by direct reflection, class literals, or `getResource`;
 - coverage bought by asserting a known bug, pinned tested-library versions, tests in the library's
   own package, and stubs of library types;
 - fix by weakening: deleted or disabled tests, removed assertions, swallowed exceptions;

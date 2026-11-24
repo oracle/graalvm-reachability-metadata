@@ -277,7 +277,7 @@ an earlier chunk processed.
 | Condition | Mode | Exit |
 | --- | --- | --- |
 | no dynamic-access calls, new library | basic: tests of the main public API | `10` |
-| no dynamic-access calls, or `uncovered` is 0, or the previous version's coverage is already met | skip, unless a reporter's issue text may ask for metadata, which gets one basic pass, kept even when it changes nothing (§AR-forge-workflow-prompts.4) | `20`, or `10` for that pass |
+| no dynamic-access calls, or `uncovered` is 0, or the previous version's coverage is already met | skip, unless the reporter requested metadata, which gets one basic pass | `20` |
 | `fails-*` label and `uncovered` above `defer_classes` | defer: `publish` opens the follow-up library-update issue | `20` |
 | new library or update and `uncovered` above `defer_classes` | chunk: label the issue, keep an exhaust report, and spend at most `defer_classes` classes this run | as below |
 | `uncovered` at least `bulk_min_classes` | bulk, then class | `10` |

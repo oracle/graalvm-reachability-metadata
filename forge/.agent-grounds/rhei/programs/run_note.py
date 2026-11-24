@@ -90,8 +90,8 @@ def write(workspace: str, state: RunState) -> None:
         f"- Allowed packages: {packages}",
         f"- Main sources, once the setup tail downloads them: `{source_context_dir(state)}`",
         f"- URL discovery: `{url_discovery_command(state)}`",
-        f"- Reporter's issue text, which may ask for metadata: `{runtime_path(workspace, 'reporter-request.md')}`"
-        if state.has_reporter_request else "- Reporter's issue text: none",
+        f"- Reporter-requested metadata: `{runtime_path(workspace, 'reporter-request.md')}`"
+        if state.has_reporter_request else "- Reporter-requested metadata: none",
         "",
         "## Search roots",
         "",

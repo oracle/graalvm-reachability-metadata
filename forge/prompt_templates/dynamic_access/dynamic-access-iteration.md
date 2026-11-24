@@ -8,6 +8,6 @@ Uncovered dynamic-access call sites of this class (§AR-forge-workflow-prompts.4
 
 {uncovered_dynamic_access_calls}
 
-## Reporter's issue text
+## Reporter-requested metadata
 
 {issue_requested_metadata_context}

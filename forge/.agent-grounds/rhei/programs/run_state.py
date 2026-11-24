@@ -117,8 +117,6 @@ class RunState:
     # The coordinate's stats and entry counts as `prepare` left them: the before side of an
     # update's pull request (§AR-pr-body).
     before: dict[str, Any] | None = None
-    # Whether a reporter wrote the issue body; it may ask for metadata or for nothing
-    # (§AR-forge-workflow-prompts.4).
     has_reporter_request: bool = False
     # The explicit metadata the reporter asked for (§FS-local-ci-equivalent-verification.1.1).
     requested_metadata: dict[str, list[str]] = field(default_factory=dict)
