@@ -65,13 +65,21 @@ is the request.
 `analyze` writes the first and `measure` every later one, rendered from
 `prompt_templates/dynamic_access/`:
 
-- **Bulk.** Every class with uncovered calls, with its call sites; the first
-  prompt also lists the reporter's request as a required target.
+- **Bulk.** Every class with uncovered calls, with its call sites.
 - **Class.** One class's uncovered call sites and its attempt number; when the
   previous attempt gained nothing, the prompt says so and names the tests that
   were reset.
-- **Basic.** No dynamic-access target: tests of the main public API in the
-  allowed packages, and the reporter's request when there is one.
+- **Basic.** No dynamic-access target. A new library gets tests of the main
+  public API in the allowed packages. Every other route gets this pass only for
+  the reporter's issue text, and finishes without changes when that text asks
+  for no metadata.
+
+The first prompt also carries the reporter's issue text when there is one, as
+untrusted evidence (§root/FS-test-contract.3.7). No program can reliably tell a
+request from an issue form nobody added to, so the agent decides. Metadata the
+text asks for, or shows to be missing, is required on that pass
+(§root/FS-test-contract.1.5). A text that asks for none adds no work and ends
+none: the agent ignores it and goes on with the pass's other targets.
 
 ## 5. The fix request
 
