@@ -27,6 +27,7 @@ import com.hazelcast.replicatedmap.ReplicatedMap;
 import com.hazelcast.ringbuffer.Ringbuffer;
 import com.hazelcast.scheduledexecutor.IScheduledExecutorService;
 import com.hazelcast.scheduledexecutor.IScheduledFuture;
+import com.hazelcast.spi.exception.PartitionMigratingException;
 import com.hazelcast.topic.ITopic;
 import com_hazelcast.hazelcast.callable.EchoCallable;
 import com_hazelcast.hazelcast.customSerializer.CustomSerializable;
@@ -179,6 +180,21 @@ class HazelcastTest {
             lock.unlock();
         }
         client.shutdown();
+    }
+
+    @Test
+    void roundTripsPartitionMigrationFailure() {
+        // Retry responses carry this payload through Hazelcast's Java serializer.
+        IMap<String, PartitionMigratingException> failures = hazelcastInstance.getMap("partition-migration-failures");
+        PartitionMigratingException failure = new PartitionMigratingException("partition is moving");
+        try {
+            failures.put("migration", failure);
+            PartitionMigratingException restored = failures.get("migration");
+            assertThat(restored).isNotSameAs(failure);
+            assertThat(restored.getMessage()).isEqualTo("partition is moving");
+        } finally {
+            failures.destroy();
+        }
     }
 
     @Test
