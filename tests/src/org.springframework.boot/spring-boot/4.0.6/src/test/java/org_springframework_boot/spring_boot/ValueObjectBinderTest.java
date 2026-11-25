@@ -17,6 +17,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValueObjectBinderTest {
     @Test
+    void suppliesAnEmptyArrayForAnOmittedDefaultedParameter() {
+        Binder binder = new Binder(new MapConfigurationPropertySource(Map.of("route.name", "orders")));
+
+        Route route = binder.bind("route", Route.class).get();
+
+        assertThat(route.name()).isEqualTo("orders");
+        assertThat(route.destinations()).isNotNull().isEmpty();
+    }
+
+    public record Route(String name, @DefaultValue Destination[] destinations) {
+    }
+
+    public record Destination(String host) {
+    }
+
+    @Test
     void createsEmptyArrayDefaultsForConstructorBoundConfiguration() {
         Binder binder = new Binder(new MapConfigurationPropertySource(Map.of("routing.name", "primary")));
         Routing routing = binder.bind("routing", Routing.class).get();
