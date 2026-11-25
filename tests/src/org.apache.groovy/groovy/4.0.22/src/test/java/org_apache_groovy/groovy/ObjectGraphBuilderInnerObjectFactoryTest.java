@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ObjectGraphBuilderInnerObjectFactoryTest {
     @Test
@@ -22,6 +24,18 @@ public class ObjectGraphBuilderInnerObjectFactoryTest {
         builder.setClassNameResolver((ObjectGraphBuilder.ClassNameResolver) name -> Node.class.getName());
         Node node = (Node) builder.invokeMethod("node", new Object[]{new LinkedHashMap<>(Map.of("size", 5))});
         assertEquals(5, node.size);
+    }
+
+    @Test
+    void rejectsANodeWhoseConfiguredClassCannotBeResolved() {
+        ObjectGraphBuilder builder = new ObjectGraphBuilder();
+        builder.setClassNameResolver((ObjectGraphBuilder.ClassNameResolver)
+                name -> "org_apache_groovy.groovy.UnavailableGraphNode");
+        RuntimeException failure = assertThrows(RuntimeException.class,
+                () -> builder.invokeMethod("node", new Object[0]));
+        ClassNotFoundException cause = assertInstanceOf(ClassNotFoundException.class,
+                failure.getCause().getCause());
+        assertEquals("org_apache_groovy.groovy.UnavailableGraphNode", cause.getMessage());
     }
 
     public static class Node {
