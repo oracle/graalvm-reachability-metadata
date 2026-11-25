@@ -288,7 +288,10 @@ Helpers under `.github/workflows/scripts/` used by the workflows above (these ar
   `dockerd.service` and `discard-port.conf`. After allowed images are pulled, CI
   disables Docker networking so tests run deterministically against pre-pulled
   images with no network access (§FS-repository-functional-spec.5.3,
-  §FS-repository-functional-spec.6). You usually do not need this locally.
+  §FS-repository-functional-spec.6). The daemon drop-in also accepts Docker API
+  1.32 for the historical Testcontainers versions in the supported test matrix;
+  this changes the accepted API floor while retaining the isolation proxies.
+  You usually do not need this locally.
 - **Consecutive version testing** — `run-consecutive-tests.sh` walks a library's
   candidate versions in ascending order, runs the full `test` lane per version,
   and on failure bisects the failing stage (`compileTestJava` → `javaTest` →
