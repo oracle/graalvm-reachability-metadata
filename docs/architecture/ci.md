@@ -107,9 +107,11 @@ own git identity, never reach the network, and compute the paths they expect. It
 
 ### AR-test-changed-infrastructure: Test changed infrastructure
 
-Triggers on PRs touching `tests/tck-build-logic/`, `gradle/`, `build.gradle`,
-`settings.gradle`, or `gradle.properties`. Runs
-`generateInfrastructureChangedCoordinatesMatrix`, then pulls allowed images,
+Triggers on PRs touching `tests/tck-build-logic/`, `tests/tck-test-support/`,
+`gradle/`, `build.gradle`, `settings.gradle`, `gradle.properties`, or the workflow
+itself. Runs `./gradlew -p tests/tck-test-support test` before
+`generateInfrastructureChangedCoordinatesMatrix`, so the shared support unit
+regressions gate the PR even if there are no affected coordinates. Then pulls allowed images,
 disables Docker networking, validates config, and runs tests for the affected
 coordinates. This is the CI counterpart of the local `testInfra` and
 `testAllInfra` harness tasks (§AR-test-harness).
