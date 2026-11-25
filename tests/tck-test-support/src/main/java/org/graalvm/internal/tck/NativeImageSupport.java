@@ -41,8 +41,8 @@ public final class NativeImageSupport {
     /// and re-throw their own without a cause. Every other failure is re-thrown unchanged,
     /// and on the JVM the action runs and asserts normally, so this is never a skip.
     ///
-    /// An [AssertionError] or [VirtualMachineError] is always re-thrown, so a genuine
-    /// assertion failure after a tolerated one is never masked.
+    /// An [AssertionError] or [VirtualMachineError] anywhere in the cause chain is always
+    /// re-thrown with its wrapper, so a genuine assertion failure is never masked.
     ///
     /// Printed throwables are inspected as objects rather than matched as text, so a
     /// library that renders the trace itself and prints the result as a string is not
@@ -59,10 +59,10 @@ public final class NativeImageSupport {
         System.setErr(trackingErr);
         try {
             action.run();
-        } catch (Error error) {
-            if (mustAlwaysRethrow(error)
-                    || (!hasUnsupportedFeatureCause(error) && !trackingErr.printedUnsupportedFeature())) {
-                throw error;
+        } catch (Exception | Error failure) {
+            if (mustAlwaysRethrow(failure)
+                    || (!hasUnsupportedFeatureCause(failure) && !trackingErr.printedUnsupportedFeature())) {
+                throw failure;
             }
         } finally {
             System.setErr(originalErr);
@@ -78,9 +78,13 @@ public final class NativeImageSupport {
         return false;
     }
 
-    private static boolean mustAlwaysRethrow(Error error) {
-        return error instanceof AssertionError
-                || error instanceof VirtualMachineError;
+    private static boolean mustAlwaysRethrow(Throwable throwable) {
+        for (Throwable current = throwable; current != null; current = current.getCause()) {
+            if (current instanceof AssertionError || current instanceof VirtualMachineError) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// Records actual unsupported-feature throwables while keeping their traces visible.
