@@ -23,6 +23,7 @@ import org.rocksdb.RocksDB;
 import org.rocksdb.RocksIterator;
 import org.rocksdb.SizeApproximationFlag;
 import org.rocksdb.Slice;
+import org.rocksdb.TransactionLogIterator;
 import org.rocksdb.WriteBatch;
 import org.rocksdb.WriteBatchWithIndex;
 
@@ -47,7 +48,7 @@ public class RocksDatabaseApiCoverageTest {
     @Test
     void databaseQueriesAndIteratorSupportArrayAndBufferForms() throws Exception {
         Path path = tempDir.resolve("query-db");
-        try (Options options = new Options().setCreateIfMissing(true);
+        try (Options options = new Options().setCreateIfMissing(true).setWalTtlSeconds(3600);
              RocksDB db = RocksDB.open(options, path.toString())) {
             db.put(bytes("alpha"), bytes("one"));
             db.put(bytes("beta"), bytes("two"));
@@ -192,17 +193,13 @@ public class RocksDatabaseApiCoverageTest {
             db.compactRange();
             db.compactRange(bytes("alpha"), bytes("zulu"));
             assertThat(db.suggestCompactRange()).isNotNull();
-            if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
-                try (org.rocksdb.TransactionLogIterator log = db.getUpdatesSince(0)) {
-                    if (log.isValid()) {
-                        assertThat(log.getBatch()).isNotNull();
-                    } else {
-                        try {
-                            log.getBatch();
-                        } catch (AssertionError expected) {
-                            assertThat(expected).isNotNull();
-                        }
-                    }
+            try (TransactionLogIterator log = db.getUpdatesSince(0)) {
+                log.status();
+                assertThat(log.isValid()).isTrue();
+                TransactionLogIterator.BatchResult batchResult = log.getBatch();
+                assertThat(batchResult.sequenceNumber()).isPositive();
+                try (WriteBatch batch = batchResult.writeBatch()) {
+                    assertThat(batch.count()).isEqualTo(1);
                 }
             }
         }

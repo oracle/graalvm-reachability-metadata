@@ -275,9 +275,6 @@ public class RocksSupportApiCoverageTest {
             assertThat(first.equals(same)).isTrue();
             assertThat(first.startsWith(prefix)).isTrue();
         }
-        org.junit.jupiter.api.Assumptions.assumeFalse(
-                "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")),
-                "RocksDB comparator callback disposal is not supported in native-image tests");
         try (ComparatorOptions comparatorOptions = new ComparatorOptions();
              ComparatorOptions intComparatorOptions = new ComparatorOptions();
              BytewiseComparator comparator = new BytewiseComparator(comparatorOptions);

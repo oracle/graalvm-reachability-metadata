@@ -80,9 +80,6 @@ public class RocksOptionsApiCoverageTest {
 
     @Test
     void columnFamilyConfigurationRoundTripsThroughPublicApi() throws Exception {
-        org.junit.jupiter.api.Assumptions.assumeFalse(
-                "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")),
-                "RocksDB callback comparators are not supported in native-image tests");
         BlockBasedTableConfig tableConfig = new BlockBasedTableConfig();
         HashLinkedListMemTableConfig memTableConfig = new HashLinkedListMemTableConfig();
         try (ColumnFamilyOptions options = new ColumnFamilyOptions();
@@ -828,9 +825,6 @@ public class RocksOptionsApiCoverageTest {
 
     @Test
     void abstractComparatorDefaultKeyShorteningPreservesKeys() throws Exception {
-        org.junit.jupiter.api.Assumptions.assumeFalse(
-                "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")),
-                "RocksDB comparator callbacks are not supported in native-image tests");
         try (org.rocksdb.ComparatorOptions comparatorOptions = new org.rocksdb.ComparatorOptions();
              CoverageComparator comparator = new CoverageComparator(comparatorOptions)) {
             ByteBuffer start = ByteBuffer.wrap(bytes("alpha"));
