@@ -360,9 +360,9 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
 
-          # Records each compatibility chain on its own (§FS-library-version-update-automation.3): each recorded
-          # version is staged, so dropping unstaged changes undoes a failed addTestedVersion; that
-          # chain's later versions are skipped, and the step fails once the others are pushed.
+          # Records chains independently (§FS-library-version-update-automation.3).
+          # Staged versions survive rollback of a failed addTestedVersion.
+          # The failed chain stops, and the step fails after pushing the other chains.
           update_new_versions() {
             local -A failed_libraries=()
             local coordinates last_supported_version release_line library log_file reason
