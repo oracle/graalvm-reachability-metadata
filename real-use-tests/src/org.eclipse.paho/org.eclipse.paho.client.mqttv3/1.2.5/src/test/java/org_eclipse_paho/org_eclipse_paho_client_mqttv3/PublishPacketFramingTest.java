@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /// is sent, and an image above the broker's packet limit costs the publisher its connection.
 public class PublishPacketFramingTest {
 
-    private static final String IMAGE = "eclipse-mosquitto:2.0.22";
+    private static final String IMAGE = "eclipse-mosquitto:2.0.23";
 
     /// Packet limit the broker enforces on every frame a client sends it.
     private static final int MAX_PACKET_SIZE = 3 * 1024 * 1024;

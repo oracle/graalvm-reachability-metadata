@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /// broker is down surfaces the last connect error.
 public class PasswordAuthFailoverTest {
 
-    private static final String IMAGE = "eclipse-mosquitto:2.0.22";
+    private static final String IMAGE = "eclipse-mosquitto:2.0.23";
 
     private static final String BROKER_CONFIG = """
             listener 1883

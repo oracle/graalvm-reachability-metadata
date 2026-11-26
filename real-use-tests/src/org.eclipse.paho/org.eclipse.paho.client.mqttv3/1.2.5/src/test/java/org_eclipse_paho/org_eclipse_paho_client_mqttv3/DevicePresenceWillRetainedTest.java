@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /// messages, and decommissioning a device clears its retained status.
 public class DevicePresenceWillRetainedTest {
 
-    private static final String IMAGE = "eclipse-mosquitto:2.0.22";
+    private static final String IMAGE = "eclipse-mosquitto:2.0.23";
 
     private static final Duration STARTUP_TIMEOUT = Duration.ofSeconds(90);
 
