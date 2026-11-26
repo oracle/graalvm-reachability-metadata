@@ -106,9 +106,13 @@ API surface.
 | `library-update-request` | Coverage percentage does not drop at all against the previously supported version. |
 | `fixes-javac-fail`, `fixes-java-run-fail`, `fixes-native-image-build-fail`, `fixes-native-image-run-fail` | Each overall or breakdown scope passes the repair comparison below. |
 
+The contributed version's dynamic-access figure is always measured: when its
+report build fails, the stats generation fails, so no gate judges a missing
+report.
+
 For the `fixes-*` labels, apply this ordered comparison independently to the
 overall dynamic-access report and every breakdown present in either version.
-Treat `N/A` on either side of a comparison as `0/0`: zero total calls and zero
+Treat a previous version's committed `N/A` as `0/0`: zero total calls and zero
 covered calls.
 
 1. A new scope with no calls passes because no comparable call surface remains.
