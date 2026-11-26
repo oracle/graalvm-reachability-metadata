@@ -107,7 +107,7 @@ class RegistrationErrorRecoveryTest {
         val (exit, output) = docker(
           "run", "--rm", "--pull=never", "-d", "--name", name,
           "-e", "POSTGRES_PASSWORD=registration-secret",
-          "-p", "127.0.0.1::5432", "postgres:18-alpine"
+          "-p", "127.0.0.1::5432", "postgres:19-alpine"
         )
         require(exit == 0, output)
         val deadline: Long = System.nanoTime() + 20.seconds.toNanos

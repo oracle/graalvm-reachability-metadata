@@ -77,7 +77,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /// turned away.
 public class MutualTlsTransportTest {
 
-    private static final String IMAGE = "eclipse-mosquitto:2.0.22";
+    private static final String IMAGE = "eclipse-mosquitto:2.0.23";
 
     private static final String BROKER_CONFIG = """
             listener 8883

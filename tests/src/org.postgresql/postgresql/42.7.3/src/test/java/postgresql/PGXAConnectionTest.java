@@ -42,7 +42,7 @@ public class PGXAConnectionTest {
     @BeforeAll
     static void beforeAll() throws Exception {
         containerId = commandOutput("docker", "run", "--rm", "-d", "-p", "127.0.0.1::5432", "-e", "POSTGRES_DB=" + DATABASE,
-                "-e", "POSTGRES_USER=" + USERNAME, "-e", "POSTGRES_PASSWORD=" + PASSWORD, "postgres:18-alpine");
+                "-e", "POSTGRES_USER=" + USERNAME, "-e", "POSTGRES_PASSWORD=" + PASSWORD, "postgres:19-alpine");
         databasePort = Integer.parseInt(commandOutput("docker", "inspect", "--format",
                 "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}", containerId));
 

@@ -36,7 +36,7 @@ class PooledBulkImportTest {
         "--publish", "127.0.0.1::5432",
         "--env", "POSTGRES_DB=shipments",
         "--env", "POSTGRES_USER=importer",
-        "--env", "POSTGRES_PASSWORD=import-secret", "postgres:18-alpine")
+        "--env", "POSTGRES_PASSWORD=import-secret", "postgres:19-alpine")
       awaitDatabase(container)
       val binding: String = command("docker", "port", container, "5432/tcp").trim
       val port: Int = binding.substring(binding.lastIndexOf(':') + 1).toInt
