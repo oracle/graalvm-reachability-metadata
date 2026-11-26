@@ -68,6 +68,10 @@ GitHub Actions, configured by [`ci.json`](../../ci.json) as the single source of
 - Schedule-driven: full metadata sweep every three days to prevent incomplete or breaking metadata from shipping in releases, opted-in new-library-version compatibility (daily), Docker image vulnerability scans, scheduled release every Monday, scheduled coverage publication.
 - Event-driven snapshot publication: every push to `master` may refresh the floating `SNAPSHOT` release when metadata changed since the previous `SNAPSHOT` tag.
 
+Shared test-support changes run their unit regressions in the PR gate even when
+no affected library coordinate is found. A failure in those regressions fails
+the infrastructure gate.
+
 CI must pass before any merge, and is the authoritative gate — local runs are best-effort.
 
 ### 4.4 Releases
