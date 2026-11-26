@@ -169,6 +169,14 @@ input. An empty report therefore always means the library reported no
 dynamic access, never that nothing was built, so a consumer may treat a zero-call
 report as a property of the library (§forge/AR-dynamic-access-fallback-and-failure).
 
+`generateLibraryStats` also fails when that build fails, so a failed build
+never reaches the stats as a figure (§FS-contribution-contract.3). It
+writes `N/A` only for a figure that cannot exist: the whole `libraryCoverage`
+when the library JARs hold no bytecode for JaCoCo to instrument, and one metric
+the JaCoCo report has no counter for, such as `line` for classes without line
+numbers. Without bytecode, `dynamicAccess` is `0/0`, as it is for a library
+without dynamic-access calls.
+
 A caller that has already listed the call sites can skip that native build.
 With `-Ptck.dynamicAccess.callSites=<dir>` naming a copy of an earlier
 `dynamic-access` output, the task runs `jacocoCodeCoverageReport` and

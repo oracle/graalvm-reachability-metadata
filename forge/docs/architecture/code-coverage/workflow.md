@@ -684,11 +684,10 @@ The Rhei template should decompose the workflow into these phases:
    (§root/AR-test-harness.8). It is also the one step here that builds a native
    image: `generateLibraryStats` measures dynamic access from a native build, so
    the stats step, not the JVM suites, sets this phase's wall clock. A native
-   build that fails degrades the coordinate's `dynamicAccess` figure to `N/A`
-   instead of failing the run, and that `N/A` replaces whatever the committed
-   stats held before. The metadata split is the same step the dynamic-access
-   workflows run at their own finalization (§AR-forge-driver-queues.2), and
-   for the same reason: metadata the
+   build that fails fails the step (§root/AR-test-harness.8), so it never
+   replaces the committed `dynamicAccess` figure. The metadata split is the
+   same step the dynamic-access workflows run at their own finalization
+   (§AR-forge-driver-queues.2), and for the same reason: metadata the
    extension suite needed only for its own helper types must not reach a
    consumer, and deciding that by hand is exactly what the task automates
    (§root/FS-metadata.2.1, §root/AR-test-harness.5). The step also fails the
