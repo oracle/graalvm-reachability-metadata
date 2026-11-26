@@ -38,7 +38,7 @@ class PooledSessionFailureRecoveryTest {
         "--publish", "127.0.0.1::5432",
         "--env", "POSTGRES_DB=dispatch",
         "--env", "POSTGRES_USER=dispatcher",
-        "--env", "POSTGRES_PASSWORD=dispatch-secret", "postgres:18-alpine")
+        "--env", "POSTGRES_PASSWORD=dispatch-secret", "postgres:19-alpine")
       awaitDatabase(container)
       val binding: String = command("docker", "port", container, "5432/tcp").trim
       val port: Int = binding.substring(binding.lastIndexOf(':') + 1).toInt

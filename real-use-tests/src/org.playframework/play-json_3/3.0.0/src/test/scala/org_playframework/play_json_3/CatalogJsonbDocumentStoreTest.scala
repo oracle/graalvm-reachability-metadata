@@ -184,7 +184,7 @@ object CatalogJsonbDocumentStoreTest {
       "run", "--rm", "-d", "--name", ContainerName,
       "-e", s"POSTGRES_PASSWORD=$Password",
       "-p", s"127.0.0.1:$port:5432",
-      "postgres:18-alpine"
+      "postgres:19-alpine"
     )
     awaitConnection(TimeUnit.SECONDS.toMillis(120))
   }

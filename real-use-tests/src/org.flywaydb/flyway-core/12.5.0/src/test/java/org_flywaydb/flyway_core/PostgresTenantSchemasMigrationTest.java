@@ -49,7 +49,7 @@ import org.junit.jupiter.api.io.TempDir;
  */
 public class PostgresTenantSchemasMigrationTest {
 
-    private static final String IMAGE = "postgres:18-alpine";
+    private static final String IMAGE = "postgres:19-alpine";
 
     private static final String USER = "billing_app";
 

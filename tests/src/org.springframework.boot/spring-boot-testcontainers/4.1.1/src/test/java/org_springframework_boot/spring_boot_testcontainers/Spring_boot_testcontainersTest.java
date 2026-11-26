@@ -73,7 +73,7 @@ public class Spring_boot_testcontainersTest {
             assertThat(beanDefinition).isInstanceOf(TestcontainerBeanDefinition.class);
             assertThat(beanDefinition.getRole()).isEqualTo(BeanDefinition.ROLE_INFRASTRUCTURE);
             assertThat(((TestcontainerBeanDefinition) beanDefinition).getContainerImageName())
-                    .isEqualTo("postgres:18-alpine");
+                    .isEqualTo("postgres:19-alpine");
             assertThat(container.getStartCount()).isZero();
         }
     }
@@ -205,12 +205,12 @@ public class Spring_boot_testcontainersTest {
         private volatile boolean running;
 
         RecordingContainer() {
-            super("postgres:18-alpine");
+            super("postgres:19-alpine");
         }
 
         @Override
         public String getDockerImageName() {
-            return "postgres:18-alpine";
+            return "postgres:19-alpine";
         }
 
         @Override

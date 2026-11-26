@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ArticleTaggingArrayTest {
 
-    private static final String POSTGRES_IMAGE = "postgres:18-alpine";
+    private static final String POSTGRES_IMAGE = "postgres:19-alpine";
 
     private static final String DATABASE = "blog";
 

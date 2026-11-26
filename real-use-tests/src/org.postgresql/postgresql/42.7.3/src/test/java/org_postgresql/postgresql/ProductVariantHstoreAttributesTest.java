@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.entry;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProductVariantHstoreAttributesTest {
 
-    private static final String POSTGRES_IMAGE = "postgres:18-alpine";
+    private static final String POSTGRES_IMAGE = "postgres:19-alpine";
 
     private static final String DATABASE = "catalog";
 
