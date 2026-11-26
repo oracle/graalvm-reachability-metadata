@@ -62,7 +62,10 @@ not gate the scheduled release (§AR-create-scheduled-release).
 Every day (`0 0 * * *`) and on manual dispatch. Owns the upstream-version
 tracking loop fully specified in §FS-library-version-update-automation
 (§GOAL-broad-version-coverage, §GOAL-fresh-metadata): it discovers newer versions
-only for libraries whose latest index entry sets `auto-update: true`, using
+only for libraries whose latest index entry sets `auto-update: true`. Optional
+`auto-update-lines` produces separate chains with their own tested-version
+baselines, preserved through the matrix, artifacts, aggregation and recording
+(§FS-library-version-update-automation.1). Discovery uses
 `fetchExistingLibrariesWithNewerVersions`, and builds a matrix with
 `generateNewLibraryVersionCompatibilityMatrix` (capped per
 §FS-repository-functional-spec.5.3), tests every candidate across the matrix

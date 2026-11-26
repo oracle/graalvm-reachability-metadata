@@ -113,7 +113,7 @@ jobs:
           git push origin "${{ steps.set-branch-name.outputs.branch }}"
 
   test-all-metadata:
-    name: "🧪 ${{ matrix.name }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.name }} ${{ matrix.releaseLine }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     if: needs.get-opted-in-libraries.outputs.none-found != 'true'
     runs-on: ${{ matrix.os }}
     needs: get-opted-in-libraries
@@ -145,7 +145,7 @@ jobs:
 
       - name: "Extract test path and library version"
         id: extract-params
-        run: ./gradlew extractLibraryTestParams -Pcoordinates="${{ matrix.name }}"
+        run: ./gradlew extractLibraryTestParams -Pcoordinates="${{ matrix.name }}${{ matrix.baselineVersion && format(':{0}', matrix.baselineVersion) || '' }}"
 
       - name: "Pull allowed docker images"
         run: ./gradlew pullAllowedDockerImages -Pcoordinates="${{ env.TEST_COORDINATES }}"
@@ -176,6 +176,7 @@ jobs:
 
           jq -n \
             --arg name "${{ matrix.name }}" \
+            --arg releaseLine "${{ matrix.releaseLine }}" \
             --arg os "${{ matrix.os }}" \
             --arg jdk "${{ matrix.version }}" \
             --arg nativeImageMode "${{ matrix.nativeImageMode }}" \
@@ -189,6 +190,7 @@ jobs:
             --rawfile logTail test_results.txt \
             '{
               name: $name,
+              releaseLine: $releaseLine,
               os: $os,
               version: $jdk,
               nativeImageMode: $nativeImageMode,
@@ -207,7 +209,7 @@ jobs:
       - name: "📝 Compute artifact names"
         id: artifact-name
         run: |
-          SAFE_NAME="$(printf '%s' '${{ matrix.name }}' | tr ':' '-')"
+          SAFE_NAME="$(printf '%s' '${{ matrix.name }}-${{ matrix.releaseLine }}' | tr ':' '-')"
           SAFE_MODE="$(printf '%s' '${{ matrix.nativeImageMode }}' | tr ':' '-')"
           echo "artifact_name=compatibility-result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}-$SAFE_MODE" >> "$GITHUB_OUTPUT"
           echo "result_file=result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}-$SAFE_MODE.json" >> "$GITHUB_OUTPUT"
@@ -268,7 +270,7 @@ jobs:
           jq -s '
             def failures_by_library:
               map(select(.failure != null))
-              | group_by(.name)
+              | group_by([.name, (.releaseLine // "")])
               | map({
                   name: .[0].name,
                   latestVersion: .[0].latestVersion,
@@ -301,16 +303,17 @@ jobs:
               reduce .[] as $item ([]; if index($item) then . else . + [$item] end);
 
             def successes_by_library:
-              group_by(.name)
+              group_by([.name, (.releaseLine // "")])
               | map(
                   (. | map(select(.skipped != true))) as $active
                   | if ($active | length) == 0 then empty else {
                       name: $active[0].name,
+                      releaseLine: ($active[0].releaseLine // ""),
                       latestVersion: $active[0].latestVersion,
                       successfulVersions: (
                         ($active | map(.successfulVersions | unique_preserve)) as $lists
                         | if ($lists | length) == 0 then []
-                          else reduce $lists[1:][] as $candidate ($lists[0]; [ .[] | select($candidate | index(.)) ])
+                          else reduce $lists[1:][] as $candidate ($lists[0]; [ .[] as $version | $version | select($candidate | index($version)) ])
                           end
                       ),
                       consideredVersions: ($active | map(.successfulVersions + (if .failure == null then [] else [.failure.failedVersion] end)) | add | unique)
@@ -327,12 +330,13 @@ jobs:
           jq -r '
             .successes[]
             | .name as $name
+            | .releaseLine as $line
             | .latestVersion as $latest
             | .successfulVersions as $versions
             | range(0; $versions | length) as $i
             | ($versions[$i]) as $version
             | (if $i == 0 then $latest else $versions[$i - 1] end) as $lastSupported
-            | "\($name):\($version)|\($lastSupported)"
+            | "\($name):\($version)|\($lastSupported)|\($line)"
           ' aggregate-results.json > successful_updates.txt
 
           if [[ -s successful_updates.txt ]]; then
@@ -356,19 +360,19 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
 
-          # Records each library on its own (§FS-library-version-update-automation.3): each recorded
+          # Records each compatibility chain on its own (§FS-library-version-update-automation.3): each recorded
           # version is staged, so dropping unstaged changes undoes a failed addTestedVersion; that
-          # library's later versions are skipped, and the step fails once the others are pushed.
+          # chain's later versions are skipped, and the step fails once the others are pushed.
           update_new_versions() {
             local -A failed_libraries=()
-            local coordinates last_supported_version library log_file reason
+            local coordinates last_supported_version release_line library log_file reason
             : > recorded_updates.txt
             : > recording_failures.txt
-            while IFS='|' read -r coordinates last_supported_version; do
+            while IFS='|' read -r coordinates last_supported_version release_line; do
               if [[ -z "$coordinates" || -z "$last_supported_version" ]]; then
                 continue
               fi
-              library="${coordinates%:*}"
+              library="${coordinates%:*}@${release_line}"
               if [[ -n "${failed_libraries[$library]+x}" ]]; then
                 echo "Skipping $coordinates: an earlier version of $library could not be recorded."
                 continue

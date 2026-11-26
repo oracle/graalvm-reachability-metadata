@@ -587,6 +587,8 @@ List<Map<String, Object>> expandNewLibraryVersionCompatibilityMatrix(List<Map<St
     expandMatrixEntries(libraries.take(maxLibraries).collect { Map<String, Object> library ->
         [
                 "name"    : library["name"],
+                "releaseLine": library["releaseLine"] ?: "",
+                "baselineVersion": library["baselineVersion"] ?: "",
                 "versions": (library["versions"] as List<?>)
                         .collect { it.toString() }
                         .take(versionsPerJob)
@@ -1011,7 +1013,14 @@ tasks.register("extractLibraryTestParams", DefaultTask) { task ->
         Map latestEntry = null
         if (indexFile.exists()) {
             def entries = new JsonSlurper().parse(indexFile) as List<Map>
-            latestEntry = entries.find { e -> Boolean.TRUE.equals(e["latest"]) }
+            if (parts.length == 3 && parts[2]) {
+                latestEntry = entries.find { e -> (e["tested-versions"] ?: []).contains(parts[2]) }
+                if (latestEntry == null) {
+                    throw new GradleException("No metadata entry owns baseline ${coordsStr}")
+                }
+            } else {
+                latestEntry = entries.find { e -> Boolean.TRUE.equals(e["latest"]) }
+            }
             if (latestEntry == null && !entries.isEmpty()) {
                 latestEntry = entries.max { e -> VersionNumber.parse((e["metadata-version"] ?: "").toString()) }
             }
@@ -1053,7 +1062,7 @@ tasks.register("extractLibraryTestParams", DefaultTask) { task ->
         // Use the latest metadata version for compatibility verification.
         String testCoordinates = "${lib}:${latestVersion}"
 
-        writeGithubEnv("LATEST_VERSION", latestVersion)
+        writeGithubEnv("LATEST_VERSION", parts.length == 3 && parts[2] ? parts[2] : latestVersion)
         writeGithubEnv("TEST_PATH", testPath)
         writeGithubEnv("TEST_COORDINATES", testCoordinates)
     }

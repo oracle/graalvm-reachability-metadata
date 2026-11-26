@@ -235,12 +235,14 @@ class ScaffoldTask extends DefaultTask {
             int index,
             Boolean latest,
             Boolean autoUpdate,
+            List<String> autoUpdateLines,
             Boolean highPriority
     ) {
         MetadataVersionsIndexEntry oldEntry = list.get(index);
         list.set(index, new MetadataVersionsIndexEntry(
                 latest,
                 autoUpdate,
+                autoUpdateLines,
                 highPriority,
                 oldEntry.override(),
                 oldEntry.defaultFor(),
@@ -266,6 +268,8 @@ class ScaffoldTask extends DefaultTask {
         int latestIndex = 0;
         VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
         boolean autoUpdate = entries.stream().anyMatch(entry -> Boolean.TRUE.equals(entry.autoUpdate()));
+        List<String> autoUpdateLines = entries.stream().map(MetadataVersionsIndexEntry::autoUpdateLines)
+                .filter(Objects::nonNull).findFirst().orElse(null);
         boolean highPriority = entries.stream().anyMatch(entry -> Boolean.TRUE.equals(entry.highPriority()));
         for (int i = 1; i < entries.size(); i++) {
             VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
@@ -282,6 +286,7 @@ class ScaffoldTask extends DefaultTask {
                     i,
                     latest ? Boolean.TRUE : null,
                     latest && autoUpdate ? Boolean.TRUE : null,
+                    latest ? autoUpdateLines : null,
                     latest && highPriority ? Boolean.TRUE : null
             );
         }
@@ -350,6 +355,7 @@ class ScaffoldTask extends DefaultTask {
         return new MetadataVersionsIndexEntry(
                 latest ? Boolean.TRUE : null,
                 null, // auto-update
+                null, // auto-update-lines
                 null, // high-priority
                 null, // override
                 null, // default-for

@@ -119,6 +119,7 @@ class ScaffoldTaskUpdateTests extends ScaffoldTaskTestSupport {
                 .filter(entry -> Boolean.TRUE.equals(entry.get("latest")))
                 .forEach(entry -> {
                     entry.put("auto-update", true);
+                    entry.put("auto-update-lines", List.of("42"));
                     entry.put("high-priority", true);
                 });
         OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValue(indexFile.toFile(), initialEntries);
@@ -134,12 +135,13 @@ class ScaffoldTaskUpdateTests extends ScaffoldTaskTestSupport {
         assertThat(indexEntries.get(0)).containsEntry("metadata-version", "42.7.2")
                 .containsEntry("tested-versions", List.of("42.7.2"))
                 .containsEntry("allowed-packages", List.of("org.postgresql"))
-                .doesNotContainKeys("latest", "auto-update", "high-priority");
+                .doesNotContainKeys("latest", "auto-update", "auto-update-lines", "high-priority");
         assertThat(indexEntries.get(1)).containsEntry("metadata-version", "42.7.3")
                 .containsEntry("tested-versions", List.of("42.7.3"))
                 .containsEntry("allowed-packages", List.of("org.postgresql"))
                 .containsEntry("latest", true)
                 .containsEntry("auto-update", true)
+                .containsEntry("auto-update-lines", List.of("42"))
                 .containsEntry("high-priority", true);
         assertThat(tempDir.resolve("tests/src/org.postgresql/postgresql/42.7.3/build.gradle")).exists();
         assertThat(tempDir.resolve("metadata/org.postgresql/postgresql/42.7.3/reachability-metadata.json")).exists();

@@ -309,6 +309,7 @@ public final class MetadataIndexUpdateUtils {
         List<String> latestRequires = null;
         LibraryLanguage latestLanguage = null;
         Boolean latestAutoUpdate = null;
+        List<String> latestAutoUpdateLines = null;
         Boolean latestHighPriority = null;
         // Copy default metadata properties from the current latest entry.
         for (int i = 0; i < entries.size(); i++) {
@@ -318,9 +319,10 @@ public final class MetadataIndexUpdateUtils {
                 latestRequires = entry.requires();
                 latestLanguage = entry.language();
                 latestAutoUpdate = entry.autoUpdate();
+                latestAutoUpdateLines = entry.autoUpdateLines();
                 latestHighPriority = entry.highPriority();
                 if (markAsLatest) {
-                    entries.set(i, copyWithLatest(entry, null, null, null));
+                    entries.set(i, entry.withLatest(null, null, null));
                 }
             }
         }
@@ -331,6 +333,7 @@ public final class MetadataIndexUpdateUtils {
         MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(
                 markAsLatest ? Boolean.TRUE : null, // latest
                 markAsLatest ? latestAutoUpdate : null, // auto-update
+                markAsLatest ? latestAutoUpdateLines : null, // auto-update-lines
                 markAsLatest ? latestHighPriority : null, // high-priority
                 null, // override
                 null, // default-for
@@ -407,7 +410,7 @@ public final class MetadataIndexUpdateUtils {
                 }
             }
             if (moved) {
-                entries.set(i, copyWithTestedVersions(entry, retainedVersions));
+                entries.set(i, entry.withTestedVersions(retainedVersions));
             }
         }
 
@@ -445,61 +448,6 @@ public final class MetadataIndexUpdateUtils {
         } catch (IllegalArgumentException e) {
             return null;
         }
-    }
-
-    private static MetadataVersionsIndexEntry copyWithTestedVersions(MetadataVersionsIndexEntry entry, List<String> testedVersions) {
-        return new MetadataVersionsIndexEntry(
-                entry.latest(),
-                entry.autoUpdate(),
-                entry.highPriority(),
-                entry.override(),
-                entry.defaultFor(),
-                entry.metadataVersion(),
-                entry.testVersion(),
-                entry.sourceCodeUrl(),
-                entry.repositoryUrl(),
-                entry.testCodeUrl(),
-                entry.documentationUrl(),
-                entry.description(),
-                entry.language(),
-                testedVersions,
-                entry.skippedVersions(),
-                entry.allowedPackages(),
-                entry.requires(),
-                entry.notForNativeImage(),
-                entry.reason(),
-                entry.replacement()
-        );
-    }
-
-    private static MetadataVersionsIndexEntry copyWithLatest(
-            MetadataVersionsIndexEntry entry,
-            Boolean latest,
-            Boolean autoUpdate,
-            Boolean highPriority
-    ) {
-        return new MetadataVersionsIndexEntry(
-                latest,
-                autoUpdate,
-                highPriority,
-                entry.override(),
-                entry.defaultFor(),
-                entry.metadataVersion(),
-                entry.testVersion(),
-                entry.sourceCodeUrl(),
-                entry.repositoryUrl(),
-                entry.testCodeUrl(),
-                entry.documentationUrl(),
-                entry.description(),
-                entry.language(),
-                entry.testedVersions(),
-                entry.skippedVersions(),
-                entry.allowedPackages(),
-                entry.requires(),
-                entry.notForNativeImage(),
-                entry.reason(),
-                entry.replacement()
-        );
     }
 
     private record ParsedMetadataVersion(List<Integer> baseComponents, int qualifierRank, int qualifierNumber)

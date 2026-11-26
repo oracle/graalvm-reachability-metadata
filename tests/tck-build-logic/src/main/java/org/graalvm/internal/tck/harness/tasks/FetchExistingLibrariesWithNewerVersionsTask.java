@@ -97,31 +97,44 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
                 eligibleLibraries.size()
         );
 
-        List<String> newerVersions = new ArrayList<>();
+        List<Map<String, Object>> pairs = new ArrayList<>();
         int maxVersionsPerLibrary = getMaxVersionsPerLibrary().get();
         for (String libraryName : eligibleLibraries) {
-            List<String> versions = getNewerVersionsFor(libraryName, getLatestLibraryVersion(libraryName));
-            List<String> skipped = getSkippedVersions(libraryName);
-            versions.removeAll(skipped);
-            versions = dropRelocatedVersions(MAVEN_CENTRAL_BASE_URL, libraryName, versions, maxVersionsPerLibrary, getLogger());
-            for (String v : versions) {
-                newerVersions.add(libraryName + ":" + v);
+            File indexFile = new File("metadata/" + libraryName.replace(':', '/') + "/index.json");
+            List<MetadataVersionsIndexEntry> entries;
+            try {
+                entries = new ObjectMapper().readValue(indexFile, new TypeReference<>() {});
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        }
-
-        Map<String, List<String>> grouped = new LinkedHashMap<>();
-        for (String coord : newerVersions) {
-            String[] parts = coord.split(":", -1);
-            String key = parts[0] + ":" + parts[1];
-            grouped.computeIfAbsent(key, k -> new ArrayList<>()).add(parts[2]);
-        }
-
-        List<Map<String, Object>> pairs = new ArrayList<>();
-        for (Map.Entry<String, List<String>> e : grouped.entrySet()) {
-            Map<String, Object> m = new LinkedHashMap<>();
-            m.put("name", e.getKey());
-            m.put("versions", e.getValue());
-            pairs.add(m);
+            Map<String, String> baselines = ReleaseLineUpdates.baselines(entries);
+            if (baselines.isEmpty()) {
+                baselines.put("", getLatestLibraryVersion(libraryName));
+            }
+            String metadataUrl = MAVEN_CENTRAL_BASE_URL + "/" + libraryName.substring(0, libraryName.indexOf(':')).replace('.', '/')
+                    + "/" + libraryName.substring(libraryName.indexOf(':') + 1)
+                    + "/maven-metadata.xml";
+            Optional<String> metadata = readMavenMetadata(metadataUrl);
+            if (metadata.isEmpty()) {
+                continue;
+            }
+            List<String> tested = getTestedVersions(libraryName);
+            List<String> skipped = getSkippedVersions(libraryName);
+            for (Map.Entry<String, String> baseline : baselines.entrySet()) {
+                List<String> versions = ReleaseLineUpdates.candidates(metadata.get(), libraryName,
+                        baseline.getValue(), baseline.getKey(), tested, skipped);
+                versions = dropRelocatedVersions(MAVEN_CENTRAL_BASE_URL, libraryName,
+                        versions, maxVersionsPerLibrary, getLogger());
+                if (versions.isEmpty()) {
+                    continue;
+                }
+                Map<String, Object> pair = new LinkedHashMap<>();
+                pair.put("name", libraryName);
+                pair.put("versions", versions);
+                pair.put("releaseLine", baseline.getKey());
+                pair.put("baselineVersion", baseline.getKey().isEmpty() ? "" : baseline.getValue());
+                pairs.add(pair);
+            }
         }
 
         try {

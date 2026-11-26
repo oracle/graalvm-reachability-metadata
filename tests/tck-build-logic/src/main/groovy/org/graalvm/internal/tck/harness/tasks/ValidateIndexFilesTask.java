@@ -6,6 +6,10 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
+import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
@@ -195,6 +199,14 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
     static void checkLibraryIndexAutoUpdate(JsonNode json, String filePath, List<String> failures) {
         if (json == null || !json.isArray()) {
             return;
+        }
+
+        try {
+            List<MetadataVersionsIndexEntry> entries = new ObjectMapper().convertValue(
+                    json, new TypeReference<List<MetadataVersionsIndexEntry>>() {});
+            ReleaseLineUpdates.baselines(entries);
+        } catch (IllegalArgumentException e) {
+            failures.add("❌ " + filePath + ": " + e.getMessage());
         }
 
         int autoUpdateEntries = 0;

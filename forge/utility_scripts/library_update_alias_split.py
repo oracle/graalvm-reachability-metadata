@@ -36,7 +36,7 @@ from utility_scripts.task_logs import build_timestamped_task_log_path, display_l
 
 ALIAS_SPLIT_METRICS_KEY = "library_update_alias_split"
 ALIAS_SWEEP_STAGE = "library-update-alias-sweep"
-LATEST_ONLY_FIELDS: tuple[str, ...] = ("auto-update", "high-priority")
+LATEST_ONLY_FIELDS: tuple[str, ...] = ("auto-update", "auto-update-lines", "high-priority")
 
 
 def load_alias_split_metrics(
