@@ -135,7 +135,7 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
         CommandResult dynamicAccess = runGradle(List.of("generateDynamicAccessReport", "-Pcoordinates=" + coordinates), true);
         if (dynamicAccess.exitCode() != 0) {
             getLogger().warn(
-                    "Dynamic access report generation failed for {} with exit code {}. Writing dynamicAccess as N/A.",
+                    "Dynamic access report generation failed for {} with exit code {}.",
                     coordinates,
                     dynamicAccess.exitCode()
             );
@@ -212,12 +212,13 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
                 .resolve("dynamic-access-coverage.json");
     }
 
+    /// The stats of one coordinate, where `N/A` marks a figure that cannot exist, never a failed build.
+    ///
+    /// JARs without bytecode give JaCoCo nothing to instrument, so their library coverage is `N/A`
+    /// and their dynamic access `0/0`. A failed report build fails the task (§AR-test-harness.8).
     protected LibraryStatsModels.VersionStats computeVersionStats(String coordinates) {
         List<Path> libraryJars = listLibraryJars(coordinates);
 
-        // When library JARs contain no bytecode (no .class files), JaCoCo has nothing
-        // to instrument and produces no report. Keep coverage as N/A, but model
-        // dynamic access as an empty fully-covered set like other empty fallbacks.
         if (!CoverageMeasurement.containsClassFiles(libraryJars)) {
             getLogger().warn(
                     "Library JARs for {} contain no bytecode. Writing empty dynamic access stats and N/A coverage.",
@@ -230,20 +231,19 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
             );
         }
 
-        boolean dynamicAccessAvailable = generateReportsForCoordinate(coordinates);
-        if (dynamicAccessAvailable) {
-            Path originsOutput = maybeCollectAgentOrigins(coordinates, libraryJars);
-            return CoverageMeasurement.buildVersionStats(
-                    coordinates,
-                    libraryJars,
-                    getDynamicAccessDir(coordinates),
-                    getJacocoReport(coordinates),
-                    CoverageMeasurement.parseAgentOrigins(originsOutput, getDynamicAccessDir(coordinates))
-            );
+        if (!generateReportsForCoordinate(coordinates)) {
+            throw new GradleException("""
+                    Dynamic access report generation failed for %s; its build output is above.
+                    Writing dynamicAccess as N/A would hide that failure from the coverage gates.\
+                    """.formatted(coordinates));
         }
-        return CoverageMeasurement.buildVersionStatsWithoutDynamicAccess(
+        Path originsOutput = maybeCollectAgentOrigins(coordinates, libraryJars);
+        return CoverageMeasurement.buildVersionStats(
                 coordinates,
-                getJacocoReport(coordinates)
+                libraryJars,
+                getDynamicAccessDir(coordinates),
+                getJacocoReport(coordinates),
+                CoverageMeasurement.parseAgentOrigins(originsOutput, getDynamicAccessDir(coordinates))
         );
     }
 

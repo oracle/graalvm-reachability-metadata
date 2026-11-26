@@ -61,18 +61,6 @@ public final class CoverageMeasurement {
         );
     }
 
-    public static LibraryStatsModels.VersionStats buildVersionStatsWithoutDynamicAccess(
-            String coordinate,
-            Path jacocoReport
-    ) {
-        JacocoReportParser.ParsedJacocoReport parsedJacocoReport = JacocoReportParser.parse(jacocoReport);
-        return versionStats(
-                coordinate,
-                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
-                parsedJacocoReport
-        );
-    }
-
     public static ExternalDynamicAccessSummary buildExternalDynamicAccessSummary(List<Path> libraryJars, Path dynamicAccessDir) {
         Set<String> libraryClasses = loadLibraryClasses(libraryJars);
         if (libraryClasses.isEmpty()) {

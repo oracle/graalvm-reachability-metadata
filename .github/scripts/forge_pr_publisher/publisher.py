@@ -1581,8 +1581,8 @@ def _format_local_ci_verification_section(verification: dict[str, Any] | None) -
 def _format_dynamic_access_entry(stats: Any) -> str:
     """One dynamic-access figure, or `N/A` when the stats hold none.
 
-    A native build that fails leaves `"N/A"` in place of the figure, and the body
-    must still render (§forge/AR-code-coverage-improvement.5, §forge/AR-pr-body).
+    Committed stats of an earlier version may hold `"N/A"` in place of the figure,
+    and the body must still render (§forge/AR-code-coverage-improvement.5, §forge/AR-pr-body).
     """
     if not _is_dynamic_access_stats_entry(stats):
         return "N/A"
