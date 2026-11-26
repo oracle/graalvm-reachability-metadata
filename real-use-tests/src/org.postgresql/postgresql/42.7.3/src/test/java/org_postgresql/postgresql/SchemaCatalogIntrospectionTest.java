@@ -146,7 +146,11 @@ class SchemaCatalogIntrospectionTest {
         try (Connection connection = dataSource.getConnection()) {
             DatabaseMetaData catalog = connection.getMetaData();
             assertThat(catalog.getDatabaseProductName()).isEqualTo("PostgreSQL");
-            assertThat(catalog.getDatabaseMajorVersion()).isEqualTo(18);
+            try (Statement statement = connection.createStatement();
+                    ResultSet version = statement.executeQuery("SELECT current_setting('server_version_num')::integer / 10000")) {
+                assertThat(version.next()).isTrue();
+                assertThat(catalog.getDatabaseMajorVersion()).isEqualTo(version.getInt(1));
+            }
             assertThat(catalog.getDriverName()).isEqualTo("PostgreSQL JDBC Driver");
             assertThat(catalog.getDriverVersion()).isEqualTo("42.7.3");
             assertThat(catalog.getUserName()).isEqualTo(USER);
