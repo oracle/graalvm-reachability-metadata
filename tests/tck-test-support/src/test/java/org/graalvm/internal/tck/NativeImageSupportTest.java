@@ -7,6 +7,7 @@
 package org.graalvm.internal.tck;
 
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 
 import com.oracle.svm.core.jdk.UnsupportedFeatureError;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,32 @@ public class NativeImageSupportTest {
     }
 
     @Test
+    void toleratesAnExceptionWrappingTheUnsupportedFeatureError() throws Exception {
+        NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+            throw new RuntimeException(new InvocationTargetException(unsupportedFeatureError()));
+        });
+    }
+
+    @Test
+    void toleratesACheckedExceptionAfterUnsupportedFeatureWasPrinted() throws Exception {
+        NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+            unsupportedFeatureError().printStackTrace(System.err);
+            throw new Exception("library discarded the cause");
+        });
+    }
+
+    @Test
+    void rethrowsAWrappedExceptionThatLeavesNoEvidence() {
+        RuntimeException failure = new RuntimeException(
+                new InvocationTargetException(new IllegalStateException("missing classfile")));
+        RuntimeException thrown = assertThrows(RuntimeException.class,
+                () -> NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+                    throw failure;
+                }));
+        assertSame(failure, thrown);
+    }
+
+    @Test
     void toleratesTheUnsupportedFeatureErrorPrintedBeforeTheCauseIsDiscarded() throws Exception {
         NativeImageSupport.runToleratingUnsupportedFeature(() -> {
             unsupportedFeatureError().printStackTrace(System.err);
@@ -117,6 +144,28 @@ public class NativeImageSupportTest {
                     throw fatalError;
                 }));
         assertSame(fatalError, thrown);
+    }
+
+    @Test
+    void rethrowsAnExceptionWrappingAnAssertionFailureAndUnsupportedFeature() {
+        RuntimeException failure = new RuntimeException(
+                new AssertionError("assertion must fail", unsupportedFeatureError()));
+        RuntimeException thrown = assertThrows(RuntimeException.class,
+                () -> NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+                    throw failure;
+                }));
+        assertSame(failure, thrown);
+    }
+
+    @Test
+    void rethrowsAnExceptionWrappingAFatalErrorAfterUnsupportedFeatureWasPrinted() {
+        RuntimeException failure = new RuntimeException(new OutOfMemoryError("fatal error"));
+        RuntimeException thrown = assertThrows(RuntimeException.class,
+                () -> NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+                    unsupportedFeatureError().printStackTrace(System.err);
+                    throw failure;
+                }));
+        assertSame(failure, thrown);
     }
 
     @Test

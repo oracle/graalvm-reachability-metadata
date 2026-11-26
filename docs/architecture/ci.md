@@ -107,9 +107,11 @@ own git identity, never reach the network, and compute the paths they expect. It
 
 ### AR-test-changed-infrastructure: Test changed infrastructure
 
-Triggers on PRs touching `tests/tck-build-logic/`, `gradle/`, `build.gradle`,
-`settings.gradle`, or `gradle.properties`. Runs
-`generateInfrastructureChangedCoordinatesMatrix`, then pulls allowed images,
+Triggers on PRs touching `tests/tck-build-logic/`, `tests/tck-test-support/`,
+`gradle/`, `build.gradle`, `settings.gradle`, `gradle.properties`, or the workflow
+itself. Runs `./gradlew -p tests/tck-test-support test` before
+`generateInfrastructureChangedCoordinatesMatrix`, so the shared support unit
+regressions gate the PR even if there are no affected coordinates. Then pulls allowed images,
 disables Docker networking, validates config, and runs tests for the affected
 coordinates. This is the CI counterpart of the local `testInfra` and
 `testAllInfra` harness tasks (§AR-test-harness).
@@ -288,7 +290,10 @@ Helpers under `.github/workflows/scripts/` used by the workflows above (these ar
   `dockerd.service` and `discard-port.conf`. After allowed images are pulled, CI
   disables Docker networking so tests run deterministically against pre-pulled
   images with no network access (§FS-repository-functional-spec.5.3,
-  §FS-repository-functional-spec.6). You usually do not need this locally.
+  §FS-repository-functional-spec.6). The daemon drop-in also accepts Docker API
+  1.32 for the historical Testcontainers versions in the supported test matrix;
+  this changes the accepted API floor while retaining the isolation proxies.
+  You usually do not need this locally.
 - **Consecutive version testing** — `run-consecutive-tests.sh` walks a library's
   candidate versions in ascending order, runs the full `test` lane per version,
   and on failure bisects the failing stage (`compileTestJava` → `javaTest` →
