@@ -137,6 +137,7 @@ public class ApplicationStorePersistenceRecoveryTest {
 
                 restarted.publish(topic, report("parcel-1003 delivered", 1)).waitForCompletion(TIMEOUT_MS);
                 assertThat(depot.next()).isEqualTo("parcel-1003 delivered");
+                assertThat(events.awaitCompleted(1)).isTrue();
                 assertThat(store.keys().hasMoreElements()).isFalse();
             } finally {
                 shutdown(restarted);
