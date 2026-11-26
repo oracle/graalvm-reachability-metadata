@@ -191,8 +191,7 @@
      report by running `./gradlew generateLibraryStats -Pcoordinates=<resolved coordinate> --stacktrace`
      (§root/AR-test-harness.8). The task re-runs the coverage report and builds
      the dynamic-access native image, so this is the step that dominates the
-     program's wall clock; a failed native build degrades `dynamicAccess` to
-     `N/A` rather than failing the step.
+     program's wall clock; a failed native build fails the step.
   6. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
      `--coordinate`, repository-relative `--coverage-suite-path`, the API
      baseline/final reports (`api-cover-report-0.json` and the highest-iteration report),
