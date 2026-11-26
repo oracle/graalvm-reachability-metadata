@@ -254,7 +254,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Docker isolation.** Docker images used in tests are pre-pulled from `allowed-docker-images`, after which the runner disables Docker networking for deterministic, isolated test runs.
 - **Release style gate.** The release workflow runs `spotlessCheck` before packaging.
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
-- **Compatibility budget.** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
+- **Compatibility budget.** `verify-new-library-version-compatibility` caps each scheduled run at a fixed compatibility-chain budget and at most 30 newer versions per chain (an artifact, or one explicitly configured release line), expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **Docker tag sync.** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
 - **Full sweep.** `test-all-metadata` runs only on a weekly Sunday schedule or manual dispatch in the main repository, uses 85 batches, isolates failed batches down to concrete library versions, publishes result and failure-log artifacts, and fails affected matrix batches. It surfaces sweep regressions but does not gate the scheduled release (§FS-repository-functional-spec.4.4).
 

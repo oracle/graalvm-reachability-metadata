@@ -434,6 +434,7 @@ class LibraryUpdateTargetSplitTests(unittest.TestCase):
             latest = {
                 "latest": True,
                 "auto-update": True,
+                "auto-update-lines": ["1"],
                 "high-priority": True,
                 "metadata-version": "1.0.0",
                 "source-code-url": "https://example.test/demo-$version$-sources.jar",
@@ -450,7 +451,7 @@ class LibraryUpdateTargetSplitTests(unittest.TestCase):
             # `latest` and its latest-only fields, and every other entry in its own formatting.
             added = {**latest, "metadata-version": "2.0.0", "tested-versions": ["2.0.0"]}
             demoted = {key: value for key, value in latest.items()
-                       if key not in ("latest", "auto-update", "high-priority")}
+                       if key not in ("latest", "auto-update", "auto-update-lines", "high-priority")}
             self.assertEqual(_jackson([added, demoted, older]), _read_index(repo))
 
     def test_older_version_lands_after_latest_without_the_latest_only_fields(self) -> None:
@@ -458,6 +459,7 @@ class LibraryUpdateTargetSplitTests(unittest.TestCase):
             latest = {
                 "latest": True,
                 "auto-update": True,
+                "auto-update-lines": ["1"],
                 "metadata-version": "2.0.0",
                 "tested-versions": ["2.0.0"],
                 "allowed-packages": ["org.example"],

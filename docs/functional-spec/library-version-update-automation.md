@@ -23,7 +23,25 @@ label it applies is defined in the GitHub label contract
 `./gradlew fetchExistingLibrariesWithNewerVersions` lists every already-supported
 library whose unique `latest: true` index entry opts in with `auto-update: true`
 and whose newest upstream release is ahead of its highest tested version,
-emitting candidate versions newest-first. Libraries without the marker are
+emitting candidate versions newest-first.
+
+The latest entry may declare `auto-update-lines`, a nonempty list of disjoint
+numeric version prefixes, such as `["4.1", "4.2", "5"]`. Each prefix matches
+whole numeric components, so `4.1` matches `4.1.115.Final` and excludes
+`4.10.0`. Each configured line must contain a tested version. Its highest
+tested version is its discovery and recording baseline, and the metadata entry
+owning that version supplies its tests, including any `test-version` alias.
+Candidates are newer versions matching that line. An artifact without this
+field keeps the existing artifact-wide discovery and test selection.
+Configured lines replace artifact-wide discovery, so maintainers explicitly
+choose which lines receive updates. The field belongs only on the unique
+latest entry with `auto-update: true` and moves with that entry.
+
+Each line is an independent compatibility chain through issue suppression,
+matrix jobs, result aggregation and recording. A failing 4.1 version must not
+suppress, stop or discard a passing 4.2 version. Line jobs and candidates count
+against the existing run and per-job version budgets. `latest` and
+`default-for` retain their consumer metadata-selection meaning. Libraries without the marker are
 discarded before Maven Central is queried. Before a candidate enters the run it
 is de-duplicated against open issues: a library whose newest candidate version
 already has an open `[Automation] … fails for <group:artifact:version>` issue is
@@ -34,7 +52,7 @@ version whose issue has been closed re-enters the run on the next day. The
 permanent exclusion is the artifact's `skipped-versions`, whose entries are
 removed from the candidate list before de-duplication and never re-enter it.
 The distinction matters because §FS-library-version-update-automation.2 stops a
-library at its first failing version: a version that cannot be supported and is
+library or configured release line at its first failing version: a version that cannot be supported and is
 not skipped both re-files its own issue indefinitely and blocks every later
 version of that library from ever being tested. Skip entries are written by the
 disposition in §FS-contribution-contract.5.4, or for a release that is broken
@@ -49,7 +67,7 @@ per-library cap are checked, which keeps the extra Maven Central reads bounded.
 
 `generateNewLibraryVersionCompatibilityMatrix` turns the surviving candidates
 into the CI test matrix, bounded by the per-run library budget and the
-≤ 30-newer-versions-per-library cap (§FS-repository-functional-spec.5.3). When
+≤ 30-newer-versions-per-chain cap (§FS-repository-functional-spec.5.3). When
 candidates remain, the run creates a timestamped working branch
 `check-new-library-versions/<timestamp>` that later steps commit to.
 
@@ -63,7 +81,7 @@ per version. On failure it bisects the failing stage in order —
 `compileTestJava` (javac), `javaTest` (JVM run), `nativeTestCompile`
 (native-image build), then `test` again (native-image run, retried) — to
 classify the failure, records the first failing version, and stops walking that
-library (versions are validated consecutively, so a break in compatibility ends
+library or configured release line (versions are validated consecutively, so a break in compatibility ends
 the chain). Each cell reports the versions that passed plus, if any, the first
 failure with its stage, failing version, reproducer command, runner-log URL, and
 a bounded log tail.
@@ -79,8 +97,8 @@ which appends the version to the artifact's `index.json` and refreshes the
 mirrored `stats/` and shared test sources. The updates are committed to the
 working branch (staging only `metadata`, `stats`, and `tests/src`) under a
 fetch-rebase-retry loop so concurrent scheduled runs do not clobber each other.
-Recording is isolated per library, because one broken library must not block
-recording for all the others: when `addTestedVersion` fails, that library's
+Recording is isolated per library or configured release line, because one broken library must not block
+recording for all the others: when `addTestedVersion` fails, that chain's
 files are restored to their state before the failed version and its remaining
 versions are skipped, while the other libraries are still recorded, committed
 and proposed. The run then fails, naming each library it could not record and

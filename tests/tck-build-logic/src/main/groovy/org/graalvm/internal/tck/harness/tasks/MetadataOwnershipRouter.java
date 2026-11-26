@@ -42,7 +42,7 @@ import java.util.zip.ZipFile;
 final class MetadataOwnershipRouter {
     private static final String INDEX_FILE = "index.json";
     private static final String METADATA_FILE = "reachability-metadata.json";
-    private static final List<String> LATEST_ONLY_FIELDS = List.of("latest", "auto-update", "high-priority");
+    private static final List<String> LATEST_ONLY_FIELDS = List.of("latest", "auto-update", "auto-update-lines", "high-priority");
     private static final List<SectionPath> SECTION_PATHS = List.of(
             new SectionPath("reflection", null),
             new SectionPath("resources", null),

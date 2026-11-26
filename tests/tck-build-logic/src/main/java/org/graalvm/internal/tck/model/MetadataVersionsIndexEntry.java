@@ -14,11 +14,14 @@ import java.util.List;
 /**
  * Index entry for metadata/<groupId>/<artifactId>/index.json.
  * The groupId and artifactId are derived from the directory path; no explicit "module" field exists.
+ * Automation fields follow §FS-library-version-update-automation.1 and §AR-test-harness.7.
  */
 public record MetadataVersionsIndexEntry(
         Boolean latest,
         @JsonProperty("auto-update")
         Boolean autoUpdate,
+        @JsonProperty("auto-update-lines")
+        List<String> autoUpdateLines,
         @JsonProperty("high-priority")
         Boolean highPriority,
         Boolean override,
@@ -55,6 +58,62 @@ public record MetadataVersionsIndexEntry(
         @JsonProperty("replacement")
         String replacement
 ) {
+    public MetadataVersionsIndexEntry withTestedVersions(List<String> testedVersions) {
+        return new MetadataVersionsIndexEntry(
+                this.latest(),
+                this.autoUpdate(),
+                this.autoUpdateLines(),
+                this.highPriority(),
+                this.override(),
+                this.defaultFor(),
+                this.metadataVersion(),
+                this.testVersion(),
+                this.sourceCodeUrl(),
+                this.repositoryUrl(),
+                this.testCodeUrl(),
+                this.documentationUrl(),
+                this.description(),
+                this.language(),
+                testedVersions,
+                this.skippedVersions(),
+                this.allowedPackages(),
+                this.requires(),
+                this.notForNativeImage(),
+                this.reason(),
+                this.replacement()
+        );
+    }
+
+    public MetadataVersionsIndexEntry withLatest(
+            Boolean latest,
+            Boolean autoUpdate,
+            Boolean highPriority
+    ) {
+        return new MetadataVersionsIndexEntry(
+                latest,
+                autoUpdate,
+                Boolean.TRUE.equals(latest) ? this.autoUpdateLines() : null,
+                highPriority,
+                this.override(),
+                this.defaultFor(),
+                this.metadataVersion(),
+                this.testVersion(),
+                this.sourceCodeUrl(),
+                this.repositoryUrl(),
+                this.testCodeUrl(),
+                this.documentationUrl(),
+                this.description(),
+                this.language(),
+                this.testedVersions(),
+                this.skippedVersions(),
+                this.allowedPackages(),
+                this.requires(),
+                this.notForNativeImage(),
+                this.reason(),
+                this.replacement()
+        );
+    }
+
     @JsonIgnore
     public boolean isNotForNativeImage() {
         return Boolean.TRUE.equals(notForNativeImage);
