@@ -111,7 +111,7 @@ class NativeImageLayers {
         if (dedicatedLayer) {
             NativeImageOptions base = nativeExtension.binaries.create("libDedicated")
             base.classpath.from(project.providers.provider {
-                artifacts.resolveDedicatedLayerClasspath(nativeExtension.binaries.getByName("test").classpath.files)
+                artifacts.resolveDedicatedLayerClasspath(nativeExtension.binaries.getByName("test").classpath)
             })
             base.buildArgs.addAll(nativeImageArgs)
             base.createLayer { CreateLayerOptions layer ->

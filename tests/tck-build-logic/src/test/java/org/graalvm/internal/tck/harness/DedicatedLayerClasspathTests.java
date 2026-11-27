@@ -66,8 +66,60 @@ class DedicatedLayerClasspathTests {
         assertThat(result.get("baseMarker")).isEqualTo(result.get("testMarker"));
     }
 
+    @Test
+    void doesNotTransformTheUnbuiltApplicationJar() throws IOException {
+        Path project = fixture("""
+                group = 'fixtures'
+                def transformed = Attribute.of('fixture.transformed', Boolean)
+                dependencies.artifactTypes.getByName('jar').attributes.attribute(transformed, false)
+                dependencies.registerTransform(CopyFixtureJar) {
+                    from.attribute(Attribute.of('artifactType', String), 'jar').attribute(transformed, false)
+                    to.attribute(Attribute.of('artifactType', String), 'jar').attribute(transformed, true)
+                }
+                configurations.nativeImageTestClasspath.attributes.attribute(transformed, true)
+                abstract class CopyFixtureJar implements TransformAction<TransformParameters.None> {
+                    @InputArtifact
+                    @PathSensitive(PathSensitivity.NAME_ONLY)
+                    abstract Provider<FileSystemLocation> getInputArtifact()
+                    void transform(TransformOutputs outputs) {
+                        File input = inputArtifact.get().asFile
+                        Files.copy(input.toPath(), outputs.file(input.name).toPath())
+                    }
+                }
+                tasks.register('inspectBaseOnly') {
+                    doLast {
+                        assert !tasks.named('jar').get().archiveFile.get().asFile.exists()
+                        assert graalvmNative.binaries.libDedicated.classpath.files*.name.containsAll(
+                            ['z-new-1.0.jar', 'a-old-1.0.jar'])
+                    }
+                }
+                """);
+        Path buildFile = project.resolve("build.gradle");
+        Files.writeString(buildFile, """
+                import java.nio.file.Files
+                import org.gradle.api.artifacts.transform.*
+                import org.gradle.api.attributes.Attribute
+                import org.gradle.api.file.FileSystemLocation
+                import org.gradle.api.provider.Provider
+                import org.gradle.api.tasks.PathSensitive
+                import org.gradle.api.tasks.PathSensitivity
+                """ + Files.readString(buildFile));
+
+        GradleRunner.create().withProjectDir(project.toFile()).withPluginClasspath()
+                .withArguments("inspectBaseOnly", "--offline", "--stacktrace").build();
+    }
+
     @SuppressWarnings("unchecked")
     private Map<String, Object> inspect(String customization) throws IOException {
+        Path project = fixture(customization);
+        String output = GradleRunner.create().withProjectDir(project.toFile()).withPluginClasspath()
+                .withArguments("inspectLayerClasspaths", "--offline", "--quiet").build().getOutput();
+        String json = output.lines().filter(line -> line.startsWith("classpaths="))
+                .findFirst().orElseThrow().substring("classpaths=".length());
+        return (Map<String, Object>) new JsonSlurper().parseText(json);
+    }
+
+    private Path fixture(String customization) throws IOException {
         Path project = LayerBuildOptionsTestFixture.create(tempDir, "", true);
         publish(project, "a-old", "old", "");
         publish(project, "z-new", "new", "private String relationship; private boolean ignoringCase;");
@@ -112,11 +164,7 @@ class DedicatedLayerClasspathTests {
                 }
                 """.formatted(customization), StandardOpenOption.APPEND);
 
-        String output = GradleRunner.create().withProjectDir(project.toFile()).withPluginClasspath()
-                .withArguments("inspectLayerClasspaths", "--offline", "--quiet").build().getOutput();
-        String json = output.lines().filter(line -> line.startsWith("classpaths="))
-                .findFirst().orElseThrow().substring("classpaths=".length());
-        return (Map<String, Object>) new JsonSlurper().parseText(json);
+        return project;
     }
 
     @SuppressWarnings("unchecked")

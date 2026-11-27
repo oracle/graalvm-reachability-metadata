@@ -43,7 +43,12 @@ and the Native Build Tools `junit-platform-native` artifact that supplies
 JARs but excludes the coordinate's compiled test classes, test resources, and
 test JAR. It filters the configured native-test classpath to resolved dependency
 artifacts without changing their order (§FS-tests.3.7), so duplicate classes
-resolve from the same dependency in both builds. Both layer builds activate
+resolve from the same dependency in both builds.
+Artifact views exclude the current project before resolving files, so dependency
+transforms never try to read an application JAR that has not been built yet.
+The base retains dependency artifact transforms and their producer dependencies;
+JUnit selection likewise filters components before transforming their artifacts.
+Both layer builds activate
 `JUnitPlatformFeature`. The base invocation
 uses infrastructure-generated selectors for the JUnit engine roots, establishing
 JUnit's initialization and reachability policy without trying to resolve absent
